@@ -1,74 +1,141 @@
-openapi: 3.0.0
-
+---
+openapi: "3.0.0"
 info:
-  title: Accessibility Map API
-  description: REST API to determine accessible road sections for a given vehicle type
-  version: '1'
-
+  title: "Accessibility map API"
+  description: "Query the accessibility for vehicle characteristics within a\
+    \ municipality."
+  version: "1"
 servers:
-  - url: /v1
-  - url: /api/rest/static-road-data/accessibility-map/v1
-
+  - url: "/v1"
+  - url: "/api/rest/static-road-data/accessibility-map/v1"
 security:
-  - iamNdw: [ ]
-
+  - iamNdw: []
 paths:
-  /test/{map}:
-    post:
+  /location/{municipalityId}:
+    get:
       tags:
-        - accessibility-map
-      summary: Test endpoint to verify correct code generation
-      operationId: testEndpoint
+        - "accessibility-map"
+      summary: "Returns inaccessible road sections for a specified municipality"
+      operationId: "getInaccessibleRoadSections"
       parameters:
-        - $ref: '#/components/parameters/MapTypeParam'
+        - $ref: '#/components/parameters/MunicipalityIdPathParam'
+        - $ref: '#/components/parameters/VehicleType'
+        - $ref: '#/components/parameters/VehicleLengthParam'
+        - $ref: '#/components/parameters/VehicleWidthParam'
+        - $ref: '#/components/parameters/VehicleHeightParam'
+        - $ref: '#/components/parameters/VehicleWeightParam'
+        - $ref: '#/components/parameters/VehicleAxleWeightParam'
+        - $ref: '#/components/parameters/VehicleHasTrailerParam'
+
       responses:
-        '200':
-          description: OK
+        "200":
+          description: "OK"
           content:
             application/json:
               schema:
-                type: string
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '500':
-          description: Internal Server Error
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/RoadSectionId"
+        "401":
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "500":
+          description: "Internal Server Error"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/APIError'
-
+                $ref: "#/components/schemas/APIError"
 components:
-  schemas:
-    MapType:
-      type: string
-      enum:
-        - nwb
-        - fcd
-      x-enum-varnames:
-        - nwb
-        - fcd
-      example: nwb
-    APIError:
-      type: object
-      properties:
-        message:
-          type: string
-  parameters:
-    MapTypeParam:
-      in: path
-      name: map
-      description: Map Type
-      required: true
-      schema:
-        $ref: '#/components/schemas/MapType'
-
   securitySchemes:
     iamNdw:
-      type: oauth2
+      type: "oauth2"
       flows:
         clientCredentials:
-          tokenUrl: https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token
-          refreshUrl: https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token
-          scopes: { }
+          tokenUrl: "https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token"
+          refreshUrl: "https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token"
+          scopes: {}
+  parameters:
+    MunicipalityIdPathParam:
+      in: "path"
+      name: "municipalityId"
+      description: "The NWB municipality id"
+      required: true
+      schema:
+        type: "integer"
+        example: "344"
+        format: int32
+    VehicleType:
+      in: "query"
+      name: "vehicleType"
+      description: "The type of vehicle"
+      required: true
+      schema:
+        type: "string"
+        enum:
+          - Car
+          - Hgv
+          - AutoBus
+    VehicleLengthParam:
+      in: "query"
+      name: vehicleLength
+      description: The length of the specified vehicle
+      required: false
+      schema:
+        type: number
+        format: float
+        minimum: 0.0
+    VehicleWidthParam:
+      in: "query"
+      name: vehicleWidth
+      description: The width of the specified vehicle
+      required: false
+      schema:
+        type: number
+        format: float
+        minimum: 0.0
+    VehicleHeightParam:
+      in: "query"
+      name: vehicleHeight
+      description: The height of the specified vehicle
+      required: false
+      schema:
+        type: number
+        format: float
+        minimum: 0.0
+    VehicleWeightParam:
+      in: "query"
+      name: vehicleWeight
+      description: The weight of the specified vehicle
+      required: false
+      schema:
+        type: number
+        format: float
+        minimum: 0.0
+    VehicleAxleWeightParam:
+      in: "query"
+      name: vehicleAxleWeight
+      description: The axle weight of the specified vehicle
+      required: false
+      schema:
+        type: number
+        format: float
+        minimum: 0.0
+    VehicleHasTrailerParam:
+      in: "query"
+      name: vehicleHasTrailer
+      description: Indicating whether a vehicle has a trailer
+      required: false
+      schema:
+        type: boolean
+        default: false
+  schemas:
+    RoadSectionId:
+      type: "integer"
+      description: "The NWB road section id"
+
+    APIError:
+      type: "object"
+      properties:
+        message:
+          type: "string"
