@@ -1,0 +1,19 @@
+# IntelliJ IDE
+.idea
+*.iml
+
+# Eclipse IDE
+.settings/
+.project
+.classpath
+.checkstyle
+.factorypath
+
+# Build folder
+target
+
+*.versionsBackup
+# Backend copies application jar to this directory after compiling, for Docker to have it in context for building.
+docker/nls-accessibility-map-api/application.jar
+
+secrets-*.yaml
