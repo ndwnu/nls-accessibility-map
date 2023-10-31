@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nls-accessibility-map-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nls-accessibility-map-api
+  template:
+    metadata:
+      annotations:
+        ad.datadoghq.com/nls-accessibility-map-api.logs: '[{"source": "java", "service": "nls-accessibility-map-api"}]'
+      labels:
+        app: nls-accessibility-map-api
+        environment: {{ .Values.environment }}
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: nls-accessibility-map-api
+          image: ndwnls.azurecr.io/nls-accessibility-map-api:{{ .Chart.AppVersion }}
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 2Gi
+            requests:
+              memory: 1Gi
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: nls-accessibility-map-api-config
+          readinessProbe:
+            httpGet:
+              path: /api/rest/static-road-data/accessibility-map/actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            timeoutSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /api/rest/static-road-data/accessibility-map/actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 300
+            timeoutSeconds: 60
+          volumeMounts:
+            - mountPath: /application/config
+              name: nls-accessibility-map-api-secrets
+              readOnly: true
+            - mountPath: /application/heapdumps
+              name: nls-accessibility-map-api-heapdump-volume
+              subPath: {{ .Chart.Name }}
+
+      volumes:
+        - name: nls-accessibility-map-api-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: nls-accessibility-map-api-spc
+        - name: nls-accessibility-map-api-heapdump-volume
+          persistentVolumeClaim:
+            claimName: heapdump-pvc-claim
