@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend;
 
-import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -21,8 +20,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        List.of(
-                        (VehicleTypeJsonConverter) VehicleTypeJson::fromValue)
-                .forEach(registry::addConverter);
+        registry.addConverter((VehicleTypeJsonConverter) VehicleTypeJson::fromValue);
     }
 }
