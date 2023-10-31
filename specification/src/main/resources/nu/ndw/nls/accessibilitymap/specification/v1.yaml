@@ -71,11 +71,7 @@ components:
       description: "The type of vehicle"
       required: true
       schema:
-        type: "string"
-        enum:
-          - Car
-          - Hgv
-          - AutoBus
+        $ref: "#/components/schemas/VehicleType"
     VehicleLengthParam:
       in: "query"
       name: vehicleLength
@@ -133,6 +129,12 @@ components:
     RoadSectionId:
       type: "integer"
       description: "The NWB road section id"
+    VehicleType:
+      type: "string"
+      enum:
+        - Car
+        - Hgv
+        - AutoBus
 
     APIError:
       type: "object"
