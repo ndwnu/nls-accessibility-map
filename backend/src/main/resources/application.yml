@@ -1,0 +1,39 @@
+server:
+  max-http-request-header-size: 50KB
+
+spring:
+  application:
+    name: nls-accessibility-map-api-local
+  jackson:
+    default-property-inclusion: non_null
+  config:
+    import: "optional:configtree:/application/config/configtree/"
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: ${nls.keycloak.url}/realms/ndw
+          jwk-set-uri: ${nls.keycloak.url}/realms/ndw/protocol/openid-connect/certs
+
+nls:
+  keycloak:
+    url: http://nls-keycloak:8000/auth
+  oauth2:
+    jwtResourceProperty: ${spring.application.name}
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      service: ${spring.application.name}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    url: /api-docs/v1.yaml
+    path: /api-docs

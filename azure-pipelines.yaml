@@ -1,0 +1,25 @@
+pool:
+  vmImage: ubuntu-latest
+
+resources:
+  repositories:
+    - repository: nls-pipeline-templates
+      type: git
+      name: NLS/nls-pipeline-templates
+      ref: main
+
+extends:
+  template: azure-pipelines-java.yml@nls-pipeline-templates
+  parameters:
+    isVersionedProject: true
+    mavenReleaseGoal: deploy
+    mavenDeployToNdwShared: true
+    sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**'
+    sonarOptionalExclusions: '**/generated/**'
+    mavenOptionalBuildOptions: '-Pregression-test'
+    dockerImages:
+      - nls-accessibility-map-api
+    helmCharts:
+      - {
+        "name": "nls-accessibility-map-api"
+      }
