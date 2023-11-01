@@ -18,6 +18,7 @@
     <modules>
         <module>specification</module>
         <module>backend</module>
+        <module>jobs</module>
     </modules>
 
     <properties>
@@ -25,17 +26,21 @@
         <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
         <karate.version>1.4.1</karate.version>
         <keycloak-authz-client.version>22.0.4</keycloak-authz-client.version>
         <logstash-encoder.version>7.4</logstash-encoder.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <nls-springboot.version>2.3.18</nls-springboot.version>
         <openapi-generator-maven-plugin.version>7.0.1</openapi-generator-maven-plugin.version>
+        <picocli.version>4.7.5</picocli.version>
         <spring-cloud.version>2022.0.4</spring-cloud.version>
         <springdoc.version>2.2.0</springdoc.version>
         <swagger-annotations.version>2.2.17</swagger-annotations.version>
+
+        <nls-nwb-data-access.version>4.1.9</nls-nwb-data-access.version>
+        <nls-springboot.version>2.3.18</nls-springboot.version>
+        <routing-map-matcher.version>7.5.0</routing-map-matcher.version>
     </properties>
 
     <distributionManagement>
@@ -145,6 +150,18 @@
             </dependency>
 
             <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli-spring-boot-starter</artifactId>
+                <version>${picocli.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>nu.ndw</groupId>
+                <artifactId>nls-nwb-data-access-jooq</artifactId>
+                <version>${nls-nwb-data-access.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>datadog</artifactId>
                 <version>${nls-springboot.version}</version>
@@ -167,6 +184,12 @@
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>oauth2-client-credentials</artifactId>
                 <version>${nls-springboot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>nu.ndw.nls</groupId>
+                <artifactId>routing-map-matcher-spring-boot</artifactId>
+                <version>${routing-map-matcher.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

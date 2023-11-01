@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   nls-keycloak:
-    image: ndwnls.azurecr.io/nls-keycloak-it-container:20221025.2
+    image: ndwnls.azurecr.io/nls-keycloak-it-container:${NLS_KEYCLOAK_VERSION}
     command: -Djboss.http.port=8000
     hostname: nls-keycloak
     environment:
@@ -19,10 +19,10 @@ services:
     volumes:
       - ./docker/keycloak-local/config/realm-export-nls.json:/config/realm-export-nls.json
       - ./docker/keycloak-local/dump:/temp
+    networks:
+      - nls-accessibility-map-network
 
   nls-accessibility-map-api:
-    container_name: nls-accessibility-map-api
-    hostname: nls-accessibility-map-api
     build: docker/nls-accessibility-map-api
     environment:
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
@@ -31,3 +31,33 @@ services:
       - "8080:8080"
     depends_on:
       - nls-keycloak
+    networks:
+      - nls-accessibility-map-network
+
+  nls-accessibility-map-jobs:
+    build: docker/nls-accessibility-map-jobs
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - COMMAND=configureRabbitMQ
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
+    volumes:
+      - ./graphhopper:/application/graphhopper
+    networks:
+      - nls-accessibility-map-network
+
+  nls-postgres:
+    hostname: nls-postgres
+    image: ndwnls.azurecr.io/nls-map-loader-test-container:${NLS_MAP_LOADER_TEST_CONTAINER_VERSION}
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=nls-maps
+      - POSTGRES_USER=nls-maps
+      - POSTGRES_PASSWORD=nls-maps
+    networks:
+      - nls-accessibility-map-network
+
+networks:
+  nls-accessibility-map-network:
+    name: nls-accessibility-map-network
