@@ -1,4 +1,4 @@
-package nu.ndw.nls.routingapi.jobs.nwb.services;
+package nu.ndw.nls.accessibilitymap.jobs.nwb.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
@@ -7,8 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
-import nu.ndw.nls.routingapi.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
 import nu.ndw.nls.routingmapmatcher.domain.model.Link;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

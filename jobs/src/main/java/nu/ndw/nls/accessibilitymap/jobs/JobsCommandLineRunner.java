@@ -1,11 +1,11 @@
-package nu.ndw.nls.routingapi.jobs;
+package nu.ndw.nls.accessibilitymap.jobs;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.routingapi.jobs.commands.BaseLoaderCommand;
+import nu.ndw.nls.accessibilitymap.jobs.commands.BaseLoaderCommand;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.info.BuildProperties;
