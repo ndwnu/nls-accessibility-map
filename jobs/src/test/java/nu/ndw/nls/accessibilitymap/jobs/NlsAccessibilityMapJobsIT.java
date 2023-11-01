@@ -1,4 +1,4 @@
-package nu.ndw.nls.routingapi.jobs;
+package nu.ndw.nls.accessibilitymap.jobs;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

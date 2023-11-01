@@ -1,4 +1,4 @@
-package nu.ndw.nls.routingapi.jobs.nwb.services;
+package nu.ndw.nls.accessibilitymap.jobs.nwb.services;
 
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.AFR;
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.BST;

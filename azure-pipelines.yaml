@@ -19,6 +19,7 @@ extends:
     mavenOptionalBuildOptions: '-Pregression-test'
     dockerImages:
       - nls-accessibility-map-api
+      - nls-accessibility-map-jobs
     helmCharts:
       - {
         "name": "nls-accessibility-map-api"
