@@ -75,7 +75,7 @@ components:
     VehicleLengthParam:
       in: "query"
       name: vehicleLength
-      description: The length of the specified vehicle in meters
+      description: The length of the specified vehicle in metres
       required: false
       schema:
         type: number
@@ -84,7 +84,7 @@ components:
     VehicleWidthParam:
       in: "query"
       name: vehicleWidth
-      description: The width of the specified vehicle in meters
+      description: The width of the specified vehicle in metres
       required: false
       schema:
         type: number
@@ -93,7 +93,7 @@ components:
     VehicleHeightParam:
       in: "query"
       name: vehicleHeight
-      description: The height of the specified vehicle in meters
+      description: The height of the specified vehicle in metres
       required: false
       schema:
         type: number
