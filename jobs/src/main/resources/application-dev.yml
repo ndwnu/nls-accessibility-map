@@ -1,0 +1,11 @@
+broker:
+  uri: amqp://guest:guest@localhost:5672?heartbeat=300
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-routing-api&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps

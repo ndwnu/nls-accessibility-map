@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nls-accessibility-map-cron-job
+spec:
+  # Runs all day, every whole hour.
+  schedule: "0 0/1 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            ad.datadoghq.com/nls-accessibility-map-jobs.logs: '[{"source": "java", "service": "{{ .name }}"}]'
+          labels:
+            environment: {{ $.Values.environment }}
+        spec:
+          containers:
+            - name: nls-accessibility-map-jobs
+              resources:
+                limits:
+                  memory: 2Gi
+                requests:
+                  memory: 2Gi
+              image: ndwnls.azurecr.io/nls-accessibility-map-jobs:{{ $.Chart.AppVersion }}
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: nls-accessibility-map-jobs-config
+              env:
+                - name: COMMAND
+                  value: createOrUpdateNetwork
+              volumeMounts:
+                - mountPath: /application/config
+                  name: nls-accessibility-map-jobs-secrets
+                  readOnly: true
+                - mountPath: /application/graphhopper
+                  name: nls-accessibility-map-jobs-volume
+                - mountPath: /application/heapdumps
+                  name: nls-accessibility-map-jobs-heapdump-volume
+                  subPath: {{ $.Chart.Name }}
+          volumes:
+            - name: nls-accessibility-map-jobs-secrets
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: nls-accessibility-map-jobs-spc
+            - name: nls-accessibility-map-jobs-volume
+              persistentVolumeClaim:
+                claimName: nls-accessibility-map-api-pvc
+            - name: nls-accessibility-map-jobs-heapdump-volume
+              persistentVolumeClaim:
+                claimName: heapdump-pvc-claim
+          restartPolicy: Never
+      # Don't retry 6 times on failure, just wait for next iteration.
+      backoffLimit: 0

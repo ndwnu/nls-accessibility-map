@@ -46,10 +46,11 @@ spec:
             - mountPath: /application/config
               name: nls-accessibility-map-api-secrets
               readOnly: true
+            - mountPath: /application/graphhopper
+              name: nls-accessibility-map-api-volume
             - mountPath: /application/heapdumps
               name: nls-accessibility-map-api-heapdump-volume
               subPath: {{ .Chart.Name }}
-
       volumes:
         - name: nls-accessibility-map-api-secrets
           csi:
@@ -57,6 +58,9 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: nls-accessibility-map-api-spc
+        - name: nls-accessibility-map-api-volume
+          persistentVolumeClaim:
+            claimName: nls-accessibility-map-api-pvc
         - name: nls-accessibility-map-api-heapdump-volume
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim

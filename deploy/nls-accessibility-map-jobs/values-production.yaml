@@ -1,0 +1,4 @@
+environment: production
+
+application:
+  databaseHost: nls-postgres-production.postgres.database.azure.com
