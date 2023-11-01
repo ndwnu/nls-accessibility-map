@@ -35,7 +35,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/RoadSection"
+                  $ref: "#/components/schemas/RoadSections"
         "401":
           description: "Unauthorized"
         "403":
@@ -126,6 +126,13 @@ components:
         type: boolean
         default: false
   schemas:
+    RoadSections:
+      type: "object"
+      properties:
+        inaccessibleRoadSections:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/RoadSection"
     RoadSection:
       type: "object"
       properties:
