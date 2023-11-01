@@ -1,4 +1,4 @@
-package nu.ndw.nls.routingapi.jobs.nwb.mappers;
+package nu.ndw.nls.accessibilitymap.jobs.nwb.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;

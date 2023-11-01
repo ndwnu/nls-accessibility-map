@@ -1,4 +1,4 @@
-package nu.ndw.nls.routingapi.jobs.commands;
+package nu.ndw.nls.accessibilitymap.jobs.commands;
 
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;

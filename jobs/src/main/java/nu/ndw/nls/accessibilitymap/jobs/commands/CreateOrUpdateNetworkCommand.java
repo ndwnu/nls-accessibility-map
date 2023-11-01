@@ -1,10 +1,10 @@
-package nu.ndw.nls.routingapi.jobs.commands;
+package nu.ndw.nls.accessibilitymap.jobs.commands;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.routingapi.jobs.nwb.services.NwbNetworkService;
+import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbNetworkService;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 

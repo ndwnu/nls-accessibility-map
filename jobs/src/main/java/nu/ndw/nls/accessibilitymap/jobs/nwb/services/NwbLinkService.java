@@ -1,10 +1,10 @@
-package nu.ndw.nls.routingapi.jobs.nwb.services;
+package nu.ndw.nls.accessibilitymap.jobs.nwb.services;
 
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
-import nu.ndw.nls.routingapi.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
+import nu.ndw.nls.accessibilitymap.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
 import nu.ndw.nls.routingmapmatcher.domain.model.Link;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
