@@ -5,10 +5,6 @@ jooq:
     packages-to-scan:
       - nu.ndw.nls.db.nwb.jooq.generated
 
-logging:
-  level:
-    nu:
-      ndw: info
 org:
   jooq:
     no-logo: true

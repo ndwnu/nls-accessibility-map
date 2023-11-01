@@ -1,0 +1,4 @@
+environment: staging
+
+application:
+  databaseHost: nls-postgres-staging.postgres.database.azure.com
