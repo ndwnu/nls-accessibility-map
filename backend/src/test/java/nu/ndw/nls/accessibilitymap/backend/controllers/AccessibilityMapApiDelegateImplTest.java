@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionsJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +22,7 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void testEndpoint_ok() {
-        ResponseEntity<List<RoadSectionJson>> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(344, VehicleTypeJson.CAR
+        ResponseEntity<List<RoadSectionsJson>> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(344, VehicleTypeJson.CAR
                 , null, null, null, null, null, false);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
