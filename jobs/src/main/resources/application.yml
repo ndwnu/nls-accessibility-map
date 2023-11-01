@@ -1,0 +1,27 @@
+jooq:
+  schema-validation:
+    schema-severity:
+      nwb: ERROR
+    packages-to-scan:
+      - nu.ndw.nls.db.nwb.jooq.generated
+
+org:
+  jooq:
+    no-logo: true
+spring:
+  application:
+    name: nls-accessibility-map-jobs
+  config:
+    import: "optional:configtree:/application/config/configtree/"
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: SELECT 1;
+      idle-timeout: 60000
+      max-lifetime: 120000
+      minimum-idle: 1
+      auto-commit: false
+  jmx:
+    enabled: false
+  jooq:
+    sql-dialect: Postgres

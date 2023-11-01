@@ -3,6 +3,7 @@ This is a multi-module project for the Accessibility Map API. It consists of the
 
 - Specification (API YAML definition)
 - [Backend REST API](backend/README.md)
+- Network generation job
 
 ## Structure
 The specification module only versions the
