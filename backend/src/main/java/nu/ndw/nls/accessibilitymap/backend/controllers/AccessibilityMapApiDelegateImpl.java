@@ -18,7 +18,8 @@ import org.springframework.stereotype.Component;
 public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDelegate {
 
     @Override
-    public ResponseEntity<List<Integer>> getInaccessibleRoadSections(Integer municipalityId, VehicleTypeJson vehicleType,
+    public ResponseEntity<List<Integer>> getInaccessibleRoadSections(Integer municipalityId,
+            VehicleTypeJson vehicleType,
             Float vehicleLength, Float vehicleWidth, Float vehicleHeight, Float vehicleWeight, Float vehicleAxleWeight,
             Boolean vehicleHasTrailer) {
         return ResponseEntity.ok(emptyList());

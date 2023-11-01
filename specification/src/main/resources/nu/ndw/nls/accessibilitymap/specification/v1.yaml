@@ -11,11 +11,11 @@ servers:
 security:
   - iamNdw: []
 paths:
-  /location/{municipalityId}:
+  /municipalities/{municipalityId}:
     get:
       tags:
         - "accessibility-map"
-      summary: "Returns inaccessible road sections for a specified municipality"
+      summary: "Returns inaccessible road sections for a specified municipality per direction"
       operationId: "getInaccessibleRoadSections"
       parameters:
         - $ref: '#/components/parameters/MunicipalityIdPathParam'
@@ -35,7 +35,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/RoadSectionId"
+                  $ref: "#/components/schemas/RoadSection"
         "401":
           description: "Unauthorized"
         "403":
@@ -75,7 +75,7 @@ components:
     VehicleLengthParam:
       in: "query"
       name: vehicleLength
-      description: The length of the specified vehicle
+      description: The length of the specified vehicle in meters
       required: false
       schema:
         type: number
@@ -84,7 +84,7 @@ components:
     VehicleWidthParam:
       in: "query"
       name: vehicleWidth
-      description: The width of the specified vehicle
+      description: The width of the specified vehicle in meters
       required: false
       schema:
         type: number
@@ -93,7 +93,7 @@ components:
     VehicleHeightParam:
       in: "query"
       name: vehicleHeight
-      description: The height of the specified vehicle
+      description: The height of the specified vehicle in meters
       required: false
       schema:
         type: number
@@ -102,7 +102,7 @@ components:
     VehicleWeightParam:
       in: "query"
       name: vehicleWeight
-      description: The weight of the specified vehicle
+      description: The weight of the specified vehicle in metric tonnes
       required: false
       schema:
         type: number
@@ -111,7 +111,7 @@ components:
     VehicleAxleWeightParam:
       in: "query"
       name: vehicleAxleWeight
-      description: The axle weight of the specified vehicle
+      description: The axle weight of the specified vehicle in metric tonnes
       required: false
       schema:
         type: number
@@ -120,21 +120,29 @@ components:
     VehicleHasTrailerParam:
       in: "query"
       name: vehicleHasTrailer
-      description: Indicating whether a vehicle has a trailer
+      description: Indication whether a vehicle has a trailer
       required: false
       schema:
         type: boolean
         default: false
   schemas:
-    RoadSectionId:
-      type: "integer"
-      description: "The NWB road section id"
+    RoadSection:
+      type: "object"
+      properties:
+        roadSectionId:
+          type: integer
+          format: int32
+        forwardAccessible:
+          type: boolean
+        backwardAccessible:
+          type: boolean
     VehicleType:
       type: "string"
       enum:
         - Car
         - Hgv
         - AutoBus
+        - MotorCycle
 
     APIError:
       type: "object"
