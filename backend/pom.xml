@@ -238,7 +238,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>
+                                    <arguments combine.children="append">
                                         <argument>down</argument>
                                     </arguments>
                                     <executable>docker-compose</executable>
@@ -251,7 +251,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>
+                                    <arguments combine.children="append">
                                         <argument>up</argument>
                                         <argument>-d</argument>
                                         <argument>nls-keycloak</argument>
@@ -266,7 +266,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>
+                                    <arguments combine.children="append">
                                         <argument>build</argument>
                                         <argument>nls-accessibility-map-api</argument>
                                     </arguments>
@@ -280,7 +280,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>
+                                    <arguments combine.children="append">
                                         <argument>up</argument>
                                         <argument>-d</argument>
                                         <argument>nls-accessibility-map-api</argument>
@@ -295,13 +295,17 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>
+                                    <arguments combine.children="append">
                                         <argument>stop</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
                         </executions>
                         <configuration>
+                            <arguments>
+                                <argument>--env-file</argument>
+                                <argument>../.env</argument>
+                            </arguments>
                             <executable>docker-compose</executable>
                         </configuration>
                     </plugin>

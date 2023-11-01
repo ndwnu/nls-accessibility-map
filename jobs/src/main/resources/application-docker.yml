@@ -1,0 +1,7 @@
+broker:
+  uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+spring:
+  datasource:
+    url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-routing-api&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
