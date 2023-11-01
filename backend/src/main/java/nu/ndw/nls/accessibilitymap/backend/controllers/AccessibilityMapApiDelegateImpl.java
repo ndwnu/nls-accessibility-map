@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDelegate {
 
     @Override
-    public ResponseEntity<List<Integer>> getInaccessibleRoadSections(Integer municipalityId,
+    public ResponseEntity<List<RoadSectionJson>> getInaccessibleRoadSections(Integer municipalityId,
             VehicleTypeJson vehicleType,
             Float vehicleLength, Float vehicleWidth, Float vehicleHeight, Float vehicleWeight, Float vehicleAxleWeight,
             Boolean vehicleHasTrailer) {
