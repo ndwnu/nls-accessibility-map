@@ -22,7 +22,7 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void testEndpoint_ok() {
-        ResponseEntity<List<RoadSectionsJson>> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(344, VehicleTypeJson.CAR
+        ResponseEntity<RoadSectionsJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(344, VehicleTypeJson.CAR
                 , null, null, null, null, null, false);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
