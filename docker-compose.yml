@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   nls-keycloak:
-    image: ndwnls.azurecr.io/nls-keycloak-it-container
+    image: ndwnls.azurecr.io/nls-keycloak-it-container:20221025.2
     command: -Djboss.http.port=8000
     hostname: nls-keycloak
     environment:
