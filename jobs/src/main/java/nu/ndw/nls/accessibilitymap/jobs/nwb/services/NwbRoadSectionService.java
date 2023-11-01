@@ -1,4 +1,4 @@
-package nu.ndw.nls.routingapi.jobs.nwb.services;
+package nu.ndw.nls.accessibilitymap.jobs.nwb.services;
 
 import java.util.Collection;
 import java.util.EnumSet;

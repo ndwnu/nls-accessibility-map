@@ -1,4 +1,4 @@
-package nu.ndw.nls.routingapi.jobs.nwb.mappers;
+package nu.ndw.nls.accessibilitymap.jobs.nwb.mappers;
 
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;

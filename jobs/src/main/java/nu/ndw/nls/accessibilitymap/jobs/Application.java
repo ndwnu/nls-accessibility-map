@@ -1,4 +1,4 @@
-package nu.ndw.nls.routingapi.jobs;
+package nu.ndw.nls.accessibilitymap.jobs;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

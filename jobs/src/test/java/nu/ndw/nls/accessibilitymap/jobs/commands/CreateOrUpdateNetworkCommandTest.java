@@ -1,11 +1,11 @@
-package nu.ndw.nls.routingapi.jobs.commands;
+package nu.ndw.nls.accessibilitymap.jobs.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 import lombok.SneakyThrows;
-import nu.ndw.nls.routingapi.jobs.nwb.services.NwbNetworkService;
+import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbNetworkService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
