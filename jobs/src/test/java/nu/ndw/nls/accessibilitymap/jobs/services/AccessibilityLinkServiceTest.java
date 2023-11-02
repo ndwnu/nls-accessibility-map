@@ -1,6 +1,7 @@
-package nu.ndw.nls.accessibilitymap.jobs.nwb.services;
+package nu.ndw.nls.accessibilitymap.jobs.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,9 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
+import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbRoadSectionService;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.domain.model.Link;
 import org.junit.jupiter.api.Test;
@@ -17,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class NwbLinkServiceTest {
+class AccessibilityLinkServiceTest {
 
     private static final int VERSION_INT = 20220101;
     private static final long ROAD_SECTION_ID_1 = 1L;
@@ -25,13 +29,14 @@ class NwbLinkServiceTest {
     private static final long ROAD_SECTION_ID_3 = 3L;
 
     @Mock
+    private NwbRoadSectionService roadSectionService;
+    @Mock
+    private TrafficSignService trafficSignService;
+    @Mock
     private NwbRoadSectionToLinkMapper nwbRoadSectionToLinkMapper;
 
-    @Mock
-    private NwbRoadSectionService roadSectionService;
-
     @InjectMocks
-    private NwbLinkService nwbLinkService;
+    private AccessibilityLinkService accessibilityLinkService;
 
     @Mock
     private Link roadSection1link;
@@ -55,20 +60,23 @@ class NwbLinkServiceTest {
                 .build();
         List<NwbRoadSectionDto> roadSectionDtos = List.of(roadSection1, roadSection2, roadSection3);
 
-        // Spy on stream, so we can verify it gets closed
+        // Spy on streams, so we can verify they get closed
         Stream<NwbRoadSectionDto> roadSectionsStream = spy(roadSectionDtos.stream());
+        Stream<TrafficSignJsonDtoV3> trafficSignStream = spy(Stream.of());
 
         when(roadSectionService.findLazyCar(VERSION_INT)).thenReturn(roadSectionsStream);
+        when(trafficSignService.getTrafficSigns()).thenReturn(trafficSignStream);
 
         when(nwbRoadSectionToLinkMapper.map(roadSection1)).thenReturn(roadSection1link);
         when(nwbRoadSectionToLinkMapper.map(roadSection2)).thenReturn(roadSection2link);
         when(nwbRoadSectionToLinkMapper.map(roadSection3)).thenReturn(roadSection3link);
 
-        List<Link> result = nwbLinkService.getLinks(VERSION_INT);
+        List<Link> result = accessibilityLinkService.getLinks(VERSION_INT);
 
         assertEquals(List.of(roadSection1link, roadSection2link, roadSection3link), result);
 
         // Verify stream closure
-        verify(roadSectionsStream).close();
+        verify(roadSectionsStream, atLeastOnce()).close();
+        verify(trafficSignStream, atLeastOnce()).close();
     }
 }
