@@ -1,3 +1,4 @@
+itTest: false
 jooq:
   schema-validation:
     schema-severity:

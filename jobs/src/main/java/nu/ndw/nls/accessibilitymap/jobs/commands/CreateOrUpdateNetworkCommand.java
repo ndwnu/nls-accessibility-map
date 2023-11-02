@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbNetworkService;
+import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityNetworkService;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 
@@ -14,12 +14,12 @@ import picocli.CommandLine.Command;
 @RequiredArgsConstructor
 public class CreateOrUpdateNetworkCommand implements Callable<Integer> {
 
-    private final NwbNetworkService nwbNetworkService;
+    private final AccessibilityNetworkService accessibilityNetworkService;
 
     @Override
     public Integer call() {
         try {
-            nwbNetworkService.storeLatestNetworkOnDisk();
+            accessibilityNetworkService.storeLatestNetworkOnDisk();
             return 0;
         } catch (IOException | RuntimeException e) {
             log.error("And error occurred while creating or updating latest network", e);

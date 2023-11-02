@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.nwb.mappers;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.domain.model.Link;
+import nu.ndw.nls.routingmapmatcher.domain.model.LinkTag;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,7 +19,7 @@ public class NwbRoadSectionToLinkMapper {
 
     public Link map(NwbRoadSectionDto roadSectionDto) {
         String drivingDirection = roadSectionDto.getDrivingDirection();
-        return Link.builder()
+        Link link = Link.builder()
                 .id(roadSectionDto.getRoadSectionId())
                 .fromNodeId(roadSectionDto.getJunctionIdFrom())
                 .toNodeId(roadSectionDto.getJunctionIdTo())
@@ -27,5 +28,7 @@ public class NwbRoadSectionToLinkMapper {
                 .distanceInMeters(roadSectionDto.getGeometry().getLength())
                 .geometry(rijksdriehoekToWgs84Mapper.map(roadSectionDto.getGeometry()))
                 .build();
+        link.setTag(LinkTag.MUNICIPALITY_CODE, roadSectionDto.getMunicipalityId());
+        return link;
     }
 }
