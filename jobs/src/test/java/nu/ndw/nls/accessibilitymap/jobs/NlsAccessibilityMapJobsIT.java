@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,9 +20,12 @@ public class NlsAccessibilityMapJobsIT {
     @MockBean
     private JobsCommandLineRunner jobsCommandLineRunner;
 
+    @Value("${graphhopper.dir}")
+    private String graphHopperDir;
+
     @Test
     void createOrUpdateNetwork_ok() {
-        Path path = Path.of("..", "graphhopper", "accessibility_latest");
+        Path path = Path.of(graphHopperDir).resolve("accessibility_latest");
         assertTrue(Files.exists(path));
         // Check whether network is fully built.
         assertTrue(Files.exists(path.resolve("properties")));

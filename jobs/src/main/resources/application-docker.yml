@@ -1,5 +1,7 @@
 broker:
   uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+graphhopper:
+  dir: graphhopper
 spring:
   datasource:
     url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified

@@ -1,3 +1,5 @@
+graphhopper:
+  dir: /application/graphhopper
 jooq:
   schema-validation:
     schema-severity:
