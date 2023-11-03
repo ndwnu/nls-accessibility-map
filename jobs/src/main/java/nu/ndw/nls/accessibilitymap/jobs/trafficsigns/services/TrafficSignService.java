@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services;
 
 import java.util.Comparator;
 import java.util.stream.Stream;
-import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +20,6 @@ public class TrafficSignService {
         this.currentStateUri = currentStateUri;
     }
 
-    @SneakyThrows
     public Stream<TrafficSignJsonDtoV3> getTrafficSigns() {
         return webClient.get()
                 .uri(currentStateUri)
