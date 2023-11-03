@@ -32,18 +32,18 @@ public class AccessibilityLinkService {
         // To reduce memory footprint, the streams are lazy and keep an open database connection and therefore need to
         // be closed after use.
         try (Stream<NwbRoadSectionDto> roadSections = roadSectionService.findLazyCar(nwbVersionId);
+                Stream<TrafficSignJsonDtoV3> trafficSigns = trafficSignService.getTrafficSigns()) {
 
-                Stream<List<TrafficSignJsonDtoV3>> trafficSignsByRoadSectionId = groupBy(
-                        trafficSignService.getTrafficSigns(), t -> t.getLocation().getRoad().getRoadSectionId());
+            Stream<List<TrafficSignJsonDtoV3>> trafficSignsByRoadSectionId = groupBy(trafficSigns,
+                    t -> t.getLocation().getRoad().getRoadSectionId());
 
-                Stream<Link> links = join(roadSections,
-                        trafficSignsByRoadSectionId,
-                        Comparator.naturalOrder(),
-                        NwbRoadSectionDto::getRoadSectionId,
-                        this::getTrafficSignsRoadSectionId,
-                        this::mapToLink,
-                        JoinType.LEFT
-                )) {
+            Stream<Link> links = join(roadSections,
+                    trafficSignsByRoadSectionId,
+                    Comparator.naturalOrder(),
+                    NwbRoadSectionDto::getRoadSectionId,
+                    this::getTrafficSignsRoadSectionId,
+                    this::mapToLink,
+                    JoinType.LEFT);
             return links.toList();
         }
     }
