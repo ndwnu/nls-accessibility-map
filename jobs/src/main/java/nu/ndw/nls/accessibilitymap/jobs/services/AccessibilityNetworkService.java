@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccessibilityNetworkService {
 
     private static final String GRAPHHOPPER = "graphhopper";
-    private static final String NETWORK_NAME = "nwb_latest";
+    private static final String NETWORK_NAME = "accessibility_latest";
 
     private final AccessibilityGraphHopperNetworkService accessibilityGraphHopperNetworkService;
     private final AccessibilityLinkService accessibilityLinkService;

@@ -11,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
-@Slf4j
 @SpringBootTest
 @ContextConfiguration(classes = TestConfig.class)
 @ActiveProfiles(profiles = {"integration-test"})
@@ -23,7 +22,7 @@ public class NlsAccessibilityMapJobsIT {
 
     @Test
     void createOrUpdateNetwork_ok() {
-        Path path = Path.of("..", "graphhopper", "nwb_latest");
+        Path path = Path.of("..", "graphhopper", "accessibility_latest");
         assertTrue(Files.exists(path));
         // Check whether network is fully built.
         assertTrue(Files.exists(path.resolve("properties")));
