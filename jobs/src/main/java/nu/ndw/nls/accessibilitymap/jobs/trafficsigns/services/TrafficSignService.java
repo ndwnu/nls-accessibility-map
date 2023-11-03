@@ -26,8 +26,7 @@ public class TrafficSignService {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToFlux(TrafficSignJsonDtoV3.class)
-                .filter(t -> t.getLocation().getRoad() != null)
-                .filter(t -> t.getLocation().getRoad().getRoadSectionId() != null)
+                .filter(t -> t.getLocation().getRoad() != null && t.getLocation().getRoad().getRoadSectionId() != null)
                 .toStream()
                 .sorted(Comparator.comparing(h -> h.getLocation().getRoad().getRoadSectionId()));
     }
