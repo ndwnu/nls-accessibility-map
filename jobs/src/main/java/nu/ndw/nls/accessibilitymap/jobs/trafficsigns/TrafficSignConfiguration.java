@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.trafficsigns;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -10,9 +11,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class TrafficSignConfiguration {
 
     @Bean
-    public WebClient getWebClient(WebClient.Builder webClientBuilder) {
+    public WebClient getWebClient(WebClient.Builder webClientBuilder,
+            @Value("${traffic-sign.base-url}") String baseUrl) {
         return webClientBuilder
-                .baseUrl("https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v3")
+                .baseUrl(baseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }

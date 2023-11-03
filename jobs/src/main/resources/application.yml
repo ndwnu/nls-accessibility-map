@@ -1,4 +1,3 @@
-itTest: false
 jooq:
   schema-validation:
     schema-severity:
@@ -26,3 +25,6 @@ spring:
     enabled: false
   jooq:
     sql-dialect: Postgres
+traffic-sign:
+  base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v3
+  current-state-uri: /current-state?status=PLACED
