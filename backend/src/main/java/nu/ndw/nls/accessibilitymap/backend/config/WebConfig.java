@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend;
+package nu.ndw.nls.accessibilitymap.backend.config;
 
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import org.springframework.context.annotation.Configuration;

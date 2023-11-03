@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.trafficsigns;
+package nu.ndw.nls.accessibilitymap.jobs.trafficsigns.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class TrafficSignConfiguration {
+public class TrafficSignConfig {
 
     @Bean
     public WebClient getWebClient(WebClient.Builder webClientBuilder,
