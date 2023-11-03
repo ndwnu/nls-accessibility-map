@@ -5,3 +5,5 @@ spring:
     url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
     username: nls-maps
     password: nls-maps
+traffic-sign:
+  current-state-uri: /current-state?status=PLACED&town-code=GM0307
