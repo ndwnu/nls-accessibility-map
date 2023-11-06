@@ -10,6 +10,10 @@
     <name>NLS routing Graphhopper jobs</name>
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli-spring-boot-starter</artifactId>
         </dependency>
@@ -40,6 +44,10 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.conductor</groupId>
+            <artifactId>stream-utils</artifactId>
         </dependency>
 
         <dependency>

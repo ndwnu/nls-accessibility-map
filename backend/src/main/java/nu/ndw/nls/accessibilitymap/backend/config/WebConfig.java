@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend;
+package nu.ndw.nls.accessibilitymap.backend.config;
 
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import org.springframework.context.annotation.Configuration;
@@ -10,9 +10,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     /*
-     * Use of marker interfaces fixes runtime errors when using spring converters as lambda expressions see:
-     * https://stackoverflow.com/questions/25711858/spring-cant-determine-generic-types-when-lambda-expression-is-used-instead-of-a
-     *
+     * Use of marker interfaces fixes runtime errors when using Spring converters as lambda expressions.
+     * See https://stackoverflow.com/questions/25711858
      */
     private interface VehicleTypeJsonConverter extends Converter<String, VehicleTypeJson> {
 
