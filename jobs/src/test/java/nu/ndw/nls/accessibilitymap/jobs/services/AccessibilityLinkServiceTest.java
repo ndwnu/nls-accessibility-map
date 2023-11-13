@@ -9,15 +9,18 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbRoadSectionService;
+import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityLinkService.AccessibilityLinkResponse;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToLinkTagMapper;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService.TrafficSignResponse;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.domain.model.Link;
 import org.junit.jupiter.api.Test;
@@ -34,6 +37,7 @@ class AccessibilityLinkServiceTest {
     private static final long ROAD_SECTION_ID_2 = 2L;
     private static final long ROAD_SECTION_ID_3 = 3L;
     private static final long ROAD_SECTION_ID_4 = 4L;
+    private static final Instant MAX_LAST_EVENT_ON = Instant.parse("2023-11-07T15:37:23Z");
 
     @Mock
     private NwbRoadSectionService roadSectionService;
@@ -80,15 +84,17 @@ class AccessibilityLinkServiceTest {
         Stream<TrafficSignJsonDtoV3> trafficSignStream = spy(trafficSigns.stream());
 
         when(roadSectionService.findLazyCar(VERSION_INT)).thenReturn(roadSectionStream);
-        when(trafficSignService.getTrafficSigns()).thenReturn(trafficSignStream);
+        when(trafficSignService.getTrafficSigns())
+                .thenReturn(new TrafficSignResponse(trafficSignStream, () -> MAX_LAST_EVENT_ON));
 
         when(nwbRoadSectionToLinkMapper.map(roadSection1)).thenReturn(roadSection1link);
         when(nwbRoadSectionToLinkMapper.map(roadSection2)).thenReturn(roadSection2link);
         when(nwbRoadSectionToLinkMapper.map(roadSection3)).thenReturn(roadSection3link);
 
-        List<Link> result = accessibilityLinkService.getLinks(VERSION_INT);
+        AccessibilityLinkResponse response = accessibilityLinkService.getLinks(VERSION_INT);
 
-        assertEquals(List.of(roadSection1link, roadSection2link, roadSection3link), result);
+        assertEquals(List.of(roadSection1link, roadSection2link, roadSection3link), response.links());
+        assertEquals(MAX_LAST_EVENT_ON, response.dataDate());
 
         verify(trafficSignToLinkTagMapper).setLinkTags(roadSection1link, List.of(trafficSign1, trafficSign2));
         verify(trafficSignToLinkTagMapper, never()).setLinkTags(eq(roadSection2link), anyList());

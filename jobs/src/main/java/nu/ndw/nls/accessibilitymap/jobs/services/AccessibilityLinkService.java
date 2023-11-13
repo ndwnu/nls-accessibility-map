@@ -4,6 +4,7 @@ import static com.conductor.stream.utils.OrderedStreamUtils.groupBy;
 import static com.conductor.stream.utils.OrderedStreamUtils.join;
 
 import com.conductor.stream.utils.join.JoinType;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -13,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbRoadSectionService;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToLinkTagMapper;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService.TrafficSignResponse;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.domain.model.Link;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,12 @@ public class AccessibilityLinkService {
     private final TrafficSignToLinkTagMapper trafficSignToLinkTagMapper;
 
     @Transactional(readOnly = true)
-    public List<Link> getLinks(int nwbVersionId) {
+    public AccessibilityLinkResponse getLinks(int nwbVersionId) {
+        TrafficSignResponse trafficSignResponse = trafficSignService.getTrafficSigns();
         // To reduce memory footprint, the streams are lazy and keep an open database connection and therefore need to
         // be closed after use.
         try (Stream<NwbRoadSectionDto> roadSections = roadSectionService.findLazyCar(nwbVersionId);
-                Stream<TrafficSignJsonDtoV3> trafficSigns = trafficSignService.getTrafficSigns()) {
+                Stream<TrafficSignJsonDtoV3> trafficSigns = trafficSignResponse.trafficSigns()) {
 
             Stream<List<TrafficSignJsonDtoV3>> trafficSignsByRoadSectionId = groupBy(trafficSigns,
                     t -> t.getLocation().getRoad().getRoadSectionId());
@@ -44,7 +47,7 @@ public class AccessibilityLinkService {
                     this::getTrafficSignsRoadSectionId,
                     this::mapToLink,
                     JoinType.LEFT);
-            return links.toList();
+            return new AccessibilityLinkResponse(links.toList(), trafficSignResponse.maxLastEventOn().get());
         }
     }
 
@@ -58,5 +61,9 @@ public class AccessibilityLinkService {
             trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
         }
         return link;
+    }
+
+    public record AccessibilityLinkResponse(List<Link> links, Instant dataDate) {
+
     }
 }

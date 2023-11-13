@@ -8,4 +8,5 @@ spring:
     username: nls-maps
     password: nls-maps
 traffic-sign:
+  base-url: http://traffic-sign-api-stub:8080/api/rest/static-road-data/traffic-signs/v3
   current-state-uri: /current-state?status=PLACED&town-code=GM0307
