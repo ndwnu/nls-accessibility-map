@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/rest/static-road-data/traffic-signs/v3/current-state?status=PLACED&town-code=GM0307"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json; charset=utf-8;"
+    },
+    "bodyFileName": "responses/current-state.json"
+  }
+}
