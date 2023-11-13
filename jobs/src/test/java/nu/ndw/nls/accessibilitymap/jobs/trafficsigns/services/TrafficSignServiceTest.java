@@ -3,10 +3,12 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService.TrafficSignResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,7 @@ import reactor.core.publisher.Flux;
 class TrafficSignServiceTest {
 
     private static final String CURRENT_STATE_URI = "/current-state";
+    private static final Instant MAX_LAST_EVENT_ON = Instant.parse("2023-11-07T15:37:23Z");
 
     private TrafficSignService trafficSignService;
 
@@ -41,16 +44,19 @@ class TrafficSignServiceTest {
     @Test
     void getTrafficSigns_ok_filteredAndSorted() {
         TrafficSignJsonDtoV3 trafficSign1 = TrafficSignJsonDtoV3.builder()
+                .lastEventOn(MAX_LAST_EVENT_ON)
                 .location(LocationJsonDtoV3.builder()
                         .build())
                 .build();
         TrafficSignJsonDtoV3 trafficSign2 = TrafficSignJsonDtoV3.builder()
+                .lastEventOn(MAX_LAST_EVENT_ON.minusSeconds(60))
                 .location(LocationJsonDtoV3.builder()
                         .road(RoadJsonDtoV3.builder()
                                 .build())
                         .build())
                 .build();
         TrafficSignJsonDtoV3 trafficSign3 = TrafficSignJsonDtoV3.builder()
+                .lastEventOn(MAX_LAST_EVENT_ON.minusSeconds(120))
                 .location(LocationJsonDtoV3.builder()
                         .road(RoadJsonDtoV3.builder()
                                 .roadSectionId("2")
@@ -69,9 +75,10 @@ class TrafficSignServiceTest {
         when(responseSpec.bodyToFlux(TrafficSignJsonDtoV3.class))
                 .thenReturn(Flux.just(trafficSign1, trafficSign2, trafficSign3, trafficSign4));
 
-        List<TrafficSignJsonDtoV3> result = trafficSignService.getTrafficSigns().toList();
+        TrafficSignResponse response = trafficSignService.getTrafficSigns();
 
-        assertEquals(List.of(trafficSign4, trafficSign3), result);
+        assertEquals(List.of(trafficSign4, trafficSign3), response.trafficSigns().toList());
+        assertEquals(MAX_LAST_EVENT_ON, response.maxLastEventOn().get());
     }
 
     @Test
@@ -79,9 +86,10 @@ class TrafficSignServiceTest {
         mockWebClient();
         when(responseSpec.bodyToFlux(TrafficSignJsonDtoV3.class)).thenReturn(Flux.empty());
 
-        List<TrafficSignJsonDtoV3> result = trafficSignService.getTrafficSigns().toList();
+        TrafficSignResponse response = trafficSignService.getTrafficSigns();
 
-        assertEquals(List.of(), result);
+        assertEquals(List.of(), response.trafficSigns().toList());
+        assertEquals(Instant.MIN, response.maxLastEventOn().get());
     }
 
     private void mockWebClient() {

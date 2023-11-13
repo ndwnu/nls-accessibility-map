@@ -182,6 +182,7 @@
                                         <argument>up</argument>
                                         <argument>-d</argument>
                                         <argument>nls-postgres</argument>
+                                        <argument>traffic-sign-api-stub</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -193,8 +194,7 @@
                                 </goals>
                                 <configuration>
                                     <arguments combine.children="append">
-                                        <argument>up</argument>
-                                        <argument>--build</argument>
+                                        <argument>build</argument>
                                         <argument>nls-accessibility-map-jobs</argument>
                                     </arguments>
                                     <executable>docker-compose</executable>
