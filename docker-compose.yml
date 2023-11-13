@@ -38,7 +38,7 @@ services:
     build: docker/nls-accessibility-map-jobs
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - COMMAND=configureRabbitMQ
+      - COMMAND=createOrUpdateNetwork
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
@@ -55,6 +55,17 @@ services:
       - POSTGRES_DB=nls-maps
       - POSTGRES_USER=nls-maps
       - POSTGRES_PASSWORD=nls-maps
+    networks:
+      - nls-accessibility-map-network
+
+  traffic-sign-api-stub:
+    hostname: traffic-sign-api-stub
+    image: registry.ndw.nu/docker-hub/wiremock/wiremock:3.0.0-1
+    volumes:
+      - ./docker/traffic-sign-api-stub/mappings:/home/wiremock/mappings
+      - ./docker/traffic-sign-api-stub/responses:/home/wiremock/__files/responses
+    ports:
+      - "8888:8080"
     networks:
       - nls-accessibility-map-network
 
