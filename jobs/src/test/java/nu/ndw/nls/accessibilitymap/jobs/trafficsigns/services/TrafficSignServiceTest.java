@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService.TrafficSignResponse;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService.TrafficSignData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +25,6 @@ import reactor.core.publisher.Flux;
 class TrafficSignServiceTest {
 
     private static final String CURRENT_STATE_URI = "/current-state";
-    private static final Instant MAX_LAST_EVENT_ON = Instant.parse("2023-11-07T15:37:23Z");
 
     private TrafficSignService trafficSignService;
 
@@ -42,24 +43,26 @@ class TrafficSignServiceTest {
     }
 
     @Test
-    void getTrafficSigns_ok_filteredAndSorted() {
+    void getTrafficSigns_ok_filteredAndGrouped() {
         TrafficSignJsonDtoV3 trafficSign1 = TrafficSignJsonDtoV3.builder()
-                .lastEventOn(MAX_LAST_EVENT_ON)
+                .lastEventOn(Instant.parse("2023-11-07T15:37:23Z"))
                 .location(LocationJsonDtoV3.builder()
                         .build())
                 .build();
         TrafficSignJsonDtoV3 trafficSign2 = TrafficSignJsonDtoV3.builder()
-                .lastEventOn(MAX_LAST_EVENT_ON.minusSeconds(60))
+                .lastEventOn(Instant.parse("2023-11-07T15:36:23Z"))
                 .location(LocationJsonDtoV3.builder()
                         .road(RoadJsonDtoV3.builder()
+                                .nwbVersion("2023-11-01")
                                 .build())
                         .build())
                 .build();
         TrafficSignJsonDtoV3 trafficSign3 = TrafficSignJsonDtoV3.builder()
-                .lastEventOn(MAX_LAST_EVENT_ON.minusSeconds(120))
+                .lastEventOn(Instant.parse("2023-11-07T15:35:23Z"))
                 .location(LocationJsonDtoV3.builder()
                         .road(RoadJsonDtoV3.builder()
                                 .roadSectionId("2")
+                                .nwbVersion("2023-10-01")
                                 .build())
                         .build())
                 .build();
@@ -67,18 +70,36 @@ class TrafficSignServiceTest {
                 .location(LocationJsonDtoV3.builder()
                         .road(RoadJsonDtoV3.builder()
                                 .roadSectionId("1")
+                                .nwbVersion("2023-09-01")
+                                .build())
+                        .build())
+                .build();
+        TrafficSignJsonDtoV3 trafficSign5 = TrafficSignJsonDtoV3.builder()
+                .location(LocationJsonDtoV3.builder()
+                        .road(RoadJsonDtoV3.builder()
+                                .roadSectionId("1")
+                                .nwbVersion("20231101")
+                                .build())
+                        .build())
+                .build();
+        TrafficSignJsonDtoV3 trafficSign6 = TrafficSignJsonDtoV3.builder()
+                .location(LocationJsonDtoV3.builder()
+                        .road(RoadJsonDtoV3.builder()
+                                .roadSectionId("2")
                                 .build())
                         .build())
                 .build();
 
         mockWebClient();
-        when(responseSpec.bodyToFlux(TrafficSignJsonDtoV3.class))
-                .thenReturn(Flux.just(trafficSign1, trafficSign2, trafficSign3, trafficSign4));
+        when(responseSpec.bodyToFlux(TrafficSignJsonDtoV3.class)).thenReturn(Flux.just(trafficSign1, trafficSign2,
+                trafficSign3, trafficSign4, trafficSign5, trafficSign6));
 
-        TrafficSignResponse response = trafficSignService.getTrafficSigns();
+        TrafficSignData result = trafficSignService.getTrafficSigns();
 
-        assertEquals(List.of(trafficSign4, trafficSign3), response.trafficSigns().toList());
-        assertEquals(MAX_LAST_EVENT_ON, response.maxLastEventOn().get());
+        assertEquals(Map.of(1L, List.of(trafficSign4, trafficSign5), 2L, List.of(trafficSign3, trafficSign6)),
+                result.trafficSignsByRoadSectionId());
+        assertEquals(Instant.parse("2023-11-07T15:37:23Z"), result.maxEventTimestamp());
+        assertEquals(LocalDate.of(2023, 10, 1), result.maxNwbReferenceDate());
     }
 
     @Test
@@ -86,10 +107,11 @@ class TrafficSignServiceTest {
         mockWebClient();
         when(responseSpec.bodyToFlux(TrafficSignJsonDtoV3.class)).thenReturn(Flux.empty());
 
-        TrafficSignResponse response = trafficSignService.getTrafficSigns();
+        TrafficSignData result = trafficSignService.getTrafficSigns();
 
-        assertEquals(List.of(), response.trafficSigns().toList());
-        assertEquals(Instant.MIN, response.maxLastEventOn().get());
+        assertEquals(Map.of(), result.trafficSignsByRoadSectionId());
+        assertEquals(Instant.MIN, result.maxEventTimestamp());
+        assertEquals(LocalDate.MIN, result.maxNwbReferenceDate());
     }
 
     private void mockWebClient() {
