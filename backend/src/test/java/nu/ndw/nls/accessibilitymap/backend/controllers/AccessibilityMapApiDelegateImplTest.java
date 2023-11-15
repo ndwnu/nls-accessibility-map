@@ -19,7 +19,7 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_ok() {
-        ResponseEntity<RoadSectionsJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(344,
+        ResponseEntity<RoadSectionsJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections("GM0344",
                 VehicleTypeJson.CAR, null, null, null, null, null, false);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
