@@ -48,7 +48,8 @@ services:
 
   nls-postgres:
     hostname: nls-postgres
-    image: ndwnls.azurecr.io/nls-map-loader-test-container:${NLS_MAP_LOADER_TEST_CONTAINER_VERSION}
+    build:
+      context: docker/nls-postgres
     ports:
       - "5432:5432"
     environment:
