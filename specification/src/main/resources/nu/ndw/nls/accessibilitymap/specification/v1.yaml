@@ -62,7 +62,7 @@ components:
       schema:
         type: "string"
         example: "GM0344"
-        pattern: "^(GM)(?=\d{4}$)\d*[1-9]\d*"
+        pattern: '^(GM)(?=\d{4}$)\d*[1-9]\d*'
     VehicleType:
       in: "query"
       name: "vehicleType"
