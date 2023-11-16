@@ -57,12 +57,12 @@ components:
     MunicipalityIdPathParam:
       in: "path"
       name: "municipalityId"
-      description: "The NWB municipality id"
+      description: "The CBS municipality id"
       required: true
       schema:
-        type: "integer"
-        example: "344"
-        format: int32
+        type: "string"
+        example: "GM0344"
+        pattern: '^(GM)(?=\d{4}$)\d*[1-9]\d*'
     VehicleType:
       in: "query"
       name: "vehicleType"
@@ -79,6 +79,7 @@ components:
         type: number
         format: float
         minimum: 0.0
+        maximum: 22.0
     VehicleWidthParam:
       in: "query"
       name: vehicleWidth
@@ -88,6 +89,7 @@ components:
         type: number
         format: float
         minimum: 0.0
+        maximum: 3.0
     VehicleHeightParam:
       in: "query"
       name: vehicleHeight
@@ -97,15 +99,18 @@ components:
         type: number
         format: float
         minimum: 0.0
+        maximum: 4.0
     VehicleWeightParam:
       in: "query"
       name: vehicleWeight
-      description: The weight of the specified vehicle in metric tonnes
+      description: "The weight of the specified vehicle in metric tonnes including load and trailer. 
+                    This field is required when selecting vehicle type commercial_vehicle."
       required: false
       schema:
         type: number
         format: float
         minimum: 0.0
+        maximum: 60
     VehicleAxleWeightParam:
       in: "query"
       name: vehicleAxleWeight
@@ -115,6 +120,7 @@ components:
         type: number
         format: float
         minimum: 0.0
+        maximum: 12.0
     VehicleHasTrailerParam:
       in: "query"
       name: vehicleHasTrailer
@@ -144,10 +150,11 @@ components:
     VehicleType:
       type: "string"
       enum:
-        - Car
-        - Hgv
-        - AutoBus
-        - MotorCycle
+        - car
+        - commercial_vehicle
+        - bus
+        - motorcycle
+        - tractor
 
     APIError:
       type: "object"
