@@ -12,7 +12,7 @@ stop:                                ## Stops the docker environment
 	$(dc) down --remove-orphans
 
 start-infra:                          ## Starts specific containers needed for local environment --adapt when needed
-	$(dc) up -d nls-keycloak nls-postgres traffic-sign-api-stub
+	$(dc) up -d nls-keycloak nls-postgres nls-rabbitmq traffic-sign-api-stub
 
 integration-test:                     ## Build and run it tests via maven
 	mvn clean verify -Pregression-test

@@ -59,6 +59,19 @@ services:
     networks:
       - nls-accessibility-map-network
 
+  nls-rabbitmq:
+    image: registry.ndw.nu/docker-hub/library/rabbitmq:3.8.7-management
+    hostname: nls-rabbitmq
+    user: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./docker/nls-rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./docker/nls-rabbitmq/load-definitions.json:/etc/rabbitmq/load-definitions.json
+    networks:
+      - nls-accessibility-map-network
+
   traffic-sign-api-stub:
     hostname: traffic-sign-api-stub
     image: registry.ndw.nu/docker-hub/wiremock/wiremock:3.0.0-1
