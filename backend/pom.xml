@@ -64,6 +64,13 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
+
+        <!--NLS library dependencies-->
+        <dependency>
+            <groupId>nu.ndw.nls</groupId>
+            <artifactId>routing-map-matcher-spring-boot</artifactId>
+        </dependency>
+
         <!--Additional dependencies-->
         <dependency>
             <groupId>jakarta.validation</groupId>
@@ -114,8 +121,6 @@
             <artifactId>test</artifactId>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
 
     <build>

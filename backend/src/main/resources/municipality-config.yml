@@ -1,0 +1,8 @@
+municipalities:
+  GM0307:
+    start-coordinate-longitude: 5.32907
+    start-coordinate-latitude: 52.13273
+    search-distance-in-metres: 50000
+    municipality-id: "GM0307"
+
+
