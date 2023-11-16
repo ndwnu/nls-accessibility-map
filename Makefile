@@ -12,7 +12,6 @@ stop:                                ## Stops the docker environment
 	$(dc) down --remove-orphans
 
 start-infra:
-	az acr login -n ndwnls
     ## Starts specific containers needed for local environment --adapt when needed
 	$(dc) up -d nls-keycloak nls-postgres traffic-sign-api-stub
 
