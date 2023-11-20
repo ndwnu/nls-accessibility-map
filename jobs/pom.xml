@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.9-SNAPSHOT</version>
+        <version>1.0.12-SNAPSHOT</version>
     </parent>
     <artifactId>jobs</artifactId>
     <name>NLS routing Graphhopper jobs</name>
@@ -39,7 +39,15 @@
         </dependency>
         <dependency>
             <groupId>nu.ndw</groupId>
+            <artifactId>nls-events</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>nu.ndw</groupId>
             <artifactId>nls-nwb-data-access-jooq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.springboot</groupId>
+            <artifactId>messaging</artifactId>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -183,6 +191,7 @@
                                         <argument>--build</argument>
                                         <argument>-d</argument>
                                         <argument>nls-postgres</argument>
+                                        <argument>nls-rabbitmq</argument>
                                         <argument>traffic-sign-api-stub</argument>
                                     </arguments>
                                 </configuration>
