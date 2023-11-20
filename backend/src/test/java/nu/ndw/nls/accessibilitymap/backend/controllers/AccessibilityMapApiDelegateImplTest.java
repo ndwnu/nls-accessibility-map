@@ -4,15 +4,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionsJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.mappers.RequestMapper;
+import nu.ndw.nls.accessibilitymap.backend.mappers.ResponseMapper;
+import nu.ndw.nls.accessibilitymap.backend.services.AccessibilityMapService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityMapApiDelegateImplTest {
+
+    @Mock
+    private RequestMapper requestMapper;
+    @Mock
+    private ResponseMapper responseMapper;
+    @Mock
+    private AccessibilityMapService accessibilityMapService;
 
     @InjectMocks
     private AccessibilityMapApiDelegateImpl accessibilityMapApiDelegate;

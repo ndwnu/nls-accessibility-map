@@ -1,0 +1,25 @@
+package nu.ndw.nls.accessibilitymap.backend.config;
+
+import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer.NotNull;
+import java.util.Map;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.validation.annotation.Validated;
+
+@SuppressWarnings("ConfigurationProperties")
+@Configuration
+@ConfigurationProperties
+@PropertySource(value = "classpath:municipality-config.yml", factory = YamlPropertySourceFactory.class)
+@Getter
+@Validated
+@RequiredArgsConstructor
+public class MunicipalityProperties {
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @NotNull
+    private final Map<String, Municipality> municipalities;
+}
