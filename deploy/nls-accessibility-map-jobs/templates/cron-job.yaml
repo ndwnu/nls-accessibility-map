@@ -19,9 +19,9 @@ spec:
             - name: nls-accessibility-map-jobs
               resources:
                 limits:
-                  memory: 2Gi
+                  memory: 8Gi
                 requests:
-                  memory: 2Gi
+                  memory: 8Gi
               image: ndwnls.azurecr.io/nls-accessibility-map-jobs:{{ $.Chart.AppVersion }}
               imagePullPolicy: Always
               envFrom:
