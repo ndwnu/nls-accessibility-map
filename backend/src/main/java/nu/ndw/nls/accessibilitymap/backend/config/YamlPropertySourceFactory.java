@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.backend.config;
 
 import java.util.Objects;
 import java.util.Properties;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -11,7 +10,8 @@ import org.springframework.core.io.support.PropertySourceFactory;
 
 public class YamlPropertySourceFactory implements PropertySourceFactory {
 
-    @NotNull
+
+    @SuppressWarnings("NullableProblems")
     @Override
     public PropertySource<?> createPropertySource(String name, EncodedResource encodedResource) {
         YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
