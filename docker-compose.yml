@@ -33,6 +33,8 @@ services:
       - nls-keycloak
     networks:
       - nls-accessibility-map-network
+    volumes:
+      - ./graphhopper:/application/graphhopper
 
   nls-accessibility-map-jobs:
     build: docker/nls-accessibility-map-jobs

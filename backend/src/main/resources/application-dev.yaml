@@ -3,7 +3,8 @@ management:
     metrics:
       export:
         enabled: false
-
+graphhopper:
+  dir: graphhopper
 logging:
   level:
     root: INFO
