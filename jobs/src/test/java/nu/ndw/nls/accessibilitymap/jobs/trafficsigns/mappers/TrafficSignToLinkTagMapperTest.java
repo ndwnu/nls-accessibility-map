@@ -76,9 +76,11 @@ class TrafficSignToLinkTagMapperTest {
         Link link = Link.builder().build();
         List<TrafficSignJsonDtoV3> trafficSigns = List.of(
                 createTrafficSignDto("C6", null, null, "H"),
-                createTrafficSignDto("C17", "10", null, "T"));
+                createTrafficSignDto("C17", "10", null, "T"),
+                createTrafficSignDto("C17", "11", null, null));
         trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
         assertEquals(Map.of(LinkTag.C6_CAR_ACCESS_FORBIDDEN.getLabel() + LinkTag.FORWARD_SUFFIX, true,
+                LinkTag.C17_MAX_LENGTH.getLabel() + LinkTag.FORWARD_SUFFIX, 11.0,
                 LinkTag.C17_MAX_LENGTH.getLabel() + LinkTag.REVERSE_SUFFIX, 10.0), link.getTags());
     }
 

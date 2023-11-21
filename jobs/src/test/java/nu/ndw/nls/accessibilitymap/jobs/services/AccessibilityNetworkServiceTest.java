@@ -20,7 +20,7 @@ import nu.ndw.nls.events.NlsEventSubjectType;
 import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.routingmapmatcher.domain.model.Link;
 import nu.ndw.nls.routingmapmatcher.domain.model.RoutingNetwork;
-import nu.ndw.nls.routingmapmatcher.graphhopper.AccessibilityGraphHopperNetworkService;
+import nu.ndw.nls.routingmapmatcher.graphhopper.IndexedGraphHopperNetworkService;
 import nu.ndw.nls.springboot.messaging.MessagePublisher;
 import nu.ndw.nls.springboot.messaging.MessagePublisherFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,7 @@ class AccessibilityNetworkServiceTest {
     private static final Instant TRAFFIC_SIGN_TIMESTAMP = Instant.parse(TRAFFIC_SIGN_TIMESTAMP_STRING);
 
     @Mock
-    private AccessibilityGraphHopperNetworkService accessibilityGraphHopperNetworkService;
+    private IndexedGraphHopperNetworkService indexedGraphHopperNetworkService;
     @Mock
     private AccessibilityLinkService accessibilityLinkService;
     @Mock
@@ -68,7 +68,7 @@ class AccessibilityNetworkServiceTest {
         Files.deleteIfExists(Path.of(GRAPHHOPPER_DIR));
         when(messagePublisherFactory.create("ndw.nls.accessibility.routing.network.updated",
                 NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED)).thenReturn(messagePublisher);
-        accessibilityNetworkService = new AccessibilityNetworkService(accessibilityGraphHopperNetworkService,
+        accessibilityNetworkService = new AccessibilityNetworkService(indexedGraphHopperNetworkService,
                 accessibilityLinkService, messagePublisherFactory, GRAPHHOPPER_DIR);
     }
 
@@ -81,7 +81,7 @@ class AccessibilityNetworkServiceTest {
 
         accessibilityNetworkService.storeLatestNetworkOnDisk();
 
-        verify(accessibilityGraphHopperNetworkService).storeOnDisk(routingNetworkArgumentCaptor.capture(),
+        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkArgumentCaptor.capture(),
                 eq(Path.of(GRAPHHOPPER_DIR)));
         RoutingNetwork routingNetwork = routingNetworkArgumentCaptor.getValue();
         assertEquals(NETWORK_NAME, routingNetwork.getNetworkNameAndVersion());
