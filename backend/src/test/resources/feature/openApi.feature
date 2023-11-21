@@ -2,7 +2,7 @@ Feature: OpenAPI
 
   Background:
     * url baseUrl
-    * def swaggerConfigResponse = read('classpath:test-messages/swagger-config-response.json')
+    * def swaggerConfigResponse = read('classpath:test-messages/open-api/swagger-config-response.json')
 
   Scenario: apiYaml should return 200
     Given path '/api-docs/v1.yaml'
