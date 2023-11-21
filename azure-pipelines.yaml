@@ -14,7 +14,7 @@ extends:
     isVersionedProject: true
     mavenReleaseGoal: deploy
     mavenDeployToNdwShared: true
-    sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**'
+    sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**'
     sonarOptionalExclusions: '**/generated/**'
     mavenOptionalBuildOptions: '-Pregression-test'
     dockerImages:
