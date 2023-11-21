@@ -1,7 +1,9 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
+import com.google.common.base.Stopwatch;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import nu.ndw.nls.routingmapmatcher.domain.AccessibilityMap;
 import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BaseAccessibleRoadsService {
 
     private final MapMatcherFactory<AccessibilityMap> accessibilityMapFactory;
@@ -28,6 +31,10 @@ public class BaseAccessibleRoadsService {
                 .municipalityId(municipality.getMunicipalityIdAsInteger())
                 .searchDistanceInMetres(municipality.getSearchDistanceInMetres())
                 .build();
-        return accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
+        Stopwatch timerAll = Stopwatch.createStarted();
+        Set<IsochroneMatch> isochroneMatches = accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
+        log.trace("Calculating accessible network took {} ", timerAll.stop());
+        return isochroneMatches;
+
     }
 }
