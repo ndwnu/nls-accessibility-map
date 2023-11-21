@@ -1,0 +1,3 @@
+{
+  "message": "municipalityId must match \"^(GM)(?=\\d{4}$)\\d*[1-9]\\d*\""
+}

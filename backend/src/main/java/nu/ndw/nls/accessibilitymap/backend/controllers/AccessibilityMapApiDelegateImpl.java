@@ -42,7 +42,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private static void checkWeightConstraint(VehicleTypeJson vehicleType, Float vehicleWeight) {
         if (VehicleTypeJson.COMMERCIAL_VEHICLE == vehicleType && vehicleWeight == null) {
-            throw new VehicleWeightRequiredException("When selecting 'commercial_vehicle' as vehicle type, "
+            throw new VehicleWeightRequiredException("When selecting 'commercial_vehicle' as vehicle type "
                     + "vehicle weight is required");
         }
     }
