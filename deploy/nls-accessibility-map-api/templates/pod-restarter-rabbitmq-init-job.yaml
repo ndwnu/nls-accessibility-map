@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nls-accessibility-map-api-pod-restarter-worker-queues-job
+spec:
+  ttlSecondsAfterFinished: 604800
+  backoffLimit: 3
+  template:
+    metadata:
+      annotations:
+        ad.datadoghq.com/nls-pod-restarter.logs: '[{"source": "java", "service": "nls-accessibility-map-api-pod-restarter-worker-queues-job"}]'
+      labels:
+        environment: {{ .Values.environment }}
+    spec:
+      containers:
+        - name: nls-pod-restarter
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 256Mi
+          image: ndwnls.azurecr.io/nls-pod-restarter:20231101.3
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nls-accessibility-map-api-pod-restarter-config
+          env:
+            - name: COMMAND
+              value: configureRabbitMQ
+          volumeMounts:
+            - mountPath: /application/config
+              name: nls-accessibility-map-api-secrets
+              readOnly: true
+      restartPolicy: Never
+      volumes:
+        - name: nls-accessibility-map-api-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: nls-accessibility-map-api-spc
