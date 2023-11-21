@@ -1,27 +1,35 @@
 package nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-@JsonPropertyOrder({"image", "firstSeen", "lastSeen", "removed", "placed", "expected_removed", "expected_placed",
-        "traffic_order_url"})
+@JsonPropertyOrder({"imageUrl", "firstSeenOn", "lastSeenOn", "removedOn", "placedOn", "expectedPlacedOn",
+        "expectedRemovedOn", "trafficOrderUrl"})
+@JsonInclude(NON_NULL)
 public final class TrafficSignDetailsJsonDtoV3 {
 
-    private String image;
+    @JsonProperty("image")
+    private final String imageUrl;
     @JsonProperty("first_seen")
-    private String firstSeen;
+    private final LocalDate firstSeenOn;
     @JsonProperty("last_seen")
-    private String lastSeen;
-    private String removed;
-    private String placed;
-    @JsonProperty("expected_removed")
-    private String expectedRemoved;
+    private final LocalDate lastSeenOn;
+    @JsonProperty("removed")
+    private final LocalDate removedOn;
+    @JsonProperty("placed")
+    private final LocalDate placedOn;
     @JsonProperty("expected_placed")
-    private String expectedPlaced;
+    private final LocalDate expectedPlacedOn;
+    @JsonProperty("expected_removed")
+    private final LocalDate expectedRemovedOn;
     @JsonProperty("traffic_order_url")
-    private String trafficOrderUrl;
+    private final String trafficOrderUrl;
 }

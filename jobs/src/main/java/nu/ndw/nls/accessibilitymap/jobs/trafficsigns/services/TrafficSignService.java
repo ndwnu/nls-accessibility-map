@@ -34,7 +34,7 @@ public class TrafficSignService {
                 .retrieve()
                 .bodyToFlux(TrafficSignJsonDtoV3.class)
                 .toStream()
-                .peek(t -> maxEventTimestamp.updateAndGet(currentMax -> max(t.getLastEventOn(), currentMax)))
+                .peek(t -> maxEventTimestamp.updateAndGet(currentMax -> max(t.getPublicationTimestamp(), currentMax)))
                 .filter(t -> t.getLocation().getRoad() != null && t.getLocation().getRoad().getRoadSectionId() != null)
                 .peek(t -> maxNwbReferenceDate.updateAndGet(currentMax -> max(t.getLocation().getRoad().getNwbVersion(),
                         currentMax)))
@@ -42,8 +42,9 @@ public class TrafficSignService {
         return new TrafficSignData(trafficSigns, maxNwbReferenceDate.get(), maxEventTimestamp.get());
     }
 
-    private Instant max(Instant lastEventOn, Instant currentMax) {
-        return lastEventOn != null && lastEventOn.isAfter(currentMax) ? lastEventOn : currentMax;
+    private Instant max(Instant publicationTimestamp, Instant currentMax) {
+        return publicationTimestamp != null && publicationTimestamp.isAfter(currentMax) ? publicationTimestamp
+                : currentMax;
     }
 
     private LocalDate max(String nwbVersion, LocalDate currentMax) {
