@@ -22,11 +22,14 @@ public class TrafficSignToLinkTagMapper {
         // No entry signs
         SIGN_MAPPINGS.put("C6", (l, t) -> setNoEntryTagValue(l, LinkTag.C6_CAR_ACCESS_FORBIDDEN, t));
         SIGN_MAPPINGS.put("C7", (l, t) -> setNoEntryTagValue(l, LinkTag.C7_HGV_ACCESS_FORBIDDEN, t));
-        SIGN_MAPPINGS.put("C7a", (l, t) -> setNoEntryTagValue(l, LinkTag.C7A_AUTO_BUS_ACCESS_FORBIDDEN, t));
-        SIGN_MAPPINGS.put("C7b", (l, t) -> setNoEntryTagValue(l, LinkTag.C7B_HGV_AND_AUTO_BUS_ACCESS_FORBIDDEN, t));
+        SIGN_MAPPINGS.put("C7a", (l, t) -> setNoEntryTagValue(l, LinkTag.C7A_BUS_ACCESS_FORBIDDEN, t));
+        SIGN_MAPPINGS.put("C7b", (l, t) -> setNoEntryTagValue(l, LinkTag.C7B_HGV_AND_BUS_ACCESS_FORBIDDEN, t));
+        SIGN_MAPPINGS.put("C8", (l, t) -> setNoEntryTagValue(l, LinkTag.C8_TRACTOR_ACCESS_FORBIDDEN, t));
+        SIGN_MAPPINGS.put("C9", (l, t) -> setNoEntryTagValue(l, LinkTag.C9_SLOW_VEHICLE_ACCESS_FORBIDDEN, t));
         SIGN_MAPPINGS.put("C10", (l, t) -> setNoEntryTagValue(l, LinkTag.C10_TRAILER_ACCESS_FORBIDDEN, t));
-        SIGN_MAPPINGS.put("C11", (l, t) -> setNoEntryTagValue(l, LinkTag.C11_MOTOR_BIKE_ACCESS_FORBIDDEN, t));
+        SIGN_MAPPINGS.put("C11", (l, t) -> setNoEntryTagValue(l, LinkTag.C11_MOTORCYCLE_ACCESS_FORBIDDEN, t));
         SIGN_MAPPINGS.put("C12", (l, t) -> setNoEntryTagValue(l, LinkTag.C12_MOTOR_VEHICLE_ACCESS_FORBIDDEN, t));
+        SIGN_MAPPINGS.put("C22c", (l, t) -> setNoEntryTagValue(l, LinkTag.C22C_LCV_AND_HGV_ACCESS_FORBIDDEN, t));
 
         // Maximum signs
         SIGN_MAPPINGS.put("C17", (l, t) -> setMaximumTagValue(l, LinkTag.C17_MAX_LENGTH, t));

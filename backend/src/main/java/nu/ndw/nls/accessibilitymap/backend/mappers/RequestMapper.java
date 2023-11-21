@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 public class RequestMapper {
 
     private static final String MESSAGE_TEMPLATE = "The vehicle type: %s is not supported";
-    private static final EnumMap<VehicleTypeJson, BiConsumer<VehiclePropertiesBuilder, Float>> VEHICLE_TYPE_CONFIGURATION =
-            new EnumMap<>(VehicleTypeJson.class);
+    private static final EnumMap<VehicleTypeJson, BiConsumer<VehiclePropertiesBuilder, Float>>
+            VEHICLE_TYPE_CONFIGURATION = new EnumMap<>(VehicleTypeJson.class);
 
     private static final double HGV_WEIGHT_IN_TONNES = 3.5;
 
@@ -26,21 +26,25 @@ public class RequestMapper {
         VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.COMMERCIAL_VEHICLE, (builder, weight) -> builder
                 .motorVehicleAccessForbidden(true)
                 .carAccessForbidden(true)
-                .hgvAccessForbidden(weight > HGV_WEIGHT_IN_TONNES ? true : null)
-                .hgvAndAutoBusAccessForbidden(weight > HGV_WEIGHT_IN_TONNES ? true : null));
+                .hgvAccessForbidden(weight > HGV_WEIGHT_IN_TONNES)
+                .hgvAndBusAccessForbidden(weight > HGV_WEIGHT_IN_TONNES)
+                .lcvAndHgvAccessForbidden(true));
 
         VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.BUS, (builder, weight) -> builder
                 .motorVehicleAccessForbidden(true)
                 .carAccessForbidden(true)
-                .hgvAndAutoBusAccessForbidden(true));
+                .busAccessForbidden(true)
+                .hgvAndBusAccessForbidden(true));
 
         VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.TRACTOR, (builder, weight) -> builder
                 .motorVehicleAccessForbidden(true)
-                .carAccessForbidden(true));
+                .carAccessForbidden(true)
+                .tractorAccessForbidden(true)
+                .slowVehicleAccessForbidden(true));
 
         VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.MOTORCYCLE, (builder, weight) -> builder
                 .motorVehicleAccessForbidden(true)
-                .motorBikeAccessForbidden(true));
+                .motorcycleAccessForbidden(true));
     }
 
     public VehicleProperties mapToVehicleProperties(VehicleArguments requestArguments) {
@@ -50,8 +54,7 @@ public class RequestMapper {
 
         BiConsumer<VehiclePropertiesBuilder, Float> vehiclePropertiesConfiguration = VEHICLE_TYPE_CONFIGURATION.get(
                 requestArguments.vehicleType());
-        VehiclePropertiesBuilder vehiclePropertiesBuilder = VehicleProperties
-                .builder();
+        VehiclePropertiesBuilder vehiclePropertiesBuilder = VehicleProperties.builder();
         vehiclePropertiesConfiguration.accept(vehiclePropertiesBuilder, requestArguments.vehicleWeight());
         vehiclePropertiesBuilder
                 .trailerAccessForbidden(requestArguments.vehicleHasTrailer())
