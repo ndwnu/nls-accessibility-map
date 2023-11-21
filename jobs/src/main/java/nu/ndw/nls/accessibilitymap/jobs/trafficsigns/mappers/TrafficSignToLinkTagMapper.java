@@ -67,14 +67,24 @@ public class TrafficSignToLinkTagMapper {
     }
 
     private static void setNoEntryTagValue(Link link, LinkTag<Boolean> linkTag, TrafficSignJsonDtoV3 trafficSign) {
-        setLinkTag(link, linkTag, true, trafficSign);
+        if (isForward(trafficSign)) {
+            link.setTag(linkTag, true, false);
+        }
+        if (isBackward(trafficSign)) {
+            link.setTag(linkTag, true, true);
+        }
     }
 
     private static void setMaximumTagValue(Link link, LinkTag<Double> linkTag, TrafficSignJsonDtoV3 trafficSign) {
         try {
             if (trafficSign.getBlackCode() != null) {
                 double value = Double.parseDouble(trafficSign.getBlackCode().replace(",", "."));
-                setLinkTag(link, linkTag, value, trafficSign);
+                if (isForward(trafficSign)) {
+                    setIfSmaller(link, linkTag, value, false);
+                }
+                if (isBackward(trafficSign)) {
+                    setIfSmaller(link, linkTag, value, true);
+                }
             }
         } catch (NumberFormatException ignored) {
             log.debug("Unprocessable value {} for traffic sign with RVV code {} on road section {}",
@@ -83,14 +93,20 @@ public class TrafficSignToLinkTagMapper {
         }
     }
 
-    private static <T> void setLinkTag(Link link, LinkTag<T> linkTag, T value, TrafficSignJsonDtoV3 trafficSign) {
-        String drivingDirection = trafficSign.getLocation().getDrivingDirection();
+    private static boolean isBackward(TrafficSignJsonDtoV3 trafficSign) {
         // Driving direction null (unknown) is mapped to both directions.
-        if (!DRIVING_DIRECTION_BACKWARD.equals(drivingDirection)) {
-            link.setTag(linkTag, value, false);
-        }
-        if (!DRIVING_DIRECTION_FORWARD.equals(drivingDirection)) {
-            link.setTag(linkTag, value, true);
+        return !DRIVING_DIRECTION_FORWARD.equals(trafficSign.getLocation().getDrivingDirection());
+    }
+
+    private static boolean isForward(TrafficSignJsonDtoV3 trafficSign) {
+        // Driving direction null (unknown) is mapped to both directions.
+        return !DRIVING_DIRECTION_BACKWARD.equals(trafficSign.getLocation().getDrivingDirection());
+    }
+
+    private static void setIfSmaller(Link link, LinkTag<Double> linkTag, double value, boolean reverse) {
+        double currentValue = link.getTag(linkTag, Double.POSITIVE_INFINITY, reverse);
+        if (value < currentValue) {
+            link.setTag(linkTag, value, reverse);
         }
     }
 }
