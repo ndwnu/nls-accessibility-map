@@ -13,6 +13,9 @@ org:
 spring:
   application:
     name: nls-accessibility-map-jobs
+  # Disables netty webserver startup
+  main:
+    web-application-type: none
   config:
     import: "optional:configtree:/application/config/configtree/"
   datasource:

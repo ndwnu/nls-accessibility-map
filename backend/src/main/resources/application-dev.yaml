@@ -8,4 +8,4 @@ graphhopper:
 logging:
   level:
     root: INFO
-    nu.ndw.nls: DEBUG
+    nu.ndw.nls: TRACE

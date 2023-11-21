@@ -1,8 +1,11 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
+import static java.util.Arrays.asList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -29,7 +33,7 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
      * cause of the problem to avoid leaking security sensitive information.
      */
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<APIErrorJson> handleRuntimeException(Throwable exception) {
+    public ResponseEntity<APIErrorJson> handleInternalServerErrorException(Throwable exception) {
         log.error("Internal server occurred", exception);
         APIErrorJson restError = new APIErrorJson()
                 .message("An internal server error occurred while processing this request");
@@ -39,9 +43,10 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
 
 
     /**
-     * Bad request handler
+     * Bad request handler for domain exceptions
      */
-    @ExceptionHandler({VehicleTypeNotSupportedException.class, VehicleWeightRequiredException.class})
+    @ExceptionHandler({VehicleTypeNotSupportedException.class, VehicleWeightRequiredException.class,
+    })
     public ResponseEntity<APIErrorJson> handleBadRequestException(RuntimeException exception) {
         APIErrorJson restError = new APIErrorJson()
                 .message(exception.getMessage());
@@ -50,10 +55,22 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * Bad request handler for MethodArgumentTypeMismatchExceptions thrown by spring framework
+     */
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<APIErrorJson> handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException exception) {
+        APIErrorJson restError = new APIErrorJson()
+                .message(exception.getPropertyName() + " " + exception.getMessage());
+        return ResponseEntity.badRequest()
+                .body(restError);
+    }
+
+    /**
      * Make sure http 403 - forbidden is thrown
      */
     @ExceptionHandler({AccessDeniedException.class})
-    public ResponseEntity<APIErrorJson> handleAccessDenied(AccessDeniedException ignoredE) {
+    public ResponseEntity<Void> handleAccessDenied(AccessDeniedException ignoredE) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -78,7 +95,7 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
             ConstraintViolationException exception) {
         Stream<String> messageStream = exception.getConstraintViolations()
                 .stream()
-                .map(c -> c.getPropertyPath() + " " + c.getMessage());
+                .map(c -> parsePropertyPath(c.getPropertyPath()) + " " + c.getMessage());
         APIErrorJson validationError = getAPIErrorJson(messageStream);
         return ResponseEntity.badRequest().contentType(APPLICATION_JSON).body(validationError);
     }
@@ -92,4 +109,14 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
                         .collect(Collectors.joining(", ")));
     }
 
+    private static String parsePropertyPath(Path propertyPath) {
+        if (propertyPath == null) {
+            return "";
+        } else if (propertyPath.toString().contains(".")) {
+            List<String> pathElements = asList(propertyPath.toString().split("\\."));
+            return pathElements.get(pathElements.size() - 1);
+        } else {
+            return propertyPath.toString();
+        }
+    }
 }

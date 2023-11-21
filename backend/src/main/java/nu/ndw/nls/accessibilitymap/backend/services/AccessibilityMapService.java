@@ -1,8 +1,10 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import nu.ndw.nls.routingmapmatcher.domain.AccessibilityMap;
 import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccessibilityMapService {
 
     private final MapMatcherFactory<AccessibilityMap> accessibilityMapFactory;
@@ -25,6 +28,7 @@ public class AccessibilityMapService {
             String municipalityId) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory
                 .createMapMatcher(networkGraphHopper);
+        Stopwatch timerAll = Stopwatch.createStarted();
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         Set<IsochroneMatch> allAccessibleRoads = baseIsochroneService.getBaseAccessibleRoadsByMunicipality(
                 municipality);
@@ -37,6 +41,9 @@ public class AccessibilityMapService {
                 .build();
         Set<IsochroneMatch> accessibleRoadsWithRestrictions = accessibilityMap.getAccessibleRoadSections(
                 accessibilityRequest);
-        return Sets.difference(allAccessibleRoads, accessibleRoadsWithRestrictions);
+        Set<IsochroneMatch> inaccessibleRoads = Sets.difference(allAccessibleRoads, accessibleRoadsWithRestrictions);
+        log.trace("Calculating inaccessible roads took {} ", timerAll.stop());
+        return inaccessibleRoads;
+
     }
 }
