@@ -1,11 +1,12 @@
 package nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos;
 
-import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import lombok.Data;
 @Builder
 @JsonPropertyOrder({"id", "ndwId", "type", "schemaVersion", "validated", "validatedOn", "userId", "organisationId",
         "rvvCode", "blackCode", "textSigns", "location", "details", "publicationTimestamp"})
+@JsonInclude(NON_NULL)
 public final class TrafficSignJsonDtoV3 {
 
     private final Integer id;
@@ -25,11 +27,7 @@ public final class TrafficSignJsonDtoV3 {
     private final String schemaVersion;
     private final String validated;
     @JsonProperty("validated_on")
-    private final Instant validatedOn;
-    @JsonProperty("first_event_on")
-    private final Instant firstEventOn;
-    @JsonProperty("last_event_on")
-    private final Instant lastEventOn;
+    private final LocalDate validatedOn;
     @JsonProperty("user_id")
     private final Integer userId;
     @JsonProperty("organisation_id")
@@ -42,7 +40,6 @@ public final class TrafficSignJsonDtoV3 {
     private final List<TextSignJsonDtoV3> textSigns;
     private final LocationJsonDtoV3 location;
     private final TrafficSignDetailsJsonDtoV3 details;
-    @JsonFormat(shape = STRING)
     @JsonProperty("publication_timestamp")
     private final Instant publicationTimestamp;
 }

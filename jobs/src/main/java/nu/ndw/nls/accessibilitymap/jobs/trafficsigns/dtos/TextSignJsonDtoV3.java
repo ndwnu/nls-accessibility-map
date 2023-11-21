@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 @Builder
 @JsonPropertyOrder({"type", "text"})
-public class TextSignJsonDtoV3 {
+public final class TextSignJsonDtoV3 {
 
-    private String type;
-    private String text;
+    private final String type;
+    private final String text;
 }
