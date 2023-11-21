@@ -25,7 +25,7 @@ public class BaseAccessibleRoadsService {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest
                 .builder()
                 .startPoint(municipality.getStartPoint())
-                .municipalityId(municipality.municipalityIdAsInteger())
+                .municipalityId(municipality.getMunicipalityIdAsInteger())
                 .searchDistanceInMetres(municipality.getSearchDistanceInMetres())
                 .build();
         return accessibilityMap.getAccessibleRoadSections(accessibilityRequest);

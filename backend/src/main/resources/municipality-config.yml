@@ -1,8 +1,13 @@
 municipalities:
   GM0307:
+    name: "Amersfoort"
     start-coordinate-longitude: 5.32907
     start-coordinate-latitude: 52.13273
     search-distance-in-metres: 50000
     municipality-id: "GM0307"
-
-
+  GM0344:
+    name: "Utrecht"
+    start-coordinate-longitude: 5.117956
+    start-coordinate-latitude: 52.092209
+    search-distance-in-metres: 50000
+    municipality-id: "GM0344"
