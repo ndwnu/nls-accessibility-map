@@ -25,7 +25,7 @@ public class NlsAccessibilityMapJobsIT {
 
     private static final String ACCESSIBILITY_LATEST = "accessibility_latest";
     private static final String PROPERTIES = "properties";
-    private static final Instant EXPECTED_DATA_DATE = Instant.parse("2023-11-02T18:13:00Z");
+    private static final Instant EXPECTED_DATA_DATE = Instant.parse("2023-11-10T13:51:59Z");
 
     // Mocking this bean to prevent stderr output about missing PicoCLI commands when running IT
     @MockBean

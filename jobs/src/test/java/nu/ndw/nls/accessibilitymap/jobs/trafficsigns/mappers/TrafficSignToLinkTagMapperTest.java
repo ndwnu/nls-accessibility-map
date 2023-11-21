@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TextSignJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
 import nu.ndw.nls.routingmapmatcher.domain.model.Link;
 import nu.ndw.nls.routingmapmatcher.domain.model.LinkTag;
@@ -27,7 +28,7 @@ class TrafficSignToLinkTagMapperTest {
                 "C11", LinkTag.C11_MOTOR_BIKE_ACCESS_FORBIDDEN,
                 "C12", LinkTag.C12_MOTOR_VEHICLE_ACCESS_FORBIDDEN).forEach((rvvCode, linkTag) -> {
             Link link = Link.builder().build();
-            List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto(rvvCode, null));
+            List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto(rvvCode, null, null, null));
             trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
             assertEquals(Map.of(linkTag.getLabel() + LinkTag.FORWARD_SUFFIX, true,
                     linkTag.getLabel() + LinkTag.REVERSE_SUFFIX, true), link.getTags());
@@ -39,11 +40,11 @@ class TrafficSignToLinkTagMapperTest {
         // The maximum signs can be tested in a single call, because they each have a different value.
         Link link = Link.builder().build();
         List<TrafficSignJsonDtoV3> trafficSigns = List.of(
-                createTrafficSignDto("C17", "10"),
-                createTrafficSignDto("C18", "2.5"),
-                createTrafficSignDto("C19", "2,8"),
-                createTrafficSignDto("C20", "4.8"),
-                createTrafficSignDto("C21", "5,4"));
+                createTrafficSignDto("C17", "10", null, null),
+                createTrafficSignDto("C18", "2.5", null, null),
+                createTrafficSignDto("C19", "2,8", null, null),
+                createTrafficSignDto("C20", "4.8", null, null),
+                createTrafficSignDto("C21", "5,4", null, null));
         trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
         assertEquals(Map.of(LinkTag.C17_MAX_LENGTH.getLabel() + LinkTag.FORWARD_SUFFIX, 10.0,
                 LinkTag.C17_MAX_LENGTH.getLabel() + LinkTag.REVERSE_SUFFIX, 10.0,
@@ -58,9 +59,33 @@ class TrafficSignToLinkTagMapperTest {
     }
 
     @Test
+    void setLinkTags_ok_ignoredTextSignTypes() {
+        Link link = Link.builder().build();
+        List<TrafficSignJsonDtoV3> trafficSigns = List.of(
+                createTrafficSignDto("C6", null, "UIT", null),
+                createTrafficSignDto("C7", null, "VRIJ", null),
+                createTrafficSignDto("C17", "10", "VOOR", null),
+                createTrafficSignDto("C18", "2.5", "TIJD", null));
+        trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
+        assertEquals(Map.of(LinkTag.C7_HGV_ACCESS_FORBIDDEN.getLabel() + LinkTag.FORWARD_SUFFIX, true,
+                LinkTag.C7_HGV_ACCESS_FORBIDDEN.getLabel() + LinkTag.REVERSE_SUFFIX, true), link.getTags());
+    }
+
+    @Test
+    void setLinkTags_ok_drivingDirection() {
+        Link link = Link.builder().build();
+        List<TrafficSignJsonDtoV3> trafficSigns = List.of(
+                createTrafficSignDto("C6", null, null, "H"),
+                createTrafficSignDto("C17", "10", null, "T"));
+        trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
+        assertEquals(Map.of(LinkTag.C6_CAR_ACCESS_FORBIDDEN.getLabel() + LinkTag.FORWARD_SUFFIX, true,
+                LinkTag.C17_MAX_LENGTH.getLabel() + LinkTag.REVERSE_SUFFIX, 10.0), link.getTags());
+    }
+
+    @Test
     void setLinkTags_ok_unsupportedRvvCode() {
         Link link = Link.builder().build();
-        List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto("C22", null));
+        List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto("C22", null, null, null));
         trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
         assertEquals(Map.of(), link.getTags());
     }
@@ -68,7 +93,7 @@ class TrafficSignToLinkTagMapperTest {
     @Test
     void setLinkTags_ok_blackCodeNull() {
         Link link = Link.builder().build();
-        List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto("C17", null));
+        List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto("C17", null, null, null));
         trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
         assertEquals(Map.of(), link.getTags());
     }
@@ -76,16 +101,21 @@ class TrafficSignToLinkTagMapperTest {
     @Test
     void setLinkTags_ok_unsupportedBlackCode() {
         Link link = Link.builder().build();
-        List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto("C17", "10 m"));
+        List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto("C17", "10 m", null, null));
         trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
         assertEquals(Map.of(), link.getTags());
     }
 
-    private TrafficSignJsonDtoV3 createTrafficSignDto(String rvvCode, String blackCode) {
+    private TrafficSignJsonDtoV3 createTrafficSignDto(String rvvCode, String blackCode, String textSignType,
+            String drivingDirection) {
         return TrafficSignJsonDtoV3.builder()
                 .rvvCode(rvvCode)
                 .blackCode(blackCode)
+                .textSigns(textSignType != null
+                        ? List.of(TextSignJsonDtoV3.builder().type(textSignType).build())
+                        : null)
                 .location(LocationJsonDtoV3.builder()
+                        .drivingDirection(drivingDirection)
                         .road(RoadJsonDtoV3.builder()
                                 .roadSectionId("1")
                                 .build())
