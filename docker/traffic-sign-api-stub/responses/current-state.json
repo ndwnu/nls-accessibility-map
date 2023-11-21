@@ -29644,6 +29644,7 @@
       "placement": "L",
       "side": "N",
       "bearing": 0,
+      "driving_direction": "H",
       "road": {
         "name": "Koesteeg",
         "wvk_id": "310325117"
@@ -36522,6 +36523,7 @@
       "placement": "L",
       "side": "Z",
       "bearing": 180,
+      "driving_direction": "T",
       "road": {
         "name": "Korte Bergstraat",
         "wvk_id": "309325069"
@@ -43413,6 +43415,7 @@
       "placement": "L",
       "side": "O",
       "bearing": 90,
+      "driving_direction": "H",
       "road": {
         "name": "Domstraat",
         "wvk_id": "316335071"
@@ -44686,6 +44689,7 @@
       "placement": "L",
       "side": "W",
       "bearing": 270,
+      "driving_direction": "H",
       "road": {
         "name": "Stationsplein",
         "wvk_id": "307325026"
@@ -59634,6 +59638,7 @@
       "placement": "L",
       "side": "Z",
       "bearing": 180,
+      "driving_direction": "H",
       "road": {
         "name": "Krommestraat",
         "wvk_id": "310326154"
@@ -70856,6 +70861,7 @@
       "placement": "L",
       "side": "W",
       "bearing": 270,
+      "driving_direction": "T",
       "road": {
         "name": "Havik",
         "wvk_id": "310326129"
