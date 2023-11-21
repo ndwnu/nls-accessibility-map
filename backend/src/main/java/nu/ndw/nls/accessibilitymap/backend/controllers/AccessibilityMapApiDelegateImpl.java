@@ -30,11 +30,9 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleWeight, Boolean vehicleHasTrailer) {
         checkWeightConstraint(vehicleType, vehicleWeight);
-        VehicleArguments requestArguments = createVehicleArguments(
-                vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight, vehicleAxleWeight,
-                vehicleHasTrailer);
-        VehicleProperties vehicleProperties = requestMapper
-                .mapToVehicleProperties(requestArguments);
+        VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
+                vehicleHeight, vehicleWeight, vehicleAxleWeight, vehicleHasTrailer == Boolean.TRUE);
+        VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
         Set<IsochroneMatch> inaccessibleRoadSections = accessibilityMapService
                 .calculateInaccessibleRoadSections(vehicleProperties, municipalityId);
         return ResponseEntity.ok(responseMapper.mapToRoadSectionsJson(inaccessibleRoadSections));
@@ -47,26 +45,10 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         }
     }
 
-    private static VehicleArguments createVehicleArguments(VehicleTypeJson vehicleType, Float vehicleLength,
-            Float vehicleWidth, Float vehicleHeight, Float vehicleWeight, Float vehicleAxleWeight,
-            Boolean vehicleHasTrailer) {
-        return VehicleArguments
-                .builder()
-                .vehicleType(vehicleType)
-                .vehicleLength(vehicleLength)
-                .vehicleWidth(vehicleWidth)
-                .vehicleHeight(vehicleHeight)
-                .vehicleWeight(vehicleWeight)
-                .vehicleAxleWeight(vehicleAxleWeight)
-                .vehicleHasTrailer(vehicleHasTrailer)
-                .build();
-    }
-
     @Builder
-    public record VehicleArguments(
-            VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth,
-            Float vehicleHeight,
-            Float vehicleWeight, Float vehicleAxleWeight, Boolean vehicleHasTrailer) {
+    public record VehicleArguments(VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth,
+                                   Float vehicleHeight, Float vehicleWeight, Float vehicleAxleWeight,
+                                   boolean vehicleHasTrailer) {
 
     }
 }

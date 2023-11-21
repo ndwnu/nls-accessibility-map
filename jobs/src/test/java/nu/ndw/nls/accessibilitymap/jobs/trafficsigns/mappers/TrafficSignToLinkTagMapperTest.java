@@ -22,11 +22,14 @@ class TrafficSignToLinkTagMapperTest {
         // the mapping from RVV code to LinkTag is correct.
         Map.of("C6", LinkTag.C6_CAR_ACCESS_FORBIDDEN,
                 "C7", LinkTag.C7_HGV_ACCESS_FORBIDDEN,
-                "C7a", LinkTag.C7A_AUTO_BUS_ACCESS_FORBIDDEN,
-                "C7b", LinkTag.C7B_HGV_AND_AUTO_BUS_ACCESS_FORBIDDEN,
+                "C7a", LinkTag.C7A_BUS_ACCESS_FORBIDDEN,
+                "C7b", LinkTag.C7B_HGV_AND_BUS_ACCESS_FORBIDDEN,
+                "C8", LinkTag.C8_TRACTOR_ACCESS_FORBIDDEN,
+                "C9", LinkTag.C9_SLOW_VEHICLE_ACCESS_FORBIDDEN,
                 "C10", LinkTag.C10_TRAILER_ACCESS_FORBIDDEN,
-                "C11", LinkTag.C11_MOTOR_BIKE_ACCESS_FORBIDDEN,
-                "C12", LinkTag.C12_MOTOR_VEHICLE_ACCESS_FORBIDDEN).forEach((rvvCode, linkTag) -> {
+                "C11", LinkTag.C11_MOTORCYCLE_ACCESS_FORBIDDEN,
+                "C12", LinkTag.C12_MOTOR_VEHICLE_ACCESS_FORBIDDEN,
+                "C22c", LinkTag.C22C_LCV_AND_HGV_ACCESS_FORBIDDEN).forEach((rvvCode, linkTag) -> {
             Link link = Link.builder().build();
             List<TrafficSignJsonDtoV3> trafficSigns = List.of(createTrafficSignDto(rvvCode, null, null, null));
             trafficSignToLinkTagMapper.setLinkTags(link, trafficSigns);
