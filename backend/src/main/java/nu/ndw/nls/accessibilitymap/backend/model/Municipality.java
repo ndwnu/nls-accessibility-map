@@ -11,22 +11,22 @@ import org.locationtech.jts.geom.Point;
 @Value
 public class Municipality {
 
+    private static final Pattern PATTERN = Pattern.compile(".{2}0*(\\d+)$");
+    String name;
     Point startPoint;
     double searchDistanceInMetres;
     String municipalityId;
-
     public Municipality(double startCoordinateLongitude, double startCoordinateLatitude, double searchDistanceInMetres,
-            String municipalityId) {
+            String municipalityId, String name) {
         // Latitude is the Y axis, longitude is the X axis.
         this.startPoint = WGS84_GEOMETRY_FACTORY.createPoint(
                 new Coordinate(startCoordinateLongitude, startCoordinateLatitude));
         this.searchDistanceInMetres = searchDistanceInMetres;
         this.municipalityId = municipalityId;
+        this.name = name;
     }
 
-    private static final Pattern PATTERN = Pattern.compile(".{2}0*(\\d+)$");
-
-    public int municipalityIdAsInteger() {
+    public int getMunicipalityIdAsInteger() {
         Matcher m = PATTERN.matcher(municipalityId);
         if (m.find()) {
             return Integer.parseInt(m.group(1));

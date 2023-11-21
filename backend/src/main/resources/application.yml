@@ -36,8 +36,8 @@ management:
 
 springdoc:
   api-docs:
-    enabled: true
     path: /api-docs
   swagger-ui:
     url: /api-docs/v1.yaml
     path: /api-docs
+

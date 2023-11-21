@@ -26,15 +26,17 @@ public class AccessibilityMapService {
         AccessibilityMap accessibilityMap = accessibilityMapFactory
                 .createMapMatcher(networkGraphHopper);
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-        Set<IsochroneMatch> noRestrictions = baseIsochroneService.getBaseAccessibleRoadsByMunicipality(municipality);
+        Set<IsochroneMatch> allAccessibleRoads = baseIsochroneService.getBaseAccessibleRoadsByMunicipality(
+                municipality);
         AccessibilityRequest accessibilityRequest = AccessibilityRequest
                 .builder()
                 .startPoint(municipality.getStartPoint())
                 .vehicleProperties(vehicleProperties)
-                .municipalityId(municipality.municipalityIdAsInteger())
+                .municipalityId(municipality.getMunicipalityIdAsInteger())
                 .searchDistanceInMetres(municipality.getSearchDistanceInMetres())
                 .build();
-        Set<IsochroneMatch> withRestrictions = accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
-        return Sets.difference(noRestrictions, withRestrictions);
+        Set<IsochroneMatch> accessibleRoadsWithRestrictions = accessibilityMap.getAccessibleRoadSections(
+                accessibilityRequest);
+        return Sets.difference(allAccessibleRoads, accessibleRoadsWithRestrictions);
     }
 }

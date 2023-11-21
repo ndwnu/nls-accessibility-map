@@ -15,7 +15,7 @@ Feature: OpenAPI
     Then status 200
     And match response == swaggerConfigResponse
 
-  Scenario: NDW Convention: Swagger UI is available at API base URI /api-docs. Redirect
+  Scenario: NDW Convention: Swagger UI is available at API base URI /api-docs Redirect
     SpringDoc will always do a 302 redirect when configuring another path. So we're accepting a 302 instead of 200.
     * configure followRedirects = false
     Given path '/api-docs'

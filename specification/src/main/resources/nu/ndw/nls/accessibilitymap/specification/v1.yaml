@@ -10,6 +10,7 @@ servers:
   - url: "/api/rest/static-road-data/accessibility-map/v1"
 security:
   - iamNdw: []
+  - bearerAuth: [ ]
 paths:
   /municipalities/{municipalityId}:
     get:
@@ -38,6 +39,20 @@ paths:
           description: "Unauthorized"
         "403":
           description: "Forbidden"
+
+        "400":
+          description: "Validation error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+
+        "404":
+          description: "Resource not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
         "500":
           description: "Internal Server Error"
           content:
@@ -53,6 +68,11 @@ components:
           tokenUrl: "https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token"
           refreshUrl: "https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token"
           scopes: {}
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Authenticate using a custom token for local testing
   parameters:
     MunicipalityIdPathParam:
       in: "path"
