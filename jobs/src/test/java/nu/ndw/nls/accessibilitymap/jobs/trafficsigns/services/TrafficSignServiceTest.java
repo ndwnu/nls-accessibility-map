@@ -45,12 +45,12 @@ class TrafficSignServiceTest {
     @Test
     void getTrafficSigns_ok_filteredAndGrouped() {
         TrafficSignJsonDtoV3 trafficSign1 = TrafficSignJsonDtoV3.builder()
-                .lastEventOn(Instant.parse("2023-11-07T15:37:23Z"))
+                .publicationTimestamp(Instant.parse("2023-11-07T15:37:23Z"))
                 .location(LocationJsonDtoV3.builder()
                         .build())
                 .build();
         TrafficSignJsonDtoV3 trafficSign2 = TrafficSignJsonDtoV3.builder()
-                .lastEventOn(Instant.parse("2023-11-07T15:36:23Z"))
+                .publicationTimestamp(Instant.parse("2023-11-07T15:36:23Z"))
                 .location(LocationJsonDtoV3.builder()
                         .road(RoadJsonDtoV3.builder()
                                 .nwbVersion("2023-11-01")
@@ -58,7 +58,7 @@ class TrafficSignServiceTest {
                         .build())
                 .build();
         TrafficSignJsonDtoV3 trafficSign3 = TrafficSignJsonDtoV3.builder()
-                .lastEventOn(Instant.parse("2023-11-07T15:35:23Z"))
+                .publicationTimestamp(Instant.parse("2023-11-07T15:35:23Z"))
                 .location(LocationJsonDtoV3.builder()
                         .road(RoadJsonDtoV3.builder()
                                 .roadSectionId("2")
