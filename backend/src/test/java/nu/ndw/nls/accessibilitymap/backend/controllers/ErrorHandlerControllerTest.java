@@ -18,12 +18,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorHandlerControllerTest {
 
     private static final String MESSAGE = "test";
     private static final String PATH = "path";
+    public static final String PROPERTY_NAME = "propertyName";
     private ErrorHandlerController errorHandlerController;
 
 
@@ -32,6 +34,9 @@ class ErrorHandlerControllerTest {
 
     @Mock
     private ConstraintViolation constraintViolation;
+
+    @Mock
+    private MethodArgumentTypeMismatchException methodArgumentTypeMismatchException;
 
     @Mock
     private Path path;
@@ -70,6 +75,18 @@ class ErrorHandlerControllerTest {
         assertThat(response.getStatusCode())
                 .isEqualTo(HttpStatus.FORBIDDEN);
 
+    }
+
+    @Test
+    void handleMethodArgumentTypeMismatchException_ok() {
+        when(methodArgumentTypeMismatchException.getPropertyName()).thenReturn(PROPERTY_NAME);
+        when(methodArgumentTypeMismatchException.getMessage()).thenReturn(MESSAGE);
+        ResponseEntity<APIErrorJson> response = errorHandlerController
+                .handleMethodArgumentTypeMismatchException(methodArgumentTypeMismatchException);
+        assertThat(response.getStatusCode())
+                .isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(Objects.requireNonNull(response.getBody()).getMessage())
+                .isEqualTo(PROPERTY_NAME + " " + MESSAGE);
     }
 
     @Test
