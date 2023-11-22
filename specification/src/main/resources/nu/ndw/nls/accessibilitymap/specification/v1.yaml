@@ -39,14 +39,12 @@ paths:
           description: "Unauthorized"
         "403":
           description: "Forbidden"
-
         "400":
           description: "Validation error"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/APIError"
-
         "404":
           description: "Resource not found"
           content:
