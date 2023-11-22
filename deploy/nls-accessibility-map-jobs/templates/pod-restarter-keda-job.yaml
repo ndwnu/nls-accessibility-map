@@ -39,7 +39,7 @@ spec:
               driver: secrets-store.csi.k8s.io
               readOnly: true
               volumeAttributes:
-                secretProviderClass: nls-accessibility-map-api-spc
+                secretProviderClass: nls-accessibility-map-jobs-spc
   pollingInterval: 60 # Default 30 seconds
   successfulJobsHistoryLimit: 2 # Default 100
   maxReplicaCount: 1 # Default 100
