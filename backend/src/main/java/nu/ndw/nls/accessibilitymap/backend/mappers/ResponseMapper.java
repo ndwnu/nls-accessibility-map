@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -13,17 +14,15 @@ import org.springframework.stereotype.Component;
 public class ResponseMapper {
 
     public RoadSectionsJson mapToRoadSectionsJson(Set<IsochroneMatch> inaccessibleRoadSections) {
-
         return new RoadSectionsJson().inaccessibleRoadSections(inaccessibleRoadSections
                 .stream()
-                .collect(Collectors
-                        .groupingBy(IsochroneMatch::getMatchedLinkId))
+                .collect(Collectors.groupingBy(IsochroneMatch::getMatchedLinkId))
                 .entrySet()
                 .stream()
                 .map(this::mapToRoadSection)
+                .sorted(Comparator.comparingInt(RoadSectionJson::getRoadSectionId))
                 .toList()
         );
-
     }
 
     private RoadSectionJson mapToRoadSection(Entry<Integer, List<IsochroneMatch>> isochroneMatchInBothDirections) {
@@ -39,6 +38,5 @@ public class ResponseMapper {
                 .roadSectionId(isochroneMatchInBothDirections.getKey())
                 .backwardAccessible(backwardAccessible)
                 .forwardAccessible(forwardAccessible);
-
     }
 }

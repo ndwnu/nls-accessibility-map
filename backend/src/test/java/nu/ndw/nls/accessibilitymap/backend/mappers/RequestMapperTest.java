@@ -38,7 +38,6 @@ class RequestMapperTest {
     }
 
     private static Stream<Arguments> provideTestScenarios() {
-
         VehicleArguments carRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.CAR)
@@ -47,14 +46,12 @@ class RequestMapperTest {
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
                 .vehicleWeight(VEHICLE_WEIGHT)
-                .vehicleHasTrailer(false)
                 .build();
 
         VehicleProperties expectedCarVehicleProperties = VehicleProperties
                 .builder()
                 .carAccessForbidden(true)
                 .motorVehicleAccessForbidden(true)
-                .trailerAccessForbidden(false)
                 .axleLoad((double) VEHICLE_AXLE_WEIGHT)
                 .height((double) VEHICLE_HEIGHT)
                 .width((double) VEHICLE_WIDTH)
@@ -71,7 +68,19 @@ class RequestMapperTest {
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
                 .vehicleWeight(VEHICLE_WEIGHT)
-                .vehicleHasTrailer(false)
+                .build();
+
+        VehicleProperties expectedLightCommercialVehicleProperties = VehicleProperties
+                .builder()
+                .carAccessForbidden(true)
+                .motorVehicleAccessForbidden(true)
+                .lcvAndHgvAccessForbidden(true)
+                .axleLoad((double) VEHICLE_AXLE_WEIGHT)
+                .height((double) VEHICLE_HEIGHT)
+                .width((double) VEHICLE_WIDTH)
+                .length((double) VEHICLE_LENGTH)
+                .width((double) VEHICLE_WIDTH)
+                .weight((double) VEHICLE_WEIGHT)
                 .build();
 
         VehicleArguments hgvCommercialVehicleRequest = VehicleArguments
@@ -82,7 +91,6 @@ class RequestMapperTest {
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
                 .vehicleWeight(HGV_VEHICLE_WEIGHT)
-                .vehicleHasTrailer(false)
                 .build();
 
         VehicleProperties expectedHgvCommercialVehicleProperties = VehicleProperties
@@ -90,8 +98,8 @@ class RequestMapperTest {
                 .carAccessForbidden(true)
                 .motorVehicleAccessForbidden(true)
                 .hgvAccessForbidden(true)
-                .hgvAndAutoBusAccessForbidden(true)
-                .trailerAccessForbidden(false)
+                .hgvAndBusAccessForbidden(true)
+                .lcvAndHgvAccessForbidden(true)
                 .axleLoad((double) VEHICLE_AXLE_WEIGHT)
                 .height((double) VEHICLE_HEIGHT)
                 .width((double) VEHICLE_WIDTH)
@@ -108,15 +116,14 @@ class RequestMapperTest {
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
                 .vehicleWeight(HGV_VEHICLE_WEIGHT)
-                .vehicleHasTrailer(false)
                 .build();
 
         VehicleProperties expectedBusVehicleProperties = VehicleProperties
                 .builder()
                 .carAccessForbidden(true)
                 .motorVehicleAccessForbidden(true)
-                .hgvAndAutoBusAccessForbidden(true)
-                .trailerAccessForbidden(false)
+                .busAccessForbidden(true)
+                .hgvAndBusAccessForbidden(true)
                 .axleLoad((double) VEHICLE_AXLE_WEIGHT)
                 .height((double) VEHICLE_HEIGHT)
                 .width((double) VEHICLE_WIDTH)
@@ -140,6 +147,8 @@ class RequestMapperTest {
                 .builder()
                 .carAccessForbidden(true)
                 .motorVehicleAccessForbidden(true)
+                .tractorAccessForbidden(true)
+                .slowVehicleAccessForbidden(true)
                 .trailerAccessForbidden(true)
                 .axleLoad((double) VEHICLE_AXLE_WEIGHT)
                 .height((double) VEHICLE_HEIGHT)
@@ -149,42 +158,35 @@ class RequestMapperTest {
                 .weight((double) HGV_VEHICLE_WEIGHT)
                 .build();
 
-        VehicleArguments motorCycleRequest = VehicleArguments
+        VehicleArguments motorcycleRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.MOTORCYCLE)
                 .build();
-        VehicleProperties expectedMotorCycleProperties = VehicleProperties
+
+        VehicleProperties expectedMotorcycleVehicleProperties = VehicleProperties
                 .builder()
                 .motorVehicleAccessForbidden(true)
-                .motorBikeAccessForbidden(true)
+                .motorcycleAccessForbidden(true)
                 .build();
 
         return Stream.of(
-                Arguments.of(
-                        named("carScenario",
-                                new ImmutablePair<>(carRequest, expectedCarVehicleProperties))),
+                Arguments.of(named("carScenario",
+                        new ImmutablePair<>(carRequest, expectedCarVehicleProperties))),
 
                 Arguments.of(named("lightCommercialVehicleScenario",
-                        new ImmutablePair<>(lightCommercialVehicleRequest,
-                                expectedCarVehicleProperties))),
+                        new ImmutablePair<>(lightCommercialVehicleRequest, expectedLightCommercialVehicleProperties))),
 
                 Arguments.of(named("hgvCommercialVehicleScenario",
-                        new ImmutablePair<>(hgvCommercialVehicleRequest,
-                                expectedHgvCommercialVehicleProperties))),
+                        new ImmutablePair<>(hgvCommercialVehicleRequest, expectedHgvCommercialVehicleProperties))),
 
                 Arguments.of(named("busScenario",
-                        new ImmutablePair<>(busRequest,
-                                expectedBusVehicleProperties))),
+                        new ImmutablePair<>(busRequest, expectedBusVehicleProperties))),
 
                 Arguments.of(named("tractorScenario",
-                        new ImmutablePair<>(tractorRequest,
-                                expectedTractorVehicleProperties))),
+                        new ImmutablePair<>(tractorRequest, expectedTractorVehicleProperties))),
 
                 Arguments.of(named("motorcycleScenario",
-                        new ImmutablePair<>(motorCycleRequest,
-                                expectedMotorCycleProperties)))
-
+                        new ImmutablePair<>(motorcycleRequest, expectedMotorcycleVehicleProperties)))
         );
     }
-
 }
