@@ -1,0 +1,53 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: nls-accessibility-map-api-pod-restarter
+spec:
+  jobTargetRef:
+    activeDeadlineSeconds: 86400 # Maximum execution time before terminating, includes retries
+    backoffLimit: 3 # Number of retries before marking job failed; default 6
+    template:
+      metadata:
+        annotations:
+          ad.datadoghq.com/nls-pod-restarter.logs: '[{"source": "java", "service": "nls-accessibility-map-api-pod-restarter"}]'
+        labels:
+          environment: {{ .Values.environment }}
+      spec:
+        serviceAccountName: nls-pod-restarter-service-account
+        containers:
+          - name: nls-pod-restarter
+            resources:
+              limits:
+                memory: 256Mi
+              requests:
+                memory: 256Mi
+            image: ndwnls.azurecr.io/nls-pod-restarter:20231121.5
+            imagePullPolicy: Always
+            envFrom:
+              - configMapRef:
+                  name: nls-accessibility-map-api-pod-restarter-config
+            env:
+              - name: COMMAND
+                value: restartPod
+            volumeMounts:
+              - mountPath: /application/config
+                name: nls-accessibility-map-api-secrets
+                readOnly: true
+        volumes:
+          - name: nls-accessibility-map-api-secrets
+            csi:
+              driver: secrets-store.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: nls-accessibility-map-api-spc
+  pollingInterval: 60 # Default 30 seconds
+  successfulJobsHistoryLimit: 2 # Default 100
+  maxReplicaCount: 1 # Default 100
+  triggers:
+    - type: rabbitmq
+      metadata:
+        queueName: nls_accessibility_map_api_routing_network_updated
+        mode: QueueLength
+        value: '1' # Tells Keda how many queue messages a single instance processes (default 20)
+      authenticationRef:
+        name: nls-accessibility-map-api-pod-restarter-trigger-auth
