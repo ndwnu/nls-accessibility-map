@@ -8,11 +8,9 @@ info:
 servers:
   - url: "/v1"
   - url: "/api/rest/static-road-data/accessibility-map/v1"
-security:
-  - iamNdw: []
-  - bearerAuth: [ ]
+
 paths:
-  /municipalities/{municipalityId}:
+  /municipalities/{municipalityId}/road-sections:
     get:
       tags:
         - "accessibility-map"
@@ -58,19 +56,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/APIError"
 components:
-  securitySchemes:
-    iamNdw:
-      type: "oauth2"
-      flows:
-        clientCredentials:
-          tokenUrl: "https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token"
-          refreshUrl: "https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token"
-          scopes: {}
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: Authenticate using a custom token for local testing
+
   parameters:
     MunicipalityIdPathParam:
       in: "path"
