@@ -39,9 +39,9 @@ class ResponseMapperTest {
         assertThat(result.getInaccessibleRoadSections().get(0).getRoadSectionId())
                 .isEqualTo(ID);
         assertThat(result.getInaccessibleRoadSections().get(0).getBackwardAccessible())
-                .isEqualTo(true);
+                .isEqualTo(false);
         assertThat(result.getInaccessibleRoadSections().get(0).getForwardAccessible())
-                .isEqualTo(true);
+                .isEqualTo(false);
     }
 
     @Test
@@ -59,9 +59,9 @@ class ResponseMapperTest {
         assertThat(result.getInaccessibleRoadSections().get(0).getRoadSectionId())
                 .isEqualTo(ID);
         assertThat(result.getInaccessibleRoadSections().get(0).getBackwardAccessible())
-                .isEqualTo(true);
-        assertThat(result.getInaccessibleRoadSections().get(0).getForwardAccessible())
                 .isEqualTo(false);
+        assertThat(result.getInaccessibleRoadSections().get(0).getForwardAccessible())
+                .isEqualTo(true);
     }
 
     @Test
