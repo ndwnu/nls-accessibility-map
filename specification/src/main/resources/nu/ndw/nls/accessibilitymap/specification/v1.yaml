@@ -23,7 +23,7 @@ paths:
         - $ref: '#/components/parameters/VehicleWidthParam'
         - $ref: '#/components/parameters/VehicleHeightParam'
         - $ref: '#/components/parameters/VehicleWeightParam'
-        - $ref: '#/components/parameters/VehicleAxleWeightParam'
+        - $ref: '#/components/parameters/VehicleAxleLoadParam'
         - $ref: '#/components/parameters/VehicleHasTrailerParam'
 
       responses:
@@ -115,10 +115,10 @@ components:
         format: float
         minimum: 0.0
         maximum: 60
-    VehicleAxleWeightParam:
+    VehicleAxleLoadParam:
       in: "query"
-      name: vehicleAxleWeight
-      description: The axle weight of the specified vehicle in metric tonnes
+      name: vehicleAxleLoad
+      description: The axle load of the specified vehicle in metric tonnes
       required: false
       schema:
         type: number

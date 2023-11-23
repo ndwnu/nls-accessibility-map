@@ -60,7 +60,7 @@ public class RequestMapper {
                 .trailerAccessForbidden(requestArguments.vehicleHasTrailer())
                 .height(convertToDouble(requestArguments.vehicleHeight()))
                 .width(convertToDouble(requestArguments.vehicleWidth()))
-                .axleLoad(convertToDouble(requestArguments.vehicleAxleWeight()))
+                .axleLoad(convertToDouble(requestArguments.vehicleAxleLoad()))
                 .length(convertToDouble(requestArguments.vehicleLength()))
                 .weight(convertToDouble(requestArguments.vehicleWeight()));
 

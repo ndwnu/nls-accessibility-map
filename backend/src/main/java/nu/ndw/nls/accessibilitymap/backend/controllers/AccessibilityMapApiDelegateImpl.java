@@ -26,10 +26,10 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     @Override
     public ResponseEntity<RoadSectionsJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
-            Float vehicleWeight, Float vehicleAxleWeight, Boolean vehicleHasTrailer) {
+            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer) {
         checkWeightConstraint(vehicleType, vehicleWeight);
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
-                vehicleHeight, vehicleWeight, vehicleAxleWeight, vehicleHasTrailer == Boolean.TRUE);
+                vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer == Boolean.TRUE);
         VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
         Set<IsochroneMatch> inaccessibleRoadSections = accessibilityMapService
                 .calculateInaccessibleRoadSections(vehicleProperties, municipalityId);
@@ -45,7 +45,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     @Builder
     public record VehicleArguments(VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth,
-                                   Float vehicleHeight, Float vehicleWeight, Float vehicleAxleWeight,
+                                   Float vehicleHeight, Float vehicleWeight, Float vehicleAxleLoad,
                                    boolean vehicleHasTrailer) {
 
     }
