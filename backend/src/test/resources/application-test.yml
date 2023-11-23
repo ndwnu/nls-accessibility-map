@@ -8,17 +8,3 @@ nls:
           path: /actuator/health
           duration: PT1M
           description: accessibility-map-api
-      keycloak:
-        url: http://localhost:8000
-        await:
-          enabled: true
-          path: /auth/realms/ndw/.well-known/openid-configuration
-          duration: PT1M
-          description: keycloak
-        clients:
-          nls-accessibility-map-api-service-account:
-            client-id: 'nls-accessibility-map-api-service-account'
-            client-secret: 'cfe4793c-ddf7-405a-940f-51b43800aed4'
-          nls-accessibility-map-api-invalid-token-test:
-            client-id: 'nls-accessibility-map-api-invalid-token-test'
-            client-secret: '50ca7ecc-ea96-4259-b05c-56d95957cf19'
