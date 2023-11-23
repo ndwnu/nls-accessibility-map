@@ -13,11 +13,9 @@ import nu.ndw.nls.accessibilitymap.backend.services.AccessibilityMapService;
 import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.domain.model.accessibility.VehicleProperties;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 @Component
-@PreAuthorize("hasAuthority('NLS-ACCESSIBILITY-MAP-API')")
 @RequiredArgsConstructor
 public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDelegate {
 
