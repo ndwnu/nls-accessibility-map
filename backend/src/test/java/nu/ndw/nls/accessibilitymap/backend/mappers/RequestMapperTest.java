@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class RequestMapperTest {
 
-    private static final float VEHICLE_AXLE_WEIGHT = 2F;
+    private static final float VEHICLE_AXLE_LOAD = 2F;
     private static final float VEHICLE_HEIGHT = 1.5F;
     private static final float VEHICLE_LENGTH = 3.5F;
     private static final float VEHICLE_WEIGHT = 2.25F;
@@ -41,7 +41,7 @@ class RequestMapperTest {
         VehicleArguments carRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.CAR)
-                .vehicleAxleWeight(VEHICLE_AXLE_WEIGHT)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
@@ -52,7 +52,7 @@ class RequestMapperTest {
                 .builder()
                 .carAccessForbidden(true)
                 .motorVehicleAccessForbidden(true)
-                .axleLoad((double) VEHICLE_AXLE_WEIGHT)
+                .axleLoad((double) VEHICLE_AXLE_LOAD)
                 .height((double) VEHICLE_HEIGHT)
                 .width((double) VEHICLE_WIDTH)
                 .length((double) VEHICLE_LENGTH)
@@ -63,7 +63,7 @@ class RequestMapperTest {
         VehicleArguments lightCommercialVehicleRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.COMMERCIAL_VEHICLE)
-                .vehicleAxleWeight(VEHICLE_AXLE_WEIGHT)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
@@ -75,7 +75,7 @@ class RequestMapperTest {
                 .carAccessForbidden(true)
                 .motorVehicleAccessForbidden(true)
                 .lcvAndHgvAccessForbidden(true)
-                .axleLoad((double) VEHICLE_AXLE_WEIGHT)
+                .axleLoad((double) VEHICLE_AXLE_LOAD)
                 .height((double) VEHICLE_HEIGHT)
                 .width((double) VEHICLE_WIDTH)
                 .length((double) VEHICLE_LENGTH)
@@ -86,7 +86,7 @@ class RequestMapperTest {
         VehicleArguments hgvCommercialVehicleRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.COMMERCIAL_VEHICLE)
-                .vehicleAxleWeight(VEHICLE_AXLE_WEIGHT)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
@@ -100,7 +100,7 @@ class RequestMapperTest {
                 .hgvAccessForbidden(true)
                 .hgvAndBusAccessForbidden(true)
                 .lcvAndHgvAccessForbidden(true)
-                .axleLoad((double) VEHICLE_AXLE_WEIGHT)
+                .axleLoad((double) VEHICLE_AXLE_LOAD)
                 .height((double) VEHICLE_HEIGHT)
                 .width((double) VEHICLE_WIDTH)
                 .length((double) VEHICLE_LENGTH)
@@ -111,7 +111,7 @@ class RequestMapperTest {
         VehicleArguments busRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.BUS)
-                .vehicleAxleWeight(VEHICLE_AXLE_WEIGHT)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
@@ -124,7 +124,7 @@ class RequestMapperTest {
                 .motorVehicleAccessForbidden(true)
                 .busAccessForbidden(true)
                 .hgvAndBusAccessForbidden(true)
-                .axleLoad((double) VEHICLE_AXLE_WEIGHT)
+                .axleLoad((double) VEHICLE_AXLE_LOAD)
                 .height((double) VEHICLE_HEIGHT)
                 .width((double) VEHICLE_WIDTH)
                 .length((double) VEHICLE_LENGTH)
@@ -135,7 +135,7 @@ class RequestMapperTest {
         VehicleArguments tractorRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.TRACTOR)
-                .vehicleAxleWeight(VEHICLE_AXLE_WEIGHT)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
@@ -150,7 +150,7 @@ class RequestMapperTest {
                 .tractorAccessForbidden(true)
                 .slowVehicleAccessForbidden(true)
                 .trailerAccessForbidden(true)
-                .axleLoad((double) VEHICLE_AXLE_WEIGHT)
+                .axleLoad((double) VEHICLE_AXLE_LOAD)
                 .height((double) VEHICLE_HEIGHT)
                 .width((double) VEHICLE_WIDTH)
                 .length((double) VEHICLE_LENGTH)

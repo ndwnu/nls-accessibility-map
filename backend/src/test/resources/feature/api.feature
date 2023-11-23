@@ -14,7 +14,7 @@ Feature: API operations
     And param vehicleWidth = 3
     And param vehicleHeight = 2
     And param vehicleWeight = 4
-    And param vehicleAxleWeight = 3
+    And param vehicleAxleLoad = 3
     And param vehicleHasTrailer = false
     And method GET
     Then status 200
@@ -42,4 +42,3 @@ Feature: API operations
     And method GET
     Then status 400
     And match response == badRequestHasTrailer
-

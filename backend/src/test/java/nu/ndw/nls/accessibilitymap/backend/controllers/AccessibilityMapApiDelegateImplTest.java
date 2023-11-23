@@ -31,8 +31,9 @@ class AccessibilityMapApiDelegateImplTest {
     private static final float VEHICLE_WIDTH = 2F;
     private static final float VEHICLE_HEIGHT = 3F;
     private static final float VEHICLE_WEIGHT = 4F;
-    private static final float VEHICLE_AXLE_WEIGHT = 5F;
+    private static final float VEHICLE_AXLE_LOAD = 5F;
     private static final String MUNICIPALITY_ID = "GM0344";
+
     @Captor
     private ArgumentCaptor<VehicleArguments> vehicleArgumentsArgumentCaptor;
     @Mock
@@ -65,7 +66,7 @@ class AccessibilityMapApiDelegateImplTest {
                 VEHICLE_WIDTH,
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
-                VEHICLE_AXLE_WEIGHT,
+                VEHICLE_AXLE_LOAD,
                 false);
 
         VehicleArguments expectedVehicleArguments = VehicleArguments
@@ -74,7 +75,7 @@ class AccessibilityMapApiDelegateImplTest {
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
                 .vehicleWeight(VEHICLE_WEIGHT)
-                .vehicleAxleWeight(VEHICLE_AXLE_WEIGHT)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHasTrailer(false)
                 .build();
@@ -84,10 +85,8 @@ class AccessibilityMapApiDelegateImplTest {
         assertThat(vehicleArguments).isEqualTo(expectedVehicleArguments);
     }
 
-
     @Test
-    void getInaccessibleRoadSections_with_no_weight_exception() {
-
+    void getInaccessibleRoadSections_exception_noWeight() {
         VehicleWeightRequiredException exception = assertThrows(VehicleWeightRequiredException.class,
                 () -> accessibilityMapApiDelegate.getInaccessibleRoadSections(
                         MUNICIPALITY_ID,
@@ -96,7 +95,7 @@ class AccessibilityMapApiDelegateImplTest {
                         VEHICLE_WIDTH,
                         VEHICLE_HEIGHT,
                         null,
-                        VEHICLE_AXLE_WEIGHT,
+                        VEHICLE_AXLE_LOAD,
                         false));
 
         assertThat(exception.getMessage()).isEqualTo("When selecting 'commercial_vehicle' as vehicle type "
