@@ -29,11 +29,11 @@ public class ResponseMapper {
         boolean backwardAccessible = isochroneMatchInBothDirections
                 .getValue()
                 .stream()
-                .anyMatch(IsochroneMatch::isReversed);
+                .noneMatch(IsochroneMatch::isReversed);
         boolean forwardAccessible = isochroneMatchInBothDirections
                 .getValue()
                 .stream()
-                .anyMatch(i -> !i.isReversed());
+                .allMatch(IsochroneMatch::isReversed);
         return new RoadSectionJson()
                 .roadSectionId(isochroneMatchInBothDirections.getKey())
                 .backwardAccessible(backwardAccessible)
