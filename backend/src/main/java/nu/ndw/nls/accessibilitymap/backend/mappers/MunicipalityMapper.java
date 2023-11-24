@@ -1,40 +1,31 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson.TypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
-import org.wololo.geojson.Feature;
-import org.wololo.jts2geojson.GeoJSONWriter;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Component
 public class MunicipalityMapper {
 
+    public FeatureCollectionJson mapToMunicipalitiesToGeoJSON(Collection<Municipality> municipalities) {
+        return new FeatureCollectionJson(TypeEnum.FEATURECOLLECTION,
+                municipalities.stream().map(this::mapMunicipality).toList());
+    }
 
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
-    private static final GeoJSONWriter JTS_CONVERTER = new GeoJSONWriter();
+    private FeatureJson mapMunicipality(Municipality m) {
+        return new FeatureJson(FeatureJson.TypeEnum.FEATURE, m.getMunicipalityId(), mapStartPoint(m))
+                .properties(new MunicipalityPropertiesJson(m.getName(), (int) m.getSearchDistanceInMetres()));
+    }
 
-    public FeatureCollectionJson mapToMunicipalitiesToGeoJSON(List<Municipality> municipalities) {
-        try {
-            List<Feature> features = new ArrayList<>();
-            for (var municipality : municipalities) {
-                Map<String, Object> properties = new HashMap<>();
-                properties.put("name", municipality.getName());
-                properties.put("searchDistance", municipality.getSearchDistanceInMetres());
-                features.add(
-                        new Feature(municipality.getMunicipalityId(), JTS_CONVERTER.write(municipality.getStartPoint()),
-                                properties));
-            }
-            var geoJSON = JSON_MAPPER.writeValueAsString(JTS_CONVERTER.write(features));
-            return JSON_MAPPER.readValue(geoJSON, FeatureCollectionJson.class);
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException("Failure while mapping geometry " + municipalities, e);
-        }
+    private PointJson mapStartPoint(Municipality m) {
+        return new PointJson(GeometryJson.TypeEnum.POINT)
+                .coordinates(List.of(m.getStartPoint().getX(), m.getStartPoint().getY()));
     }
 }

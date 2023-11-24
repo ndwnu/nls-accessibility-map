@@ -8,7 +8,7 @@ import nu.ndw.nls.accessibilitymap.backend.services.TestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class MunicipalityMapperTest {
+class MunicipalityMapperTest {
 
     private MunicipalityMapper municipalityMapper;
 
@@ -18,7 +18,7 @@ public class MunicipalityMapperTest {
     }
 
     @Test
-    void mapMunicipality() {
+    void mapToMunicipalitiesToGeoJSON_ok() {
         var geoJSON = municipalityMapper.mapToMunicipalitiesToGeoJSON(List.of(TestHelper.MUNICIPALITY));
         assertThat(geoJSON.getType().getValue()).isEqualTo("FeatureCollection");
         assertThat(geoJSON.getFeatures()).hasSize(1);
