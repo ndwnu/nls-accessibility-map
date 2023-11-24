@@ -42,3 +42,8 @@ Feature: API operations
     And method GET
     Then status 400
     And match response == badRequestHasTrailer
+
+  Scenario: municipalities should return 200
+    Given path '/v1/municipalities'
+    And method GET
+    Then status 200

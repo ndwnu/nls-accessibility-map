@@ -55,6 +55,27 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/APIError"
+
+  /municipalities:
+    get:
+      tags:
+        - "municipalities"
+      summary: "Returns all currently configured municipalities"
+      operationId: "getMunicipalities"
+
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureCollection"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
 components:
 
   parameters:
@@ -159,6 +180,82 @@ components:
         - bus
         - motorcycle
         - tractor
+    Feature:
+      type: object
+      description: GeoJSon Feature
+      required:
+        - type
+        - id
+        - geometry
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      properties:
+        type:
+          type: string
+          enum:
+            - Feature
+        id:
+          type: object
+        geometry:
+          $ref: '#/components/schemas/Geometry'
+        properties:
+          type: object
+    FeatureCollection:
+      type: object
+      description: GeoJSon Feature collection
+      required:
+        - type
+        - features
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      properties:
+        type:
+          type: string
+          enum:
+            - FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+    Geometry:
+      type: object
+      description: GeoJSON geometry
+      discriminator:
+        propertyName: type
+      required:
+        - type
+      externalDocs:
+        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1
+      properties:
+        type:
+          type: string
+          enum:
+            - Point
+          description: Geometry type
+
+    Point3D:
+      type: array
+      description: Point in 2D space
+      externalDocs:
+        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
+      minItems: 2
+      maxItems: 3
+      example: [ 5.1, 52.2 ]
+      items:
+        type: number
+        format: double
+
+    Point:
+      type: object
+      description: GeoJSON geometry
+      example: [ 5.1, 52.2 ]
+      externalDocs:
+        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - properties:
+            coordinates:
+              $ref: '#/components/schemas/Point3D'
 
     APIError:
       type: "object"
