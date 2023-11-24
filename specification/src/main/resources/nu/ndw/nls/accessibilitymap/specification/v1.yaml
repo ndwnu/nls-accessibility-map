@@ -182,7 +182,7 @@ components:
         - tractor
     Feature:
       type: object
-      description: GeoJSon Feature
+      description: GeoJSON feature
       required:
         - type
         - id
@@ -199,10 +199,23 @@ components:
         geometry:
           $ref: '#/components/schemas/Geometry'
         properties:
-          type: object
+          $ref: '#/components/schemas/MunicipalityProperties'
+    MunicipalityProperties:
+      type: object
+      required:
+        - name
+        - searchDistance
+      properties:
+        name:
+          type: string
+          description: Municipality name
+        searchDistance:
+          type: integer
+          format: int32
+          description: Search distance in metres
     FeatureCollection:
       type: object
-      description: GeoJSon Feature collection
+      description: GeoJSON feature collection
       required:
         - type
         - features
