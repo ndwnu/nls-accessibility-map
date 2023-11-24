@@ -27,7 +27,9 @@ public class MunicipalityMapper {
                 Map<String, Object> properties = new HashMap<>();
                 properties.put("name", municipality.getName());
                 properties.put("searchDistance", municipality.getSearchDistanceInMetres());
-                features.add(new Feature(municipality.getMunicipalityId(), JTS_CONVERTER.write(municipality.getStartPoint()), properties));
+                features.add(
+                        new Feature(municipality.getMunicipalityId(), JTS_CONVERTER.write(municipality.getStartPoint()),
+                                properties));
             }
             var geoJSON = JSON_MAPPER.writeValueAsString(JTS_CONVERTER.write(features));
             return JSON_MAPPER.readValue(geoJSON, FeatureCollectionJson.class);
