@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson;
@@ -31,6 +32,6 @@ class MunicipalityMapperTest {
                         new MunicipalityPropertiesJson(MUNICIPALITY.getName(),
                                 (int) MUNICIPALITY.getSearchDistanceInMetres()))));
         var geoJSON = municipalityMapper.mapToMunicipalitiesToGeoJSON(List.of(MUNICIPALITY));
-        assert (geoJSON.equals(expectedResult));
+        assertEquals(geoJSON, expectedResult);
     }
 }
