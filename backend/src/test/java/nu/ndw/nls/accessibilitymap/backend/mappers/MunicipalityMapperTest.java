@@ -32,6 +32,6 @@ class MunicipalityMapperTest {
                         new MunicipalityPropertiesJson(MUNICIPALITY.getName(),
                                 (int) MUNICIPALITY.getSearchDistanceInMetres()))));
         var geoJSON = municipalityMapper.mapToMunicipalitiesToGeoJSON(List.of(MUNICIPALITY));
-        assertEquals(geoJSON, expectedResult);
+        assertEquals(expectedResult, geoJSON);
     }
 }
