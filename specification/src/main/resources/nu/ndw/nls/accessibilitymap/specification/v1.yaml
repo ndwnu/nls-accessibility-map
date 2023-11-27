@@ -33,10 +33,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RoadSections"
-        "401":
-          description: "Unauthorized"
-        "403":
-          description: "Forbidden"
         "400":
           description: "Validation error"
           content:
@@ -246,13 +242,13 @@ components:
             - Point
           description: Geometry type
 
-    Point3D:
+    Point2D:
       type: array
       description: Point in 2D space
       externalDocs:
         url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
       minItems: 2
-      maxItems: 3
+      maxItems: 2
       example: [ 5.1, 52.2 ]
       items:
         type: number
@@ -268,7 +264,7 @@ components:
         - $ref: '#/components/schemas/Geometry'
         - properties:
             coordinates:
-              $ref: '#/components/schemas/Point3D'
+              $ref: '#/components/schemas/Point2D'
 
     APIError:
       type: "object"
