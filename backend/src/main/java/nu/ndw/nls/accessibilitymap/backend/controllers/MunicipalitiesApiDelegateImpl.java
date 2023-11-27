@@ -18,7 +18,7 @@ public class MunicipalitiesApiDelegateImpl implements MunicipalitiesApiDelegate 
     @Override
     public ResponseEntity<FeatureCollectionJson> getMunicipalities() {
         return ResponseEntity.ok(municipalityMapper.mapToMunicipalitiesToGeoJSON(
-                municipalityProperties.getMunicipalities().values().stream().toList()));
+                municipalityProperties.getMunicipalities().values()));
     }
 
 }
