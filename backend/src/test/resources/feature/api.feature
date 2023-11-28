@@ -6,6 +6,7 @@ Feature: API operations
     * def badRequestMunicipalityId = read('classpath:test-messages/accessibility/response-400-incorrect-municipality-id.json')
     * def badRequestVehicleLength = read('classpath:test-messages/accessibility/response-400-incorrect-vehicle-length.json')
     * def badRequestHasTrailer = read('classpath:test-messages/accessibility/response-400-incorrect-has-trailer.json')
+    * def municipalitiesOkResponse = read('classpath:test-messages/municipalities/response-ok.json')
 
   Scenario: accessibility map should return 200
     Given path '/v1/municipalities/GM0307/road-sections'
@@ -42,3 +43,9 @@ Feature: API operations
     And method GET
     Then status 400
     And match response == badRequestHasTrailer
+
+  Scenario: municipalities should return 200
+    Given path '/v1/municipalities'
+    And method GET
+    Then status 200
+    And match response == municipalitiesOkResponse

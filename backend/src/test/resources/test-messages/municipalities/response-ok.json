@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "GM0307",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.32907,
+          52.13273
+        ]
+      },
+      "properties": {
+        "name": "Amersfoort",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0344",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.117956,
+          52.092209
+        ]
+      },
+      "properties": {
+        "name": "Utrecht",
+        "searchDistance": 50000
+      }
+    }
+  ]
+}
