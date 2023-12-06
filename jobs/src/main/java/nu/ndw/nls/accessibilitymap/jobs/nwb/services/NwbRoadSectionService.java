@@ -18,8 +18,10 @@ public class NwbRoadSectionService {
     private static final int FETCH_SIZE = 250;
     private static final EnumSet<CarriagewayTypeCode> EXCLUSIONS = EnumSet.of(
             CarriagewayTypeCode.BU,
+            CarriagewayTypeCode.BUS,
             CarriagewayTypeCode.FP,
             CarriagewayTypeCode.VP,
+            CarriagewayTypeCode.VZ,
             CarriagewayTypeCode.OVB,
             CarriagewayTypeCode.CADO,
             CarriagewayTypeCode.RP,
