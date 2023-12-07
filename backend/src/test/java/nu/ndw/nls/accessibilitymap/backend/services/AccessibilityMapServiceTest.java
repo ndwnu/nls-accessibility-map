@@ -1,13 +1,16 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ACCESSIBLE_MATCH;
+import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ID_1;
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.INACCESSIBLE_MATCH;
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY;
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Set;
+import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.routingmapmatcher.domain.AccessibilityMap;
 import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
 import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
@@ -40,7 +43,6 @@ class AccessibilityMapServiceTest {
     @InjectMocks
     private AccessibilityMapService accessibilityMapService;
 
-
     @Test
     void calculateInaccessibleRoadSections_ok() {
         Set<IsochroneMatch> allIsochroneMatchSet = Set.of(ACCESSIBLE_MATCH, INACCESSIBLE_MATCH);
@@ -60,8 +62,8 @@ class AccessibilityMapServiceTest {
                 .builder()
                 .build();
 
-        Set<IsochroneMatch> inaccessibleRoadSections = accessibilityMapService
-                .calculateInaccessibleRoadSections(vehicleProperties, MUNICIPALITY_ID);
+        List<RoadSection> inaccessibleRoadSections = accessibilityMapService
+                .determineInaccessibleRoadSections(vehicleProperties, MUNICIPALITY_ID);
         AccessibilityRequest accessibilityRequest = accessibilityRequestArgumentCaptor.getValue();
         AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest
                 .builder()
@@ -70,7 +72,7 @@ class AccessibilityMapServiceTest {
                 .municipalityId(MUNICIPALITY.getMunicipalityIdAsInteger())
                 .vehicleProperties(vehicleProperties)
                 .build();
-        assertThat(inaccessibleRoadSections).isEqualTo(Set.of(ACCESSIBLE_MATCH));
+        assertThat(inaccessibleRoadSections).isEqualTo(List.of(new RoadSection(ID_1, false, null)));
         assertThat(accessibilityRequest).isEqualTo(expectedAccessibilityRequest);
     }
 }

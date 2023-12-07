@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
-import java.util.Set;
+import java.util.List;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
@@ -9,8 +9,8 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionsJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.mappers.RequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.ResponseMapper;
+import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.services.AccessibilityMapService;
-import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.domain.model.accessibility.VehicleProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -31,8 +31,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer == Boolean.TRUE);
         VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
-        Set<IsochroneMatch> inaccessibleRoadSections = accessibilityMapService
-                .calculateInaccessibleRoadSections(vehicleProperties, municipalityId);
+        List<RoadSection> inaccessibleRoadSections = accessibilityMapService
+                .determineInaccessibleRoadSections(vehicleProperties, municipalityId);
         return ResponseEntity.ok(responseMapper.mapToRoadSectionsJson(inaccessibleRoadSections));
     }
 
