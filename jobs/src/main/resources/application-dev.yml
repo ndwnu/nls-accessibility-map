@@ -1,5 +1,9 @@
-broker:
-  uri: amqp://guest:guest@localhost:5672?heartbeat=300
+nu:
+  ndw:
+    nls:
+      springboot:
+        messaging:
+          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
 logging:
   level:
     root: INFO

@@ -3,17 +3,13 @@ package nu.ndw.nls.accessibilitymap.jobs.services;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.jobs.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityLinkService.AccessibilityLinkData;
 import nu.ndw.nls.events.NlsEvent;
-import nu.ndw.nls.events.NlsEventSubject;
-import nu.ndw.nls.events.NlsEventSubjectType;
-import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.routingmapmatcher.domain.model.RoutingNetwork;
 import nu.ndw.nls.routingmapmatcher.graphhopper.IndexedGraphHopperNetworkService;
-import nu.ndw.nls.springboot.messaging.MessagePublisher;
-import nu.ndw.nls.springboot.messaging.MessagePublisherFactory;
+import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,23 +17,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 public class AccessibilityNetworkService {
-
-    private static final String ROUTING_KEY = "ndw.nls.accessibility.routing.network.updated";
-    private static final NlsEventType EVENT_TYPE = NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED;
     private static final String NETWORK_NAME = "accessibility_latest";
 
     private final IndexedGraphHopperNetworkService indexedGraphHopperNetworkService;
     private final AccessibilityLinkService accessibilityLinkService;
-    private final MessagePublisher messagePublisher;
     private final Path graphHopperPath;
+    private final MessageService messageService;
+    private final AccessibilityRoutingNetworkEventMapper accessibilityRoutingNetworkEventMapper;
 
     public AccessibilityNetworkService(IndexedGraphHopperNetworkService indexedGraphHopperNetworkService,
-            AccessibilityLinkService accessibilityLinkService, MessagePublisherFactory messagePublisherFactory,
-            @Value("${graphhopper.dir}") String graphHopperDir) {
+            AccessibilityLinkService accessibilityLinkService,
+            @Value("${graphhopper.dir}") String graphHopperDir,
+            MessageService messageService,
+            AccessibilityRoutingNetworkEventMapper accessibilityRoutingNetworkEventMapper) {
         this.indexedGraphHopperNetworkService = indexedGraphHopperNetworkService;
         this.accessibilityLinkService = accessibilityLinkService;
-        this.messagePublisher = messagePublisherFactory.create(ROUTING_KEY, EVENT_TYPE);
         this.graphHopperPath = Path.of(graphHopperDir);
+        this.messageService = messageService;
+        this.accessibilityRoutingNetworkEventMapper = accessibilityRoutingNetworkEventMapper;
     }
 
     @Transactional
@@ -56,19 +53,12 @@ public class AccessibilityNetworkService {
         log.debug("Creating GraphHopper network and writing to disk");
         indexedGraphHopperNetworkService.storeOnDisk(routingNetwork, graphHopperPath);
 
-        log.debug("Sending " + EVENT_TYPE.getLabel() + " event for NWB version " + linkData.nwbVersionId()
+        NlsEvent nlsEvent = accessibilityRoutingNetworkEventMapper.map(linkData.nwbVersionId(),
+                linkData.trafficSignTimestamp());
+
+        log.debug("Sending " + nlsEvent.getType().getLabel() + " event for NWB version " + linkData.nwbVersionId()
                 + " and traffic sign timestamp " + linkData.trafficSignTimestamp());
-        sendNlsEvent(linkData.nwbVersionId(), linkData.trafficSignTimestamp());
+        messageService.publish(nlsEvent);
     }
 
-    private void sendNlsEvent(int nwbVersionId, Instant trafficSignTimestamp) {
-        messagePublisher.publishMessage(NlsEvent.builder()
-                .type(EVENT_TYPE)
-                .subject(NlsEventSubject.builder()
-                        .type(NlsEventSubjectType.ACCESSIBILITY_ROUTING_NETWORK)
-                        .nwbVersion(String.valueOf(nwbVersionId))
-                        .timestamp(trafficSignTimestamp.toString())
-                        .build())
-                .build());
-    }
 }
