@@ -1,11 +1,14 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Sets;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.routingmapmatcher.domain.AccessibilityMap;
 import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
 import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
@@ -24,7 +27,7 @@ public class AccessibilityMapService {
     private final MunicipalityService municipalityService;
     private final BaseAccessibleRoadsService baseIsochroneService;
 
-    public Set<IsochroneMatch> calculateInaccessibleRoadSections(VehicleProperties vehicleProperties,
+    public List<RoadSection> determineInaccessibleRoadSections(VehicleProperties vehicleProperties,
             String municipalityId) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory
                 .createMapMatcher(networkGraphHopper);
@@ -41,9 +44,37 @@ public class AccessibilityMapService {
                 .build();
         Set<IsochroneMatch> accessibleRoadsWithRestrictions = accessibilityMap.getAccessibleRoadSections(
                 accessibilityRequest);
-        Set<IsochroneMatch> inaccessibleRoads = Sets.difference(allAccessibleRoads, accessibleRoadsWithRestrictions);
-        log.trace("Calculating inaccessible roads took {} ", timerAll.stop());
+        List<RoadSection> inaccessibleRoads = determineDifference(allAccessibleRoads, accessibleRoadsWithRestrictions);
+        log.trace("Determining inaccessible roads took {}", timerAll.stop());
         return inaccessibleRoads;
+    }
 
+    private List<RoadSection> determineDifference(Set<IsochroneMatch> withoutRestrictions,
+            Set<IsochroneMatch> withRestrictions) {
+        SortedMap<Integer, RoadSection> roadSections = new TreeMap<>();
+        for (IsochroneMatch m : withoutRestrictions) {
+            roadSections.computeIfAbsent(m.getMatchedLinkId(), RoadSection::new);
+            RoadSection r = roadSections.get(m.getMatchedLinkId());
+            // Accessible remains null in case road section is not present in both directions in baseline.
+            // This way, non-existing directions of one-way roads (null) can be distinguished from inaccessible
+            // directions due to restrictions (false).
+            if (m.isReversed()) {
+                r.setBackwardAccessible(false);
+            } else {
+                r.setForwardAccessible(false);
+            }
+        }
+        for (IsochroneMatch m : withRestrictions) {
+            RoadSection r = roadSections.get(m.getMatchedLinkId());
+            if (m.isReversed()) {
+                r.setBackwardAccessible(true);
+            } else {
+                r.setForwardAccessible(true);
+            }
+        }
+        return roadSections.values().stream()
+                // Only keep road sections affected by restrictions
+                .filter(r -> r.getForwardAccessible() == Boolean.FALSE || r.getBackwardAccessible() == Boolean.FALSE)
+                .toList();
     }
 }

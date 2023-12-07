@@ -11,15 +11,15 @@ public final class TestHelper {
             50000,
             MUNICIPALITY_ID,
             "Test");
-    public static final int ID_1 = 1;
 
+    public static final int ID_1 = 1;
     public static final int ID_2 = 2;
+
     public static final IsochroneMatch INACCESSIBLE_MATCH = IsochroneMatch
             .builder()
             .reversed(false)
             .matchedLinkId(ID_2)
             .build();
-
     public static final IsochroneMatch ACCESSIBLE_MATCH = IsochroneMatch
             .builder()
             .reversed(false)
@@ -28,5 +28,4 @@ public final class TestHelper {
 
     private TestHelper() {
     }
-
 }

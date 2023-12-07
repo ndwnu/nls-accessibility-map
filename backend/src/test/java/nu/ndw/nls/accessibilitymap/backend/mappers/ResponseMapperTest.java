@@ -1,87 +1,29 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
+import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ID_1;
+import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ID_2;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Set;
+import java.util.List;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionsJson;
-import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
-import org.junit.jupiter.api.BeforeEach;
+import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import org.junit.jupiter.api.Test;
 
 class ResponseMapperTest {
 
-    private static final int ID = 1;
-    private static final int ID_2 = 2;
-
-    private ResponseMapper responseMapper;
-
-    @BeforeEach
-    void setUp() {
-        responseMapper = new ResponseMapper();
-    }
+    private final ResponseMapper responseMapper = new ResponseMapper();
 
     @Test
-    void mapToRoadSectionsJson_ok_twoDirections() {
-        IsochroneMatch isochroneMatchReversed = IsochroneMatch
-                .builder()
-                .matchedLinkId(ID)
-                .reversed(true)
-                .build();
-        IsochroneMatch isochroneMatch = IsochroneMatch
-                .builder()
-                .matchedLinkId(ID)
-                .build();
-        Set<IsochroneMatch> matches = Set.of(isochroneMatchReversed, isochroneMatch);
+    void mapToRoadSectionsJson_ok() {
+        List<RoadSection> roadSections = List.of(
+                new RoadSection(ID_1, true, false),
+                new RoadSection(ID_2, false, null));
 
-        RoadSectionsJson result = responseMapper.mapToRoadSectionsJson(matches);
+        RoadSectionsJson result = responseMapper.mapToRoadSectionsJson(roadSections);
 
-        assertThat(result.getInaccessibleRoadSections()).hasSize(1);
-        assertThat(result.getInaccessibleRoadSections().get(0).getRoadSectionId())
-                .isEqualTo(ID);
-        assertThat(result.getInaccessibleRoadSections().get(0).getBackwardAccessible())
-                .isEqualTo(false);
-        assertThat(result.getInaccessibleRoadSections().get(0).getForwardAccessible())
-                .isEqualTo(false);
-    }
-
-    @Test
-    void mapToRoadSectionsJson_ok_oneDirection() {
-        IsochroneMatch isochroneMatchReversed = IsochroneMatch
-                .builder()
-                .matchedLinkId(ID)
-                .reversed(true)
-                .build();
-        Set<IsochroneMatch> matches = Set.of(isochroneMatchReversed);
-
-        RoadSectionsJson result = responseMapper.mapToRoadSectionsJson(matches);
-
-        assertThat(result.getInaccessibleRoadSections()).hasSize(1);
-        assertThat(result.getInaccessibleRoadSections().get(0).getRoadSectionId())
-                .isEqualTo(ID);
-        assertThat(result.getInaccessibleRoadSections().get(0).getBackwardAccessible())
-                .isEqualTo(false);
-        assertThat(result.getInaccessibleRoadSections().get(0).getForwardAccessible())
-                .isEqualTo(true);
-    }
-
-    @Test
-    void mapToRoadSectionsJson_ok_sort() {
-        IsochroneMatch isochroneMatch1 = IsochroneMatch
-                .builder()
-                .matchedLinkId(ID)
-                .build();
-        IsochroneMatch isochroneMatch2 = IsochroneMatch
-                .builder()
-                .matchedLinkId(ID_2)
-                .build();
-        Set<IsochroneMatch> matches = Set.of(isochroneMatch2, isochroneMatch1);
-
-        RoadSectionsJson result = responseMapper.mapToRoadSectionsJson(matches);
-
-        assertThat(result.getInaccessibleRoadSections()).hasSize(2);
-        assertThat(result.getInaccessibleRoadSections().get(0).getRoadSectionId())
-                .isEqualTo(ID);
-        assertThat(result.getInaccessibleRoadSections().get(1).getRoadSectionId())
-                .isEqualTo(ID_2);
+        assertThat(result.getInaccessibleRoadSections()).isEqualTo(List.of(
+                new RoadSectionJson().roadSectionId(ID_1).forwardAccessible(true).backwardAccessible(false),
+                new RoadSectionJson().roadSectionId(ID_2).forwardAccessible(false).backwardAccessible(null)));
     }
 }
