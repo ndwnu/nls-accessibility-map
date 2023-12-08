@@ -1,18 +1,19 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
+import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ID_1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import java.util.Set;
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.controllers.AccessibilityMapApiDelegateImpl.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionsJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.mappers.RequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.ResponseMapper;
+import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.services.AccessibilityMapService;
-import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.domain.model.accessibility.VehicleProperties;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,14 +50,14 @@ class AccessibilityMapApiDelegateImplTest {
     @Test
     void getInaccessibleRoadSections_ok() {
         VehicleProperties vehicleProperties = VehicleProperties.builder().build();
-        Set<IsochroneMatch> isochroneMatches = Set.of(IsochroneMatch.builder().build());
+        List<RoadSection> roadSections = List.of(new RoadSection(ID_1));
         RoadSectionsJson roadSectionsJson = new RoadSectionsJson();
 
         when(requestMapper.mapToVehicleProperties(vehicleArgumentsArgumentCaptor.capture()))
                 .thenReturn(vehicleProperties);
-        when(accessibilityMapService.calculateInaccessibleRoadSections(vehicleProperties, MUNICIPALITY_ID))
-                .thenReturn(isochroneMatches);
-        when(responseMapper.mapToRoadSectionsJson(isochroneMatches))
+        when(accessibilityMapService.determineInaccessibleRoadSections(vehicleProperties, MUNICIPALITY_ID))
+                .thenReturn(roadSections);
+        when(responseMapper.mapToRoadSectionsJson(roadSections))
                 .thenReturn(roadSectionsJson);
 
         ResponseEntity<RoadSectionsJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(
