@@ -74,7 +74,11 @@ public class AccessibilityMapService {
         }
         return roadSections.values().stream()
                 // Only keep road sections affected by restrictions
-                .filter(r -> r.getForwardAccessible() == Boolean.FALSE || r.getBackwardAccessible() == Boolean.FALSE)
+                .filter(this::isRestrictedInAnyDirection)
                 .toList();
+    }
+
+    private boolean isRestrictedInAnyDirection(RoadSection r) {
+        return r.getForwardAccessible() == Boolean.FALSE || r.getBackwardAccessible() == Boolean.FALSE;
     }
 }
