@@ -28,4 +28,4 @@ COPY --chown=java:java logback-deploy.xml ./
 RUN mkdir ./graphhopper && chmod -R 755 ./graphhopper && chown -R java ./graphhopper
 USER 1000
 
-ENTRYPOINT java org.springframework.boot.loader.JarLauncher $COMMAND
+ENTRYPOINT java org.springframework.boot.loader.launch.JarLauncher $COMMAND

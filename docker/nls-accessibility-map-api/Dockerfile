@@ -27,4 +27,4 @@ COPY --chown=java:java logback-deploy.xml logback-deploy.xml
 
 USER 1000
 
-ENTRYPOINT java org.springframework.boot.loader.JarLauncher
+ENTRYPOINT java org.springframework.boot.loader.launch.JarLauncher
