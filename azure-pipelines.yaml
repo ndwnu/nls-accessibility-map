@@ -17,7 +17,6 @@ extends:
     sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**'
     sonarOptionalExclusions: '**/generated/**'
     mavenOptionalBuildOptions: '-Pregression-test'
-    overrideAllowHelmDeploy: true
     dockerImages:
       - nls-accessibility-map-api
       - nls-accessibility-map-jobs
