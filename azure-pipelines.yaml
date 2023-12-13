@@ -25,5 +25,7 @@ extends:
         "name": "nls-accessibility-map-api"
       }
       - {
-        "name": "nls-accessibility-map-jobs"
+        "name": "nls-accessibility-map-jobs",
+        "forceDelete": "true",
+        "optionalArgs": "--wait-for-jobs --timeout 60s"
       }
