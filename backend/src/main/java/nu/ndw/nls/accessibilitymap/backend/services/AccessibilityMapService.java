@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
 import com.google.common.base.Stopwatch;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -27,7 +26,7 @@ public class AccessibilityMapService {
     private final MunicipalityService municipalityService;
     private final BaseAccessibleRoadsService baseIsochroneService;
 
-    public List<RoadSection> determineInaccessibleRoadSections(VehicleProperties vehicleProperties,
+    public SortedMap<Integer, RoadSection> determineInaccessibleRoadSections(VehicleProperties vehicleProperties,
             String municipalityId) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory
                 .createMapMatcher(networkGraphHopper);
@@ -44,12 +43,14 @@ public class AccessibilityMapService {
                 .build();
         Set<IsochroneMatch> accessibleRoadsWithRestrictions = accessibilityMap.getAccessibleRoadSections(
                 accessibilityRequest);
-        List<RoadSection> inaccessibleRoads = determineDifference(allAccessibleRoads, accessibleRoadsWithRestrictions);
+        SortedMap<Integer, RoadSection> idToRoadSectionMap = determineDifference(allAccessibleRoads,
+                accessibleRoadsWithRestrictions);
+
         log.trace("Determining inaccessible roads took {}", timerAll.stop());
-        return inaccessibleRoads;
+        return idToRoadSectionMap;
     }
 
-    private List<RoadSection> determineDifference(Set<IsochroneMatch> withoutRestrictions,
+    private SortedMap<Integer, RoadSection> determineDifference(Set<IsochroneMatch> withoutRestrictions,
             Set<IsochroneMatch> withRestrictions) {
         SortedMap<Integer, RoadSection> roadSections = new TreeMap<>();
         for (IsochroneMatch m : withoutRestrictions) {
@@ -72,13 +73,8 @@ public class AccessibilityMapService {
                 r.setForwardAccessible(true);
             }
         }
-        return roadSections.values().stream()
-                // Only keep road sections affected by restrictions
-                .filter(this::isRestrictedInAnyDirection)
-                .toList();
+
+        return roadSections;
     }
 
-    private boolean isRestrictedInAnyDirection(RoadSection r) {
-        return r.getForwardAccessible() == Boolean.FALSE || r.getBackwardAccessible() == Boolean.FALSE;
-    }
 }
