@@ -5,6 +5,7 @@ import java.util.SortedMap;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.PointMatchingRoadSectionNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
@@ -44,10 +45,10 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         Point startPoint = pointMapper.mapCoordinateAllowNulls(latitude, longitude);
         Integer requestedRoadSectionId = null;
-        // 404
+
         if (Objects.nonNull(startPoint)) {
             CandidateMatch candidateMatch = pointMatchService.match(startPoint).orElseThrow(() ->
-                    new IllegalArgumentException("Could not find road section by latitude: " + latitude +
+                    new PointMatchingRoadSectionNotFoundException("Could not find road section by latitude: " + latitude +
                             " longitude: " + longitude));
             requestedRoadSectionId = candidateMatch.getMatchedLinkId();
 
@@ -61,13 +62,15 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         SortedMap<Integer, RoadSection> idToRoadSection = accessibilityMapService
                 .determineInaccessibleRoadSections(vehicleProperties, municipalityId);
 
-        if (    Objects.nonNull(requestedRoadSectionId) &&
-                !idToRoadSection.containsKey(requestedRoadSectionId)) {
-            throw new IllegalArgumentException("Requested latitude: " + latitude + " longitude: " + longitude +
-                    " matched on road section id: " + requestedRoadSectionId +
-                    ", but this road section id could not be found as accessible road in the municipality id: " +
-                    municipalityId + " area");
-        }
+//      THe requested road section id is probably outside the municipality area
+//      Decide what to do in this situation, return nothing? Throw exception?
+//        if (    Objects.nonNull(requestedRoadSectionId) &&
+//                !idToRoadSection.containsKey(requestedRoadSectionId)) {
+//            throw new IllegalStateException("Requested latitude: " + latitude + " longitude: " + longitude +
+//                    " matched on road section id: " + requestedRoadSectionId +
+//                    ", but this road section id could not be found as accessible road in the municipality id: " +
+//                    municipalityId + " area");
+//        }
 
         return ResponseEntity.ok(accessibilityMapResultMapper.map(idToRoadSection, requestedRoadSectionId));
     }

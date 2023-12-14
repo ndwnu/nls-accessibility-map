@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.validators;
 
 import java.util.Objects;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,9 +13,9 @@ public class PointValidator {
         }
 
        if (Objects.isNull(latitude)) {
-            throw new IllegalArgumentException("When longitude is present, latitude must also be specified");
+            throw new IncompleteArgumentsException("When longitude is present, latitude must also be specified");
         } else {
-            throw new IllegalArgumentException("When latitude is present, longitude must also be specified");
+            throw new IncompleteArgumentsException("When latitude is present, longitude must also be specified");
         }
     }
 
