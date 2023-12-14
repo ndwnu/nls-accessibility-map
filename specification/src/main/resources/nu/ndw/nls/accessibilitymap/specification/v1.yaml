@@ -177,7 +177,7 @@ components:
           type: "array"
           items:
             $ref: "#/components/schemas/RoadSection"
-        requestedLocation:
+        matchedRoadSection:
           $ref: "#/components/schemas/RoadSection"
     RoadSection:
       type: "object"
