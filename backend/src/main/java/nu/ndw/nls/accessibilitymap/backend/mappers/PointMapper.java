@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PointMapper {
     public Point mapCoordinateAllowNulls(Double latitude, Double longitude) {
-        if (Objects.isNull(latitude) && Objects.isNull(longitude)) {
+        if (Objects.isNull(latitude) || Objects.isNull(longitude)) {
             return null;
         }
 
