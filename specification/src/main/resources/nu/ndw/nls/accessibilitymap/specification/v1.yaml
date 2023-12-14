@@ -160,8 +160,6 @@ components:
       schema:
         type: number
         format: double
-        minimum: 0.0
-        maximum: 22.0
     LongitudeParam:
       in: "query"
       name: longitude
@@ -170,8 +168,6 @@ components:
       schema:
         type: number
         format: double
-        minimum: 0.0
-        maximum: 22.0
 
   schemas:
     AccessibilityMapResponse:
