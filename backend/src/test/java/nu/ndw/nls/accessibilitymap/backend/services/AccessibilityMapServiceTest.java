@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.services;
 
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ACCESSIBLE_MATCH;
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ID_1;
+import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ID_2;
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.INACCESSIBLE_MATCH;
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY;
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY_ID;
@@ -9,7 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.routingmapmatcher.domain.AccessibilityMap;
 import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
@@ -62,7 +65,7 @@ class AccessibilityMapServiceTest {
                 .builder()
                 .build();
 
-        List<RoadSection> inaccessibleRoadSections = accessibilityMapService
+        SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
                 .determineInaccessibleRoadSections(vehicleProperties, MUNICIPALITY_ID);
         AccessibilityRequest accessibilityRequest = accessibilityRequestArgumentCaptor.getValue();
         AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest
@@ -72,7 +75,8 @@ class AccessibilityMapServiceTest {
                 .municipalityId(MUNICIPALITY.getMunicipalityIdAsInteger())
                 .vehicleProperties(vehicleProperties)
                 .build();
-        assertThat(inaccessibleRoadSections).isEqualTo(List.of(new RoadSection(ID_1, false, null)));
+        assertThat(idToRoadSections).isEqualTo(Map.of(ID_1, new RoadSection(ID_1, false, null),
+                                                      ID_2, new RoadSection(ID_2, true, null)));
         assertThat(accessibilityRequest).isEqualTo(expectedAccessibilityRequest);
     }
 }
