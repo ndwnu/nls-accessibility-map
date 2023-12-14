@@ -62,16 +62,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         SortedMap<Integer, RoadSection> idToRoadSection = accessibilityMapService
                 .determineInaccessibleRoadSections(vehicleProperties, municipalityId);
 
-//      THe requested road section id is probably outside the municipality area
-//      Decide what to do in this situation, return nothing? Throw exception?
-//        if (    Objects.nonNull(requestedRoadSectionId) &&
-//                !idToRoadSection.containsKey(requestedRoadSectionId)) {
-//            throw new IllegalStateException("Requested latitude: " + latitude + " longitude: " + longitude +
-//                    " matched on road section id: " + requestedRoadSectionId +
-//                    ", but this road section id could not be found as accessible road in the municipality id: " +
-//                    municipalityId + " area");
-//        }
-
         return ResponseEntity.ok(accessibilityMapResultMapper.map(idToRoadSection, requestedRoadSectionId));
     }
 
