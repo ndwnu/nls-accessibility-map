@@ -46,7 +46,7 @@ class AccessibilityResponseMapperTest {
     @Mock
     private RoadSectionJson roadSectionJsonD;
     @Mock
-    private RoadSectionJson requestedRoadSectionJson;
+    private RoadSectionJson matchedRoadSectionJson;
 
     @InjectMocks
     private AccessibilityResponseMapper accessibilityResponseMapper;
@@ -73,14 +73,14 @@ class AccessibilityResponseMapperTest {
         when(roadSectionJsonResponseMapper.mapToRoadSection(roadSectionB)).thenReturn(roadSectionJsonB);
         when(roadSectionJsonResponseMapper.mapToRoadSection(roadSectionC)).thenReturn(roadSectionJsonC);
         when(roadSectionJsonResponseMapper.mapToRoadSection(roadSectionD)).thenReturn(roadSectionJsonD);
-        when(roadSectionJsonResponseMapper.mapToRoadSection(requestedRoadSection)).thenReturn(requestedRoadSectionJson);
+        when(roadSectionJsonResponseMapper.mapToRoadSection(requestedRoadSection)).thenReturn(matchedRoadSectionJson);
 
         AccessibilityMapResponseJson result = accessibilityResponseMapper.map(idToRoadSection, ID_REQUESTED);
 
         assertNotNull(result);
         List<@Valid RoadSectionJson> inaccessibleRoadSections = result.getInaccessibleRoadSections();
-        assertEquals(List.of(roadSectionJsonB, roadSectionJsonC, roadSectionJsonD, requestedRoadSectionJson),
+        assertEquals(List.of(roadSectionJsonB, roadSectionJsonC, roadSectionJsonD, matchedRoadSectionJson),
                 inaccessibleRoadSections);
-        assertEquals(requestedRoadSectionJson, result.getRequestedLocation());
+        assertEquals(matchedRoadSectionJson, result.getMatchedRoadSection());
     }
 }

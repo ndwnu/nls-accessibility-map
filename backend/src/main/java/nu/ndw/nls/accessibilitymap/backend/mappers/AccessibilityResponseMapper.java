@@ -25,7 +25,7 @@ public class AccessibilityResponseMapper {
 
         return new AccessibilityMapResponseJson()
                 .inaccessibleRoadSections(list)
-                .requestedLocation(Optional.ofNullable(requestedRoadSectionId)
+                .matchedRoadSection(Optional.ofNullable(requestedRoadSectionId)
                         .map(idToRoadSectionMap::get)
                         .map(roadSectionJsonResponseMapper::mapToRoadSection)
                         .orElse(null));

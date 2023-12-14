@@ -3,7 +3,7 @@ Feature: API operations
   Background:
     * url baseUrl
     * def okResponse = read('classpath:test-messages/accessibility/response-ok.json')
-    * def okResponseWithRequestedLocation = read('classpath:test-messages/accessibility/response-ok-with-requested-location.json')
+    * def okResponseWithMatchedRoadSection  = read('classpath:test-messages/accessibility/response-ok-with-matched-road-section.json')
     * def badRequestMunicipalityId = read('classpath:test-messages/accessibility/response-400-incorrect-municipality-id.json')
     * def badRequestVehicleLength = read('classpath:test-messages/accessibility/response-400-incorrect-vehicle-length.json')
     * def badRequestHasTrailer = read('classpath:test-messages/accessibility/response-400-incorrect-has-trailer.json')
@@ -38,7 +38,7 @@ Feature: API operations
     And param longitude = 5.37886419
     And method GET
     Then status 200
-    And match response == okResponseWithRequestedLocation
+    And match response == okResponseWithMatchedRoadSection
 
   Scenario: accessibility map with longitude set, but latitude missing should return 400
     Given path '/v1/municipalities/GM0307/road-sections'
