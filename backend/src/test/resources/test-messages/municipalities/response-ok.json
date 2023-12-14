@@ -3,12 +3,1257 @@
   "features": [
     {
       "type": "Feature",
+      "id": "GM0014",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.603274120764192,
+          53.15069401080208
+        ]
+      },
+      "properties": {
+        "name": "Groningen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0034",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.326501272168828,
+          52.31028397221435
+        ]
+      },
+      "properties": {
+        "name": "Almere",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0037",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.966808253600339,
+          53.011261004250876
+        ]
+      },
+      "properties": {
+        "name": "Stadskanaal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0047",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.950974014711065,
+          53.088928572504805
+        ]
+      },
+      "properties": {
+        "name": "Veendam",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0050",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.433931168122092,
+          52.322193999977685
+        ]
+      },
+      "properties": {
+        "name": "Zeewolde",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0059",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.121795333138518,
+          53.187538101237244
+        ]
+      },
+      "properties": {
+        "name": "Achtkarspelen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0060",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.6936436038973595,
+          53.44660062930814
+        ]
+      },
+      "properties": {
+        "name": "Ameland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0072",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.437174429919124,
+          53.17353917811815
+        ]
+      },
+      "properties": {
+        "name": "Harlingen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0074",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.846445285527579,
+          53.04561043602002
+        ]
+      },
+      "properties": {
+        "name": "Heerenveen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0080",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.798041287416477,
+          53.140874177108785
+        ]
+      },
+      "properties": {
+        "name": "Leeuwarden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0085",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.2607146367495625,
+          52.99285498228307
+        ]
+      },
+      "properties": {
+        "name": "Ooststellingwerf",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0086",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.139033501581893,
+          53.098827933102136
+        ]
+      },
+      "properties": {
+        "name": "Opsterland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0088",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.178725557937527,
+          53.484999194379355
+        ]
+      },
+      "properties": {
+        "name": "Schiermonnikoog",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0090",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.129012750709805,
+          53.10285917995685
+        ]
+      },
+      "properties": {
+        "name": "Smallingerland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0093",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.239216393538731,
+          53.37191875771147
+        ]
+      },
+      "properties": {
+        "name": "Terschelling",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0096",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.075354072840563,
+          53.29642705213891
+        ]
+      },
+      "properties": {
+        "name": "Vlieland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0098",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.025002795886286,
+          52.87761862505926
+        ]
+      },
+      "properties": {
+        "name": "Weststellingwerf",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0106",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.5474472753228685,
+          53.01786817057763
+        ]
+      },
+      "properties": {
+        "name": "Assen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0109",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.800922270920592,
+          52.79807634264045
+        ]
+      },
+      "properties": {
+        "name": "Coevorden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0114",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.9776578725883684,
+          52.7342343127093
+        ]
+      },
+      "properties": {
+        "name": "Emmen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0118",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.424271194207306,
+          52.7044794426482
+        ]
+      },
+      "properties": {
+        "name": "Hoogeveen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0119",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.209227070159412,
+          52.692713761708625
+        ]
+      },
+      "properties": {
+        "name": "Meppel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0141",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.685823961957735,
+          52.30748054594952
+        ]
+      },
+      "properties": {
+        "name": "Almelo",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0147",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.741750875954086,
+          52.2860616890323
+        ]
+      },
+      "properties": {
+        "name": "Borne",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0148",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.2874004342864005,
+          52.591755430201026
+        ]
+      },
+      "properties": {
+        "name": "Dalfsen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0150",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.30107148209534,
+          52.24290998445806
+        ]
+      },
+      "properties": {
+        "name": "Deventer",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0153",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.834659965040768,
+          52.27504494777431
+        ]
+      },
+      "properties": {
+        "name": "Enschede",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0158",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.75167393089383,
+          52.18224880346228
+        ]
+      },
+      "properties": {
+        "name": "Haaksbergen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0160",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.407422888822934,
+          52.60814220142059
+        ]
+      },
+      "properties": {
+        "name": "Hardenberg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0163",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.483688848242572,
+          52.41973848656492
+        ]
+      },
+      "properties": {
+        "name": "Hellendoorn",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0164",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.76358646715276,
+          52.239188274179256
+        ]
+      },
+      "properties": {
+        "name": "Hengelo (O)",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0166",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.914543428719596,
+          52.53018689460928
+        ]
+      },
+      "properties": {
+        "name": "Kampen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0168",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.0030778909949465,
+          52.30851445979654
+        ]
+      },
+      "properties": {
+        "name": "Losser",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0171",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.65063314830081,
+          52.61513363778717
+        ]
+      },
+      "properties": {
+        "name": "Noordoostpolder",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0173",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.8879787621583155,
+          52.293296534049645
+        ]
+      },
+      "properties": {
+        "name": "Oldenzaal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0175",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.418514265174189,
+          52.55025673984082
+        ]
+      },
+      "properties": {
+        "name": "Ommen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0177",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.22799072940345,
+          52.383556825464275
+        ]
+      },
+      "properties": {
+        "name": "Raalte",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0180",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.217551346722537,
+          52.58741008505512
+        ]
+      },
+      "properties": {
+        "name": "Staphorst",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0183",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.760627192226677,
+          52.39834281229648
+        ]
+      },
+      "properties": {
+        "name": "Tubbergen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0184",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.635494718244603,
+          52.64974702867462
+        ]
+      },
+      "properties": {
+        "name": "Urk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0189",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.5620833543899595,
+          52.28443396242643
+        ]
+      },
+      "properties": {
+        "name": "Wierden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0193",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.172770923403581,
+          52.55137996622633
+        ]
+      },
+      "properties": {
+        "name": "Zwolle",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0197",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.550709829012729,
+          51.92903438759938
+        ]
+      },
+      "properties": {
+        "name": "Aalten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0200",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0261074748566825,
+          52.18282886418359
+        ]
+      },
+      "properties": {
+        "name": "Apeldoorn",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0202",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9252476233547675,
+          52.017431646875394
+        ]
+      },
+      "properties": {
+        "name": "Arnhem",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0203",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.4802348602871165,
+          52.16525070325999
+        ]
+      },
+      "properties": {
+        "name": "Barneveld",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0209",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.774344382667406,
+          51.843554698977805
+        ]
+      },
+      "properties": {
+        "name": "Beuningen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0213",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.173121727394235,
+          52.12242613387289
+        ]
+      },
+      "properties": {
+        "name": "Brummen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0214",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.3635074555407325,
+          51.942371443246046
+        ]
+      },
+      "properties": {
+        "name": "Buren",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0216",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.167777408032201,
+          51.925974287859745
+        ]
+      },
+      "properties": {
+        "name": "Culemborg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0221",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.144209160999378,
+          52.000227209286535
+        ]
+      },
+      "properties": {
+        "name": "Doesburg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0222",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.280765085095462,
+          51.943626924120494
+        ]
+      },
+      "properties": {
+        "name": "Doetinchem",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0225",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.617826525034821,
+          51.870857806367255
+        ]
+      },
+      "properties": {
+        "name": "Druten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0226",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.024430141706078,
+          51.961781098897994
+        ]
+      },
+      "properties": {
+        "name": "Duiven",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0228",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.6172003501790355,
+          52.03734945106467
+        ]
+      },
+      "properties": {
+        "name": "Ede",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0230",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.889556614120369,
+          52.410489306483896
+        ]
+      },
+      "properties": {
+        "name": "Elburg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0232",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.014873088873048,
+          52.29275213617687
+        ]
+      },
+      "properties": {
+        "name": "Epe",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0233",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.5632678279574765,
+          52.310452228888884
+        ]
+      },
+      "properties": {
+        "name": "Ermelo",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0243",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.650151099033097,
+          52.33961147444522
+        ]
+      },
+      "properties": {
+        "name": "Harderwijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0244",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.034477586070393,
+          52.46432363978106
+        ]
+      },
+      "properties": {
+        "name": "Hattem",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0246",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.016430542353992,
+          52.41602180408311
+        ]
+      },
+      "properties": {
+        "name": "Heerde",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0252",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.8382222783263575,
+          51.770140078482
+        ]
+      },
+      "properties": {
+        "name": "Heumen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0262",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.398797433792117,
+          52.240506126255596
+        ]
+      },
+      "properties": {
+        "name": "Lochem",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0263",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.260143709349746,
+          51.773180140523436
+        ]
+      },
+      "properties": {
+        "name": "Maasdriel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0267",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.446633780743365,
+          52.214140930451386
+        ]
+      },
+      "properties": {
+        "name": "Nijkerk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0268",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.773330059438665,
+          51.825911519491605
+        ]
+      },
+      "properties": {
+        "name": "Nijmegen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0269",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.992014269284585,
+          52.4698054332909
+        ]
+      },
+      "properties": {
+        "name": "Oldebroek",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0273",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.495825999287866,
+          52.24936795547224
+        ]
+      },
+      "properties": {
+        "name": "Putten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0274",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.76600395144823,
+          51.97201301830117
+        ]
+      },
+      "properties": {
+        "name": "Renkum",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0275",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0714369195496225,
+          52.01618478030747
+        ]
+      },
+      "properties": {
+        "name": "Rheden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0277",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.956404610358879,
+          52.008228543662284
+        ]
+      },
+      "properties": {
+        "name": "Rozendaal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0279",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.462767126203013,
+          52.08235107117516
+        ]
+      },
+      "properties": {
+        "name": "Scherpenzeel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0281",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.380004250797542,
+          51.89031474074106
+        ]
+      },
+      "properties": {
+        "name": "Tiel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0285",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.119181819828348,
+          52.21626091797205
+        ]
+      },
+      "properties": {
+        "name": "Voorst",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0289",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.69990816474641,
+          51.967836739199505
+        ]
+      },
+      "properties": {
+        "name": "Wageningen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0293",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.98986941636665,
+          51.97439051883533
+        ]
+      },
+      "properties": {
+        "name": "Westervoort",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0294",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.786894664556158,
+          51.94066776347271
+        ]
+      },
+      "properties": {
+        "name": "Winterswijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0296",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.68012399019574,
+          51.81704912981516
+        ]
+      },
+      "properties": {
+        "name": "Wijchen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0297",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.257994094749444,
+          51.788954355134024
+        ]
+      },
+      "properties": {
+        "name": "Zaltbommel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0299",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.155566694875015,
+          51.90851488956079
+        ]
+      },
+      "properties": {
+        "name": "Zevenaar",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0301",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.2866883589368046,
+          52.130890465552056
+        ]
+      },
+      "properties": {
+        "name": "Zutphen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0302",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.82272850139271,
+          52.37500788685177
+        ]
+      },
+      "properties": {
+        "name": "Nunspeet",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0303",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.636369379522964,
+          52.60754857657352
+        ]
+      },
+      "properties": {
+        "name": "Dronten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
       "id": "GM0307",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.32907,
-          52.13273
+          5.425700290172756,
+          52.17346956183308
         ]
       },
       "properties": {
@@ -18,16 +1263,3931 @@
     },
     {
       "type": "Feature",
+      "id": "GM0308",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.303726596225828,
+          52.21966040240807
+        ]
+      },
+      "properties": {
+        "name": "Baarn",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0310",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.186556452744777,
+          52.09234891152631
+        ]
+      },
+      "properties": {
+        "name": "De Bilt",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0312",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.218471510925565,
+          52.059462466728796
+        ]
+      },
+      "properties": {
+        "name": "Bunnik",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0313",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.365890097716321,
+          52.20944638311568
+        ]
+      },
+      "properties": {
+        "name": "Bunschoten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0317",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.23726190470817,
+          52.23131132759002
+        ]
+      },
+      "properties": {
+        "name": "Eemnes",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0321",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.144070821435492,
+          52.05266969046366
+        ]
+      },
+      "properties": {
+        "name": "Houten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0327",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.380967280926702,
+          52.131608517860364
+        ]
+      },
+      "properties": {
+        "name": "Leusden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0331",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.968457091837679,
+          51.99470332923171
+        ]
+      },
+      "properties": {
+        "name": "Lopik",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0335",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.903019481254423,
+          52.07031310844039
+        ]
+      },
+      "properties": {
+        "name": "Montfoort",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0339",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.534758767809739,
+          52.042265634427544
+        ]
+      },
+      "properties": {
+        "name": "Renswoude",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0340",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.528181642600415,
+          51.99857298859823
+        ]
+      },
+      "properties": {
+        "name": "Rhenen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0342",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.305135799227052,
+          52.11703724108477
+        ]
+      },
+      "properties": {
+        "name": "Soest",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
       "id": "GM0344",
       "geometry": {
         "type": "Point",
         "coordinates": [
-          5.117956,
-          52.092209
+          5.172921583918823,
+          52.09261801031514
         ]
       },
       "properties": {
         "name": "Utrecht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0345",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.550714102847777,
+          52.042381495763564
+        ]
+      },
+      "properties": {
+        "name": "Veenendaal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0351",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.465359424820519,
+          52.051352782408436
+        ]
+      },
+      "properties": {
+        "name": "Woudenberg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0352",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.32702738943262,
+          51.99030210592557
+        ]
+      },
+      "properties": {
+        "name": "Wijk bij Duurstede",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0353",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.074059291407079,
+          52.00515782896201
+        ]
+      },
+      "properties": {
+        "name": "IJsselstein",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0355",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.261342341957239,
+          52.108893314851024
+        ]
+      },
+      "properties": {
+        "name": "Zeist",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0356",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.126286529090282,
+          52.02029576639095
+        ]
+      },
+      "properties": {
+        "name": "Nieuwegein",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0358",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.786630611072056,
+          52.27246244305403
+        ]
+      },
+      "properties": {
+        "name": "Aalsmeer",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0361",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.740096590846542,
+          52.61052101391
+        ]
+      },
+      "properties": {
+        "name": "Alkmaar",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0362",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.889698484141383,
+          52.29508141504884
+        ]
+      },
+      "properties": {
+        "name": "Amstelveen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0363",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.95427343609352,
+          52.34182900928465
+        ]
+      },
+      "properties": {
+        "name": "Amsterdam",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0373",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.646899350525993,
+          52.726040240455255
+        ]
+      },
+      "properties": {
+        "name": "Bergen (NH)",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0375",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.656525712445916,
+          52.47671376366661
+        ]
+      },
+      "properties": {
+        "name": "Beverwijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0376",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.203841546736289,
+          52.26714907980374
+        ]
+      },
+      "properties": {
+        "name": "Blaricum",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0377",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.551872760646673,
+          52.40417058168672
+        ]
+      },
+      "properties": {
+        "name": "Bloemendaal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0383",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.720117339675386,
+          52.54638449203721
+        ]
+      },
+      "properties": {
+        "name": "Castricum",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0384",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.967494607930054,
+          52.34400695091797
+        ]
+      },
+      "properties": {
+        "name": "Diemen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0385",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.0242354243104925,
+          52.54352906805556
+        ]
+      },
+      "properties": {
+        "name": "Edam-Volendam",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0388",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.274139224426293,
+          52.696071297420296
+        ]
+      },
+      "properties": {
+        "name": "Enkhuizen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0392",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.671424658008959,
+          52.37043087066895
+        ]
+      },
+      "properties": {
+        "name": "Haarlem",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0394",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.659170496671746,
+          52.23810890268032
+        ]
+      },
+      "properties": {
+        "name": "Haarlemmermeer",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0396",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.708118371078013,
+          52.509970309966285
+        ]
+      },
+      "properties": {
+        "name": "Heemskerk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0397",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.601007272964562,
+          52.33356204064332
+        ]
+      },
+      "properties": {
+        "name": "Heemstede",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0399",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.732421120967175,
+          52.605553247246505
+        ]
+      },
+      "properties": {
+        "name": "Heiloo",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0400",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.781804134584608,
+          52.949451251684586
+        ]
+      },
+      "properties": {
+        "name": "Den Helder",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0402",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.194289743951611,
+          52.20213777526236
+        ]
+      },
+      "properties": {
+        "name": "Hilversum",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0405",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.066577198505338,
+          52.67346883118453
+        ]
+      },
+      "properties": {
+        "name": "Hoorn",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0406",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.19958835212157,
+          52.26953985074066
+        ]
+      },
+      "properties": {
+        "name": "Huizen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0415",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8954090223863185,
+          52.43619226353323
+        ]
+      },
+      "properties": {
+        "name": "Landsmeer",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0417",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.205014147505233,
+          52.266496151568525
+        ]
+      },
+      "properties": {
+        "name": "Laren",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0420",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.025079041159677,
+          52.72278276330741
+        ]
+      },
+      "properties": {
+        "name": "Medemblik",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0431",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.863105384661019,
+          52.436425000247844
+        ]
+      },
+      "properties": {
+        "name": "Oostzaan",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0432",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.953712228406657,
+          52.705754305008206
+        ]
+      },
+      "properties": {
+        "name": "Opmeer",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0437",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.913953112937441,
+          52.328326684221274
+        ]
+      },
+      "properties": {
+        "name": "Ouder-Amstel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0439",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.9346191734720595,
+          52.513332751633136
+        ]
+      },
+      "properties": {
+        "name": "Purmerend",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0441",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.786542636250091,
+          52.75278962255854
+        ]
+      },
+      "properties": {
+        "name": "Schagen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0448",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.77608645775109,
+          53.06392951297278
+        ]
+      },
+      "properties": {
+        "name": "Texel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0450",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.716660288518731,
+          52.51464022808643
+        ]
+      },
+      "properties": {
+        "name": "Uitgeest",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0451",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.7927749389868275,
+          52.251406762965836
+        ]
+      },
+      "properties": {
+        "name": "Uithoorn",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0453",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.65581076008493,
+          52.449228063425714
+        ]
+      },
+      "properties": {
+        "name": "Velsen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0473",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.540068616601991,
+          52.39544198917587
+        ]
+      },
+      "properties": {
+        "name": "Zandvoort",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0479",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.796419510374031,
+          52.46455744101838
+        ]
+      },
+      "properties": {
+        "name": "Zaanstad",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0482",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.677340813481556,
+          51.8519336018588
+        ]
+      },
+      "properties": {
+        "name": "Alblasserdam",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0484",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.526898863963921,
+          52.134158269838004
+        ]
+      },
+      "properties": {
+        "name": "Alphen aan den Rijn",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0489",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.5161362302211705,
+          51.849573451807295
+        ]
+      },
+      "properties": {
+        "name": "Barendrecht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0498",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.155588381955602,
+          52.69473328468086
+        ]
+      },
+      "properties": {
+        "name": "Drechterland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0502",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.570263107806968,
+          51.95843873461622
+        ]
+      },
+      "properties": {
+        "name": "Capelle aan den IJssel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0503",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.370804200646159,
+          51.99192475125609
+        ]
+      },
+      "properties": {
+        "name": "Delft",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0505",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.649688190201362,
+          51.7987685692175
+        ]
+      },
+      "properties": {
+        "name": "Dordrecht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0512",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.999298788032055,
+          51.84460156083476
+        ]
+      },
+      "properties": {
+        "name": "Gorinchem",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0513",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.683689585642648,
+          52.02715406336038
+        ]
+      },
+      "properties": {
+        "name": "Gouda",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0518",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.380202179001216,
+          52.065778238784866
+        ]
+      },
+      "properties": {
+        "name": "'s-Gravenhage",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0523",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.844954573186756,
+          51.82407543150791
+        ]
+      },
+      "properties": {
+        "name": "Hardinxveld-Giessendam",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0531",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.614237675787014,
+          51.83999407220985
+        ]
+      },
+      "properties": {
+        "name": "Hendrik-Ido-Ambacht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0532",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.206069954732364,
+          52.683361097908914
+        ]
+      },
+      "properties": {
+        "name": "Stede Broec",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0534",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.576948830626511,
+          52.27392185672674
+        ]
+      },
+      "properties": {
+        "name": "Hillegom",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0537",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.422551895961526,
+          52.2003239612403
+        ]
+      },
+      "properties": {
+        "name": "Katwijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0542",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.617183982616106,
+          51.91346299053405
+        ]
+      },
+      "properties": {
+        "name": "Krimpen aan den IJssel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0546",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.454679537372445,
+          52.171091181978696
+        ]
+      },
+      "properties": {
+        "name": "Leiden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0547",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.544858841127008,
+          52.156450430837815
+        ]
+      },
+      "properties": {
+        "name": "Leiderdorp",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0553",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.551238298401957,
+          52.22379799179173
+        ]
+      },
+      "properties": {
+        "name": "Lisse",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0556",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.264255429183895,
+          51.91179151862411
+        ]
+      },
+      "properties": {
+        "name": "Maassluis",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0569",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.7613897492609265,
+          52.18974743357697
+        ]
+      },
+      "properties": {
+        "name": "Nieuwkoop",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0575",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.4413947065258155,
+          52.21151888914674
+        ]
+      },
+      "properties": {
+        "name": "Noordwijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0579",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.457012558895405,
+          52.17895634330737
+        ]
+      },
+      "properties": {
+        "name": "Oegstgeest",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0589",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.853499792207072,
+          52.044835845625705
+        ]
+      },
+      "properties": {
+        "name": "Oudewater",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0590",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.712300970557143,
+          51.83872874075591
+        ]
+      },
+      "properties": {
+        "name": "Papendrecht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0597",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.561014921692247,
+          51.87061665453707
+        ]
+      },
+      "properties": {
+        "name": "Ridderkerk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0599",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.414920068608486,
+          51.95010511794282
+        ]
+      },
+      "properties": {
+        "name": "Rotterdam",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0603",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.322294321486501,
+          52.02747192946681
+        ]
+      },
+      "properties": {
+        "name": "Rijswijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0606",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.370377737327947,
+          51.90830156592723
+        ]
+      },
+      "properties": {
+        "name": "Schiedam",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0610",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.751277390951291,
+          51.8303888061925
+        ]
+      },
+      "properties": {
+        "name": "Sliedrecht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0613",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.461762141693665,
+          51.8623495522584
+        ]
+      },
+      "properties": {
+        "name": "Albrandswaard",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0622",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.34994185425997,
+          51.92240788266675
+        ]
+      },
+      "properties": {
+        "name": "Vlaardingen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0626",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.427308010703999,
+          52.13011856771042
+        ]
+      },
+      "properties": {
+        "name": "Voorschoten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0627",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.681869211128041,
+          52.02918011028266
+        ]
+      },
+      "properties": {
+        "name": "Waddinxveen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0629",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.439134928180675,
+          52.1528798746852
+        ]
+      },
+      "properties": {
+        "name": "Wassenaar",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0632",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.985415192189331,
+          52.080211252875515
+        ]
+      },
+      "properties": {
+        "name": "Woerden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0637",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.514971607717501,
+          52.04269288316769
+        ]
+      },
+      "properties": {
+        "name": "Zoetermeer",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0638",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.544764451803857,
+          52.12855446904544
+        ]
+      },
+      "properties": {
+        "name": "Zoeterwoude",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0642",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.633055456252685,
+          51.815322425467194
+        ]
+      },
+      "properties": {
+        "name": "Zwijndrecht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0654",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7532629581924506,
+          51.446352015328465
+        ]
+      },
+      "properties": {
+        "name": "Borsele",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0664",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.81853071052502,
+          51.48333365839383
+        ]
+      },
+      "properties": {
+        "name": "Goes",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0668",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.497501641420921,
+          51.88916617484335
+        ]
+      },
+      "properties": {
+        "name": "West Maas en Waal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0677",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.128761615972048,
+          51.29191581848662
+        ]
+      },
+      "properties": {
+        "name": "Hulst",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0678",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.003906026613409,
+          51.466989617214544
+        ]
+      },
+      "properties": {
+        "name": "Kapelle",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0687",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.6496318190676846,
+          51.48054671043785
+        ]
+      },
+      "properties": {
+        "name": "Middelburg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0703",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.027636470867349,
+          51.461262545672405
+        ]
+      },
+      "properties": {
+        "name": "Reimerswaal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0715",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8156187054427875,
+          51.29410223907576
+        ]
+      },
+      "properties": {
+        "name": "Terneuzen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0716",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.190032132503516,
+          51.537071171750036
+        ]
+      },
+      "properties": {
+        "name": "Tholen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0717",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.6297451911235217,
+          51.585564064737085
+        ]
+      },
+      "properties": {
+        "name": "Veere",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0718",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.63221759446851,
+          51.47554362256736
+        ]
+      },
+      "properties": {
+        "name": "Vlissingen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0736",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.9618633576344955,
+          52.266418178482645
+        ]
+      },
+      "properties": {
+        "name": "De Ronde Venen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0737",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.981063057363716,
+          53.186370013224526
+        ]
+      },
+      "properties": {
+        "name": "Tytsjerksteradiel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0743",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.700848664652544,
+          51.42194611559656
+        ]
+      },
+      "properties": {
+        "name": "Asten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0744",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.911086008460107,
+          51.46050128730629
+        ]
+      },
+      "properties": {
+        "name": "Baarle-Nassau",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0748",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.316889007711758,
+          51.487873664764386
+        ]
+      },
+      "properties": {
+        "name": "Bergen op Zoom",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0753",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.413502351470602,
+          51.50662541913384
+        ]
+      },
+      "properties": {
+        "name": "Best",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0755",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.668322174054642,
+          51.61718576934149
+        ]
+      },
+      "properties": {
+        "name": "Boekel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0756",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.900030533438143,
+          51.55552022698114
+        ]
+      },
+      "properties": {
+        "name": "Boxmeer",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0757",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.317613405869424,
+          51.61511795128461
+        ]
+      },
+      "properties": {
+        "name": "Boxtel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0758",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.833493297383602,
+          51.551819902957234
+        ]
+      },
+      "properties": {
+        "name": "Breda",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0762",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.868805514314142,
+          51.39030273883132
+        ]
+      },
+      "properties": {
+        "name": "Deurne",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0765",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.990203134135957,
+          53.054630327638606
+        ]
+      },
+      "properties": {
+        "name": "Pekela",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0766",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.957387992688671,
+          51.637991978733204
+        ]
+      },
+      "properties": {
+        "name": "Dongen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0770",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.279474131244309,
+          51.353653701835995
+        ]
+      },
+      "properties": {
+        "name": "Eersel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0772",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.463232812129694,
+          51.49692445421765
+        ]
+      },
+      "properties": {
+        "name": "Eindhoven",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0777",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.610286881396649,
+          51.55500369519387
+        ]
+      },
+      "properties": {
+        "name": "Etten-Leur",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0779",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8756972123299995,
+          51.6881455068821
+        ]
+      },
+      "properties": {
+        "name": "Geertruidenberg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0784",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.94715485092115,
+          51.55203176783568
+        ]
+      },
+      "properties": {
+        "name": "Gilze en Rijen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0785",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.044244561397812,
+          51.53085371145959
+        ]
+      },
+      "properties": {
+        "name": "Goirle",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0794",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.60934488742372,
+          51.47171243741204
+        ]
+      },
+      "properties": {
+        "name": "Helmond",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0796",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.301613880598936,
+          51.71843149610921
+        ]
+      },
+      "properties": {
+        "name": "'s-Hertogenbosch",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0797",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.165648192546068,
+          51.69792452114103
+        ]
+      },
+      "properties": {
+        "name": "Heusden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0798",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.1336190002845346,
+          51.50302988587039
+        ]
+      },
+      "properties": {
+        "name": "Hilvarenbeek",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0809",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.057153963866707,
+          51.65025838446813
+        ]
+      },
+      "properties": {
+        "name": "Loon op Zand",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0820",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.583057867261648,
+          51.46535228819753
+        ]
+      },
+      "properties": {
+        "name": "Nuenen, Gerwen en Nederwetten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0823",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.38541109527133,
+          51.48635259903874
+        ]
+      },
+      "properties": {
+        "name": "Oirschot",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0824",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.14903345726702,
+          51.546169013516916
+        ]
+      },
+      "properties": {
+        "name": "Oisterwijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0826",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.839614664703838,
+          51.60138450625834
+        ]
+      },
+      "properties": {
+        "name": "Oosterhout",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0828",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.569752070780129,
+          51.73132626155224
+        ]
+      },
+      "properties": {
+        "name": "Oss",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0840",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.525220449498099,
+          51.54728753930008
+        ]
+      },
+      "properties": {
+        "name": "Rucphen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0845",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.3038955328338,
+          51.66488216805927
+        ]
+      },
+      "properties": {
+        "name": "Sint-Michielsgestel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0847",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.697719936975423,
+          51.42379947633512
+        ]
+      },
+      "properties": {
+        "name": "Someren",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0848",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.47909490124478,
+          51.49703695244468
+        ]
+      },
+      "properties": {
+        "name": "Son en Breugel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0851",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.381012377918015,
+          51.62320164711721
+        ]
+      },
+      "properties": {
+        "name": "Steenbergen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0852",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.047760351268998,
+          52.44023451017131
+        ]
+      },
+      "properties": {
+        "name": "Waterland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0855",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.1298921985633905,
+          51.556627712078864
+        ]
+      },
+      "properties": {
+        "name": "Tilburg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0856",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.598509543603351,
+          51.69513530625283
+        ]
+      },
+      "properties": {
+        "name": "Uden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0858",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.425578527436353,
+          51.34459931385797
+        ]
+      },
+      "properties": {
+        "name": "Valkenswaard",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0861",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.379411212718499,
+          51.39584345831628
+        ]
+      },
+      "properties": {
+        "name": "Veldhoven",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0865",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.299506212915859,
+          51.666716329515516
+        ]
+      },
+      "properties": {
+        "name": "Vught",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0866",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.503148332244728,
+          51.40147282720156
+        ]
+      },
+      "properties": {
+        "name": "Waalre",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0867",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.038219828138077,
+          51.6930472385604
+        ]
+      },
+      "properties": {
+        "name": "Waalwijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0873",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.281579939685736,
+          51.43198486854542
+        ]
+      },
+      "properties": {
+        "name": "Woensdrecht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0879",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.719104975822984,
+          51.52343672126629
+        ]
+      },
+      "properties": {
+        "name": "Zundert",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0880",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.852762233529554,
+          52.47282768087727
+        ]
+      },
+      "properties": {
+        "name": "Wormerland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0882",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0377659861064625,
+          50.91044022142643
+        ]
+      },
+      "properties": {
+        "name": "Landgraaf",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0888",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.838232326913965,
+          50.94556819412052
+        ]
+      },
+      "properties": {
+        "name": "Beek",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0889",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.061773691309646,
+          51.25921563272514
+        ]
+      },
+      "properties": {
+        "name": "Beesel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0893",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.075626259130591,
+          51.55554727933381
+        ]
+      },
+      "properties": {
+        "name": "Bergen (L)",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0899",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.93251983745382,
+          50.93742969261003
+        ]
+      },
+      "properties": {
+        "name": "Brunssum",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0907",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.98700501059633,
+          51.665308800686084
+        ]
+      },
+      "properties": {
+        "name": "Gennep",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0917",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.938631724612942,
+          50.89977635578109
+        ]
+      },
+      "properties": {
+        "name": "Heerlen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0928",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.0430735888920815,
+          50.89639847215526
+        ]
+      },
+      "properties": {
+        "name": "Kerkrade",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0935",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.732930770178227,
+          50.87143771561289
+        ]
+      },
+      "properties": {
+        "name": "Maastricht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0938",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.738423923905806,
+          50.885158447235014
+        ]
+      },
+      "properties": {
+        "name": "Meerssen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0944",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.871348783754976,
+          51.75881737339521
+        ]
+      },
+      "properties": {
+        "name": "Mook en Middelaar",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0946",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.724237806378984,
+          51.321227645832394
+        ]
+      },
+      "properties": {
+        "name": "Nederweert",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0957",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.024796648038216,
+          51.20721498609822
+        ]
+      },
+      "properties": {
+        "name": "Roermond",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0965",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.992695553327193,
+          50.82681447126192
+        ]
+      },
+      "properties": {
+        "name": "Simpelveld",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0971",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.773124529441051,
+          50.965905313824315
+        ]
+      },
+      "properties": {
+        "name": "Stein",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0981",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9955110481883125,
+          50.78426198258707
+        ]
+      },
+      "properties": {
+        "name": "Vaals",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0983",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.136714381553675,
+          51.394403451924006
+        ]
+      },
+      "properties": {
+        "name": "Venlo",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0984",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9922939215912985,
+          51.549926096752074
+        ]
+      },
+      "properties": {
+        "name": "Venray",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0986",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.905326007170565,
+          50.87981123171794
+        ]
+      },
+      "properties": {
+        "name": "Voerendaal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0988",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.664921877175335,
+          51.275754486112696
+        ]
+      },
+      "properties": {
+        "name": "Weert",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0994",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.821840975792947,
+          50.87518654193855
+        ]
+      },
+      "properties": {
+        "name": "Valkenburg aan de Geul",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM0995",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.4746769982657115,
+          52.4658395425958
+        ]
+      },
+      "properties": {
+        "name": "Lelystad",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1507",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.05455022391771,
+          51.468794769768046
+        ]
+      },
+      "properties": {
+        "name": "Horst aan de Maas",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1509",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.338163101771354,
+          51.914294202664244
+        ]
+      },
+      "properties": {
+        "name": "Oude IJsselstreek",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1525",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.491474987032299,
+          52.206451813193056
+        ]
+      },
+      "properties": {
+        "name": "Teylingen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1581",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.274069737886754,
+          52.06380346595487
+        ]
+      },
+      "properties": {
+        "name": "Utrechtse Heuvelrug",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1586",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.632308973000821,
+          52.06434612682117
+        ]
+      },
+      "properties": {
+        "name": "Oost Gelre",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1598",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.034185961952943,
+          52.666448968394704
+        ]
+      },
+      "properties": {
+        "name": "Koggenland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1621",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.533480969040839,
+          52.03766899804822
+        ]
+      },
+      "properties": {
+        "name": "Lansingerland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1640",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.846141477878158,
+          51.17891075137564
+        ]
+      },
+      "properties": {
+        "name": "Leudal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1641",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9100012418782235,
+          51.13425244971955
+        ]
+      },
+      "properties": {
+        "name": "Maasgouw",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1652",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.789195685273057,
+          51.504279124522384
+        ]
+      },
+      "properties": {
+        "name": "Gemert-Bakel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1655",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.50023922520258,
+          51.60483969983099
+        ]
+      },
+      "properties": {
+        "name": "Halderberge",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1658",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.5707006955822465,
+          51.33689574783642
+        ]
+      },
+      "properties": {
+        "name": "Heeze-Leende",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1659",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.584876616563643,
+          51.51156834189276
+        ]
+      },
+      "properties": {
+        "name": "Laarbeek",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1667",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.1746072662353235,
+          51.36755189565426
+        ]
+      },
+      "properties": {
+        "name": "Reusel-De Mierden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1669",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.969664987451083,
+          51.166963682703205
+        ]
+      },
+      "properties": {
+        "name": "Roerdalen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1674",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.470803575180398,
+          51.52547405203718
+        ]
+      },
+      "properties": {
+        "name": "Roosendaal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1676",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.15221581393174,
+          51.6782541725668
+        ]
+      },
+      "properties": {
+        "name": "Schouwen-Duiveland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1680",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.715825614076999,
+          53.0466950728901
+        ]
+      },
+      "properties": {
+        "name": "Aa en Hunze",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1681",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.8252379768086024,
+          52.88316193844603
+        ]
+      },
+      "properties": {
+        "name": "Borger-Odoorn",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1685",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.596924399790463,
+          51.701997591463666
+        ]
+      },
+      "properties": {
+        "name": "Landerd",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1690",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.436590037901317,
+          52.64654886540227
+        ]
+      },
+      "properties": {
+        "name": "De Wolden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1695",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.7867408358391255,
+          51.58070442004342
+        ]
+      },
+      "properties": {
+        "name": "Noord-Beveland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1696",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.121147025612835,
+          52.248767180339506
+        ]
+      },
+      "properties": {
+        "name": "Wijdemeren",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1699",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.469404275624985,
+          53.01879812886554
+        ]
+      },
+      "properties": {
+        "name": "Noordenveld",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1700",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.637090666386942,
+          52.40920230866808
+        ]
+      },
+      "properties": {
+        "name": "Twenterand",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1701",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.175638080929312,
+          52.77414650379345
+        ]
+      },
+      "properties": {
+        "name": "Westerveld",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1702",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.753196128221444,
+          51.61064100695236
+        ]
+      },
+      "properties": {
+        "name": "Sint Anthonis",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1705",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.865633016366191,
+          51.895444316192645
+        ]
+      },
+      "properties": {
+        "name": "Lingewaard",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1706",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.62870092953341,
+          51.29628481821765
+        ]
+      },
+      "properties": {
+        "name": "Cranendonck",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1708",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.168522606298066,
+          52.77916571702768
+        ]
+      },
+      "properties": {
+        "name": "Steenwijkerland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1709",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.424646533557914,
+          51.65762028255106
+        ]
+      },
+      "properties": {
+        "name": "Moerdijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1711",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.895737180944967,
+          51.13446474439237
+        ]
+      },
+      "properties": {
+        "name": "Echt-Susteren",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1714",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.565946786374372,
+          51.340517826584666
+        ]
+      },
+      "properties": {
+        "name": "Sluis",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1719",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.696791296112947,
+          51.64614444517955
+        ]
+      },
+      "properties": {
+        "name": "Drimmelen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1721",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.572005698879676,
+          51.72533992692431
+        ]
+      },
+      "properties": {
+        "name": "Bernheze",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1723",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8559632631649094,
+          51.55512410078159
+        ]
+      },
+      "properties": {
+        "name": "Alphen-Chaam",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1724",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.398788898211309,
+          51.27080781474818
+        ]
+      },
+      "properties": {
+        "name": "Bergeijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1728",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.272010559512706,
+          51.349197069895524
+        ]
+      },
+      "properties": {
+        "name": "Bladel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1729",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9246257862517995,
+          50.80584620934494
+        ]
+      },
+      "properties": {
+        "name": "Gulpen-Wittem",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1730",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.649849828536324,
+          53.08766581675482
+        ]
+      },
+      "properties": {
+        "name": "Tynaarlo",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1731",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.513940313600083,
+          52.878294589726714
+        ]
+      },
+      "properties": {
+        "name": "Midden-Drenthe",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1734",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.874830984456789,
+          51.91921315319375
+        ]
+      },
+      "properties": {
+        "name": "Overbetuwe",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1735",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.453943481064576,
+          52.26037074176569
+        ]
+      },
+      "properties": {
+        "name": "Hof van Twente",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1740",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.59781340857618,
+          51.9215260747334
+        ]
+      },
+      "properties": {
+        "name": "Neder-Betuwe",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1742",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.399434395995957,
+          52.24874552540999
+        ]
+      },
+      "properties": {
+        "name": "Rijssen-Holten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1771",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.544247924577243,
+          51.40477852705277
+        ]
+      },
+      "properties": {
+        "name": "Geldrop-Mierlo",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1773",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.1074108840747146,
+          52.352597843720595
+        ]
+      },
+      "properties": {
+        "name": "Olst-Wijhe",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1774",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.8477189240560445,
+          52.27997667907813
+        ]
+      },
+      "properties": {
+        "name": "Dinkelland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1783",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.233000192121595,
+          51.95322788139703
+        ]
+      },
+      "properties": {
+        "name": "Westland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1842",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.310979769151578,
+          52.01067339866716
+        ]
+      },
+      "properties": {
+        "name": "Midden-Delfland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1859",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.649674605788794,
+          52.12484424574364
+        ]
+      },
+      "properties": {
+        "name": "Berkelland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1876",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.305329748444566,
+          52.05014439294997
+        ]
+      },
+      "properties": {
+        "name": "Bronckhorst",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1883",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.824436361093278,
+          51.03681278919584
+        ]
+      },
+      "properties": {
+        "name": "Sittard-Geleen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1884",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.56465304860209,
+          52.16932876300506
+        ]
+      },
+      "properties": {
+        "name": "Kaag en Braassem",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1891",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.8869729417701215,
+          53.2737707752032
+        ]
+      },
+      "properties": {
+        "name": "Dantumadiel",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1892",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.651187157183987,
+          52.00005561417537
+        ]
+      },
+      "properties": {
+        "name": "Zuidplas",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1894",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.983905549805814,
+          51.37790138310069
+        ]
+      },
+      "properties": {
+        "name": "Peel en Maas",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1895",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.198245276972892,
+          53.177719547333076
+        ]
+      },
+      "properties": {
+        "name": "Oldambt",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1896",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.082171043671796,
+          52.636888730228684
+        ]
+      },
+      "properties": {
+        "name": "Zwartewaterland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1900",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.429343147187065,
+          53.09173204036887
+        ]
+      },
+      "properties": {
+        "name": "Súdwest-Fryslân",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1901",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.730539358945925,
+          52.0603758042427
+        ]
+      },
+      "properties": {
+        "name": "Bodegraven-Reeuwijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1903",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.723142399582952,
+          50.812005779083165
+        ]
+      },
+      "properties": {
+        "name": "Eijsden-Margraten",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1904",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.982374908258661,
+          52.22476741731713
+        ]
+      },
+      "properties": {
+        "name": "Stichtse Vecht",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1911",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.037728736478225,
+          52.931471688175456
+        ]
+      },
+      "properties": {
+        "name": "Hollands Kroon",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1916",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.340372924187249,
+          52.073922101113446
+        ]
+      },
+      "properties": {
+        "name": "Leidschendam-Voorburg",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1924",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.297369501877451,
+          51.70031317451954
+        ]
+      },
+      "properties": {
+        "name": "Goeree-Overflakkee",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1926",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.389915116146206,
+          51.99731342406591
+        ]
+      },
+      "properties": {
+        "name": "Pijnacker-Nootdorp",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1930",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.290354065615118,
+          51.8216671230863
+        ]
+      },
+      "properties": {
+        "name": "Nissewaard",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1931",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.642631194825699,
+          51.91188971879269
+        ]
+      },
+      "properties": {
+        "name": "Krimpenerwaard",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1940",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.824937192508255,
+          52.95859989531142
+        ]
+      },
+      "properties": {
+        "name": "De Fryske Marren",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1942",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.18364751644594,
+          52.28135436262876
+        ]
+      },
+      "properties": {
+        "name": "Gooise Meren",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1945",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.9592367560158115,
+          51.8389465446104
+        ]
+      },
+      "properties": {
+        "name": "Berg en Dal",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1948",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.505110411054534,
+          51.62319424593689
+        ]
+      },
+      "properties": {
+        "name": "Meierijstad",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1949",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.546002216091321,
+          53.20085478698855
+        ]
+      },
+      "properties": {
+        "name": "Waadhoeke",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1950",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.086825374822883,
+          53.06257994446719
+        ]
+      },
+      "properties": {
+        "name": "Westerwolde",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1952",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.893672992836508,
+          53.18405888703725
+        ]
+      },
+      "properties": {
+        "name": "Midden-Groningen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1954",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.882737667050333,
+          50.93260505057431
+        ]
+      },
+      "properties": {
+        "name": "Beekdaelen",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1955",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.153646984797942,
+          51.92422256096964
+        ]
+      },
+      "properties": {
+        "name": "Montferland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1959",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.907515839528333,
+          51.73590203332913
+        ]
+      },
+      "properties": {
+        "name": "Altena",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1960",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.211625894387277,
+          51.875045654513286
+        ]
+      },
+      "properties": {
+        "name": "West Betuwe",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1961",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.09659958970706,
+          51.9702317330797
+        ]
+      },
+      "properties": {
+        "name": "Vijfheerenlanden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1963",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.413610508071433,
+          51.74544957911734
+        ]
+      },
+      "properties": {
+        "name": "Hoeksche Waard",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1966",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.805975512085905,
+          53.434500287876986
+        ]
+      },
+      "properties": {
+        "name": "Het Hogeland",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1969",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.267904063492951,
+          53.15406036131282
+        ]
+      },
+      "properties": {
+        "name": "Westerkwartier",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1970",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.124002799688537,
+          53.3802987074908
+        ]
+      },
+      "properties": {
+        "name": "Noardeast-Fryslân",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1978",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.96778892129439,
+          51.87742959808694
+        ]
+      },
+      "properties": {
+        "name": "Molenlanden",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1979",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.675998770810532,
+          53.33855875117977
+        ]
+      },
+      "properties": {
+        "name": "Eemsdelta",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1980",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.80111205079179,
+          52.65723442878987
+        ]
+      },
+      "properties": {
+        "name": "Dijk en Waard",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1982",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.980162005018038,
+          51.58454817020741
+        ]
+      },
+      "properties": {
+        "name": "Land van Cuijk",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1991",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.578493448467641,
+          51.73781258961005
+        ]
+      },
+      "properties": {
+        "name": "Maashorst",
+        "searchDistance": 50000
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "GM1992",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.17955989408535,
+          51.86922702304244
+        ]
+      },
+      "properties": {
+        "name": "Voorne aan Zee",
         "searchDistance": 50000
       }
     }
