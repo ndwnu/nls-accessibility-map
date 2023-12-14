@@ -82,7 +82,8 @@ class AccessibilityMapApiDelegateImplTest {
                 .thenReturn(idToRoadSectionMap);
         when(accessibilityResponseMapper.map(idToRoadSectionMap, REQUESTED_ROAD_SECTION_ID))
                 .thenReturn(accessibilityMapResponseJson);
-        when(idToRoadSectionMap.containsKey(REQUESTED_ROAD_SECTION_ID)).thenReturn(true);
+        // Decide what we want to do here
+//        when(idToRoadSectionMap.containsKey(REQUESTED_ROAD_SECTION_ID)).thenReturn(true);
 
         ResponseEntity<AccessibilityMapResponseJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(
                 MUNICIPALITY_ID,
