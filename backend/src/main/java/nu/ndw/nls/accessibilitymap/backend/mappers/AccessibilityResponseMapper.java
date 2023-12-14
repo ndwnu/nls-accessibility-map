@@ -25,10 +25,12 @@ public class AccessibilityResponseMapper {
 
         return new AccessibilityMapResponseJson()
                 .inaccessibleRoadSections(list)
-                .requestedLocation(Optional.ofNullable(idToRoadSectionMap.get(requestedRoadSectionId))
+                .requestedLocation(Optional.ofNullable(requestedRoadSectionId)
+                        .map(idToRoadSectionMap::get)
                         .map(roadSectionJsonResponseMapper::mapToRoadSection)
                         .orElse(null));
     }
+
 
     private boolean isRestrictedInAnyDirection(RoadSection r) {
         return r.getForwardAccessible() == Boolean.FALSE || r.getBackwardAccessible() == Boolean.FALSE;
