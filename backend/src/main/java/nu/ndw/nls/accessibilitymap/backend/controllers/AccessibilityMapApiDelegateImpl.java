@@ -48,8 +48,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         if (Objects.nonNull(startPoint)) {
             CandidateMatch candidateMatch = pointMatchService.match(startPoint).orElseThrow(() ->
-                    new PointMatchingRoadSectionNotFoundException("Could not find road section by latitude: " + latitude +
-                            " longitude: " + longitude));
+                    new PointMatchingRoadSectionNotFoundException("Could not find road section by latitude: " +
+                            latitude + " longitude: " + longitude));
             requestedRoadSectionId = candidateMatch.getMatchedLinkId();
 
             log.debug("Found road section id: {} by latitude: {}, longitude {}", requestedRoadSectionId, latitude,

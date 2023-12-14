@@ -12,7 +12,7 @@ public class PointValidator {
             return;
         }
 
-       if (Objects.isNull(latitude)) {
+        if (Objects.isNull(latitude)) {
             throw new IncompleteArgumentsException("When longitude is present, latitude must also be specified");
         } else {
             throw new IncompleteArgumentsException("When latitude is present, longitude must also be specified");
