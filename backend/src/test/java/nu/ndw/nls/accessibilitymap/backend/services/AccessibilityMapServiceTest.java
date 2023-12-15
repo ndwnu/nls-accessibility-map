@@ -9,7 +9,6 @@ import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALI
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -47,7 +46,7 @@ class AccessibilityMapServiceTest {
     private AccessibilityMapService accessibilityMapService;
 
     @Test
-    void calculateInaccessibleRoadSections_ok() {
+    void determineAccessibilityByRoadSection_ok() {
         Set<IsochroneMatch> allIsochroneMatchSet = Set.of(ACCESSIBLE_MATCH, INACCESSIBLE_MATCH);
         Set<IsochroneMatch> restrictedIsochroneMatchSet = Set.of(INACCESSIBLE_MATCH);
 
@@ -66,7 +65,7 @@ class AccessibilityMapServiceTest {
                 .build();
 
         SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
-                .determineInaccessibleRoadSections(vehicleProperties, MUNICIPALITY_ID);
+                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID);
         AccessibilityRequest accessibilityRequest = accessibilityRequestArgumentCaptor.getValue();
         AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest
                 .builder()

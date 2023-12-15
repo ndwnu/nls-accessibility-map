@@ -60,7 +60,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer == Boolean.TRUE);
         VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
         SortedMap<Integer, RoadSection> idToRoadSection = accessibilityMapService
-                .determineInaccessibleRoadSections(vehicleProperties, municipalityId);
+                .determineAccessibilityByRoadSection(vehicleProperties, municipalityId);
 
         return ResponseEntity.ok(accessibilityMapResultMapper.map(idToRoadSection, requestedRoadSectionId));
     }

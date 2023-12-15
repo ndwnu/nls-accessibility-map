@@ -26,7 +26,7 @@ public class AccessibilityMapService {
     private final MunicipalityService municipalityService;
     private final BaseAccessibleRoadsService baseIsochroneService;
 
-    public SortedMap<Integer, RoadSection> determineInaccessibleRoadSections(VehicleProperties vehicleProperties,
+    public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(VehicleProperties vehicleProperties,
             String municipalityId) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory
                 .createMapMatcher(networkGraphHopper);

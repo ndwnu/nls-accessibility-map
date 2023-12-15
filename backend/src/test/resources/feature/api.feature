@@ -12,7 +12,7 @@ Feature: API operations
     * def badRequestRpadSectionNotFindByLatitudeLongitude = read('classpath:test-messages/accessibility/response-404-road-section-not-found-by-latitude-longitude.json')
     * def municipalitiesOkResponse = read('classpath:test-messages/municipalities/response-ok.json')
 
-  Scenario: accessibility map should return 200
+  Scenario: accessibility map without latitude and longitude should return 200
     Given path '/v1/municipalities/GM0307/road-sections'
     And param vehicleType = 'commercial_vehicle'
     And param vehicleLength = 5
@@ -25,7 +25,7 @@ Feature: API operations
     Then status 200
     And match response == okResponse
 
-  Scenario: accessibility map should return 200
+  Scenario: accessibility map request with latitude and longitude specified should return 200
     Given path '/v1/municipalities/GM0307/road-sections'
     And param vehicleType = 'commercial_vehicle'
     And param vehicleLength = 5
