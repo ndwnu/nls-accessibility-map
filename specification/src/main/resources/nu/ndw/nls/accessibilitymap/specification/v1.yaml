@@ -25,6 +25,8 @@ paths:
         - $ref: '#/components/parameters/VehicleWeightParam'
         - $ref: '#/components/parameters/VehicleAxleLoadParam'
         - $ref: '#/components/parameters/VehicleHasTrailerParam'
+        - $ref: '#/components/parameters/LatitudeParam'
+        - $ref: '#/components/parameters/LongitudeParam'
 
       responses:
         "200":
@@ -32,7 +34,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RoadSections"
+                $ref: "#/components/schemas/AccessibilityMapResponse"
         "400":
           description: "Validation error"
           content:
@@ -150,14 +152,35 @@ components:
       schema:
         type: boolean
         default: false
+    LatitudeParam:
+      in: "query"
+      name: latitude
+      description: Optional latitude of the start location. When present, the longitude must also be specified
+      example: 52.1326
+      required: false
+      schema:
+        type: number
+        format: double
+    LongitudeParam:
+      in: "query"
+      name: longitude
+      description: Optional longitude of the start location. When present, the latitude must also be specified
+      example: 5.2913
+      required: false
+      schema:
+        type: number
+        format: double
+
   schemas:
-    RoadSections:
+    AccessibilityMapResponse:
       type: "object"
       properties:
         inaccessibleRoadSections:
           type: "array"
           items:
             $ref: "#/components/schemas/RoadSection"
+        matchedRoadSection:
+          $ref: "#/components/schemas/RoadSection"
     RoadSection:
       type: "object"
       properties:

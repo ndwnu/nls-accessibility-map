@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.ResourceNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.APIErrorJson;
@@ -46,7 +48,7 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
      * Bad request handler for domain exceptions
      */
     @ExceptionHandler({VehicleTypeNotSupportedException.class, VehicleWeightRequiredException.class,
-    })
+            IncompleteArgumentsException.class})
     public ResponseEntity<APIErrorJson> handleBadRequestException(RuntimeException exception) {
         APIErrorJson restError = new APIErrorJson()
                 .message(exception.getMessage());
@@ -78,8 +80,8 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     /**
      * Municipality not found handler
      */
-    @ExceptionHandler({MunicipalityNotFoundException.class})
-    public ResponseEntity<APIErrorJson> handleNotFoundException(MunicipalityNotFoundException exception) {
+    @ExceptionHandler({ResourceNotFoundException.class})
+    public ResponseEntity<APIErrorJson> handleNotFoundException(ResourceNotFoundException exception) {
         APIErrorJson restError = new APIErrorJson()
                 .message(exception.getMessage());
         return ResponseEntity
