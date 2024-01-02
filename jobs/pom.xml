@@ -227,6 +227,18 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>wait-for-database</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../scripts/pg-isready.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+
+                            <execution>
                                 <id>docker-compose-run-create-or-update-network</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>

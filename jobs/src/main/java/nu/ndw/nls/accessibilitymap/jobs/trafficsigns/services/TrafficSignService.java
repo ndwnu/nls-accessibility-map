@@ -2,62 +2,54 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.CurrentStateStatus;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToLinkTagMapper;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.repositories.TrafficSignRepository;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.utils.MaxEventTimestampTracker;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.utils.MaxNwbVersionTracker;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
+@RequiredArgsConstructor
 public class TrafficSignService {
 
-    private final WebClient webClient;
-    private final String currentStateUri;
+    private final TrafficSignRepository trafficSignRepository;
+    private final TrafficSignToLinkTagMapper trafficSignToLinkTagMapper;
 
-    public TrafficSignService(WebClient webClient, @Value("${traffic-sign.current-state-uri}") String currentStateUri) {
-        this.webClient = webClient;
-        this.currentStateUri = currentStateUri;
-    }
 
     public TrafficSignData getTrafficSigns() {
-        AtomicReference<Instant> maxEventTimestamp = new AtomicReference<>(Instant.MIN);
-        AtomicReference<LocalDate> maxNwbReferenceDate = new AtomicReference<>(LocalDate.MIN);
-        Map<Long, List<TrafficSignJsonDtoV3>> trafficSigns = webClient.get()
-                .uri(currentStateUri)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .retrieve()
-                .bodyToFlux(TrafficSignJsonDtoV3.class)
-                .toStream()
-                .peek(t -> maxEventTimestamp.updateAndGet(currentMax -> max(t.getPublicationTimestamp(), currentMax)))
-                .filter(t -> t.getLocation().getRoad() != null && t.getLocation().getRoad().getRoadSectionId() != null)
-                .peek(t -> maxNwbReferenceDate.updateAndGet(currentMax -> max(t.getLocation().getRoad().getNwbVersion(),
-                        currentMax)))
-                .collect(Collectors.groupingBy(t -> Long.parseLong(t.getLocation().getRoad().getRoadSectionId())));
-        return new TrafficSignData(trafficSigns, maxNwbReferenceDate.get(), maxEventTimestamp.get());
+        MaxEventTimestampTracker maxEventTimestampTracker = new MaxEventTimestampTracker();
+        MaxNwbVersionTracker maxNwbVersionTracker = new MaxNwbVersionTracker();
+
+        Map<Long, List<TrafficSignJsonDtoV3>> trafficSigns;
+
+        try ( Stream<TrafficSignJsonDtoV3> stream = findTrafficSignByRvvCodes()) {
+            trafficSigns = stream.map(maxEventTimestampTracker::updateMaxEventTimeStampAndContinue)
+                    .filter(this::hasRoadSectionId)
+                    .map(maxNwbVersionTracker::updateMaxNwbVersionAndContinue)
+                    .collect(Collectors.groupingBy(t -> Long.parseLong(t.getLocation().getRoad().getRoadSectionId())));
+        }
+
+        return new TrafficSignData(trafficSigns, maxNwbVersionTracker.getMaxNwbReferenceDate(),
+                maxEventTimestampTracker.getMaxEventTimestamp());
     }
 
-    private Instant max(Instant publicationTimestamp, Instant currentMax) {
-        return publicationTimestamp != null && publicationTimestamp.isAfter(currentMax) ? publicationTimestamp
-                : currentMax;
+    private Stream<TrafficSignJsonDtoV3> findTrafficSignByRvvCodes() {
+        return trafficSignToLinkTagMapper.getRvvCodesUsed()
+                .stream()
+                .map(rvvCode -> trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, rvvCode))
+                .reduce(Stream::concat)
+                .orElseThrow(() -> new IllegalStateException("Failed to combine traffic sign by rvv code streams"));
     }
 
-    private LocalDate max(String nwbVersion, LocalDate currentMax) {
-        if (nwbVersion == null) {
-            return currentMax;
-        }
-        LocalDate newVersion;
-        try {
-            newVersion = LocalDate.parse(nwbVersion);
-        } catch (DateTimeParseException ignored) {
-            return currentMax;
-        }
-        return newVersion.isAfter(currentMax) ? newVersion : currentMax;
+    private boolean hasRoadSectionId(TrafficSignJsonDtoV3 t) {
+        return t.getLocation().getRoad() != null && t.getLocation().getRoad().getRoadSectionId() != null;
     }
 
     public record TrafficSignData(Map<Long, List<TrafficSignJsonDtoV3>> trafficSignsByRoadSectionId,

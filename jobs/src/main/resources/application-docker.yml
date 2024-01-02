@@ -4,6 +4,14 @@ nu:
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+      accessibilitymap:
+        jobs:
+          trafficsigns:
+            api:
+              base-url: http://traffic-sign-api-stub:8080/api/rest/static-road-data/traffic-signs/v3
+              current-state-path: /current-state
+              town-code: GM0307
+
 logging:
   level:
     root: INFO
@@ -15,6 +23,4 @@ spring:
     url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
     username: nls-maps
     password: nls-maps
-traffic-sign:
-  base-url: http://traffic-sign-api-stub:8080/api/rest/static-road-data/traffic-signs/v3
-  current-state-uri: /current-state?status=PLACED&town-code=GM0307
+

@@ -28,7 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 @SpringBootTest
 @ContextConfiguration(classes = TestConfig.class)
 @ActiveProfiles(profiles = {"integration-test"})
-public class NlsAccessibilityMapJobsIT {
+class NlsAccessibilityMapJobsIT {
 
     private static final String ACCESSIBILITY_LATEST = "accessibility_latest";
     private static final String PROPERTIES = "properties";

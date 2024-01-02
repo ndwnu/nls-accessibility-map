@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TextSignJsonDtoV3;
@@ -17,6 +18,12 @@ class TrafficSignToLinkTagMapperTest {
     private final TrafficSignToLinkTagMapper trafficSignToLinkTagMapper = new TrafficSignToLinkTagMapper();
 
     @Test
+    void getRvvCodesUsed_ok_allValuesPresent() {
+        assertEquals(Set.of("C6", "C7", "C7a", "C7b", "C8", "C9", "C10", "C11", "C12", "C22c", "C17", "C18", "C19",
+                        "C20", "C21"),
+                trafficSignToLinkTagMapper.getRvvCodesUsed());
+    }
+
     void setLinkTags_ok_noEntrySigns() {
         // All no entry signs are mapped to the same Boolean true value, so we have to test them separately to verify
         // the mapping from RVV code to LinkTag is correct.

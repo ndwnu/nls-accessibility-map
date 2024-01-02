@@ -1,15 +1,21 @@
 package nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.CurrentStateStatus;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToLinkTagMapper;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.repositories.TrafficSignRepository;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService.TrafficSignData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,22 +30,18 @@ import reactor.core.publisher.Flux;
 @ExtendWith(MockitoExtension.class)
 class TrafficSignServiceTest {
 
-    private static final String CURRENT_STATE_URI = "/current-state";
-
+    private static final String RVV_CODE_B = "rvv-code-b";
+    private static final String RVV_CODE_A = "rvv-code-a";
     private TrafficSignService trafficSignService;
+    @Mock
+    private TrafficSignRepository trafficSignRepository;
+    @Mock
+    private TrafficSignToLinkTagMapper trafficSignToLinkTagMapper;
 
-    @Mock
-    private WebClient webClient;
-    @Mock
-    private WebClient.RequestHeadersSpec requestHeadersSpec;
-    @Mock
-    private WebClient.RequestHeadersUriSpec requestHeadersUriSpec;
-    @Mock
-    private WebClient.ResponseSpec responseSpec;
 
     @BeforeEach
     void setUp() {
-        trafficSignService = new TrafficSignService(webClient, CURRENT_STATE_URI);
+        trafficSignService = new TrafficSignService(trafficSignRepository, trafficSignToLinkTagMapper);
     }
 
     @Test
@@ -90,35 +92,34 @@ class TrafficSignServiceTest {
                         .build())
                 .build();
 
-        mockWebClient();
-        when(responseSpec.bodyToFlux(TrafficSignJsonDtoV3.class)).thenReturn(Flux.just(trafficSign1, trafficSign2,
-                trafficSign3, trafficSign4, trafficSign5, trafficSign6));
+        when(trafficSignToLinkTagMapper.getRvvCodesUsed()).thenReturn(Set.of(RVV_CODE_A, RVV_CODE_B));
+
+
+        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, RVV_CODE_A))
+                .thenReturn(Stream.of(trafficSign1, trafficSign2, trafficSign3));
+
+        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, RVV_CODE_B))
+                .thenReturn(Stream.of(trafficSign4, trafficSign5, trafficSign6));
 
         TrafficSignData result = trafficSignService.getTrafficSigns();
 
-        assertEquals(Map.of(1L, List.of(trafficSign4, trafficSign5), 2L, List.of(trafficSign3, trafficSign6)),
-                result.trafficSignsByRoadSectionId());
+        Map<Long, List<TrafficSignJsonDtoV3>> longListMap = result.trafficSignsByRoadSectionId();
+
+        assertTrue(longListMap.containsKey(1L));
+        List<TrafficSignJsonDtoV3> trafficSignJsonDtoV3s = longListMap.get(1L);
+        assertEquals(2, trafficSignJsonDtoV3s.size());
+        assertTrue(trafficSignJsonDtoV3s.contains(trafficSign4));
+        assertTrue(trafficSignJsonDtoV3s.contains(trafficSign5));
+
+
+        assertTrue(longListMap.containsKey(2L));
+        trafficSignJsonDtoV3s = longListMap.get(2L);
+        assertEquals(2, trafficSignJsonDtoV3s.size());
+        assertTrue(trafficSignJsonDtoV3s.contains(trafficSign3));
+        assertTrue(trafficSignJsonDtoV3s.contains(trafficSign6));
+
         assertEquals(Instant.parse("2023-11-07T15:37:23Z"), result.maxEventTimestamp());
         assertEquals(LocalDate.of(2023, 10, 1), result.maxNwbReferenceDate());
     }
 
-    @Test
-    void getTrafficSigns_ok_emptyFlux() {
-        mockWebClient();
-        when(responseSpec.bodyToFlux(TrafficSignJsonDtoV3.class)).thenReturn(Flux.empty());
-
-        TrafficSignData result = trafficSignService.getTrafficSigns();
-
-        assertEquals(Map.of(), result.trafficSignsByRoadSectionId());
-        assertEquals(Instant.MIN, result.maxEventTimestamp());
-        assertEquals(LocalDate.MIN, result.maxNwbReferenceDate());
-    }
-
-    private void mockWebClient() {
-        when(webClient.get()).thenReturn(requestHeadersUriSpec);
-        when(requestHeadersUriSpec.uri(CURRENT_STATE_URI)).thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                .thenReturn(requestHeadersSpec);
-        when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
-    }
 }
