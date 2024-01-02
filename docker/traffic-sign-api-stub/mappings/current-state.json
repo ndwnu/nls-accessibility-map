@@ -1,7 +1,64 @@
 {
   "request": {
     "method": "GET",
-    "url": "/api/rest/static-road-data/traffic-signs/v3/current-state?status=PLACED&town-code=GM0307"
+    "urlPathPattern": "/api/rest/static-road-data/traffic-signs/v3/current-state",
+    "queryParameters": {
+      "status": {
+        "equalTo": "PLACED"
+      },
+      "town-code": {
+        "equalTo": "GM0307"
+      },
+      "rvv-code": {
+        "or": [
+          {
+            "equalTo": "C6"
+          },
+          {
+            "equalTo": "C7"
+          },
+          {
+            "equalTo": "C7a"
+          },
+          {
+            "equalTo": "C7b"
+          },
+          {
+            "equalTo": "C8"
+          },
+          {
+            "equalTo": "C9"
+          },
+          {
+            "equalTo": "C10"
+          },
+          {
+            "equalTo": "C11"
+          },
+          {
+            "equalTo": "C12"
+          },
+          {
+            "equalTo": "C22c"
+          },
+          {
+            "equalTo": "C17"
+          },
+          {
+            "equalTo": "C18"
+          },
+          {
+            "equalTo": "C19"
+          },
+          {
+            "equalTo": "C20"
+          },
+          {
+            "equalTo": "C21"
+          }
+        ]
+      }
+    }
   },
   "response": {
     "status": 200,

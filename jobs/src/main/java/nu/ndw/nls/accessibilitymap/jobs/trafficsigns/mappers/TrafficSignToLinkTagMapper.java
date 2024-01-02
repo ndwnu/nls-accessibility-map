@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TextSignJsonDtoV3;
@@ -49,6 +50,10 @@ public class TrafficSignToLinkTagMapper {
 
     private static final String DRIVING_DIRECTION_BACKWARD = "T";
     private static final String DRIVING_DIRECTION_FORWARD = "H";
+
+    public Set<String> getRvvCodesUsed() {
+        return SIGN_MAPPINGS.keySet();
+    }
 
     public void setLinkTags(Link link, List<TrafficSignJsonDtoV3> trafficSigns) {
         for (TrafficSignJsonDtoV3 trafficSign : trafficSigns) {
