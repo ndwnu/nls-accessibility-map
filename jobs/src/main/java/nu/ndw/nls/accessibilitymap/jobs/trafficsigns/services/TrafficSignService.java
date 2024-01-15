@@ -29,7 +29,7 @@ public class TrafficSignService {
 
         Map<Long, List<TrafficSignJsonDtoV3>> trafficSigns;
 
-        try ( Stream<TrafficSignJsonDtoV3> stream = findTrafficSignByRvvCodes()) {
+        try (Stream<TrafficSignJsonDtoV3> stream = findTrafficSignByRvvCodes()) {
             trafficSigns = stream.map(maxEventTimestampTracker::updateMaxEventTimeStampAndContinue)
                     .filter(this::hasRoadSectionId)
                     .map(maxNwbVersionTracker::updateMaxNwbVersionAndContinue)
@@ -41,11 +41,8 @@ public class TrafficSignService {
     }
 
     private Stream<TrafficSignJsonDtoV3> findTrafficSignByRvvCodes() {
-        return trafficSignToLinkTagMapper.getRvvCodesUsed()
-                .stream()
-                .map(rvvCode -> trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, rvvCode))
-                .reduce(Stream::concat)
-                .orElseThrow(() -> new IllegalStateException("Failed to combine traffic sign by rvv code streams"));
+        return trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED,
+                trafficSignToLinkTagMapper.getRvvCodesUsed());
     }
 
     private boolean hasRoadSectionId(TrafficSignJsonDtoV3 t) {
