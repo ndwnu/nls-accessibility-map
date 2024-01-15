@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.TrafficSignConfiguration;
@@ -92,7 +93,7 @@ class TrafficSignRepositoryTest {
         when(trafficSignJsonDtoV3Flux.toStream()).thenReturn(trafficSignJsonDtoV3Stream);
 
         assertEquals(trafficSignJsonDtoV3Stream,
-                trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, VALUE_VVCODE_A1));
+                trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, Set.of(VALUE_VVCODE_A1)));
 
         verify(uriBuilder).path(CURRENT_STATE_URI);
         verify(uriBuilder).queryParam(QUERY_PARAM_STATUS, VALUE_CURRENT_STATE_STATUS_PLACED);
