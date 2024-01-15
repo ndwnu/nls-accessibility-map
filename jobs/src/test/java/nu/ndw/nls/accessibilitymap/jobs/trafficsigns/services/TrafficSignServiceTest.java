@@ -22,10 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 
 @ExtendWith(MockitoExtension.class)
 class TrafficSignServiceTest {
@@ -94,12 +90,8 @@ class TrafficSignServiceTest {
 
         when(trafficSignToLinkTagMapper.getRvvCodesUsed()).thenReturn(Set.of(RVV_CODE_A, RVV_CODE_B));
 
-
-        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, RVV_CODE_A))
-                .thenReturn(Stream.of(trafficSign1, trafficSign2, trafficSign3));
-
-        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, RVV_CODE_B))
-                .thenReturn(Stream.of(trafficSign4, trafficSign5, trafficSign6));
+        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, Set.of(RVV_CODE_A,RVV_CODE_B)))
+                .thenReturn(Stream.of(trafficSign1, trafficSign2, trafficSign3,trafficSign4, trafficSign5, trafficSign6));
 
         TrafficSignData result = trafficSignService.getTrafficSigns();
 
@@ -110,7 +102,6 @@ class TrafficSignServiceTest {
         assertEquals(2, trafficSignJsonDtoV3s.size());
         assertTrue(trafficSignJsonDtoV3s.contains(trafficSign4));
         assertTrue(trafficSignJsonDtoV3s.contains(trafficSign5));
-
 
         assertTrue(longListMap.containsKey(2L));
         trafficSignJsonDtoV3s = longListMap.get(2L);
