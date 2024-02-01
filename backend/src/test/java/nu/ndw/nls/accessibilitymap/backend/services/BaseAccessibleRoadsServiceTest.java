@@ -6,11 +6,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Set;
-import nu.ndw.nls.routingmapmatcher.domain.AccessibilityMap;
-import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
-import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
-import nu.ndw.nls.routingmapmatcher.domain.model.accessibility.AccessibilityRequest;
-import nu.ndw.nls.routingmapmatcher.graphhopper.NetworkGraphHopper;
+import nu.ndw.nls.accessibilitymap.backend.graphhopper.AccessibilityMap;
+import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.AccessibilityMapFactory;
+import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
+import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -26,7 +26,7 @@ class BaseAccessibleRoadsServiceTest {
     private ArgumentCaptor<AccessibilityRequest> accessibilityRequestArgumentCaptor;
 
     @Mock
-    private MapMatcherFactory<AccessibilityMap> accessibilityMapFactory;
+    private AccessibilityMapFactory accessibilityMapFactory;
     @Mock
     private NetworkGraphHopper networkGraphHopper;
     @Mock
@@ -37,8 +37,8 @@ class BaseAccessibleRoadsServiceTest {
 
     @Test
     void getBaseAccessibleRoadsByMunicipality_ok() {
-        when(accessibilityMapFactory.createMapMatcher(networkGraphHopper))
-                .thenReturn(accessibilityMap);
+
+        when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
 
         when(accessibilityMap
                 .getAccessibleRoadSections(accessibilityRequestArgumentCaptor.capture()))

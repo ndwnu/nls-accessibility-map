@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
-import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
+import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 
 public final class TestHelper {
 

@@ -14,9 +14,9 @@ import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.CurrentStateStatus;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToLinkTagMapper;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToDtoMapper;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.repositories.TrafficSignRepository;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService.TrafficSignData;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,12 +32,12 @@ class TrafficSignServiceTest {
     @Mock
     private TrafficSignRepository trafficSignRepository;
     @Mock
-    private TrafficSignToLinkTagMapper trafficSignToLinkTagMapper;
+    private TrafficSignToDtoMapper trafficSignToDtoMapper;
 
 
     @BeforeEach
     void setUp() {
-        trafficSignService = new TrafficSignService(trafficSignRepository, trafficSignToLinkTagMapper);
+        trafficSignService = new TrafficSignService(trafficSignRepository, trafficSignToDtoMapper);
     }
 
     @Test
@@ -88,7 +88,7 @@ class TrafficSignServiceTest {
                         .build())
                 .build();
 
-        when(trafficSignToLinkTagMapper.getRvvCodesUsed()).thenReturn(Set.of(RVV_CODE_A, RVV_CODE_B));
+        when(trafficSignToDtoMapper.getRvvCodesUsed()).thenReturn(Set.of(RVV_CODE_A, RVV_CODE_B));
 
         when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, Set.of(RVV_CODE_A,RVV_CODE_B)))
                 .thenReturn(Stream.of(trafficSign1, trafficSign2, trafficSign3,trafficSign4, trafficSign5, trafficSign6));

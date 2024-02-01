@@ -10,6 +10,11 @@
     <name>NLS Accessibility Map Graphhopper jobs</name>
     <dependencies>
         <dependency>
+            <groupId>nu.ndw.nls.accessibilitymap</groupId>
+            <version>${project.parent.version}</version>
+            <artifactId>shared</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
@@ -19,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls</groupId>
-            <artifactId>routing-map-matcher-spring-boot</artifactId>
+            <artifactId>routing-map-matcher-library</artifactId>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>

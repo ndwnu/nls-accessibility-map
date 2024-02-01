@@ -6,14 +6,14 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.backend.graphhopper.AccessibilityMap;
+import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.AccessibilityMapFactory;
+import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
-import nu.ndw.nls.routingmapmatcher.domain.AccessibilityMap;
-import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
-import nu.ndw.nls.routingmapmatcher.domain.model.IsochroneMatch;
-import nu.ndw.nls.routingmapmatcher.domain.model.accessibility.AccessibilityRequest;
-import nu.ndw.nls.routingmapmatcher.domain.model.accessibility.VehicleProperties;
-import nu.ndw.nls.routingmapmatcher.graphhopper.NetworkGraphHopper;
+import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
+import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,15 +21,14 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AccessibilityMapService {
 
-    private final MapMatcherFactory<AccessibilityMap> accessibilityMapFactory;
+    private final AccessibilityMapFactory accessibilityMapFactory;
     private final NetworkGraphHopper networkGraphHopper;
     private final MunicipalityService municipalityService;
     private final BaseAccessibleRoadsService baseIsochroneService;
 
     public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(VehicleProperties vehicleProperties,
             String municipalityId) {
-        AccessibilityMap accessibilityMap = accessibilityMapFactory
-                .createMapMatcher(networkGraphHopper);
+        AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(networkGraphHopper);
         Stopwatch timerAll = Stopwatch.createStarted();
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         Set<IsochroneMatch> allAccessibleRoads = baseIsochroneService.getBaseAccessibleRoadsByMunicipality(
