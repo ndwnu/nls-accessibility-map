@@ -5,8 +5,8 @@ import java.util.function.BiConsumer;
 import nu.ndw.nls.accessibilitymap.backend.controllers.AccessibilityMapApiDelegateImpl.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
-import nu.ndw.nls.routingmapmatcher.domain.model.accessibility.VehicleProperties;
-import nu.ndw.nls.routingmapmatcher.domain.model.accessibility.VehicleProperties.VehiclePropertiesBuilder;
+import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
+import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties.VehiclePropertiesBuilder;
 import org.springframework.stereotype.Component;
 
 @Component

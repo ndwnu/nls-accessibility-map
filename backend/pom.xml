@@ -22,6 +22,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>nu.ndw.nls.accessibilitymap</groupId>
+            <version>${project.parent.version}</version>
+            <artifactId>shared</artifactId>
+        </dependency>
         <!--Spring dependencies-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -68,7 +73,7 @@
         <!--NLS library dependencies-->
         <dependency>
             <groupId>nu.ndw.nls</groupId>
-            <artifactId>routing-map-matcher-spring-boot</artifactId>
+            <artifactId>routing-map-matcher-library</artifactId>
         </dependency>
 
         <!--Additional dependencies-->

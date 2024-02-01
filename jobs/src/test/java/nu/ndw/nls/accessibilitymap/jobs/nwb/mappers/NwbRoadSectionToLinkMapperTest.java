@@ -1,12 +1,17 @@
 package nu.ndw.nls.accessibilitymap.jobs.nwb.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
+import java.util.List;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignAccessibilityDto;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToDtoMapper;
+import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
-import nu.ndw.nls.routingmapmatcher.domain.model.Link;
-import nu.ndw.nls.routingmapmatcher.domain.model.LinkTag;
+import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,14 +31,15 @@ class NwbRoadSectionToLinkMapperTest {
     private static final String DRIVING_DIRECTION_BACKWARD = "T";
     private static final String DRIVING_DIRECTION_BOTH = "B";
     private static final int MUNICIPALITY_ID = 307;
-    private static final double DEFAULT_SPEED_KMH = 50;
-    private static final double NO_ACCESS_SPEED_KMH = 0;
 
     @Mock
     private RijksdriehoekToWgs84Mapper rijksdriehoekToWgs84Mapper;
 
+    @Mock
+    private TrafficSignToDtoMapper trafficSignToDtoMapper;
+
     @InjectMocks
-    private NwbRoadSectionToLinkMapper nwbRoadSectionToLinkMapper;
+    private NwbRoadSectionToLinkMapperImpl nwbRoadSectionToLinkMapper;
 
     @Mock
     private LineString lineString;
@@ -41,40 +47,115 @@ class NwbRoadSectionToLinkMapperTest {
     @Mock
     private LineString lineStringRijksdriehoek;
 
+    @Mock
+    private List<TrafficSignJsonDtoV3> trafficSignJsonDtoV3s;
+    @Mock
+    private TrafficSignAccessibilityDto trafficSignAccessibilityDto;
+
+    @Mock
+    private DirectionalDto<Boolean> carAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> hgvAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> busAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> hgvAndBusAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> tractorAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> slowVehicleAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> trailerAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> motorcycleAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> motorVehicleAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> lcvAndHgvAccessForbidden;
+    @Mock
+    private DirectionalDto<Double> maxLength;
+    @Mock
+    private DirectionalDto<Double> maxWidth;
+    @Mock
+    private DirectionalDto<Double> maxHeight;
+    @Mock
+    private DirectionalDto<Double> maxAxleLoad;
+    @Mock
+    private DirectionalDto<Double> maxWeight;
+
+
+
     @BeforeEach
     void setUp() {
         when(lineString.getLength()).thenReturn(GEOMETRY_LENGTH);
         when(rijksdriehoekToWgs84Mapper.map(lineString)).thenReturn(lineStringRijksdriehoek);
+        when(trafficSignToDtoMapper.map(trafficSignJsonDtoV3s)).thenReturn(trafficSignAccessibilityDto);
+
+        when(trafficSignAccessibilityDto.getCarAccessForbidden()).thenReturn(carAccessForbidden);
+        when(trafficSignAccessibilityDto.getHgvAccessForbidden()).thenReturn(hgvAccessForbidden);
+        when(trafficSignAccessibilityDto.getBusAccessForbidden()).thenReturn(busAccessForbidden);
+        when(trafficSignAccessibilityDto.getHgvAndBusAccessForbidden()).thenReturn(hgvAndBusAccessForbidden);
+        when(trafficSignAccessibilityDto.getTractorAccessForbidden()).thenReturn(tractorAccessForbidden);
+        when(trafficSignAccessibilityDto.getSlowVehicleAccessForbidden()).thenReturn(slowVehicleAccessForbidden);
+        when(trafficSignAccessibilityDto.getTrailerAccessForbidden()).thenReturn(trailerAccessForbidden);
+        when(trafficSignAccessibilityDto.getMotorcycleAccessForbidden()).thenReturn(motorcycleAccessForbidden);
+        when(trafficSignAccessibilityDto.getMotorVehicleAccessForbidden()).thenReturn(motorVehicleAccessForbidden);
+        when(trafficSignAccessibilityDto.getMaxLength()).thenReturn(maxLength);
+        when(trafficSignAccessibilityDto.getMaxWidth()).thenReturn(maxWidth);
+        when(trafficSignAccessibilityDto.getMaxHeight()).thenReturn(maxHeight);
+        when(trafficSignAccessibilityDto.getMaxAxleLoad()).thenReturn(maxAxleLoad);
+        when(trafficSignAccessibilityDto.getMaxWeight()).thenReturn(maxWeight);
+        when(trafficSignAccessibilityDto.getLcvAndHgvAccessForbidden()).thenReturn(lcvAndHgvAccessForbidden);
     }
+
 
     @Test
     void map_ok() {
-        Link link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_FORWARD));
+        AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_FORWARD),
+                trafficSignJsonDtoV3s);
 
         assertEquals(ROAD_SECTION_ID, link.getId());
         assertEquals(JUNCTION_ID_FROM, link.getFromNodeId());
         assertEquals(JUNCTION_ID_TO, link.getToNodeId());
-        assertEquals(DEFAULT_SPEED_KMH, link.getSpeedInKilometersPerHour());
-        assertEquals(NO_ACCESS_SPEED_KMH, link.getReverseSpeedInKilometersPerHour());
+        assertTrue(link.getAccessibility().forward());
+        assertFalse(link.getAccessibility().reverse());
         assertEquals(GEOMETRY_LENGTH, link.getDistanceInMeters());
         assertEquals(lineStringRijksdriehoek, link.getGeometry());
-        assertEquals(Map.of(LinkTag.MUNICIPALITY_CODE.getLabel(), 307), link.getTags());
+        assertEquals(307, link.getMunicipalityCode());
+
+        assertEquals(carAccessForbidden, link.getCarAccessForbidden());
+        assertEquals(hgvAccessForbidden, link.getHgvAccessForbidden());
+        assertEquals(busAccessForbidden, link.getBusAccessForbidden());
+        assertEquals(hgvAndBusAccessForbidden, link.getHgvAndBusAccessForbidden());
+        assertEquals(tractorAccessForbidden, link.getTractorAccessForbidden());
+        assertEquals(slowVehicleAccessForbidden, link.getSlowVehicleAccessForbidden());
+        assertEquals(trailerAccessForbidden, link.getTrailerAccessForbidden());
+        assertEquals(motorcycleAccessForbidden, link.getMotorcycleAccessForbidden());
+        assertEquals(motorVehicleAccessForbidden, link.getMotorVehicleAccessForbidden());
+        assertEquals(maxLength, link.getMaxLength());
+        assertEquals(maxWidth, link.getMaxWidth());
+        assertEquals(maxHeight, link.getMaxHeight());
+        assertEquals(maxAxleLoad, link.getMaxAxleLoad());
+        assertEquals(maxWeight, link.getMaxWeight());
+        assertEquals(lcvAndHgvAccessForbidden, link.getLcvAndHgvAccessForbidden());
     }
 
     @Test
     void map_ok_drivingDirectionBackward() {
-        Link link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_BACKWARD));
+        AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_BACKWARD),
+                trafficSignJsonDtoV3s);
 
-        assertEquals(NO_ACCESS_SPEED_KMH, link.getSpeedInKilometersPerHour());
-        assertEquals(DEFAULT_SPEED_KMH, link.getReverseSpeedInKilometersPerHour());
+        assertFalse(link.getAccessibility().forward());
+        assertTrue(link.getAccessibility().reverse());
     }
 
     @Test
     void map_ok_drivingDirectionBoth() {
-        Link link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_BOTH));
+        AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_BOTH),
+                trafficSignJsonDtoV3s);
 
-        assertEquals(DEFAULT_SPEED_KMH, link.getSpeedInKilometersPerHour());
-        assertEquals(DEFAULT_SPEED_KMH, link.getReverseSpeedInKilometersPerHour());
+        assertTrue(link.getAccessibility().forward());
+        assertTrue(link.getAccessibility().reverse());
     }
 
     private NwbRoadSectionDto createRoadSectionDto(String drivingDirection) {

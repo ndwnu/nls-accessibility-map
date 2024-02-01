@@ -1,16 +1,13 @@
 package nu.ndw.nls.accessibilitymap.jobs.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,13 +18,12 @@ import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityLinkService.Access
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToLinkTagMapper;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService.TrafficSignData;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignData;
+import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.data.api.nwb.dtos.NwbVersionDto;
 import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
-import nu.ndw.nls.routingmapmatcher.domain.model.Link;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,20 +49,19 @@ class AccessibilityLinkServiceTest {
     private NwbRoadSectionService nwbRoadSectionService;
     @Mock
     private NwbRoadSectionToLinkMapper nwbRoadSectionToLinkMapper;
-    @Mock
-    private TrafficSignToLinkTagMapper trafficSignToLinkTagMapper;
 
     @InjectMocks
     private AccessibilityLinkService accessibilityLinkService;
 
     @Mock
-    private Link roadSection1link;
+    private AccessibilityLink roadSection1link;
 
     @Mock
-    private Link roadSection2link;
+    private AccessibilityLink roadSection2link;
 
     @Mock
-    private Link roadSection3link;
+    private AccessibilityLink roadSection3link;
+
 
     @Test
     void getLinks_ok() {
@@ -99,20 +94,15 @@ class AccessibilityLinkServiceTest {
                 Optional.of(NwbVersionDto.builder().versionId(NWB_VERSION_ID).build()));
         when(nwbRoadSectionService.findLazyCar(NWB_VERSION_ID)).thenReturn(roadSectionStream);
 
-        when(nwbRoadSectionToLinkMapper.map(roadSection1)).thenReturn(roadSection1link);
-        when(nwbRoadSectionToLinkMapper.map(roadSection2)).thenReturn(roadSection2link);
-        when(nwbRoadSectionToLinkMapper.map(roadSection3)).thenReturn(roadSection3link);
+        when(nwbRoadSectionToLinkMapper.map(roadSection1, List.of(trafficSign1, trafficSign2))).thenReturn(roadSection1link);
+        when(nwbRoadSectionToLinkMapper.map(roadSection2, Collections.emptyList())).thenReturn(roadSection2link);
+        when(nwbRoadSectionToLinkMapper.map(roadSection3, List.of(trafficSign3))).thenReturn(roadSection3link);
 
         AccessibilityLinkData result = accessibilityLinkService.getLinks();
 
         assertEquals(List.of(roadSection1link, roadSection2link, roadSection3link), result.links());
         assertEquals(NWB_VERSION_ID, result.nwbVersionId());
         assertEquals(MAX_EVENT_TIMESTAMP, result.trafficSignTimestamp());
-
-        verify(trafficSignToLinkTagMapper).setLinkTags(roadSection1link, List.of(trafficSign1, trafficSign2));
-        verify(trafficSignToLinkTagMapper, never()).setLinkTags(eq(roadSection2link), anyList());
-        verify(trafficSignToLinkTagMapper).setLinkTags(roadSection3link, List.of(trafficSign3));
-        verify(trafficSignToLinkTagMapper, never()).setLinkTags(any(Link.class), eq(List.of(trafficSign4)));
 
         // Verify stream closure
         verify(roadSectionStream).close();

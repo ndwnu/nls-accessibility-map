@@ -1,34 +1,42 @@
 package nu.ndw.nls.accessibilitymap.jobs.nwb.mappers;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignAccessibilityDto;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToDtoMapper;
+import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
-import nu.ndw.nls.routingmapmatcher.domain.model.Link;
-import nu.ndw.nls.routingmapmatcher.domain.model.LinkTag;
-import org.springframework.stereotype.Component;
+import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Component
-@RequiredArgsConstructor
-public class NwbRoadSectionToLinkMapper {
+@Mapper(componentModel = "spring", uses = RijksdriehoekToWgs84Mapper.class)
+public abstract class NwbRoadSectionToLinkMapper {
 
     private static final String BACKWARD = "T";
     private static final String FORWARD = "H";
-    private static final int NO_ACCESS_SPEED = 0;
-    private static final int DEFAULT_SPEED = 50;
 
-    private final RijksdriehoekToWgs84Mapper rijksdriehoekToWgs84Mapper;
+    @Autowired
+    private TrafficSignToDtoMapper trafficSignToDtoMapper;
 
-    public Link map(NwbRoadSectionDto roadSectionDto) {
-        String drivingDirection = roadSectionDto.getDrivingDirection();
-        Link link = Link.builder()
-                .id(roadSectionDto.getRoadSectionId())
-                .fromNodeId(roadSectionDto.getJunctionIdFrom())
-                .toNodeId(roadSectionDto.getJunctionIdTo())
-                .speedInKilometersPerHour(BACKWARD.equals(drivingDirection) ? NO_ACCESS_SPEED : DEFAULT_SPEED)
-                .reverseSpeedInKilometersPerHour(FORWARD.equals(drivingDirection) ? NO_ACCESS_SPEED : DEFAULT_SPEED)
-                .distanceInMeters(roadSectionDto.getGeometry().getLength())
-                .geometry(rijksdriehoekToWgs84Mapper.map(roadSectionDto.getGeometry()))
-                .build();
-        link.setTag(LinkTag.MUNICIPALITY_CODE, roadSectionDto.getMunicipalityId());
-        return link;
+    public AccessibilityLink map(NwbRoadSectionDto roadSectionDto, List<TrafficSignJsonDtoV3> trafficSigns) {
+        return this.map(roadSectionDto, trafficSignToDtoMapper.map(trafficSigns));
     }
+
+    @Mapping(source = "roadSection.roadSectionId", target = "id")
+    @Mapping(source = "roadSection.junctionIdFrom", target = "fromNodeId")
+    @Mapping(source = "roadSection.junctionIdTo", target = "toNodeId")
+    @Mapping(source = "roadSection.geometry.length", target = "distanceInMeters")
+    @Mapping(source = "roadSection.municipalityId", target = "municipalityCode")
+    @Mapping(source = "roadSection.drivingDirection", target = "accessibility")
+    protected abstract AccessibilityLink map(NwbRoadSectionDto roadSection, TrafficSignAccessibilityDto accessibility);
+
+    protected DirectionalDto<Boolean> getAccessibility(String drivingDirection) {
+        return DirectionalDto.<Boolean>builder()
+                .forward(!BACKWARD.equals(drivingDirection))
+                .reverse(!FORWARD.equals(drivingDirection))
+                .build();
+    }
+
 }

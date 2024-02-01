@@ -1,17 +1,18 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
-import nu.ndw.nls.routingmapmatcher.domain.SinglePointMapMatcher;
-import nu.ndw.nls.routingmapmatcher.domain.model.singlepoint.SinglePointLocation;
-import nu.ndw.nls.routingmapmatcher.domain.model.singlepoint.SinglePointMatch;
-import nu.ndw.nls.routingmapmatcher.domain.model.singlepoint.SinglePointMatch.CandidateMatch;
-import nu.ndw.nls.routingmapmatcher.graphhopper.NetworkGraphHopper;
+import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointLocation;
+import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch;
+import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import nu.ndw.nls.routingmapmatcher.singlepoint.SinglePointMapMatcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +46,7 @@ class PointMatchServiceTest {
 
     @BeforeEach
     void setUp() {
-        when(singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper))
+        when(singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, PROFILE.getName()))
                 .thenReturn(singlePointMapMatcher);
         pointMatchService = new PointMatchService(singlePointMapMatcherMapMatcherFactory, networkGraphHopper);
     }

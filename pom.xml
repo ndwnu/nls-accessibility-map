@@ -17,6 +17,7 @@
     <description>REST API to determine accessible road sections for a given vehicle type</description>
     <modules>
         <module>specification</module>
+        <module>shared</module>
         <module>backend</module>
         <module>jobs</module>
     </modules>
@@ -42,7 +43,7 @@
         <nls-events.version>3.6.1</nls-events.version>
         <nls-nwb-data-access.version>4.2.6</nls-nwb-data-access.version>
         <nls-springboot.version>3.2.8</nls-springboot.version>
-        <routing-map-matcher.version>7.7.6</routing-map-matcher.version>
+        <routing-map-matcher.version>8.0.1</routing-map-matcher.version>
     </properties>
 
     <distributionManagement>
@@ -208,7 +209,7 @@
 
             <dependency>
                 <groupId>nu.ndw.nls</groupId>
-                <artifactId>routing-map-matcher-spring-boot</artifactId>
+                <artifactId>routing-map-matcher-library</artifactId>
                 <version>${routing-map-matcher.version}</version>
             </dependency>
         </dependencies>
@@ -294,7 +295,7 @@
                         <dependency>
                             <groupId>nu.ndw.nls.accessibilitymap</groupId>
                             <artifactId>specification</artifactId>
-                            <version>1.0.40-SNAPSHOT</version>
+                            <version>${project.parent.version}</version>
                         </dependency>
                     </dependencies>
 

@@ -37,8 +37,7 @@ class MunicipalityServiceTest {
         when(municipalityProperties.getMunicipalities())
                 .thenReturn(Map.of("GM001", MUNICIPALITY));
         MunicipalityNotFoundException municipalityNotFoundException = assertThrows(MunicipalityNotFoundException.class,
-                () -> municipalityService
-                        .getMunicipalityById(MUNICIPALITY_ID));
+                () -> municipalityService.getMunicipalityById(MUNICIPALITY_ID));
         assertThat(municipalityNotFoundException.getMessage())
                 .isEqualTo("The municipality with id: GM0307 cannot be found");
     }

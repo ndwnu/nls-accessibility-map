@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
-import static nu.ndw.nls.routingmapmatcher.constants.GlobalConstants.WGS84_GEOMETRY_FACTORY;
+
+import static nu.ndw.nls.routingmapmatcher.util.GeometryConstants.WGS84_GEOMETRY_FACTORY;
 
 import java.util.Objects;
 import org.locationtech.jts.geom.Coordinate;
