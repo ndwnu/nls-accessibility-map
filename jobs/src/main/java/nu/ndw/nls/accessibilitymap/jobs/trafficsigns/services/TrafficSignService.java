@@ -45,7 +45,9 @@ public class TrafficSignService {
     }
 
     private boolean hasRoadSectionId(TrafficSignJsonDtoV3 t) {
-        return t.getLocation().getRoad() != null && t.getLocation().getRoad().getRoadSectionId() != null;
+        return t.getLocation() != null &&
+                t.getLocation().getRoad() != null &&
+                t.getLocation().getRoad().getRoadSectionId() != null;
     }
 
 }
