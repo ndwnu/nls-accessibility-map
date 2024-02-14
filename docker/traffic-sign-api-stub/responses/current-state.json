@@ -1,5 +1,177 @@
 [
   {
+    "id": 1,
+    "ndw_id": "010221c8-c4ba-4e88-ad3a-1127a46495bb",
+    "type": "updated",
+    "schema_version": "3.0",
+    "validated": "n",
+    "rvv_code": "C12",
+    "zone_code": "ZB",
+    "text_signs": [
+      {
+        "type": "TIJD",
+        "text": "ma t/m vr 07.00-09.30 b uitgezonderd antheffingbouders en landbouwvdertulg-controle"
+      }
+    ],
+    "location": {
+      "wgs84": {
+        "latitude": "52.154982361918",
+        "longitude": "5.4574392250096"
+      },
+      "rd": {
+        "x": "159806.359",
+        "y": "462980.971"
+      },
+      "placement": "L",
+      "side": "W",
+      "bearing": 270,
+      "road": {
+        "name": "Stoutenburgerlaan",
+        "wvk_id": "1",
+        "nwb_version": "2023-11-01"
+      },
+      "county": {
+        "name": "Amersfoort",
+        "code": "GM0307",
+        "townname": "Stoutenburg Noord"
+      }
+    },
+    "details": {
+      "first_seen": "2016-06-10",
+      "last_seen": "2023-12-03"
+    },
+    "publication_timestamp": "2023-12-03T21:54:58.141Z"
+  },
+  {
+    "id": 2,
+    "ndw_id": "010221c8-c4ba-4e88-ad3a-1127a46495bb",
+    "type": "updated",
+    "schema_version": "3.0",
+    "validated": "n",
+    "rvv_code": "C12",
+    "zone_code": "ZE",
+    "text_signs": [
+      {
+        "type": "TIJD",
+        "text": "ma t/m vr 07.00-09.30 b uitgezonderd antheffingbouders en landbouwvdertulg-controle"
+      }
+    ],
+    "location": {
+      "wgs84": {
+        "latitude": "52.154982361918",
+        "longitude": "5.4574392250096"
+      },
+      "rd": {
+        "x": "159806.359",
+        "y": "462980.971"
+      },
+      "placement": "L",
+      "side": "W",
+      "bearing": 270,
+      "road": {
+        "name": "Stoutenburgerlaan",
+        "wvk_id": "2",
+        "nwb_version": "2023-11-01"
+      },
+      "county": {
+        "name": "Amersfoort",
+        "code": "GM0307",
+        "townname": "Stoutenburg Noord"
+      }
+    },
+    "details": {
+      "first_seen": "2016-06-10",
+      "last_seen": "2023-12-03"
+    },
+    "publication_timestamp": "2023-12-03T21:54:58.141Z"
+  },
+  {
+    "id": 3,
+    "ndw_id": "010221c8-c4ba-4e88-ad3a-1127a46495bb",
+    "type": "updated",
+    "schema_version": "3.0",
+    "validated": "n",
+    "rvv_code": "C12",
+    "zone_code": "ZH",
+    "text_signs": [
+      {
+        "type": "TIJD",
+        "text": "ma t/m vr 07.00-09.30 b uitgezonderd antheffingbouders en landbouwvdertulg-controle"
+      }
+    ],
+    "location": {
+      "wgs84": {
+        "latitude": "52.154982361918",
+        "longitude": "5.4574392250096"
+      },
+      "rd": {
+        "x": "159806.359",
+        "y": "462980.971"
+      },
+      "placement": "L",
+      "side": "W",
+      "bearing": 270,
+      "road": {
+        "name": "Stoutenburgerlaan",
+        "wvk_id": "3",
+        "nwb_version": "2023-11-01"
+      },
+      "county": {
+        "name": "Amersfoort",
+        "code": "GM0307",
+        "townname": "Stoutenburg Noord"
+      }
+    },
+    "details": {
+      "first_seen": "2016-06-10",
+      "last_seen": "2023-12-03"
+    },
+    "publication_timestamp": "2023-12-03T21:54:58.141Z"
+  },
+  {
+    "id": 4,
+    "ndw_id": "010221c8-c4ba-4e88-ad3a-1127a46495bb",
+    "type": "updated",
+    "schema_version": "3.0",
+    "validated": "n",
+    "rvv_code": "C12",
+    "zone_code": "ZO",
+    "text_signs": [
+      {
+        "type": "TIJD",
+        "text": "ma t/m vr 07.00-09.30 b uitgezonderd antheffingbouders en landbouwvdertulg-controle"
+      }
+    ],
+    "location": {
+      "wgs84": {
+        "latitude": "52.154982361918",
+        "longitude": "5.4574392250096"
+      },
+      "rd": {
+        "x": "159806.359",
+        "y": "462980.971"
+      },
+      "placement": "L",
+      "side": "W",
+      "bearing": 270,
+      "road": {
+        "name": "Stoutenburgerlaan",
+        "wvk_id": "4",
+        "nwb_version": "2023-11-01"
+      },
+      "county": {
+        "name": "Amersfoort",
+        "code": "GM0307",
+        "townname": "Stoutenburg Noord"
+      }
+    },
+    "details": {
+      "first_seen": "2016-06-10",
+      "last_seen": "2023-12-03"
+    },
+    "publication_timestamp": "2023-12-03T21:54:58.141Z"
+  },
+  {
     "id": 9459085,
     "ndw_id": "010221c8-c4ba-4e88-ad3a-1127a46495bb",
     "type": "updated",

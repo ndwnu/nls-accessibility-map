@@ -9,6 +9,6 @@ import org.springframework.stereotype.Component;
 public class NotZoneEndsFilterPredicate implements TrafficSignToDtoMapper.TrafficSignIncludedFilterPredicate {
     @Override
     public boolean test(TrafficSignJsonDtoV3 trafficSignJsonDtoV3) {
-        return trafficSignJsonDtoV3.getZoneCode() != ZoneCode.ZONE_ENDS;
+        return trafficSignJsonDtoV3.getZoneCode() != ZoneCode.END;
     }
 }

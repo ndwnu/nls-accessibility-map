@@ -7,7 +7,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ZoneCode {
     @JsonProperty("ZB")
-    ZONE_BEGINS,
+    BEGIN,
     @JsonProperty("ZE")
-    ZONE_ENDS;
+    END,
+    @JsonProperty("ZH")
+    REPEAT,
+    @JsonProperty("ZO")
+    UNKNOWN;
 }
