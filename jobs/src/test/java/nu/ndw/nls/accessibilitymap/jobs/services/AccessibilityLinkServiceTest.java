@@ -15,12 +15,13 @@ import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbRoadSectionService;
 import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityLinkService.AccessibilityLinkData;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.LocationJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.RoadJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignData;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.TrafficSignMapperRegistry;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.LocationJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.RoadJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.data.api.nwb.dtos.NwbVersionDto;
 import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
@@ -62,6 +63,11 @@ class AccessibilityLinkServiceTest {
     @Mock
     private AccessibilityLink roadSection3link;
 
+    @Mock
+    private TrafficSignMapperRegistry trafficSignMapperRegistry;
+
+    @Mock
+    private java.util.Set<String> rvvCodesSet;
 
     @Test
     void getLinks_ok() {
@@ -87,8 +93,9 @@ class AccessibilityLinkServiceTest {
 
         // Spy on stream, so we can verify it gets closed
         Stream<NwbRoadSectionDto> roadSectionStream = spy(roadSections.stream());
+        when(trafficSignMapperRegistry.getIncludedRvvCodes()).thenReturn(rvvCodesSet);
 
-        when(trafficSignService.getTrafficSigns()).thenReturn(
+        when(trafficSignService.getTrafficSigns(rvvCodesSet)).thenReturn(
                 new TrafficSignData(trafficSignsByRoadSectionId, MAX_NWB_REFERENCE_DATE, MAX_EVENT_TIMESTAMP));
         when(nwbVersionService.findLatestByReferenceDate(MAX_NWB_REFERENCE_DATE)).thenReturn(
                 Optional.of(NwbVersionDto.builder().versionId(NWB_VERSION_ID).build()));

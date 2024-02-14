@@ -36,7 +36,7 @@ import org.springframework.test.context.ContextConfiguration;
 class NlsAccessibilityMapJobsIT {
 
     private static final String PROPERTIES = "properties";
-    private static final Instant EXPECTED_DATA_DATE = Instant.parse("2023-11-10T13:51:59Z");
+    private static final Instant EXPECTED_DATA_DATE = Instant.parse("2024-01-30T15:23:14Z");
 
     // Mocking this bean to prevent stderr output about missing PicoCLI commands when running IT
     @MockBean

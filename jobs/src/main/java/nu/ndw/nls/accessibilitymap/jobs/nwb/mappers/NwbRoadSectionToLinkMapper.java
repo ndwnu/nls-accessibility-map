@@ -1,10 +1,10 @@
 package nu.ndw.nls.accessibilitymap.jobs.nwb.mappers;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignAccessibilityDto;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.mappers.TrafficSignToDtoMapper;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.TrafficSignToDtoMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import org.mapstruct.Mapper;

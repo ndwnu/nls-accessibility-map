@@ -6,9 +6,10 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbRoadSectionService;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.services.TrafficSignService;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsigns.dtos.TrafficSignData;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.TrafficSignMapperRegistry;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,12 @@ public class AccessibilityLinkService {
     private final NwbVersionCrudService nwbVersionService;
     private final NwbRoadSectionService nwbRoadSectionService;
     private final NwbRoadSectionToLinkMapper nwbRoadSectionToLinkMapper;
+    private final TrafficSignMapperRegistry trafficSignMapperRegistry;
 
     @Transactional(readOnly = true)
     public AccessibilityLinkData getLinks() {
-        TrafficSignData trafficSignData = trafficSignService.getTrafficSigns();
+        TrafficSignData trafficSignData = trafficSignService.getTrafficSigns(
+                trafficSignMapperRegistry.getIncludedRvvCodes());
         int nwbVersionId = nwbVersionService.findLatestByReferenceDate(trafficSignData.maxNwbReferenceDate())
                 .orElseThrow(() -> new IllegalStateException("NWB version " + trafficSignData.maxNwbReferenceDate()
                         + " from traffic signs response not found in database"))
