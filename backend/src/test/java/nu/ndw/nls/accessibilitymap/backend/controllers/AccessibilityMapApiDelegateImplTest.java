@@ -40,9 +40,9 @@ class AccessibilityMapApiDelegateImplTest {
     private static final float VEHICLE_WEIGHT = 4F;
     private static final float VEHICLE_AXLE_LOAD = 5F;
     private static final String MUNICIPALITY_ID = "GM0344";
-    public static final int REQUESTED_ROAD_SECTION_ID = 123;
-    public static final double REQUESTED_LONGITUDE = 3333;
-    public static final double REQUESTED_LATITUDE = 222;
+    private static final int REQUESTED_ROAD_SECTION_ID = 123;
+    private static final double REQUESTED_LONGITUDE = 3333;
+    private static final double REQUESTED_LATITUDE = 222;
 
     @Captor
     private ArgumentCaptor<VehicleArguments> vehicleArgumentsArgumentCaptor;

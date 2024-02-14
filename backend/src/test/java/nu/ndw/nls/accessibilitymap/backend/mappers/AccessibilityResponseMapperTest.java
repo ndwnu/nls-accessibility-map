@@ -20,11 +20,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AccessibilityResponseMapperTest {
 
-    public static final int ID_A = 1;
-    public static final int ID_B = 2;
-    public static final int ID_C = 3;
-    public static final int ID_D = 4;
-    public static final int ID_REQUESTED = 5;
+    private static final int ID_A = 1;
+    private static final int ID_B = 2;
+    private static final int ID_C = 3;
+    private static final int ID_D = 4;
+    private static final int ID_REQUESTED = 5;
     @Mock
     private RoadSectionJsonResponseMapper roadSectionJsonResponseMapper;
 

@@ -25,7 +25,7 @@ class ErrorHandlerControllerTest {
 
     private static final String MESSAGE = "test";
     private static final String PATH = "path";
-    public static final String PROPERTY_NAME = "propertyName";
+    private static final String PROPERTY_NAME = "propertyName";
     private ErrorHandlerController errorHandlerController;
 
 

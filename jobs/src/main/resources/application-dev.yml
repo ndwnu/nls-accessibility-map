@@ -5,12 +5,11 @@ nu:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
       accessibilitymap:
-        jobs:
-          trafficsigns:
-            api:
-              base-url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v3
-              current-state-path: /current-state
-              town-code: GM0307
+        trafficsignclient:
+          api:
+            base-url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v3
+            current-state-path: /current-state
+            town-code: GM0307
 
 logging:
   level:

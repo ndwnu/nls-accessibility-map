@@ -19,6 +19,7 @@
         <module>specification</module>
         <module>shared</module>
         <module>backend</module>
+        <module>trafficsignclient</module>
         <module>jobs</module>
     </modules>
 
