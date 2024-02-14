@@ -62,5 +62,10 @@ diff -Naur  original.json current-state.json > driving_direction.patch
 ```
 that can be used to patch your response, assuming that the road section id of the used roads still exist.
 
+The sample set also did not contain zone codes, therefor 4 road sections have been added with:
+ - Unused road section id's 
+ - All different zone codes
 
+This patch will add them:
+[zone-codes.patch](docker%2Ftraffic-sign-api-stub%2Fsourcecode%2Fzone-codes.patch)
 

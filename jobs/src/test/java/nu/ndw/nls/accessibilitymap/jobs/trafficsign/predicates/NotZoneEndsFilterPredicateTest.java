@@ -22,7 +22,7 @@ class NotZoneEndsFilterPredicateTest {
 
     @Test
     void test_ok_includingZoneBegins() {
-        when(trafficSignJsonDtoV3.getZoneCode()).thenReturn(ZoneCode.ZONE_BEGINS);
+        when(trafficSignJsonDtoV3.getZoneCode()).thenReturn(ZoneCode.BEGIN);
         assertTrue(notZoneEndsFilterPredicate.test(trafficSignJsonDtoV3));
         verify(trafficSignJsonDtoV3).getZoneCode();
     }
@@ -36,7 +36,7 @@ class NotZoneEndsFilterPredicateTest {
 
     @Test
     void test_ok_excludingZoneEnds() {
-        when(trafficSignJsonDtoV3.getZoneCode()).thenReturn(ZoneCode.ZONE_ENDS);
+        when(trafficSignJsonDtoV3.getZoneCode()).thenReturn(ZoneCode.END);
         assertFalse(notZoneEndsFilterPredicate.test(trafficSignJsonDtoV3));
         verify(trafficSignJsonDtoV3).getZoneCode();
     }
