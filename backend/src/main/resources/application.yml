@@ -30,8 +30,8 @@ management:
     health:
       probes:
         enabled: true
-  metrics:
-    tags:
+  observations:
+    key-values:
       service: ${spring.application.name}
 
 springdoc:
