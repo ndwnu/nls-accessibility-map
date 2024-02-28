@@ -1,20 +1,18 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
-import static java.util.Arrays.asList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.ResourceNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.APIErrorJson;
+import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -43,7 +41,6 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
                 .body(restError);
     }
 
-
     /**
      * Bad request handler for domain exceptions
      */
@@ -63,7 +60,7 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     public ResponseEntity<APIErrorJson> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException exception) {
         APIErrorJson restError = new APIErrorJson()
-                .message(exception.getPropertyName() + " " + exception.getMessage());
+                .message("'" + exception.getPropertyName() + "' " + exception.getMessage());
         return ResponseEntity.badRequest()
                 .body(restError);
     }
@@ -75,7 +72,6 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     public ResponseEntity<Void> handleAccessDenied(AccessDeniedException ignoredE) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
-
 
     /**
      * Municipality not found handler
@@ -97,11 +93,10 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
             ConstraintViolationException exception) {
         Stream<String> messageStream = exception.getConstraintViolations()
                 .stream()
-                .map(c -> parsePropertyPath(c.getPropertyPath()) + " " + c.getMessage());
+                .map(c -> "'" + parsePropertyPath(c.getPropertyPath()) + "' " + c.getMessage());
         APIErrorJson validationError = getAPIErrorJson(messageStream);
         return ResponseEntity.badRequest().contentType(APPLICATION_JSON).body(validationError);
     }
-
 
     private APIErrorJson getAPIErrorJson(Stream<String> messageStream) {
         return new APIErrorJson()
@@ -114,9 +109,8 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     private static String parsePropertyPath(Path propertyPath) {
         if (propertyPath == null) {
             return "";
-        } else if (propertyPath.toString().contains(".")) {
-            List<String> pathElements = asList(propertyPath.toString().split("\\."));
-            return pathElements.get(pathElements.size() - 1);
+        } else if (propertyPath instanceof PathImpl pathImpl) {
+            return pathImpl.getLeafNode().asString();
         } else {
             return propertyPath.toString();
         }
