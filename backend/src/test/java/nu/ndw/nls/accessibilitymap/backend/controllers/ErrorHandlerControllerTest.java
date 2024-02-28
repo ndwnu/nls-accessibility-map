@@ -6,13 +6,14 @@ import static org.mockito.Mockito.when;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
-import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.APIErrorJson;
-import org.junit.jupiter.api.BeforeEach;
+import org.hibernate.validator.internal.engine.path.NodeImpl;
+import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -26,35 +27,31 @@ class ErrorHandlerControllerTest {
     private static final String MESSAGE = "test";
     private static final String PATH = "path";
     private static final String PROPERTY_NAME = "propertyName";
-    private ErrorHandlerController errorHandlerController;
 
+    @InjectMocks
+    private ErrorHandlerController errorHandlerController;
 
     @Mock
     private ConstraintViolationException constraintViolationException;
-
     @Mock
-    private ConstraintViolation constraintViolation;
-
+    private ConstraintViolation<?> constraintViolation;
     @Mock
-    private MethodArgumentTypeMismatchException methodArgumentTypeMismatchException;
-
+    private PathImpl pathImpl;
+    @Mock
+    private NodeImpl nodeImpl;
     @Mock
     private Path path;
 
-    @BeforeEach
-    void setup() {
-        errorHandlerController = new ErrorHandlerController();
-    }
+    @Mock
+    private MethodArgumentTypeMismatchException methodArgumentTypeMismatchException;
 
     @Test
     void handleInternalServerErrorException_ok() {
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleInternalServerErrorException(new Exception(MESSAGE));
-
-        assertThat(response.getStatusCode())
-                .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        assertThat(Objects.requireNonNull(response.getBody()).getMessage())
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getMessage())
                 .isEqualTo("An internal server error occurred while processing this request");
     }
 
@@ -62,19 +59,15 @@ class ErrorHandlerControllerTest {
     void handleBadRequestException_ok() {
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleBadRequestException(new RuntimeException(MESSAGE));
-        assertThat(response.getStatusCode())
-                .isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(Objects.requireNonNull(response.getBody()).getMessage())
-                .isEqualTo(MESSAGE);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getMessage()).isEqualTo(MESSAGE);
     }
 
     @Test
     void handleAccessDenied_ok() {
-        ResponseEntity<Void> response = errorHandlerController
-                .handleAccessDenied(new AccessDeniedException(MESSAGE));
-        assertThat(response.getStatusCode())
-                .isEqualTo(HttpStatus.FORBIDDEN);
-
+        ResponseEntity<Void> response = errorHandlerController.handleAccessDenied(new AccessDeniedException(MESSAGE));
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -83,32 +76,53 @@ class ErrorHandlerControllerTest {
         when(methodArgumentTypeMismatchException.getMessage()).thenReturn(MESSAGE);
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleMethodArgumentTypeMismatchException(methodArgumentTypeMismatchException);
-        assertThat(response.getStatusCode())
-                .isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(Objects.requireNonNull(response.getBody()).getMessage())
-                .isEqualTo(PROPERTY_NAME + " " + MESSAGE);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getMessage()).isEqualTo("'" + PROPERTY_NAME + "' " + MESSAGE);
     }
 
     @Test
     void handleNotFoundException_ok() {
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleNotFoundException(new MunicipalityNotFoundException(MESSAGE));
-        assertThat(response.getStatusCode())
-                .isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(Objects.requireNonNull(response.getBody()).getMessage())
-                .isEqualTo(MESSAGE);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getMessage()).isEqualTo(MESSAGE);
     }
 
     @Test
-    void handleConstraintViolationException_ok() {
-        //noinspection unchecked
-        when(constraintViolationException.getConstraintViolations())
-                .thenReturn(Set.of(constraintViolation));
+    void handleConstraintViolationException_ok_pathNull() {
+        when(constraintViolation.getPropertyPath()).thenReturn(null);
+
+        handleConstraintViolationException_ok("");
+    }
+
+    @Test
+    void handleConstraintViolationException_ok_pathImplLeafNodeAsString() {
+        when(constraintViolation.getPropertyPath()).thenReturn(pathImpl);
+        when(pathImpl.getLeafNode()).thenReturn(nodeImpl);
+        when(nodeImpl.asString()).thenReturn(PATH);
+
+        handleConstraintViolationException_ok(PATH);
+    }
+
+    @Test
+    void handleConstraintViolationException_ok_pathToString() {
         when(constraintViolation.getPropertyPath()).thenReturn(path);
         when(path.toString()).thenReturn(PATH);
+
+        handleConstraintViolationException_ok(PATH);
+    }
+
+    private void handleConstraintViolationException_ok(String path) {
+        when(constraintViolationException.getConstraintViolations()).thenReturn(Set.of(constraintViolation));
         when(constraintViolation.getMessage()).thenReturn(MESSAGE);
+
         ResponseEntity<APIErrorJson> response = errorHandlerController.handleConstraintViolationException(
                 constraintViolationException);
-        assertThat(Objects.requireNonNull(response.getBody()).getMessage()).isEqualTo(PATH + " " + MESSAGE);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getMessage()).isEqualTo("'" + path + "' " + MESSAGE);
     }
 }
