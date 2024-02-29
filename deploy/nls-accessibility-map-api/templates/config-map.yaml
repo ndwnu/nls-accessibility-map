@@ -6,7 +6,7 @@ metadata:
 data:
   JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/
   LOGGING_CONFIG: logback-deploy.xml
-  MANAGEMENT_METRICS_TAGS_ENVIRONMENT: {{ .Values.environment }}
+  MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
   NLS_OAUTH2_JWTRESOURCEPROPERTY: app-{{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_MAIN_BANNER_MODE: 'off'

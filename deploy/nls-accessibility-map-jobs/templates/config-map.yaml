@@ -6,7 +6,7 @@ data:
   JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/ -Dorg.jooq.no-tips=true
   LOGGING_CONFIG: logback-deploy.xml
   LOGGING_LEVEL_NU_NDW_NLS_ACCESSIBILITYMAP: {{ .Values.application.loggingLevelNuNdwNlsAccessibilityMap }}
-  MANAGEMENT_METRICS_TAGS_ENVIRONMENT: {{ .Values.environment }}
+  MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
   SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_DATASOURCE_URL: jdbc:postgresql://{{ .Values.application.databaseHost }}/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
   SPRING_DATASOURCE_USERNAME: nls

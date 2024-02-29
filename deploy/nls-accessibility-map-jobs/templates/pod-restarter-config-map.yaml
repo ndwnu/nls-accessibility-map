@@ -5,7 +5,7 @@ metadata:
 data:
   JAVA_TOOL_OPTIONS: '-XX:MaxRAMPercentage=70'
   LOGGING_CONFIG: 'logback-deploy.xml'
-  MANAGEMENT_METRICS_TAGS_ENVIRONMENT: {{ .Values.environment }}
+  MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
   SPRING_MAIN_BANNER_MODE: 'OFF'
   RABBITMQ_EVENTTYPE: 'accessibility-routing-network-updated'
   RABBITMQ_EXCHANGENAME: 'eventbus'
