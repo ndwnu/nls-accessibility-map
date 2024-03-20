@@ -103,7 +103,7 @@ class IsochroneServiceTest {
             return null;
         }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
         when(isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY, queryGraph,
-                startSegment)).thenReturn(
+                startSegment.getClosestEdge())).thenReturn(
                 IsochroneMatch.builder().build());
         wrapWithStaticMock(
                 () -> isochroneService.getIsochroneMatchesByMunicipalityId(weighting, point, MUNICIPALITY_ID,
