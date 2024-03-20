@@ -11,8 +11,6 @@ import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.RoutingMapMatcherConfiguration;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import nu.ndw.nls.routingmapmatcher.network.model.LinkVehicleMapper;
-import nu.ndw.nls.routingmapmatcher.util.CrsTransformer;
-import nu.ndw.nls.routingmapmatcher.util.PointListUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
