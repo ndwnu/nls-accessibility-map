@@ -14,13 +14,13 @@ import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.routingmapmatcher.util.CrsTransformer;
+import nu.ndw.nls.routingmapmatcher.util.PointListUtil;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class IsochroneServiceFactory {
 
-    private final CrsTransformer crsTransformer;
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
     public IsochroneService createService(NetworkGraphHopper network) {
@@ -28,8 +28,8 @@ public class IsochroneServiceFactory {
         BaseGraph baseGraph = network.getBaseGraph();
         EncodingManager encodingManager = network.getEncodingManager();
 
-        IsochroneMatchMapper isochroneMatchMapper = new IsochroneMatchMapper(crsTransformer, encodingManager,
-                edgeIteratorStateReverseExtractor);
+        IsochroneMatchMapper isochroneMatchMapper = new IsochroneMatchMapper(encodingManager,
+                edgeIteratorStateReverseExtractor, new PointListUtil());
         Weighting weighting = network.createWeighting(PROFILE, new PMap());
         ShortestPathTreeFactory shortestPathTreeFactory = new ShortestPathTreeFactory(weighting);
         return new IsochroneService(encodingManager, baseGraph, isochroneMatchMapper, shortestPathTreeFactory,

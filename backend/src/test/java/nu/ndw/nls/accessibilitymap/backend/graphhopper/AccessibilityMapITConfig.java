@@ -12,6 +12,7 @@ import nu.ndw.nls.routingmapmatcher.RoutingMapMatcherConfiguration;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import nu.ndw.nls.routingmapmatcher.network.model.LinkVehicleMapper;
 import nu.ndw.nls.routingmapmatcher.util.CrsTransformer;
+import nu.ndw.nls.routingmapmatcher.util.PointListUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
@@ -23,10 +24,8 @@ class AccessibilityMapITConfig {
         RestrictionMapperProvider restrictionMapperProvider = new RestrictionMapperProvider();
         VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory = new VehicleRestrictionsModelFactory(
                 restrictionMapperProvider);
-        CrsTransformer crsTransformer = new CrsTransformer();
         EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor = new EdgeIteratorStateReverseExtractor();
-        IsochroneServiceFactory isochroneServiceFactory = new IsochroneServiceFactory(crsTransformer,
-                edgeIteratorStateReverseExtractor);
+        IsochroneServiceFactory isochroneServiceFactory = new IsochroneServiceFactory(edgeIteratorStateReverseExtractor);
         return new AccessibilityMapFactory(vehicleRestrictionsModelFactory, isochroneServiceFactory);
     }
 
