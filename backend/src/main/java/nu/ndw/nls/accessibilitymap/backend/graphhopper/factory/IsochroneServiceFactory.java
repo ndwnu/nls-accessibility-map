@@ -13,7 +13,6 @@ import nu.ndw.nls.accessibilitymap.backend.graphhopper.IsochroneService;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
-import nu.ndw.nls.routingmapmatcher.util.CrsTransformer;
 import nu.ndw.nls.routingmapmatcher.util.PointListUtil;
 import org.springframework.stereotype.Component;
 
