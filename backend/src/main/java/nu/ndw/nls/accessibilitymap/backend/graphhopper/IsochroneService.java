@@ -74,7 +74,7 @@ public class IsochroneService {
                 .filter(isoLabel -> getMunicipalityCode(isoLabel, queryGraph, idEnc) == municipalityId)
                 .map(isoLabel -> isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY,
                         queryGraph,
-                        startSegment))
+                        startSegment.getClosestEdge()))
                 .collect(Collectors.toSet());
     }
     private int getMunicipalityCode(IsoLabel isoLabel, QueryGraph queryGraph, IntEncodedValue idEnc) {
