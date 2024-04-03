@@ -106,10 +106,11 @@
                         </executions>
                         <configuration>
                             <arguments>
+                                <argument>compose</argument>
                                 <argument>--env-file</argument>
                                 <argument>../.env</argument>
                             </arguments>
-                            <executable>docker-compose</executable>
+                            <executable>docker</executable>
                         </configuration>
                     </plugin>
                 </plugins>
