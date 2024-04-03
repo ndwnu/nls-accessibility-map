@@ -264,7 +264,6 @@
                                     <arguments combine.children="append">
                                         <argument>down</argument>
                                     </arguments>
-                                    <executable>docker-compose</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -279,7 +278,6 @@
                                         <argument>-d</argument>
                                         <argument>nls-keycloak</argument>
                                     </arguments>
-                                    <executable>docker-compose</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -293,7 +291,6 @@
                                         <argument>build</argument>
                                         <argument>nls-accessibility-map-api</argument>
                                     </arguments>
-                                    <executable>docker-compose</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -308,7 +305,6 @@
                                         <argument>-d</argument>
                                         <argument>nls-accessibility-map-api</argument>
                                     </arguments>
-                                    <executable>docker-compose</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -326,10 +322,11 @@
                         </executions>
                         <configuration>
                             <arguments>
+                                <argument>compose</argument>
                                 <argument>--env-file</argument>
                                 <argument>../.env</argument>
                             </arguments>
-                            <executable>docker-compose</executable>
+                            <executable>docker</executable>
                         </configuration>
                     </plugin>
                     <plugin>
