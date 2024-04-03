@@ -186,7 +186,6 @@
                                         <argument>build</argument>
                                         <argument>nls-accessibility-map-jobs</argument>
                                     </arguments>
-                                    <executable>docker-compose</executable>
                                 </configuration>
                             </execution>
                             <!-- Make sure that this folder is read write by all for the build pipeline to allow docker
@@ -230,7 +229,6 @@
                                         <argument>COMMAND=createOrUpdateNetwork</argument>
                                         <argument>nls-accessibility-map-jobs</argument>
                                     </arguments>
-                                    <executable>docker-compose</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -248,10 +246,11 @@
                         </executions>
                         <configuration>
                             <arguments>
+                                <argument>compose</argument>
                                 <argument>--env-file</argument>
                                 <argument>../.env</argument>
                             </arguments>
-                            <executable>docker-compose</executable>
+                            <executable>docker</executable>
                         </configuration>
                     </plugin>
                 </plugins>
