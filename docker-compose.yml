@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   nls-keycloak:
     image: ndwnls.azurecr.io/nls-keycloak-it-container:${NLS_KEYCLOAK_VERSION}

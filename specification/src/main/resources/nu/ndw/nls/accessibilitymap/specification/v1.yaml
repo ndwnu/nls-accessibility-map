@@ -224,6 +224,8 @@ components:
       required:
         - name
         - searchDistance
+        - bounds
+        - requestExemptionUrl
       properties:
         name:
           type: string
@@ -232,6 +234,11 @@ components:
           type: integer
           format: int32
           description: Search distance in metres
+        bounds:
+          $ref: '#/components/schemas/BoundingBox'
+        requestExemptionUrl:
+          type: string
+          description: Url to request an exemption
     FeatureCollection:
       type: object
       description: GeoJSON feature collection
@@ -276,6 +283,18 @@ components:
       items:
         type: number
         format: double
+
+    BoundingBox:
+      type: array
+      description: The bounding box of a municipality in [west-south, east-north] order
+      example: [[3.9555803787437767,51.79111331209157],[4.2393831509799735,51.93614160776871]]
+      minItems: 2
+      maxItems: 2
+      items:
+        type: array
+        items:
+          type: number
+          format: double
 
     Point:
       type: object

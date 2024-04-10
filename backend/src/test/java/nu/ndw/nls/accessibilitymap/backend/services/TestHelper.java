@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.model.MunicipalityBoundingBox;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 
 public final class TestHelper {
@@ -10,7 +11,9 @@ public final class TestHelper {
             52.0,
             50000,
             MUNICIPALITY_ID,
-            "Test");
+            "Test",
+            "http://iets-met-vergunningen.nl",
+            new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2));
 
     public static final int ID_1 = 1;
     public static final int ID_2 = 2;

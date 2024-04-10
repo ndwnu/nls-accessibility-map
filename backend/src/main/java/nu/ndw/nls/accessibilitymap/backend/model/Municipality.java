@@ -17,14 +17,25 @@ public class Municipality {
     Point startPoint;
     double searchDistanceInMetres;
     String municipalityId;
-    public Municipality(double startCoordinateLongitude, double startCoordinateLatitude, double searchDistanceInMetres,
-            String municipalityId, String name) {
+    String requestExemptionUrl;
+    MunicipalityBoundingBox bounds;
+
+
+    public Municipality(double startCoordinateLongitude,
+            double startCoordinateLatitude,
+            double searchDistanceInMetres,
+            String municipalityId,
+            String name,
+            String requestExemptionUrl,
+            MunicipalityBoundingBox bounds) {
+        this.requestExemptionUrl = requestExemptionUrl;
         // Latitude is the Y axis, longitude is the X axis.
         this.startPoint = WGS84_GEOMETRY_FACTORY.createPoint(
                 new Coordinate(startCoordinateLongitude, startCoordinateLatitude));
         this.searchDistanceInMetres = searchDistanceInMetres;
         this.municipalityId = municipalityId;
         this.name = name;
+        this.bounds = bounds;
     }
 
     public int getMunicipalityIdAsInteger() {

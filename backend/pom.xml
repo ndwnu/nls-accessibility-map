@@ -75,6 +75,10 @@
             <groupId>nu.ndw.nls</groupId>
             <artifactId>routing-map-matcher-library</artifactId>
         </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.geometry</groupId>
+            <artifactId>nls-geometry</artifactId>
+        </dependency>
 
         <!--Additional dependencies-->
         <dependency>
