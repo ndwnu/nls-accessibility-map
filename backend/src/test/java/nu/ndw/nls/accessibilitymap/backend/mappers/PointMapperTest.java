@@ -3,12 +3,13 @@ package nu.ndw.nls.accessibilitymap.backend.mappers;
 import static nu.ndw.nls.routingmapmatcher.util.GeometryConstants.WGS84_GEOMETRY_FACTORY;
 import static org.junit.jupiter.api.Assertions.*;
 
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 
 class PointMapperTest {
 
-    private final PointMapper pointMapper = new PointMapper();
+    private final PointMapper pointMapper = new PointMapper(new GeometryFactoryWgs84());
 
     @Test
     void mapCoordinateAllowNulls_ok_maps() {

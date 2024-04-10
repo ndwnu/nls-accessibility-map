@@ -1,10 +1,12 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.config.MunicipalityProperties;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.MunicipalitiesApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.mappers.MunicipalityMapper;
+import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +20,10 @@ public class MunicipalitiesApiDelegateImpl implements MunicipalitiesApiDelegate 
     @Override
     public ResponseEntity<FeatureCollectionJson> getMunicipalities() {
         return ResponseEntity.ok(municipalityMapper.mapToMunicipalitiesToGeoJSON(
-                municipalityProperties.getMunicipalities().values()));
+                municipalityProperties.getMunicipalities().values().stream()
+                        .sorted(Comparator.comparing(Municipality::getMunicipalityId))
+                        .toList())
+        );
     }
 
 }
