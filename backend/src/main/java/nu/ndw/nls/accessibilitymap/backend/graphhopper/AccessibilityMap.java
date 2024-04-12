@@ -26,7 +26,6 @@ public class AccessibilityMap {
         Weighting weighting = network.createWeighting(profile, new PMap());
 
         return isochroneService.getIsochroneMatchesByMunicipalityId(weighting, accessibilityRequest.startPoint(),
-                accessibilityRequest.municipalityId(),
-                accessibilityRequest.searchDistanceInMetres());
+                accessibilityRequest.municipalityId(), accessibilityRequest.searchDistanceInMetres());
     }
 }

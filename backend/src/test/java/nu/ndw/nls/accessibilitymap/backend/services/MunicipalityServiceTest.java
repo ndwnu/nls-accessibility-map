@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
-import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY;
 import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY_ID;
+import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY_ID_2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -21,21 +21,25 @@ class MunicipalityServiceTest {
 
     @Mock
     private MunicipalityProperties municipalityProperties;
+
+    @Mock
+    private Municipality municipality;
+
     @InjectMocks
     private MunicipalityService municipalityService;
 
     @Test
     void getMunicipalityById_ok() {
         when(municipalityProperties.getMunicipalities())
-                .thenReturn(Map.of(MUNICIPALITY_ID, MUNICIPALITY));
-        Municipality municipality = municipalityService.getMunicipalityById(MUNICIPALITY_ID);
-        assertThat(municipality).isEqualTo(MUNICIPALITY);
+                .thenReturn(Map.of(MUNICIPALITY_ID, municipality));
+        Municipality result = municipalityService.getMunicipalityById(MUNICIPALITY_ID);
+        assertThat(result).isEqualTo(municipality);
     }
 
     @Test
-    void getMunicipalityById_not_found_exception() {
+    void getMunicipalityById_exception_notFound() {
         when(municipalityProperties.getMunicipalities())
-                .thenReturn(Map.of("GM001", MUNICIPALITY));
+                .thenReturn(Map.of(MUNICIPALITY_ID_2, municipality));
         MunicipalityNotFoundException municipalityNotFoundException = assertThrows(MunicipalityNotFoundException.class,
                 () -> municipalityService.getMunicipalityById(MUNICIPALITY_ID));
         assertThat(municipalityNotFoundException.getMessage())
