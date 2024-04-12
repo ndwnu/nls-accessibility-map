@@ -23,7 +23,8 @@ class AccessibilityMapITConfig {
         VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory = new VehicleRestrictionsModelFactory(
                 restrictionMapperProvider);
         EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor = new EdgeIteratorStateReverseExtractor();
-        IsochroneServiceFactory isochroneServiceFactory = new IsochroneServiceFactory(edgeIteratorStateReverseExtractor);
+        IsochroneServiceFactory isochroneServiceFactory = new IsochroneServiceFactory(
+                edgeIteratorStateReverseExtractor);
         return new AccessibilityMapFactory(vehicleRestrictionsModelFactory, isochroneServiceFactory);
     }
 
@@ -42,6 +43,4 @@ class AccessibilityMapITConfig {
             }
         };
     }
-
-
 }

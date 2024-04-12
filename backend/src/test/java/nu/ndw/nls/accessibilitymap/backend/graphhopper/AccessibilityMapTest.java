@@ -30,28 +30,29 @@ class AccessibilityMapTest {
     private static final double SEARCH_DISTANCE = 500d;
 
     @Mock
-    Weighting weighting;
+    private Weighting weighting;
     @Mock
-    AccessibilityRequest accessibilityRequest;
+    private AccessibilityRequest accessibilityRequest;
     @Mock
-    VehicleProperties vehicleProperties;
+    private VehicleProperties vehicleProperties;
     @Mock
-    CustomModel model;
+    private CustomModel model;
     @Captor
-    ArgumentCaptor<Profile> profile;
+    private ArgumentCaptor<Profile> profile;
     @Mock
-    Point startPoint;
+    private Point startPoint;
     @Mock
-    Set<IsochroneMatch> matches;
+    private Set<IsochroneMatch> matches;
 
     @Mock
-    NetworkGraphHopper network;
+    private NetworkGraphHopper network;
     @Mock
-    VehicleRestrictionsModelFactory modelFactory;
+    private VehicleRestrictionsModelFactory modelFactory;
     @Mock
-    IsochroneService isochroneService;
+    private IsochroneService isochroneService;
+
     @InjectMocks
-    AccessibilityMap accessibilityMap;
+    private AccessibilityMap accessibilityMap;
 
     @Test
     void getAccessibleRoadSections_ok() {
@@ -69,6 +70,4 @@ class AccessibilityMapTest {
         assertEquals(matches, result);
         assertEquals(model, profile.getValue().getCustomModel());
     }
-
-
 }

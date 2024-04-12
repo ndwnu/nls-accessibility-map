@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @RequiredArgsConstructor
-@Import({RoutingMapMatcherConfiguration.class,  SharedConfiguration.class, GeometryConfiguration.class})
+@Import({RoutingMapMatcherConfiguration.class, SharedConfiguration.class, GeometryConfiguration.class})
 @EnableConfigurationProperties(GraphHopperProperties.class)
 public class AccessibilityMapConfiguration {
 
@@ -31,7 +31,6 @@ public class AccessibilityMapConfiguration {
 
     @Bean
     public NetworkGraphHopper networkGraphHopper() throws GraphHopperNotImportedException {
-
         RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = RoutingNetworkSettings
                 .builder(AccessibilityLink.class)
                 .profiles(List.of(PROFILE))
@@ -40,12 +39,10 @@ public class AccessibilityMapConfiguration {
                 .build();
 
         return graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
-
     }
 
     @Bean
     public EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor() {
         return new EdgeIteratorStateReverseExtractor();
     }
-
 }

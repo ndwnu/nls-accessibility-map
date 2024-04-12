@@ -1,14 +1,11 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
-import com.google.common.base.Stopwatch;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.AccessibilityMapFactory;
-import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
@@ -18,35 +15,24 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AccessibilityMapService {
 
     private final AccessibilityMapFactory accessibilityMapFactory;
     private final NetworkGraphHopper networkGraphHopper;
     private final MunicipalityService municipalityService;
-    private final BaseAccessibleRoadsService baseIsochroneService;
+    private final AccessibleRoadsService accessibleRoadsService;
 
     public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(VehicleProperties vehicleProperties,
             String municipalityId) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(networkGraphHopper);
-        Stopwatch timerAll = Stopwatch.createStarted();
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-        Set<IsochroneMatch> allAccessibleRoads = baseIsochroneService.getBaseAccessibleRoadsByMunicipality(
-                municipality);
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest
-                .builder()
-                .startPoint(municipality.getStartPoint())
-                .vehicleProperties(vehicleProperties)
-                .municipalityId(municipality.getMunicipalityIdAsInteger())
-                .searchDistanceInMetres(municipality.getSearchDistanceInMetres())
-                .build();
-        Set<IsochroneMatch> accessibleRoadsWithRestrictions = accessibilityMap.getAccessibleRoadSections(
-                accessibilityRequest);
-        SortedMap<Integer, RoadSection> idToRoadSectionMap = determineDifference(allAccessibleRoads,
-                accessibleRoadsWithRestrictions);
 
-        log.trace("Determining inaccessible roads took {}", timerAll.stop());
-        return idToRoadSectionMap;
+        Set<IsochroneMatch> allAccessibleRoads = accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(
+                accessibilityMap, municipality);
+        Set<IsochroneMatch> accessibleRoadsWithRestrictions = accessibleRoadsService
+                .getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties, municipality);
+
+        return determineDifference(allAccessibleRoads, accessibleRoadsWithRestrictions);
     }
 
     private SortedMap<Integer, RoadSection> determineDifference(Set<IsochroneMatch> withoutRestrictions,
@@ -75,5 +61,4 @@ public class AccessibilityMapService {
 
         return roadSections;
     }
-
 }

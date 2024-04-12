@@ -1,14 +1,16 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
+import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY_ID;
+import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY_ID_2;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.backend.config.MunicipalityProperties;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.mappers.MunicipalityMapper;
-import nu.ndw.nls.accessibilitymap.backend.services.TestHelper;
+import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,17 +26,28 @@ class MunicipalitiesApiDelegateImplTest {
     private MunicipalityMapper municipalityMapper;
     @Mock
     private MunicipalityProperties municipalityProperties;
+
+    @Mock
+    private Municipality municipality1;
+    @Mock
+    private Municipality municipality2;
+    @Mock
+    private FeatureCollectionJson featureCollection;
+
     @InjectMocks
     private MunicipalitiesApiDelegateImpl municipalitiesApiDelegate;
 
     @Test
     void getMunicipalities_ok() {
-        var featureCollection = new FeatureCollectionJson();
-        when(municipalityProperties.getMunicipalities()).thenReturn(
-                Map.of(TestHelper.MUNICIPALITY_ID, TestHelper.MUNICIPALITY));
-        when(municipalityMapper.mapToMunicipalitiesToGeoJSON(any())).thenReturn(featureCollection);
+        when(municipalityProperties.getMunicipalities())
+                .thenReturn(Map.of(MUNICIPALITY_ID, municipality1, MUNICIPALITY_ID_2, municipality2));
+        when(municipality1.getMunicipalityId()).thenReturn(MUNICIPALITY_ID);
+        when(municipality2.getMunicipalityId()).thenReturn(MUNICIPALITY_ID_2);
+        when(municipalityMapper.mapToMunicipalitiesToGeoJSON(List.of(municipality2, municipality1)))
+                .thenReturn(featureCollection);
 
         ResponseEntity<FeatureCollectionJson> response = municipalitiesApiDelegate.getMunicipalities();
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(featureCollection);
     }
