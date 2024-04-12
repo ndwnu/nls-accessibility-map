@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.graphhopper;
 
-
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MUNICIPALITY_CODE;
 
 import com.graphhopper.routing.ev.IntEncodedValue;
@@ -77,9 +76,9 @@ public class IsochroneService {
                         startSegment.getClosestEdge()))
                 .collect(Collectors.toSet());
     }
+
     private int getMunicipalityCode(IsoLabel isoLabel, QueryGraph queryGraph, IntEncodedValue idEnc) {
         EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(isoLabel.getEdge(), isoLabel.getNode());
         return currentEdge.get(idEnc);
     }
-
 }
