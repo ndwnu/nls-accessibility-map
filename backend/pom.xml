@@ -59,7 +59,7 @@
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls.springboot</groupId>
-            <artifactId>datadog</artifactId>
+            <artifactId>monitoring</artifactId>
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls.springboot</groupId>

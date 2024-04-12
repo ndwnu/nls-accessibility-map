@@ -39,7 +39,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class IsochroneServiceTest {
 
-
     private static final int ROOT_ID = -1;
     private static final double Y_COORDINATE = 1D;
     private static final double X_COORDINATE = 0D;
@@ -57,23 +56,20 @@ class IsochroneServiceTest {
     @Mock
     private ShortestPathTreeFactory shortestPathTreeFactory;
     @Mock
-    private QueryGraph queryGraph;
-    @Mock
     private LocationIndexTree locationIndexTree;
+
+    @Mock
+    private QueryGraph queryGraph;
     @Mock
     private Point point;
     @Mock
     private Snap startSegment;
-
     @Mock
     private IsochroneByTimeDistanceAndWeight isochroneAlgorithm;
-
     @Mock
     private EdgeIteratorState currentEdge;
-
     @Mock
     private IntEncodedValue intEncodedValue;
-
     @Mock
     private Weighting weighting;
 
@@ -88,8 +84,9 @@ class IsochroneServiceTest {
                 any(Weighting.class),
                 any(QueryGraph.class),
                 eq(TraversalMode.EDGE_BASED),
-                anyDouble(), eq(IsochroneUnit.METERS)
-                , eq(false)))
+                anyDouble(),
+                eq(IsochroneUnit.METERS),
+                eq(false)))
                 .thenReturn(isochroneAlgorithm);
 
         when(queryGraph.getEdgeIteratorState(anyInt(), anyInt()))
@@ -103,31 +100,24 @@ class IsochroneServiceTest {
             return null;
         }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
         when(isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY, queryGraph,
-                startSegment.getClosestEdge())).thenReturn(
-                IsochroneMatch.builder().build());
-        wrapWithStaticMock(
-                () -> isochroneService.getIsochroneMatchesByMunicipalityId(weighting, point, MUNICIPALITY_ID,
-                        ISOCHRONE_VALUE_METERS));
+                startSegment.getClosestEdge())).thenReturn(IsochroneMatch.builder().build());
+        wrapWithStaticMock(() -> isochroneService.getIsochroneMatchesByMunicipalityId(weighting, point, MUNICIPALITY_ID,
+                ISOCHRONE_VALUE_METERS));
         verify(shortestPathTreeFactory).createShortestPathTreeByTimeDistanceAndWeight(weighting, queryGraph,
-                TraversalMode.EDGE_BASED, ISOCHRONE_VALUE_METERS,
-                IsochroneUnit.METERS, false);
+                TraversalMode.EDGE_BASED, ISOCHRONE_VALUE_METERS, IsochroneUnit.METERS, false);
     }
 
     private void wrapWithStaticMock(Runnable function) {
         try (MockedStatic<QueryGraph> queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class)) {
-            queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class)))
-                    .thenReturn(queryGraph);
+            queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
             function.run();
         }
     }
 
     private void setupFixture() {
-
         when(point.getY()).thenReturn(Y_COORDINATE);
         when(point.getX()).thenReturn(X_COORDINATE);
-        when(locationIndexTree.findClosest(Y_COORDINATE, X_COORDINATE,
-                EdgeFilter.ALL_EDGES))
-                .thenReturn(startSegment);
+        when(locationIndexTree.findClosest(Y_COORDINATE, X_COORDINATE, EdgeFilter.ALL_EDGES)).thenReturn(startSegment);
         when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
     }
 
@@ -141,10 +131,10 @@ class IsochroneServiceTest {
                 int.class,
                 double.class,
                 long.class,
-                double.class, IsoLabel.class);
+                double.class,
+                IsoLabel.class);
         constructor.setAccessible(true);
         IsoLabel parent = constructor.newInstance(ROOT_ID, ROOT_ID, weight, 0, 0, null);
         return constructor.newInstance(edgeId, adjNode, weight, (long) 0, (double) 100, parent);
     }
-
 }

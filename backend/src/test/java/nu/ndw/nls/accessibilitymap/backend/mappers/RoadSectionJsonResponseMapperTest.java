@@ -15,11 +15,9 @@ class RoadSectionJsonResponseMapperTest {
     @Test
     void mapToRoadSectionsJson_ok() {
         assertEquals(new RoadSectionJson().roadSectionId(ID_1).forwardAccessible(true).backwardAccessible(false),
-                roadSectionJsonResponseMapper.mapToRoadSection(new RoadSection(ID_1, true,
-                        false)));
+                roadSectionJsonResponseMapper.mapToRoadSection(new RoadSection(ID_1, true, false)));
 
         assertEquals(new RoadSectionJson().roadSectionId(ID_2).forwardAccessible(false).backwardAccessible(null),
-                roadSectionJsonResponseMapper.mapToRoadSection(new RoadSection(ID_2, false,
-                        null)));
+                roadSectionJsonResponseMapper.mapToRoadSection(new RoadSection(ID_2, false, null)));
     }
 }
