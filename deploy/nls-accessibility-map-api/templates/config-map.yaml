@@ -8,5 +8,4 @@ data:
   NLS_OAUTH2_JWTRESOURCEPROPERTY: app-{{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_MAIN_BANNER_MODE: 'off'
-  SERVER_SERVLET_CONTEXT_PATH: /api/rest/static-road-data/accessibility-map
   SPRING_PROFILES_ACTIVE: {{ .Values.environment }}

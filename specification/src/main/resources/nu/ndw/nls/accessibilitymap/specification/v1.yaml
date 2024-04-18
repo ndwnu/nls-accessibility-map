@@ -1,12 +1,11 @@
 ---
 openapi: "3.0.0"
 info:
-  title: "Accessibility map API"
+  title: "Accessibility map V1 API"
   description: "Query the accessibility for vehicle characteristics within a\
     \ municipality."
   version: "1"
 servers:
-  - url: "/v1"
   - url: "/api/rest/static-road-data/accessibility-map/v1"
 
 paths:

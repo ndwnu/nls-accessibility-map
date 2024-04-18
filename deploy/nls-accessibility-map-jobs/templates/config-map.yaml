@@ -3,8 +3,6 @@ kind: ConfigMap
 metadata:
   name: nls-accessibility-map-jobs-config
 data:
-  JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/ -Dorg.jooq.no-tips=true
-  LOGGING_CONFIG: logback-deploy.xml
   LOGGING_LEVEL_NU_NDW_NLS_ACCESSIBILITYMAP: {{ .Values.application.loggingLevelNuNdwNlsAccessibilityMap }}
   MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
   SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
@@ -12,3 +10,4 @@ data:
   SPRING_DATASOURCE_USERNAME: nls
   SPRING_MAIN_BANNER_MODE: 'off'
   NU_NDW_NLS_ACCESSIBILITYMAP_JOBS_TRAFFICSIGNS_API_BASE_URL: {{ .Values.trafficSignApiUrl }}
+  SPRING_PROFILES_ACTIVE: {{ .Values.environment }}
