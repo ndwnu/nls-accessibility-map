@@ -31,6 +31,8 @@ management:
       probes:
         enabled: true
   observations:
+    annotations:
+      enabled: true
     key-values:
       service: ${spring.application.name}
 

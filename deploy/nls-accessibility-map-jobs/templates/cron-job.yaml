@@ -2,6 +2,10 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: nls-accessibility-map-cron-job
+  labels:
+    tags.datadoghq.com/service: "nls-accessibility-map-cron-job"
+    tags.datadoghq.com/env: "{{ .Values.environment }}"
+    tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
 spec:
   # Runs all day, every 10 minutes.
   schedule: "*/10 * * * *"
@@ -11,9 +15,15 @@ spec:
       template:
         metadata:
           annotations:
-            ad.datadoghq.com/nls-accessibility-map-jobs.logs: '[{"source": "java", "service": "{{ .name }}"}]'
+            ad.datadoghq.com/nls-accessibility-map-jobs.logs: '[{"source": "java", "service": "nls-accessibility-map-cron-job"}]'
+            admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
+            tags.datadoghq.com/service: "nls-accessibility-map-cron-job"
+            tags.datadoghq.com/env: "{{ .Values.environment }}"
+            tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
           labels:
+            app: nls-accessibility-map-cron-job
             environment: {{ $.Values.environment }}
+            admission.datadoghq.com/enabled: "true"
         spec:
           containers:
             - name: nls-accessibility-map-jobs
@@ -30,6 +40,11 @@ spec:
               env:
                 - name: COMMAND
                   value: createOrUpdateNetwork
+                {{- /*
+                    Added as env variable so the dd init container appends the settings instead of an overwrite
+                  */}}
+                - name: JAVA_TOOL_OPTIONS
+                  value: -XX:MaxRAMPercentage=70 -Dorg.jooq.no-tips=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/
               volumeMounts:
                 - mountPath: /application/config
                   name: nls-accessibility-map-jobs-secrets

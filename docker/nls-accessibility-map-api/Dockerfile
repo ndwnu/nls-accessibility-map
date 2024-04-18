@@ -23,8 +23,6 @@ RUN true
 COPY --chown=java:java --from=builder application/application/ ./
 RUN true
 
-COPY --chown=java:java logback-deploy.xml logback-deploy.xml
-
 USER 1000
 
 ENTRYPOINT java org.springframework.boot.loader.launch.JarLauncher

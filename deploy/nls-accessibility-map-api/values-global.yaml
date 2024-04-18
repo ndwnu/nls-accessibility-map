@@ -1,0 +1,3 @@
+datadog:
+  agent:
+    version: v1.32.0

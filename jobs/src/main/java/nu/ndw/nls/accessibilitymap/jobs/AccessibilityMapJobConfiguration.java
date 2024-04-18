@@ -4,6 +4,7 @@ import nu.ndw.nls.accessibilitymap.shared.SharedConfiguration;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.TrafficSignConfiguration;
 import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.routingmapmatcher.RoutingMapMatcherConfiguration;
+import nu.ndw.nls.springboot.datadog.DatadogConfiguration;
 import nu.ndw.nls.springboot.messaging.MessagingConfig;
 import nu.ndw.nls.springboot.messaging.properties.validation.MessagingRequiredConfiguration;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({TrafficSignConfiguration.class, RoutingMapMatcherConfiguration.class, MessagingConfig.class,
-        MessagingConfig.class, SharedConfiguration.class})
+        MessagingConfig.class, SharedConfiguration.class, DatadogConfiguration.class})
 @MessagingRequiredConfiguration(receive = {}, publish = {NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED})
 public class AccessibilityMapJobConfiguration {
 
