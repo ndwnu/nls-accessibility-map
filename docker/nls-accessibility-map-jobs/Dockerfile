@@ -23,8 +23,6 @@ RUN true
 COPY --chown=java:java --from=builder application/application/ ./
 RUN true
 
-COPY --chown=java:java logback-deploy.xml ./
-
 RUN mkdir ./graphhopper && chmod -R 755 ./graphhopper && chown -R java ./graphhopper
 USER 1000
 

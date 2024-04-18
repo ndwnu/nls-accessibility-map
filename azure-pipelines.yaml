@@ -8,9 +8,15 @@ resources:
       name: NLS/nls-pipeline-templates
       ref: main
 
+parameters:
+  - name: overrideAllowHelmDeploy
+    type: boolean
+    default: false
+
 extends:
   template: azure-pipelines-java.yml@nls-pipeline-templates
   parameters:
+    overrideAllowHelmDeploy: ${{ parameters.overrideAllowHelmDeploy }}
     isVersionedProject: true
     mavenReleaseGoal: deploy
     mavenDeployToNdwShared: true

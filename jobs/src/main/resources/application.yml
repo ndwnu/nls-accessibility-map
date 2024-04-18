@@ -46,3 +46,7 @@ nu:
           publish:
             - routingKey: ndw.nls.accessibility.routing.network.updated
               expectedEventType: ACCESSIBILITY_ROUTING_NETWORK_UPDATED
+management:
+  observations:
+    annotations:
+      enabled: true

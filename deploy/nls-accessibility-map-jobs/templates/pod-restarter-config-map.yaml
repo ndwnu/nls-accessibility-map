@@ -3,8 +3,6 @@ kind: ConfigMap
 metadata:
   name: nls-accessibility-map-api-pod-restarter-config
 data:
-  JAVA_TOOL_OPTIONS: '-XX:MaxRAMPercentage=70'
-  LOGGING_CONFIG: 'logback-deploy.xml'
   MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
   SPRING_MAIN_BANNER_MODE: 'OFF'
   RABBITMQ_EVENTTYPE: 'accessibility-routing-network-updated'
@@ -13,3 +11,4 @@ data:
   RABBITMQ_ROUTINGKEYS_0_: 'ndw.nls.accessibility.routing.network.updated'
   DEPLOYMENT_NAMESPACE: 'nls'
   DEPLOYMENT_DEPLOYMENTNAME: 'nls-accessibility-map-api-deployment'
+  SPRING_PROFILES_ACTIVE: {{ .Values.environment }}

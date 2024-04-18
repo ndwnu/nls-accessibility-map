@@ -4,10 +4,9 @@ metadata:
   name: nls-accessibility-map-api-config
   namespace: nls
 data:
-  JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=70 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/
-  LOGGING_CONFIG: logback-deploy.xml
   MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
   NLS_OAUTH2_JWTRESOURCEPROPERTY: app-{{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_MAIN_BANNER_MODE: 'off'
   SERVER_SERVLET_CONTEXT_PATH: /api/rest/static-road-data/accessibility-map
+  SPRING_PROFILES_ACTIVE: {{ .Values.environment }}
