@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.52-SNAPSHOT</version>
+        <version>1.0.52</version>
     </parent>
     <artifactId>trafficsignclient</artifactId>
     <name>NLS Accessibility Map Traffic Sign Client</name>
