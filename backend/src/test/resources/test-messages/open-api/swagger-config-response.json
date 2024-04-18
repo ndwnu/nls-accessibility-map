@@ -1,6 +1,6 @@
 {
-  "configUrl": "/api-docs/swagger-config",
-  "oauth2RedirectUrl": "http://localhost:8080/swagger-ui/oauth2-redirect.html",
-  "url": "/api-docs/v1.yaml",
+  "configUrl": "/api/rest/static-road-data/accessibility-map/api-docs/swagger-config",
+  "oauth2RedirectUrl": "http://localhost:8080/api/rest/static-road-data/accessibility-map/swagger-ui/oauth2-redirect.html",
+  "url": "/api/rest/static-road-data/accessibility-map/api-docs/v1.yaml",
   "validatorUrl": ""
 }

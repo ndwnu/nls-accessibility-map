@@ -2,7 +2,7 @@ nls:
   springboot:
     test:
       main:
-        url: http://localhost:8080
+        url: http://localhost:8080/api/rest/static-road-data/accessibility-map
         await:
           enabled: true
           path: /actuator/health

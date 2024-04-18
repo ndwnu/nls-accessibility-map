@@ -1,5 +1,7 @@
 server:
   max-http-request-header-size: 50KB
+  servlet:
+    context-path: /api/rest/static-road-data/accessibility-map
 graphhopper:
   dir: /application/graphhopper
 
@@ -43,3 +45,6 @@ springdoc:
     url: /api-docs/v1.yaml
     path: /api-docs
 
+openapi:
+  accessibilityMapV1:
+    base-path: /v1
