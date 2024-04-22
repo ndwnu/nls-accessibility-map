@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class AccessibleRoadsService {
 
     @Cacheable(key = "#municipality.municipalityId", cacheNames = "baseAccessibleRoadsByMunicipality", sync = true)
-    @Timed("Time spent determining base accessible road sections")
+    @Timed(description = "Time spent determining base accessible road sections")
     public Set<IsochroneMatch> getBaseAccessibleRoadsByMunicipality(AccessibilityMap accessibilityMap,
             Municipality municipality) {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
@@ -26,7 +26,7 @@ public class AccessibleRoadsService {
         return accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
     }
 
-    @Timed("Time spent determining vehicle accessible road sections")
+    @Timed(description = "Time spent determining vehicle accessible road sections")
     public Set<IsochroneMatch> getVehicleAccessibleRoadsByMunicipality(AccessibilityMap accessibilityMap,
             VehicleProperties vehicleProperties, Municipality municipality) {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
