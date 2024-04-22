@@ -15,13 +15,13 @@ spec:
         annotations:
           ad.datadoghq.com/nls-pod-restarter.logs: '[{"source": "java", "service": "nls-accessibility-map-api-pod-restarter"}]'
           admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
-          tags.datadoghq.com/service: "nls-accessibility-map-api-pod-restarter"
-          tags.datadoghq.com/env: "{{ .Values.environment }}"
-          tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
         labels:
           app: nls-accessibility-map-api-pod-restarter
           environment: {{ .Values.environment }}
           admission.datadoghq.com/enabled: "true"
+          tags.datadoghq.com/service: "nls-accessibility-map-api-pod-restarter"
+          tags.datadoghq.com/env: "{{ .Values.environment }}"
+          tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
       spec:
         serviceAccountName: nls-pod-restarter-service-account
         containers:

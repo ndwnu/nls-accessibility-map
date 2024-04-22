@@ -17,13 +17,13 @@ spec:
           annotations:
             ad.datadoghq.com/nls-accessibility-map-jobs.logs: '[{"source": "java", "service": "nls-accessibility-map-cron-job"}]'
             admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
-            tags.datadoghq.com/service: "nls-accessibility-map-cron-job"
-            tags.datadoghq.com/env: "{{ .Values.environment }}"
-            tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
           labels:
             app: nls-accessibility-map-cron-job
             environment: {{ $.Values.environment }}
             admission.datadoghq.com/enabled: "true"
+            tags.datadoghq.com/service: "nls-accessibility-map-cron-job"
+            tags.datadoghq.com/env: "{{ .Values.environment }}"
+            tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
         spec:
           containers:
             - name: nls-accessibility-map-jobs
