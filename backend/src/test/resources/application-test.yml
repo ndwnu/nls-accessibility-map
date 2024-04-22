@@ -1,3 +1,5 @@
+graphhopper:
+  dir: ../graphhopper
 nls:
   springboot:
     test:
