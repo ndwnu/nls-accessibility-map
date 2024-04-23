@@ -44,7 +44,7 @@
         <nls-nwb-data-access.version>4.2.7</nls-nwb-data-access.version>
         <nls-springboot.version>4.0.4</nls-springboot.version>
         <routing-map-matcher.version>9.0.2</routing-map-matcher.version>
-        <nls-geomerty.version>1.0.3</nls-geomerty.version>
+        <nls-geomerty.version>2.0.4</nls-geomerty.version>
     </properties>
 
     <distributionManagement>
