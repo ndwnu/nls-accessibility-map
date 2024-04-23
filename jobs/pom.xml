@@ -56,6 +56,10 @@
             <artifactId>monitoring</artifactId>
         </dependency>
         <dependency>
+            <groupId>nu.ndw.nls.geometry</groupId>
+            <artifactId>nls-geometry</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.conductor</groupId>
             <artifactId>stream-utils</artifactId>
         </dependency>

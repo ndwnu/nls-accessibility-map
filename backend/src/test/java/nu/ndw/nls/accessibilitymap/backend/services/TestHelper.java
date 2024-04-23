@@ -2,13 +2,15 @@ package nu.ndw.nls.accessibilitymap.backend.services;
 
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.model.MunicipalityBoundingBox;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
+import org.locationtech.jts.geom.Coordinate;
 
 public final class TestHelper {
 
     public static final String MUNICIPALITY_ID = "GM0307";
     public static final String MUNICIPALITY_ID_2 = "GM0008";
-    public static final Municipality MUNICIPALITY = new Municipality(5.0,
-            52.0,
+    public static final Municipality MUNICIPALITY = new Municipality(new GeometryFactoryWgs84().createPoint(
+            new Coordinate(5.0, 52.0)),
             50000,
             MUNICIPALITY_ID,
             "Test",
