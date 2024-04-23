@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
-import static nu.ndw.nls.routingmapmatcher.util.GeometryConstants.WGS84_GEOMETRY_FACTORY;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -13,7 +13,7 @@ class PointMapperTest {
 
     @Test
     void mapCoordinateAllowNulls_ok_maps() {
-        assertEquals(WGS84_GEOMETRY_FACTORY.createPoint(new Coordinate(2.0, 1.0)),
+        assertEquals(new GeometryFactoryWgs84().createPoint(new Coordinate(2.0, 1.0)),
                 pointMapper.mapCoordinateAllowNulls(1.0, 2.0));
     }
 

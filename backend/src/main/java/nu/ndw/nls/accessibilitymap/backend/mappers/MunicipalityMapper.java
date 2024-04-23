@@ -17,6 +17,9 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class MunicipalityMapper {
 
+
+
+
     public FeatureCollectionJson mapToMunicipalitiesToGeoJSON(Collection<Municipality> municipalities) {
         return new FeatureCollectionJson(TypeEnum.FEATURECOLLECTION,
                 municipalities.stream().map(this::mapMunicipality).toList());

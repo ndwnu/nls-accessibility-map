@@ -3,11 +3,15 @@ package nu.ndw.nls.accessibilitymap.backend.graphhopper;
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.CAR;
 
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.AccessibilityMapFactory;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.backend.services.RestrictionMapperProvider;
 import nu.ndw.nls.accessibilitymap.backend.services.VehicleRestrictionsModelFactory;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
+import nu.ndw.nls.geometry.factories.GeodeticCalculatorFactory;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.RoutingMapMatcherConfiguration;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import nu.ndw.nls.routingmapmatcher.network.model.LinkVehicleMapper;
@@ -24,7 +28,8 @@ class AccessibilityMapITConfig {
                 restrictionMapperProvider);
         EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor = new EdgeIteratorStateReverseExtractor();
         IsochroneServiceFactory isochroneServiceFactory = new IsochroneServiceFactory(
-                edgeIteratorStateReverseExtractor);
+                edgeIteratorStateReverseExtractor, new FractionAndDistanceCalculator(new GeodeticCalculatorFactory(),
+                List.of(new GeometryFactoryWgs84())));
         return new AccessibilityMapFactory(vehicleRestrictionsModelFactory, isochroneServiceFactory);
     }
 
