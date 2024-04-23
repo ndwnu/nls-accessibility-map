@@ -70,7 +70,8 @@ class MunicipalityMapperTest {
         assertEquals(NAME, municipality.getName());
         assertEquals(municipalityBoundingBox, municipality.getBounds());
         assertEquals(URL, municipality.getRequestExemptionUrl());
-        assertEquals(MUNICIPALITY_ID, municipality.getMunicipalityId());
+        assertEquals(MUNICIPALITY_ID_STRING, municipality.getMunicipalityId());
+        assertEquals(MUNICIPALITY_ID, municipality.getMunicipalityIdInteger());
         assertEquals(SEARCH_DISTANCE_IN_METRES, municipality.getSearchDistanceInMetres());
 
         assertEquals(point, municipality.getStartPoint());

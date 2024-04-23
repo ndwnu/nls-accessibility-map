@@ -22,7 +22,7 @@ import org.locationtech.jts.geom.Coordinate;
 
 class MunicipalityFeatureMapperTest {
 
-    private static final int MUNICIPALITY_ID = 307;
+    private static final String MUNICIPALITY_ID = "GM0307";
     private static final Municipality MUNICIPALITY;
 
     static {
@@ -31,6 +31,7 @@ class MunicipalityFeatureMapperTest {
                     new Coordinate(5.0, 52.0)),
                     50000,
                     MUNICIPALITY_ID,
+                    307,
                     "Test",
                     new URL("http://iets-met-vergunningen.nl"),
                     new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2));

@@ -11,6 +11,7 @@ import org.mapstruct.Mapping;
 public interface MunicipalityMapper {
 
     @Mapping(source=".", target = "startPoint")
+    @Mapping(source="municipalityId", target = "municipalityIdInteger")
     Municipality map(MunicipalityProperty municipalityProperty);
 
 }
