@@ -44,7 +44,7 @@
         <nls-nwb-data-access.version>4.2.11</nls-nwb-data-access.version>
         <nls-springboot.version>4.0.5</nls-springboot.version>
         <routing-map-matcher.version>9.0.11</routing-map-matcher.version>
-        <nls-geomerty.version>2.0.4</nls-geomerty.version>
+        <nls-geometry.version>2.0.4</nls-geometry.version>
     </properties>
 
     <distributionManagement>
@@ -174,7 +174,7 @@
             <dependency>
                 <groupId>nu.ndw.nls.geometry</groupId>
                 <artifactId>nls-geometry</artifactId>
-                <version>${nls-geomerty.version}</version>
+                <version>${nls-geometry.version}</version>
             </dependency>
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
