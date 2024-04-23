@@ -1,49 +1,16 @@
 package nu.ndw.nls.accessibilitymap.backend.model;
 
-
-import static nu.ndw.nls.routingmapmatcher.util.GeometryConstants.WGS84_GEOMETRY_FACTORY;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.net.URL;
 import lombok.Value;
-import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 
 @Value
 public class Municipality {
-
-    private static final Pattern PATTERN = Pattern.compile(".{2}0*(\\d+)$");
-    String name;
     Point startPoint;
     double searchDistanceInMetres;
     String municipalityId;
-    String requestExemptionUrl;
+    int municipalityIdInteger;
+    String name;
+    URL requestExemptionUrl;
     MunicipalityBoundingBox bounds;
-
-
-    public Municipality(double startCoordinateLongitude,
-            double startCoordinateLatitude,
-            double searchDistanceInMetres,
-            String municipalityId,
-            String name,
-            String requestExemptionUrl,
-            MunicipalityBoundingBox bounds) {
-        this.requestExemptionUrl = requestExemptionUrl;
-        // Latitude is the Y axis, longitude is the X axis.
-        this.startPoint = WGS84_GEOMETRY_FACTORY.createPoint(
-                new Coordinate(startCoordinateLongitude, startCoordinateLatitude));
-        this.searchDistanceInMetres = searchDistanceInMetres;
-        this.municipalityId = municipalityId;
-        this.name = name;
-        this.bounds = bounds;
-    }
-
-    public int getMunicipalityIdAsInteger() {
-        Matcher m = PATTERN.matcher(municipalityId);
-        if (m.find()) {
-            return Integer.parseInt(m.group(1));
-        } else {
-            throw new IllegalStateException("Incorrect municipalityId " + municipalityId);
-        }
-    }
 }
