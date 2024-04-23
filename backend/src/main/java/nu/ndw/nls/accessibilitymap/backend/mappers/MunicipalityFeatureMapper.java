@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class MunicipalityMapper {
+public class MunicipalityFeatureMapper {
+
+
+
 
     public FeatureCollectionJson mapToMunicipalitiesToGeoJSON(Collection<Municipality> municipalities) {
         return new FeatureCollectionJson(TypeEnum.FEATURECOLLECTION,
@@ -24,12 +28,19 @@ public class MunicipalityMapper {
 
     private FeatureJson mapMunicipality(Municipality m) {
         List<List<Double>> bounds = mapMunicipalityBounds(m.getBounds());
+
+        URL requestExemptionUrl = m.getRequestExemptionUrl();
+        String requestExemptionUrlString = "";
+        if (requestExemptionUrl != null) {
+            requestExemptionUrlString = requestExemptionUrl.toString();
+        }
+
         return new FeatureJson(FeatureJson.TypeEnum.FEATURE, m.getMunicipalityId(), mapStartPoint(m))
                 .properties(new MunicipalityPropertiesJson(
                         m.getName(),
                         (int) m.getSearchDistanceInMetres(),
                         bounds,
-                        m.getRequestExemptionUrl()));
+                        requestExemptionUrlString));
     }
 
     private PointJson mapStartPoint(Municipality m) {

@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.graphhopper;
 
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
-import static nu.ndw.nls.routingmapmatcher.util.GeometryConstants.WGS84_GEOMETRY_FACTORY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.Sets;
@@ -12,6 +11,7 @@ import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.AccessibilityMapF
 import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -28,6 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(classes = AccessibilityMapITConfig.class)
 class AccessibilityMapIT {
 
+    private static final GeometryFactoryWgs84 WGS84_GEOMETRY_FACTORY = new GeometryFactoryWgs84();
     private static final Coordinate NODE = new Coordinate(0.0, 0.0);
     private static final LineString LINE_STRING = WGS84_GEOMETRY_FACTORY.createLineString(new Coordinate[]{NODE, NODE});
 
