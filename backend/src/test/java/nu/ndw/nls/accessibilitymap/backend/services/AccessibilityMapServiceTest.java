@@ -1,8 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
-import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ID_1;
-import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.ID_2;
-import static nu.ndw.nls.accessibilitymap.backend.services.TestHelper.MUNICIPALITY_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -23,6 +20,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityMapServiceTest {
+
+    private static final String MUNICIPALITY_ID_STRING = "GM307";
+
+    private static final int ID_1 = 1;
+    private static final int ID_2 = 2;
 
     private static final IsochroneMatch INACCESSIBLE_MATCH = IsochroneMatch.builder()
             .reversed(false)
@@ -58,14 +60,14 @@ class AccessibilityMapServiceTest {
         Set<IsochroneMatch> restrictedIsochroneMatchSet = Set.of(INACCESSIBLE_MATCH);
 
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
-        when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);
+        when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
         when(accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(accessibilityMap, municipality))
                 .thenReturn(allIsochroneMatchSet);
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
                 municipality)).thenReturn(restrictedIsochroneMatchSet);
 
         SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
-                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID);
+                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING);
 
         assertThat(idToRoadSections).hasSize(2)
                 .containsEntry(ID_1, new RoadSection(ID_1, false, null))
