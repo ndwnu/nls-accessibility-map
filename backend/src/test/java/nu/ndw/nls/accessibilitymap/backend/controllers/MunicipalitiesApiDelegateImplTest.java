@@ -22,8 +22,8 @@ class MunicipalitiesApiDelegateImplTest {
 
     private static final String MUNICIPALITY_ID_STRING = "GM0307";
     private static final String MUNICIPALITY_ID_2_STRING = "GM0008";
-    private static final int MUNICIPALITY_ID_2 = 8;
-    private static final int MUNICIPALITY_ID = 307;
+    private static final String MUNICIPALITY_ID_2 = "GM0008";
+    private static final String MUNICIPALITY_ID = "GM0307";
     @Mock
     private MunicipalityFeatureMapper municipalityFeatureMapper;
     @Mock

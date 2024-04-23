@@ -19,7 +19,7 @@ public class AccessibleRoadsService {
             Municipality municipality) {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(municipality.getStartPoint())
-                .municipalityId(municipality.getMunicipalityId())
+                .municipalityId(municipality.getMunicipalityIdInteger())
                 .searchDistanceInMetres(municipality.getSearchDistanceInMetres())
                 .build();
 
@@ -32,7 +32,7 @@ public class AccessibleRoadsService {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(municipality.getStartPoint())
                 .vehicleProperties(vehicleProperties)
-                .municipalityId(municipality.getMunicipalityId())
+                .municipalityId(municipality.getMunicipalityIdInteger())
                 .searchDistanceInMetres(municipality.getSearchDistanceInMetres())
                 .build();
 

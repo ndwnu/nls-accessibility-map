@@ -8,7 +8,8 @@ import org.locationtech.jts.geom.Point;
 public class Municipality {
     Point startPoint;
     double searchDistanceInMetres;
-    int municipalityId;
+    String municipalityId;
+    int municipalityIdInteger;
     String name;
     URL requestExemptionUrl;
     MunicipalityBoundingBox bounds;
