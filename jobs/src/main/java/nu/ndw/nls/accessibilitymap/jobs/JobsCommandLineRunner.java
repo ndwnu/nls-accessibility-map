@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.jobs;
 
-import io.micrometer.tracing.annotation.NewSpan;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -26,7 +25,6 @@ public class JobsCommandLineRunner implements CommandLineRunner, ExitCodeGenerat
     private final CommandLine.IFactory factory;
     private int exitCode;
 
-    @NewSpan
     @Override
     public void run(String[] args) {
         String buildTime = DATE_TIME_FORMATTER.format(buildProperties.getTime());
