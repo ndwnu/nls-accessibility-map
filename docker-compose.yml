@@ -60,7 +60,7 @@ services:
       - nls-accessibility-map-network
 
   nls-rabbitmq:
-    image: registry.ndw.nu/docker-hub/library/rabbitmq:3.8.7-management
+    image: ndwnls.azurecr.io/docker.io/library/rabbitmq:3.8.7-management
     hostname: nls-rabbitmq
     user: rabbitmq
     ports:
@@ -74,7 +74,7 @@ services:
 
   traffic-sign-api-stub:
     hostname: traffic-sign-api-stub
-    image: registry.ndw.nu/docker-hub/wiremock/wiremock:3.0.0-1
+    image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.0.0-1
     volumes:
       - ./docker/traffic-sign-api-stub/mappings:/home/wiremock/mappings
       - ./docker/traffic-sign-api-stub/responses:/home/wiremock/__files/responses
