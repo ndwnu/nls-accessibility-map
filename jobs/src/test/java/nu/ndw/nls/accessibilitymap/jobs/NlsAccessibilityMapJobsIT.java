@@ -74,6 +74,8 @@ class NlsAccessibilityMapJobsIT {
         assertEdgeValue(networkGraphHopper, 600793741, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
         // Text sign type VOOR
         assertEdgeValue(networkGraphHopper, 309327059, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
+        // Text sign type VRIJ
+        assertEdgeValue(networkGraphHopper, 601008374, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
 
         // Driving direction H
         assertEdgeValue(networkGraphHopper, 310325117, MOTOR_VEHICLE_ACCESS_FORBIDDEN, true, false);
