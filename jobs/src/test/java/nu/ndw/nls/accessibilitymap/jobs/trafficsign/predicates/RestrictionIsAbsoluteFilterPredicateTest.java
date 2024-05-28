@@ -20,6 +20,7 @@ class RestrictionIsAbsoluteFilterPredicateTest {
     private static final String IGNORED_TOKEN_CONTAINS_UIT = "UIT";
     private static final String IGNORED_TOKEN_CONTAINS_VOOR = "VOOR";
     private static final String IGNORED_TOKEN_CONTAINS_TIJD = "TIJD";
+    private static final String IGNORED_TOKEN_CONTAINS_VRIJ = "VRIJ";
     private static final String FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS = "some text to %s test contains";
 
     @InjectMocks
@@ -64,6 +65,13 @@ class RestrictionIsAbsoluteFilterPredicateTest {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_TIJD));
         restrictionIsAbsoluteFilterPredicate.test(
                 mockSign(FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS.formatted(IGNORED_TOKEN_CONTAINS_TIJD)));
+    }
+
+    @Test
+    void test_ok_excludedBecauseItContainsVrij() {
+        restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_VRIJ));
+        restrictionIsAbsoluteFilterPredicate.test(
+                mockSign(FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS.formatted(IGNORED_TOKEN_CONTAINS_VRIJ)));
     }
 
     private TrafficSignJsonDtoV3 mockSign(String textSignType) {

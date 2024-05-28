@@ -10,13 +10,17 @@ import org.springframework.util.CollectionUtils;
 
 @Component
 public class RestrictionIsAbsoluteFilterPredicate implements TrafficSignIncludedFilterPredicate {
+
     private static final List<String> IGNORED_TEXT_SIGN_TYPES = List.of(
             // Sign has exceptions, e.g. for local traffic.
             "UIT",
             // Sign is a pre-announcement, e.g. restriction starts in 800 metres.
             "VOOR",
             // Sign only applies between certain times.
-            "TIJD");
+            "TIJD",
+            // Sign text has not been categorized by George. In practice, many of these fall in the former categories,
+            // so it's safer to exclude them as well.
+            "VRIJ");
 
     @Override
     public boolean test(TrafficSignJsonDtoV3 trafficSignJsonDtoV3) {
