@@ -1,14 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.5</version>
     </parent>
-
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
     <version>1.0.65-SNAPSHOT</version>
@@ -22,7 +18,6 @@
         <module>trafficsignclient</module>
         <module>jobs</module>
     </modules>
-
     <properties>
         <java.version>17</java.version>
         <exec-maven-plugin.version>3.2.0</exec-maven-plugin.version>
@@ -39,14 +34,12 @@
         <springdoc.version>2.5.0</springdoc.version>
         <stream-utils.version>1.3.1</stream-utils.version>
         <swagger-annotations.version>2.2.21</swagger-annotations.version>
-
         <nls-events.version>3.7.2</nls-events.version>
         <nls-nwb-data-access.version>4.2.11</nls-nwb-data-access.version>
-        <nls-springboot.version>4.0.5</nls-springboot.version>
+        <nls-springboot.version>4.1.0</nls-springboot.version>
         <routing-map-matcher.version>9.0.11</routing-map-matcher.version>
         <nls-geometry.version>2.0.4</nls-geometry.version>
     </properties>
-
     <distributionManagement>
         <repository>
             <id>NLS</id>
@@ -98,7 +91,6 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -108,69 +100,58 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${springdoc.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.intuit.karate</groupId>
                 <artifactId>karate-junit5</artifactId>
                 <version>${karate.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-authz-client</artifactId>
                 <version>${keycloak-authz-client.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-annotations.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.openapitools</groupId>
                 <artifactId>jackson-databind-nullable</artifactId>
                 <version>${jackson-databind-nullable.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli-spring-boot-starter</artifactId>
                 <version>${picocli.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.conductor</groupId>
                 <artifactId>stream-utils</artifactId>
                 <version>${stream-utils.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>nu.ndw</groupId>
                 <artifactId>nls-events</artifactId>
                 <version>${nls-events.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>nu.ndw</groupId>
                 <artifactId>nls-nwb-data-access-jooq</artifactId>
                 <version>${nls-nwb-data-access.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>nu.ndw.nls.geometry</groupId>
                 <artifactId>nls-geometry</artifactId>
@@ -186,32 +167,27 @@
                 <artifactId>monitoring</artifactId>
                 <version>${nls-springboot.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>messaging</artifactId>
                 <version>${nls-springboot.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>security</artifactId>
                 <version>${nls-springboot.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>test</artifactId>
                 <version>${nls-springboot.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>oauth2-client-credentials</artifactId>
                 <version>${nls-springboot.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>nu.ndw.nls</groupId>
                 <artifactId>routing-map-matcher-library</artifactId>
@@ -219,7 +195,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <pluginManagement>
             <plugins>
@@ -243,7 +218,6 @@
                         </execution>
                     </executions>
                 </plugin>
-
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
@@ -264,7 +238,6 @@
                         </execution>
                     </executions>
                 </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -285,12 +258,10 @@
                         </annotationProcessorPaths>
                     </configuration>
                 </plugin>
-
                 <plugin>
                     <groupId>org.openapitools</groupId>
                     <artifactId>openapi-generator-maven-plugin</artifactId>
                     <version>${openapi-generator-maven-plugin.version}</version>
-
                     <dependencies>
                         <dependency>
                             <groupId>nu.ndw.nls.springboot</groupId>
@@ -303,7 +274,6 @@
                             <version>${project.parent.version}</version>
                         </dependency>
                     </dependencies>
-
                     <executions>
                         <execution>
                             <id>generate-open-api</id>
@@ -313,9 +283,7 @@
                             <configuration>
                                 <templateResourcePath>nu/ndw/nls/springboot/openapi</templateResourcePath>
                                 <configurationFile>openapi-variables.yml</configurationFile>
-
                                 <additionalProperties>removeEnumValuePrefix=true</additionalProperties>
-
                                 <!-- Location of our openapi specification file -->
                                 <inputSpec>/nu/ndw/nls/accessibilitymap/specification/v1.yaml</inputSpec>
                                 <!-- Type of code to generate -->
@@ -328,12 +296,10 @@
                                   Reason to not want all the default generated files: we'd need more dependencies.
                                 -->
                                 <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
-
                             </configuration>
                         </execution>
                     </executions>
                 </plugin>
-
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
