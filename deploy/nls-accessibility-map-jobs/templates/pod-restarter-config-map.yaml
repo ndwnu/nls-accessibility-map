@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: nls-accessibility-map-api-pod-restarter-config
 data:
+  DD_DATA_STREAMS_ENABLED: "true"
   DD_TRACE_METHODS: picocli.CommandLine[execute]
   DEPLOYMENT_DEPLOYMENTNAME: 'nls-accessibility-map-api-deployment'
   DEPLOYMENT_NAMESPACE: 'nls'
