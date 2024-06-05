@@ -9,6 +9,7 @@ import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.IsochroneServiceF
 import nu.ndw.nls.accessibilitymap.backend.services.RestrictionMapperProvider;
 import nu.ndw.nls.accessibilitymap.backend.services.VehicleRestrictionsModelFactory;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.geometry.bearing.BearingCalculator;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.factories.GeodeticCalculatorFactory;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -27,9 +28,10 @@ class AccessibilityMapITConfig {
         VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory = new VehicleRestrictionsModelFactory(
                 restrictionMapperProvider);
         EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor = new EdgeIteratorStateReverseExtractor();
+        GeodeticCalculatorFactory geodeticCalculatorFactory = new GeodeticCalculatorFactory();
         IsochroneServiceFactory isochroneServiceFactory = new IsochroneServiceFactory(
-                edgeIteratorStateReverseExtractor, new FractionAndDistanceCalculator(new GeodeticCalculatorFactory(),
-                List.of(new GeometryFactoryWgs84())));
+                edgeIteratorStateReverseExtractor, new FractionAndDistanceCalculator(geodeticCalculatorFactory,
+                List.of(new GeometryFactoryWgs84()), new BearingCalculator(geodeticCalculatorFactory)));
         return new AccessibilityMapFactory(vehicleRestrictionsModelFactory, isochroneServiceFactory);
     }
 
