@@ -237,11 +237,6 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 
@@ -337,24 +332,6 @@
                                 <goals>
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>prepare-agent-integration</id>
-                                <goals>
-                                    <goal>prepare-agent-integration</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>report-integration</id>
-                                <goals>
-                                    <goal>report-integration</goal>
                                 </goals>
                             </execution>
                         </executions>
