@@ -18,8 +18,18 @@ public class NlsAccessibilityMapApiIT {
     }
 
     @Karate.Test
-    Karate api() {
-        return Karate.run("classpath:feature/api.feature");
+    Karate getInaccessibleRoadSections() {
+        return Karate.run("classpath:feature/accessibility-json.feature");
+    }
+
+    @Karate.Test
+    Karate getRoadSections() {
+        return Karate.run("classpath:feature/accessibility-geojson.feature");
+    }
+
+    @Karate.Test
+    Karate getMunicipalities() {
+        return Karate.run("classpath:feature/municipalities.feature");
     }
 
     @Karate.Test

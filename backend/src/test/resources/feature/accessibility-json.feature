@@ -1,16 +1,15 @@
-Feature: API operations
+Feature: Inaccessible road sections JSON endpoint
 
   Background:
     * url baseUrl
-    * def okResponse = read('classpath:test-messages/accessibility/response-ok.json')
-    * def okResponseWithMatchedRoadSection  = read('classpath:test-messages/accessibility/response-ok-with-matched-road-section.json')
+    * def okResponse = read('classpath:test-messages/accessibility/json/response-ok.json')
+    * def okResponseWithMatchedRoadSection  = read('classpath:test-messages/accessibility/json/response-ok-with-matched-road-section.json')
     * def badRequestMunicipalityId = read('classpath:test-messages/accessibility/response-400-incorrect-municipality-id.json')
     * def badRequestVehicleLength = read('classpath:test-messages/accessibility/response-400-incorrect-vehicle-length.json')
     * def badRequestHasTrailer = read('classpath:test-messages/accessibility/response-400-incorrect-has-trailer.json')
     * def badRequestLatitudeSetLongitudeMissing = read('classpath:test-messages/accessibility/response-400-longitude-missing.json')
     * def badRequestLongitudeSetLatitudeMissing = read('classpath:test-messages/accessibility/response-400-latitude-missing.json')
     * def badRequestRoadSectionNotFoundByLatitudeLongitude = read('classpath:test-messages/accessibility/response-404-road-section-not-found-by-latitude-longitude.json')
-    * def municipalitiesOkResponse = read('classpath:test-messages/municipalities/response-ok.json')
 
   Scenario: accessibility map without latitude and longitude should return 200
     Given path '/v1/municipalities/GM0307/road-sections'
@@ -87,9 +86,3 @@ Feature: API operations
     And method GET
     Then status 400
     And match response == badRequestHasTrailer
-
-  Scenario: municipalities should return 200
-    Given path '/v1/municipalities'
-    And method GET
-    Then status 200
-    And match response == municipalitiesOkResponse
