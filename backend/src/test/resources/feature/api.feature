@@ -7,9 +7,9 @@ Feature: API operations
     * def badRequestMunicipalityId = read('classpath:test-messages/accessibility/response-400-incorrect-municipality-id.json')
     * def badRequestVehicleLength = read('classpath:test-messages/accessibility/response-400-incorrect-vehicle-length.json')
     * def badRequestHasTrailer = read('classpath:test-messages/accessibility/response-400-incorrect-has-trailer.json')
-    * def badRequesLatitudeSetLongitudeMissing = read('classpath:test-messages/accessibility/response-400-longitude-missing.json')
+    * def badRequestLatitudeSetLongitudeMissing = read('classpath:test-messages/accessibility/response-400-longitude-missing.json')
     * def badRequestLongitudeSetLatitudeMissing = read('classpath:test-messages/accessibility/response-400-latitude-missing.json')
-    * def badRequestRpadSectionNotFindByLatitudeLongitude = read('classpath:test-messages/accessibility/response-404-road-section-not-found-by-latitude-longitude.json')
+    * def badRequestRoadSectionNotFoundByLatitudeLongitude = read('classpath:test-messages/accessibility/response-404-road-section-not-found-by-latitude-longitude.json')
     * def municipalitiesOkResponse = read('classpath:test-messages/municipalities/response-ok.json')
 
   Scenario: accessibility map without latitude and longitude should return 200
@@ -54,7 +54,7 @@ Feature: API operations
     And param latitude = 1.0
     And method GET
     Then status 400
-    And match response == badRequesLatitudeSetLongitudeMissing
+    And match response == badRequestLatitudeSetLongitudeMissing
 
   Scenario: accessibility map should return 404 when road section is not found by map matching latitude longitude
     Given path '/v1/municipalities/GM0307/road-sections'
@@ -63,7 +63,7 @@ Feature: API operations
     And param longitude = 1.0
     And method GET
     Then status 404
-    And match response == badRequestRpadSectionNotFindByLatitudeLongitude
+    And match response == badRequestRoadSectionNotFoundByLatitudeLongitude
 
   Scenario: accessibility map with invalid municipality id parameter value should return 400
     Given path '/v1/municipalities/GM000/road-sections'
