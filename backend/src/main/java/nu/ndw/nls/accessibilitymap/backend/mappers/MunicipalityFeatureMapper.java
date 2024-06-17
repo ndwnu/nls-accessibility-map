@@ -4,10 +4,10 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson.TypeEnum;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
@@ -18,15 +18,12 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class MunicipalityFeatureMapper {
 
-
-
-
-    public FeatureCollectionJson mapToMunicipalitiesToGeoJSON(Collection<Municipality> municipalities) {
-        return new FeatureCollectionJson(TypeEnum.FEATURECOLLECTION,
+    public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
+        return new MunicipalityFeatureCollectionJson(TypeEnum.FEATURECOLLECTION,
                 municipalities.stream().map(this::mapMunicipality).toList());
     }
 
-    private FeatureJson mapMunicipality(Municipality m) {
+    private MunicipalityFeatureJson mapMunicipality(Municipality m) {
         List<List<Double>> bounds = mapMunicipalityBounds(m.getBounds());
 
         URL requestExemptionUrl = m.getRequestExemptionUrl();
@@ -35,7 +32,8 @@ public class MunicipalityFeatureMapper {
             requestExemptionUrlString = requestExemptionUrl.toString();
         }
 
-        return new FeatureJson(FeatureJson.TypeEnum.FEATURE, m.getMunicipalityId(), mapStartPoint(m))
+        return new MunicipalityFeatureJson(MunicipalityFeatureJson.TypeEnum.FEATURE, m.getMunicipalityId(),
+                mapStartPoint(m))
                 .properties(new MunicipalityPropertiesJson(
                         m.getName(),
                         (int) m.getSearchDistanceInMetres(),
@@ -48,15 +46,12 @@ public class MunicipalityFeatureMapper {
     }
 
     private static PointJson mapPointJson(double x, double y) {
-        return new PointJson(GeometryJson.TypeEnum.POINT)
-                .coordinates(List.of(x, y));
+        return new PointJson(List.of(x, y), GeometryJson.TypeEnum.POINT);
     }
 
     private List<List<Double>> mapMunicipalityBounds(MunicipalityBoundingBox boundingBox) {
-        List<Double> from = List.of(
-                boundingBox.longitudeFrom(), boundingBox.latitudeFrom());
-        List<Double> to = List.of(
-                boundingBox.longitudeTo(), boundingBox.latitudeTo());
+        List<Double> from = List.of(boundingBox.longitudeFrom(), boundingBox.latitudeFrom());
+        List<Double> to = List.of(boundingBox.longitudeTo(), boundingBox.latitudeTo());
         return List.of(from, to);
     }
 }

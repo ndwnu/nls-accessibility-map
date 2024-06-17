@@ -1,20 +1,18 @@
----
-openapi: "3.0.0"
+openapi: 3.0.0
 info:
-  title: "Accessibility map V1 API"
-  description: "Query the accessibility for vehicle characteristics within a\
-    \ municipality."
-  version: "1"
+  title: Accessibility map V1 API
+  description: Query the accessibility for vehicle characteristics within a municipality.
+  version: '1'
 servers:
-  - url: "/api/rest/static-road-data/accessibility-map/v1"
+  - url: /api/rest/static-road-data/accessibility-map/v1
 
 paths:
   /municipalities/{municipalityId}/road-sections:
     get:
       tags:
-        - "accessibility-map"
-      summary: "Returns inaccessible road sections for a specified municipality per direction"
-      operationId: "getInaccessibleRoadSections"
+        - accessibility-map
+      summary: Returns inaccessible road sections for a specified municipality as JSON
+      operationId: getInaccessibleRoadSections
       parameters:
         - $ref: '#/components/parameters/MunicipalityIdPathParam'
         - $ref: '#/components/parameters/VehicleType'
@@ -26,74 +24,115 @@ paths:
         - $ref: '#/components/parameters/VehicleHasTrailerParam'
         - $ref: '#/components/parameters/LatitudeParam'
         - $ref: '#/components/parameters/LongitudeParam'
-
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AccessibilityMapResponse"
-        "400":
-          description: "Validation error"
+                $ref: '#/components/schemas/AccessibilityMapResponse'
+        '400':
+          description: Validation error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/APIError"
-        "404":
-          description: "Resource not found"
+                $ref: '#/components/schemas/APIError'
+        '404':
+          description: Resource not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/APIError"
-        "500":
-          description: "Internal Server Error"
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/APIError"
+                $ref: '#/components/schemas/APIError'
+
+  /municipalities/{municipalityId}/road-sections.geojson:
+    get:
+      tags:
+        - accessibility-map
+      summary: Returns road sections for a specified municipality as GeoJSON per direction
+      operationId: getRoadSections
+      parameters:
+        - $ref: '#/components/parameters/MunicipalityIdPathParam'
+        - $ref: '#/components/parameters/VehicleType'
+        - $ref: '#/components/parameters/VehicleLengthParam'
+        - $ref: '#/components/parameters/VehicleWidthParam'
+        - $ref: '#/components/parameters/VehicleHeightParam'
+        - $ref: '#/components/parameters/VehicleWeightParam'
+        - $ref: '#/components/parameters/VehicleAxleLoadParam'
+        - $ref: '#/components/parameters/VehicleHasTrailerParam'
+        - $ref: '#/components/parameters/LatitudeParam'
+        - $ref: '#/components/parameters/LongitudeParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/RoadSectionFeatureCollection'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
 
   /municipalities:
     get:
       tags:
-        - "municipalities"
-      summary: "Returns all currently configured municipalities"
-      operationId: "getMunicipalities"
-
+        - municipalities
+      summary: Returns all currently configured municipalities
+      operationId: getMunicipalities
       responses:
-        "200":
-          description: "OK"
+        '200':
+          description: OK
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/MunicipalityFeatureCollection'
+        '500':
+          description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FeatureCollection"
-        "500":
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-components:
+                $ref: '#/components/schemas/APIError'
 
+components:
   parameters:
     MunicipalityIdPathParam:
-      in: "path"
-      name: "municipalityId"
-      description: "The CBS municipality id"
+      in: path
+      name: municipalityId
+      description: The CBS municipality ID
       required: true
       schema:
-        type: "string"
-        example: "GM0344"
-        pattern: '^(GM)(?=\d{4}$)\d*[1-9]\d*'
+        type: string
+        example: GM0344
+        pattern: ^(GM)(?=\d{4}$)\d*[1-9]\d*
     VehicleType:
-      in: "query"
-      name: "vehicleType"
-      description: "The type of vehicle"
+      in: query
+      name: vehicleType
+      description: The type of vehicle
       required: true
       schema:
-        $ref: "#/components/schemas/VehicleType"
+        $ref: '#/components/schemas/VehicleType'
     VehicleLengthParam:
-      in: "query"
+      in: query
       name: vehicleLength
       description: The length of the specified vehicle in metres
       required: false
@@ -103,7 +142,7 @@ components:
         minimum: 0.0
         maximum: 22.0
     VehicleWidthParam:
-      in: "query"
+      in: query
       name: vehicleWidth
       description: The width of the specified vehicle in metres
       required: false
@@ -113,7 +152,7 @@ components:
         minimum: 0.0
         maximum: 3.0
     VehicleHeightParam:
-      in: "query"
+      in: query
       name: vehicleHeight
       description: The height of the specified vehicle in metres
       required: false
@@ -123,18 +162,19 @@ components:
         minimum: 0.0
         maximum: 4.0
     VehicleWeightParam:
-      in: "query"
+      in: query
       name: vehicleWeight
-      description: "The weight of the specified vehicle in metric tonnes including load and trailer. 
-                    This field is required when selecting vehicle type commercial_vehicle."
+      description: |
+        The weight of the specified vehicle in metric tonnes including load and trailer.
+        This field is required when selecting vehicle type commercial_vehicle.
       required: false
       schema:
         type: number
         format: float
         minimum: 0.0
-        maximum: 60
+        maximum: 60.0
     VehicleAxleLoadParam:
-      in: "query"
+      in: query
       name: vehicleAxleLoad
       description: The axle load of the specified vehicle in metric tonnes
       required: false
@@ -144,7 +184,7 @@ components:
         minimum: 0.0
         maximum: 12.0
     VehicleHasTrailerParam:
-      in: "query"
+      in: query
       name: vehicleHasTrailer
       description: Indication whether a vehicle has a trailer
       required: false
@@ -152,7 +192,7 @@ components:
         type: boolean
         default: false
     LatitudeParam:
-      in: "query"
+      in: query
       name: latitude
       description: Optional latitude of the start location. When present, the longitude must also be specified
       example: 52.1326
@@ -161,7 +201,7 @@ components:
         type: number
         format: double
     LongitudeParam:
-      in: "query"
+      in: query
       name: longitude
       description: Optional longitude of the start location. When present, the latitude must also be specified
       example: 5.2913
@@ -171,17 +211,26 @@ components:
         format: double
 
   schemas:
+    VehicleType:
+      type: string
+      enum:
+        - car
+        - commercial_vehicle
+        - bus
+        - motorcycle
+        - tractor
+
     AccessibilityMapResponse:
-      type: "object"
+      type: object
       properties:
         inaccessibleRoadSections:
-          type: "array"
+          type: array
           items:
-            $ref: "#/components/schemas/RoadSection"
+            $ref: '#/components/schemas/RoadSection'
         matchedRoadSection:
-          $ref: "#/components/schemas/RoadSection"
+          $ref: '#/components/schemas/RoadSection'
     RoadSection:
-      type: "object"
+      type: object
       properties:
         roadSectionId:
           type: integer
@@ -190,14 +239,24 @@ components:
           type: boolean
         backwardAccessible:
           type: boolean
-    VehicleType:
-      type: "string"
-      enum:
-        - car
-        - commercial_vehicle
-        - bus
-        - motorcycle
-        - tractor
+
+    FeatureCollection:
+      type: object
+      description: GeoJSON feature collection
+      required:
+        - type
+        - features
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      properties:
+        type:
+          type: string
+          enum:
+            - FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
     Feature:
       type: object
       description: GeoJSON feature
@@ -216,8 +275,125 @@ components:
           type: object
         geometry:
           $ref: '#/components/schemas/Geometry'
-        properties:
-          $ref: '#/components/schemas/MunicipalityProperties'
+    Geometry:
+      type: object
+      description: GeoJSON geometry
+      discriminator:
+        propertyName: type
+      required:
+        - type
+      externalDocs:
+        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1
+      properties:
+        type:
+          type: string
+          enum:
+            - Point
+            - LineString
+          description: Geometry type
+    Point:
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - type: object
+          description: GeoJSON geometry
+          example: [ 5.1, 52.2 ]
+          externalDocs:
+            url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
+          required:
+            - coordinates
+          properties:
+            coordinates:
+              $ref: '#/components/schemas/Point2D'
+    LineString:
+      allOf:
+        - $ref: '#/components/schemas/Geometry'
+        - type: object
+          description: GeoJSON geometry
+          example: [ [ 5.1, 52.2 ], [ 5.4, 52.3 ] ]
+          externalDocs:
+            url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.4
+          required:
+            - coordinates
+          properties:
+            coordinates:
+              type: array
+              items:
+                $ref: '#/components/schemas/Point2D'
+    Point2D:
+      type: array
+      description: Point in 2D space
+      externalDocs:
+        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
+      minItems: 2
+      maxItems: 2
+      example: [ 5.1, 52.2 ]
+      items:
+        type: number
+        format: double
+
+    RoadSectionFeatureCollection:
+      allOf:
+        - $ref: '#/components/schemas/FeatureCollection'
+        - type: object
+          description: Road sections GeoJSON feature collection
+          required:
+            - features
+          properties:
+            features:
+              type: array
+              items:
+                $ref: '#/components/schemas/RoadSectionFeature'
+    RoadSectionFeature:
+      allOf:
+        - $ref: '#/components/schemas/Feature'
+        - type: object
+          description: Road section GeoJSON feature
+          required:
+            - geometry
+          properties:
+            id:
+              type: integer
+              format: int32
+            geometry:
+              $ref: '#/components/schemas/LineString'
+            properties:
+              $ref: '#/components/schemas/RoadSectionProperties'
+    RoadSectionProperties:
+      type: object
+      required:
+        - accessible
+      properties:
+        accessible:
+          type: boolean
+        matched:
+          type: boolean
+
+    MunicipalityFeatureCollection:
+      allOf:
+        - $ref: '#/components/schemas/FeatureCollection'
+        - type: object
+          description: Municipalities GeoJSON feature collection
+          required:
+            - features
+          properties:
+            features:
+              type: array
+              items:
+                $ref: '#/components/schemas/MunicipalityFeature'
+    MunicipalityFeature:
+      allOf:
+        - $ref: '#/components/schemas/Feature'
+        - type: object
+          description: Municipality GeoJSON feature
+          required:
+            - geometry
+          properties:
+            id:
+              type: string
+            geometry:
+              $ref: '#/components/schemas/Point'
+            properties:
+              $ref: '#/components/schemas/MunicipalityProperties'
     MunicipalityProperties:
       type: object
       required:
@@ -237,56 +413,11 @@ components:
           $ref: '#/components/schemas/BoundingBox'
         requestExemptionUrl:
           type: string
-          description: Url to request an exemption
-    FeatureCollection:
-      type: object
-      description: GeoJSON feature collection
-      required:
-        - type
-        - features
-      externalDocs:
-        url: https://tools.ietf.org/html/rfc7946#section-3.3
-      properties:
-        type:
-          type: string
-          enum:
-            - FeatureCollection
-        features:
-          type: array
-          items:
-            $ref: '#/components/schemas/Feature'
-    Geometry:
-      type: object
-      description: GeoJSON geometry
-      discriminator:
-        propertyName: type
-      required:
-        - type
-      externalDocs:
-        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1
-      properties:
-        type:
-          type: string
-          enum:
-            - Point
-          description: Geometry type
-
-    Point2D:
-      type: array
-      description: Point in 2D space
-      externalDocs:
-        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
-      minItems: 2
-      maxItems: 2
-      example: [ 5.1, 52.2 ]
-      items:
-        type: number
-        format: double
-
+          description: URL to request an exemption
     BoundingBox:
       type: array
       description: The bounding box of a municipality in [west-south, east-north] order
-      example: [[3.9555803787437767,51.79111331209157],[4.2393831509799735,51.93614160776871]]
+      example: [ [ 3.9555803787437767, 51.79111331209157 ], [ 4.2393831509799735, 51.93614160776871 ] ]
       minItems: 2
       maxItems: 2
       items:
@@ -295,20 +426,8 @@ components:
           type: number
           format: double
 
-    Point:
-      type: object
-      description: GeoJSON geometry
-      example: [ 5.1, 52.2 ]
-      externalDocs:
-        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
-      allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - properties:
-            coordinates:
-              $ref: '#/components/schemas/Point2D'
-
     APIError:
-      type: "object"
+      type: object
       properties:
         message:
-          type: "string"
+          type: string
