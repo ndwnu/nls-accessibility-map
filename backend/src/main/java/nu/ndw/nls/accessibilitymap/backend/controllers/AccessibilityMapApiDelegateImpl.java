@@ -57,7 +57,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     @Override
     public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
-            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude) {
+            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
+            Double longitude) {
         checkWeightConstraint(vehicleType, vehicleWeight);
         CandidateMatch startPointMatch = matchStartPoint(latitude, longitude);
 
@@ -65,7 +66,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer == Boolean.TRUE);
         SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(municipalityId, requestArguments);
 
-        return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(idToRoadSection, startPointMatch));
+        return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(idToRoadSection, startPointMatch, accessible));
     }
 
     private CandidateMatch matchStartPoint(Double latitude, Double longitude) {

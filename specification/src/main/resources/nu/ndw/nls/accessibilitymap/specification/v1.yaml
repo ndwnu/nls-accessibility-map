@@ -65,6 +65,7 @@ paths:
         - $ref: '#/components/parameters/VehicleWeightParam'
         - $ref: '#/components/parameters/VehicleAxleLoadParam'
         - $ref: '#/components/parameters/VehicleHasTrailerParam'
+        - $ref: '#/components/parameters/AccessibleParam'
         - $ref: '#/components/parameters/LatitudeParam'
         - $ref: '#/components/parameters/LongitudeParam'
       responses:
@@ -191,6 +192,15 @@ components:
       schema:
         type: boolean
         default: false
+    AccessibleParam:
+      in: query
+      name: accessible
+      description: |
+        Only return accessible or inaccessible road sections. When omitted, return both.
+        Matched road section by latitude-longitude is always returned, regardless of this filter.
+      required: false
+      schema:
+        type: boolean
     LatitudeParam:
       in: query
       name: latitude
