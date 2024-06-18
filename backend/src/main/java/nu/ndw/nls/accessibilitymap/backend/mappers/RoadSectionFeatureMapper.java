@@ -23,8 +23,8 @@ public class RoadSectionFeatureMapper {
         int id = forward ? roadSection.getRoadSectionId() : -roadSection.getRoadSectionId();
         LineString geometry = forward ? roadSection.getGeometry() : roadSection.getGeometry().reverse();
         Boolean accessible = forward ? roadSection.getForwardAccessible() : roadSection.getBackwardAccessible();
-        Boolean matched = candidateMatch != null ? roadSection.getRoadSectionId() == candidateMatch.getMatchedLinkId()
-                && forward != candidateMatch.isReversed() : null;
+        Boolean matched = candidateMatch != null ? (roadSection.getRoadSectionId() == candidateMatch.getMatchedLinkId()
+                && forward != candidateMatch.isReversed()) : null;
 
         return new RoadSectionFeatureJson(RoadSectionFeatureJson.TypeEnum.FEATURE, id,
                 new LineStringJson(geoJsonLineStringCoordinateMapper.map(geometry), GeometryJson.TypeEnum.LINESTRING))
