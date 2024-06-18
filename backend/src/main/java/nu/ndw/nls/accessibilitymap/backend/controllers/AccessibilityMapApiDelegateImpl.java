@@ -30,14 +30,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDelegate {
 
-    private final RequestMapper requestMapper;
-    private final AccessibilityResponseMapper accessibilityMapResultMapper;
-    private final RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
-    private final PointMapper pointMapper;
-
-    private final AccessibilityMapService accessibilityMapService;
-    private final PointMatchService pointMatchService;
     private final PointValidator pointValidator;
+    private final PointMapper pointMapper;
+    private final PointMatchService pointMatchService;
+    private final RequestMapper requestMapper;
+    private final AccessibilityMapService accessibilityMapService;
+    private final AccessibilityResponseMapper accessibilityResponseMapper;
+    private final RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
 
     @Override
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
@@ -51,7 +50,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer == Boolean.TRUE);
         SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(municipalityId, requestArguments);
 
-        return ResponseEntity.ok(accessibilityMapResultMapper.map(idToRoadSection, requestedRoadSectionId));
+        return ResponseEntity.ok(accessibilityResponseMapper.map(idToRoadSection, requestedRoadSectionId));
     }
 
     @Override
@@ -67,6 +66,13 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(municipalityId, requestArguments);
 
         return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(idToRoadSection, startPointMatch, accessible));
+    }
+
+    private static void checkWeightConstraint(VehicleTypeJson vehicleType, Float vehicleWeight) {
+        if (VehicleTypeJson.COMMERCIAL_VEHICLE == vehicleType && vehicleWeight == null) {
+            throw new VehicleWeightRequiredException("When selecting 'commercial_vehicle' as vehicle type "
+                    + "vehicle weight is required");
+        }
     }
 
     private CandidateMatch matchStartPoint(Double latitude, Double longitude) {
@@ -89,13 +95,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     private SortedMap<Integer, RoadSection> getAccessibility(String municipalityId, VehicleArguments requestArguments) {
         VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
         return accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, municipalityId);
-    }
-
-    private static void checkWeightConstraint(VehicleTypeJson vehicleType, Float vehicleWeight) {
-        if (VehicleTypeJson.COMMERCIAL_VEHICLE == vehicleType && vehicleWeight == null) {
-            throw new VehicleWeightRequiredException("When selecting 'commercial_vehicle' as vehicle type "
-                    + "vehicle weight is required");
-        }
     }
 
     @Builder

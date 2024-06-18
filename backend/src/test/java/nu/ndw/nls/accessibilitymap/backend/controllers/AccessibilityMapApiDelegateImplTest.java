@@ -10,21 +10,21 @@ import java.util.SortedMap;
 import nu.ndw.nls.accessibilitymap.backend.controllers.AccessibilityMapApiDelegateImpl.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.mappers.AccessibilityResponseMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.PointMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.RequestMapper;
+import nu.ndw.nls.accessibilitymap.backend.mappers.RoadSectionFeatureCollectionMapper;
 import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.backend.services.AccessibilityMapService;
 import nu.ndw.nls.accessibilitymap.backend.services.PointMatchService;
 import nu.ndw.nls.accessibilitymap.backend.validators.PointValidator;
-import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Point;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -44,16 +44,6 @@ class AccessibilityMapApiDelegateImplTest {
     private static final double REQUESTED_LONGITUDE = 3333;
     private static final double REQUESTED_LATITUDE = 222;
 
-    @Captor
-    private ArgumentCaptor<VehicleArguments> vehicleArgumentsArgumentCaptor;
-    @Mock
-    private RequestMapper requestMapper;
-    @Mock
-    private AccessibilityResponseMapper accessibilityResponseMapper;
-    @Mock
-    private AccessibilityMapService accessibilityMapService;
-    @Mock
-    private SortedMap<Integer, RoadSection> idToRoadSectionMap;
     @Mock
     private PointValidator pointValidator;
     @Mock
@@ -61,25 +51,33 @@ class AccessibilityMapApiDelegateImplTest {
     @Mock
     private PointMatchService pointMatchService;
     @Mock
+    private RequestMapper requestMapper;
+    @Mock
+    private AccessibilityMapService accessibilityMapService;
+    @Mock
+    private AccessibilityResponseMapper accessibilityResponseMapper;
+    @Mock
+    private RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
+
+    @Mock
+    private VehicleProperties vehicleProperties;
+    @Mock
     private Point requestedPoint;
     @Mock
     private CandidateMatch candidateMatch;
+    @Mock
+    private SortedMap<Integer, RoadSection> idToRoadSectionMap;
+    @Mock
+    private AccessibilityMapResponseJson accessibilityMapResponseJson;
+    @Mock
+    private RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson;
 
     @InjectMocks
     private AccessibilityMapApiDelegateImpl accessibilityMapApiDelegate;
 
     @Test
     void getInaccessibleRoadSections_ok() {
-        VehicleProperties vehicleProperties = VehicleProperties.builder().build();
-        AccessibilityMapResponseJson accessibilityMapResponseJson = new AccessibilityMapResponseJson();
-
-        when(requestMapper.mapToVehicleProperties(vehicleArgumentsArgumentCaptor.capture()))
-                .thenReturn(vehicleProperties);
-        when(pointMapper.mapCoordinateAllowNulls(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(requestedPoint);
-        when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
-        when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
-        when(accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID))
-                .thenReturn(idToRoadSectionMap);
+        setUpFixture();
         when(accessibilityResponseMapper.map(idToRoadSectionMap, REQUESTED_ROAD_SECTION_ID))
                 .thenReturn(accessibilityMapResponseJson);
 
@@ -93,20 +91,8 @@ class AccessibilityMapApiDelegateImplTest {
                 VEHICLE_AXLE_LOAD,
                 false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
 
-        VehicleArguments expectedVehicleArguments = VehicleArguments
-                .builder()
-                .vehicleType(VehicleTypeJson.CAR)
-                .vehicleHeight(VEHICLE_HEIGHT)
-                .vehicleLength(VEHICLE_LENGTH)
-                .vehicleWeight(VEHICLE_WEIGHT)
-                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
-                .vehicleWidth(VEHICLE_WIDTH)
-                .vehicleHasTrailer(false)
-                .build();
-        VehicleArguments vehicleArguments = vehicleArgumentsArgumentCaptor.getValue();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(accessibilityMapResponseJson);
-        assertThat(vehicleArguments).isEqualTo(expectedVehicleArguments);
 
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
@@ -126,5 +112,62 @@ class AccessibilityMapApiDelegateImplTest {
 
         assertThat(exception.getMessage()).isEqualTo("When selecting 'commercial_vehicle' as vehicle type "
                 + "vehicle weight is required");
+    }
+
+    @Test
+    void getRoadSections_ok() {
+        setUpFixture();
+        when(roadSectionFeatureCollectionMapper.map(idToRoadSectionMap, candidateMatch, true))
+                .thenReturn(roadSectionFeatureCollectionJson);
+
+        ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
+                MUNICIPALITY_ID,
+                VehicleTypeJson.CAR,
+                VEHICLE_LENGTH,
+                VEHICLE_WIDTH,
+                VEHICLE_HEIGHT,
+                VEHICLE_WEIGHT,
+                VEHICLE_AXLE_LOAD,
+                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
+
+        verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
+    }
+
+    @Test
+    void getRoadSections_exception_noWeight() {
+        VehicleWeightRequiredException exception = assertThrows(VehicleWeightRequiredException.class,
+                () -> accessibilityMapApiDelegate.getRoadSections(
+                        MUNICIPALITY_ID,
+                        VehicleTypeJson.COMMERCIAL_VEHICLE,
+                        VEHICLE_LENGTH,
+                        VEHICLE_WIDTH,
+                        VEHICLE_HEIGHT,
+                        null,
+                        VEHICLE_AXLE_LOAD,
+                        false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE));
+
+        assertThat(exception.getMessage()).isEqualTo("When selecting 'commercial_vehicle' as vehicle type "
+                + "vehicle weight is required");
+    }
+
+    private void setUpFixture() {
+        when(requestMapper.mapToVehicleProperties(VehicleArguments.builder()
+                .vehicleType(VehicleTypeJson.CAR)
+                .vehicleHeight(VEHICLE_HEIGHT)
+                .vehicleLength(VEHICLE_LENGTH)
+                .vehicleWeight(VEHICLE_WEIGHT)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
+                .vehicleWidth(VEHICLE_WIDTH)
+                .vehicleHasTrailer(false)
+                .build()))
+                .thenReturn(vehicleProperties);
+        when(pointMapper.mapCoordinateAllowNulls(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(requestedPoint);
+        when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
+        when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
+        when(accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID))
+                .thenReturn(idToRoadSectionMap);
     }
 }
