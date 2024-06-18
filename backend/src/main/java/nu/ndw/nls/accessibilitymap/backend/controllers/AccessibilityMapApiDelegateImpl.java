@@ -47,7 +47,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         Integer requestedRoadSectionId = startPointMatch != null ? startPointMatch.getMatchedLinkId() : null;
 
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
-                vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer == Boolean.TRUE);
+                vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
         SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(municipalityId, requestArguments);
 
         return ResponseEntity.ok(accessibilityResponseMapper.map(idToRoadSection, requestedRoadSectionId));
@@ -62,7 +62,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         CandidateMatch startPointMatch = matchStartPoint(latitude, longitude);
 
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
-                vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer == Boolean.TRUE);
+                vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
         SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(municipalityId, requestArguments);
 
         return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(idToRoadSection, startPointMatch, accessible));
@@ -100,6 +100,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     @Builder
     public record VehicleArguments(VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth,
                                    Float vehicleHeight, Float vehicleWeight, Float vehicleAxleLoad,
-                                   boolean vehicleHasTrailer) {
+                                   Boolean vehicleHasTrailer) {
     }
 }
