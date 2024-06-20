@@ -31,9 +31,7 @@ public class AccessibilityResponseMapper {
                         .orElse(null));
     }
 
-
     private boolean isRestrictedInAnyDirection(RoadSection r) {
         return r.getForwardAccessible() == Boolean.FALSE || r.getBackwardAccessible() == Boolean.FALSE;
     }
-
 }

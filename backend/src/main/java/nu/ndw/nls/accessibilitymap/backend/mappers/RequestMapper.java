@@ -57,7 +57,7 @@ public class RequestMapper {
         VehiclePropertiesBuilder vehiclePropertiesBuilder = VehicleProperties.builder();
         vehiclePropertiesConfiguration.accept(vehiclePropertiesBuilder, requestArguments.vehicleWeight());
         vehiclePropertiesBuilder
-                .trailerAccessForbidden(requestArguments.vehicleHasTrailer())
+                .trailerAccessForbidden(requestArguments.vehicleHasTrailer() == Boolean.TRUE)
                 .height(convertToDouble(requestArguments.vehicleHeight()))
                 .width(convertToDouble(requestArguments.vehicleWidth()))
                 .axleLoad(convertToDouble(requestArguments.vehicleAxleLoad()))
