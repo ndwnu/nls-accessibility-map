@@ -1,24 +1,23 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureCollectionJson.TypeEnum;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.model.MunicipalityBoundingBox;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 
 class MunicipalityFeatureMapperTest {
 
@@ -48,31 +47,30 @@ class MunicipalityFeatureMapperTest {
     }
 
     @Test
-    void mapToMunicipalitiesToGeoJSON_ok() {
+    void mapToMunicipalitiesToGeoJson_ok() {
+        MunicipalityFeatureCollectionJson expectedResult = createExpectedResult();
 
-        var expectedResult = createExpectedResult();
-
-        var geoJSON = municipalityFeatureMapper.mapToMunicipalitiesToGeoJSON(List.of(MUNICIPALITY));
+        MunicipalityFeatureCollectionJson geoJSON = municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(
+                List.of(MUNICIPALITY));
 
         assertEquals(expectedResult, geoJSON);
     }
 
-    @NotNull
-    private static FeatureCollectionJson createExpectedResult() {
-        var municipalityId = MUNICIPALITY.getMunicipalityId();
-        var startPoint = MUNICIPALITY.getStartPoint();
-        var bounds = MUNICIPALITY.getBounds();
-        var pointJson = new PointJson(GeometryJson.TypeEnum.POINT);
-        pointJson.coordinates(List.of(startPoint.getX(), startPoint.getY()));
-        var boundsStart = List.of(bounds.longitudeFrom(), bounds.latitudeFrom());
-        var boundsEnd = List.of(bounds.longitudeTo(), bounds.latitudeTo());
+    private MunicipalityFeatureCollectionJson createExpectedResult() {
+        String municipalityId = MUNICIPALITY.getMunicipalityId();
+        Point startPoint = MUNICIPALITY.getStartPoint();
+        MunicipalityBoundingBox bounds = MUNICIPALITY.getBounds();
+        var pointJson = new PointJson(List.of(startPoint.getX(), startPoint.getY()), GeometryJson.TypeEnum.POINT);
+        List<Double> boundsStart = List.of(bounds.longitudeFrom(), bounds.latitudeFrom());
+        List<Double> boundsEnd = List.of(bounds.longitudeTo(), bounds.latitudeTo());
         var propertiesJson = new MunicipalityPropertiesJson(
                 MUNICIPALITY.getName(),
                 (int) MUNICIPALITY.getSearchDistanceInMetres(),
                 List.of(boundsStart, boundsEnd),
                 MUNICIPALITY.getRequestExemptionUrl().toString());
-        var featureJson = new FeatureJson(FeatureJson.TypeEnum.FEATURE, municipalityId, pointJson);
+        var featureJson = new MunicipalityFeatureJson(MunicipalityFeatureJson.TypeEnum.FEATURE, municipalityId,
+                pointJson);
         featureJson.properties(propertiesJson);
-        return new FeatureCollectionJson(TypeEnum.FEATURECOLLECTION, List.of(featureJson));
+        return new MunicipalityFeatureCollectionJson(TypeEnum.FEATURECOLLECTION, List.of(featureJson));
     }
 }

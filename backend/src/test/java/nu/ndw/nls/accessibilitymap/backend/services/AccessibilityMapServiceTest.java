@@ -70,7 +70,7 @@ class AccessibilityMapServiceTest {
                 .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING);
 
         assertThat(idToRoadSections).hasSize(2)
-                .containsEntry(ID_1, new RoadSection(ID_1, false, null))
-                .containsEntry(ID_2, new RoadSection(ID_2, true, null));
+                .containsEntry(ID_1, new RoadSection(ID_1, null, false, null))
+                .containsEntry(ID_2, new RoadSection(ID_2, null, true, null));
     }
 }
