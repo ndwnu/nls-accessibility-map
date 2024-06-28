@@ -13,7 +13,7 @@ Feature: Inaccessible road sections JSON endpoint
 
   Scenario: accessibility map without latitude and longitude should return 200
     Given path '/v1/municipalities/GM0307/road-sections'
-    And param vehicleType = 'commercial_vehicle'
+    And param vehicleType = 'truck'
     And param vehicleLength = 5
     And param vehicleWidth = 3
     And param vehicleHeight = 2
@@ -26,7 +26,7 @@ Feature: Inaccessible road sections JSON endpoint
 
   Scenario: accessibility map request with latitude and longitude specified should return 200
     Given path '/v1/municipalities/GM0307/road-sections'
-    And param vehicleType = 'commercial_vehicle'
+    And param vehicleType = 'truck'
     And param vehicleLength = 5
     And param vehicleWidth = 3
     And param vehicleHeight = 2
