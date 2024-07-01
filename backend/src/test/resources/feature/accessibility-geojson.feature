@@ -15,7 +15,7 @@ Feature: Road sections GeoJSON endpoint
 
   Scenario: accessibility map without latitude and longitude should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
-    And param vehicleType = 'commercial_vehicle'
+    And param vehicleType = 'truck'
     And param vehicleLength = 5
     And param vehicleWidth = 3
     And param vehicleHeight = 2
@@ -28,7 +28,7 @@ Feature: Road sections GeoJSON endpoint
 
   Scenario: accessibility map request with latitude and longitude specified should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
-    And param vehicleType = 'commercial_vehicle'
+    And param vehicleType = 'truck'
     And param vehicleLength = 5
     And param vehicleWidth = 3
     And param vehicleHeight = 2
@@ -43,7 +43,7 @@ Feature: Road sections GeoJSON endpoint
 
   Scenario: accessibility map request with filter on accessible road sections should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
-    And param vehicleType = 'commercial_vehicle'
+    And param vehicleType = 'truck'
     And param vehicleLength = 5
     And param vehicleWidth = 3
     And param vehicleHeight = 2
@@ -59,7 +59,7 @@ Feature: Road sections GeoJSON endpoint
 
   Scenario: accessibility map request with filter on inaccessible road sections should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
-    And param vehicleType = 'commercial_vehicle'
+    And param vehicleType = 'truck'
     And param vehicleLength = 5
     And param vehicleWidth = 3
     And param vehicleHeight = 2

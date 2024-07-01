@@ -223,12 +223,15 @@ components:
   schemas:
     VehicleType:
       type: string
+      description: commercial_vehicle is deprecated. Use light_commercial_vehicle (<= 3.5 t) or truck (> 3.5 t) instead
       enum:
+        - bus
         - car
         - commercial_vehicle
-        - bus
+        - light_commercial_vehicle
         - motorcycle
         - tractor
+        - truck
 
     AccessibilityMapResponse:
       type: object

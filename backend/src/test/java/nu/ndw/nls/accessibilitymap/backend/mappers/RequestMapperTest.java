@@ -18,8 +18,8 @@ class RequestMapperTest {
 
     private static final float VEHICLE_AXLE_LOAD = 2F;
     private static final float VEHICLE_HEIGHT = 1.5F;
-    private static final float VEHICLE_LENGTH = 3.5F;
-    private static final float VEHICLE_WEIGHT = 2.25F;
+    private static final float VEHICLE_LENGTH = 4.5F;
+    private static final float VEHICLE_WEIGHT = 3.5F;
     private static final float VEHICLE_WIDTH = 2.5F;
     private static final float HGV_VEHICLE_WEIGHT = 3.6F;
 
@@ -60,9 +60,18 @@ class RequestMapperTest {
                 .weight((double) VEHICLE_WEIGHT)
                 .build();
 
-        VehicleArguments lightCommercialVehicleRequest = VehicleArguments
+        VehicleArguments commercialVehicleLightRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.COMMERCIAL_VEHICLE)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
+                .vehicleWidth(VEHICLE_WIDTH)
+                .vehicleHeight(VEHICLE_HEIGHT)
+                .vehicleLength(VEHICLE_LENGTH)
+                .vehicleWeight(VEHICLE_WEIGHT)
+                .build();
+        VehicleArguments lightCommercialVehicleRequest = VehicleArguments
+                .builder()
+                .vehicleType(VehicleTypeJson.LIGHT_COMMERCIAL_VEHICLE)
                 .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHeight(VEHICLE_HEIGHT)
@@ -83,9 +92,18 @@ class RequestMapperTest {
                 .weight((double) VEHICLE_WEIGHT)
                 .build();
 
-        VehicleArguments hgvCommercialVehicleRequest = VehicleArguments
+        VehicleArguments commercialVehicleHeavyRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.COMMERCIAL_VEHICLE)
+                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
+                .vehicleWidth(VEHICLE_WIDTH)
+                .vehicleHeight(VEHICLE_HEIGHT)
+                .vehicleLength(VEHICLE_LENGTH)
+                .vehicleWeight(HGV_VEHICLE_WEIGHT)
+                .build();
+        VehicleArguments truckRequest = VehicleArguments
+                .builder()
+                .vehicleType(VehicleTypeJson.TRUCK)
                 .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHeight(VEHICLE_HEIGHT)
@@ -173,11 +191,15 @@ class RequestMapperTest {
                 Arguments.of(named("carScenario",
                         new ImmutablePair<>(carRequest, expectedCarVehicleProperties))),
 
+                Arguments.of(named("commercialVehicleLightScenario",
+                        new ImmutablePair<>(commercialVehicleLightRequest, expectedLightCommercialVehicleProperties))),
                 Arguments.of(named("lightCommercialVehicleScenario",
                         new ImmutablePair<>(lightCommercialVehicleRequest, expectedLightCommercialVehicleProperties))),
 
-                Arguments.of(named("hgvCommercialVehicleScenario",
-                        new ImmutablePair<>(hgvCommercialVehicleRequest, expectedHgvCommercialVehicleProperties))),
+                Arguments.of(named("commercialVehicleHeavyScenario",
+                        new ImmutablePair<>(commercialVehicleHeavyRequest, expectedHgvCommercialVehicleProperties))),
+                Arguments.of(named("truckScenario",
+                        new ImmutablePair<>(truckRequest, expectedHgvCommercialVehicleProperties))),
 
                 Arguments.of(named("busScenario",
                         new ImmutablePair<>(busRequest, expectedBusVehicleProperties))),
