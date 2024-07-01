@@ -1,38 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.nwb.services;
 
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.AFR;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.BST;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.BVP;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.DST;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.ERF;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.GRB;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.HR;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.MRB;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.NRB;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.OPR;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.PAR;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.PC;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.PKB;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.PKP;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.PP;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.PR;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.PST;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.RB;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.TN;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.TRB;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VBD;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VBI;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VBK;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VBR;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VBS;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VBW;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VD;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VDA;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VDF;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VDV;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VWG;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.WIS;
-import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.YYY;
+import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -67,8 +35,8 @@ class NwbRoadSectionServiceTest {
 
     static {
         CARRIAGEWAY_TYPE_CODES = new HashSet<>();
-        CARRIAGEWAY_TYPE_CODES.addAll(Set.of(VBD, VBR, TN, VBI, HR, DST, AFR, PP, PKP, PC, NRB, VWG, PST, VBS,
-                WIS, VDF, ERF, BST, VBW, TRB, PAR, VD, VBK, VDV, YYY, PKB, VDA, RB, BVP, OPR, PR, MRB, GRB));
+        CARRIAGEWAY_TYPE_CODES.addAll(Set.of(RB, VWG, PAR, MRB, NRB, OPR, AFR, PST, VBD, VBI, VBS, VBR, VBK, VBW, DST,
+                PKP, PKB, BST, BVP, HR, TN, YYY, TRB, PP, PC, PR, ERF, WIS, GRB, VDA, VD));
         CARRIAGEWAY_TYPE_CODES.add(null);
     }
 
