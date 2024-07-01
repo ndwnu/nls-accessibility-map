@@ -19,6 +19,12 @@ public class RequestMapper {
     private static final double HGV_WEIGHT_IN_TONNES = 3.5;
 
     static {
+        VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.BUS, (builder, weight) -> builder
+                .motorVehicleAccessForbidden(true)
+                .carAccessForbidden(true)
+                .busAccessForbidden(true)
+                .hgvAndBusAccessForbidden(true));
+
         VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.CAR, (builder, weight) -> builder
                 .motorVehicleAccessForbidden(true)
                 .carAccessForbidden(true));
@@ -30,11 +36,14 @@ public class RequestMapper {
                 .hgvAndBusAccessForbidden(weight > HGV_WEIGHT_IN_TONNES)
                 .lcvAndHgvAccessForbidden(true));
 
-        VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.BUS, (builder, weight) -> builder
+        VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.LIGHT_COMMERCIAL_VEHICLE, (builder, weight) -> builder
                 .motorVehicleAccessForbidden(true)
                 .carAccessForbidden(true)
-                .busAccessForbidden(true)
-                .hgvAndBusAccessForbidden(true));
+                .lcvAndHgvAccessForbidden(true));
+
+        VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.MOTORCYCLE, (builder, weight) -> builder
+                .motorVehicleAccessForbidden(true)
+                .motorcycleAccessForbidden(true));
 
         VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.TRACTOR, (builder, weight) -> builder
                 .motorVehicleAccessForbidden(true)
@@ -42,9 +51,12 @@ public class RequestMapper {
                 .tractorAccessForbidden(true)
                 .slowVehicleAccessForbidden(true));
 
-        VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.MOTORCYCLE, (builder, weight) -> builder
+        VEHICLE_TYPE_CONFIGURATION.put(VehicleTypeJson.TRUCK, (builder, weight) -> builder
                 .motorVehicleAccessForbidden(true)
-                .motorcycleAccessForbidden(true));
+                .carAccessForbidden(true)
+                .hgvAccessForbidden(true)
+                .hgvAndBusAccessForbidden(true)
+                .lcvAndHgvAccessForbidden(true));
     }
 
     public VehicleProperties mapToVehicleProperties(VehicleArguments requestArguments) {
