@@ -25,7 +25,9 @@ public class NwbRoadSectionService {
             CarriagewayTypeCode.OVB,
             CarriagewayTypeCode.CADO,
             CarriagewayTypeCode.RP,
-            CarriagewayTypeCode.VV);
+            CarriagewayTypeCode.VV,
+            CarriagewayTypeCode.VDF,
+            CarriagewayTypeCode.VDV);
     private static final Collection<CarriagewayTypeCode> CARRIAGE_WAY_TYPE_CODE_INCLUSIONS;
 
     static {
