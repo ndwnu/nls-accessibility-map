@@ -9,7 +9,7 @@ metadata:
 spec:
   jobTargetRef:
     activeDeadlineSeconds: 86400 # Maximum execution time before terminating, includes retries
-    backoffLimit: 3 # Number of retries before marking job failed; default 6
+    backoffLimit: 0 # Number of retries before marking job failed; default 6
     template:
       metadata:
         annotations:
