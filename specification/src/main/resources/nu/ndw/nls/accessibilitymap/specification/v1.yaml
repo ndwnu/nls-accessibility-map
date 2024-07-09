@@ -204,7 +204,7 @@ components:
     LatitudeParam:
       in: query
       name: latitude
-      description: Optional latitude of the start location. When present, the longitude must also be specified
+      description: Optional latitude of the destination location. When present, the longitude must also be specified
       example: 52.1326
       required: false
       schema:
@@ -213,7 +213,7 @@ components:
     LongitudeParam:
       in: query
       name: longitude
-      description: Optional longitude of the start location. When present, the latitude must also be specified
+      description: Optional longitude of the destination location. When present, the latitude must also be specified
       example: 5.2913
       required: false
       schema:
