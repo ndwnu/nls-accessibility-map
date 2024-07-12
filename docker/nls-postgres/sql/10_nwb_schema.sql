@@ -144,7 +144,9 @@ ALTER TABLE nwb.road_section OWNER TO "nls-maps";
 CREATE TABLE nwb.version (
     version_id integer NOT NULL,
     imported timestamp with time zone NOT NULL,
-    reference_date date NOT NULL
+    reference_date date NOT NULL,
+    status text NOT NULL DEFAULT 'OK',
+    revision timestamptz NOT NULL
 );
 
 
@@ -24045,10 +24047,9 @@ COPY nwb.road_section (version_id, road_section_id, valid_from, junction_id_from
 -- Data for Name: version; Type: TABLE DATA; Schema: nwb; Owner: nls-maps
 --
 
-COPY nwb.version (version_id, imported, reference_date) FROM stdin;
-20240101	2023-10-04 03:04:39.973722+00	2024-01-01
+COPY nwb.version (version_id, imported, reference_date, revision, status) FROM stdin;
+20240101	2023-10-04 03:04:39.973722+00	2024-01-01	2023-10-04 14:30:00+00	OK
 \.
-
 
 --
 -- Name: hectometre_sign hectometre_sign_pkey; Type: CONSTRAINT; Schema: nwb; Owner: nls-maps
