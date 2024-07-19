@@ -1,4 +1,4 @@
 datadog:
   agent:
     version: v1.32.0
-podRestarterVersion: "20240112.1"
+podRestarterVersion: "20240719.4"
