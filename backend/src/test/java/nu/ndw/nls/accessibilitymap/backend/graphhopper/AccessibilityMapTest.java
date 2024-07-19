@@ -8,7 +8,7 @@ import com.graphhopper.config.Profile;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
-import java.util.Set;
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.backend.services.VehicleRestrictionsModelFactory;
@@ -42,7 +42,7 @@ class AccessibilityMapTest {
     @Mock
     private Point startPoint;
     @Mock
-    private Set<IsochroneMatch> matches;
+    private List<IsochroneMatch> matches;
 
     @Mock
     private NetworkGraphHopper network;
@@ -66,7 +66,7 @@ class AccessibilityMapTest {
         when(isochroneService.getIsochroneMatchesByMunicipalityId(weighting, startPoint, MUNICIPALITY_ID,
                 SEARCH_DISTANCE)).thenReturn(matches);
 
-        Set<IsochroneMatch> result = accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
+        List<IsochroneMatch> result = accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
         assertEquals(matches, result);
         assertEquals(model, profile.getValue().getCustomModel());
     }

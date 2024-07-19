@@ -14,8 +14,6 @@ import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
@@ -49,7 +47,7 @@ public class IsochroneService {
      * @see <a href="https://github.com/graphhopper/graphhopper/blob/master/docs/core/custom-models.md">Custom
      * models</a>
      */
-    public Set<IsochroneMatch> getIsochroneMatchesByMunicipalityId(Weighting weighting, Point startPoint,
+    public List<IsochroneMatch> getIsochroneMatchesByMunicipalityId(Weighting weighting, Point startPoint,
             int municipalityId, double searchDistanceInMetres) {
         double latitude = startPoint.getY();
         double longitude = startPoint.getX();
@@ -62,9 +60,8 @@ public class IsochroneService {
         */
         QueryGraph queryGraph = QueryGraph.create(baseGraph, startSegment);
         IsochroneByTimeDistanceAndWeight accessibilityPathTree = shortestPathTreeFactory
-                .createShortestPathTreeByTimeDistanceAndWeight(
-                weighting, queryGraph,
-                TraversalMode.EDGE_BASED, searchDistanceInMetres, IsochroneUnit.METERS, false);
+                .createShortestPathTreeByTimeDistanceAndWeight(weighting, queryGraph, TraversalMode.EDGE_BASED,
+                        searchDistanceInMetres, IsochroneUnit.METERS, false);
         List<IsoLabel> isoLabels = new ArrayList<>();
         accessibilityPathTree.search(startSegment.getClosestNode(), isoLabels::add);
         IntEncodedValue idEnc = encodingManager.getIntEncodedValue(MUNICIPALITY_CODE);
@@ -72,9 +69,8 @@ public class IsochroneService {
                 .filter(isoLabel -> isoLabel.getEdge() != ROOT_PARENT)
                 .filter(isoLabel -> getMunicipalityCode(isoLabel, queryGraph, idEnc) == municipalityId)
                 .map(isoLabel -> isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY,
-                        queryGraph,
-                        startSegment.getClosestEdge()))
-                .collect(Collectors.toSet());
+                        queryGraph, startSegment.getClosestEdge()))
+                .toList();
     }
 
     private int getMunicipalityCode(IsoLabel isoLabel, QueryGraph queryGraph, IntEncodedValue idEnc) {

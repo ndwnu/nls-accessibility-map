@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
-import java.util.Set;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
@@ -27,19 +27,20 @@ public class AccessibilityMapService {
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(networkGraphHopper);
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
 
-        Set<IsochroneMatch> allAccessibleRoads = accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(
+        List<IsochroneMatch> allAccessibleRoads = accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(
                 accessibilityMap, municipality);
-        Set<IsochroneMatch> accessibleRoadsWithRestrictions = accessibleRoadsService
+        List<IsochroneMatch> accessibleRoadsWithRestrictions = accessibleRoadsService
                 .getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties, municipality);
 
         return determineDifference(allAccessibleRoads, accessibleRoadsWithRestrictions);
     }
 
-    private SortedMap<Integer, RoadSection> determineDifference(Set<IsochroneMatch> withoutRestrictions,
-            Set<IsochroneMatch> withRestrictions) {
+    private SortedMap<Integer, RoadSection> determineDifference(List<IsochroneMatch> withoutRestrictions,
+            List<IsochroneMatch> withRestrictions) {
         SortedMap<Integer, RoadSection> roadSections = new TreeMap<>();
         for (IsochroneMatch m : withoutRestrictions) {
-            roadSections.computeIfAbsent(m.getMatchedLinkId(), i -> new RoadSection(i, m.getGeometry()));
+            roadSections.computeIfAbsent(m.getMatchedLinkId(), i -> new RoadSection(i,
+                    m.isReversed() ? m.getGeometry().reverse() : m.getGeometry()));
             RoadSection r = roadSections.get(m.getMatchedLinkId());
             // Accessible remains null in case road section is not present in both directions in baseline.
             // This way, non-existing directions of one-way roads (null) can be distinguished from inaccessible

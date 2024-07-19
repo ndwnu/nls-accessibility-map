@@ -6,7 +6,7 @@ import com.graphhopper.config.Profile;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
-import java.util.Set;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.services.VehicleRestrictionsModelFactory;
@@ -20,7 +20,7 @@ public class AccessibilityMap {
     private final VehicleRestrictionsModelFactory modelFactory;
     private final IsochroneService isochroneService;
 
-    public Set<IsochroneMatch> getAccessibleRoadSections(AccessibilityRequest accessibilityRequest) {
+    public List<IsochroneMatch> getAccessibleRoadSections(AccessibilityRequest accessibilityRequest) {
         CustomModel model = modelFactory.getModel(accessibilityRequest.vehicleProperties());
         Profile profile = profileWithCustomModel(model);
         Weighting weighting = network.createWeighting(profile, new PMap());

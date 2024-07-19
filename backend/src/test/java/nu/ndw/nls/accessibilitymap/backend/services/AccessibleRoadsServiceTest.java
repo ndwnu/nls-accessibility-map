@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Set;
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
@@ -46,7 +46,7 @@ class AccessibleRoadsServiceTest {
     @Mock
     private AccessibilityMap accessibilityMap;
     @Mock
-    private Set<IsochroneMatch> accessibleRoadSections;
+    private List<IsochroneMatch> accessibleRoadSections;
     @Mock
     private VehicleProperties vehicleProperties;
 
@@ -62,7 +62,7 @@ class AccessibleRoadsServiceTest {
                 .build();
         when(accessibilityMap.getAccessibleRoadSections(accessibilityRequest)).thenReturn(accessibleRoadSections);
 
-        Set<IsochroneMatch> isochroneMatches = accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(
+        List<IsochroneMatch> isochroneMatches = accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(
                 accessibilityMap, MUNICIPALITY);
 
         assertThat(isochroneMatches).isEqualTo(accessibleRoadSections);
@@ -78,7 +78,7 @@ class AccessibleRoadsServiceTest {
                 .build();
         when(accessibilityMap.getAccessibleRoadSections(accessibilityRequest)).thenReturn(accessibleRoadSections);
 
-        Set<IsochroneMatch> isochroneMatches = accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(
+        List<IsochroneMatch> isochroneMatches = accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(
                 accessibilityMap, vehicleProperties, MUNICIPALITY);
 
         assertThat(isochroneMatches).isEqualTo(accessibleRoadSections);
