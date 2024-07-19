@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.services;
 
 import io.micrometer.core.annotation.Timed;
-import java.util.Set;
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
@@ -15,7 +15,7 @@ public class AccessibleRoadsService {
 
     @Cacheable(key = "#municipality.municipalityId", cacheNames = "baseAccessibleRoadsByMunicipality", sync = true)
     @Timed(description = "Time spent determining base accessible road sections")
-    public Set<IsochroneMatch> getBaseAccessibleRoadsByMunicipality(AccessibilityMap accessibilityMap,
+    public List<IsochroneMatch> getBaseAccessibleRoadsByMunicipality(AccessibilityMap accessibilityMap,
             Municipality municipality) {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(municipality.getStartPoint())
@@ -27,7 +27,7 @@ public class AccessibleRoadsService {
     }
 
     @Timed(description = "Time spent determining vehicle accessible road sections")
-    public Set<IsochroneMatch> getVehicleAccessibleRoadsByMunicipality(AccessibilityMap accessibilityMap,
+    public List<IsochroneMatch> getVehicleAccessibleRoadsByMunicipality(AccessibilityMap accessibilityMap,
             VehicleProperties vehicleProperties, Municipality municipality) {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(municipality.getStartPoint())

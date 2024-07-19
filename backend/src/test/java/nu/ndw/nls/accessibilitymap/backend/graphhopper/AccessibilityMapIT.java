@@ -3,9 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.graphhopper;
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.Sets;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.AccessibilityMapFactory;
 import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
@@ -94,7 +92,7 @@ class AccessibilityMapIT {
         // Access roads are blocked, and inside the municipality. Therefore, both these and the inner ring are returned.
         List<AccessibilityLink> accessRoads = createAccessRoads(true, 1);
         graphHopper = createGhNetwork(accessRoads);
-        Set<IsochroneMatch> notAccessible = getIsochroneMatches();
+        List<IsochroneMatch> notAccessible = getIsochroneMatches();
         assertMatches(notAccessible, join(List.of(INNER_RING, accessRoads)));
     }
 
@@ -103,7 +101,7 @@ class AccessibilityMapIT {
         // Access roads are open, though outside the municipality. Therefore, the inner ring is accessible.
         List<AccessibilityLink> accessRoads = createAccessRoads(false, 2);
         graphHopper = createGhNetwork(accessRoads);
-        Set<IsochroneMatch> notAccessible = getIsochroneMatches();
+        List<IsochroneMatch> notAccessible = getIsochroneMatches();
         assertMatches(notAccessible, List.of());
     }
 
@@ -112,11 +110,11 @@ class AccessibilityMapIT {
         // Access roads are closed, and outside the municipality. Therefore, the inner ring is inaccessible.
         List<AccessibilityLink> accessRoads = createAccessRoads(true, 2);
         graphHopper = createGhNetwork(accessRoads);
-        final Set<IsochroneMatch> notAccessible = getIsochroneMatches();
+        List<IsochroneMatch> notAccessible = getIsochroneMatches();
         assertMatches(notAccessible, INNER_RING);
     }
 
-    private void assertMatches(Set<IsochroneMatch> matches, List<AccessibilityLink> expectedLinks) {
+    private void assertMatches(List<IsochroneMatch> matches, List<AccessibilityLink> expectedLinks) {
         List<Integer> expectedIds = expectedLinks.stream()
                 .map(AccessibilityLink::getId)
                 .map(Long::intValue)
@@ -125,18 +123,20 @@ class AccessibilityMapIT {
         assertMatchesInDirection(matches, expectedIds, match -> !match.isReversed());
     }
 
-    private void assertMatchesInDirection(Set<IsochroneMatch> matches, List<Integer> expectedIds,
+    private void assertMatchesInDirection(List<IsochroneMatch> matches, List<Integer> expectedIds,
             Predicate<IsochroneMatch> directionPredicate) {
         assertThat(matches).filteredOn(directionPredicate)
                 .map(IsochroneMatch::getMatchedLinkId)
                 .containsExactlyInAnyOrderElementsOf(expectedIds);
     }
 
-    private Set<IsochroneMatch> getIsochroneMatches() {
+    private List<IsochroneMatch> getIsochroneMatches() {
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(graphHopper);
-        Set<IsochroneMatch> allAccessible = accessibilityMap.getAccessibleRoadSections(REQUEST_UNRESTRICTED);
-        Set<IsochroneMatch> restrictedAccess = accessibilityMap.getAccessibleRoadSections(REQUEST_RESTRICTED);
-        return Sets.difference(allAccessible, restrictedAccess);
+        List<IsochroneMatch> allAccessible = accessibilityMap.getAccessibleRoadSections(REQUEST_UNRESTRICTED);
+        List<IsochroneMatch> restrictedAccess = accessibilityMap.getAccessibleRoadSections(REQUEST_RESTRICTED);
+        return allAccessible.stream()
+                .filter(m -> !restrictedAccess.contains(m))
+                .toList();
     }
 
     private NetworkGraphHopper createGhNetwork(List<AccessibilityLink> accessRoads) {
@@ -178,6 +178,4 @@ class AccessibilityMapIT {
     private <T> List<T> join(List<List<T>> lists) {
         return lists.stream().flatMap(List::stream).toList();
     }
-
-
 }
