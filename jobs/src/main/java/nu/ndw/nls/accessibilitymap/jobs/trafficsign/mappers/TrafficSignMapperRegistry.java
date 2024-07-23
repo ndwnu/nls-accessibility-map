@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.Getter;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.signmappers.MaximumSignMapper;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.signmappers.NoEntrySignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.signmappers.SignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.signmappers.SignMapper.DtoSetter;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.signmappers.MaximumSignMapper;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.signmappers.NoEntrySignMapper;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,6 +41,14 @@ public class TrafficSignMapperRegistry {
             "C21", TrafficSignAccessibilityDto::setMaxWeight
     );
 
+    private static final Map<String, DtoSetter<Boolean>> NO_ENTRY_SIGN_MAPPINGS_WINDOWED = Map.of(
+            "C6T", TrafficSignAccessibilityDto::setCarAccessForbiddenWindowed,
+            "C7T", TrafficSignAccessibilityDto::setHgvAccessForbiddenWindowed,
+            "C7bT", TrafficSignAccessibilityDto::setHgvAndBusAccessForbiddenWindowed,
+            "C12T", TrafficSignAccessibilityDto::setMotorVehicleAccessForbiddenWindowed,
+            "C22cT", TrafficSignAccessibilityDto::setLcvAndHgvAccessForbiddenWindowed
+    );
+
     private final List<SignMapper<?>> mappers;
 
     private final Set<String> includedRvvCodes;
@@ -49,6 +57,8 @@ public class TrafficSignMapperRegistry {
         this.mappers = new ArrayList<>();
         NO_ENTRY_SIGN_MAPPINGS.forEach((rvvCode, setter) -> mappers.add(new NoEntrySignMapper(rvvCode, setter)));
         MAXIMUM_SIGN_MAPPINGS.forEach((rvvCode, setter) -> mappers.add(new MaximumSignMapper(rvvCode, setter)));
+        NO_ENTRY_SIGN_MAPPINGS_WINDOWED.forEach(
+                (rvvCode, setter) -> mappers.add(new NoEntrySignMapper(rvvCode, setter)));
 
         this.includedRvvCodes = extractRvvCodes(mappers);
     }
@@ -59,7 +69,7 @@ public class TrafficSignMapperRegistry {
                 .map(SignMapper::getRvvCode)
                 .toList();
         Set<String> uniqueCodes = new HashSet<>(allCodes);
-        if(uniqueCodes.size() < allCodes.size()) {
+        if (uniqueCodes.size() < allCodes.size()) {
             throw new IllegalArgumentException(DUPLICATE_RVV_MSG);
         }
         return uniqueCodes;

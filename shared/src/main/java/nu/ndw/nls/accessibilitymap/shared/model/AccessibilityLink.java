@@ -12,15 +12,20 @@ public class AccessibilityLink extends Link {
 
     public static final String MUNICIPALITY_CODE = "municipality_code";
     public static final String CAR_ACCESS_FORBIDDEN = "car_access_forbidden";
+    public static final String CAR_ACCESS_FORBIDDEN_WINDOWED = "car_access_forbidden_windowed";
     public static final String HGV_ACCESS_FORBIDDEN = "hgv_access_forbidden";
+    public static final String HGV_ACCESS_FORBIDDEN_WINDOWED = "hgv_access_forbidden_windowed";
     public static final String BUS_ACCESS_FORBIDDEN = "bus_access_forbidden";
     public static final String HGV_AND_BUS_ACCESS_FORBIDDEN = "hgv_and_bus_access_forbidden";
+    public static final String HGV_AND_BUS_ACCESS_FORBIDDEN_WINDOWED = "hgv_and_bus_access_forbidden_windowed";
     public static final String TRACTOR_ACCESS_FORBIDDEN = "tractor_access_forbidden";
     public static final String SLOW_VEHICLE_ACCESS_FORBIDDEN = "slow_vehicle_access_forbidden";
     public static final String TRAILER_ACCESS_FORBIDDEN = "trailer_access_forbidden";
     public static final String MOTORCYCLE_ACCESS_FORBIDDEN = "motorcycle_access_forbidden";
     public static final String MOTOR_VEHICLE_ACCESS_FORBIDDEN = "motor_vehicle_access_forbidden";
+    public static final String MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED = "motor_vehicle_access_forbidden_windowed";
     public static final String LCV_AND_HGV_ACCESS_FORBIDDEN = "lcv_and_hgv_access_forbidden";
+    public static final String LCV_AND_HGV_ACCESS_FORBIDDEN_WINDOWED = "lcv_and_hgv_access_forbidden_windowed";
     public static final String MAX_LENGTH = "max_length";
     public static final String MAX_WIDTH = "max_width";
     public static final String MAX_HEIGHT = "max_height";
@@ -32,14 +37,23 @@ public class AccessibilityLink extends Link {
     @EncodedValue(key = CAR_ACCESS_FORBIDDEN)
     private final DirectionalDto<Boolean> carAccessForbidden;
 
+    @EncodedValue(key = CAR_ACCESS_FORBIDDEN_WINDOWED)
+    private final DirectionalDto<Boolean> carAccessForbiddenWindowed;
+
     @EncodedValue(key = HGV_ACCESS_FORBIDDEN)
     private final DirectionalDto<Boolean> hgvAccessForbidden;
+
+    @EncodedValue(key = HGV_ACCESS_FORBIDDEN_WINDOWED)
+    private final DirectionalDto<Boolean> hgvAccessForbiddenWindowed;
 
     @EncodedValue(key = BUS_ACCESS_FORBIDDEN)
     private final DirectionalDto<Boolean> busAccessForbidden;
 
     @EncodedValue(key = HGV_AND_BUS_ACCESS_FORBIDDEN)
     private final DirectionalDto<Boolean> hgvAndBusAccessForbidden;
+
+    @EncodedValue(key = HGV_AND_BUS_ACCESS_FORBIDDEN_WINDOWED)
+    private final DirectionalDto<Boolean> hgvAndBusAccessForbiddenWindowed;
 
     @EncodedValue(key = TRACTOR_ACCESS_FORBIDDEN)
     private final DirectionalDto<Boolean> tractorAccessForbidden;
@@ -56,8 +70,14 @@ public class AccessibilityLink extends Link {
     @EncodedValue(key = MOTOR_VEHICLE_ACCESS_FORBIDDEN)
     private final DirectionalDto<Boolean> motorVehicleAccessForbidden;
 
+    @EncodedValue(key = MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED)
+    private final DirectionalDto<Boolean> motorVehicleAccessForbiddenWindowed;
+
     @EncodedValue(key = LCV_AND_HGV_ACCESS_FORBIDDEN)
     private final DirectionalDto<Boolean> lcvAndHgvAccessForbidden;
+
+    @EncodedValue(key = LCV_AND_HGV_ACCESS_FORBIDDEN_WINDOWED)
+    private final DirectionalDto<Boolean> lcvAndHgvAccessForbiddenWindowed;
 
     @EncodedValue(key = MAX_LENGTH, bits = 7)
     private final DirectionalDto<Double> maxLength;
@@ -80,31 +100,46 @@ public class AccessibilityLink extends Link {
     @Builder
     protected AccessibilityLink(long id, long fromNodeId, long toNodeId,
             DirectionalDto<Boolean> accessibility, double distanceInMeters,
-            LineString geometry, DirectionalDto<Boolean> carAccessForbidden, DirectionalDto<Boolean> hgvAccessForbidden,
-            DirectionalDto<Boolean> busAccessForbidden, DirectionalDto<Boolean> hgvAndBusAccessForbidden,
-            DirectionalDto<Boolean> tractorAccessForbidden, DirectionalDto<Boolean> slowVehicleAccessForbidden,
-            DirectionalDto<Boolean> trailerAccessForbidden, DirectionalDto<Boolean> motorcycleAccessForbidden,
-            DirectionalDto<Boolean> motorVehicleAccessForbidden, DirectionalDto<Double> maxLength,
-            DirectionalDto<Double> maxWidth, DirectionalDto<Double> maxHeight, DirectionalDto<Double> maxAxleLoad,
-            DirectionalDto<Double> maxWeight, DirectionalDto<Boolean> lcvAndHgvAccessForbidden,
-            Integer municipalityCode) {
+            LineString geometry, DirectionalDto<Boolean> carAccessForbidden,
+            DirectionalDto<Boolean> carAccessForbiddenWindowed,
+            DirectionalDto<Boolean> hgvAccessForbidden,
+            DirectionalDto<Boolean> hgvAccessForbiddenWindowed,
+            DirectionalDto<Boolean> busAccessForbidden,
+            DirectionalDto<Boolean> hgvAndBusAccessForbidden,
+            DirectionalDto<Boolean> hgvAndBusAccessForbiddenWindowed,
+            DirectionalDto<Boolean> tractorAccessForbidden,
+            DirectionalDto<Boolean> slowVehicleAccessForbidden,
+            DirectionalDto<Boolean> trailerAccessForbidden,
+            DirectionalDto<Boolean> motorcycleAccessForbidden,
+            DirectionalDto<Boolean> motorVehicleAccessForbidden,
+            DirectionalDto<Boolean> motorVehicleAccessForbiddenWindowed,
+            DirectionalDto<Boolean> lcvAndHgvAccessForbidden,
+            DirectionalDto<Boolean> lcvAndHgvAccessForbiddenWindowed,
+            DirectionalDto<Double> maxLength, DirectionalDto<Double> maxWidth,
+            DirectionalDto<Double> maxHeight, DirectionalDto<Double> maxAxleLoad,
+            DirectionalDto<Double> maxWeight, Integer municipalityCode) {
         super(id, fromNodeId, toNodeId, distanceInMeters, geometry);
         this.accessibility = accessibility;
         this.carAccessForbidden = carAccessForbidden;
+        this.carAccessForbiddenWindowed = carAccessForbiddenWindowed;
         this.hgvAccessForbidden = hgvAccessForbidden;
+        this.hgvAccessForbiddenWindowed = hgvAccessForbiddenWindowed;
         this.busAccessForbidden = busAccessForbidden;
         this.hgvAndBusAccessForbidden = hgvAndBusAccessForbidden;
+        this.hgvAndBusAccessForbiddenWindowed = hgvAndBusAccessForbiddenWindowed;
         this.tractorAccessForbidden = tractorAccessForbidden;
         this.slowVehicleAccessForbidden = slowVehicleAccessForbidden;
         this.trailerAccessForbidden = trailerAccessForbidden;
         this.motorcycleAccessForbidden = motorcycleAccessForbidden;
         this.motorVehicleAccessForbidden = motorVehicleAccessForbidden;
+        this.motorVehicleAccessForbiddenWindowed = motorVehicleAccessForbiddenWindowed;
+        this.lcvAndHgvAccessForbidden = lcvAndHgvAccessForbidden;
+        this.lcvAndHgvAccessForbiddenWindowed = lcvAndHgvAccessForbiddenWindowed;
         this.maxLength = maxLength;
         this.maxWidth = maxWidth;
         this.maxHeight = maxHeight;
         this.maxAxleLoad = maxAxleLoad;
         this.maxWeight = maxWeight;
-        this.lcvAndHgvAccessForbidden = lcvAndHgvAccessForbidden;
         this.municipalityCode = municipalityCode;
     }
 }

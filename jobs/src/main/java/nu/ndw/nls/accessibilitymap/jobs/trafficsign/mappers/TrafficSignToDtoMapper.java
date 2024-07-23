@@ -16,29 +16,30 @@ public class TrafficSignToDtoMapper {
 
     private final List<SignMapper<?>> signMappers;
     private final Predicate<TrafficSignJsonDtoV3> includedTrafficSignsPredicate;
+    private final NoEntrySignWindowedMapper noEntrySignWindowedMapper;
 
     public TrafficSignToDtoMapper(TrafficSignMapperRegistry trafficSignMapperRegistry,
-            List<TrafficSignIncludedFilterPredicate> trafficSignIncludedFilterPredicates) {
+            List<TrafficSignIncludedFilterPredicate> trafficSignIncludedFilterPredicates,
+            NoEntrySignWindowedMapper noEntrySignWindowedMapper) {
         this.signMappers = trafficSignMapperRegistry.getMappers();
 
-        this.includedTrafficSignsPredicate  = trafficSignIncludedFilterPredicates.stream()
+        this.includedTrafficSignsPredicate = trafficSignIncludedFilterPredicates.stream()
                 .map(a -> (Predicate<TrafficSignJsonDtoV3>) a)
                 .reduce(Predicate::and)
                 .orElseThrow(() -> new IllegalArgumentException("No traffic sign include filters found"));
+        this.noEntrySignWindowedMapper = noEntrySignWindowedMapper;
     }
 
-
     public TrafficSignAccessibilityDto map(List<TrafficSignJsonDtoV3> trafficSigns) {
-
-        Map<String, List<TrafficSignJsonDtoV3>> includedTrafficSigns  = trafficSigns.stream()
+        Map<String, List<TrafficSignJsonDtoV3>> includedTrafficSigns = trafficSigns.stream()
                 .filter(this.includedTrafficSignsPredicate)
+                .map(noEntrySignWindowedMapper::map)
                 .collect(Collectors.groupingBy(TrafficSignJsonDtoV3::getRvvCode));
 
         TrafficSignAccessibilityDto dto = new TrafficSignAccessibilityDto();
-        signMappers.forEach(mapper -> mapper.addToDto(dto, includedTrafficSigns ));
+        signMappers.forEach(mapper -> mapper.addToDto(dto, includedTrafficSigns));
         return dto;
     }
-
 
     /**
      * Used by {@link TrafficSignToDtoMapper} to determine which traffic signs to include

@@ -1,22 +1,21 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.dtos;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
+import lombok.Builder;
+import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import lombok.Builder;
-import lombok.Data;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @JsonPropertyOrder({"id", "ndwId", "type", "schemaVersion", "validated", "validatedOn", "userId", "organisationId",
         "rvvCode", "blackCode", "textSigns", "location", "details", "publicationTimestamp"})
-@JsonInclude(NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public final class TrafficSignJsonDtoV3 {
 
     private final Integer id;
