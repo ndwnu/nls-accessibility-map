@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs;
 
+import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.HGV_ACCESS_FORBIDDEN;
+import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.HGV_ACCESS_FORBIDDEN_WINDOWED;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_HEIGHT;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_LENGTH;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MOTOR_VEHICLE_ACCESS_FORBIDDEN;
@@ -12,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.graphhopper.routing.ev.BooleanEncodedValue;
 import com.graphhopper.routing.ev.DecimalEncodedValue;
+import com.graphhopper.routing.ev.StringEncodedValue;
 import com.graphhopper.util.EdgeIteratorState;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,6 +71,9 @@ class NlsAccessibilityMapJobsIT {
         assertThat(networkGraphHopper.getImportDate()).isNotNull();
         assertThat(networkGraphHopper.getDataDate()).isEqualTo(EXPECTED_DATA_DATE);
 
+        // Text sign type TIJD with windowed restriction
+        assertEdgeValue(networkGraphHopper, 307324006, HGV_ACCESS_FORBIDDEN_WINDOWED, false, false);
+
         // Text sign type TIJD
         assertEdgeValue(networkGraphHopper, 319325003, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
         // Text sign type UIT
@@ -109,5 +115,4 @@ class NlsAccessibilityMapJobsIT {
         assertEquals(expectedForwardValue, edge.get(encodedValue));
         assertEquals(expectedBackwardValue, edge.getReverse(encodedValue));
     }
-
 }

@@ -1,12 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -48,6 +43,28 @@ class TrafficSignToDtoMapperTest {
     @Mock
     private TrafficSignJsonDtoV3 signB;
 
+    @Mock
+    TrafficSignJsonDtoV3 c6;
+    @Mock
+    TrafficSignJsonDtoV3 c7;
+    @Mock
+    TrafficSignJsonDtoV3 c7b;
+    @Mock
+    TrafficSignJsonDtoV3 c12;
+    @Mock
+    TrafficSignJsonDtoV3 c22c;
+
+    @Mock
+    TrafficSignJsonDtoV3 c6T;
+    @Mock
+    TrafficSignJsonDtoV3 c7T;
+    @Mock
+    TrafficSignJsonDtoV3 c7bT;
+    @Mock
+    TrafficSignJsonDtoV3 c12T;
+    @Mock
+    TrafficSignJsonDtoV3 c22cT;
+
 
     @Mock
     private SignMapper<?> signMapperA;
@@ -55,11 +72,14 @@ class TrafficSignToDtoMapperTest {
     @Mock
     private SignMapper<?> signMapperB;
 
+    @Mock
+    NoEntrySignWindowedMapper noEntrySignWindowedMapper;
+
+
     @Captor
     private ArgumentCaptor<TrafficSignAccessibilityDto> resultCaptor;
 
     private List<TrafficSignJsonDtoV3> trafficSigns;
-
 
     @Test
     void test_ok_allPredicatesTrueAndTrafficSignIsMappedBySingleMapper() {
@@ -69,12 +89,14 @@ class TrafficSignToDtoMapperTest {
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
 
         trafficSignToDtoMapper = new TrafficSignToDtoMapper(trafficSignMapperRegistry,
-                List.of(predicateA, predicateB));
+                List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
         when(signA.getRvvCode()).thenReturn(RVV_CODE_A);
 
         when(predicateA.test(signA)).thenReturn(Boolean.TRUE);
         when(predicateB.test(signA)).thenReturn(Boolean.TRUE);
+
+        when(noEntrySignWindowedMapper.map(signA)).thenReturn(signA);
 
         TrafficSignAccessibilityDto result = trafficSignToDtoMapper.map(trafficSigns);
 
@@ -91,12 +113,14 @@ class TrafficSignToDtoMapperTest {
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA, signMapperB));
 
         trafficSignToDtoMapper = new TrafficSignToDtoMapper(trafficSignMapperRegistry,
-                List.of(predicateA, predicateB));
+                List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
         when(signA.getRvvCode()).thenReturn(RVV_CODE_A);
 
         when(predicateA.test(signA)).thenReturn(Boolean.TRUE);
         when(predicateB.test(signA)).thenReturn(Boolean.TRUE);
+
+        when(noEntrySignWindowedMapper.map(signA)).thenReturn(signA);
 
         TrafficSignAccessibilityDto result = trafficSignToDtoMapper.map(trafficSigns);
 
@@ -115,11 +139,14 @@ class TrafficSignToDtoMapperTest {
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
 
         trafficSignToDtoMapper = new TrafficSignToDtoMapper(trafficSignMapperRegistry,
-                List.of(predicateA, predicateB));
+                List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
         // Same rvv code
         when(signA.getRvvCode()).thenReturn(RVV_CODE_A);
         when(signB.getRvvCode()).thenReturn(RVV_CODE_A);
+
+        when(noEntrySignWindowedMapper.map(signA)).thenReturn(signA);
+        when(noEntrySignWindowedMapper.map(signB)).thenReturn(signB);
 
         when(predicateA.test(signA)).thenReturn(Boolean.TRUE);
         when(predicateB.test(signA)).thenReturn(Boolean.TRUE);
@@ -142,7 +169,7 @@ class TrafficSignToDtoMapperTest {
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
 
         trafficSignToDtoMapper = new TrafficSignToDtoMapper(trafficSignMapperRegistry,
-                List.of(predicateA, predicateB));
+                List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
         // different rvv codes
         when(signA.getRvvCode()).thenReturn(RVV_CODE_A);
@@ -152,6 +179,9 @@ class TrafficSignToDtoMapperTest {
         when(predicateB.test(signA)).thenReturn(Boolean.TRUE);
         when(predicateA.test(signB)).thenReturn(Boolean.TRUE);
         when(predicateB.test(signB)).thenReturn(Boolean.TRUE);
+
+        when(noEntrySignWindowedMapper.map(signA)).thenReturn(signA);
+        when(noEntrySignWindowedMapper.map(signB)).thenReturn(signB);
 
         TrafficSignAccessibilityDto result = trafficSignToDtoMapper.map(trafficSigns);
 
@@ -171,7 +201,7 @@ class TrafficSignToDtoMapperTest {
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
 
         trafficSignToDtoMapper = new TrafficSignToDtoMapper(trafficSignMapperRegistry,
-                List.of(predicateA, predicateB));
+                List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
         // predicate a filters out this traffic sign
         when(predicateA.test(signA)).thenReturn(Boolean.FALSE);
@@ -187,23 +217,55 @@ class TrafficSignToDtoMapperTest {
     }
 
     @Test
-    void test_ok_predicatesBFalseAndTrafficSignExcluded() {
+    void test_ok_windowedTrafficSigns() {
 
-        trafficSigns = List.of(signA);
+        trafficSigns = List.of(c6, c7, c7b, c12, c22c);
+
+        when(c6T.getRvvCode()).thenReturn("C6T");
+        when(c7T.getRvvCode()).thenReturn("C7T");
+        when(c7bT.getRvvCode()).thenReturn("C7bT");
+        when(c12T.getRvvCode()).thenReturn("C12T");
+        when(c22cT.getRvvCode()).thenReturn("C22cT");
 
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
 
         trafficSignToDtoMapper = new TrafficSignToDtoMapper(trafficSignMapperRegistry,
-                List.of(predicateA, predicateB));
+                List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
-        when(predicateA.test(signA)).thenReturn(Boolean.TRUE);
-        // predicate b is filtering out the traffic sign
-        when(predicateB.test(signA)).thenReturn(Boolean.FALSE);
+        when(predicateA.test(c6)).thenReturn(Boolean.TRUE);
+        when(predicateB.test(c6)).thenReturn(Boolean.TRUE);
+
+        when(predicateA.test(c7)).thenReturn(Boolean.TRUE);
+        when(predicateB.test(c7)).thenReturn(Boolean.TRUE);
+
+        when(predicateA.test(c7b)).thenReturn(Boolean.TRUE);
+        when(predicateB.test(c7b)).thenReturn(Boolean.TRUE);
+
+        when(predicateA.test(c12)).thenReturn(Boolean.TRUE);
+        when(predicateB.test(c12)).thenReturn(Boolean.TRUE);
+
+        when(predicateA.test(c22c)).thenReturn(Boolean.TRUE);
+        when(predicateB.test(c22c)).thenReturn(Boolean.TRUE);
+
+        when(noEntrySignWindowedMapper.map(c6)).thenReturn(c6T);
+        when(noEntrySignWindowedMapper.map(c7)).thenReturn(c7T);
+        when(noEntrySignWindowedMapper.map(c7b)).thenReturn(c7bT);
+        when(noEntrySignWindowedMapper.map(c12)).thenReturn(c12T);
+        when(noEntrySignWindowedMapper.map(c22c)).thenReturn(c22cT);
 
         TrafficSignAccessibilityDto result = trafficSignToDtoMapper.map(trafficSigns);
 
-        verify(signMapperA).addToDto(resultCaptor.capture(), eq(Collections.emptyMap()));
+        verify(signMapperA).addToDto(resultCaptor.capture(), eq(Map.of(
+                "C6T", List.of(c6T),
+                "C7T", List.of(c7T),
+                "C7bT", List.of(c7bT),
+                "C12T", List.of(c12T),
+                "C22cT", List.of(c22cT)
+        )));
 
         assertEquals(result, resultCaptor.getValue());
     }
+
+
 }
+

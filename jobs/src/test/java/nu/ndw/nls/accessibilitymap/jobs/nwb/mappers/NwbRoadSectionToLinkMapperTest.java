@@ -56,11 +56,17 @@ class NwbRoadSectionToLinkMapperTest {
     @Mock
     private DirectionalDto<Boolean> carAccessForbidden;
     @Mock
+    private DirectionalDto<Boolean> carAccessForbiddenWindowed;
+    @Mock
     private DirectionalDto<Boolean> hgvAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> hgvAccessForbiddenWindowed;
     @Mock
     private DirectionalDto<Boolean> busAccessForbidden;
     @Mock
     private DirectionalDto<Boolean> hgvAndBusAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> hgvAndBusAccessForbiddenWindowed;
     @Mock
     private DirectionalDto<Boolean> tractorAccessForbidden;
     @Mock
@@ -72,7 +78,11 @@ class NwbRoadSectionToLinkMapperTest {
     @Mock
     private DirectionalDto<Boolean> motorVehicleAccessForbidden;
     @Mock
+    private DirectionalDto<Boolean> motorVehicleAccessForbiddenWindowed;
+    @Mock
     private DirectionalDto<Boolean> lcvAndHgvAccessForbidden;
+    @Mock
+    private DirectionalDto<Boolean> lcvAndHgvAccessForbiddenWindowed;
     @Mock
     private DirectionalDto<Double> maxLength;
     @Mock
@@ -85,7 +95,6 @@ class NwbRoadSectionToLinkMapperTest {
     private DirectionalDto<Double> maxWeight;
 
 
-
     @BeforeEach
     void setUp() {
         when(lineString.getLength()).thenReturn(GEOMETRY_LENGTH);
@@ -93,20 +102,25 @@ class NwbRoadSectionToLinkMapperTest {
         when(trafficSignToDtoMapper.map(trafficSignJsonDtoV3s)).thenReturn(trafficSignAccessibilityDto);
 
         when(trafficSignAccessibilityDto.getCarAccessForbidden()).thenReturn(carAccessForbidden);
+        when(trafficSignAccessibilityDto.getCarAccessForbiddenWindowed()).thenReturn(carAccessForbiddenWindowed);
         when(trafficSignAccessibilityDto.getHgvAccessForbidden()).thenReturn(hgvAccessForbidden);
+        when(trafficSignAccessibilityDto.getHgvAccessForbiddenWindowed()).thenReturn(hgvAccessForbiddenWindowed);
         when(trafficSignAccessibilityDto.getBusAccessForbidden()).thenReturn(busAccessForbidden);
         when(trafficSignAccessibilityDto.getHgvAndBusAccessForbidden()).thenReturn(hgvAndBusAccessForbidden);
+        when(trafficSignAccessibilityDto.getHgvAndBusAccessForbiddenWindowed()).thenReturn(hgvAndBusAccessForbiddenWindowed);
         when(trafficSignAccessibilityDto.getTractorAccessForbidden()).thenReturn(tractorAccessForbidden);
         when(trafficSignAccessibilityDto.getSlowVehicleAccessForbidden()).thenReturn(slowVehicleAccessForbidden);
         when(trafficSignAccessibilityDto.getTrailerAccessForbidden()).thenReturn(trailerAccessForbidden);
         when(trafficSignAccessibilityDto.getMotorcycleAccessForbidden()).thenReturn(motorcycleAccessForbidden);
         when(trafficSignAccessibilityDto.getMotorVehicleAccessForbidden()).thenReturn(motorVehicleAccessForbidden);
+        when(trafficSignAccessibilityDto.getMotorVehicleAccessForbiddenWindowed()).thenReturn(motorVehicleAccessForbiddenWindowed);
+        when(trafficSignAccessibilityDto.getLcvAndHgvAccessForbidden()).thenReturn(lcvAndHgvAccessForbidden);
+        when(trafficSignAccessibilityDto.getLcvAndHgvAccessForbiddenWindowed()).thenReturn(lcvAndHgvAccessForbiddenWindowed);
         when(trafficSignAccessibilityDto.getMaxLength()).thenReturn(maxLength);
         when(trafficSignAccessibilityDto.getMaxWidth()).thenReturn(maxWidth);
         when(trafficSignAccessibilityDto.getMaxHeight()).thenReturn(maxHeight);
         when(trafficSignAccessibilityDto.getMaxAxleLoad()).thenReturn(maxAxleLoad);
         when(trafficSignAccessibilityDto.getMaxWeight()).thenReturn(maxWeight);
-        when(trafficSignAccessibilityDto.getLcvAndHgvAccessForbidden()).thenReturn(lcvAndHgvAccessForbidden);
     }
 
 
@@ -125,20 +139,25 @@ class NwbRoadSectionToLinkMapperTest {
         assertEquals(307, link.getMunicipalityCode());
 
         assertEquals(carAccessForbidden, link.getCarAccessForbidden());
+        assertEquals(carAccessForbiddenWindowed, link.getCarAccessForbiddenWindowed());
         assertEquals(hgvAccessForbidden, link.getHgvAccessForbidden());
+        assertEquals(hgvAccessForbiddenWindowed, link.getHgvAccessForbiddenWindowed());
         assertEquals(busAccessForbidden, link.getBusAccessForbidden());
         assertEquals(hgvAndBusAccessForbidden, link.getHgvAndBusAccessForbidden());
+        assertEquals(hgvAndBusAccessForbiddenWindowed, link.getHgvAndBusAccessForbiddenWindowed());
         assertEquals(tractorAccessForbidden, link.getTractorAccessForbidden());
         assertEquals(slowVehicleAccessForbidden, link.getSlowVehicleAccessForbidden());
         assertEquals(trailerAccessForbidden, link.getTrailerAccessForbidden());
         assertEquals(motorcycleAccessForbidden, link.getMotorcycleAccessForbidden());
         assertEquals(motorVehicleAccessForbidden, link.getMotorVehicleAccessForbidden());
+        assertEquals(motorVehicleAccessForbiddenWindowed, link.getMotorVehicleAccessForbiddenWindowed());
+        assertEquals(lcvAndHgvAccessForbidden, link.getLcvAndHgvAccessForbidden());
+        assertEquals(lcvAndHgvAccessForbiddenWindowed, link.getLcvAndHgvAccessForbiddenWindowed());
         assertEquals(maxLength, link.getMaxLength());
         assertEquals(maxWidth, link.getMaxWidth());
         assertEquals(maxHeight, link.getMaxHeight());
         assertEquals(maxAxleLoad, link.getMaxAxleLoad());
         assertEquals(maxWeight, link.getMaxWeight());
-        assertEquals(lcvAndHgvAccessForbidden, link.getLcvAndHgvAccessForbidden());
     }
 
     @Test

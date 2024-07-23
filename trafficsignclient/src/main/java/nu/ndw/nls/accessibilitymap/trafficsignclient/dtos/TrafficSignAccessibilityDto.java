@@ -12,12 +12,15 @@ import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 public class TrafficSignAccessibilityDto {
 
     private DirectionalDto<Boolean> carAccessForbidden;
+    private DirectionalDto<Boolean> carAccessForbiddenWindowed;
 
     private DirectionalDto<Boolean> hgvAccessForbidden;
+    private DirectionalDto<Boolean> hgvAccessForbiddenWindowed;
 
     private DirectionalDto<Boolean> busAccessForbidden;
 
     private DirectionalDto<Boolean> hgvAndBusAccessForbidden;
+    private DirectionalDto<Boolean> hgvAndBusAccessForbiddenWindowed;
 
     private DirectionalDto<Boolean> tractorAccessForbidden;
 
@@ -28,6 +31,10 @@ public class TrafficSignAccessibilityDto {
     private DirectionalDto<Boolean> motorcycleAccessForbidden;
 
     private DirectionalDto<Boolean> motorVehicleAccessForbidden;
+    private DirectionalDto<Boolean> motorVehicleAccessForbiddenWindowed;
+
+    private DirectionalDto<Boolean> lcvAndHgvAccessForbidden;
+    private DirectionalDto<Boolean> lcvAndHgvAccessForbiddenWindowed;
 
     private DirectionalDto<Double> maxLength;
 
@@ -39,6 +46,5 @@ public class TrafficSignAccessibilityDto {
 
     private DirectionalDto<Double> maxWeight;
 
-    private DirectionalDto<Boolean> lcvAndHgvAccessForbidden;
 
 }
