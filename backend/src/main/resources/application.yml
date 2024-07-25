@@ -20,6 +20,14 @@ spring:
         jwt:
           issuer-uri: ${nls.keycloak.url}/realms/ndw
           jwk-set-uri: ${nls.keycloak.url}/realms/ndw/protocol/openid-connect/certs
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: SELECT 1;
+      idle-timeout: 60000
+      max-lifetime: 120000
+      minimum-idle: 1
+      auto-commit: false
 
 nls:
   keycloak:

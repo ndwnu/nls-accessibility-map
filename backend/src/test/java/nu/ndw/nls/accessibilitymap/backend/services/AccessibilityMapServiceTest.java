@@ -71,7 +71,7 @@ class AccessibilityMapServiceTest {
     private AccessibilityMapService accessibilityMapService;
 
     @Test
-    void determineAccessibilityByRoadSection_ok() {
+    void determineAccessibilityByRoadSection_ok_oldMethod() {
         // Backward is processed before forward, but result should still contain forward geometry.
         List<IsochroneMatch> allIsochroneMatches = List.of(ACCESSIBLE_MATCH, INACCESSIBLE_MATCH_REVERSED,
                 INACCESSIBLE_MATCH);
@@ -85,10 +85,11 @@ class AccessibilityMapServiceTest {
                 municipality)).thenReturn(restrictedIsochroneMatches);
 
         SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
-                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING);
+                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING, false);
 
         assertThat(idToRoadSections).hasSize(2)
                 .containsEntry(ID_1, new RoadSection(ID_1, LINE_STRING_1, false, null))
                 .containsEntry(ID_2, new RoadSection(ID_2, LINE_STRING_2, true, true));
     }
+
 }

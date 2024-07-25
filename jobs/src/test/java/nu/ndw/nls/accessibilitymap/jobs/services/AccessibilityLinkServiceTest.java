@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
-import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbRoadSectionService;
+import nu.ndw.nls.accessibilitymap.shared.nwb.services.NwbRoadSectionService;
 import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityLinkService.AccessibilityLinkData;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.TrafficSignMapperRegistry;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;

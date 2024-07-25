@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.nwb.services;
+package nu.ndw.nls.accessibilitymap.shared.nwb.services;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -48,7 +48,18 @@ public class NwbRoadSectionService {
      * @return Lazy stream
      */
     public Stream<NwbRoadSectionDto> findLazyCar(int versionId) {
+        return findLazyCar(versionId, null);
+    }
+
+    /**
+     * Make sure to add {@link Transactional} around the method in which you use this stream and close the stream after
+     * use
+     *
+     * @param versionId version id
+     * @return Lazy stream
+     */
+    public Stream<NwbRoadSectionDto> findLazyCar(int versionId, Collection<Integer> municipalities) {
         return nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCode(versionId,
-                CARRIAGE_WAY_TYPE_CODE_INCLUSIONS, FETCH_SIZE);
+                CARRIAGE_WAY_TYPE_CODE_INCLUSIONS, municipalities, FETCH_SIZE);
     }
 }
