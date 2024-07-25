@@ -1,8 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+
 management:
   datadog:
     metrics:
       export:
         enabled: false
+
 graphhopper:
   dir: graphhopper
 logging:

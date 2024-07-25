@@ -10,3 +10,9 @@ nls:
           path: /actuator/health
           duration: PT1M
           description: accessibility-map-api
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps

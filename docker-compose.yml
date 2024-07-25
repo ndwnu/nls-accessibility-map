@@ -23,6 +23,7 @@ services:
   nls-accessibility-map-api:
     build: docker/nls-accessibility-map-api
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - NLS_KEYCLOAK_URL=http://nls-keycloak:8000/auth
     ports:
