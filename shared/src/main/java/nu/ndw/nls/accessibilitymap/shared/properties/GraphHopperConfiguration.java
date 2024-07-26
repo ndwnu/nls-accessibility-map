@@ -21,11 +21,16 @@ import org.springframework.context.annotation.Configuration;
 public class GraphHopperConfiguration {
 
     private static final String NETWORK_NAME = "accessibility_latest";
+    private static final String ACCESSIBILITY_META_DATA_JSON = "accessibility_meta_data.json";
 
     private final GraphHopperProperties graphHopperProperties;
 
     public Path getLatestPath() {
         return graphHopperProperties.getDir().resolve(NETWORK_NAME);
+    }
+
+    public Path getMetaDataPath() {
+        return getLatestPath().resolve(ACCESSIBILITY_META_DATA_JSON);
     }
 
     public RoutingNetworkSettings<AccessibilityLink> configureLoadingRoutingNetworkSettings() {
