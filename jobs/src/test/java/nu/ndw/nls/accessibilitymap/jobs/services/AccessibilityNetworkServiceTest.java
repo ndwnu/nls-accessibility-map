@@ -18,6 +18,8 @@ import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.jobs.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityLinkService.AccessibilityLinkData;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
@@ -56,6 +58,9 @@ class AccessibilityNetworkServiceTest {
     private MessageService messageService;
     @Mock
     private AccessibilityRoutingNetworkEventMapper accessibilityRoutingNetworkEventMapper;
+    @Mock
+    private NetworkMetaDataService networkMetaDataService;
+
     @InjectMocks
     private AccessibilityNetworkService accessibilityNetworkService;
 
@@ -90,6 +95,8 @@ class AccessibilityNetworkServiceTest {
                 .thenReturn(routingNetworkSettings);
 
         accessibilityNetworkService.storeLatestNetworkOnDisk();
+
+        verify(networkMetaDataService).saveMetaData(new AccessibilityGraphhopperMetaData(NWB_VERSION_ID));
 
         verify(graphHopperConfiguration).configurePersistingRoutingNetworkSettings(supplierArgumentCaptor.capture(),
                 eq(TRAFFIC_SIGN_TIMESTAMP));

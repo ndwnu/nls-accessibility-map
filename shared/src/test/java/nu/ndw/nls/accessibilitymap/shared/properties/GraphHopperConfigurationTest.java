@@ -23,6 +23,9 @@ class GraphHopperConfigurationTest {
     private static final String NETWORK_NAME = "accessibility_latest";
     private static final Path GRAPHHOPPER_BASE_PATH = Path.of("base_path");
     private static final Path GRAPHHOPPER_FULL_PATH = Path.of("base_path", NETWORK_NAME);
+    private static final Path EXPECTED_META_DATA_PATH = Path.of(
+            "base_path/accessibility_latest/accessibility_meta_data.json");
+
     @Mock
     private GraphHopperProperties graphHopperProperties;
 
@@ -40,6 +43,13 @@ class GraphHopperConfigurationTest {
         when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
         assertEquals(GRAPHHOPPER_FULL_PATH, graphHopperConfiguration.getLatestPath());
     }
+
+    @Test
+    void getMetaDataPath_ok() {
+        when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
+        assertEquals(EXPECTED_META_DATA_PATH, graphHopperConfiguration.getMetaDataPath());
+    }
+
 
     @Test
     void configureLoadingRoutingNetworkSettings_ok() {

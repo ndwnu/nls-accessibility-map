@@ -94,7 +94,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private SortedMap<Integer, RoadSection> getAccessibility(String municipalityId, VehicleArguments requestArguments) {
         VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
-        return accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, municipalityId, false);
+        return accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, municipalityId, true);
     }
 
     @Builder

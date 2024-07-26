@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityLinkService.AccessibilityLinkData;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
@@ -25,6 +27,7 @@ public class AccessibilityNetworkService {
     private final GraphHopperConfiguration graphHopperConfiguration;
     private final MessageService messageService;
     private final AccessibilityRoutingNetworkEventMapper accessibilityRoutingNetworkEventMapper;
+    private final NetworkMetaDataService networkMetaDataService;
 
     @Transactional
     public void storeLatestNetworkOnDisk() throws IOException {
@@ -44,6 +47,8 @@ public class AccessibilityNetworkService {
         graphHopperNetworkService.storeOnDisk(accessibilityLinkRoutingNetworkSettings);
 
         int nwbVersionId = linkData.nwbVersionId();
+
+        networkMetaDataService.saveMetaData(new AccessibilityGraphhopperMetaData(nwbVersionId));
 
         NlsEvent nlsEvent = accessibilityRoutingNetworkEventMapper.map(nwbVersionId, linkData.trafficSignTimestamp());
 

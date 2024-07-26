@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.AccessibilityMapFactory;
+import nu.ndw.nls.accessibilitymap.backend.model.CachedRoadSection;
 import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
@@ -78,9 +79,10 @@ public class AccessibilityMapService {
     private SortedMap<Integer, RoadSection> determineDifference(List<IsochroneMatch> withRestrictions,
             int municipalityId) {
 
-        // For every road driving direction that exists in the NWB municipality, we initialize our RoadSection with
-        // false. We then use the withRestrictions isochrone result to update all road section directions which are
-        // accessible and effectively end up with RoadSection objects that have accessible states with three values:
+        // For every road driving direction that is accessible for a car in the NWB municipality area, we initialize our
+        // RoadSection with false. We then use the withRestrictions isochrone result to update all road section
+        // directions which are accessible with true and effectively end up with RoadSection objects that have
+        // accessible states with three values:
         // - null: road section driving direction not accessible in NWB
         // - false: road section driving direction accessible in NWB, but did not exist in the isochrone response and is
         //          inaccessible with the restrictions applied to the isochrone
@@ -89,12 +91,8 @@ public class AccessibilityMapService {
         SortedMap<Integer, RoadSection> roadSections =
                 cachedMunicipalityRoadSectionsService.getRoadSectionIdToRoadSection(municipalityId)
                 .stream()
-                .map(cachedRoadSection -> new RoadSection(cachedRoadSection.getRoadSectionId(),
-                        cachedRoadSection.getGeometry(),
-                        initializeNwbAccessibleRoads(cachedRoadSection.getForwardAccessible()),
-                        initializeNwbAccessibleRoads(cachedRoadSection.getBackwardAccessible())))
-                .collect(Collectors.toMap(RoadSection::getRoadSectionId, Function.identity(),
-                        (a, b) -> a,
+                .map(this::intializeRoadSection)
+                .collect(Collectors.toMap(RoadSection::getRoadSectionId, Function.identity(), (a, b) -> a,
                         TreeMap::new));
 
         for (IsochroneMatch m : withRestrictions) {
@@ -107,6 +105,13 @@ public class AccessibilityMapService {
         }
 
         return roadSections;
+    }
+
+    private RoadSection intializeRoadSection(CachedRoadSection cachedRoadSection) {
+        return new RoadSection( cachedRoadSection.getRoadSectionId(),
+                                cachedRoadSection.getGeometry(),
+                                initializeNwbAccessibleRoads(cachedRoadSection.getForwardAccessible()),
+                                initializeNwbAccessibleRoads(cachedRoadSection.getBackwardAccessible()));
     }
 
     private Boolean initializeNwbAccessibleRoads(boolean accessible) {
