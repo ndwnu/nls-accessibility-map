@@ -19,13 +19,11 @@ class GraphhopperVersionMapperTest {
     @Mock
     private NetworkGraphHopper networkGraphHopper;
 
-
-
     @Test
     void map_ok() {
-        when(networkGraphHopper.getDataDate()).thenReturn(LocalDate.of(2024, 12, 31).atStartOfDay().toInstant(
-                ZoneOffset.UTC));
+        when(networkGraphHopper.getDataDate()).thenReturn(LocalDate.of(2024, 12, 31).atStartOfDay()
+                .withDayOfMonth(1).toInstant(ZoneOffset.UTC));
 
-        assertEquals(20241231, graphhopperVersionMapper.map(networkGraphHopper));
+        assertEquals(20241201, graphhopperVersionMapper.map(networkGraphHopper));
     }
 }

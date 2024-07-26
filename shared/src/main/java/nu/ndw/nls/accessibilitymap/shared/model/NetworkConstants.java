@@ -8,7 +8,7 @@ public final class NetworkConstants {
     public static final String CAR = "car";
     private static final String PROFILE_NAME = "motor_vehicle_custom";
     public static final Profile PROFILE = new Profile(PROFILE_NAME).setVehicle(CAR);
-    public static final String NETWORK_NAME = "accessibility_latest";
+
 
     private NetworkConstants() {}
 
