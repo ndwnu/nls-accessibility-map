@@ -65,7 +65,7 @@ class GraphHopperConfigurationTest {
     }
 
     @Test
-    void configurePersistingRoutingNetworkSettings() {
+    void configurePersistingRoutingNetworkSettings_ok() {
 
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings =
                 graphHopperConfiguration.configurePersistingRoutingNetworkSettings(accessibilityLinkSupplier,

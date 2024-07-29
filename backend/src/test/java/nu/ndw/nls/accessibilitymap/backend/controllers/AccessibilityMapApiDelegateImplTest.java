@@ -168,8 +168,7 @@ class AccessibilityMapApiDelegateImplTest {
         when(pointMapper.mapCoordinateAllowNulls(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(requestedPoint);
         when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
         when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
-        when(accessibilityMapService.determineAccessibilityByRoadSection(eq(vehicleProperties), eq(MUNICIPALITY_ID)
-        ))
+        when(accessibilityMapService.determineAccessibilityByRoadSection(eq(vehicleProperties), eq(MUNICIPALITY_ID)))
                 .thenReturn(idToRoadSectionMap);
     }
 }
