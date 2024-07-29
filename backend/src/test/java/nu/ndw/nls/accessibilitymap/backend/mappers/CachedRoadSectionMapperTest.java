@@ -22,17 +22,6 @@ class CachedRoadSectionMapperTest {
 
     private static final long ID = 1234L;
 
-    public CachedRoadSection map(NwbRoadSectionDto nwbRoadSectionDto) {
-        // We only check H and T values, all other values mean accessible.
-        boolean forwardAccessible =
-                !ROAD_SECTION_DRIVING_DIRECTION_BACKWARD.equals(nwbRoadSectionDto.getDrivingDirection());
-        boolean reverseAccessible =
-                !ROAD_SECTION_DRIVING_DIRECTION_FORWARD.equals(nwbRoadSectionDto.getDrivingDirection());
-
-        return new CachedRoadSection((int) nwbRoadSectionDto.getRoadSectionId(), nwbRoadSectionDto.getGeometry(),
-                forwardAccessible, reverseAccessible);
-    }
-
     @InjectMocks
     private CachedRoadSectionMapper cachedRoadSectionMapper;
 

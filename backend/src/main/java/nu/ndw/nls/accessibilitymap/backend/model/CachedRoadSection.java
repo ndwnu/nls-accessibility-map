@@ -12,7 +12,7 @@ public class CachedRoadSection {
 
     private final int roadSectionId;
     private final LineString geometry;
-    private Boolean forwardAccessible;
-    private Boolean backwardAccessible;
+    private boolean forwardAccessible;
+    private boolean backwardAccessible;
 
 }
