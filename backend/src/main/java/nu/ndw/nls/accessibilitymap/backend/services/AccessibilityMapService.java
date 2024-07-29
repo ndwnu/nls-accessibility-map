@@ -52,8 +52,7 @@ public class AccessibilityMapService {
             List<IsochroneMatch> withRestrictions) {
         SortedMap<Integer, RoadSection> roadSections = new TreeMap<>();
         for (IsochroneMatch m : withoutRestrictions) {
-            roadSections.computeIfAbsent(m.getMatchedLinkId(), id -> new RoadSection(id,
-                    m.isReversed() ? m.getGeometry().reverse() : m.getGeometry())); // always deliver geometry in travel direction?
+            roadSections.computeIfAbsent(m.getMatchedLinkId(), id -> new RoadSection(id, m.getGeometry()));
             RoadSection r = roadSections.get(m.getMatchedLinkId());
             // Accessible remains null in case road section is not present in both directions in baseline.
             // This way, non-existing directions of one-way roads (null) can be distinguished from inaccessible
