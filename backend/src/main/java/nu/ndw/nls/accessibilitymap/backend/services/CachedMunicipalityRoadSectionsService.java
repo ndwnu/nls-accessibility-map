@@ -38,6 +38,7 @@ public class CachedMunicipalityRoadSectionsService {
         try (Stream<NwbRoadSectionDto> roadSections =
                 nwbRoadSectionService.findLazyCar(accessibilityGraphhopperMetaData.nwbVersion(),
                         Collections.singleton(municipalityId))) {
+
             return roadSections.map(cachedRoadSectionMapper::map).toList();
         }
     }
