@@ -59,7 +59,7 @@ public class NwbRoadSectionService {
      * @return Lazy stream
      */
     public Stream<NwbRoadSectionDto> findLazyCar(int versionId, Collection<Integer> municipalities) {
-        return nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCode(versionId,
+        return nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(versionId,
                 CARRIAGE_WAY_TYPE_CODE_INCLUSIONS, municipalities, FETCH_SIZE);
     }
 }
