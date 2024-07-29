@@ -31,7 +31,7 @@ public class AccessibilityMapService {
     private final CachedMunicipalityRoadSectionsService cachedMunicipalityRoadSectionsService;
 
     public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(VehicleProperties vehicleProperties,
-            String municipalityId, boolean newMethod) {
+            String municipalityId) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(networkGraphHopper);
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
 
@@ -40,39 +40,7 @@ public class AccessibilityMapService {
         List<IsochroneMatch> accessibleRoadsWithRestrictions = accessibleRoadsService
                 .getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties, municipality);
 
-
-        if (newMethod) {
-            return determineDifference(accessibleRoadsWithRestrictions, municipality.getMunicipalityIdInteger());
-        } else {
-            return determineDifference(allAccessibleRoads, accessibleRoadsWithRestrictions);
-        }
-    }
-
-    private SortedMap<Integer, RoadSection> determineDifference(List<IsochroneMatch> withoutRestrictions,
-            List<IsochroneMatch> withRestrictions) {
-        SortedMap<Integer, RoadSection> roadSections = new TreeMap<>();
-        for (IsochroneMatch m : withoutRestrictions) {
-            roadSections.computeIfAbsent(m.getMatchedLinkId(), id -> new RoadSection(id, m.getGeometry()));
-            RoadSection r = roadSections.get(m.getMatchedLinkId());
-            // Accessible remains null in case road section is not present in both directions in baseline.
-            // This way, non-existing directions of one-way roads (null) can be distinguished from inaccessible
-            // directions due to restrictions (false).
-            if (m.isReversed()) {
-                r.setBackwardAccessible(false);
-            } else {
-                r.setForwardAccessible(false);
-            }
-        }
-        for (IsochroneMatch m : withRestrictions) {
-            RoadSection r = roadSections.get(m.getMatchedLinkId());
-            if (m.isReversed()) {
-                r.setBackwardAccessible(true);
-            } else {
-                r.setForwardAccessible(true);
-            }
-        }
-
-        return roadSections;
+        return determineDifference(accessibleRoadsWithRestrictions, municipality.getMunicipalityIdInteger());
     }
 
     private SortedMap<Integer, RoadSection> determineDifference(List<IsochroneMatch> withRestrictions,

@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.backend.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -169,8 +168,8 @@ class AccessibilityMapApiDelegateImplTest {
         when(pointMapper.mapCoordinateAllowNulls(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(requestedPoint);
         when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
         when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
-        when(accessibilityMapService.determineAccessibilityByRoadSection(eq(vehicleProperties), eq(MUNICIPALITY_ID),
-                anyBoolean()))
+        when(accessibilityMapService.determineAccessibilityByRoadSection(eq(vehicleProperties), eq(MUNICIPALITY_ID)
+        ))
                 .thenReturn(idToRoadSectionMap);
     }
 }
