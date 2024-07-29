@@ -30,7 +30,7 @@ public class NetworkMetaDataService {
         try {
             objectMapper.writeValue(latestPath.toFile(), accessibilityGraphhopperMetaData);
         } catch (IOException e) {
-            throw new IllegalStateException("Could not write meta-data from file path: " + latestPath, e);
+            throw new IllegalStateException("Could not write meta-data to file path: " + latestPath, e);
         }
     }
 
