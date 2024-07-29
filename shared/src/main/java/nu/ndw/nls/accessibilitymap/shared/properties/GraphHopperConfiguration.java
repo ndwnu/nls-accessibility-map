@@ -39,11 +39,11 @@ public class GraphHopperConfiguration {
 
     public RoutingNetworkSettings<AccessibilityLink> configurePersistingRoutingNetworkSettings(
             Supplier<Iterator<AccessibilityLink>> accessibilityLinkSupplier, Instant trafficSignData) {
-            return configureBaseRoutingNetworkSettingsBuilder()
-                    .indexed(true)
-                    .linkSupplier(accessibilityLinkSupplier)
-                    .dataDate(trafficSignData)
-                    .build();
+        return configureBaseRoutingNetworkSettingsBuilder()
+                .indexed(true)
+                .linkSupplier(accessibilityLinkSupplier)
+                .dataDate(trafficSignData)
+                .build();
     }
 
     private RoutingNetworkSettingsBuilder<AccessibilityLink> configureBaseRoutingNetworkSettingsBuilder() {
