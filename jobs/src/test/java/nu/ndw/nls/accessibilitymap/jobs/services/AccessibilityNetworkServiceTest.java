@@ -1,10 +1,10 @@
 package nu.ndw.nls.accessibilitymap.jobs.services;
 
-import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.NETWORK_NAME;
-import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
 import static nu.ndw.nls.events.NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -13,11 +13,14 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Supplier;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.jobs.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.services.AccessibilityLinkService.AccessibilityLinkData;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperProperties;
+import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
+import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
@@ -45,52 +48,63 @@ class AccessibilityNetworkServiceTest {
     private Iterator<AccessibilityLink> linkIterator;
     @Mock
     private NlsEvent publishEvent;
-    @Captor
-    private ArgumentCaptor<RoutingNetworkSettings<AccessibilityLink>> routingNetworkArgumentCaptor;
-
     @Mock
     private GraphHopperNetworkService indexedGraphHopperNetworkService;
     @Mock
     private AccessibilityLinkService accessibilityLinkService;
     @Mock
-    private GraphHopperProperties graphHopperProperties;
+    private GraphHopperConfiguration graphHopperConfiguration;
     @Mock
     private MessageService messageService;
     @Mock
     private AccessibilityRoutingNetworkEventMapper accessibilityRoutingNetworkEventMapper;
+    @Mock
+    private NetworkMetaDataService networkMetaDataService;
+
     @InjectMocks
     private AccessibilityNetworkService accessibilityNetworkService;
+
+    @Mock
+    private RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings;
+
+    @Captor
+    ArgumentCaptor<Supplier<Iterator<AccessibilityLink>>> supplierArgumentCaptor;
+
+    private Path tmpLatestPathFolder;
 
     @SneakyThrows
     @BeforeEach
     void setUp() {
-        Files.deleteIfExists(Path.of(GRAPHHOPPER_DIR, NETWORK_NAME));
-        Files.deleteIfExists(Path.of(GRAPHHOPPER_DIR));
+        tmpLatestPathFolder = Files.createTempDirectory("test-accessibility-network-service");
+        when(graphHopperConfiguration.getLatestPath()).thenReturn(tmpLatestPathFolder);
     }
 
     @SneakyThrows
     @Test
     void storeLatestNetworkOnDisk_ok() {
-        when(graphHopperProperties.getDir()).thenReturn(Path.of(GRAPHHOPPER_DIR));
         when(accessibilityLinkService.getLinks()).thenReturn(
                 new AccessibilityLinkData(links, NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP));
         when(links.iterator()).thenReturn(linkIterator);
+
 
         when(accessibilityRoutingNetworkEventMapper.map(NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP))
                 .thenReturn(publishEvent);
         when(publishEvent.getType()).thenReturn(ACCESSIBILITY_ROUTING_NETWORK_UPDATED);
 
+        when(graphHopperConfiguration.configurePersistingRoutingNetworkSettings(any(), eq(TRAFFIC_SIGN_TIMESTAMP)))
+                .thenReturn(routingNetworkSettings);
+
         accessibilityNetworkService.storeLatestNetworkOnDisk();
 
-        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkArgumentCaptor.capture());
-        RoutingNetworkSettings<AccessibilityLink> routingNetwork = routingNetworkArgumentCaptor.getValue();
-        assertEquals(NETWORK_NAME, routingNetwork.getNetworkNameAndVersion());
-        assertEquals(AccessibilityLink.class, routingNetwork.getLinkType());
-        assertEquals(List.of(PROFILE), routingNetwork.getProfiles());
-        assertEquals(GRAPHHOPPER_DIR, routingNetwork.getGraphhopperRootPath().toString());
-        assertEquals(linkIterator, routingNetwork.getLinkSupplier().get());
-        assertEquals(TRAFFIC_SIGN_TIMESTAMP, routingNetwork.getDataDate());
-        assertTrue(Files.exists(Path.of(GRAPHHOPPER_DIR, NETWORK_NAME)));
+        verify(networkMetaDataService).saveMetaData(new AccessibilityGraphhopperMetaData(NWB_VERSION_ID));
+
+        verify(graphHopperConfiguration).configurePersistingRoutingNetworkSettings(supplierArgumentCaptor.capture(),
+                eq(TRAFFIC_SIGN_TIMESTAMP));
+
+        assertEquals(linkIterator, supplierArgumentCaptor.getValue().get());
+
+        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkSettings);
+        assertTrue(Files.exists(tmpLatestPathFolder));
 
         verify(messageService).publish(publishEvent);
     }

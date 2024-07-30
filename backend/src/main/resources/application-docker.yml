@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+
+graphhopper:
+  dir: graphhopper
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG

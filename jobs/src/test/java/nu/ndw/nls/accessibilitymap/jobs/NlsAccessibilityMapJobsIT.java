@@ -5,7 +5,6 @@ import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.HGV_ACC
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_HEIGHT;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_LENGTH;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MOTOR_VEHICLE_ACCESS_FORBIDDEN;
-import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.NETWORK_NAME;
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +21,7 @@ import java.time.Instant;
 import java.util.List;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperProperties;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -38,6 +38,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ActiveProfiles(profiles = {"integration-test"})
 class NlsAccessibilityMapJobsIT {
 
+    private static final String NETWORK_NAME = "accessibility_latest";
     private static final String PROPERTIES = "properties";
     private static final Instant EXPECTED_DATA_DATE = Instant.parse("2024-01-30T15:23:14Z");
 
@@ -49,12 +50,15 @@ class NlsAccessibilityMapJobsIT {
     private GraphHopperNetworkService networkService;
 
     @Autowired
+    private GraphHopperConfiguration graphHopperConfiguration;
+
+    @Autowired
     private GraphHopperProperties graphHopperProperties;
 
     @SneakyThrows
     @Test
     void createOrUpdateNetwork_ok() {
-        Path accessibilityLatest = graphHopperProperties.getDir().resolve(NETWORK_NAME);
+        Path accessibilityLatest = graphHopperConfiguration.getLatestPath();
         assertTrue(Files.exists(accessibilityLatest));
         // Check whether network is fully built.
         assertTrue(Files.exists(accessibilityLatest.resolve(PROPERTIES)));

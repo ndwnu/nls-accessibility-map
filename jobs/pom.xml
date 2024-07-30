@@ -44,10 +44,6 @@
             <artifactId>nls-events</artifactId>
         </dependency>
         <dependency>
-            <groupId>nu.ndw</groupId>
-            <artifactId>nls-nwb-data-access-jooq</artifactId>
-        </dependency>
-        <dependency>
             <groupId>nu.ndw.nls.springboot</groupId>
             <artifactId>messaging</artifactId>
         </dependency>
