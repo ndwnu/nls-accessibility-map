@@ -7,7 +7,7 @@
     </parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.80</version>
+    <version>1.0.81-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>nls-accessibility-map</name>
     <description>REST API to determine accessible road sections for a given vehicle type</description>
