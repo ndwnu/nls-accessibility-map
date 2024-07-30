@@ -77,8 +77,8 @@ public class AccessibilityMapService {
     private RoadSection intializeRoadSection(CachedRoadSection cachedRoadSection) {
         return new RoadSection( cachedRoadSection.getRoadSectionId(),
                                 cachedRoadSection.getGeometry(),
-                                initializeNwbAccessibleRoads(cachedRoadSection.isBackwardAccessible()),
-                                initializeNwbAccessibleRoads(cachedRoadSection.isForwardAccessible()));
+                                initializeNwbAccessibleRoads(cachedRoadSection.isForwardAccessible()),
+                                initializeNwbAccessibleRoads(cachedRoadSection.isBackwardAccessible()));
     }
 
     private Boolean initializeNwbAccessibleRoads(boolean accessible) {
