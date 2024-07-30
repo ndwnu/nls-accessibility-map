@@ -8,6 +8,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeature
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
+import nu.ndw.nls.geometry.rounding.dto.RoundDoubleConfiguration;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,8 @@ public class RoadSectionFeatureMapper {
                 && forward != candidateMatch.isReversed()) : null;
 
         return new RoadSectionFeatureJson(RoadSectionFeatureJson.TypeEnum.FEATURE, id,
-                new LineStringJson(geoJsonLineStringCoordinateMapper.map(geometry), GeometryJson.TypeEnum.LINESTRING))
+                new LineStringJson(geoJsonLineStringCoordinateMapper.map(geometry,
+                        RoundDoubleConfiguration.ROUND_7_HALF_UP), GeometryJson.TypeEnum.LINESTRING))
                 .properties(new RoadSectionPropertiesJson(accessible).matched(matched));
     }
 }

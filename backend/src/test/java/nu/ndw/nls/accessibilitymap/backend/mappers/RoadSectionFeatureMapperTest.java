@@ -12,6 +12,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeature
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
+import nu.ndw.nls.geometry.rounding.dto.RoundDoubleConfiguration;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +46,8 @@ class RoadSectionFeatureMapperTest {
         when(roadSection.getRoadSectionId()).thenReturn(1);
         when(roadSection.getGeometry()).thenReturn(geometry);
         when(roadSection.getForwardAccessible()).thenReturn(true);
-        when(geoJsonLineStringCoordinateMapper.map(geometry)).thenReturn(coordinates);
+        when(geoJsonLineStringCoordinateMapper.map(geometry, RoundDoubleConfiguration.ROUND_7_HALF_UP))
+                .thenReturn(coordinates);
 
         RoadSectionFeatureJson actual = roadSectionFeatureMapper.map(roadSection, null, true);
 
@@ -61,7 +63,8 @@ class RoadSectionFeatureMapperTest {
         when(roadSection.getGeometry()).thenReturn(geometry);
         when(geometry.reverse()).thenReturn(reverseGeometry);
         when(roadSection.getBackwardAccessible()).thenReturn(true);
-        when(geoJsonLineStringCoordinateMapper.map(reverseGeometry)).thenReturn(coordinates);
+        when(geoJsonLineStringCoordinateMapper.map(reverseGeometry, RoundDoubleConfiguration.ROUND_7_HALF_UP))
+                .thenReturn(coordinates);
 
         RoadSectionFeatureJson actual = roadSectionFeatureMapper.map(roadSection, null, false);
 
