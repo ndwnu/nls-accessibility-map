@@ -38,7 +38,7 @@
         <nls-nwb-data-access.version>6.0.0</nls-nwb-data-access.version>
         <nls-springboot.version>4.2.0</nls-springboot.version>
         <routing-map-matcher.version>9.0.19</routing-map-matcher.version>
-        <nls-geometry.version>2.1.8</nls-geometry.version>
+        <nls-geometry.version>2.2.0</nls-geometry.version>
     </properties>
     <distributionManagement>
         <repository>
