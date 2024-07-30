@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.nwb.mappers.NwbRoadSectionToLinkMapper;
-import nu.ndw.nls.accessibilitymap.jobs.nwb.services.NwbRoadSectionService;
+import nu.ndw.nls.accessibilitymap.shared.nwb.services.NwbRoadSectionService;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.TrafficSignMapperRegistry;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;

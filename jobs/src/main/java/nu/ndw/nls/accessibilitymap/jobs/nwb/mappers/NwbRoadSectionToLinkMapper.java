@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", uses = RijksdriehoekToWgs84Mapper.class)
+@Mapper(componentModel = "spring")
 public abstract class NwbRoadSectionToLinkMapper {
 
     private static final String BACKWARD = "T";

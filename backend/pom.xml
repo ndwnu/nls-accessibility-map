@@ -271,6 +271,7 @@
                                     <arguments combine.children="append">
                                         <argument>up</argument>
                                         <argument>-d</argument>
+                                        <argument>nls-postgres</argument>
                                         <argument>nls-keycloak</argument>
                                     </arguments>
                                 </configuration>

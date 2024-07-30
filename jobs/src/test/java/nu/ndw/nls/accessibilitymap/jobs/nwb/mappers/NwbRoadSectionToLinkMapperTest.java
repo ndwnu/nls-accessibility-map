@@ -6,11 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.TrafficSignToDtoMapper;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsign.mappers.TrafficSignToDtoMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +33,6 @@ class NwbRoadSectionToLinkMapperTest {
     private static final int MUNICIPALITY_ID = 307;
 
     @Mock
-    private RijksdriehoekToWgs84Mapper rijksdriehoekToWgs84Mapper;
-
-    @Mock
     private TrafficSignToDtoMapper trafficSignToDtoMapper;
 
     @InjectMocks
@@ -44,9 +40,6 @@ class NwbRoadSectionToLinkMapperTest {
 
     @Mock
     private LineString lineString;
-
-    @Mock
-    private LineString lineStringRijksdriehoek;
 
     @Mock
     private List<TrafficSignJsonDtoV3> trafficSignJsonDtoV3s;
@@ -98,7 +91,6 @@ class NwbRoadSectionToLinkMapperTest {
     @BeforeEach
     void setUp() {
         when(lineString.getLength()).thenReturn(GEOMETRY_LENGTH);
-        when(rijksdriehoekToWgs84Mapper.map(lineString)).thenReturn(lineStringRijksdriehoek);
         when(trafficSignToDtoMapper.map(trafficSignJsonDtoV3s)).thenReturn(trafficSignAccessibilityDto);
 
         when(trafficSignAccessibilityDto.getCarAccessForbidden()).thenReturn(carAccessForbidden);
@@ -135,7 +127,7 @@ class NwbRoadSectionToLinkMapperTest {
         assertTrue(link.getAccessibility().forward());
         assertFalse(link.getAccessibility().reverse());
         assertEquals(GEOMETRY_LENGTH, link.getDistanceInMeters());
-        assertEquals(lineStringRijksdriehoek, link.getGeometry());
+        assertEquals(lineString, link.getGeometry());
         assertEquals(307, link.getMunicipalityCode());
 
         assertEquals(carAccessForbidden, link.getCarAccessForbidden());
