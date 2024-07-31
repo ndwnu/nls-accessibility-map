@@ -52,7 +52,7 @@ class RoadSectionFeatureCollectionMapperTest {
         RoadSectionFeatureCollectionJson actual = roadSectionFeatureCollectionMapper.map(
                 new TreeMap<>(Map.of(1, roadSection)), candidateMatch, null);
 
-        RoadSectionFeatureCollectionJson expected = new RoadSectionFeatureCollectionJson(TypeEnum.FEATURECOLLECTION,
+        RoadSectionFeatureCollectionJson expected = new RoadSectionFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION,
                 List.of(roadSectionFeatureJson1));
         assertEquals(expected, actual);
     }
@@ -69,7 +69,7 @@ class RoadSectionFeatureCollectionMapperTest {
         RoadSectionFeatureCollectionJson actual = roadSectionFeatureCollectionMapper.map(
                 new TreeMap<>(Map.of(1, roadSection)), candidateMatch, true);
 
-        RoadSectionFeatureCollectionJson expected = new RoadSectionFeatureCollectionJson(TypeEnum.FEATURECOLLECTION,
+        RoadSectionFeatureCollectionJson expected = new RoadSectionFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION,
                 List.of(roadSectionFeatureJson1));
         assertEquals(expected, actual);
     }
@@ -87,7 +87,7 @@ class RoadSectionFeatureCollectionMapperTest {
         RoadSectionFeatureCollectionJson actual = roadSectionFeatureCollectionMapper.map(
                 new TreeMap<>(Map.of(1, roadSection)), candidateMatch, true);
 
-        RoadSectionFeatureCollectionJson expected = new RoadSectionFeatureCollectionJson(TypeEnum.FEATURECOLLECTION,
+        RoadSectionFeatureCollectionJson expected = new RoadSectionFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION,
                 List.of(roadSectionFeatureJson1, roadSectionFeatureJson2));
         assertEquals(expected, actual);
     }

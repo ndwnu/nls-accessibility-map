@@ -71,6 +71,6 @@ class MunicipalityFeatureMapperTest {
         var featureJson = new MunicipalityFeatureJson(MunicipalityFeatureJson.TypeEnum.FEATURE, municipalityId,
                 pointJson);
         featureJson.properties(propertiesJson);
-        return new MunicipalityFeatureCollectionJson(TypeEnum.FEATURECOLLECTION, List.of(featureJson));
+        return new MunicipalityFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION, List.of(featureJson));
     }
 }

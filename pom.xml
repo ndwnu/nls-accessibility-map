@@ -28,9 +28,9 @@
         <karate.version>1.4.1</karate.version>
         <keycloak-authz-client.version>25.0.2</keycloak-authz-client.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <openapi-generator-maven-plugin.version>7.6.0</openapi-generator-maven-plugin.version>
+        <openapi-generator-maven-plugin.version>7.7.0</openapi-generator-maven-plugin.version>
         <picocli.version>4.7.6</picocli.version>
-        <spring-cloud.version>2023.0.2</spring-cloud.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
         <springdoc.version>2.6.0</springdoc.version>
         <stream-utils.version>1.3.1</stream-utils.version>
         <swagger-annotations.version>2.2.22</swagger-annotations.version>
