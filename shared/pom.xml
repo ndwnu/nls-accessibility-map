@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.82</version>
+        <version>1.0.83-SNAPSHOT</version>
     </parent>
     <artifactId>shared</artifactId>
     <name>NLS Accessibility Map Graphhopper shared</name>
