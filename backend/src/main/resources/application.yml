@@ -28,6 +28,8 @@ spring:
       max-lifetime: 120000
       minimum-idle: 1
       auto-commit: false
+  jooq:
+    sql-dialect: Postgres
 
 nls:
   keycloak:

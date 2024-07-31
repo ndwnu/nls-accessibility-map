@@ -9,3 +9,5 @@ data:
   SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_MAIN_BANNER_MODE: 'off'
   SPRING_PROFILES_ACTIVE: {{ .Values.environment }}
+  SPRING_DATASOURCE_URL: jdbc:postgresql://{{ .Values.application.databaseHost }}/nls-maps?ApplicationName=nls-accessibility-map-api&stringtype=unspecified
+  SPRING_DATASOURCE_USERNAME: nls
