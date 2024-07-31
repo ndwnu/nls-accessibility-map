@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.mappers;
 
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.LineStringJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
@@ -29,7 +29,7 @@ public class RoadSectionFeatureMapper {
 
         return new RoadSectionFeatureJson(RoadSectionFeatureJson.TypeEnum.FEATURE, id,
                 new LineStringJson(geoJsonLineStringCoordinateMapper.map(geometry,
-                        RoundDoubleConfiguration.ROUND_7_HALF_UP), GeometryJson.TypeEnum.LINESTRING))
+                        RoundDoubleConfiguration.ROUND_7_HALF_UP), TypeEnum.LINE_STRING))
                 .properties(new RoadSectionPropertiesJson(accessible).matched(matched));
     }
 }

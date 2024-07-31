@@ -28,6 +28,6 @@ public class RoadSectionFeatureCollectionMapper {
                 .filter(r -> accessible == null || accessible.equals(r.getProperties().getAccessible())
                         || Boolean.TRUE.equals(r.getProperties().getMatched()))
                 .toList();
-        return new RoadSectionFeatureCollectionJson(TypeEnum.FEATURECOLLECTION, features);
+        return new RoadSectionFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION, features);
     }
 }
