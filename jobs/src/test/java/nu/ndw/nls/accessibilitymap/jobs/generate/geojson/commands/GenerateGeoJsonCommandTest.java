@@ -25,14 +25,14 @@ class GenerateGeoJsonCommandTest {
     private GenerateGeoJsonCommand generateGeoJsonCommand;
 
     @Test
-    void call_ok_returnsErrorCode0() {
+    void call_ok_returnsExitCode0() {
         CommandLine commandLine = new CommandLine(generateGeoJsonCommand);
         assertEquals(0, commandLine.execute(CMD_ARG_TRUCKS_FORBIDDEN));
         verify(generateGeoJsonService).generate(GenerateGeoJsonType.C7);
     }
 
     @Test
-    void call_fail_exceptionThrownReturnErrorCode1() {
+    void call_fail_exceptionThrownReturnExitCode1() {
         generateGeoJsonCommand = new GenerateGeoJsonCommand(generateGeoJsonService);
         doThrow(IllegalStateException.class).when(generateGeoJsonService)
                 .generate(GenerateGeoJsonType.C7);

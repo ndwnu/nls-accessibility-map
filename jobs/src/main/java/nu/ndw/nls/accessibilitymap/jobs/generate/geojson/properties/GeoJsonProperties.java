@@ -12,6 +12,6 @@ public class GeoJsonProperties {
     private String pathDatePattern;
 
     @NotBlank
-    private String rvv;
+    private String rvvCode;
 
 }
