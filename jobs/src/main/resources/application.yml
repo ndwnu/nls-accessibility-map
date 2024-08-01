@@ -42,16 +42,16 @@ nu:
                 path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
                 rvv: C6
               C7:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
                 rvv: C7
               C7B:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
                 rvv: C7b
               C12:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
                 rvv: C12
               C22C:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
                 rvv: C22c
         trafficsignclient:
           api:
