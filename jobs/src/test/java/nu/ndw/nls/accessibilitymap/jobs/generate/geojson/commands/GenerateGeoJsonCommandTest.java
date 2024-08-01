@@ -16,7 +16,7 @@ import picocli.CommandLine;
 @ExtendWith(MockitoExtension.class)
 class GenerateGeoJsonCommandTest {
 
-    private static final String CMD_ARG_TRUCKS_FORBIDDEN = "TRUCKS_FORBIDDEN";
+    private static final String CMD_ARG_TRUCKS_FORBIDDEN = GenerateGeoJsonType.C7.toString();
 
     @Mock
     private GenerateGeoJsonService generateGeoJsonService;
@@ -28,19 +28,19 @@ class GenerateGeoJsonCommandTest {
     void call_ok_returnsErrorCode0() {
         CommandLine commandLine = new CommandLine(generateGeoJsonCommand);
         assertEquals(0, commandLine.execute(CMD_ARG_TRUCKS_FORBIDDEN));
-        verify(generateGeoJsonService).generate(GenerateGeoJsonType.C6);
+        verify(generateGeoJsonService).generate(GenerateGeoJsonType.C7);
     }
 
     @Test
     void call_fail_exceptionThrownReturnErrorCode1() {
         generateGeoJsonCommand = new GenerateGeoJsonCommand(generateGeoJsonService);
         doThrow(IllegalStateException.class).when(generateGeoJsonService)
-                .generate(GenerateGeoJsonType.C6);
+                .generate(GenerateGeoJsonType.C7);
 
         CommandLine commandLine = new CommandLine(generateGeoJsonCommand);
         assertEquals(1, commandLine.execute(CMD_ARG_TRUCKS_FORBIDDEN));
 
-        verify(generateGeoJsonService).generate(GenerateGeoJsonType.C6);
+        verify(generateGeoJsonService).generate(GenerateGeoJsonType.C7);
     }
 
 }
