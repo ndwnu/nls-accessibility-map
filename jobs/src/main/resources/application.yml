@@ -38,8 +38,21 @@ nu:
         jobs:
           generate:
             geojson:
-              TRUCKS_FORBIDDEN:
-                name: Trucks forbidden
+              C6:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                rvv: C6
+              C7:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                rvv: C7
+              C7B:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                rvv: C7b
+              C12:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                rvv: C12
+              C22C:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                rvv: C22c
         trafficsignclient:
           api:
             base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v3

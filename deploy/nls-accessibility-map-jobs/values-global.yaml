@@ -10,9 +10,33 @@ cronJobs:
     memory: 8Gi
     # runs every 10 minutes
     schedule: "*/10 * * * *"
-  generateGeoJsonTruckForbiddenExample:
-    name: nls-accessibility-map-generate-truck-forbidden-cron-job
-    command: generateGeoJson TRUCKS_FORBIDDEN
+  generateGeoJsonRvvC6:
+    name: nls-accessibility-map-generate-rvv-c6-cron-job
+    command: generateGeoJson C6
+    memory: 1Gi
+    # runs every hour
+    schedule: "* 0/1 * * *"
+  generateGeoJsonRvvC7:
+    name: nls-accessibility-map-generate-rvv-c7-cron-job
+    command: generateGeoJson C7
+    memory: 1Gi
+    # runs every hour
+    schedule: "* 0/1 * * *"
+  generateGeoJsonRvvC7B:
+    name: nls-accessibility-map-generate-rvv-c7b-cron-job
+    command: generateGeoJson C7B
+    memory: 1Gi
+    # runs every hour
+    schedule: "* 0/1 * * *"
+  generateGeoJsonRvvC12:
+    name: nls-accessibility-map-generate-rvv-c12-cron-job
+    command: generateGeoJson C12
+    memory: 1Gi
+    # runs every hour
+    schedule: "* 0/1 * * *"
+  generateGeoJsonRvvC22C:
+    name: nls-accessibility-map-generate-rvv-c22c-cron-job
+    command: generateGeoJson C22C
     memory: 1Gi
     # runs every hour
     schedule: "* 0/1 * * *"
