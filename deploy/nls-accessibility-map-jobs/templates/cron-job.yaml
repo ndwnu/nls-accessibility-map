@@ -1,27 +1,28 @@
+{{- range .Values.cronJobs }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: nls-accessibility-map-cron-job
+  name: {{ .name }}
   labels:
-    tags.datadoghq.com/service: nls-accessibility-map-cron-job
+    tags.datadoghq.com/service: {{ .name }}
     tags.datadoghq.com/env: {{ .Values.environment }}
     tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
 spec:
   # Runs all day, every 10 minutes.
-  schedule: "*/10 * * * *"
+  schedule: {{ .schedule }}
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
         metadata:
           annotations:
-            ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "nls-accessibility-map-cron-job"}]'
+            ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .name }}"}]'
             admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
           labels:
-            app: nls-accessibility-map-cron-job
+            app: {{ .name }}
             environment: {{ .Values.environment }}
             admission.datadoghq.com/enabled: "true"
-            tags.datadoghq.com/service: nls-accessibility-map-cron-job
+            tags.datadoghq.com/service: {{ .name }}
             tags.datadoghq.com/env: {{ .Values.environment }}
             tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
         spec:
@@ -29,9 +30,9 @@ spec:
             - name: {{ .Chart.Name }}
               resources:
                 limits:
-                  memory: 8Gi
+                  memory: {{ .memory }}
                 requests:
-                  memory: 8Gi
+                  memory: {{ .memory }}
               image: ndwnls.azurecr.io/nls-accessibility-map-jobs:{{ $.Chart.AppVersion }}
               imagePullPolicy: Always
               envFrom:
@@ -39,7 +40,7 @@ spec:
                     name: nls-accessibility-map-jobs-config
               env:
                 - name: COMMAND
-                  value: createOrUpdateNetwork
+                  value: {{ .command }}
                 {{- /*
                     Added as env variable so the dd init container appends the settings instead of an overwrite
                   */}}
@@ -54,6 +55,8 @@ spec:
                 - mountPath: /application/heapdumps
                   name: nls-accessibility-map-jobs-heapdump-volume
                   subPath: {{ $.Chart.Name }}
+                - mountPath: /application/maps
+                  name: maps-volume
           volumes:
             - name: nls-accessibility-map-jobs-secrets
               csi:
@@ -67,6 +70,11 @@ spec:
             - name: nls-accessibility-map-jobs-heapdump-volume
               persistentVolumeClaim:
                 claimName: heapdump-pvc-claim
+            - name: maps-volume
+              persistentVolumeClaim:
+                claimName: maps-azure-blob-claim
           restartPolicy: Never
       # Don't retry 6 times on failure, just wait for next iteration.
       backoffLimit: 0
+---
+{{- end }}

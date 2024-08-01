@@ -35,6 +35,11 @@ nu:
   ndw:
     nls:
       accessibilitymap:
+        jobs:
+          generate:
+            geojson:
+              TRUCKS_FORBIDDEN:
+                name: Trucks forbidden
         trafficsignclient:
           api:
             base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v3

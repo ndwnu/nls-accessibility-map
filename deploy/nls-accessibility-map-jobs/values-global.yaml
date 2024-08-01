@@ -2,3 +2,17 @@ datadog:
   agent:
     version: v1.32.0
 podRestarterVersion: "20240719.4"
+
+cronJobs:
+  updateAccessibilityMap:
+    name: nls-accessibility-map-cron-job
+    command: createOrUpdateNetwork
+    memory: 8Gi
+    # runs every 10 minutes
+    schedule: "*/10 * * * *"
+  generateGeoJsonTruckForbiddenExample:
+    name: nls-accessibility-map-generate-truck-forbidden-cron-job
+    command: generateGeoJson TRUCKS_FORBIDDEN
+    memory: 1Gi
+    # runs every hour
+    schedule: "* 0/1 * * *"

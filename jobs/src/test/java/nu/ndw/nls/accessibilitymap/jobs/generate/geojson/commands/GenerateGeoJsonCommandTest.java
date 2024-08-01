@@ -1,0 +1,46 @@
+package nu.ndw.nls.accessibilitymap.jobs.generate.geojson.commands;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+
+import nu.ndw.nls.accessibilitymap.jobs.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.generate.geojson.services.GenerateGeoJsonService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import picocli.CommandLine;
+
+@ExtendWith(MockitoExtension.class)
+class GenerateGeoJsonCommandTest {
+
+    private static final String CMD_ARG_TRUCKS_FORBIDDEN = "TRUCKS_FORBIDDEN";
+
+    @Mock
+    private GenerateGeoJsonService generateGeoJsonService;
+
+    @InjectMocks
+    private GenerateGeoJsonCommand generateGeoJsonCommand;
+
+    @Test
+    void call_ok_returnsErrorCode0() {
+        CommandLine commandLine = new CommandLine(generateGeoJsonCommand);
+        assertEquals(0, commandLine.execute(CMD_ARG_TRUCKS_FORBIDDEN));
+        verify(generateGeoJsonService).generate(GenerateGeoJsonType.TRUCKS_FORBIDDEN);
+    }
+
+    @Test
+    void call_fail_exceptionThrownReturnErrorCode1() {
+        generateGeoJsonCommand = new GenerateGeoJsonCommand(generateGeoJsonService);
+        doThrow(IllegalStateException.class).when(generateGeoJsonService)
+                .generate(GenerateGeoJsonType.TRUCKS_FORBIDDEN);
+
+        CommandLine commandLine = new CommandLine(generateGeoJsonCommand);
+        assertEquals(1, commandLine.execute(CMD_ARG_TRUCKS_FORBIDDEN));
+
+        verify(generateGeoJsonService).generate(GenerateGeoJsonType.TRUCKS_FORBIDDEN);
+    }
+
+}
