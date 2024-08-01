@@ -24,7 +24,7 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     public Integer call() {
         try {
             log.info("Generating GeoJson {} using accessibility network", type);
-            generateGeoJsonService.generate(GenerateGeoJsonType.TRUCKS_FORBIDDEN);
+            generateGeoJsonService.generate(GenerateGeoJsonType.C6);
             return 0;
         } catch (RuntimeException e) {
             log.error("An error occurred while generating GeoJson {} using accessibility network", type, e);

@@ -9,6 +9,9 @@ import org.springframework.validation.annotation.Validated;
 public class GeoJsonProperties {
 
     @NotBlank
-    private String name;
+    private String pathDatePattern;
+
+    @NotBlank
+    private String rvv;
 
 }

@@ -5,29 +5,28 @@ metadata:
   name: {{ .name }}
   labels:
     tags.datadoghq.com/service: {{ .name }}
-    tags.datadoghq.com/env: {{ .Values.environment }}
-    tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+    tags.datadoghq.com/env: {{ $.Values.environment }}
+    tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
 spec:
-  # Runs all day, every 10 minutes.
-  schedule: {{ .schedule }}
+  schedule: "{{ .schedule }}"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
         metadata:
           annotations:
-            ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .name }}"}]'
-            admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
+            ad.datadoghq.com/{{ $.Chart.Name }}.logs: '[{"source": "java", "service": "{{ .name }}"}]'
+            admission.datadoghq.com/java-lib.version: "{{ $.Values.datadog.agent.version }}"
           labels:
             app: {{ .name }}
-            environment: {{ .Values.environment }}
+            environment: {{ $.Values.environment   }}
             admission.datadoghq.com/enabled: "true"
             tags.datadoghq.com/service: {{ .name }}
-            tags.datadoghq.com/env: {{ .Values.environment }}
-            tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+            tags.datadoghq.com/env: {{ $.Values.environment   }}
+            tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
         spec:
           containers:
-            - name: {{ .Chart.Name }}
+            - name: {{ $.Chart.Name }}
               resources:
                 limits:
                   memory: {{ .memory }}
