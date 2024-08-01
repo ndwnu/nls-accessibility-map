@@ -35,8 +35,6 @@ public class AccessibilityMapService {
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(networkGraphHopper);
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
 
-        List<IsochroneMatch> allAccessibleRoads = accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(
-                accessibilityMap, municipality);
         List<IsochroneMatch> accessibleRoadsWithRestrictions = accessibleRoadsService
                 .getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties, municipality);
 
