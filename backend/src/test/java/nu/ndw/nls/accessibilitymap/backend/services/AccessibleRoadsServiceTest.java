@@ -54,21 +54,6 @@ class AccessibleRoadsServiceTest {
     private AccessibleRoadsService accessibleRoadsService;
 
     @Test
-    void getBaseAccessibleRoadsByMunicipality_ok() {
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .startPoint(MUNICIPALITY.getStartPoint())
-                .searchDistanceInMetres(MUNICIPALITY.getSearchDistanceInMetres())
-                .municipalityId(MUNICIPALITY.getMunicipalityIdInteger())
-                .build();
-        when(accessibilityMap.getAccessibleRoadSections(accessibilityRequest)).thenReturn(accessibleRoadSections);
-
-        List<IsochroneMatch> isochroneMatches = accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(
-                accessibilityMap, MUNICIPALITY);
-
-        assertThat(isochroneMatches).isEqualTo(accessibleRoadSections);
-    }
-
-    @Test
     void getVehicleAccessibleRoadsByMunicipality_ok() {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(MUNICIPALITY.getStartPoint())
