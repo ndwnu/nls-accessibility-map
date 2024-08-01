@@ -49,13 +49,17 @@ spec:
                 - mountPath: /application/config
                   name: nls-accessibility-map-jobs-secrets
                   readOnly: true
-                - mountPath: /application/graphhopper
-                  name: nls-accessibility-map-jobs-volume
                 - mountPath: /application/heapdumps
                   name: nls-accessibility-map-jobs-heapdump-volume
                   subPath: {{ $.Chart.Name }}
+                {{ if eq .type "graphhopper" }}
+                - mountPath: /application/graphhopper
+                  name: nls-accessibility-map-jobs-volume
+                {{ end }}
+                {{ if eq .type "geojson" }}
                 - mountPath: /application/maps
                   name: maps-volume
+                {{ end }}
           volumes:
             - name: nls-accessibility-map-jobs-secrets
               csi:
