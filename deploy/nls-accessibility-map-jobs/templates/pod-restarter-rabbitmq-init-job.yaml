@@ -4,7 +4,7 @@ metadata:
   name: nls-accessibility-map-api-pod-restarter-worker-queues-job
   labels:
     tags.datadoghq.com/service: nls-accessibility-map-api-pod-restarter-worker-queues-job
-    tags.datadoghq.com/env: {{ .Values.environment }}
+    tags.datadoghq.com/env: {{ $.Values.environment }}
     tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
 spec:
   ttlSecondsAfterFinished: 604800
@@ -16,10 +16,10 @@ spec:
         admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
       labels:
         app: nls-accessibility-map-api-pod-restarter-worker-queues-job
-        environment: {{ .Values.environment }}
+        environment: {{ $.Values.environment }}
         admission.datadoghq.com/enabled: "true"
         tags.datadoghq.com/service: nls-accessibility-map-api-pod-restarter-worker-queues-job
-        tags.datadoghq.com/env: {{ .Values.environment }}
+        tags.datadoghq.com/env: {{ $.Values.environment }}
         tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
     spec:
       containers:
