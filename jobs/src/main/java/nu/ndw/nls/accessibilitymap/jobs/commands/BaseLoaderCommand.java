@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.commands;
 
+import nu.ndw.nls.accessibilitymap.jobs.generate.geojson.commands.GenerateGeoJsonCommand;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 
@@ -9,7 +10,8 @@ import picocli.CommandLine.Command;
  */
 @Component
 @Command(name = "jobs", subcommands = {
-        CreateOrUpdateNetworkCommand.class
+        CreateOrUpdateNetworkCommand.class,
+        GenerateGeoJsonCommand.class
 })
 public class BaseLoaderCommand {
 
