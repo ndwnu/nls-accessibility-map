@@ -61,9 +61,6 @@ spec:
                 readOnly: true
                 volumeAttributes:
                   secretProviderClass: nls-accessibility-map-jobs-spc
-            - name: nls-accessibility-map-jobs-volume
-              persistentVolumeClaim:
-                claimName: nls-accessibility-map-api-pvc
             - name: nls-accessibility-map-jobs-heapdump-volume
               persistentVolumeClaim:
                 claimName: heapdump-pvc-claim
