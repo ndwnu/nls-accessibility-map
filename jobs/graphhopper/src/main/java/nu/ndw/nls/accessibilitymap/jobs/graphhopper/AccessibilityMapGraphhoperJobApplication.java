@@ -7,6 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AccessibilityMapGraphhoperJobApplication {
 
     public static void main(String[] args) {
-        System.exit(SpringApplication.exit(SpringApplication.run(AccessibilityMapGraphhoperJobApplication.class, args)));
+        System.exit(SpringApplication.exit(SpringApplication.run(AccessibilityMapGraphhoperJobApplication.class,args)));
     }
 }
