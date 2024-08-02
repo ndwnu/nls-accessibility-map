@@ -32,7 +32,7 @@ spec:
                   memory: {{ .memory }}
                 requests:
                   memory: {{ .memory }}
-              image: ndwnls.azurecr.io/nls-accessibility-map-graphhopper-job:{{ $.Chart.AppVersion }}
+              image: ndwnls.azurecr.io/nls-accessibility-map-generator-jobs:{{ $.Chart.AppVersion }}
               imagePullPolicy: Always
               envFrom:
                 - configMapRef:
