@@ -8,7 +8,6 @@ import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataServic
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperProperties;
 import nu.ndw.nls.geometry.GeometryConfiguration;
-import nu.ndw.nls.routingmapmatcher.RoutingMapMatcherConfiguration;
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -20,8 +19,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @RequiredArgsConstructor
-@Import({DatadogConfiguration.class, GeometryConfiguration.class, RoutingMapMatcherConfiguration.class,
-        SharedConfiguration.class})
+@Import({DatadogConfiguration.class, GeometryConfiguration.class, SharedConfiguration.class})
 @EnableConfigurationProperties(GraphHopperProperties.class)
 public class AccessibilityMapConfiguration {
 

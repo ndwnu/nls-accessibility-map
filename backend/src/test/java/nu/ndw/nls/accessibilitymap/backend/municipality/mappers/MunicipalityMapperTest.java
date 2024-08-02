@@ -5,9 +5,12 @@ import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.model.MunicipalityBoundingBox;
-import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.Municipality;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.MunicipalityProperty;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.mappers.MunicipalityCoordinateMapper;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.mappers.MunicipalityIdMapper;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.mappers.MunicipalityMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
