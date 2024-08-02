@@ -40,13 +40,13 @@ validate-helm-chart-api:
 	@sed -i "s/98789.98789/@docker.image.tag@/g" ./deploy/nls-accessibility-map-api/Chart.yaml
 
 validate-helm-chart-jobs:
-	@sed -i "s/@docker.image.tag@/98789.98789/g" ./deploy/nls-accessibility-map-graphhopper-job/Chart.yaml
+	@sed -i "s/@docker.image.tag@/98789.98789/g" ./deploy/nls-accessibility-map-jobs/Chart.yaml
 	helm install \
 		--dry-run \
-		-f ./deploy/nls-accessibility-map-graphhopper-job/values-global.yaml \
-		-f ./deploy/nls-accessibility-map-graphhopper-job/values-staging.yaml \
+		-f ./deploy/nls-accessibility-map-jobs/values-global.yaml \
+		-f ./deploy/nls-accessibility-map-jobs/values-staging.yaml \
 		--set secretProviderClass.userAssignedIdentityID='dry-run' \
 		--set secretProviderClass.tenantID='dry-run' \
-		nls-accessibility-map-graphhopper-job \
-		./deploy/nls-accessibility-map-graphhopper-job/
-	@sed -i "s/98789.98789/@docker.image.tag@/g" ./deploy/nls-accessibility-map-graphhopper-job/Chart.yaml
+		nls-accessibility-map-jobs \
+		./deploy/nls-accessibility-map-jobs/
+	@sed -i "s/98789.98789/@docker.image.tag@/g" ./deploy/nls-accessibility-map-jobs/Chart.yaml
