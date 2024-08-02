@@ -16,7 +16,8 @@
         <module>shared</module>
         <module>backend</module>
         <module>trafficsignclient</module>
-        <module>jobs</module>
+        <module>jobs/mapgenerator</module>
+        <module>jobs/graphhopper</module>
     </modules>
     <properties>
         <java.version>17</java.version>

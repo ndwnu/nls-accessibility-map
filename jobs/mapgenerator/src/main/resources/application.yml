@@ -1,0 +1,63 @@
+graphhopper:
+  dir: /application/graphhopper
+jooq:
+  schema-validation:
+    schema-severity:
+      nwb: ERROR
+    packages-to-scan:
+      - nu.ndw.nls.db.nwb.jooq.generated
+org:
+  jooq:
+    no-logo: true
+spring:
+  application:
+    name: nls-accessibility-map-generator-jobs
+  # Disables netty webserver startup
+  main:
+    web-application-type: none
+  config:
+    import: "optional:configtree:/application/config/configtree/"
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: SELECT 1;
+      idle-timeout: 60000
+      max-lifetime: 120000
+      minimum-idle: 1
+      auto-commit: false
+  jmx:
+    enabled: false
+  jooq:
+    sql-dialect: Postgres
+
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        jobs:
+          generate:
+            geojson:
+              C6:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                rvv-code: C6
+              C7:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
+                rvv-code: C7
+              C7B:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
+                rvv-code: C7b
+              C12:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
+                rvv-code: C12
+              C22C:
+                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
+                rvv-code: C22c
+
+      springboot:
+        messaging:
+          broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+
+management:
+  observations:
+    annotations:
+      enabled: true

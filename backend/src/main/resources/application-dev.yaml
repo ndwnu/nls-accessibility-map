@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
+    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
     username: nls-maps
     password: nls-maps
 

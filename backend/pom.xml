@@ -112,7 +112,7 @@
                  -->
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <artifactId>jobs</artifactId>
+            <artifactId>graphhopper-job</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
