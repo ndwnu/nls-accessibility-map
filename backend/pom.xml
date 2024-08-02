@@ -6,12 +6,12 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.83-SNAPSHOT</version>
+        <version>1.0.84-SNAPSHOT</version>
     </parent>
 
     <artifactId>backend</artifactId>
 
-    <version>1.0.83-SNAPSHOT</version>
+    <version>1.0.84-SNAPSHOT</version>
     <name>NLS Accessibility Map Backend</name>
 
     <description>Accessibility Map REST API</description>
@@ -102,7 +102,7 @@
                  -->
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <artifactId>jobs</artifactId>
+            <artifactId>graphhopper-job</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

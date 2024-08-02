@@ -31,7 +31,8 @@ extends:
     pushToGitHub: true
     dockerImages:
       - nls-accessibility-map-api
-      - nls-accessibility-map-jobs
+      - nls-accessibility-map-graphhopper-job
+      - nls-accessibility-map-generator-jobs
     helmCharts:
       - {
         "name": "nls-accessibility-map-api"
