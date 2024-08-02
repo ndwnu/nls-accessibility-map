@@ -1,6 +1,6 @@
-package nu.ndw.nls.accessibilitymap.backend;
+package nu.ndw.nls.accessibilitymap.shared.accessibility;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import lombok.SneakyThrows;
@@ -12,14 +12,10 @@ import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
-class AccessibilityMapConfigurationTest {
-
+class AccessibilityConfigurationTest {
     @Mock
     private GraphHopperConfiguration graphHopperConfiguration;
 
@@ -30,7 +26,7 @@ class AccessibilityMapConfigurationTest {
     private NetworkMetaDataService networkMetaDataService;
 
     @InjectMocks
-    private AccessibilityMapConfiguration accessibilityMapConfiguration;
+    private AccessibilityConfiguration accessibilityConfiguration;
 
     @Mock
     private RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings;
@@ -47,7 +43,7 @@ class AccessibilityMapConfigurationTest {
     void networkGraphHopper_ok() {
         when(graphHopperConfiguration.configureLoadingRoutingNetworkSettings()).thenReturn(routingNetworkSettings);
         when(graphHopperNetworkService.loadFromDisk(routingNetworkSettings)).thenReturn(networkGraphHopper);
-        assertEquals(networkGraphHopper, accessibilityMapConfiguration.networkGraphHopper());
+        assertEquals(networkGraphHopper, accessibilityConfiguration.networkGraphHopper());
     }
 
     @Test
@@ -55,8 +51,7 @@ class AccessibilityMapConfigurationTest {
     void accessibilityGraphhopperMetaData_ok() {
         when(networkMetaDataService.loadMetaData()).thenReturn(accessibilityGraphhopperMetaData);
         assertEquals(accessibilityGraphhopperMetaData,
-                accessibilityMapConfiguration.accessibilityGraphhopperMetaData());
+                accessibilityConfiguration.accessibilityGraphhopperMetaData());
     }
-
 
 }

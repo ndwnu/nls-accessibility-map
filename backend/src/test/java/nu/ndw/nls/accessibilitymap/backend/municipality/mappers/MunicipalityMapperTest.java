@@ -11,6 +11,7 @@ import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.Municipalit
 import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.mappers.MunicipalityCoordinateMapper;
 import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.mappers.MunicipalityIdMapper;
 import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.mappers.MunicipalityMapper;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.mappers.MunicipalityMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
