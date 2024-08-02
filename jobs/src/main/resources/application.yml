@@ -40,19 +40,19 @@ nu:
             geojson:
               C6:
                 path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
-                rvv: C6
+                rvv-code: C6
               C7:
                 path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
-                rvv: C7
+                rvv-code: C7
               C7B:
                 path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
-                rvv: C7b
+                rvv-code: C7b
               C12:
                 path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
-                rvv: C12
+                rvv-code: C12
               C22C:
                 path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
-                rvv: C22c
+                rvv-code: C22c
         trafficsignclient:
           api:
             base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v3
