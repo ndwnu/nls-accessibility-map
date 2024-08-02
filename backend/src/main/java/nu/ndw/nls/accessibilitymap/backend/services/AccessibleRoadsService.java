@@ -2,10 +2,11 @@ package nu.ndw.nls.accessibilitymap.backend.services;
 
 import io.micrometer.core.annotation.Timed;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.graphhopper.AccessibilityMap;
-import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
+
+import nu.ndw.nls.accessibilitymap.shared.accessibility.graphhopper.AccessibilityMap;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.Municipality;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.VehicleProperties;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import org.springframework.stereotype.Service;
 
