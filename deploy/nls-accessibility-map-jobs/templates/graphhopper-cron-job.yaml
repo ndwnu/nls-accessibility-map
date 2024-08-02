@@ -49,18 +49,18 @@ spec:
                 - mountPath: /application/config
                   name: nls-accessibility-map-graphhopper-cron-jobs-secrets
                   readOnly: true
-                - mountPath: /application/graphhopper
-                  name: nls-accessibility-map-graphhopper-cron-jobs-volume
                 - mountPath: /application/heapdumps
                   name: nls-accessibility-map-graphhopper-cron-jobs-heapdump-volume
                   subPath: {{ $.Chart.Name }}
+                - mountPath: /application/graphhopper
+                  name: nls-accessibility-map-graphhopper-cron-jobs-volume
           volumes:
             - name: nls-accessibility-map-graphhopper-cron-jobs-secrets
               csi:
                 driver: secrets-store.csi.k8s.io
                 readOnly: true
                 volumeAttributes:
-                  secretProviderClass: nls-accessibility-map-graphhopper-cron-jobs-spc
+                  secretProviderClass: nls-accessibility-map-jobs-spc
             - name: nls-accessibility-map-graphhopper-cron-jobs-volume
               persistentVolumeClaim:
                 claimName: nls-accessibility-map-api-pvc
