@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>jobs</artifactId>
         <version>1.0.84-SNAPSHOT</version>
     </parent>
     <artifactId>graphhopper-job</artifactId>
