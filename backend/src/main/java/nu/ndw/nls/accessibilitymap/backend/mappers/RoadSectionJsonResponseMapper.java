@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
-import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.RoadSection;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -10,8 +10,8 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatur
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
-import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.model.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.Municipality;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.MunicipalityBoundingBox;
 import org.springframework.stereotype.Component;
 
 @Component

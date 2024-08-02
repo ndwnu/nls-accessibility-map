@@ -10,7 +10,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeature
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
-import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.RoadSection;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

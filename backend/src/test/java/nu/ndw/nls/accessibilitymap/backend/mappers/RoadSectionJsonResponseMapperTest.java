@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.mappers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
-import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.shared.accessibility.model.RoadSection;
 import org.junit.jupiter.api.Test;
 
 class RoadSectionJsonResponseMapperTest {

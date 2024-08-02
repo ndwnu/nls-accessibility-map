@@ -16,6 +16,7 @@ import org.springframework.util.CollectionUtils;
 
 @Service
 public class PointMatchService {
+
     private final SinglePointMapMatcher singlePointMapMatcher;
 
     public PointMatchService(MapMatcherFactory<SinglePointMapMatcher> singlePointMapMatcherMapMatcherFactory,
