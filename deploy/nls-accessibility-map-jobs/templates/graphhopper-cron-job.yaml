@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nls-accessibility-map-graphhopper-cron-job
+  labels:
+    tags.datadoghq.com/service: nls-accessibility-map-graphhopper-cron-job
+    tags.datadoghq.com/env: {{ .Values.environment }}
+    tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+spec:
+  # Runs all day, every 10 minutes.
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "nls-accessibility-map-graphhopper-cron-job"}]'
+            admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
+          labels:
+            app: nls-accessibility-map-graphhopper-cron-job
+            environment: {{ .Values.environment }}
+            admission.datadoghq.com/enabled: "true"
+            tags.datadoghq.com/service: nls-accessibility-map-graphhopper-cron-job
+            tags.datadoghq.com/env: {{ .Values.environment }}
+            tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+        spec:
+          containers:
+            - name: {{ .Chart.Name }}
+              resources:
+                limits:
+                  memory: 8Gi
+                requests:
+                  memory: 8Gi
+              image: ndwnls.azurecr.io/nls-accessibility-map-graphhopper-job:{{ $.Chart.AppVersion }}
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: nls-accessibility-map-graphhopper-cron-jobs-config
+              env:
+                - name: COMMAND
+                  value: createOrUpdateNetwork
+                {{- /*
+                    Added as env variable so the dd init container appends the settings instead of an overwrite
+                  */}}
+                - name: JAVA_TOOL_OPTIONS
+                  value: -XX:MaxRAMPercentage=70 -Dorg.jooq.no-tips=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/
+              volumeMounts:
+                - mountPath: /application/config
+                  name: nls-accessibility-map-graphhopper-cron-jobs-secrets
+                  readOnly: true
+                - mountPath: /application/graphhopper
+                  name: nls-accessibility-map-graphhopper-cron-jobs-volume
+                - mountPath: /application/heapdumps
+                  name: nls-accessibility-map-graphhopper-cron-jobs-heapdump-volume
+                  subPath: {{ $.Chart.Name }}
+          volumes:
+            - name: nls-accessibility-map-graphhopper-cron-jobs-secrets
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: nls-accessibility-map-graphhopper-cron-jobs-spc
+            - name: nls-accessibility-map-graphhopper-cron-jobs-volume
+              persistentVolumeClaim:
+                claimName: nls-accessibility-map-api-pvc
+            - name: nls-accessibility-map-graphhopper-cron-jobs-heapdump-volume
+              persistentVolumeClaim:
+                claimName: heapdump-pvc-claim
+          restartPolicy: Never
+      # Don't retry 6 times on failure, just wait for next iteration.
+      backoffLimit: 0

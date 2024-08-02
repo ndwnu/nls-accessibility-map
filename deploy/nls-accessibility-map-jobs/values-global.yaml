@@ -4,44 +4,32 @@ datadog:
 podRestarterVersion: "20240719.4"
 
 cronJobs:
-  updateAccessibilityMap:
-    name: nls-accessibility-map-cron-job
-    type: graphhopper
-    command: createOrUpdateNetwork
-    memory: 8Gi
-    # runs every 10 minutes
-    schedule: "*/10 * * * *"
   generateGeoJsonRvvC6:
     name: nls-accessibility-map-generate-rvv-c6-cron-job
-    type: geojson
     command: generateGeoJson C6
     memory: 1Gi
     # runs every hour
     schedule: "* 0/1 * * *"
   generateGeoJsonRvvC7:
     name: nls-accessibility-map-generate-rvv-c7-cron-job
-    type: geojson
     command: generateGeoJson C7
     memory: 1Gi
     # runs every hour
     schedule: "* 0/1 * * *"
   generateGeoJsonRvvC7B:
     name: nls-accessibility-map-generate-rvv-c7b-cron-job
-    type: geojson
     command: generateGeoJson C7B
     memory: 1Gi
     # runs every hour
     schedule: "* 0/1 * * *"
   generateGeoJsonRvvC12:
     name: nls-accessibility-map-generate-rvv-c12-cron-job
-    type: geojson
     command: generateGeoJson C12
     memory: 1Gi
     # runs every hour
     schedule: "* 0/1 * * *"
   generateGeoJsonRvvC22C:
     name: nls-accessibility-map-generate-rvv-c22c-cron-job
-    type: geojson
     command: generateGeoJson C22C
     memory: 1Gi
     # runs every hour
