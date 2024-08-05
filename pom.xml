@@ -14,6 +14,7 @@
     <modules>
         <module>specification</module>
         <module>shared</module>
+        <module>accessibility</module>
         <module>backend</module>
         <module>trafficsignclient</module>
         <module>jobs</module>

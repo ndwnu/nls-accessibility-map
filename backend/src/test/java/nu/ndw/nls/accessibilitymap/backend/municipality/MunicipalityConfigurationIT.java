@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.shared.accessibility.municipality.MunicipalityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.municipality.MunicipalityConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

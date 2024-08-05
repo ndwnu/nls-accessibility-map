@@ -4,10 +4,10 @@ import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.CAR;
 
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.shared.accessibility.graphhopper.factory.AccessibilityMapFactory;
-import nu.ndw.nls.accessibilitymap.shared.accessibility.graphhopper.factory.IsochroneServiceFactory;
-import nu.ndw.nls.accessibilitymap.shared.accessibility.services.RestrictionMapperProvider;
-import nu.ndw.nls.accessibilitymap.shared.accessibility.services.VehicleRestrictionsModelFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.services.RestrictionMapperProvider;
+import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsModelFactory;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.geometry.bearing.BearingCalculator;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
