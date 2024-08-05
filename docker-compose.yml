@@ -35,11 +35,23 @@ services:
     volumes:
       - ./graphhopper:/application/graphhopper
 
-  nls-accessibility-map-jobs:
-    build: docker/nls-accessibility-map-jobs
+  nls-accessibility-map-graphhopper-job:
+    build: docker/nls-accessibility-map-graphhopper-job
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - COMMAND=createOrUpdateNetwork
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
+    volumes:
+      - ./graphhopper:/application/graphhopper
+    networks:
+      - nls-accessibility-map-network
+
+  nls-accessibility-map-generator-jobs:
+    build: docker/nls-accessibility-map-generator-jobs
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - COMMAND=generateGeoJson
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:

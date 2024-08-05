@@ -1,0 +1,74 @@
+{{- range .Values.cronJobs }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .name }}
+  labels:
+    tags.datadoghq.com/service: {{ .name }}
+    tags.datadoghq.com/env: {{ $.Values.environment }}
+    tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
+spec:
+  schedule: "{{ .schedule }}"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            ad.datadoghq.com/{{ $.Chart.Name }}.logs: '[{"source": "java", "service": "{{ .name }}"}]'
+            admission.datadoghq.com/java-lib.version: "{{ $.Values.datadog.agent.version }}"
+          labels:
+            app: {{ .name }}
+            environment: {{ $.Values.environment   }}
+            admission.datadoghq.com/enabled: "true"
+            tags.datadoghq.com/service: {{ .name }}
+            tags.datadoghq.com/env: {{ $.Values.environment   }}
+            tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
+        spec:
+          containers:
+            - name: {{ $.Chart.Name }}
+              resources:
+                limits:
+                  memory: {{ .memory }}
+                requests:
+                  memory: {{ .memory }}
+              image: ndwnls.azurecr.io/nls-accessibility-map-generator-jobs:{{ $.Chart.AppVersion }}
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: nls-accessibility-map-jobs-config
+              env:
+                - name: COMMAND
+                  value: {{ .command }}
+                {{- /*
+                    Added as env variable so the dd init container appends the settings instead of an overwrite
+                  */}}
+                - name: JAVA_TOOL_OPTIONS
+                  value: -XX:MaxRAMPercentage=70 -Dorg.jooq.no-tips=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/
+              volumeMounts:
+                - mountPath: /application/config
+                  name: nls-accessibility-map-jobs-secrets
+                  readOnly: true
+                - mountPath: /application/heapdumps
+                  name: nls-accessibility-map-jobs-heapdump-volume
+                  subPath: {{ $.Chart.Name }}
+                - mountPath: /application/maps
+                  name: maps-volume
+          volumes:
+            - name: nls-accessibility-map-jobs-secrets
+              csi:
+                driver: secrets-store.csi.k8s.io
+                readOnly: true
+                volumeAttributes:
+                  secretProviderClass: nls-accessibility-map-jobs-spc
+            - name: nls-accessibility-map-jobs-heapdump-volume
+              persistentVolumeClaim:
+                claimName: heapdump-pvc-claim
+            - name: maps-volume
+              persistentVolumeClaim:
+                claimName: maps-azure-blob-claim
+          restartPolicy: Never
+      # Don't retry 6 times on failure, just wait for next iteration.
+      backoffLimit: 0
+---
+{{- end }}
