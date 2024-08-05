@@ -10,7 +10,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson.TypeE
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.LineStringJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
-import nu.ndw.nls.accessibilitymap.shared.accessibility.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import nu.ndw.nls.geometry.rounding.dto.RoundDoubleConfiguration;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;

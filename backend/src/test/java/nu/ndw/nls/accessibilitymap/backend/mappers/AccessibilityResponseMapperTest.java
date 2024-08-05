@@ -10,7 +10,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
-import nu.ndw.nls.accessibilitymap.shared.accessibility.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
