@@ -36,7 +36,7 @@ spec:
               imagePullPolicy: Always
               envFrom:
                 - configMapRef:
-                    name: nls-accessibility-map-graphhopper-cron-jobs-config
+                    name: nls-accessibility-map-jobs-config
               env:
                 - name: COMMAND
                   value: createOrUpdateNetwork
