@@ -15,13 +15,13 @@ import com.graphhopper.util.EdgeIteratorState;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneUnit;
-import org.locationtech.jts.geom.Point;
 
 @RequiredArgsConstructor
 public class IsochroneService {
@@ -47,10 +47,9 @@ public class IsochroneService {
      * @see <a href="https://github.com/graphhopper/graphhopper/blob/master/docs/core/custom-models.md">Custom
      * models</a>
      */
-    public List<IsochroneMatch> getIsochroneMatchesByMunicipalityId(Weighting weighting, Point startPoint,
-            int municipalityId, double searchDistanceInMetres) {
-        double latitude = startPoint.getY();
-        double longitude = startPoint.getX();
+    public List<IsochroneMatch> getIsochroneMatchesByMunicipalityId(IsochroneArguments isochroneArguments) {
+        double latitude = isochroneArguments.startPoint().getY();
+        double longitude = isochroneArguments.startPoint().getX();
 
         Snap startSegment = locationIndexTree.findClosest(latitude, longitude, EdgeFilter.ALL_EDGES);
         /*
@@ -60,17 +59,27 @@ public class IsochroneService {
         */
         QueryGraph queryGraph = QueryGraph.create(baseGraph, startSegment);
         IsochroneByTimeDistanceAndWeight accessibilityPathTree = shortestPathTreeFactory
-                .createShortestPathTreeByTimeDistanceAndWeight(weighting, queryGraph, TraversalMode.EDGE_BASED,
-                        searchDistanceInMetres, IsochroneUnit.METERS, false);
+                .createShortestPathTreeByTimeDistanceAndWeight(isochroneArguments.weighting(), queryGraph,
+                        TraversalMode.EDGE_BASED,
+                        isochroneArguments.searchDistanceInMetres(), IsochroneUnit.METERS, false);
         List<IsoLabel> isoLabels = new ArrayList<>();
         accessibilityPathTree.search(startSegment.getClosestNode(), isoLabels::add);
-        IntEncodedValue idEnc = encodingManager.getIntEncodedValue(MUNICIPALITY_CODE);
+
         return isoLabels.stream()
                 .filter(isoLabel -> isoLabel.getEdge() != ROOT_PARENT)
-                .filter(isoLabel -> getMunicipalityCode(isoLabel, queryGraph, idEnc) == municipalityId)
+                .filter(isoLabel ->  filterMunicipality(queryGraph, isoLabel, isochroneArguments))
                 .map(isoLabel -> isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY,
                         queryGraph, startSegment.getClosestEdge()))
                 .toList();
+    }
+
+    private boolean filterMunicipality(QueryGraph queryGraph, IsoLabel isoLabel, IsochroneArguments isochroneArguments){
+        if (isochroneArguments.getMunicipalityId().isEmpty()) {
+            return true;
+        }
+
+        IntEncodedValue idEnc = encodingManager.getIntEncodedValue(MUNICIPALITY_CODE);
+        return getMunicipalityCode(isoLabel, queryGraph, idEnc)== isochroneArguments.municipalityId();
     }
 
     private int getMunicipalityCode(IsoLabel isoLabel, QueryGraph queryGraph, IntEncodedValue idEnc) {

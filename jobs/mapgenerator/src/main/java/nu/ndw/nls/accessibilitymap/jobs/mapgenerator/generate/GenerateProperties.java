@@ -1,6 +1,9 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import java.nio.file.Path;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +19,20 @@ import org.springframework.validation.annotation.Validated;
 public class GenerateProperties {
 
     @NotNull
+    private Path rootGenerationDestination;
+
+    @NotNull
     private Map<GenerateGeoJsonType, GeoJsonProperties> geojson;
+
+    @Min(50)
+    @Max(54)
+    public double startLocationLatitude;
+
+    @Min(3)
+    @Max(8)
+    public double startLocationLongitude;
+
+    @Min(1)
+    public double searchDistanceInMeters;
 
 }
