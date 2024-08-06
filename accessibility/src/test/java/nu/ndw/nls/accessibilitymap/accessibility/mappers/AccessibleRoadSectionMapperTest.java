@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.mappers;
 import static org.mockito.Mockito.when;
 
 
-import nu.ndw.nls.accessibilitymap.accessibility.model.CachedRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibleRoadSection;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class CachedRoadSectionMapperTest {
+class AccessibleRoadSectionMapperTest {
 
     private static final String ROAD_SECTION_DRIVING_DIRECTION_FORWARD = "H";
     private static final String ROAD_SECTION_DRIVING_DIRECTION_BACKWARD = "T";
@@ -24,7 +24,7 @@ class CachedRoadSectionMapperTest {
     private static final long ID = 1234L;
 
     @InjectMocks
-    private CachedRoadSectionMapper cachedRoadSectionMapper;
+    private AccessibleRoadSectionMapper accessibleRoadSectionMapper;
 
     @Mock
     private NwbRoadSectionDto nwbRoadSectionDto;
@@ -40,8 +40,8 @@ class CachedRoadSectionMapperTest {
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(ROAD_SECTION_DRIVING_DIRECTION_FORWARD);
         when(nwbRoadSectionDto.getGeometry()).thenReturn(geometry);
 
-        Assertions.assertEquals(new CachedRoadSection((int) ID, geometry, true, false),
-                cachedRoadSectionMapper.map(nwbRoadSectionDto));
+        Assertions.assertEquals(new AccessibleRoadSection((int) ID, geometry, true, false),
+                accessibleRoadSectionMapper.map(nwbRoadSectionDto));
     }
 
     @Test
@@ -51,8 +51,8 @@ class CachedRoadSectionMapperTest {
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(ROAD_SECTION_DRIVING_DIRECTION_BACKWARD);
         when(nwbRoadSectionDto.getGeometry()).thenReturn(geometry);
 
-        Assertions.assertEquals(new CachedRoadSection((int) ID, geometry, false, true),
-                cachedRoadSectionMapper.map(nwbRoadSectionDto));
+        Assertions.assertEquals(new AccessibleRoadSection((int) ID, geometry, false, true),
+                accessibleRoadSectionMapper.map(nwbRoadSectionDto));
     }
 
     @Test
@@ -62,8 +62,8 @@ class CachedRoadSectionMapperTest {
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(ROAD_SECTION_DRIVING_DIRECTION_BEIDE);
         when(nwbRoadSectionDto.getGeometry()).thenReturn(geometry);
 
-        Assertions.assertEquals(new CachedRoadSection((int) ID, geometry, true, true),
-                cachedRoadSectionMapper.map(nwbRoadSectionDto));
+        Assertions.assertEquals(new AccessibleRoadSection((int) ID, geometry, true, true),
+                accessibleRoadSectionMapper.map(nwbRoadSectionDto));
     }
 
     @Test
@@ -73,7 +73,7 @@ class CachedRoadSectionMapperTest {
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(ROAD_SECTION_DRIVING_DIRECTION_ONBEKEND);
         when(nwbRoadSectionDto.getGeometry()).thenReturn(geometry);
 
-        Assertions.assertEquals(new CachedRoadSection((int) ID, geometry, true, true),
-                cachedRoadSectionMapper.map(nwbRoadSectionDto));
+        Assertions.assertEquals(new AccessibleRoadSection((int) ID, geometry, true, true),
+                accessibleRoadSectionMapper.map(nwbRoadSectionDto));
     }
 }

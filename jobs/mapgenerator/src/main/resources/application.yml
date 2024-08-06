@@ -36,22 +36,27 @@ nu:
       accessibilitymap:
         jobs:
           generate:
+            root-generation-path: ./map-generation-destination
+            search-distance-in-meters: 1000000
+            start-location-latitude: 53.01546436904244
+            start-location-longitude: 5.197172571583729
             geojson:
               C6:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
                 rvv-code: C6
               C7:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
                 rvv-code: C7
               C7B:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
                 rvv-code: C7b
               C12:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
                 rvv-code: C12
               C22C:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
                 rvv-code: C22c
+
 
       springboot:
         messaging:

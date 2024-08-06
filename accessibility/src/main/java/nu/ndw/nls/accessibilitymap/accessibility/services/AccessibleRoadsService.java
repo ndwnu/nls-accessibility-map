@@ -1,18 +1,20 @@
 package nu.ndw.nls.accessibilitymap.accessibility.services;
 
 import io.micrometer.core.annotation.Timed;
+
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.accessibility.model.Municipality;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRequest;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
+import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccessibleRoadsService {
 
-    @Timed(description = "Time spent determining vehicle accessible road sections")
+    @Timed(description = "Time spent determining vehicle accessible road sections within municipality")
     public List<IsochroneMatch> getVehicleAccessibleRoadsByMunicipality(AccessibilityMap accessibilityMap,
             VehicleProperties vehicleProperties, Municipality municipality) {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
@@ -24,4 +26,17 @@ public class AccessibleRoadsService {
 
         return accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
     }
+
+    @Timed(description = "Time spent determining vehicle accessible road sections within entire map")
+    public List<IsochroneMatch> getVehicleAccessibleRoads(AccessibilityMap accessibilityMap,
+            VehicleProperties vehicleProperties, Point startPoint, double searchDistanceInMeters) {
+        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
+                .startPoint(startPoint)
+                .vehicleProperties(vehicleProperties)
+                .searchDistanceInMetres(searchDistanceInMeters)
+                .build();
+
+        return accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
+    }
+
 }

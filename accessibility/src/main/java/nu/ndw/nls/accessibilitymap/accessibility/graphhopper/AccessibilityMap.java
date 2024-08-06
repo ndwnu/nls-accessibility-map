@@ -7,6 +7,7 @@ import com.graphhopper.util.PMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsModelFactory;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
@@ -24,7 +25,11 @@ public class AccessibilityMap {
         Profile profile = NetworkConstants.profileWithCustomModel(model);
         Weighting weighting = network.createWeighting(profile, new PMap());
 
-        return isochroneService.getIsochroneMatchesByMunicipalityId(weighting, accessibilityRequest.startPoint(),
-                accessibilityRequest.municipalityId(), accessibilityRequest.searchDistanceInMetres());
+        return isochroneService.getIsochroneMatchesByMunicipalityId(IsochroneArguments.builder()
+                        .weighting(weighting)
+                        .startPoint(accessibilityRequest.startPoint())
+                        .municipalityId(accessibilityRequest.municipalityId())
+                        .searchDistanceInMetres(accessibilityRequest.searchDistanceInMetres())
+                        .build());
     }
 }

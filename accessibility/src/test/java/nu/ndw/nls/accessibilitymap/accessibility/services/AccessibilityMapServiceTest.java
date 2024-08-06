@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.SortedMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.model.CachedRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibleRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.Municipality;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
@@ -57,16 +57,16 @@ class AccessibilityMapServiceTest {
     @Mock
     private VehicleProperties vehicleProperties;
     @Mock
-    private CachedMunicipalityRoadSectionsService cachedMunicipalityRoadSectionsService;
+    private AccessibleRoadSectionsService accessibleRoadSectionsService;
     @InjectMocks
     private AccessibilityMapService accessibilityMapService;
 
 
-    private final CachedRoadSection NWB_ACCESSIBLE_BOTH = new CachedRoadSection(ID_1, LINE_STRING_1, true, true);
+    private final AccessibleRoadSection NWB_ACCESSIBLE_BOTH = new AccessibleRoadSection(ID_1, LINE_STRING_1, true, true);
 
-    private final CachedRoadSection NEW_ACCESSIBLE_FORWARD = new CachedRoadSection(ID_2, LINE_STRING_2, true, false);
+    private final AccessibleRoadSection NEW_ACCESSIBLE_FORWARD = new AccessibleRoadSection(ID_2, LINE_STRING_2, true, false);
 
-    private final CachedRoadSection NEW_ACCESSIBLE_REVERSED = new CachedRoadSection(ID_3, LINE_STRING_3, false, true);
+    private final AccessibleRoadSection NEW_ACCESSIBLE_REVERSED = new AccessibleRoadSection(ID_3, LINE_STRING_3, false, true);
 
     @Test
     void determineAccessibilityByRoadSection_ok_noAccessibleIsochroneSections() {
@@ -74,7 +74,7 @@ class AccessibilityMapServiceTest {
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
         when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(cachedMunicipalityRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
+        when(accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
                 .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
 
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
@@ -95,7 +95,7 @@ class AccessibilityMapServiceTest {
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
         when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(cachedMunicipalityRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
+        when(accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
                 .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
 
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
@@ -135,7 +135,7 @@ class AccessibilityMapServiceTest {
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
         when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(cachedMunicipalityRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
+        when(accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
                 .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
 
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
@@ -160,7 +160,7 @@ class AccessibilityMapServiceTest {
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
         when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(cachedMunicipalityRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
+        when(accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
                 .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
 
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,

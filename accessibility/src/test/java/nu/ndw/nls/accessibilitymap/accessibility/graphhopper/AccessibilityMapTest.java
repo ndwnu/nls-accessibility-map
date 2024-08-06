@@ -10,6 +10,7 @@ import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsModelFactory;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
@@ -63,8 +64,13 @@ class AccessibilityMapTest {
         when(accessibilityRequest.municipalityId()).thenReturn(MUNICIPALITY_ID);
         when(accessibilityRequest.searchDistanceInMetres()).thenReturn(SEARCH_DISTANCE);
 
-        when(isochroneService.getIsochroneMatchesByMunicipalityId(weighting, startPoint, MUNICIPALITY_ID,
-                SEARCH_DISTANCE)).thenReturn(matches);
+
+        when(isochroneService.getIsochroneMatchesByMunicipalityId(IsochroneArguments.builder()
+                        .startPoint(startPoint)
+                        .weighting(weighting)
+                        .searchDistanceInMetres(SEARCH_DISTANCE)
+                        .municipalityId(MUNICIPALITY_ID)
+                        .build())).thenReturn(matches);
 
         List<IsochroneMatch> result = accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
         assertEquals(matches, result);

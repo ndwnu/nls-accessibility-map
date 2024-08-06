@@ -21,6 +21,7 @@ import com.graphhopper.util.EdgeIteratorState;
 import java.lang.reflect.Constructor;
 import java.util.function.Consumer;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
@@ -101,8 +102,13 @@ class IsochroneServiceTest {
         }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
         when(isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY, queryGraph,
                 startSegment.getClosestEdge())).thenReturn(IsochroneMatch.builder().build());
-        wrapWithStaticMock(() -> isochroneService.getIsochroneMatchesByMunicipalityId(weighting, point, MUNICIPALITY_ID,
-                ISOCHRONE_VALUE_METERS));
+        wrapWithStaticMock(() -> isochroneService.getIsochroneMatchesByMunicipalityId(IsochroneArguments.builder()
+                        .weighting(weighting)
+                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
+                        .startPoint(point)
+                        .municipalityId(MUNICIPALITY_ID)
+                        .build())
+                );
         verify(shortestPathTreeFactory).createShortestPathTreeByTimeDistanceAndWeight(weighting, queryGraph,
                 TraversalMode.EDGE_BASED, ISOCHRONE_VALUE_METERS, IsochroneUnit.METERS, false);
     }
