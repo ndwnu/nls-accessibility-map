@@ -56,6 +56,7 @@ services:
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
       - ./graphhopper:/application/graphhopper
+      - ./map-generation-destination:/application/map-generation-destination
     networks:
       - nls-accessibility-map-network
 
@@ -93,6 +94,17 @@ services:
       - ./docker/traffic-sign-api-stub/responses:/home/wiremock/__files/responses
     ports:
       - "8888:8080"
+    networks:
+      - nls-accessibility-map-network
+
+  nls-messaging-configurator:
+    image: messagingconfigurator
+    volumes:
+      - ./docker/nls-messaging-configurator/config/application.yml:/application/config/application.yml
+    environment:
+      COMMAND: configureRabbitMQ
+      MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED: false
+      NU_NDW_NLS_SPRINGBOOT_MESSAGING_BROKER_URI: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
     networks:
       - nls-accessibility-map-network
 

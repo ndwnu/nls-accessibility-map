@@ -4,6 +4,10 @@ nu:
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+      accessibilitymap:
+        jobs:
+          generate:
+            root-generation-destination: ./map-generation-destination
 
 logging:
   level:
@@ -16,4 +20,3 @@ spring:
     url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps
     password: nls-maps
-
