@@ -1,13 +1,37 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.SortedMap;
+import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
+import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonGeneratedEventMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
+import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
+import nu.ndw.nls.events.NlsEvent;
+import nu.ndw.nls.events.NlsEventSubject;
+import nu.ndw.nls.events.NlsEventSubjectType;
+import nu.ndw.nls.events.NlsEventType;
+import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.locationtech.jts.geom.Point;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -15,22 +39,101 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class GenerateGeoJsonServiceTest {
 
+    private static final int GENERATION_VERSION_INT = 20240102;
+    private static final int NWB_VERSION_INT = 20240101;
+    private static final double SEARCH_DISTANCE = Double.MAX_VALUE;
+    private static final GenerateGeoJsonType GENERATE_GEO_JSON_TYPE = GenerateGeoJsonType.C6;
+    @Mock
+    private GenerateProperties generateProperties;
+
     @Mock
     private GenerateConfiguration generateConfiguration;
+
+    @Mock
+    private AccessibilityMapService accessibilityMapService;
+
+    @Mock
+    private AccessibilityGeoJsonMapper accessibilityGeoJsonMapper;
+
+    @Mock
+    private FileService uploadService;
+
+    @Mock
+    private AccessibilityConfiguration accessibilityConfiguration;
+
+    @Mock
+    private MessageService messageService;
+
+    @Mock
+    private AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
+
+    @Mock
+    private LocalDateVersionMapper localDateVersionMapper;
 
     @InjectMocks
     private GenerateGeoJsonService generateGeoJsonService;
 
     @Mock
-    private GeoJsonProperties geoJsonProperties;
+    private AccessibilityGraphhopperMetaData accessibilityGraphhopperMetaData;
+
+    @Mock
+    private Point startLocation;
+
+    @Mock
+    private SortedMap<Integer, RoadSection> idToRoadSectionSortedMap;
+
+    @Mock
+    private AccessibilityGeoJsonFeatureCollection geoJson;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private NlsEvent nlsEvent;
+
+    @Mock
+    private NlsEventSubject nlsEventSubject;
 
 
     @Test
-    void generate() {
-//        when(generateConfiguration.getConfiguration(GenerateGeoJsonType.C6)).thenReturn(geoJsonProperties);
-//
-//        generateGeoJsonService.generate(GenerateGeoJsonType.C6);
-//
-//        verify(generateConfiguration).getConfiguration(GenerateGeoJsonType.C6);
+    @SneakyThrows
+    void generate_ok() {
+
+        LocalDate versionDate = LocalDate.now();
+        when(localDateVersionMapper.map(versionDate)).thenReturn(GENERATION_VERSION_INT);
+        when(accessibilityConfiguration.accessibilityGraphhopperMetaData())
+                .thenReturn(accessibilityGraphhopperMetaData);
+        when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(NWB_VERSION_INT);
+
+        when(generateConfiguration.getStartLocation()).thenReturn(startLocation);
+        when(generateProperties.getSearchDistanceInMeters()).thenReturn(SEARCH_DISTANCE);
+
+        // @todo: fix any class
+        when(accessibilityMapService.determineAccessibilityByRoadSection(any(VehicleProperties.class),
+                eq(startLocation), eq(SEARCH_DISTANCE))).thenReturn(idToRoadSectionSortedMap);
+
+        when(accessibilityGeoJsonMapper.map(idToRoadSectionSortedMap, NWB_VERSION_INT))
+                .thenReturn(geoJson);
+
+        when(generateConfiguration.getObjectMapper()).thenReturn(objectMapper);
+
+        // @todo: fix instant check
+        when(accessibilityGeoJsonGeneratedEventMapper.map(eq(GENERATE_GEO_JSON_TYPE), eq(NWB_VERSION_INT),
+                eq(NWB_VERSION_INT), any(Instant.class))).thenReturn(nlsEvent);
+
+        when(nlsEvent.getType()).thenReturn(NlsEventType.MAP_GEOJSON_PUBLISHED_EVENT);
+        when(nlsEvent.getSubject()).thenReturn(nlsEventSubject);
+        when(nlsEventSubject.getType()).thenReturn(NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C6);
+
+
+        generateGeoJsonService.generate(GENERATE_GEO_JSON_TYPE);
+
+
+        // @todo: fix any class
+        verify(objectMapper).writeValue(any(File.class), eq(geoJson));
+
+        verify(messageService).publish(nlsEvent);
+
+
     }
 }

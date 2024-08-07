@@ -5,6 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.SortedMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +49,8 @@ public class GenerateGeoJsonService {
     private final LocalDateVersionMapper localDateVersionMapper;
 
     public void generate(GenerateGeoJsonType type) {
-        LocalDate versionDate = LocalDate.now();
-        int version = localDateVersionMapper.map(versionDate);
+        LocalDateTime versionLocalDateTime = LocalDateTime.now();
+        int version = localDateVersionMapper.map(versionLocalDateTime.toLocalDate());
         int nwbVersion = accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion();
 
         log.info("Generating geojson: {} version: {} based on NWB version: {}", type, version, nwbVersion);
@@ -75,14 +77,15 @@ public class GenerateGeoJsonService {
             throw new IllegalStateException("Failed to serialize geojson to file: " + tempFile, e);
         }
 
-        uploadService.uploadFile(type, tempFile, versionDate);
+        uploadService.uploadFile(type, tempFile, versionLocalDateTime.toLocalDate());
 
-        Instant trafficSignTimeStamp = Instant.now();
+        NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(type, nwbVersion, nwbVersion,
+                versionLocalDateTime.toInstant(ZoneOffset.UTC));
 
-        NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(type, nwbVersion, nwbVersion, trafficSignTimeStamp);
+        log.debug("Sending {} created event for type {}, version {}, NWB version {} and traffic sign timestamp {}",
+                nlsEvent.getType().getLabel(), nlsEvent.getSubject().getType(), version, nwbVersion,
+                versionLocalDateTime);
 
-        log.debug("Sending {} event for version {} NWB version {} and traffic sign timestamp {}",
-                nlsEvent.getType().getLabel(), version, nwbVersion, trafficSignTimeStamp);
         messageService.publish(nlsEvent);
     }
 
