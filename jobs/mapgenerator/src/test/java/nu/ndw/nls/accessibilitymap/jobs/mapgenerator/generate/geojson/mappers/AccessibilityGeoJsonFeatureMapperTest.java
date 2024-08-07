@@ -7,6 +7,7 @@ import java.util.List;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.LineStringGeojson;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +40,9 @@ class AccessibilityGeoJsonFeatureMapperTest {
 
         assertEquals(AccessibilityGeoJsonFeature.builder()
                 .id((long) ROAD_SECTION_ID)
-                .geometry(geojsonLineString)
+                .geometry(LineStringGeojson.builder()
+                        .coordinates(geojsonLineString)
+                        .build())
                 .properties(AccessibilityProperties.builder()
                         .id((long) ROAD_SECTION_ID)
                         .versionId(NWB_VERSION)
@@ -58,7 +61,9 @@ class AccessibilityGeoJsonFeatureMapperTest {
 
         assertEquals(AccessibilityGeoJsonFeature.builder()
                 .id((long) ROAD_SECTION_ID)
-                .geometry(geojsonLineString)
+                .geometry(LineStringGeojson.builder()
+                        .coordinates(geojsonLineString)
+                        .build())
                 .properties(AccessibilityProperties.builder()
                         .id((long) ROAD_SECTION_ID)
                         .versionId(NWB_VERSION)
