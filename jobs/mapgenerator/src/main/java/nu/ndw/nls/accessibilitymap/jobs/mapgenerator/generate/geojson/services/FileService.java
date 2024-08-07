@@ -24,9 +24,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FileService {
 
-    private static final FileAttribute<?> FILE_PERMISSIONS = PosixFilePermissions.asFileAttribute(
-            Set.of(OWNER_READ, OWNER_WRITE, OTHERS_READ));
-
     private static final FileAttribute<?> FOLDER_PERMISSIONS = PosixFilePermissions.asFileAttribute(
             Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE));
 

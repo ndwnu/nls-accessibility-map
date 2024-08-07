@@ -1,0 +1,67 @@
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class FileServiceTest {
+
+    private static final LocalDate VERSION_DATE = LocalDate.of(2024, 12, 31);
+    private static final String TESTCONTENT = "testcontent";
+    private static final String DIFFERENTCONTENT = "differentcontent";
+    @Mock
+    private BlobStorageLocationMapper blobStorageLocationMapper;
+
+    @InjectMocks
+    private FileService fileService;
+
+    @Test
+    @SneakyThrows
+    void uploadFile_ok_newFile() {
+        Path generatedFile = Files.createTempFile("generate", ".json");
+        Files.writeString(generatedFile, TESTCONTENT);
+
+        Path tempRootDirectory = Files.createTempDirectory("fileservice");
+        Path tempDirectory = tempRootDirectory.resolve("v1/windowTimes");
+        Path destinationFile = tempDirectory.resolve("result.json");
+
+        when(blobStorageLocationMapper.map(GenerateGeoJsonType.C6, VERSION_DATE)).thenReturn(destinationFile);
+        fileService.uploadFile(GenerateGeoJsonType.C6, generatedFile, VERSION_DATE);
+
+        assertTrue(Files.exists(destinationFile));
+        assertEquals(TESTCONTENT, Files.readString(destinationFile));
+    }
+
+    @Test
+    @SneakyThrows
+    void uploadFile_ok_existingFile() {
+        Path generatedFile = Files.createTempFile("generate", ".json");
+        Files.writeString(generatedFile, TESTCONTENT);
+
+        Path tempRootDirectory = Files.createTempDirectory("fileservice");
+        Path tempDirectory = tempRootDirectory.resolve("v1/windowTimes");
+        Path destinationFile = tempDirectory.resolve("result.json");
+
+        // Create a file at the destination with different content
+        Files.createDirectories(tempDirectory);
+        Files.writeString(destinationFile, DIFFERENTCONTENT);
+
+        when(blobStorageLocationMapper.map(GenerateGeoJsonType.C6, VERSION_DATE)).thenReturn(destinationFile);
+        fileService.uploadFile(GenerateGeoJsonType.C6, generatedFile, VERSION_DATE);
+
+        assertTrue(Files.exists(destinationFile));
+        assertEquals(TESTCONTENT, Files.readString(destinationFile));
+    }
+}

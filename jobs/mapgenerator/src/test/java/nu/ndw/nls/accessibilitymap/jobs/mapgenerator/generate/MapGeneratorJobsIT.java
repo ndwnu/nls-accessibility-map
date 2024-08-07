@@ -17,6 +17,8 @@ import io.micrometer.observation.ObservationRegistry;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +53,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ActiveProfiles(profiles = {"integration-test"})
 class MapGeneratorJobsIT {
 
+    private static final String DESTINATION_PATH = "../../map-generation-destination";
 
     @Configuration
     @Import(MessagingConfig.class)
@@ -75,6 +78,22 @@ class MapGeneratorJobsIT {
         assertEquals("20240101", result.getSubject().getVersion());
         assertEquals("20240101", result.getSubject().getNwbVersion());
     }
+
+    @Test
+    @SneakyThrows
+    void geojson_ok_c6Published() {
+        Path geojsonFilePath = formatWindowTimesPath("c6WindowTimeSegments.geojson");
+        assertTrue(Files.exists(geojsonFilePath), "GeoJson file must exist");
+        assertTrue(Files.size(geojsonFilePath) > 0, "GeoJson file must not be 0 bytes");
+    }
+
+    private Path formatWindowTimesPath(String geojsonFileName) {
+        return Path.of(DESTINATION_PATH + "/api/v1/windowTimes/" + LocalDate.now()
+                .format(DateTimeFormatter.BASIC_ISO_DATE) +
+                "/geojson/").resolve(geojsonFileName);
+
+    }
+
 
 }
 
