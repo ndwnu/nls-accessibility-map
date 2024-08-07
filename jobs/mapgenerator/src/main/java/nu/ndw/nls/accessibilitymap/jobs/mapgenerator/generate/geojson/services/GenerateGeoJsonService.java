@@ -3,6 +3,8 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.SortedMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +14,13 @@ import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
-import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
+import nu.ndw.nls.events.NlsEvent;
+import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -36,18 +40,24 @@ public class GenerateGeoJsonService {
 
     private final AccessibilityConfiguration accessibilityConfiguration;
 
+    private final MessageService messageService;
+
+    private final AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
+
+    private final LocalDateVersionMapper localDateVersionMapper;
+
     public void generate(GenerateGeoJsonType type) {
-        log.info("Generating geojson {} (still needs to be implemented)", type);
+        LocalDate versionDate = LocalDate.now();
+        int version = localDateVersionMapper.map(versionDate);
+        int nwbVersion = accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion();
 
-        GeoJsonProperties configuration = generateConfiguration.getConfiguration(type);
+        log.info("Generating geojson: {} version: {} based on NWB version: {}", type, version, nwbVersion);
 
-        VehicleProperties vehicleProperties = VehicleProperties.builder().carAccessForbidden(true).build();
+        VehicleProperties vehicleProperties = VehicleProperties.builder().hgvAccessForbidden(true).build();
 
         SortedMap<Integer, RoadSection> idToRoadSectionSortedMap =
                 accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
                         generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters());
-
-        int nwbVersion = accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion();
 
         AccessibilityGeoJsonFeatureCollection geoJson = accessibilityGeoJsonMapper.map(idToRoadSectionSortedMap,
                 nwbVersion);
@@ -65,7 +75,15 @@ public class GenerateGeoJsonService {
             throw new IllegalStateException("Failed to serialize geojson to file: " + tempFile, e);
         }
 
-        uploadService.uploadFile(type, tempFile);
+        uploadService.uploadFile(type, tempFile, versionDate);
+
+        Instant trafficSignTimeStamp = Instant.now();
+
+        NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(type, nwbVersion, nwbVersion, trafficSignTimeStamp);
+
+        log.debug("Sending {} event for version {} NWB version {} and traffic sign timestamp {}",
+                nlsEvent.getType().getLabel(), version, nwbVersion, trafficSignTimeStamp);
+        messageService.publish(nlsEvent);
     }
 
 }

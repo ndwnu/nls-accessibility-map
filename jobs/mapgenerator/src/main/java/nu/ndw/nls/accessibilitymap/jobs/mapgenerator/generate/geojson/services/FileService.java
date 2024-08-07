@@ -32,8 +32,8 @@ public class FileService {
 
     private final BlobStorageLocationMapper blobStorageLocationMapper;
 
-    public void uploadFile(GenerateGeoJsonType type, Path geojsonTmpResult) {
-        Path mapDestinationPath = blobStorageLocationMapper.map(type, LocalDate.now());
+    public void uploadFile(GenerateGeoJsonType type, Path geojsonTmpResult, LocalDate versionDate) {
+        Path mapDestinationPath = blobStorageLocationMapper.map(type, versionDate);
 
         Path mapDirectoryPath = mapDestinationPath.getParent();
 
