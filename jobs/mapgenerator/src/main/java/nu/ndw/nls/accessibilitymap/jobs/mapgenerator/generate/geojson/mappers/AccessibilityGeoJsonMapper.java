@@ -27,7 +27,6 @@ public class AccessibilityGeoJsonMapper {
                 .flatMap(Collection::stream)
                 .map(directionalRoadSection ->
                         accessibilityGeoJsonFeatureMapper.map(directionalRoadSection, nwbVersion))
-                .limit(2)
                 .toList();
 
         return accessibilityGeoJsonFeatureCollectionMapper.map(features);

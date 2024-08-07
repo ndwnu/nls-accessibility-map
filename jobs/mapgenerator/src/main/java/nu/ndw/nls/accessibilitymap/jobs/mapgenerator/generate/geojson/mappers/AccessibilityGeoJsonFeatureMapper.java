@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.LineStringGeojson;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,9 @@ public class AccessibilityGeoJsonFeatureMapper {
         return AccessibilityGeoJsonFeature
                 .builder()
                 .id(directionalRoadSection.getRoadSectionId())
-                .geometry(geoJsonLineStringCoordinateMapper.map(directionalRoadSection.getGeometry()))
+                .geometry(LineStringGeojson.builder()
+                        .coordinates(geoJsonLineStringCoordinateMapper.map(directionalRoadSection.getGeometry()))
+                        .build())
                 .properties(AccessibilityProperties.builder()
                         .id(directionalRoadSection.getRoadSectionId())
                         .versionId(version)
