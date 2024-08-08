@@ -134,8 +134,7 @@ class GenerateGeoJsonServiceTest {
 
         when(generateConfiguration.getObjectMapper()).thenReturn(objectMapper);
 
-        // @todo: fix instant check
-        when(accessibilityGeoJsonGeneratedEventMapper.map(eq(GENERATE_GEO_JSON_TYPE), eq(NWB_VERSION_INT),
+        when(accessibilityGeoJsonGeneratedEventMapper.map(eq(GENERATE_GEO_JSON_TYPE), eq(GENERATION_VERSION_INT),
                 eq(NWB_VERSION_INT), any(Instant.class))).thenReturn(nlsEvent);
 
         when(nlsEvent.getType()).thenReturn(NlsEventType.MAP_GEOJSON_PUBLISHED_EVENT);

@@ -77,7 +77,7 @@ public class GenerateGeoJsonService {
 
         uploadService.uploadFile(type, tempFile, versionLocalDateTime.toLocalDate());
 
-        NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(type, nwbVersion, nwbVersion,
+        NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(type, version, nwbVersion,
                 versionLocalDateTime.toInstant(ZoneOffset.UTC));
 
         log.debug("Sending {} created event for type {}, version {}, NWB version {} and traffic sign timestamp {}",
@@ -88,50 +88,51 @@ public class GenerateGeoJsonService {
     }
 
     private void logDebugStatistics(SortedMap<Integer, RoadSection> idToRoadSectionSortedMap ) {
-        if (log.isDebugEnabled()) {
-
-            long forwardBaseInaccessible = idToRoadSectionSortedMap.values()
-                    .stream()
-                    .map(RoadSection::getForwardAccessible)
-                    .filter(Objects::nonNull)
-                    .count();
-
-            long forwardInaccessible = idToRoadSectionSortedMap.values()
-                    .stream()
-                    .map(RoadSection::getForwardAccessible)
-                    .filter(aBoolean -> !aBoolean)
-                    .count();
-
-            long forwardAccessible = idToRoadSectionSortedMap.values()
-                    .stream()
-                    .map(RoadSection::getForwardAccessible)
-                    .filter(aBoolean -> aBoolean)
-                    .count();
-
-            long backwardBaseInaccessible = idToRoadSectionSortedMap.values()
-                    .stream()
-                    .map(RoadSection::getBackwardAccessible)
-                    .filter(Objects::nonNull)
-                    .count();
-
-            long backwardInaccessible = idToRoadSectionSortedMap.values()
-                    .stream()
-                    .map(RoadSection::getForwardAccessible)
-                    .filter(aBoolean -> !aBoolean)
-                    .count();
-
-            long backwardAccessible = idToRoadSectionSortedMap.values()
-                    .stream()
-                    .map(RoadSection::getForwardAccessible)
-                    .filter(aBoolean -> aBoolean)
-                    .count();
-
-            log.debug("Road sections evaluated: {}, forward( base inaccessible: {}, inaccessible: {}, accessible: {}),"
-                            + "backwards( base inaccessible: {}, inaccessible: {}, accessible: {}) ",
-                    idToRoadSectionSortedMap.size(), forwardBaseInaccessible, forwardInaccessible, forwardAccessible,
-                    backwardBaseInaccessible, backwardInaccessible, backwardAccessible
-                    );
+        if (!log.isDebugEnabled()) {
+            return;
         }
+
+        long forwardBaseInaccessible = idToRoadSectionSortedMap.values()
+                .stream()
+                .map(RoadSection::getForwardAccessible)
+                .filter(Objects::nonNull)
+                .count();
+
+        long forwardInaccessible = idToRoadSectionSortedMap.values()
+                .stream()
+                .map(RoadSection::getForwardAccessible)
+                .filter(aBoolean -> !aBoolean)
+                .count();
+
+        long forwardAccessible = idToRoadSectionSortedMap.values()
+                .stream()
+                .map(RoadSection::getForwardAccessible)
+                .filter(aBoolean -> aBoolean)
+                .count();
+
+        long backwardBaseInaccessible = idToRoadSectionSortedMap.values()
+                .stream()
+                .map(RoadSection::getBackwardAccessible)
+                .filter(Objects::nonNull)
+                .count();
+
+        long backwardInaccessible = idToRoadSectionSortedMap.values()
+                .stream()
+                .map(RoadSection::getForwardAccessible)
+                .filter(aBoolean -> !aBoolean)
+                .count();
+
+        long backwardAccessible = idToRoadSectionSortedMap.values()
+                .stream()
+                .map(RoadSection::getForwardAccessible)
+                .filter(aBoolean -> aBoolean)
+                .count();
+
+        log.debug("Road sections evaluated: {}, forward( base inaccessible: {}, inaccessible: {}, accessible: {}),"
+                        + "backwards( base inaccessible: {}, inaccessible: {}, accessible: {}) ",
+                idToRoadSectionSortedMap.size(), forwardBaseInaccessible, forwardInaccessible, forwardAccessible,
+                backwardBaseInaccessible, backwardInaccessible, backwardAccessible
+                );
     }
 
 }
