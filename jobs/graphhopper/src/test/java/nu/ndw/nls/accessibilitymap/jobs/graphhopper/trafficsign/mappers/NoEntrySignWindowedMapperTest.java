@@ -1,39 +1,21 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.UUID;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.LocationJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignDetailsJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.ZoneCode;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.List;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class NoEntrySignWindowedMapperTest {
 
-    @Mock
-    LocationJsonDtoV3 location;
-    @Mock
-    TrafficSignDetailsJsonDtoV3 details;
-    @Mock
-    TextSignJsonDtoV3 textSign;
-
+    @InjectMocks
     NoEntrySignWindowedMapper noEntrySignWindowedMapper;
-
-    @BeforeEach
-    void setUp() {
-        noEntrySignWindowedMapper = new NoEntrySignWindowedMapper();
-    }
 
     @Test
     void map_ok() {
@@ -47,35 +29,21 @@ class NoEntrySignWindowedMapperTest {
     }
 
     private void testMapping(String inputRvvCode, String expectedRvvCode, String signType) {
-        UUID uuid = UUID.randomUUID();
-        LocalDate localDateNow = LocalDate.now();
-        Instant instantNow = Instant.now();
+        TextSignDto textSignDto = TextSignDto.builder()
+                .type(signType)
+                .build();
 
-        when(textSign.getType()).thenReturn(signType);
-
-        TrafficSignJsonDtoV3 originalSign = TrafficSignJsonDtoV3.builder()
-                .id(1)
-                .ndwId(uuid)
-                .type("type")
-                .schemaVersion("schemaVersion")
-                .validated("true")
-                .validatedOn(localDateNow)
-                .userId(1)
-                .organisationId(1)
-                .zoneCode(ZoneCode.BEGIN)
-                .blackCode("blackCode")
-                .textSigns(Collections.singletonList(textSign))
-                .location(location)
-                .details(details)
+        TrafficSignPropertiesDto trafficSignPropertiesDto = TrafficSignPropertiesDto.builder()
                 .rvvCode(inputRvvCode)
-                .publicationTimestamp(instantNow)
+                .textSigns(List.of(textSignDto))
                 .build();
 
-        TrafficSignJsonDtoV3 expectedSign = originalSign.toBuilder()
-                .rvvCode(expectedRvvCode)
+        TrafficSignGeoJsonDto trafficSignGeoJsonDto = TrafficSignGeoJsonDto.builder()
+                .properties(trafficSignPropertiesDto)
                 .build();
 
-        TrafficSignJsonDtoV3 actual = noEntrySignWindowedMapper.map(originalSign);
-        assertEquals(expectedSign, actual);
+        TrafficSignGeoJsonDto actual = noEntrySignWindowedMapper.map(trafficSignGeoJsonDto);
+
+        assertEquals(actual.getProperties().getRvvCode(), expectedRvvCode);
     }
 }

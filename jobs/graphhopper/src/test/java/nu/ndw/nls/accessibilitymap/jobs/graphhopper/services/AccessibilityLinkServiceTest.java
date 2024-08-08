@@ -17,10 +17,9 @@ import nu.ndw.nls.accessibilitymap.shared.nwb.services.NwbRoadSectionService;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.AccessibilityLinkService.AccessibilityLinkData;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignMapperRegistry;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.LocationJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.data.api.nwb.dtos.NwbVersionDto;
@@ -82,11 +81,12 @@ class AccessibilityLinkServiceTest {
                 .build();
         List<NwbRoadSectionDto> roadSections = List.of(roadSection1, roadSection2, roadSection3);
 
-        TrafficSignJsonDtoV3 trafficSign1 = createTrafficSign(ROAD_SECTION_ID_1);
-        TrafficSignJsonDtoV3 trafficSign2 = createTrafficSign(ROAD_SECTION_ID_1);
-        TrafficSignJsonDtoV3 trafficSign3 = createTrafficSign(ROAD_SECTION_ID_3);
-        TrafficSignJsonDtoV3 trafficSign4 = createTrafficSign(ROAD_SECTION_ID_4);
-        Map<Long, List<TrafficSignJsonDtoV3>> trafficSignsByRoadSectionId = Map.of(
+        TrafficSignGeoJsonDto trafficSign1 = createTrafficSign(ROAD_SECTION_ID_1);
+        TrafficSignGeoJsonDto trafficSign2 = createTrafficSign(ROAD_SECTION_ID_1);
+        TrafficSignGeoJsonDto trafficSign3 = createTrafficSign(ROAD_SECTION_ID_3);
+        TrafficSignGeoJsonDto trafficSign4 = createTrafficSign(ROAD_SECTION_ID_4);
+
+        Map<Long, List<TrafficSignGeoJsonDto>> trafficSignsByRoadSectionId = Map.of(
                 ROAD_SECTION_ID_1, List.of(trafficSign1, trafficSign2),
                 ROAD_SECTION_ID_3, List.of(trafficSign3),
                 ROAD_SECTION_ID_4, List.of(trafficSign4));
@@ -101,7 +101,8 @@ class AccessibilityLinkServiceTest {
                 Optional.of(NwbVersionDto.builder().versionId(NWB_VERSION_ID).build()));
         when(nwbRoadSectionService.findLazyCar(NWB_VERSION_ID)).thenReturn(roadSectionStream);
 
-        when(nwbRoadSectionToLinkMapper.map(roadSection1, List.of(trafficSign1, trafficSign2))).thenReturn(roadSection1link);
+        when(nwbRoadSectionToLinkMapper.map(roadSection1, List.of(trafficSign1, trafficSign2))).thenReturn(
+                roadSection1link);
         when(nwbRoadSectionToLinkMapper.map(roadSection2, Collections.emptyList())).thenReturn(roadSection2link);
         when(nwbRoadSectionToLinkMapper.map(roadSection3, List.of(trafficSign3))).thenReturn(roadSection3link);
 
@@ -115,13 +116,12 @@ class AccessibilityLinkServiceTest {
         verify(roadSectionStream).close();
     }
 
-    private TrafficSignJsonDtoV3 createTrafficSign(long roadSectionId2) {
-        return TrafficSignJsonDtoV3.builder()
-                .location(LocationJsonDtoV3.builder()
-                        .road(RoadJsonDtoV3.builder()
-                                .roadSectionId(String.valueOf(roadSectionId2))
-                                .build())
-                        .build())
+    private TrafficSignGeoJsonDto createTrafficSign(long roadSectionId2) {
+        TrafficSignPropertiesDto trafficSignPropertiesDto = TrafficSignPropertiesDto.builder()
+                .roadSectionId((int) roadSectionId2)
+                .build();
+        return TrafficSignGeoJsonDto.builder()
+                .properties(trafficSignPropertiesDto)
                 .build();
     }
 }

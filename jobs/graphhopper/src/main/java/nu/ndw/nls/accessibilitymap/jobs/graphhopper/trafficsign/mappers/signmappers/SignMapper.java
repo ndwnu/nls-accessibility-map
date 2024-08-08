@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 
 @Slf4j
@@ -25,8 +25,8 @@ public abstract class SignMapper<T> {
     private final T defaultValue;
     private final BinaryOperator<T> accumulator;
 
-    public void addToDto(TrafficSignAccessibilityDto dto, Map<String, List<TrafficSignJsonDtoV3>> noEntrySignMap) {
-        List<TrafficSignJsonDtoV3> signs = noEntrySignMap.getOrDefault(rvvCode, List.of());
+    public void addToDto(TrafficSignAccessibilityDto dto, Map<String, List<TrafficSignGeoJsonDto>> noEntrySignMap) {
+        List<TrafficSignGeoJsonDto> signs = noEntrySignMap.getOrDefault(rvvCode, List.of());
         DirectionalDto<T> directionalDto = DirectionalDto.<T>builder()
                 .forward(getValueInDirection(signs, this::isForward))
                 .reverse(getValueInDirection(signs, this::isBackward))
@@ -34,8 +34,8 @@ public abstract class SignMapper<T> {
         setter.set(dto, directionalDto);
     }
 
-    private T getValueInDirection(List<TrafficSignJsonDtoV3> trafficSigns,
-            Predicate<TrafficSignJsonDtoV3> directionPredicate) {
+    private T getValueInDirection(List<TrafficSignGeoJsonDto> trafficSigns,
+            Predicate<TrafficSignGeoJsonDto> directionPredicate) {
         return trafficSigns.stream()
                 .filter(directionPredicate)
                 .map(this::getValue)
@@ -43,16 +43,16 @@ public abstract class SignMapper<T> {
                 .reduce(defaultValue, accumulator);
     }
 
-    abstract Optional<T> getValue(TrafficSignJsonDtoV3 trafficSign);
+    abstract Optional<T> getValue(TrafficSignGeoJsonDto trafficSign);
 
-    private boolean isBackward(TrafficSignJsonDtoV3 trafficSign) {
+    private boolean isBackward(TrafficSignGeoJsonDto trafficSign) {
         // Driving direction null (unknown) is mapped to both directions.
-        return !DRIVING_DIRECTION_FORWARD.equals(trafficSign.getLocation().getDrivingDirection());
+        return !DRIVING_DIRECTION_FORWARD.equals(trafficSign.getProperties().getDrivingDirection());
     }
 
-    private boolean isForward(TrafficSignJsonDtoV3 trafficSign) {
+    private boolean isForward(TrafficSignGeoJsonDto trafficSign) {
         // Driving direction null (unknown) is mapped to both directions.
-        return !DRIVING_DIRECTION_BACKWARD.equals(trafficSign.getLocation().getDrivingDirection());
+        return !DRIVING_DIRECTION_BACKWARD.equals(trafficSign.getProperties().getDrivingDirection());
     }
 
     public interface DtoSetter<T> {
