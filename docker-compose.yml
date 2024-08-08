@@ -97,10 +97,21 @@ services:
     networks:
       - nls-accessibility-map-network
 
-  nls-messaging-configurator:
+  nls-messaging-configurator-graphhopper:
     image: messagingconfigurator
     volumes:
-      - ./docker/nls-messaging-configurator/config/application.yml:/application/config/application.yml
+      - ./docker/nls-messaging-configurator/graphhopper/application.yml:/application/config/application.yml
+    environment:
+      COMMAND: configureRabbitMQ
+      MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED: false
+      NU_NDW_NLS_SPRINGBOOT_MESSAGING_BROKER_URI: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+    networks:
+      - nls-accessibility-map-network
+
+  nls-messaging-configurator-mapgenerator:
+    image: messagingconfigurator
+    volumes:
+      - ./docker/nls-messaging-configurator/mapgenerator/application.yml:/application/config/application.yml
     environment:
       COMMAND: configureRabbitMQ
       MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED: false
