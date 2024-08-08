@@ -4,13 +4,12 @@ nu:
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
-#          Not part of the application, but we use this to setup some queues on which we will receive the produced
-#          messsages
           receive:
-              - queue: nls_map_loader_fcd_retrieved
-                routingKey: ndw.nls.fcd.retrieved
-                expectedEventTypes:
-                  - FCD_RETRIEVED_EVENT
+            - queue: integration_test_accessibility_routing_network_updated
+              expectedEventTypes:
+                - ACCESSIBILITY_ROUTING_NETWORK_UPDATED
+              eventSubjectType: ACCESSIBILITY_ROUTING_NETWORK
+              initialize: DECLARE
 
 graphhopper:
   dir: ../../graphhopper
