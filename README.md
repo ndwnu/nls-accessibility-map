@@ -39,41 +39,39 @@ All modules currently have the same version.
 # Updating integration test data
 
 ## NDW Amersfoort sample data export
-Create Amersfoort cut out in temp table:
+Set up a connection to the staging database and create an Amersfoort cut out in a temp table:
+Make sure to update the ```version_id``` in the sql below when applicable. 
 ```sql
 create table nwb.road_section_for_dump as 
     select * from nwb.road_section
-             where version_id = 20231001 
+             where version_id = 20240701 
                and geometry && st_makeenvelope(147769.55323, 455801.28125,163636.57098, 472114.299, 28992);
 ```
+A table on staging should exist, and now we want to create a dump from it. The command below utilizes your local 
+pg_dump executable (which might be located elsewhere on your computer). Since we already have the database schema, 
+we only need the data. Use the following command to create the dump:
 
-Export with pg_dump:
 ```shell
 /usr/bin/pg_dump --dbname=nls-maps --schema=nwb --table=nwb.\"road_section_for_dump\" 
   --format=p --file=/tmp/road_sections_dump_ndw_20240101 --data-only 
   --username=nls_administrator --host=nls-postgres-staging.postgres.database.azure.com --port=5432
 ```
+Since this is a data-only dump, we need to make sure to not completely override
+`docker/nls-postgres/sql/10_nwb_schema.sql` and replace only the data part which starts with
+`COPY nwb.road_section (version_id, road_section_id,`
+
+After you replaced the data you also need to update the `version_id` and `reference_date` in the `nwb.version` 
+table. You can find the `COPY nwb.version (version_id, imported, reference_date, revision, status) FROM stdin;` 
+right below the added data.
+
 
 ## Traffic sign responses
 
 When you update the traffig sign responses, you probably also need to update the NWB test data set version. Traffic sign
-responses include `location.road.nwb_version` entries, of which the maximum value is used as reference date to lookup 
+responses include `location.road.nwb_version` entries, of which the maximum value is used as reference date to look up 
 the correct NWB version.
 
 To re-create the mocked response, download Amersfoort files, using the following url:
-https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v3/current-state?town-code=GM0307&rvv-code=C6&rvv-code=C7&rvv-code=C7a&rvv-code=C7b&rvv-code=C8&rvv-code=C9&rvv-code=C10&rvv-code=C11&rvv-code=C12&rvv-code=C22c&rvv-code=C17&rvv-code=C18&rvv-code=C19&rvv-code=C20&rvv-code=C21
+https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?townCode=GM0307&rvvCode=C6&rvvCode=C7&rvvCode=C7a&rvvCode=C7b&rvvCode=C8&rvvCode=C9&rvvCode=C10&rvvCode=C11&rvvCode=C12&rvvCode=C22c&rvvCode=C17&rvvCode=C18&rvvCode=C19&rvvCode=C20&rvvCode=C21
 
-`driving_direction` was manually added to this mocked data and a patch `[driving_direction.patch](driving_direction.patch)
-was created:
-```shell
-diff -Naur  original.json current-state.json > driving_direction.patch
-```
-that can be used to patch your response, assuming that the road section id of the used roads still exist.
-
-The sample set also did not contain zone codes, therefor 4 road sections have been added with:
- - Unused road section id's 
- - All different zone codes
-
-This patch will add them:
-[zone-codes.patch](docker%2Ftraffic-sign-api-stub%2Fsourcecode%2Fzone-codes.patch)
 

@@ -3,15 +3,15 @@ package nu.ndw.nls.accessibilitymap.trafficsignclient.utils;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import lombok.Getter;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 
 @Getter
 public class MaxNwbVersionTracker {
 
     private LocalDate maxNwbReferenceDate = LocalDate.MIN;
 
-    public TrafficSignJsonDtoV3 updateMaxNwbVersionAndContinue(TrafficSignJsonDtoV3 trafficSignData) {
-        String nwbVersion = trafficSignData.getLocation().getRoad().getNwbVersion();
+    public TrafficSignGeoJsonDto updateMaxNwbVersionAndContinue(TrafficSignGeoJsonDto trafficSignData) {
+        String nwbVersion = String.valueOf(trafficSignData.getProperties().getNwbVersion());
         maxNwbReferenceDate = max(nwbVersion, maxNwbReferenceDate);
         return trafficSignData;
     }

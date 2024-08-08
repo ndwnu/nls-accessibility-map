@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.signmap
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 
 @Slf4j
 public class NoEntrySignMapper extends SignMapper<Boolean> {
@@ -16,7 +16,7 @@ public class NoEntrySignMapper extends SignMapper<Boolean> {
     }
 
     @Override
-    Optional<Boolean> getValue(TrafficSignJsonDtoV3 trafficSign) {
+    Optional<Boolean> getValue(TrafficSignGeoJsonDto trafficSign) {
         return Optional.of(true);
     }
 

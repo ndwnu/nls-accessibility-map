@@ -9,7 +9,7 @@ import java.util.List;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,7 @@ class NwbRoadSectionToLinkMapperTest {
     private LineString lineString;
 
     @Mock
-    private List<TrafficSignJsonDtoV3> trafficSignJsonDtoV3s;
+    private List<TrafficSignGeoJsonDto> trafficSignJsonDtos;
     @Mock
     private TrafficSignAccessibilityDto trafficSignAccessibilityDto;
 
@@ -91,7 +91,7 @@ class NwbRoadSectionToLinkMapperTest {
     @BeforeEach
     void setUp() {
         when(lineString.getLength()).thenReturn(GEOMETRY_LENGTH);
-        when(trafficSignToDtoMapper.map(trafficSignJsonDtoV3s)).thenReturn(trafficSignAccessibilityDto);
+        when(trafficSignToDtoMapper.map(trafficSignJsonDtos)).thenReturn(trafficSignAccessibilityDto);
 
         when(trafficSignAccessibilityDto.getCarAccessForbidden()).thenReturn(carAccessForbidden);
         when(trafficSignAccessibilityDto.getCarAccessForbiddenWindowed()).thenReturn(carAccessForbiddenWindowed);
@@ -99,15 +99,18 @@ class NwbRoadSectionToLinkMapperTest {
         when(trafficSignAccessibilityDto.getHgvAccessForbiddenWindowed()).thenReturn(hgvAccessForbiddenWindowed);
         when(trafficSignAccessibilityDto.getBusAccessForbidden()).thenReturn(busAccessForbidden);
         when(trafficSignAccessibilityDto.getHgvAndBusAccessForbidden()).thenReturn(hgvAndBusAccessForbidden);
-        when(trafficSignAccessibilityDto.getHgvAndBusAccessForbiddenWindowed()).thenReturn(hgvAndBusAccessForbiddenWindowed);
+        when(trafficSignAccessibilityDto.getHgvAndBusAccessForbiddenWindowed()).thenReturn(
+                hgvAndBusAccessForbiddenWindowed);
         when(trafficSignAccessibilityDto.getTractorAccessForbidden()).thenReturn(tractorAccessForbidden);
         when(trafficSignAccessibilityDto.getSlowVehicleAccessForbidden()).thenReturn(slowVehicleAccessForbidden);
         when(trafficSignAccessibilityDto.getTrailerAccessForbidden()).thenReturn(trailerAccessForbidden);
         when(trafficSignAccessibilityDto.getMotorcycleAccessForbidden()).thenReturn(motorcycleAccessForbidden);
         when(trafficSignAccessibilityDto.getMotorVehicleAccessForbidden()).thenReturn(motorVehicleAccessForbidden);
-        when(trafficSignAccessibilityDto.getMotorVehicleAccessForbiddenWindowed()).thenReturn(motorVehicleAccessForbiddenWindowed);
+        when(trafficSignAccessibilityDto.getMotorVehicleAccessForbiddenWindowed()).thenReturn(
+                motorVehicleAccessForbiddenWindowed);
         when(trafficSignAccessibilityDto.getLcvAndHgvAccessForbidden()).thenReturn(lcvAndHgvAccessForbidden);
-        when(trafficSignAccessibilityDto.getLcvAndHgvAccessForbiddenWindowed()).thenReturn(lcvAndHgvAccessForbiddenWindowed);
+        when(trafficSignAccessibilityDto.getLcvAndHgvAccessForbiddenWindowed()).thenReturn(
+                lcvAndHgvAccessForbiddenWindowed);
         when(trafficSignAccessibilityDto.getMaxLength()).thenReturn(maxLength);
         when(trafficSignAccessibilityDto.getMaxWidth()).thenReturn(maxWidth);
         when(trafficSignAccessibilityDto.getMaxHeight()).thenReturn(maxHeight);
@@ -119,7 +122,7 @@ class NwbRoadSectionToLinkMapperTest {
     @Test
     void map_ok() {
         AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_FORWARD),
-                trafficSignJsonDtoV3s);
+                trafficSignJsonDtos);
 
         assertEquals(ROAD_SECTION_ID, link.getId());
         assertEquals(JUNCTION_ID_FROM, link.getFromNodeId());
@@ -155,7 +158,7 @@ class NwbRoadSectionToLinkMapperTest {
     @Test
     void map_ok_drivingDirectionBackward() {
         AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_BACKWARD),
-                trafficSignJsonDtoV3s);
+                trafficSignJsonDtos);
 
         assertFalse(link.getAccessibility().forward());
         assertTrue(link.getAccessibility().reverse());
@@ -164,7 +167,7 @@ class NwbRoadSectionToLinkMapperTest {
     @Test
     void map_ok_drivingDirectionBoth() {
         AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_BOTH),
-                trafficSignJsonDtoV3s);
+                trafficSignJsonDtos);
 
         assertTrue(link.getAccessibility().forward());
         assertTrue(link.getAccessibility().reverse());

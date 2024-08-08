@@ -1,15 +1,15 @@
 {
   "request": {
     "method": "GET",
-    "urlPathPattern": "/api/rest/static-road-data/traffic-signs/v3/current-state",
+    "urlPathPattern": "/api/rest/static-road-data/traffic-signs/v4/current-state",
     "queryParameters": {
       "status": {
         "equalTo": "PLACED"
       },
-      "town-code": {
+      "townCode": {
         "equalTo": "GM0307"
       },
-      "rvv-code": {
+      "rvvCode": {
         "or": [
           {
             "equalTo": "C6"

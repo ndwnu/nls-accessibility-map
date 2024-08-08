@@ -37,9 +37,8 @@ nu:
       accessibilitymap:
         trafficsignclient:
           api:
-            base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v3
+            base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
             current-state-path: /current-state
-
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
@@ -50,3 +49,4 @@ management:
   observations:
     annotations:
       enabled: true
+
