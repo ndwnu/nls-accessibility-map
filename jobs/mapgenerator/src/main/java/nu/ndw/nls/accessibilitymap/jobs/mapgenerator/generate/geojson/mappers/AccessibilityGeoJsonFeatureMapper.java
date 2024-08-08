@@ -26,7 +26,6 @@ public class AccessibilityGeoJsonFeatureMapper {
                         .id(directionalRoadSection.getRoadSectionId())
                         .versionId(version)
                         .accessible(directionalRoadSection.isAccessible())
-                        //.validFrom() dump?
                         .build())
                 .build();
     }
