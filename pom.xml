@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -7,7 +8,7 @@
     </parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>2.0.3-SNAPSHOT</version>
+    <version>2.0.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>nls-accessibility-map</name>
     <description>REST API to determine accessible road sections for a given vehicle type</description>
@@ -40,8 +41,8 @@
         <nls-springboot.version>4.2.1-SNAPSHOT</nls-springboot.version>
         <routing-map-matcher.version>9.0.19</routing-map-matcher.version>
         <nls-geometry.version>2.2.0</nls-geometry.version>
-
         <jackson-geojson.version>1.14</jackson-geojson.version>
+        <jsurfer-jackson.version>1.6.3</jsurfer-jackson.version>
     </properties>
     <distributionManagement>
         <repository>
@@ -200,6 +201,16 @@
                 <groupId>de.grundid.opendatalab</groupId>
                 <artifactId>geojson-jackson</artifactId>
                 <version>${jackson-geojson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.grundid.opendatalab</groupId>
+                <artifactId>geojson-jackson</artifactId>
+                <version>${jackson-geojson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jsurfer</groupId>
+                <artifactId>jsurfer-jackson</artifactId>
+                <version>${jsurfer-jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

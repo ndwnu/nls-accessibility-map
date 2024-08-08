@@ -12,7 +12,8 @@ import java.util.Map;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper.TrafficSignIncludedFilterPredicate;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.signmappers.SignMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -38,32 +39,45 @@ class TrafficSignToDtoMapperTest {
     private TrafficSignToDtoMapper trafficSignToDtoMapper;
 
     @Mock
-    private TrafficSignJsonDtoV3 signA;
+    private TrafficSignPropertiesDto singAProperties;
+    @Mock
+    private TrafficSignGeoJsonDto signA;
+    @Mock
+    private TrafficSignPropertiesDto signBProperties;
+    @Mock
+    private TrafficSignGeoJsonDto signB;
 
     @Mock
-    private TrafficSignJsonDtoV3 signB;
+    TrafficSignGeoJsonDto c6;
+    @Mock
+    TrafficSignGeoJsonDto c7;
+    @Mock
+    TrafficSignGeoJsonDto c7b;
+    @Mock
+    TrafficSignGeoJsonDto c12;
 
     @Mock
-    TrafficSignJsonDtoV3 c6;
+    TrafficSignGeoJsonDto c22c;
     @Mock
-    TrafficSignJsonDtoV3 c7;
+    private TrafficSignPropertiesDto c6TProperties;
     @Mock
-    TrafficSignJsonDtoV3 c7b;
+    TrafficSignGeoJsonDto c6T;
     @Mock
-    TrafficSignJsonDtoV3 c12;
+    private TrafficSignPropertiesDto c7TProperties;
     @Mock
-    TrafficSignJsonDtoV3 c22c;
-
+    TrafficSignGeoJsonDto c7T;
     @Mock
-    TrafficSignJsonDtoV3 c6T;
+    private TrafficSignPropertiesDto c7bTProperties;
     @Mock
-    TrafficSignJsonDtoV3 c7T;
+    TrafficSignGeoJsonDto c7bT;
     @Mock
-    TrafficSignJsonDtoV3 c7bT;
+    private TrafficSignPropertiesDto c12TProperties;
     @Mock
-    TrafficSignJsonDtoV3 c12T;
+    TrafficSignGeoJsonDto c12T;
     @Mock
-    TrafficSignJsonDtoV3 c22cT;
+    private TrafficSignPropertiesDto c22cTProperties;
+    @Mock
+    TrafficSignGeoJsonDto c22cT;
 
 
     @Mock
@@ -79,11 +93,11 @@ class TrafficSignToDtoMapperTest {
     @Captor
     private ArgumentCaptor<TrafficSignAccessibilityDto> resultCaptor;
 
-    private List<TrafficSignJsonDtoV3> trafficSigns;
+    private List<TrafficSignGeoJsonDto> trafficSigns;
 
     @Test
     void test_ok_allPredicatesTrueAndTrafficSignIsMappedBySingleMapper() {
-
+        when(signA.getProperties()).thenReturn(singAProperties);
         trafficSigns = List.of(signA);
 
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
@@ -91,7 +105,7 @@ class TrafficSignToDtoMapperTest {
         trafficSignToDtoMapper = new TrafficSignToDtoMapper(trafficSignMapperRegistry,
                 List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
-        when(signA.getRvvCode()).thenReturn(RVV_CODE_A);
+        when(signA.getProperties().getRvvCode()).thenReturn(RVV_CODE_A);
 
         when(predicateA.test(signA)).thenReturn(Boolean.TRUE);
         when(predicateB.test(signA)).thenReturn(Boolean.TRUE);
@@ -107,7 +121,7 @@ class TrafficSignToDtoMapperTest {
 
     @Test
     void test_ok_allPredicatesTrueAndTrafficSignIsMappedByMultipleMappers() {
-
+        when(signA.getProperties()).thenReturn(singAProperties);
         trafficSigns = List.of(signA);
 
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA, signMapperB));
@@ -115,7 +129,7 @@ class TrafficSignToDtoMapperTest {
         trafficSignToDtoMapper = new TrafficSignToDtoMapper(trafficSignMapperRegistry,
                 List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
-        when(signA.getRvvCode()).thenReturn(RVV_CODE_A);
+        when(signA.getProperties().getRvvCode()).thenReturn(RVV_CODE_A);
 
         when(predicateA.test(signA)).thenReturn(Boolean.TRUE);
         when(predicateB.test(signA)).thenReturn(Boolean.TRUE);
@@ -133,7 +147,8 @@ class TrafficSignToDtoMapperTest {
 
     @Test
     void test_ok_allPredicatesTrueAndMultipleTrafficSignsAreMappedAndGroupedBySameRvvCode() {
-
+        when(signA.getProperties()).thenReturn(singAProperties);
+        when(signB.getProperties()).thenReturn(signBProperties);
         trafficSigns = List.of(signA, signB);
 
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
@@ -142,8 +157,8 @@ class TrafficSignToDtoMapperTest {
                 List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
         // Same rvv code
-        when(signA.getRvvCode()).thenReturn(RVV_CODE_A);
-        when(signB.getRvvCode()).thenReturn(RVV_CODE_A);
+        when(signA.getProperties().getRvvCode()).thenReturn(RVV_CODE_A);
+        when(signB.getProperties().getRvvCode()).thenReturn(RVV_CODE_A);
 
         when(noEntrySignWindowedMapper.map(signA)).thenReturn(signA);
         when(noEntrySignWindowedMapper.map(signB)).thenReturn(signB);
@@ -163,7 +178,8 @@ class TrafficSignToDtoMapperTest {
 
     @Test
     void test_ok_allPredicatesTrueAndMultipleTrafficSignsAreMappedAndGroupedByDifferentRvvCode() {
-
+        when(signA.getProperties()).thenReturn(singAProperties);
+        when(signB.getProperties()).thenReturn(signBProperties);
         trafficSigns = List.of(signA, signB);
 
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
@@ -172,8 +188,8 @@ class TrafficSignToDtoMapperTest {
                 List.of(predicateA, predicateB), noEntrySignWindowedMapper);
 
         // different rvv codes
-        when(signA.getRvvCode()).thenReturn(RVV_CODE_A);
-        when(signB.getRvvCode()).thenReturn(RVV_CODE_B);
+        when(signA.getProperties().getRvvCode()).thenReturn(RVV_CODE_A);
+        when(signB.getProperties().getRvvCode()).thenReturn(RVV_CODE_B);
 
         when(predicateA.test(signA)).thenReturn(Boolean.TRUE);
         when(predicateB.test(signA)).thenReturn(Boolean.TRUE);
@@ -195,7 +211,6 @@ class TrafficSignToDtoMapperTest {
 
     @Test
     void test_ok_predicatesAFalseAndTrafficSignExcluded() {
-
         trafficSigns = List.of(signA);
 
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
@@ -218,14 +233,19 @@ class TrafficSignToDtoMapperTest {
 
     @Test
     void test_ok_windowedTrafficSigns() {
-
         trafficSigns = List.of(c6, c7, c7b, c12, c22c);
 
-        when(c6T.getRvvCode()).thenReturn("C6T");
-        when(c7T.getRvvCode()).thenReturn("C7T");
-        when(c7bT.getRvvCode()).thenReturn("C7bT");
-        when(c12T.getRvvCode()).thenReturn("C12T");
-        when(c22cT.getRvvCode()).thenReturn("C22cT");
+        when(c6TProperties.getRvvCode()).thenReturn("C6T");
+        when(c7TProperties.getRvvCode()).thenReturn("C7T");
+        when(c7bTProperties.getRvvCode()).thenReturn("C7bT");
+        when(c12TProperties.getRvvCode()).thenReturn("C12T");
+        when(c22cTProperties.getRvvCode()).thenReturn("C22cT");
+
+        when(c6T.getProperties()).thenReturn(c6TProperties);
+        when(c7T.getProperties()).thenReturn(c7TProperties);
+        when(c7bT.getProperties()).thenReturn(c7bTProperties);
+        when(c12T.getProperties()).thenReturn(c12TProperties);
+        when(c22cT.getProperties()).thenReturn(c22cTProperties);
 
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
 

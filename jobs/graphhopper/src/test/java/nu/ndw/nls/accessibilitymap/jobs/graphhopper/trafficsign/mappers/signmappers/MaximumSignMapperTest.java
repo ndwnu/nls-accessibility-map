@@ -8,10 +8,9 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.signmappers.SignMapper.DtoSetter;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.LocationJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.RoadJsonDtoV3;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,22 +30,21 @@ class MaximumSignMapperTest {
 
     private static final String RVV_CODE = "C17";
     private static final String OTHER_RVV_CODE = "C18";
-    private static final String ROAD_SECTION_ID = "ID";
+    private static final int ROAD_SECTION_ID = 1;
     private static final DirectionalDto<Double> NO_RESTRICTIONS = new DirectionalDto<>(Double.POSITIVE_INFINITY);
     @Mock
     private DtoSetter<Double> setter;
     @Mock
     private TrafficSignAccessibilityDto dto;
     @Mock
-    private TrafficSignJsonDtoV3 signA;
+    private TrafficSignGeoJsonDto signA;
     @Mock
-    private TrafficSignJsonDtoV3 signB;
+    private TrafficSignGeoJsonDto signB;
     @Mock
-    private LocationJsonDtoV3 locationA;
+    private TrafficSignPropertiesDto propertiesA;
     @Mock
-    private LocationJsonDtoV3 locationB;
-    @Mock
-    private RoadJsonDtoV3 road;
+    private TrafficSignPropertiesDto propertiesB;
+
     @Captor
     private ArgumentCaptor<DirectionalDto<Double>> setValueCaptor;
 
@@ -64,9 +62,9 @@ class MaximumSignMapperTest {
 
     @Test
     void addToDto_ok_forward() {
-        when(signA.getBlackCode()).thenReturn(MAXIMUM_STRING);
-        when(signA.getLocation()).thenReturn(locationA);
-        when(locationA.getDrivingDirection()).thenReturn("H");
+        when(signA.getProperties()).thenReturn(propertiesA);
+        when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING);
+        when(propertiesA.getDrivingDirection()).thenReturn("H");
 
         DirectionalDto<Double> expectedDirectional = DirectionalDto.<Double>builder()
                 .forward(MAXIMUM_DOUBLE)
@@ -78,9 +76,9 @@ class MaximumSignMapperTest {
 
     @Test
     void addToDto_ok_reverse() {
-        when(signA.getBlackCode()).thenReturn(MAXIMUM_STRING);
-        when(signA.getLocation()).thenReturn(locationA);
-        when(locationA.getDrivingDirection()).thenReturn("T");
+        when(signA.getProperties()).thenReturn(propertiesA);
+        when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING);
+        when(propertiesA.getDrivingDirection()).thenReturn("T");
 
         DirectionalDto<Double> expectedDirectional = DirectionalDto.<Double>builder()
                 .forward(Double.POSITIVE_INFINITY)
@@ -92,9 +90,9 @@ class MaximumSignMapperTest {
 
     @Test
     void addToDto_ok_bothWays() {
-        when(signA.getBlackCode()).thenReturn(MAXIMUM_STRING);
-        when(signA.getLocation()).thenReturn(locationA);
-        when(locationA.getDrivingDirection()).thenReturn(null);
+        when(signA.getProperties()).thenReturn(propertiesA);
+        when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING);
+        when(propertiesA.getDrivingDirection()).thenReturn(null);
 
         DirectionalDto<Double> expectedDirectional = DirectionalDto.<Double>builder()
                 .forward(MAXIMUM_DOUBLE)
@@ -106,13 +104,13 @@ class MaximumSignMapperTest {
 
     @Test
     void addToDto_ok_multipleSigns() {
-        when(signA.getBlackCode()).thenReturn(MAXIMUM_STRING_MORE_RESTRICTIVE);
-        when(signA.getLocation()).thenReturn(locationA);
-        when(locationA.getDrivingDirection()).thenReturn("H");
+        when(signA.getProperties()).thenReturn(propertiesA);
+        when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING_MORE_RESTRICTIVE);
+        when(propertiesA.getDrivingDirection()).thenReturn("H");
 
-        when(signB.getBlackCode()).thenReturn(MAXIMUM_STRING);
-        when(signB.getLocation()).thenReturn(locationB);
-        when(locationB.getDrivingDirection()).thenReturn(null);
+        when(signB.getProperties()).thenReturn(propertiesB);
+        when(propertiesB.getBlackCode()).thenReturn(MAXIMUM_STRING);
+        when(propertiesB.getDrivingDirection()).thenReturn("T");
 
         DirectionalDto<Double> expectedDirectional = DirectionalDto.<Double>builder()
                 .forward(MAXIMUM_DOUBLE_MORE_RESTRICTIVE)
@@ -129,29 +127,29 @@ class MaximumSignMapperTest {
 
     @Test
     void setLinkTags_ok_blackCodeNull() {
-        when(signA.getBlackCode()).thenReturn(null);
-        when(signA.getLocation()).thenReturn(locationA);
-        when(signA.getLocation().getDrivingDirection()).thenReturn(null);
+        when(signA.getProperties()).thenReturn(propertiesA);
+        when(propertiesA.getBlackCode()).thenReturn(null);
+        when(propertiesA.getDrivingDirection()).thenReturn(null);
 
         testMapping(NO_RESTRICTIONS, List.of(signA));
     }
 
     @Test
     void setLinkTags_ok_unsupportedBlackCode() {
-        when(signA.getBlackCode()).thenReturn("10 m");
-        when(signA.getLocation()).thenReturn(locationA);
-        when(locationA.getRoad()).thenReturn(road);
-        when(road.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);
+        when(signA.getProperties()).thenReturn(propertiesA);
+        when(propertiesA.getBlackCode()).thenReturn("10 m");
+        when(propertiesA.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);
 
         testMapping(NO_RESTRICTIONS, List.of(signA));
     }
 
-    private void testMapping(DirectionalDto<Double> expected, List<TrafficSignJsonDtoV3> trafficSigns) {
-        Map<String, List<TrafficSignJsonDtoV3>> trafficSignMap = Map.of(RVV_CODE, trafficSigns);
+    private void testMapping(DirectionalDto<Double> expected, List<TrafficSignGeoJsonDto> trafficSigns) {
+        Map<String, List<TrafficSignGeoJsonDto>> trafficSignMap = Map.of(RVV_CODE, trafficSigns);
         testMapping(expected, trafficSignMap);
     }
 
-    private void testMapping(DirectionalDto<Double> expected, Map<String, List<TrafficSignJsonDtoV3>> trafficSignMap) {
+    private void testMapping(DirectionalDto<Double> expected,
+            Map<String, List<TrafficSignGeoJsonDto>> trafficSignMap) {
         maximumSignToDtoMapper.addToDto(dto, trafficSignMap);
 
         verify(setter).set(eq(dto), setValueCaptor.capture());

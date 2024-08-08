@@ -5,12 +5,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -26,10 +26,6 @@ class RestrictionIsAbsoluteFilterPredicateTest {
     @InjectMocks
     private RestrictionIsAbsoluteFilterPredicate restrictionIsAbsoluteFilterPredicate;
 
-
-    @Mock
-    private TrafficSignJsonDtoV3 trafficSignJsonDtoV3;
-
     @Test
     void test_ok_includedBecauseItUsesNoBlacklistedTokens() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign("als pasen en pinksteren op één dag vallen"));
@@ -37,13 +33,22 @@ class RestrictionIsAbsoluteFilterPredicateTest {
 
     @Test
     void test_ok_includedHasNoNullTextSigns() {
-        when(trafficSignJsonDtoV3.getTextSigns()).thenReturn(null);
-        assertTrue(restrictionIsAbsoluteFilterPredicate.test(trafficSignJsonDtoV3));
+        TrafficSignPropertiesDto propertiesDto = Mockito.mock(TrafficSignPropertiesDto.class);
+        TrafficSignGeoJsonDto trafficSignGeoJsonDto = Mockito.mock(TrafficSignGeoJsonDto.class);
+
+        when(propertiesDto.getTextSigns()).thenReturn(null);
+        when(trafficSignGeoJsonDto.getProperties()).thenReturn(propertiesDto);
+        assertTrue(restrictionIsAbsoluteFilterPredicate.test(trafficSignGeoJsonDto));
     }
+
     @Test
     void test_ok_includedHasNoEmptyTextSignsList() {
-        when(trafficSignJsonDtoV3.getTextSigns()).thenReturn(Collections.emptyList());
-        assertTrue(restrictionIsAbsoluteFilterPredicate.test(trafficSignJsonDtoV3));
+        TrafficSignPropertiesDto propertiesDto = Mockito.mock(TrafficSignPropertiesDto.class);
+        TrafficSignGeoJsonDto trafficSignGeoJsonDto = Mockito.mock(TrafficSignGeoJsonDto.class);
+
+        when(propertiesDto.getTextSigns()).thenReturn(Collections.emptyList());
+        when(trafficSignGeoJsonDto.getProperties()).thenReturn(propertiesDto);
+        assertTrue(restrictionIsAbsoluteFilterPredicate.test(trafficSignGeoJsonDto));
     }
 
     @Test
@@ -74,11 +79,14 @@ class RestrictionIsAbsoluteFilterPredicateTest {
                 mockSign(FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS.formatted(IGNORED_TOKEN_CONTAINS_VRIJ)));
     }
 
-    private TrafficSignJsonDtoV3 mockSign(String textSignType) {
-        TrafficSignJsonDtoV3 mockSign = Mockito.mock(TrafficSignJsonDtoV3.class);
-        TextSignJsonDtoV3 mockTextSign = Mockito.mock(TextSignJsonDtoV3.class);
-        when(mockSign.getTextSigns()).thenReturn(List.of(mockTextSign));
-        when(mockTextSign.getType()).thenReturn(textSignType);
-        return mockSign;
+    private TrafficSignGeoJsonDto mockSign(String textSignType) {
+        TextSignDto mockedTextSign = Mockito.mock(TextSignDto.class);
+        TrafficSignPropertiesDto propertiesDto = Mockito.mock(TrafficSignPropertiesDto.class);
+        TrafficSignGeoJsonDto trafficSignGeoJsonDto = Mockito.mock(TrafficSignGeoJsonDto.class);
+
+        when(mockedTextSign.getType()).thenReturn(textSignType);
+        when(propertiesDto.getTextSigns()).thenReturn(List.of(mockedTextSign));
+        when(trafficSignGeoJsonDto.getProperties()).thenReturn(propertiesDto);
+        return trafficSignGeoJsonDto;
     }
 }

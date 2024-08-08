@@ -1,14 +1,15 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.predicates;
 
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper.TrafficSignIncludedFilterPredicate;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.ZoneCode;
-import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NotZoneEndsFilterPredicate implements TrafficSignToDtoMapper.TrafficSignIncludedFilterPredicate {
+public class NotZoneEndsFilterPredicate implements TrafficSignIncludedFilterPredicate {
+
     @Override
-    public boolean test(TrafficSignJsonDtoV3 trafficSignJsonDtoV3) {
-        return trafficSignJsonDtoV3.getZoneCode() != ZoneCode.END;
+    public boolean test(TrafficSignGeoJsonDto trafficSignJsonDto) {
+        return !ZoneCode.END.toString().equals(trafficSignJsonDto.getProperties().getZoneCode());
     }
 }

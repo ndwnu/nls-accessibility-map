@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.nwb.mappers;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
@@ -20,7 +20,7 @@ public abstract class NwbRoadSectionToLinkMapper {
     @Autowired
     private TrafficSignToDtoMapper trafficSignToDtoMapper;
 
-    public AccessibilityLink map(NwbRoadSectionDto roadSectionDto, List<TrafficSignJsonDtoV3> trafficSigns) {
+    public AccessibilityLink map(NwbRoadSectionDto roadSectionDto, List<TrafficSignGeoJsonDto> trafficSigns) {
         return this.map(roadSectionDto, trafficSignToDtoMapper.map(trafficSigns));
     }
 

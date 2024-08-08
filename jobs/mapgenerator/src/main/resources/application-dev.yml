@@ -1,3 +1,8 @@
+management:
+  datadog:
+    metrics:
+      export:
+        enabled: false
 nu:
   ndw:
     nls:
@@ -7,7 +12,7 @@ nu:
       accessibilitymap:
         trafficsignclient:
           api:
-            base-url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v3
+            base-url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
             current-state-path: /current-state
             town-code: GM0307
         jobs:
@@ -25,3 +30,4 @@ spring:
     url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps
     password: nls-maps
+

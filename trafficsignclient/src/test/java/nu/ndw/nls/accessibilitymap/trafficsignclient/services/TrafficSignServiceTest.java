@@ -4,18 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.CurrentStateStatus;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.LocationJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.RoadJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.repositories.TrafficSignRepository;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.repositories.TrafficSignRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,73 +37,69 @@ class TrafficSignServiceTest {
 
     @Test
     void getTrafficSigns_ok_filteredAndGrouped() {
-        TrafficSignJsonDtoV3 trafficSign1 = TrafficSignJsonDtoV3.builder()
-                .publicationTimestamp(Instant.parse("2023-11-07T15:37:23Z"))
-                .location(LocationJsonDtoV3.builder()
-                        .build())
+        TrafficSignPropertiesDto trafficSignPropertiesDto1 = TrafficSignPropertiesDto.builder()
                 .build();
-        TrafficSignJsonDtoV3 trafficSign2 = TrafficSignJsonDtoV3.builder()
-                .publicationTimestamp(Instant.parse("2023-11-07T15:36:23Z"))
-                .location(LocationJsonDtoV3.builder()
-                        .road(RoadJsonDtoV3.builder()
-                                .nwbVersion("2023-11-01")
-                                .build())
-                        .build())
-                .build();
-        TrafficSignJsonDtoV3 trafficSign3 = TrafficSignJsonDtoV3.builder()
-                .publicationTimestamp(Instant.parse("2023-11-07T15:35:23Z"))
-                .location(LocationJsonDtoV3.builder()
-                        .road(RoadJsonDtoV3.builder()
-                                .roadSectionId("2")
-                                .nwbVersion("2023-10-01")
-                                .build())
-                        .build())
-                .build();
-        TrafficSignJsonDtoV3 trafficSign4 = TrafficSignJsonDtoV3.builder()
-                .location(LocationJsonDtoV3.builder()
-                        .road(RoadJsonDtoV3.builder()
-                                .roadSectionId("1")
-                                .nwbVersion("2023-09-01")
-                                .build())
-                        .build())
-                .build();
-        TrafficSignJsonDtoV3 trafficSign5 = TrafficSignJsonDtoV3.builder()
-                .location(LocationJsonDtoV3.builder()
-                        .road(RoadJsonDtoV3.builder()
-                                .roadSectionId("1")
-                                .nwbVersion("20231101")
-                                .build())
-                        .build())
-                .build();
-        TrafficSignJsonDtoV3 trafficSign6 = TrafficSignJsonDtoV3.builder()
-                .location(LocationJsonDtoV3.builder()
-                        .road(RoadJsonDtoV3.builder()
-                                .roadSectionId("2")
-                                .build())
-                        .build())
+        TrafficSignGeoJsonDto trafficSign1 = TrafficSignGeoJsonDto.builder()
+                .properties(trafficSignPropertiesDto1)
                 .build();
 
+        TrafficSignPropertiesDto trafficSignPropertiesDto2 = TrafficSignPropertiesDto.builder()
+                .nwbVersion(LocalDate.of(2023, 11, 1))
+                .build();
+        TrafficSignGeoJsonDto trafficSign2 = TrafficSignGeoJsonDto.builder()
+                .properties(trafficSignPropertiesDto2)
+                .build();
 
-        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, Set.of(RVV_CODE_A,RVV_CODE_B)))
-                .thenReturn(Stream.of(trafficSign1, trafficSign2, trafficSign3,trafficSign4, trafficSign5, trafficSign6));
+        TrafficSignPropertiesDto trafficSignPropertiesDto3 = TrafficSignPropertiesDto.builder()
+                .roadSectionId(2)
+                .nwbVersion(LocalDate.of(2023, 10, 1))
+                .build();
+        TrafficSignGeoJsonDto trafficSign3 = TrafficSignGeoJsonDto.builder()
+                .properties(trafficSignPropertiesDto3)
+                .build();
 
-        TrafficSignData result = trafficSignService.getTrafficSigns(Set.of(RVV_CODE_A,RVV_CODE_B));
+        TrafficSignPropertiesDto trafficSignPropertiesDto4 = TrafficSignPropertiesDto.builder()
+                .roadSectionId(1)
+                .nwbVersion(LocalDate.of(2023, 9, 1))
+                .build();
+        TrafficSignGeoJsonDto trafficSign4 = TrafficSignGeoJsonDto.builder()
+                .properties(trafficSignPropertiesDto4)
+                .build();
 
-        Map<Long, List<TrafficSignJsonDtoV3>> longListMap = result.trafficSignsByRoadSectionId();
+        TrafficSignPropertiesDto trafficSignPropertiesDto5 = TrafficSignPropertiesDto.builder()
+                .roadSectionId(1)
+                .nwbVersion(LocalDate.of(2023, 9, 1))
+                .build();
+        TrafficSignGeoJsonDto trafficSign5 = TrafficSignGeoJsonDto.builder()
+                .properties(trafficSignPropertiesDto5)
+                .build();
+
+        TrafficSignPropertiesDto trafficSignPropertiesDto6 = TrafficSignPropertiesDto.builder()
+                .roadSectionId(2)
+                .build();
+        TrafficSignGeoJsonDto trafficSign6 = TrafficSignGeoJsonDto.builder()
+                .properties(trafficSignPropertiesDto6)
+                .build();
+
+        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, Set.of(RVV_CODE_A, RVV_CODE_B)))
+                .thenReturn(
+                        Stream.of(trafficSign1, trafficSign2, trafficSign3, trafficSign4, trafficSign5, trafficSign6));
+
+        TrafficSignData result = trafficSignService.getTrafficSigns(Set.of(RVV_CODE_A, RVV_CODE_B));
+
+        Map<Long, List<TrafficSignGeoJsonDto>> longListMap = result.trafficSignsByRoadSectionId();
 
         assertTrue(longListMap.containsKey(1L));
-        List<TrafficSignJsonDtoV3> trafficSignJsonDtoV3s = longListMap.get(1L);
-        assertEquals(2, trafficSignJsonDtoV3s.size());
-        assertTrue(trafficSignJsonDtoV3s.contains(trafficSign4));
-        assertTrue(trafficSignJsonDtoV3s.contains(trafficSign5));
+        List<TrafficSignGeoJsonDto> trafficSignGeoJsonDtos = longListMap.get(1L);
+        assertEquals(2, trafficSignGeoJsonDtos.size());
+        assertTrue(trafficSignGeoJsonDtos.contains(trafficSign4));
+        assertTrue(trafficSignGeoJsonDtos.contains(trafficSign5));
 
         assertTrue(longListMap.containsKey(2L));
-        trafficSignJsonDtoV3s = longListMap.get(2L);
-        assertEquals(2, trafficSignJsonDtoV3s.size());
-        assertTrue(trafficSignJsonDtoV3s.contains(trafficSign3));
-        assertTrue(trafficSignJsonDtoV3s.contains(trafficSign6));
-
-        assertEquals(Instant.parse("2023-11-07T15:37:23Z"), result.maxEventTimestamp());
+        trafficSignGeoJsonDtos = longListMap.get(2L);
+        assertEquals(2, trafficSignGeoJsonDtos.size());
+        assertTrue(trafficSignGeoJsonDtos.contains(trafficSign3));
+        assertTrue(trafficSignGeoJsonDtos.contains(trafficSign6));
         assertEquals(LocalDate.of(2023, 10, 1), result.maxNwbReferenceDate());
     }
 
