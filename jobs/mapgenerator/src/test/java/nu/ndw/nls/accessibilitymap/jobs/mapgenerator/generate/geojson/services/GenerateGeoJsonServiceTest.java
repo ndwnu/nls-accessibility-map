@@ -21,6 +21,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.VehicleTypeVehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
@@ -56,7 +57,7 @@ class GenerateGeoJsonServiceTest {
     private AccessibilityGeoJsonMapper accessibilityGeoJsonMapper;
 
     @Mock
-    private FileService uploadService;
+    private FileService fileService;
 
     @Mock
     private AccessibilityConfiguration accessibilityConfiguration;
@@ -69,6 +70,9 @@ class GenerateGeoJsonServiceTest {
 
     @Mock
     private LocalDateVersionMapper localDateVersionMapper;
+
+    @Mock
+    private VehicleTypeVehiclePropertiesMapper vehicleTypeVehiclePropertiesMapper;
 
     @InjectMocks
     private GenerateGeoJsonService generateGeoJsonService;
@@ -94,6 +98,15 @@ class GenerateGeoJsonServiceTest {
     @Mock
     private NlsEventSubject nlsEventSubject;
 
+    @Mock
+    private Path tmpFilePath;
+
+    @Mock
+    private File tmpFile;
+
+    @Mock
+    private VehicleProperties vehicleProperties;
+
 
     @Test
     @SneakyThrows
@@ -108,12 +121,16 @@ class GenerateGeoJsonServiceTest {
         when(generateConfiguration.getStartLocation()).thenReturn(startLocation);
         when(generateProperties.getSearchDistanceInMeters()).thenReturn(SEARCH_DISTANCE);
 
-        // @todo: fix any class
-        when(accessibilityMapService.determineAccessibilityByRoadSection(any(VehicleProperties.class),
-                eq(startLocation), eq(SEARCH_DISTANCE))).thenReturn(idToRoadSectionSortedMap);
+        when(vehicleTypeVehiclePropertiesMapper.map(GENERATE_GEO_JSON_TYPE)).thenReturn(vehicleProperties);
+
+        when(accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
+                startLocation, SEARCH_DISTANCE)).thenReturn(idToRoadSectionSortedMap);
 
         when(accessibilityGeoJsonMapper.map(idToRoadSectionSortedMap, NWB_VERSION_INT))
                 .thenReturn(geoJson);
+
+        when(fileService.createTmpGeoJsonFile(GENERATE_GEO_JSON_TYPE)).thenReturn(tmpFilePath);
+        when(tmpFilePath.toFile()).thenReturn(tmpFile);
 
         when(generateConfiguration.getObjectMapper()).thenReturn(objectMapper);
 
@@ -125,15 +142,10 @@ class GenerateGeoJsonServiceTest {
         when(nlsEvent.getSubject()).thenReturn(nlsEventSubject);
         when(nlsEventSubject.getType()).thenReturn(NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C6);
 
-
         generateGeoJsonService.generate(GENERATE_GEO_JSON_TYPE);
 
-
-        // @todo: fix any class
-        verify(objectMapper).writeValue(any(File.class), eq(geoJson));
+        verify(objectMapper).writeValue(tmpFile, geoJson);
 
         verify(messageService).publish(nlsEvent);
-
-
     }
 }
