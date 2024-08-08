@@ -20,6 +20,7 @@ public class TrafficSignProperties {
     @Value
     @Validated
     public static class TrafficSignApiProperties {
+
         @NotNull
         URI baseUrl;
 

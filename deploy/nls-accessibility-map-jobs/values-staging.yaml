@@ -4,4 +4,4 @@ application:
   databaseHost: nls-postgres-staging.postgres.database.azure.com
   loggingLevelNuNdwNlsAccessibilityMap: DEBUG
 
-trafficSignApiUrl: https://data.staging.ndw.nu/api/rest/static-road-data/traffic-signs/v3
+trafficSignApiUrl: https://data.staging.ndw.nu/api/rest/static-road-data/traffic-signs/v4

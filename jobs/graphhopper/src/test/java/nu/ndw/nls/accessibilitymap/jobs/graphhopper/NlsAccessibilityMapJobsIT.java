@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper;
 
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.HGV_ACCESS_FORBIDDEN_WINDOWED;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_HEIGHT;
-import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_LENGTH;
+import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_WIDTH;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MOTOR_VEHICLE_ACCESS_FORBIDDEN;
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +38,6 @@ class NlsAccessibilityMapJobsIT {
 
     private static final String NETWORK_NAME = "accessibility_latest";
     private static final String PROPERTIES = "properties";
-    private static final Instant EXPECTED_DATA_DATE = Instant.parse("2024-01-30T15:23:14Z");
 
     // Mocking this bean to prevent stderr output about missing PicoCLI commands when running IT
     @MockBean
@@ -71,11 +70,11 @@ class NlsAccessibilityMapJobsIT {
         NetworkGraphHopper networkGraphHopper = networkService.loadFromDisk(networkSettings);
         assertThat(networkGraphHopper).isNotNull();
         assertThat(networkGraphHopper.getImportDate()).isNotNull();
-        assertThat(networkGraphHopper.getDataDate()).isEqualTo(EXPECTED_DATA_DATE);
+        assertThat(networkGraphHopper.getDataDate()).isNotNull();
+        assertTrue(networkGraphHopper.getImportDate().isAfter(networkGraphHopper.getDataDate()));
 
         // Text sign type TIJD with windowed restriction
         assertEdgeValue(networkGraphHopper, 307324006, HGV_ACCESS_FORBIDDEN_WINDOWED, false, false);
-
         // Text sign type TIJD
         assertEdgeValue(networkGraphHopper, 319325003, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
         // Text sign type UIT
@@ -93,7 +92,7 @@ class NlsAccessibilityMapJobsIT {
         // Black code - driving direction H
         assertEdgeValue(networkGraphHopper, 316335071, MAX_HEIGHT, 4.0, Double.POSITIVE_INFINITY);
         // Black code - driving direction null
-        assertEdgeValue(networkGraphHopper, 600389685, MAX_LENGTH, 10.0, 10.0);
+        assertEdgeValue(networkGraphHopper, 600137823, MAX_WIDTH, 3.5, 3.5);
     }
 
     private void assertEdgeValue(NetworkGraphHopper networkGraphHopper, long roadSectionId,

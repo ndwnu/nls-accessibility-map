@@ -26,7 +26,7 @@ extends:
     mavenReleaseGoal: deploy
     mavenDeployToNdwShared: true
     sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**'
-    sonarOptionalExclusions: '**/generated/**'
+    sonarOptionalExclusions: '**/generated/**,**/StreamingJsonBodyExtractor.*'
     mavenOptionalBuildOptions: '-Pregression-test'
     pushToGitHub: true
     dockerImages:

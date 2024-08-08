@@ -16,11 +16,11 @@ class TrafficSignDataTest {
     private static final long ROAD_SECTION_ID_NOT_PRESENT = 2L;
 
     @Mock
-    private TrafficSignJsonDtoV3 trafficSign;
+    private TrafficSignGeoJsonDto trafficSign;
 
     @Test
     void getTrafficSignsByRoadSectionId_ok() {
-        Map<Long, List<TrafficSignJsonDtoV3>> map = Map.of(ROAD_SECTION_ID_PRESENT, List.of(trafficSign));
+        Map<Long, List<TrafficSignGeoJsonDto>> map = Map.of(ROAD_SECTION_ID_PRESENT, List.of(trafficSign));
 
         TrafficSignData data = new TrafficSignData(map, null, null);
 

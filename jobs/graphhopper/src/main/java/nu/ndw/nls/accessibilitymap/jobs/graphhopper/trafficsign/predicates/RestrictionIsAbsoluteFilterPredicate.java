@@ -2,9 +2,9 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.predicates;
 
 import java.util.List;
 import java.util.Objects;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper.TrafficSignIncludedFilterPredicate;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignJsonDtoV3;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -21,12 +21,12 @@ public class RestrictionIsAbsoluteFilterPredicate implements TrafficSignIncluded
             "VRIJ");
 
     @Override
-    public boolean test(TrafficSignJsonDtoV3 trafficSignJsonDtoV3) {
-        if (CollectionUtils.isEmpty(trafficSignJsonDtoV3.getTextSigns())) {
+    public boolean test(TrafficSignGeoJsonDto trafficSignJsonDto) {
+        if (CollectionUtils.isEmpty(trafficSignJsonDto.getProperties().getTextSigns())) {
             return true;
         }
-        return trafficSignJsonDtoV3.getTextSigns().stream()
-                .map(TextSignJsonDtoV3::getType)
+        return trafficSignJsonDto.getProperties().getTextSigns().stream()
+                .map(TextSignDto::getType)
                 .filter(Objects::nonNull)
                 .noneMatch(IGNORED_TEXT_SIGN_TYPES::contains);
     }

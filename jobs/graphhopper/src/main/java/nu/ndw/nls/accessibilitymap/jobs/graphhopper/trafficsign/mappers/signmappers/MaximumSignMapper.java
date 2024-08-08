@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.signmap
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignJsonDtoV3;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 
 @Slf4j
 public class MaximumSignMapper extends SignMapper<Double> {
@@ -16,17 +16,17 @@ public class MaximumSignMapper extends SignMapper<Double> {
     }
 
     @Override
-    Optional<Double> getValue(TrafficSignJsonDtoV3 trafficSign) {
-        if (trafficSign.getBlackCode() == null) {
+    Optional<Double> getValue(TrafficSignGeoJsonDto trafficSign) {
+        if (trafficSign.getProperties().getBlackCode() == null) {
             return Optional.empty();
         }
 
         try {
-            return Optional.of(Double.parseDouble(trafficSign.getBlackCode().replace(",", ".")));
+            return Optional.of(Double.parseDouble(trafficSign.getProperties().getBlackCode().replace(",", ".")));
         } catch (NumberFormatException ignored) {
             log.debug("Unprocessable value {} for traffic sign with RVV code {} on road section {}",
-                    trafficSign.getBlackCode(), trafficSign.getRvvCode(),
-                    trafficSign.getLocation().getRoad().getRoadSectionId());
+                    trafficSign.getProperties().getBlackCode(), trafficSign.getProperties().getRvvCode(),
+                    trafficSign.getProperties().getRoadSectionId());
             return Optional.empty();
         }
     }
