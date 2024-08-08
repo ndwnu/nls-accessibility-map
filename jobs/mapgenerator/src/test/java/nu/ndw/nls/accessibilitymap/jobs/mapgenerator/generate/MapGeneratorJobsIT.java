@@ -114,8 +114,8 @@ class MapGeneratorJobsIT {
 
         assertEquals(NlsEventType.MAP_GEOJSON_PUBLISHED_EVENT, result.getType());
         assertEquals(nlsEventSubjectType, result.getSubject().getType());
-        assertEquals("20240101", result.getSubject().getVersion());
-        assertEquals("20240101", result.getSubject().getNwbVersion());
+        assertEquals("20240701", result.getSubject().getVersion());
+        assertEquals("20240701", result.getSubject().getNwbVersion());
     }
 
     private Path formatWindowTimesPath(String geojsonFileName) {
