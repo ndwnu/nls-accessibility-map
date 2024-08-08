@@ -114,7 +114,7 @@ class MapGeneratorJobsIT {
 
         assertEquals(NlsEventType.MAP_GEOJSON_PUBLISHED_EVENT, result.getType());
         assertEquals(nlsEventSubjectType, result.getSubject().getType());
-        assertEquals("20240701", result.getSubject().getVersion());
+        assertEquals(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE), result.getSubject().getVersion());
         assertEquals("20240701", result.getSubject().getNwbVersion());
     }
 
