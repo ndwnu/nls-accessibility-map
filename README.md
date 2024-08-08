@@ -77,3 +77,6 @@ The sample set also did not contain zone codes, therefor 4 road sections have be
 This patch will add them:
 [zone-codes.patch](docker%2Ftraffic-sign-api-stub%2Fsourcecode%2Fzone-codes.patch)
 
+
+## Pretty printing geojson
+jq . c6WindowTimeSegments.geojson | sponge c6WindowTimeSegments.geojson
