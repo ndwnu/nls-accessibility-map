@@ -14,35 +14,35 @@ class VehicleTypeVehiclePropertiesMapperTest {
     @Test
     void map_ok_c6() {
        assertEquals(VehicleProperties.builder()
-               .carAccessForbidden(true)
+               .carAccessForbiddenWt(true)
                .build(), vehicleTypeVehiclePropertiesMapper.map(GenerateGeoJsonType.C6));
     }
 
     @Test
     void map_ok_c7() {
         assertEquals(VehicleProperties.builder()
-                .hgvAccessForbidden(true)
+                .hgvAccessForbiddenWt(true)
                 .build(), vehicleTypeVehiclePropertiesMapper.map(GenerateGeoJsonType.C7));
     }
 
     @Test
     void map_ok_c7b() {
         assertEquals(VehicleProperties.builder()
-                .hgvAndBusAccessForbidden(true)
+                .hgvAndBusAccessForbiddenWt(true)
                 .build(), vehicleTypeVehiclePropertiesMapper.map(GenerateGeoJsonType.C7B));
     }
 
     @Test
     void map_ok_c12() {
         assertEquals(VehicleProperties.builder()
-                .motorVehicleAccessForbidden(true)
+                .motorVehicleAccessForbiddenWt(true)
                 .build(), vehicleTypeVehiclePropertiesMapper.map(GenerateGeoJsonType.C12));
     }
 
     @Test
     void map_ok_c22c() {
         assertEquals(VehicleProperties.builder()
-                .lcvAndHgvAccessForbidden(true)
+                .lcvAndHgvAccessForbiddenWt(true)
                 .build(), vehicleTypeVehiclePropertiesMapper.map(GenerateGeoJsonType.C22C));
     }
 

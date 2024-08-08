@@ -220,6 +220,17 @@
                                     <commandlineArgs>../../scripts/pg-isready.sh</commandlineArgs>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>wait-for-rabbitmq</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../../scripts/rabbit-isready.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
 
                             <execution>
                                 <id>docker-compose-build-nls-accessibility-configure-rabbit</id>
@@ -236,7 +247,7 @@
                             </execution>
 
                             <execution>
-                                <id>docker-compose-run-create-or-update-network</id>
+                                <id>docker-compose-run-nls-accessibility-map-generator-job-c6</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -250,18 +261,78 @@
                                     </arguments>
                                 </configuration>
                             </execution>
-<!--                            <execution>-->
-<!--                                <id>docker-compose-stop</id>-->
-<!--                                <phase>post-integration-test</phase>-->
-<!--                                <goals>-->
-<!--                                    <goal>exec</goal>-->
-<!--                                </goals>-->
-<!--                                <configuration>-->
-<!--                                    <arguments combine.children="append">-->
-<!--                                        <argument>stop</argument>-->
-<!--                                    </arguments>-->
-<!--                                </configuration>-->
-<!--                            </execution>-->
+                            <execution>
+                                <id>docker-compose-run-nls-accessibility-map-generator-job-c7</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>-e</argument>
+                                        <argument>COMMAND=generateGeoJson C7</argument>
+                                        <argument>nls-accessibility-map-generator-jobs</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-nls-accessibility-map-generator-job-c7b</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>-e</argument>
+                                        <argument>COMMAND=generateGeoJson C7B</argument>
+                                        <argument>nls-accessibility-map-generator-jobs</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-nls-accessibility-map-generator-job-c12</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>-e</argument>
+                                        <argument>COMMAND=generateGeoJson C12</argument>
+                                        <argument>nls-accessibility-map-generator-jobs</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-nls-accessibility-map-generator-job-c22c</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>-e</argument>
+                                        <argument>COMMAND=generateGeoJson C22C</argument>
+                                        <argument>nls-accessibility-map-generator-jobs</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-stop</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>stop</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
                         </executions>
                         <configuration>
                             <arguments>

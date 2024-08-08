@@ -8,6 +8,8 @@ public record VehicleProperties(Double length, Double width, Double height, Doub
                                 boolean hgvAndBusAccessForbidden, boolean tractorAccessForbidden,
                                 boolean slowVehicleAccessForbidden, boolean trailerAccessForbidden,
                                 boolean motorcycleAccessForbidden, boolean motorVehicleAccessForbidden,
-                                boolean lcvAndHgvAccessForbidden) {
+                                boolean lcvAndHgvAccessForbidden, boolean carAccessForbiddenWt,
+                                boolean hgvAccessForbiddenWt, boolean hgvAndBusAccessForbiddenWt,
+                                boolean motorVehicleAccessForbiddenWt, boolean lcvAndHgvAccessForbiddenWt ) {
 
 }

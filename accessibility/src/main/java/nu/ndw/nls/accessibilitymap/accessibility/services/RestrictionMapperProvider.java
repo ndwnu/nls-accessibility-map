@@ -2,9 +2,13 @@ package nu.ndw.nls.accessibilitymap.accessibility.services;
 
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.BUS_ACCESS_FORBIDDEN;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.CAR_ACCESS_FORBIDDEN;
+import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.CAR_ACCESS_FORBIDDEN_WINDOWED;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.HGV_ACCESS_FORBIDDEN;
+import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.HGV_ACCESS_FORBIDDEN_WINDOWED;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.HGV_AND_BUS_ACCESS_FORBIDDEN;
+import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.HGV_AND_BUS_ACCESS_FORBIDDEN_WINDOWED;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.LCV_AND_HGV_ACCESS_FORBIDDEN;
+import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.LCV_AND_HGV_ACCESS_FORBIDDEN_WINDOWED;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_AXLE_LOAD;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_HEIGHT;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_LENGTH;
@@ -44,6 +48,13 @@ public class RestrictionMapperProvider {
             MOTOR_VEHICLE_ACCESS_FORBIDDEN, VehicleProperties::motorVehicleAccessForbidden,
             LCV_AND_HGV_ACCESS_FORBIDDEN, VehicleProperties::lcvAndHgvAccessForbidden);
 
+    private static final Map<String, Predicate<VehicleProperties>> NO_ENTRY_RESTRICTION_WINDOW_TIMES_MAP = Map.of(
+            CAR_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::carAccessForbiddenWt,
+            HGV_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::hgvAccessForbiddenWt,
+            HGV_AND_BUS_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::hgvAndBusAccessForbiddenWt,
+            MOTOR_VEHICLE_ACCESS_FORBIDDEN, VehicleProperties::motorVehicleAccessForbiddenWt,
+            LCV_AND_HGV_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::lcvAndHgvAccessForbiddenWt);
+
     private static final Map<String, Function<VehicleProperties, Double>> MAXIMUM_RESTRICTION_MAP = Map.of(
             MAX_LENGTH, VehicleProperties::length,
             MAX_WIDTH, VehicleProperties::width,
@@ -54,6 +65,8 @@ public class RestrictionMapperProvider {
     public List<RestrictionMapper> getMappers() {
         List<RestrictionMapper> restrictionMappers = new ArrayList<>();
         NO_ENTRY_RESTRICTION_MAP.forEach((key, vehiclePredicate) ->
+                restrictionMappers.add(new NoEntryRestrictionMapper(key, vehiclePredicate)));
+        NO_ENTRY_RESTRICTION_WINDOW_TIMES_MAP.forEach((key, vehiclePredicate) ->
                 restrictionMappers.add(new NoEntryRestrictionMapper(key, vehiclePredicate)));
         MAXIMUM_RESTRICTION_MAP.forEach((key, doubleGetter) ->
                 restrictionMappers.add(new MaximumRestrictionMapper(key, doubleGetter)));

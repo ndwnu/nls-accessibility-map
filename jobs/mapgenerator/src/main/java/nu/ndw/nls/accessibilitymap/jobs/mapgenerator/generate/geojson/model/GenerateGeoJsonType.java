@@ -8,11 +8,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties.Vehicle
 @Getter
 @RequiredArgsConstructor
 public enum GenerateGeoJsonType {
-    C6(b -> b.carAccessForbidden(true)),
-    C7(b -> b.hgvAccessForbidden(true)),
-    C7B(b -> b.hgvAndBusAccessForbidden(true)),
-    C12(b -> b.motorVehicleAccessForbidden(true)),
-    C22C(b -> b.lcvAndHgvAccessForbidden(true));
+    C6(b -> b.carAccessForbiddenWt(true)),
+    C7(b -> b.hgvAccessForbiddenWt(true)),
+    C7B(b -> b.hgvAndBusAccessForbiddenWt(true)),
+    C12(b -> b.motorVehicleAccessForbiddenWt(true)),
+    C22C(b -> b.lcvAndHgvAccessForbiddenWt(true));
 
     private final Consumer<VehiclePropertiesBuilder> vehiclePropertiesConfigurer;
 
