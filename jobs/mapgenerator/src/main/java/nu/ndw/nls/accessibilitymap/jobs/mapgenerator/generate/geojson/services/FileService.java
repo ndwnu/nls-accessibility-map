@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.LocalDate;
+import java.util.Locale;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +25,22 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FileService {
 
+    private static final FileAttribute<?> FILE_PERMISSIONS = PosixFilePermissions.asFileAttribute(
+            Set.of(OWNER_READ, OWNER_WRITE, OTHERS_READ));
+
     private static final FileAttribute<?> FOLDER_PERMISSIONS = PosixFilePermissions.asFileAttribute(
             Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE));
 
     private final BlobStorageLocationMapper blobStorageLocationMapper;
+
+    public Path createTmpGeoJsonFile(GenerateGeoJsonType type) {
+        try {
+            return Files.createTempFile("accessibility-" + type.toString().toLowerCase(Locale.ROOT) + "-", ".geojson",
+                    FILE_PERMISSIONS);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to create tmp file for geojson response", e);
+        }
+    }
 
     public void uploadFile(GenerateGeoJsonType type, Path geojsonTmpResult, LocalDate versionDate) {
         Path mapDestinationPath = blobStorageLocationMapper.map(type, versionDate);

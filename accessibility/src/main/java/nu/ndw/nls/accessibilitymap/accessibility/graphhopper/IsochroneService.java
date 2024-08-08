@@ -79,7 +79,7 @@ public class IsochroneService {
         }
 
         IntEncodedValue idEnc = encodingManager.getIntEncodedValue(MUNICIPALITY_CODE);
-        return getMunicipalityCode(isoLabel, queryGraph, idEnc)== isochroneArguments.municipalityId();
+        return getMunicipalityCode(isoLabel, queryGraph, idEnc) == isochroneArguments.municipalityId();
     }
 
     private int getMunicipalityCode(IsoLabel isoLabel, QueryGraph queryGraph, IntEncodedValue idEnc) {

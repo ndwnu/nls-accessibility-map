@@ -1,11 +1,16 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.nio.file.attribute.PosixFilePermission.OTHERS_READ;
+import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
+import static java.nio.file.attribute.PosixFilePermission.OWNER_WRITE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Set;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
@@ -64,4 +69,18 @@ class FileServiceTest {
         assertTrue(Files.exists(destinationFile));
         assertEquals(TESTCONTENT, Files.readString(destinationFile));
     }
+
+    @Test
+    @SneakyThrows
+    void createTempGeoJsonFile_ok() {
+        Path tempFile = fileService.createTmpGeoJsonFile(GenerateGeoJsonType.C6);
+
+        assertTrue(tempFile.getFileName().toString().startsWith("accessibility-c6-"));
+        assertTrue(tempFile.getFileName().toString().endsWith(".geojson"));
+
+        assertTrue(Files.exists(tempFile));
+
+        assertEquals(Set.of(OWNER_READ, OWNER_WRITE, OTHERS_READ), Files.getPosixFilePermissions(tempFile));
+    }
+
 }
