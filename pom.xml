@@ -36,9 +36,9 @@
         <springdoc.version>2.6.0</springdoc.version>
         <stream-utils.version>1.3.1</stream-utils.version>
         <swagger-annotations.version>2.2.22</swagger-annotations.version>
-        <nls-events.version>4.0.3-SNAPSHOT</nls-events.version>
+        <nls-events.version>4.0.3</nls-events.version>
         <nls-nwb-data-access.version>6.0.0</nls-nwb-data-access.version>
-        <nls-springboot.version>4.2.1-SNAPSHOT</nls-springboot.version>
+        <nls-springboot.version>4.2.1</nls-springboot.version>
         <routing-map-matcher.version>9.0.19</routing-map-matcher.version>
         <nls-geometry.version>2.2.0</nls-geometry.version>
         <jackson-geojson.version>1.14</jackson-geojson.version>
