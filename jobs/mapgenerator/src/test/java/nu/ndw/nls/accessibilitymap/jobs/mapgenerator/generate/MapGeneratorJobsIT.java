@@ -17,6 +17,8 @@ import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
 import nu.ndw.nls.springboot.messaging.services.MessageReceiveService.ReceiveKey;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
@@ -41,28 +43,28 @@ class MapGeneratorJobsIT {
 
     @Test
     void messageReceived_ok_c6Published() {
-        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C6);
+        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6);
     }
 
     @Test
     void messageReceived_ok_c7Published() {
-        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C7);
+        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7);
     }
 
     @Test
     void messageReceived_ok_c7bPublished() {
-        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C7B);
+        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7B);
     }
 
     @Test
     void messageReceived_ok_c12Published() {
-        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C12);
+        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C12);
     }
 
 
     @Test
     void messageReceived_ok_c22cPublished() {
-        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C22C);
+        verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C22C);
     }
 
     @Test
@@ -98,9 +100,15 @@ class MapGeneratorJobsIT {
 
     @SneakyThrows
     private void verifyGeoJson(String geojsonFileName) {
-        Path geojsonFilePath = formatWindowTimesPath(geojsonFileName);
+        Path geojsonFilePath = formatGeneratedWindowTimesPath(geojsonFileName);
         assertTrue(Files.exists(geojsonFilePath), "GeoJson file must exist");
         assertTrue(Files.size(geojsonFilePath) > 0, "GeoJson file must not be 0 bytes");
+
+        String actualJson =  Files.readString(geojsonFilePath);
+
+        Path expectedPath = formatExpectedWindowTimesPath(geojsonFileName);
+        String expectedJson = Files.readString(expectedPath);
+        JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.STRICT);
     }
 
     private void verifyMessageAvailable(NlsEventSubjectType nlsEventSubjectType) {
@@ -118,11 +126,15 @@ class MapGeneratorJobsIT {
         assertEquals("20240701", result.getSubject().getNwbVersion());
     }
 
-    private Path formatWindowTimesPath(String geojsonFileName) {
+    private Path formatExpectedWindowTimesPath(String geojsonFileName) {
+        return Path.of("src/test/resources/expected-it-results/api/v1/windowTimes/20240808/geojson/")
+                .resolve(geojsonFileName);
+    }
+
+    private Path formatGeneratedWindowTimesPath(String geojsonFileName) {
         return Path.of(DESTINATION_PATH + "/api/v1/windowTimes/" + LocalDate.now()
                 .format(DateTimeFormatter.BASIC_ISO_DATE) +
                 "/geojson/").resolve(geojsonFileName);
-
     }
 
 
