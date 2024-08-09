@@ -8,27 +8,27 @@ nu:
               - queue: integration_test_window_times_rvv_code_c6
                 expected-event-types:
                 - MAP_GEOJSON_PUBLISHED_EVENT
-                eventSubjectType: ACCESSIBILITY_RVV_CODE_C6
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6
                 initialize: DECLARE
               - queue: integration_test_window_times_rvv_code_c7
                 expected-event-types:
                   - MAP_GEOJSON_PUBLISHED_EVENT
-                eventSubjectType: ACCESSIBILITY_RVV_CODE_C7
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7
                 initialize: DECLARE
               - queue: integration_test_window_times_rvv_code_c7b
                 expected-event-types:
                   - MAP_GEOJSON_PUBLISHED_EVENT
-                eventSubjectType: ACCESSIBILITY_RVV_CODE_C7B
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7B
                 initialize: DECLARE
               - queue: integration_test_window_times_rvv_code_c12
                 expected-event-types:
                   - MAP_GEOJSON_PUBLISHED_EVENT
-                eventSubjectType: ACCESSIBILITY_RVV_CODE_C12
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C12
                 initialize: DECLARE
               - queue: integration_test_window_times_rvv_code_c22c
                 expected-event-types:
                   - MAP_GEOJSON_PUBLISHED_EVENT
-                eventSubjectType: ACCESSIBILITY_RVV_CODE_C22C
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C22C
                 initialize: DECLARE
 
 graphhopper:

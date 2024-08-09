@@ -28,7 +28,8 @@ class AccessibilityGeoJsonGeneratedEventMapperTest {
     private static final int VERSION = 202301002;
     private static final String VERSION_AS_STRING = "202301002";
     private static final GenerateGeoJsonType GENERATE_GEO_JSON_TYPE = GenerateGeoJsonType.C6;
-    private static final NlsEventSubjectType NLS_EVENT_SUBJECT_TYPE = NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C6;
+    private static final NlsEventSubjectType NLS_EVENT_SUBJECT_TYPE =
+            NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6;
 
     @Mock
     private GenerateConfiguration generateConfiguration;

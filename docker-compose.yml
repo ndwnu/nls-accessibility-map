@@ -99,6 +99,7 @@ services:
 
   nls-messaging-configurator-graphhopper:
     image: messagingconfigurator
+#    image: ndwnls.azurecr.io/nls-messaging-configurator:${NLS_MESSAGING_CONFIGURATOR_VERSION}
     volumes:
       - ./docker/nls-messaging-configurator/graphhopper/application.yml:/application/config/application.yml
     environment:
@@ -110,6 +111,7 @@ services:
 
   nls-messaging-configurator-mapgenerator:
     image: messagingconfigurator
+#    image: ndwnls.azurecr.io/nls-messaging-configurator:${NLS_MESSAGING_CONFIGURATOR_VERSION}
     volumes:
       - ./docker/nls-messaging-configurator/mapgenerator/application.yml:/application/config/application.yml
     environment:

@@ -139,7 +139,7 @@ class GenerateGeoJsonServiceTest {
 
         when(nlsEvent.getType()).thenReturn(NlsEventType.MAP_GEOJSON_PUBLISHED_EVENT);
         when(nlsEvent.getSubject()).thenReturn(nlsEventSubject);
-        when(nlsEventSubject.getType()).thenReturn(NlsEventSubjectType.ACCESSIBILITY_RVV_CODE_C6);
+        when(nlsEventSubject.getType()).thenReturn(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6);
 
         generateGeoJsonService.generate(GENERATE_GEO_JSON_TYPE);
 
