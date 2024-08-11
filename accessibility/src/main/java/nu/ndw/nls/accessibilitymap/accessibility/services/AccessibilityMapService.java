@@ -42,7 +42,7 @@ public class AccessibilityMapService {
         DIFFERENCE_OF_ADDED_RESTRICTIONS,
         // Includes all NWB road sections to determine the accessibility and then uses isochrone to determine how
         // traffic signs are adding additional restrictions. The result is a map that indicates which road sections
-        // you cannot access starting from the start point
+        // you cannot reach from the start point.
         EFFECTIVE_ACCESSIBILITY;
     }
 

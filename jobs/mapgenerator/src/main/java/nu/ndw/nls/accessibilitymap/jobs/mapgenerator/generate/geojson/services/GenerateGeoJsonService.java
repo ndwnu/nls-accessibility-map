@@ -63,7 +63,7 @@ public class GenerateGeoJsonService {
         SortedMap<Integer, RoadSection> idToRoadSectionSortedMap =
                 accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
                         generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters()
-                , ResultType.EFFECTIVE_ACCESSIBILITY);
+                , ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
 
         logDebugStatistics(idToRoadSectionSortedMap);
 
