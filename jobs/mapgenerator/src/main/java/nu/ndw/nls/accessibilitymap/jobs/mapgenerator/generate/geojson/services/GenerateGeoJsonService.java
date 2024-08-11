@@ -12,6 +12,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
+import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonGeneratedEventMapper;
@@ -61,7 +62,8 @@ public class GenerateGeoJsonService {
 
         SortedMap<Integer, RoadSection> idToRoadSectionSortedMap =
                 accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
-                        generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters());
+                        generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters()
+                , ResultType.EFFECTIVE_ACCESSIBILITY);
 
         logDebugStatistics(idToRoadSectionSortedMap);
 
