@@ -137,6 +137,45 @@ class AccessibilityMapServiceTest {
 
 
     @Test
+    void determineAccessibilityByRoadSection_ok_byStartPointAndDistanceEffectiveAccessibilityAllAccessibleIsochroneEffectivelyAccessible() {
+        when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
+
+        when(accessibleRoadSectionsService.getRoadSections())
+                .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
+
+        when(accessibleRoadsService.getVehicleAccessibleRoads(accessibilityMap, vehicleProperties,
+                startPoint, SEARCH_DISTANCE_IN_METERS)).thenReturn(List.of(IsochroneMatch.builder()
+                        .matchedLinkId(ID_1)
+                        .geometry(LINE_STRING_1)
+                        .reversed(false)
+                        .build(),
+                IsochroneMatch.builder()
+                        .matchedLinkId(ID_1)
+                        .geometry(LINE_STRING_1)
+                        .reversed(true)
+                        .build(),
+                IsochroneMatch.builder()
+                        .matchedLinkId(ID_2)
+                        .geometry(LINE_STRING_2)
+                        .reversed(false)
+                        .build(),
+                IsochroneMatch.builder()
+                        .matchedLinkId(ID_3)
+                        .geometry(LINE_STRING_3)
+                        .reversed(true)
+                        .build()));
+
+        SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
+                .determineAccessibilityByRoadSection(vehicleProperties, startPoint, SEARCH_DISTANCE_IN_METERS,
+                        ResultType.EFFECTIVE_ACCESSIBILITY);
+
+        assertThat(idToRoadSections).hasSize(3)
+                .containsEntry(ID_1, new RoadSection(ID_1, LINE_STRING_1, true, true))
+                .containsEntry(ID_2, new RoadSection(ID_2, LINE_STRING_2, true, null))
+                .containsEntry(ID_3, new RoadSection(ID_3, LINE_STRING_3, null, true));
+    }
+
+    @Test
     void determineAccessibilityByRoadSection_ok_noAccessibleIsochroneSectionsEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
