@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import java.util.SortedMap;
+import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.backend.controllers.AccessibilityMapApiDelegateImpl.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
@@ -168,7 +169,8 @@ class AccessibilityMapApiDelegateImplTest {
         when(pointMapper.mapCoordinateAllowNulls(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(requestedPoint);
         when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
         when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
-        when(accessibilityMapService.determineAccessibilityByRoadSection(eq(vehicleProperties), eq(MUNICIPALITY_ID)))
+        when(accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID,
+                ResultType.EFFECTIVE_ACCESSIBILITY))
                 .thenReturn(idToRoadSectionMap);
     }
 }

@@ -5,6 +5,7 @@ import java.util.SortedMap;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.PointMatchingRoadSectionNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
@@ -94,7 +95,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private SortedMap<Integer, RoadSection> getAccessibility(String municipalityId, VehicleArguments requestArguments) {
         VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
-        return accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, municipalityId);
+        return accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, municipalityId,
+                ResultType.EFFECTIVE_ACCESSIBILITY);
     }
 
     @Builder
