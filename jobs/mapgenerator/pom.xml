@@ -201,7 +201,7 @@
                             <!-- Make sure that this folder is read write by all for the build pipeline to allow docker
                                  user 1000 to write on the volume mount. -->
                             <execution>
-                                <id>chmod-777-graphhopper</id>
+                                <id>chmod-777-maps</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -209,12 +209,11 @@
                                 <configuration>
                                     <arguments>
                                         <argument>777</argument>
-                                        <argument>../../graphhopper</argument>
+                                        <argument>../../map-generation-destination</argument>
                                     </arguments>
                                     <executable>chmod</executable>
                                 </configuration>
-                            </execution>
-                            <execution>
+                            </execution>                            <execution>
                                 <id>wait-for-database</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
