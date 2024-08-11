@@ -1,9 +1,8 @@
-package nu.ndw.nls.accessibilitymap.backend.municipality.mappers;
+package nu.ndw.nls.accessibilitymap.accessibility.municipality.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import nu.ndw.nls.accessibilitymap.accessibility.municipality.mappers.MunicipalityIdMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

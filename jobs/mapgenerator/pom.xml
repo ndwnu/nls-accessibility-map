@@ -213,7 +213,8 @@
                                     </arguments>
                                     <executable>chmod</executable>
                                 </configuration>
-                            </execution>                            <execution>
+                            </execution>
+                            <execution>
                                 <id>wait-for-database</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>

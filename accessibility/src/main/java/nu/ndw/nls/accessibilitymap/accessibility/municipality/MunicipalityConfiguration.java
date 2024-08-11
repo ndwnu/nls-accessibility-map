@@ -19,8 +19,8 @@ public class MunicipalityConfiguration {
             MunicipalityProperties municipalityProperties) {
         this.municipalityMapper = municipalityMapper;
 
-        this.municipalities = new HashMap<>();
 
+        this.municipalities = new HashMap<>();
         municipalityProperties.getMunicipalities()
                 .forEach((name, municipalityProperty) -> this.municipalities.put(name,
                         municipalityMapper.map(municipalityProperty)));

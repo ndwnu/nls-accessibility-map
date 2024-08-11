@@ -7,7 +7,6 @@ import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.util.TraversalMode;
-import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.BaseGraph;
 import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.storage.index.Snap;
@@ -39,10 +38,7 @@ public class IsochroneService {
      * has no restriction and consequently calling this method with a weighting that has restrictions based on vehicles
      * dimensions etc.
      *
-     * @param weighting      The specific weighting ie Custom weighting to filter out inaccessible roads based on
-     *                       vehicle dimensions.
-     * @param startPoint     The start point of the isochrone search
-     * @param municipalityId The id of the municipality to get the isochrone for
+     * @param isochroneArguments  The isochrone arguments
      * @return The list of isochrone matches
      * @see <a href="https://github.com/graphhopper/graphhopper/blob/master/docs/core/custom-models.md">Custom
      * models</a>
