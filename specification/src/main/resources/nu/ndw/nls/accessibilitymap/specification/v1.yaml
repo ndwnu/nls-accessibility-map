@@ -414,6 +414,7 @@ components:
         - searchDistance
         - bounds
         - requestExemptionUrl
+        - dateLastCheck
       properties:
         name:
           type: string
@@ -427,6 +428,11 @@ components:
         requestExemptionUrl:
           type: string
           description: URL to request an exemption
+        dateLastCheck:
+          type: string
+          format: date
+          description: The last validated date.
+
     BoundingBox:
       type: array
       description: The bounding box of a municipality in [west-south, east-north] order

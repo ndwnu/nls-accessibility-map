@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.mappers;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class MunicipalityFeatureMapper {
 
+    private static final String EMPTY_STRING = "";
+
     public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
         return new MunicipalityFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION,
                 municipalities.stream().map(this::mapMunicipality).toList());
@@ -26,11 +29,9 @@ public class MunicipalityFeatureMapper {
     private MunicipalityFeatureJson mapMunicipality(Municipality m) {
         List<List<Double>> bounds = mapMunicipalityBounds(m.getBounds());
 
-        URL requestExemptionUrl = m.getRequestExemptionUrl();
-        String requestExemptionUrlString = "";
-        if (requestExemptionUrl != null) {
-            requestExemptionUrlString = requestExemptionUrl.toString();
-        }
+        String requestExemptionUrlString = Optional.ofNullable(m.getRequestExemptionUrl())
+                .map(URL::toString)
+                .orElse(EMPTY_STRING);
 
         return new MunicipalityFeatureJson(MunicipalityFeatureJson.TypeEnum.FEATURE, m.getMunicipalityId(),
                 mapStartPoint(m))
@@ -38,7 +39,8 @@ public class MunicipalityFeatureMapper {
                         m.getName(),
                         (int) m.getSearchDistanceInMetres(),
                         bounds,
-                        requestExemptionUrlString));
+                        requestExemptionUrlString,
+                        m.getDateLastCheck()));
     }
 
     private PointJson mapStartPoint(Municipality m) {
