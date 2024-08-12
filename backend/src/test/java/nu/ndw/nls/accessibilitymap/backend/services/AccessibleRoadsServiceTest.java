@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
@@ -26,6 +27,8 @@ class AccessibleRoadsServiceTest {
 
     private static final String MUNICIPALITY_ID = "GM0307";
     private static final Municipality MUNICIPALITY;
+    private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
+
 
     static {
         try {
@@ -36,7 +39,8 @@ class AccessibleRoadsServiceTest {
                     307,
                     "Test",
                     new URL("http://iets-met-vergunningen.nl"),
-                    new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2));
+                    new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2),
+                    DATE_LAST_CHECK);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

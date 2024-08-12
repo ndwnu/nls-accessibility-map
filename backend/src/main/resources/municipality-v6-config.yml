@@ -1,0 +1,4447 @@
+municipalities:
+    GM0014:
+        name: "Groningen"
+        start-coordinate-longitude: 6.576083918400632
+        start-coordinate-latitude: 53.18282555933817
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0014"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.46274561567743
+            latitude-from: 53.10619872876451
+            longitude-to: 6.7725267920285965
+            latitude-to: 53.31296372893705
+    GM0034:
+        name: "Almere"
+        start-coordinate-longitude: 5.331849936324421
+        start-coordinate-latitude: 52.313808669594756
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0034"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.060428137909151
+            latitude-from: 52.30239217268957
+            longitude-to: 5.379211048366248
+            latitude-to: 52.58368169751611
+    GM0037:
+        name: "Stadskanaal"
+        start-coordinate-longitude: 7.030530315741497
+        start-coordinate-latitude: 52.93866602956766
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0037"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.8612874465198095
+            latitude-from: 52.91903701141883
+            longitude-to: 7.100077193807268
+            latitude-to: 53.07370169922017
+    GM0047:
+        name: "Veendam"
+        start-coordinate-longitude: 6.950974014711065
+        start-coordinate-latitude: 53.088928572504805
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0047"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.801673952818199
+            latitude-from: 53.03240647842648
+            longitude-to: 6.961913827950905
+            latitude-to: 53.12883973045055
+    GM0050:
+        name: "Zeewolde"
+        start-coordinate-longitude: 5.469619551732883
+        start-coordinate-latitude: 52.265357627967994
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0050"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.301244499218849
+            latitude-from: 52.249527068608344
+            longitude-to: 5.623021180971955
+            latitude-to: 52.44265625442039
+    GM0059:
+        name: "Achtkarspelen"
+        start-coordinate-longitude: 6.106484246506641
+        start-coordinate-latitude: 53.241627530307696
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0059"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.019788971141535
+            latitude-from: 53.1449933990562
+            longitude-to: 6.235100679369517
+            latitude-to: 53.27003651988014
+    GM0060:
+        name: "Ameland"
+        start-coordinate-longitude: 5.6651872485611445
+        start-coordinate-latitude: 53.437131762289575
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0060"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.552855804638939
+            latitude-from: 53.31874307111208
+            longitude-to: 6.004928511463472
+            latitude-to: 53.49394856053802
+    GM0072:
+        name: "Harlingen"
+        start-coordinate-longitude: 5.486879831781403
+        start-coordinate-latitude: 53.19257271161976
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0072"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.095778095841043
+            latitude-from: 53.0010036897306
+            longitude-to: 5.496393514258497
+            latitude-to: 53.25132515011565
+    GM0074:
+        name: "Heerenveen"
+        start-coordinate-longitude: 5.972392268352382
+        start-coordinate-latitude: 52.9889776440474
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0074"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.795507879632288
+            latitude-from: 52.91174044024063
+            longitude-to: 6.205423640165267
+            latitude-to: 53.085207909586764
+    GM0080:
+        name: "Leeuwarden"
+        start-coordinate-longitude: 5.798041287416462
+        start-coordinate-latitude: 53.14087417710878
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0080"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.631993134900175
+            latitude-from: 53.045849234794645
+            longitude-to: 5.949656606510728
+            latitude-to: 53.294720996792684
+    GM0085:
+        name: "Ooststellingwerf"
+        start-coordinate-longitude: 6.204863201721853
+        start-coordinate-latitude: 53.03188261041904
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0085"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.084847696787535
+            latitude-from: 52.9063560652058
+            longitude-to: 6.42761470897187
+            latitude-to: 53.07527937865719
+    GM0086:
+        name: "Opsterland"
+        start-coordinate-longitude: 6.049922534826686
+        start-coordinate-latitude: 53.06001484808389
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0086"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.92758050896325
+            latitude-from: 52.96436363956162
+            longitude-to: 6.332055348602002
+            latitude-to: 53.129213440409536
+    GM0088:
+        name: "Schiermonnikoog"
+        start-coordinate-longitude: 6.178725557937527
+        start-coordinate-latitude: 53.484999194379355
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0088"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.0501246982537005
+            latitude-from: 53.413288807842875
+            longitude-to: 6.418680899659895
+            latitude-to: 53.53971341613774
+    GM0090:
+        name: "Smallingerland"
+        start-coordinate-longitude: 6.139450616000777
+        start-coordinate-latitude: 53.10675471294896
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0090"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.870312588937381
+            latitude-from: 53.070785271639856
+            longitude-to: 6.1857166953395435
+            latitude-to: 53.15950451336305
+    GM0093:
+        name: "Terschelling"
+        start-coordinate-longitude: 5.384882502380607
+        start-coordinate-latitude: 53.40364388877047
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0093"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.087068925720037
+            latitude-from: 53.21561364331057
+            longitude-to: 5.612830790681626
+            latitude-to: 53.47158485690184
+    GM0096:
+        name: "Vlieland"
+        start-coordinate-longitude: 5.076779389654054
+        start-coordinate-latitude: 53.296549402982755
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0096"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.8183757195427965
+            latitude-from: 53.08710514580102
+            longitude-to: 5.163222052811769
+            latitude-to: 53.32307248402281
+    GM0098:
+        name: "Weststellingwerf"
+        start-coordinate-longitude: 6.025002795886286
+        start-coordinate-latitude: 52.87761862505926
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0098"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.81810888635777
+            latitude-from: 52.80071840984214
+            longitude-to: 6.24725868954985
+            latitude-to: 52.9430136540547
+    GM0106:
+        name: "Assen"
+        start-coordinate-longitude: 6.577077398530734
+        start-coordinate-latitude: 53.031957795867285
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0106"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.483947668242866
+            latitude-from: 52.93251481629145
+            longitude-to: 6.632646181860299
+            latitude-to: 53.06192059005827
+    GM0109:
+        name: "Coevorden"
+        start-coordinate-longitude: 6.6371248823414986
+        start-coordinate-latitude: 52.71395053034571
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0109"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.576428508074613
+            latitude-from: 52.626760429826525
+            longitude-to: 6.861875214572832
+            latitude-to: 52.878691288588186
+    GM0114:
+        name: "Emmen"
+        start-coordinate-longitude: 6.841344797235295
+        start-coordinate-latitude: 52.725942927639856
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0114"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.826360775506311
+            latitude-from: 52.632705741008245
+            longitude-to: 7.092739665529219
+            latitude-to: 52.87301202611349
+    GM0118:
+        name: "Hoogeveen"
+        start-coordinate-longitude: 6.448279288982383
+        start-coordinate-latitude: 52.77078043881858
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0118"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.403598844961739
+            latitude-from: 52.65450731166295
+            longitude-to: 6.632412525957688
+            latitude-to: 52.80055649532549
+    GM0119:
+        name: "Meppel"
+        start-coordinate-longitude: 6.199822940676057
+        start-coordinate-latitude: 52.73234447761299
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0119"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.120063659386915
+            latitude-from: 52.667987742818504
+            longitude-to: 6.2867001619101055
+            latitude-to: 52.77305425554323
+    GM0141:
+        name: "Almelo"
+        start-coordinate-longitude: 6.6914705548107145
+        start-coordinate-latitude: 52.31361021687771
+        request-exemption-url:  "https://www.almelo.nl/parkeren-en-verkeer/rvv-ontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0141"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.59770479877282
+            latitude-from: 52.28997394757925
+            longitude-to: 6.721167950668645
+            latitude-to: 52.399122747159986
+    GM0147:
+        name: "Borne"
+        start-coordinate-longitude: 6.724254159046421
+        start-coordinate-latitude: 52.29622729443091
+        request-exemption-url:  "https://www.borne.nl/parkeerontheffing-bewoners"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0147"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.689481310602509
+            latitude-from: 52.28311347961948
+            longitude-to: 6.802135603471685
+            latitude-to: 52.34120753596724
+    GM0148:
+        name: "Dalfsen"
+        start-coordinate-longitude: 6.2874004342864005
+        start-coordinate-latitude: 52.591755430201026
+        request-exemption-url:  "https://www.dalfsen.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0148"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.16249545806607
+            latitude-from: 52.42444067267266
+            longitude-to: 6.384150047655578
+            latitude-to: 52.599171074281806
+    GM0150:
+        name: "Deventer"
+        start-coordinate-longitude: 6.273132188839186
+        start-coordinate-latitude: 52.24235272967694
+        request-exemption-url:  "https://www.deventer.nl/loketten/digitaal-loket/wegenverkeerswet-ontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0150"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.101320378574265
+            latitude-from: 52.217438303895875
+            longitude-to: 6.381911745098505
+            latitude-to: 52.32112185499049
+    GM0153:
+        name: "Enschede"
+        start-coordinate-longitude: 6.768040460503668
+        start-coordinate-latitude: 52.23474783476802
+        request-exemption-url:  "https://www.enschede.nl/ontheffing-verkeersmaatregelen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0153"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.755892710151453
+            latitude-from: 52.16120591785049
+            longitude-to: 6.981100052502818
+            latitude-to: 52.28550574747624
+    GM0158:
+        name: "Haaksbergen"
+        start-coordinate-longitude: 6.7876514584617
+        start-coordinate-latitude: 52.176652847701774
+        request-exemption-url:  "https://www.haaksbergen.nl/woneninhaaksbergen/Meldingen/Gebruik-openbare-ruimte.html"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0158"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.624347345011301
+            latitude-from: 52.11806948966257
+            longitude-to: 6.889750259897004
+            latitude-to: 52.20633143274624
+    GM0160:
+        name: "Hardenberg"
+        start-coordinate-longitude: 6.453525431774509
+        start-coordinate-latitude: 52.60718289207793
+        request-exemption-url:  "https://www.hardenberg.nl/vergunning-of-ontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0160"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.303063686453502
+            latitude-from: 52.46560324783502
+            longitude-to: 6.766693909167976
+            latitude-to: 52.674049271295054
+    GM0163:
+        name: "Hellendoorn"
+        start-coordinate-longitude: 6.4947416220442955
+        start-coordinate-latitude: 52.36317866288604
+        request-exemption-url:  "https://www.hellendoorn.nl/direct-regelen/verkeer-vervoer-en-parkeren/verkeer-en-vervoer/verkeersontheffing-aanvragen/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0163"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.333501865496527
+            latitude-from: 52.318218784544165
+            longitude-to: 6.598147593594392
+            latitude-to: 52.46170246413973
+    GM0164:
+        name: "Hengelo (O)"
+        start-coordinate-longitude: 6.768277140983896
+        start-coordinate-latitude: 52.23484741067631
+        request-exemption-url:  "https://www.hengelo.nl/Inwoners/Vergunningen-en-ontheffingen.html"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0164"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.7020391371711385
+            latitude-from: 52.19106489798405
+            longitude-to: 6.852527342469005
+            latitude-to: 52.31358607982838
+    GM0166:
+        name: "Kampen"
+        start-coordinate-longitude: 5.842976579644237
+        start-coordinate-latitude: 52.61041831578167
+        request-exemption-url:  "https://parkeervergunning.kampen.nl/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0166"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.777749995600547
+            latitude-from: 52.47405758598182
+            longitude-to: 6.033037539277028
+            latitude-to: 52.628302256511844
+    GM0168:
+        name: "Losser"
+        start-coordinate-longitude: 7.043396208050448
+        start-coordinate-latitude: 52.31372426451994
+        request-exemption-url:  "https://www.losser.nl/Vergunningen/Parkeren_en_verkeer/Ontheffing_verkeersregels_en_verkeerstekens"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0168"
+        date-last-check: "2024-07-11"
+        bounds:
+            longitude-from: 6.934324921187539
+            latitude-from: 52.22073698627478
+            longitude-to: 7.072763277819066
+            latitude-to: 52.379859553935795
+    GM0171:
+        name: "Noordoostpolder"
+        start-coordinate-longitude: 5.756450571966774
+        start-coordinate-latitude: 52.78997490595406
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0171"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.377259769107315
+            latitude-from: 52.60733122378312
+            longitude-to: 6.0173013673886055
+            latitude-to: 52.84398224129244
+    GM0173:
+        name: "Oldenzaal"
+        start-coordinate-longitude: 6.929096061911129
+        start-coordinate-latitude: 52.287929176645505
+        request-exemption-url:  "https://www.oldenzaal.nl/parkeren-verkeer-en-vervoer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0173"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.859781375920012
+            latitude-from: 52.28216813834617
+            longitude-to: 6.950389255273435
+            latitude-to: 52.333460191657174
+    GM0175:
+        name: "Ommen"
+        start-coordinate-longitude: 6.4180961183682275
+        start-coordinate-latitude: 52.550332502037506
+        request-exemption-url:  "https://www.ommen.nl/direct-regelen/verkeer-vervoer-parkeren/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0175"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.323412512722235
+            latitude-from: 52.42814451802504
+            longitude-to: 6.60964354052243
+            latitude-to: 52.59258412006463
+    GM0177:
+        name: "Raalte"
+        start-coordinate-longitude: 6.263882335319894
+        start-coordinate-latitude: 52.367814815589995
+        request-exemption-url:  "https://www.raalte.nl/parkeerontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0177"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.1441457470016765
+            latitude-from: 52.300521516109555
+            longitude-to: 6.405169501316309
+            latitude-to: 52.474388353749525
+    GM0180:
+        name: "Staphorst"
+        start-coordinate-longitude: 6.19822739176219
+        start-coordinate-latitude: 52.6669286178249
+        request-exemption-url:  "https://www.staphorst.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0180"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.095916658717079
+            latitude-from: 52.581246293172185
+            longitude-to: 6.3292901217167525
+            latitude-to: 52.69218332319655
+    GM0183:
+        name: "Tubbergen"
+        start-coordinate-longitude: 6.774141648758523
+        start-coordinate-latitude: 52.40409765247543
+        request-exemption-url:  "https://www.tubbergen.nl/ontheffing-parkeerschijfzone"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0183"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.669671715511708
+            latitude-from: 52.32966534723912
+            longitude-to: 6.949223994194982
+            latitude-to: 52.47813155024854
+    GM0184:
+        name: "Urk"
+        start-coordinate-longitude: 5.620263010757767
+        start-coordinate-latitude: 52.65005464766926
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0184"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.361146852663902
+            latitude-from: 52.63478080112358
+            longitude-to: 5.655379146063353
+            latitude-to: 52.76480520298613
+    GM0189:
+        name: "Wierden"
+        start-coordinate-longitude: 6.564726890639714
+        start-coordinate-latitude: 52.28417908627398
+        request-exemption-url:  "https://www.wierden.nl/parkeren-van-grote-voertuigen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0189"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.46818948833463
+            latitude-from: 52.269116175610115
+            longitude-to: 6.631782330979025
+            latitude-to: 52.41751349818893
+    GM0193:
+        name: "Zwolle"
+        start-coordinate-longitude: 6.166022601720456
+        start-coordinate-latitude: 52.54213406313331
+        request-exemption-url:  "https://www.zwolle.nl/parkeervergunningen-voor-bewoners"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0193"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.003619006054876
+            latitude-from: 52.44053072787075
+            longitude-to: 6.210810675187728
+            latitude-to: 52.587940362081035
+    GM0197:
+        name: "Aalten"
+        start-coordinate-longitude: 6.5941288532421485
+        start-coordinate-latitude: 51.932586309150594
+        request-exemption-url:  "https://www.aalten.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0197"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.464335036459655
+            latitude-from: 51.85382302023726
+            longitude-to: 6.668733388664839
+            latitude-to: 51.97436835628652
+    GM0200:
+        name: "Apeldoorn"
+        start-coordinate-longitude: 6.010407620176193
+        start-coordinate-latitude: 52.18432361868645
+        request-exemption-url:  "https://www.apeldoorn.nl/wonen-en-leven/verkeer-en-vervoer/parkeren-en-ontheffingen/rvv-ontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0200"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.726388866191377
+            latitude-from: 52.073338550858374
+            longitude-to: 6.078484116739825
+            latitude-to: 52.28566941033259
+    GM0202:
+        name: "Arnhem"
+        start-coordinate-longitude: 5.946191496628604
+        start-coordinate-latitude: 52.07773466293015
+        request-exemption-url:  "https://www.arnhem.nl/Ondernemers/parkeren_en_verkeer/ontheffing_verkeersregels_wegenverkeerswet"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0202"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.8029605589819555
+            latitude-from: 51.93346419703547
+            longitude-to: 5.990340039057297
+            latitude-to: 52.077890530037294
+    GM0203:
+        name: "Barneveld"
+        start-coordinate-longitude: 5.529740537442248
+        start-coordinate-latitude: 52.16311350824204
+        request-exemption-url:  "https://www.barneveld.nl/vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0203"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.472433304005097
+            latitude-from: 52.100482300519914
+            longitude-to: 5.811932329665282
+            latitude-to: 52.24250306087217
+    GM0209:
+        name: "Beuningen"
+        start-coordinate-longitude: 5.72713614233943
+        start-coordinate-latitude: 51.854840638571396
+        request-exemption-url:  "https://www.beuningen.nl/Omgeving/Verkeer_en_vervoer/Parkeerontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0209"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.667847169830805
+            latitude-from: 51.83227185790586
+            longitude-to: 5.825695330454183
+            latitude-to: 51.8956726528426
+    GM0213:
+        name: "Brummen"
+        start-coordinate-longitude: 6.167840171816554
+        start-coordinate-latitude: 52.108213656929735
+        request-exemption-url:  "https://www.brummen.nl/inwoner-en-ondernemer/vergunning-of-melding"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0213"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.006084877052069
+            latitude-from: 52.059181108403116
+            longitude-to: 6.218380584096643
+            latitude-to: 52.16205943625353
+    GM0214:
+        name: "Buren"
+        start-coordinate-longitude: 5.5497088037082705
+        start-coordinate-latitude: 51.91927958709657
+        request-exemption-url:  "https://www.buren.nl/onderwerp/verkeersontheffing/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0214"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.241921559080901
+            latitude-from: 51.87339498564984
+            longitude-to: 5.586616586992874
+            latitude-to: 51.985947632715416
+    GM0216:
+        name: "Culemborg"
+        start-coordinate-longitude: 5.173013195149512
+        start-coordinate-latitude: 51.92082418446469
+        request-exemption-url:  "https://www.culemborg.nl/parkeervergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0216"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.142432875125701
+            latitude-from: 51.919630121161
+            longitude-to: 5.270373603728995
+            latitude-to: 51.978939629691276
+    GM0221:
+        name: "Doesburg"
+        start-coordinate-longitude: 6.1394574382456755
+        start-coordinate-latitude: 52.0001181290784
+        request-exemption-url:  "https://www.doesburg.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0221"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.109590532752705
+            latitude-from: 51.99556605301775
+            longitude-to: 6.177299024936617
+            latitude-to: 52.04211280288096
+    GM0222:
+        name: "Doetinchem"
+        start-coordinate-longitude: 6.308434057250215
+        start-coordinate-latitude: 51.94524191967565
+        request-exemption-url:  "https://www.buha.nl/parkeerontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0222"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.144688334128358
+            latitude-from: 51.92278202342854
+            longitude-to: 6.416081865598374
+            latitude-to: 51.994260711140846
+    GM0225:
+        name: "Druten"
+        start-coordinate-longitude: 5.617826525034821
+        start-coordinate-latitude: 51.870857806367255
+        request-exemption-url:  "https://www.druten.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0225"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.53098133699644
+            latitude-from: 51.83627384514096
+            longitude-to: 5.685013781320172
+            latitude-to: 51.90180355753511
+    GM0226:
+        name: "Duiven"
+        start-coordinate-longitude: 6.063271974987198
+        start-coordinate-latitude: 51.949100818164496
+        request-exemption-url:  "https://www.duiven.nl/parkeerontheffing-blauwe-zone"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0226"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.9657754667008005
+            latitude-from: 51.912333958978685
+            longitude-to: 6.06885248673068
+            latitude-to: 51.981859315924794
+    GM0228:
+        name: "Ede"
+        start-coordinate-longitude: 5.639135709276101
+        start-coordinate-latitude: 52.0163974567599
+        request-exemption-url:  "https://www.ede.nl/aanvragen-en-regelen/parkeervergunning-of-ontheffing/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0228"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.546744777835979
+            latitude-from: 51.99095145653127
+            longitude-to: 5.951465742566449
+            latitude-to: 52.152228470450225
+    GM0230:
+        name: "Elburg"
+        start-coordinate-longitude: 5.895856876128413
+        start-coordinate-latitude: 52.412424471145506
+        request-exemption-url:  "https://www.elburg.nl/Verkeer_en_vervoer/Parkeren/Parkeerontheffing_binnenstad_voor_bewoners"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0230"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.756291823247239
+            latitude-from: 52.357872767773216
+            longitude-to: 5.924338612117346
+            latitude-to: 52.473401572649244
+    GM0232:
+        name: "Epe"
+        start-coordinate-longitude: 6.009698933413816
+        start-coordinate-latitude: 52.29190348716799
+        request-exemption-url:  "https://www.epe.nl/vergunningen-en-toestemming"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0232"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.840830924100893
+            latitude-from: 52.25580705397305
+            longitude-to: 6.094857433275133
+            latitude-to: 52.39843712018269
+    GM0233:
+        name: "Ermelo"
+        start-coordinate-longitude: 5.550561396875118
+        start-coordinate-latitude: 52.29204002226062
+        request-exemption-url:  "https://www.ermelo.nl/parkeren-en-verkeer/parkeren-in-de-blauwe-zone"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0233"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.54516787616774
+            latitude-from: 52.23932509479616
+            longitude-to: 5.761448675151156
+            latitude-to: 52.33238908183214
+    GM0243:
+        name: "Harderwijk"
+        start-coordinate-longitude: 5.6914979056817945
+        start-coordinate-latitude: 52.3423324528418
+        request-exemption-url:  "https://www.harderwijk.nl/parkeren-verkeer-en-vervoer/ontheffing-parkeren-blauwe-zone"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0243"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.565863593306461
+            latitude-from: 52.30149213064587
+            longitude-to: 5.712847616286344
+            latitude-to: 52.37884125882498
+    GM0244:
+        name: "Hattem"
+        start-coordinate-longitude: 6.037257768702085
+        start-coordinate-latitude: 52.46979683491117
+        request-exemption-url:  "https://www.hattem.nl/Inwoners/Vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0244"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.000788399528778
+            latitude-from: 52.44376557786849
+            longitude-to: 6.10354592886399
+            latitude-to: 52.50960619807545
+    GM0246:
+        name: "Heerde"
+        start-coordinate-longitude: 6.0146046362025265
+        start-coordinate-latitude: 52.39282931630126
+        request-exemption-url:  "https://www.heerde.nl/Inwoners/Meldingen_vergunningen_ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0246"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.951004803613519
+            latitude-from: 52.35651243885214
+            longitude-to: 6.130552872730762
+            latitude-to: 52.45480644058699
+    GM0252:
+        name: "Heumen"
+        start-coordinate-longitude: 5.810502205074141
+        start-coordinate-latitude: 51.790760045494714
+        request-exemption-url:  "https://www.heumen.nl/ontheffing-sluitingstijden"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0252"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.729745375124888
+            latitude-from: 51.75210059428757
+            longitude-to: 5.893409258369337
+            latitude-to: 51.81009627365933
+    GM0262:
+        name: "Lochem"
+        start-coordinate-longitude: 6.39879916397412
+        start-coordinate-latitude: 52.24324653330176
+        request-exemption-url:  "https://www.lochem.nl/vergunningen-meldingen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0262"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.156078707465852
+            latitude-from: 52.09690798819397
+            longitude-to: 6.494372827985843
+            latitude-to: 52.24611280613762
+    GM0263:
+        name: "Maasdriel"
+        start-coordinate-longitude: 5.304463599534091
+        start-coordinate-latitude: 51.73878837613523
+        request-exemption-url:  "https://www.maasdriel.nl/inwoner-en-ondernemer/openbare-ruimte-en-verkeer/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0263"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.173672359902783
+            latitude-from: 51.733580706680684
+            longitude-to: 5.416222927812369
+            latitude-to: 51.83765877048788
+    GM0267:
+        name: "Nijkerk"
+        start-coordinate-longitude: 5.4442522411327925
+        start-coordinate-latitude: 52.21115487160085
+        request-exemption-url:  "https://www.nijkerk.eu/ontheffing-verkeersmaatregel"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0267"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.3932097149631195
+            latitude-from: 52.16576177871054
+            longitude-to: 5.634862021861952
+            latitude-to: 52.263924050870266
+    GM0268:
+        name: "Nijmegen"
+        start-coordinate-longitude: 5.8108401398620595
+        start-coordinate-latitude: 51.79091236450849
+        request-exemption-url:  "https://www.nijmegen.nl/diensten/parkeren-verkeer-en-vervoer/toestemming-laden-lossen-of-parkeren/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0268"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.757620556917187
+            latitude-from: 51.79058910771342
+            longitude-to: 5.908346896634419
+            latitude-to: 51.894620923170514
+    GM0269:
+        name: "Oldebroek"
+        start-coordinate-longitude: 6.012991545008373
+        start-coordinate-latitude: 52.480983191879346
+        request-exemption-url:  "https://www.oldebroek.nl/Inwoners/Vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0269"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.840256035735397
+            latitude-from: 52.39139294080506
+            longitude-to: 6.036944776908896
+            latitude-to: 52.52202501997813
+    GM0273:
+        name: "Putten"
+        start-coordinate-longitude: 5.532337467988452
+        start-coordinate-latitude: 52.26384424836295
+        request-exemption-url:  "https://www.putten.nl/Inwoners/Parkeren_verkeer_vervoer/Parkeren_in_Putten/Verkeersontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0273"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.474192020158972
+            latitude-from: 52.2023362400266
+            longitude-to: 5.683642095377867
+            latitude-to: 52.29330274464
+    GM0274:
+        name: "Renkum"
+        start-coordinate-longitude: 5.762423624685709
+        start-coordinate-latitude: 51.97855813172103
+        request-exemption-url:  "https://www.renkum.nl/Inwoners/Verkeer_en_parkeren/Verkeersontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0274"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.713608217933364
+            latitude-from: 51.95899078639993
+            longitude-to: 5.870860246450447
+            latitude-to: 52.0240705828196
+    GM0275:
+        name: "Rheden"
+        start-coordinate-longitude: 6.01330801087408
+        start-coordinate-latitude: 51.9984697619726
+        request-exemption-url:  "https://www.rheden.nl/Inwoners/Wonen_leefomgeving/Parkeren_en_parkeervergunning"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0275"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.9515263216112775
+            latitude-from: 51.97440609167327
+            longitude-to: 6.137469230956873
+            latitude-to: 52.08824704371003
+    GM0277:
+        name: "Rozendaal"
+        start-coordinate-longitude: 5.956404610358879
+        start-coordinate-latitude: 52.008228543662284
+        request-exemption-url:  "https://www.roosendaal.nl/ontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0277"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.937098857389762
+            latitude-from: 51.99963780639644
+            longitude-to: 6.0089925813897915
+            latitude-to: 52.079164178616075
+    GM0279:
+        name: "Scherpenzeel"
+        start-coordinate-longitude: 5.504686489288674
+        start-coordinate-latitude: 52.08838501528015
+        request-exemption-url:  "https://www.scherpenzeel.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0279"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.459242922467752
+            latitude-from: 52.06961949050708
+            longitude-to: 5.539160181441271
+            latitude-to: 52.1110972632062
+    GM0281:
+        name: "Tiel"
+        start-coordinate-longitude: 5.344573061437183
+        start-coordinate-latitude: 51.87308534217558
+        request-exemption-url:  "https://www.tiel.nl/parkeerontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0281"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.328029978587202
+            latitude-from: 51.851801019555595
+            longitude-to: 5.472451035788485
+            latitude-to: 51.92276135857614
+    GM0285:
+        name: "Voorst"
+        start-coordinate-longitude: 6.102131728552514
+        start-coordinate-latitude: 52.21140833724782
+        request-exemption-url:  "https://www.voorst.nl/groen-water-wegen/wegen-en-verkeer/ontheffing-aanvragen-voor-exceptioneel-transport"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0285"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.0248005892213925
+            latitude-from: 52.143938074211846
+            longitude-to: 6.194369727525956
+            latitude-to: 52.33090728595721
+    GM0289:
+        name: "Wageningen"
+        start-coordinate-longitude: 5.663984679216478
+        start-coordinate-latitude: 51.99394382436018
+        request-exemption-url:  "https://www.wageningen.nl/direct-regelen/parkeren-en-vervoer/vervoer/ontheffing-verkeersregels/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0289"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.605823867554742
+            latitude-from: 51.93640548724297
+            longitude-to: 5.724362611898588
+            latitude-to: 52.00070833017495
+    GM0293:
+        name: "Westervoort"
+        start-coordinate-longitude: 5.98986941636665
+        start-coordinate-latitude: 51.97439051883533
+        request-exemption-url:  "https://www.westervoort.nl/vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0293"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.949249360428601
+            latitude-from: 51.93867536548406
+            longitude-to: 6.0031878768494416
+            latitude-to: 51.9806500047782
+    GM0294:
+        name: "Winterswijk"
+        start-coordinate-longitude: 6.660738095991866
+        start-coordinate-latitude: 52.00473278094567
+        request-exemption-url:  "https://www.winterswijk.nl/blauwe-zone-ontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0294"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.629071271713156
+            latitude-from: 51.89606333668846
+            longitude-to: 6.832801617279222
+            latitude-to: 52.040064709123584
+    GM0296:
+        name: "Wijchen"
+        start-coordinate-longitude: 5.693311582490112
+        start-coordinate-latitude: 51.84173653303321
+        request-exemption-url:  "https://www.wijchen.nl/verkeersontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0296"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.5979766152118655
+            latitude-from: 51.77285104821923
+            longitude-to: 5.8009486647892805
+            latitude-to: 51.867449438999316
+    GM0297:
+        name: "Zaltbommel"
+        start-coordinate-longitude: 5.260385793354194
+        start-coordinate-latitude: 51.81631041615289
+        request-exemption-url:  "https://www.zaltbommel.nl/inwoner-en-ondernemer/openbare-ruimte-en-verkeer/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0297"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.000363907649173
+            latitude-from: 51.73760714234623
+            longitude-to: 5.28843667217568
+            latitude-to: 51.826851292201745
+    GM0299:
+        name: "Zevenaar"
+        start-coordinate-longitude: 6.093762776670753
+        start-coordinate-latitude: 51.93689690205037
+        request-exemption-url:  "https://www.zevenaar.nl/parkeerontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0299"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.987062570298826
+            latitude-from: 51.84072164075819
+            longitude-to: 6.167913042229302
+            latitude-to: 52.01502445025289
+    GM0301:
+        name: "Zutphen"
+        start-coordinate-longitude: 6.267253173271624
+        start-coordinate-latitude: 52.139898111209334
+        request-exemption-url:  "https://zutphen.nl/vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0301"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.140386932727903
+            latitude-from: 52.08873300831716
+            longitude-to: 6.3283143682943805
+            latitude-to: 52.169801272758825
+    GM0302:
+        name: "Nunspeet"
+        start-coordinate-longitude: 5.781016238698832
+        start-coordinate-latitude: 52.36177719043931
+        request-exemption-url:  "https://www.nunspeet.nl/parkeren-verkeer-en-vervoer/parkeerontheffing-blauwe-zone-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0302"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.678921586770261
+            latitude-from: 52.26714586059123
+            longitude-to: 5.880951329263006
+            latitude-to: 52.407426487657645
+    GM0303:
+        name: "Dronten"
+        start-coordinate-longitude: 5.57337625090246
+        start-coordinate-latitude: 52.595047423143534
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0303"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.511294154230413
+            latitude-from: 52.36412959711491
+            longitude-to: 5.864502276623402
+            latitude-to: 52.66355610579793
+    GM0307:
+        name: "Amersfoort"
+        start-coordinate-longitude: 5.334845116067081
+        start-coordinate-latitude: 52.12096528507054
+        request-exemption-url:  "https://amersfoort.parkeerservice.nl/vergunningen/vergunning-aanvragen/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0307"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.3064586356450425
+            latitude-from: 52.10838438725853
+            longitude-to: 5.484329664176056
+            latitude-to: 52.21915384787239
+    GM0308:
+        name: "Baarn"
+        start-coordinate-longitude: 5.330391360460763
+        start-coordinate-latitude: 52.214517823163646
+        request-exemption-url:  "https://www.baarn.nl/parkeren-verkeer-en-vervoer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0308"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.212075564368448
+            latitude-from: 52.16537957660912
+            longitude-to: 5.335808791381667
+            latitude-to: 52.23282882967367
+    GM0310:
+        name: "De Bilt"
+        start-coordinate-longitude: 5.161215715993417
+        start-coordinate-latitude: 52.14719084795029
+        request-exemption-url:  "https://www.debilt.nl/vergunningen-en-belastingen/andere-vergunningen/overige-vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0310"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.094889714575793
+            latitude-from: 52.08489559029354
+            longitude-to: 5.230930385976496
+            latitude-to: 52.20427342551226
+    GM0312:
+        name: "Bunnik"
+        start-coordinate-longitude: 5.217623010166562
+        start-coordinate-latitude: 52.05913940586195
+        request-exemption-url:  "https://www.bunnik.nl/vergunningen/verkeer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0312"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.1530306253977285
+            latitude-from: 51.997742062618
+            longitude-to: 5.280153232216831
+            latitude-to: 52.0805626857814
+    GM0313:
+        name: "Bunschoten"
+        start-coordinate-longitude: 5.368942823884378
+        start-coordinate-latitude: 52.20834332702484
+        request-exemption-url:  "https://www.bunschoten.nl/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0313"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.310456351834595
+            latitude-from: 52.20552770715958
+            longitude-to: 5.404643328230817
+            latitude-to: 52.28773172305773
+    GM0317:
+        name: "Eemnes"
+        start-coordinate-longitude: 5.246869299157719
+        start-coordinate-latitude: 52.24773359495072
+        request-exemption-url:  "https://www.eemnes.nl/Ondernemers/Vergunningen/APV/Ontheffing_verkeer_aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0317"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.222901246812829
+            latitude-from: 52.21927339805437
+            longitude-to: 5.33956358759035
+            latitude-to: 52.29021841425959
+    GM0321:
+        name: "Houten"
+        start-coordinate-longitude: 5.127080050679259
+        start-coordinate-latitude: 52.021173819596655
+        request-exemption-url:  "https://www.houten.nl/verkeer-en-parkeren"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0321"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.119563210007102
+            latitude-from: 51.95943248301828
+            longitude-to: 5.271446597474226
+            latitude-to: 52.05675729602536
+    GM0327:
+        name: "Leusden"
+        start-coordinate-longitude: 5.363992836856216
+        start-coordinate-latitude: 52.12831440882398
+        request-exemption-url:  "https://www.leusden.nl/vergunningen-en-belastingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0327"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.310919800924671
+            latitude-from: 52.089333533242794
+            longitude-to: 5.514079390291914
+            latitude-to: 52.161520089913935
+    GM0331:
+        name: "Lopik"
+        start-coordinate-longitude: 4.968457091837679
+        start-coordinate-latitude: 51.99470332923171
+        request-exemption-url:  "https://www.lopik.nl/advies-en-contact"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0331"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.834101672835238
+            latitude-from: 51.93803067558328
+            longitude-to: 5.062638115444042
+            latitude-to: 52.02562706877481
+    GM0335:
+        name: "Montfoort"
+        start-coordinate-longitude: 4.903019481254423
+        start-coordinate-latitude: 52.07031310844039
+        request-exemption-url:  "https://www.montfoort.nl/Alle_onderwerpen/Vergunningen_en_ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0335"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.868225038756287
+            latitude-from: 52.01001400154113
+            longitude-to: 5.018010507432661
+            latitude-to: 52.079920331188916
+    GM0339:
+        name: "Renswoude"
+        start-coordinate-longitude: 5.519690036430587
+        start-coordinate-latitude: 52.04536209154053
+        request-exemption-url:  "https://www.renswoude.nl/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0339"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.49555456476614
+            latitude-from: 52.03946881250775
+            longitude-to: 5.562746193632119
+            latitude-to: 52.10541954247427
+    GM0340:
+        name: "Rhenen"
+        start-coordinate-longitude: 5.599504523678346
+        start-coordinate-latitude: 51.954985281102175
+        request-exemption-url:  "https://www.rhenen.nl/belasting-en-vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0340"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.47766449953156
+            latitude-from: 51.94312478453369
+            longitude-to: 5.627314460994599
+            latitude-to: 52.01851609710711
+    GM0342:
+        name: "Soest"
+        start-coordinate-longitude: 5.304664104828326
+        start-coordinate-latitude: 52.11570173135389
+        request-exemption-url:  "https://www.soest.nl/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0342"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.243172628139617
+            latitude-from: 52.11027146355069
+            longitude-to: 5.349925435227286
+            latitude-to: 52.20456119609356
+    GM0344:
+        name: "Utrecht"
+        start-coordinate-longitude: 5.001547943824298
+        start-coordinate-latitude: 52.078092444078244
+        request-exemption-url:  "https://loket.digitaal.utrecht.nl/nl/products/ontheffing-voertuig"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0344"
+        date-last-check: "2024-07-11"
+        bounds:
+            longitude-from: 4.970095981700407
+            latitude-from: 52.02628198454681
+            longitude-to: 5.1951549701599244
+            latitude-to: 52.142050597982795
+    GM0345:
+        name: "Veenendaal"
+        start-coordinate-longitude: 5.560379889705201
+        start-coordinate-latitude: 52.042107871115604
+        request-exemption-url:  "https://www.veenendaal.nl/parkeren-en-vervoer/ontheffingen-vervoer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0345"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.512592173395457
+            latitude-from: 51.996958356324996
+            longitude-to: 5.590242100595249
+            latitude-to: 52.04937330660507
+    GM0351:
+        name: "Woudenberg"
+        start-coordinate-longitude: 5.457635570220815
+        start-coordinate-latitude: 52.05083508795219
+        request-exemption-url:  "https://www.woudenberg.nl/over-de-gemeente/parkeren-in-woudenberg#:~:text=Ontheffing%20blauwe%20zone%20Dorpsstraat%2C%20Voorstraat,principe%20%C3%A9%C3%A9n%20ontheffing%20per%20adres."
+        search-distance-in-metres: 50000
+        municipality-id: "GM0351"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.29830071064058
+            latitude-from: 52.043123222272726
+            longitude-to: 5.49787596276079
+            latitude-to: 52.11742618018664
+    GM0352:
+        name: "Wijk bij Duurstede"
+        start-coordinate-longitude: 5.3273950439477815
+        start-coordinate-latitude: 51.99045121568561
+        request-exemption-url:  "https://www.wijkbijduurstede.nl/parkeren-in-de-gemeente/ontheffing-artikel-87-rvv-1990-aanvragen-parkeerontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0352"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.242355106081126
+            latitude-from: 51.954919169897096
+            longitude-to: 5.4152772643999745
+            latitude-to: 52.027001472298316
+    GM0353:
+        name: "IJsselstein"
+        start-coordinate-longitude: 5.07405877016689
+        start-coordinate-latitude: 52.00515878895363
+        request-exemption-url:  "https://www.ijsselstein.nl/Inwoners/Parkeren_verkeer_en_vervoer/Parkeren"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0353"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.978379117467194
+            latitude-from: 51.99123307748739
+            longitude-to: 5.07771755197112
+            latitude-to: 52.06114287197441
+    GM0355:
+        name: "Zeist"
+        start-coordinate-longitude: 5.268292860533793
+        start-coordinate-latitude: 52.108207333425
+        request-exemption-url:  "https://www.zeist.nl/parkeren/parkeervergunning-en-parkeerplek-aanvragen/ontheffing-inrijverbod-centrum"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0355"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.192752057546252
+            latitude-from: 52.05848680359072
+            longitude-to: 5.332611269324696
+            latitude-to: 52.17125091060244
+    GM0356:
+        name: "Nieuwegein"
+        start-coordinate-longitude: 5.073572380712649
+        start-coordinate-latitude: 52.0013511760221
+        request-exemption-url:  "https://www.nieuwegein.nl/parkeren-en-vervoer/vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0356"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.062511476171605
+            latitude-from: 51.997451831997324
+            longitude-to: 5.130993277626078
+            latitude-to: 52.062255565758846
+    GM0358:
+        name: "Aalsmeer"
+        start-coordinate-longitude: 4.768239935837682
+        start-coordinate-latitude: 52.244625487840544
+        request-exemption-url:  "https://www.aalsmeer.nl/regelen-aanvragen/publicatie/vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0358"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.670293393871001
+            latitude-from: 52.21635386511621
+            longitude-to: 4.8238604224389805
+            latitude-to: 52.30577609982684
+    GM0361:
+        name: "Alkmaar"
+        start-coordinate-longitude: 4.740096590846542
+        start-coordinate-latitude: 52.61052101391
+        request-exemption-url:  "https://faq.alkmaar.parkeer.nl/hc/nl/categories/4411182332690-Afgesloten-gebieden"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0361"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.708275691945267
+            latitude-from: 52.51916418308267
+            longitude-to: 4.926925470262355
+            latitude-to: 52.68247524599262
+    GM0362:
+        name: "Amstelveen"
+        start-coordinate-longitude: 4.873304701491144
+        start-coordinate-latitude: 52.297475242519
+        request-exemption-url:  "https://www.amstelveen.nl/regelen-aanvragen/publicatie/vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0362"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.794545501270437
+            latitude-from: 52.24186781967511
+            longitude-to: 4.909151212271173
+            latitude-to: 52.33056990613246
+    GM0363:
+        name: "Amsterdam"
+        start-coordinate-longitude: 4.862065999348135
+        start-coordinate-latitude: 52.33786720044894
+        request-exemption-url:  "https://www.amsterdam.nl/ondernemen/vergunningen/wevos/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0363"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.728758927718665
+            latitude-from: 52.277976609132836
+            longitude-to: 5.107693332999837
+            latitude-to: 52.43106382971276
+    GM0373:
+        name: "Bergen (NH)"
+        start-coordinate-longitude: 4.693087104939854
+        start-coordinate-latitude: 52.63086835469602
+        request-exemption-url:  "https://www.bergen.nl/verkeer-en-vervoer-inwoners"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0373"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.594074429866518
+            latitude-from: 52.57369992616769
+            longitude-to: 4.752464695190686
+            latitude-to: 52.758328848348604
+    GM0375:
+        name: "Beverwijk"
+        start-coordinate-longitude: 4.683751859277428
+        start-coordinate-latitude: 52.48415652213772
+        request-exemption-url:  "https://www.beverwijk.nl/vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0375"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.566312336337431
+            latitude-from: 52.455520407781094
+            longitude-to: 4.707982365923153
+            latitude-to: 52.50203578757033
+    GM0376:
+        name: "Blaricum"
+        start-coordinate-longitude: 5.312618959309285
+        start-coordinate-latitude: 52.30265504102761
+        request-exemption-url:  "https://www.blaricum.nl/Contact_en_openingstijden"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0376"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.203821976439632
+            latitude-from: 52.25466278423581
+            longitude-to: 5.335461439568466
+            latitude-to: 52.30763117601508
+    GM0377:
+        name: "Bloemendaal"
+        start-coordinate-longitude: 4.568089895249409
+        start-coordinate-latitude: 52.39898412836536
+        request-exemption-url:  "https://www.bloemendaal.nl/vergunningen/ontheffingen-voertuigen-gemeente-bloemendaal"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0377"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.526045098591512
+            latitude-from: 52.30929800806598
+            longitude-to: 4.6316475960807475
+            latitude-to: 52.43930240594713
+    GM0383:
+        name: "Castricum"
+        start-coordinate-longitude: 4.719755493330578
+        start-coordinate-latitude: 52.54809790808087
+        request-exemption-url:  "https://www.castricum.nl/aanvragen-en-regelen/parkeerontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0383"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.583320873885979
+            latitude-from: 52.52672755591118
+            longitude-to: 4.781622845330635
+            latitude-to: 52.59258472405917
+    GM0384:
+        name: "Diemen"
+        start-coordinate-longitude: 4.986005013619173
+        start-coordinate-latitude: 52.33965002473205
+        request-exemption-url:  "https://www.diemen.nl/Onderwerpen/Parkeren/Parkeerontheffing_of_vergunning_aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0384"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.9426935545996615
+            latitude-from: 52.313978850281444
+            longitude-to: 5.03996915547677
+            latitude-to: 52.35610167822202
+    GM0385:
+        name: "Edam-Volendam"
+        start-coordinate-longitude: 4.982129717202658
+        start-coordinate-latitude: 52.58556236483793
+        request-exemption-url:  "https://www.edam-volendam.nl/voorwaarden-afwegingskader-ontheffingverlening"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0385"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.949345980738468
+            latitude-from: 52.48456840153729
+            longitude-to: 5.112987771808856
+            latitude-to: 52.612606044055354
+    GM0388:
+        name: "Enkhuizen"
+        start-coordinate-longitude: 5.287073880938181
+        start-coordinate-latitude: 52.69033685874859
+        request-exemption-url:  "https://www.enkhuizen.nl/direct-regelen/wonen-verkeer-en-veiligheid/verkeer-en-vervoer/wegenverkeerswet-ontheffing/406/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0388"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.211337514552924
+            latitude-from: 52.67572642205238
+            longitude-to: 5.377259769107315
+            latitude-to: 52.84063142452944
+    GM0392:
+        name: "Haarlem"
+        start-coordinate-longitude: 4.671424658008959
+        start-coordinate-latitude: 52.37043087066895
+        request-exemption-url:  "https://haarlem.nl/parkeren-en-verkeer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0392"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.599515587312203
+            latitude-from: 52.3389060772508
+            longitude-to: 4.6869211361522085
+            latitude-to: 52.42856966190616
+    GM0394:
+        name: "Haarlemmermeer"
+        start-coordinate-longitude: 4.643670087519128
+        start-coordinate-latitude: 52.23011752364216
+        request-exemption-url:  "https://haarlemmermeergemeente.nl/ontheffing-verkeersregels-en-parkeerverbod"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0394"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.550455092827444
+            latitude-from: 52.214468405263865
+            longitude-to: 4.819158698344317
+            latitude-to: 52.43333616852791
+    GM0396:
+        name: "Heemskerk"
+        start-coordinate-longitude: 4.694826599932204
+        start-coordinate-latitude: 52.487926950624484
+        request-exemption-url:  "https://www.heemskerk.nl/belastingen-en-vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0396"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.5714944462809335
+            latitude-from: 52.486332285068016
+            longitude-to: 4.720367092485904
+            latitude-to: 52.53389206938169
+    GM0397:
+        name: "Heemstede"
+        start-coordinate-longitude: 4.634694576359088
+        start-coordinate-latitude: 52.34081001783016
+        request-exemption-url:  "https://www.heemstede.nl/vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0397"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.590186116110808
+            latitude-from: 52.322204579917795
+            longitude-to: 4.641033667004333
+            latitude-to: 52.36340485716886
+    GM0399:
+        name: "Heiloo"
+        start-coordinate-longitude: 4.718566402198199
+        start-coordinate-latitude: 52.58008633798899
+        request-exemption-url:  "https://www.heiloo.nl/aanvragen-en-regelen/parkeerontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0399"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.670615392841823
+            latitude-from: 52.57873712068994
+            longitude-to: 4.7521386243671575
+            latitude-to: 52.62502542285718
+    GM0400:
+        name: "Den Helder"
+        start-coordinate-longitude: 4.79008192865756
+        start-coordinate-latitude: 52.913702040883635
+        request-exemption-url:  "https://www.denhelder.nl/Onderwerpen/verkeer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0400"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.629450656187513
+            latitude-from: 52.87862622477851
+            longitude-to: 4.925837962721728
+            latitude-to: 53.02197817608086
+    GM0402:
+        name: "Hilversum"
+        start-coordinate-longitude: 5.193553290904537
+        start-coordinate-latitude: 52.20168154214321
+        request-exemption-url:  "https://hilversum.nl/parkeren/parkeervergunningen/laden-lossen-winkelgebied"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0402"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.102013312521359
+            latitude-from: 52.177680721258966
+            longitude-to: 5.2189603223699645
+            latitude-to: 52.285545185030784
+    GM0405:
+        name: "Hoorn"
+        start-coordinate-longitude: 5.047128313273677
+        start-coordinate-latitude: 52.67155428637617
+        request-exemption-url:  "https://www.hoorn.nl/verkeersontheffing#:~:text=Online%20ontheffing%20aanvragen&text=U%20kunt%20ontheffing%20aanvragen%20voor%20een%20korte%20tijd%20of%20onbepaalde%20tijd.&text=De%20kosten%20voor%20een%20verkeersontheffing%20zijn%20%E2%82%AC%2013%2C60.&text=U%20kunt%20ook%20ontheffing%20aanvragen,kentekenbewijs%20mee%20naar%20de%20afspraak."
+        search-distance-in-metres: 50000
+        municipality-id: "GM0405"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.01353664697993
+            latitude-from: 52.57893613075008
+            longitude-to: 5.135305662631997
+            latitude-to: 52.684365480251934
+    GM0406:
+        name: "Huizen"
+        start-coordinate-longitude: 5.20401386649166
+        start-coordinate-latitude: 52.267191073703174
+        request-exemption-url:  "https://www.huizen.nl/ontheffing-aanvragen-of-wijzigen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0406"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.184702824542359
+            latitude-from: 52.26711508855313
+            longitude-to: 5.305455265345312
+            latitude-to: 52.325761532390864
+    GM0415:
+        name: "Landsmeer"
+        start-coordinate-longitude: 4.911857844633025
+        start-coordinate-latitude: 52.420443921574446
+        request-exemption-url:  "https://publieksbalie.landsmeer.nl/producten/inrijverbod_ontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0415"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.8930348276782665
+            latitude-from: 52.411607581431056
+            longitude-to: 4.950879386401476
+            latitude-to: 52.49043447685898
+    GM0417:
+        name: "Laren"
+        start-coordinate-longitude: 5.222222018800948
+        start-coordinate-latitude: 52.22313579399249
+        request-exemption-url:  "https://www.laren.nl/Parkeren_en_verkeer/Parkeren/Ontheffing_blauwe_zone"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0417"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.1888528580575555
+            latitude-from: 52.212128714433305
+            longitude-to: 5.245093123294242
+            latitude-to: 52.27290887253024
+    GM0420:
+        name: "Medemblik"
+        start-coordinate-longitude: 5.029930154029864
+        start-coordinate-latitude: 52.697099930599194
+        request-exemption-url:  "https://www.medemblik.nl/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0420"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.971888143298849
+            latitude-from: 52.66440296365378
+            longitude-to: 5.28117890317493
+            latitude-to: 52.91610234161639
+    GM0431:
+        name: "Oostzaan"
+        start-coordinate-longitude: 4.866072806928948
+        start-coordinate-latitude: 52.431885373696744
+        request-exemption-url:  "https://oostzaan.nl/ontheffingen-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0431"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.842950947488361
+            latitude-from: 52.42446133971987
+            longitude-to: 4.906469642121102
+            latitude-to: 52.47982647495599
+    GM0432:
+        name: "Opmeer"
+        start-coordinate-longitude: 4.923466007808113
+        start-coordinate-latitude: 52.68172093414126
+        request-exemption-url:  "https://www.opmeer.nl/verkeer-en-vervoer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0432"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.898669408864161
+            latitude-from: 52.671765475102916
+            longitude-to: 5.01116355792194
+            latitude-to: 52.755296332820976
+    GM0437:
+        name: "Ouder-Amstel"
+        start-coordinate-longitude: 4.945786594178964
+        start-coordinate-latitude: 52.28635036982696
+        request-exemption-url:  "https://www.ouder-amstel.nl/Home/Vergunningen_aanvragen/Verkeersontheffing_aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0437"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.870121266278454
+            latitude-from: 52.250742634015246
+            longitude-to: 4.955240524925102
+            latitude-to: 52.33863824756433
+    GM0439:
+        name: "Purmerend"
+        start-coordinate-longitude: 4.955520091139497
+        start-coordinate-latitude: 52.544387611068366
+        request-exemption-url:  "https://purmerend.nl/vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0439"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.833910385168197
+            latitude-from: 52.47034853907425
+            longitude-to: 5.024700057244598
+            latitude-to: 52.614107523482254
+    GM0441:
+        name: "Schagen"
+        start-coordinate-longitude: 4.8095982355098075
+        start-coordinate-latitude: 52.79712639597817
+        request-exemption-url:  "https://www.schagen.nl/parkeren-en-vervoer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0441"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.6344785807715905
+            latitude-from: 52.69140378592114
+            longitude-to: 4.850374465656303
+            latitude-to: 52.884472620584724
+    GM0448:
+        name: "Texel"
+        start-coordinate-longitude: 4.776262421779858
+        start-coordinate-latitude: 53.064159029009275
+        request-exemption-url:  "https://www.texel.nl/direct-regelen/parkeren-vergunningen/parkeren-voor-bedrijven/ontheffing-inrijverbod-bedrijven/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0448"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.6130006009133995
+            latitude-from: 52.94106928277284
+            longitude-to: 5.144281381055772
+            latitude-to: 53.21427479361007
+    GM0450:
+        name: "Uitgeest"
+        start-coordinate-longitude: 4.71537373384525
+        start-coordinate-latitude: 52.515734026975544
+        request-exemption-url:  "https://www.uitgeest.nl/aanvragen-en-regelen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0450"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.690494318366696
+            latitude-from: 52.49495391256382
+            longitude-to: 4.782476457704378
+            latitude-to: 52.5516425053605
+    GM0451:
+        name: "Uithoorn"
+        start-coordinate-longitude: 4.824812788952717
+        start-coordinate-latitude: 52.25267356033621
+        request-exemption-url:  "https://www.uithoorn.nl/Home/Parkeren_Verkeer_en_vervoer/Verkeersontheffing_aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0451"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.723655179138661
+            latitude-from: 52.20651642029413
+            longitude-to: 4.852187207012195
+            latitude-to: 52.261015581768355
+    GM0453:
+        name: "Velsen"
+        start-coordinate-longitude: 4.669201924310818
+        start-coordinate-latitude: 52.454602310684365
+        request-exemption-url:  "https://www.velsen.nl/ontheffing-parkeerverbod-aanvraag"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0453"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.517549747596183
+            latitude-from: 52.41082018687417
+            longitude-to: 4.72198309401294
+            latitude-to: 52.4927441191472
+    GM0473:
+        name: "Zandvoort"
+        start-coordinate-longitude: 4.535306827905182
+        start-coordinate-latitude: 52.388116661857744
+        request-exemption-url:  "https://zandvoort.nl/ontheffing-voertuig-op-het-strand-en-boulevard"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0473"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.47764943515092
+            latitude-from: 52.31399659818969
+            longitude-to: 4.591658966071481
+            latitude-to: 52.40516737022617
+    GM0479:
+        name: "Zaanstad"
+        start-coordinate-longitude: 4.800240425706112
+        start-coordinate-latitude: 52.46554193898345
+        request-exemption-url:  "https://www.zaanstad.nl/mozard/!suite86.scherm0325?mVrg=6471"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0479"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.67484802108524
+            latitude-from: 52.416662167305816
+            longitude-to: 4.862805016717141
+            latitude-to: 52.521253638038935
+    GM0482:
+        name: "Alblasserdam"
+        start-coordinate-longitude: 4.680128462267452
+        start-coordinate-latitude: 51.849540639589904
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0482"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.626391054034031
+            latitude-from: 51.838650328751925
+            longitude-to: 4.700239703871275
+            latitude-to: 51.88121215274075
+    GM0484:
+        name: "Alphen aan den Rijn"
+        start-coordinate-longitude: 4.586822742905808
+        start-coordinate-latitude: 52.12251350322339
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0484"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.530103521141797
+            latitude-from: 52.05856937949708
+            longitude-to: 4.760075969618573
+            latitude-to: 52.167504227518236
+    GM0489:
+        name: "Barendrecht"
+        start-coordinate-longitude: 4.516889888084015
+        start-coordinate-latitude: 51.86278537952802
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0489"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.479871566750576
+            latitude-from: 51.82985424113595
+            longitude-to: 4.57141230620269
+            latitude-to: 51.87402723074372
+    GM0498:
+        name: "Drechterland"
+        start-coordinate-longitude: 5.200623550702082
+        start-coordinate-latitude: 52.68254521032091
+        request-exemption-url:  "https://www.drechterland.nl/direct-regelen/wonen-verkeer-en-veiligheid/verkeer-en-vervoer/aanvragen-ontheffing-vrachtautoverbod/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0498"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.091752304209845
+            latitude-from: 52.60393718305525
+            longitude-to: 5.262266015070842
+            latitude-to: 52.707451800080754
+    GM0502:
+        name: "Capelle aan den IJssel"
+        start-coordinate-longitude: 4.5717864509582204
+        start-coordinate-latitude: 51.95890442532597
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0502"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.537160360488747
+            latitude-from: 51.906204557219375
+            longitude-to: 4.619488624484398
+            latitude-to: 51.96550384120377
+    GM0503:
+        name: "Delft"
+        start-coordinate-longitude: 4.375244633157397
+        start-coordinate-latitude: 52.013971482248756
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0503"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.320217743007207
+            latitude-from: 51.96631631444287
+            longitude-to: 4.407910876301395
+            latitude-to: 52.03259880857367
+    GM0505:
+        name: "Dordrecht"
+        start-coordinate-longitude: 4.633885521366493
+        start-coordinate-latitude: 51.721740025433796
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0505"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.6204038821276825
+            latitude-from: 51.71412355183186
+            longitude-to: 4.884642512265728
+            latitude-to: 51.82335827771153
+    GM0512:
+        name: "Gorinchem"
+        start-coordinate-longitude: 4.924791125345978
+        start-coordinate-latitude: 51.83902327865032
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0512"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.921688021996051
+            latitude-from: 51.81885673991698
+            longitude-to: 5.0314150015857
+            latitude-to: 51.86362936025897
+    GM0513:
+        name: "Gouda"
+        start-coordinate-longitude: 4.681087130652722
+        start-coordinate-latitude: 52.0282551009783
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0513"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.659454559108605
+            latitude-from: 51.99625804215058
+            longitude-to: 4.7573298075366495
+            latitude-to: 52.04011969881707
+    GM0518:
+        name: "'s-Gravenhage"
+        start-coordinate-longitude: 4.346974658681276
+        start-coordinate-latitude: 52.04238788867627
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0518"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.1849984198154715
+            latitude-from: 52.014848432732144
+            longitude-to: 4.422489654302975
+            latitude-to: 52.13503622143543
+    GM0523:
+        name: "Hardinxveld-Giessendam"
+        start-coordinate-longitude: 4.808890376102514
+        start-coordinate-latitude: 51.82206758841681
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0523"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.803378549399143
+            latitude-from: 51.81647139787968
+            longitude-to: 4.926986579793947
+            latitude-to: 51.86073467127649
+    GM0531:
+        name: "Hendrik-Ido-Ambacht"
+        start-coordinate-longitude: 4.606448635183519
+        start-coordinate-latitude: 51.847843213462966
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0531"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.60015490350694
+            latitude-from: 51.82358911887699
+            longitude-to: 4.67270237392471
+            latitude-to: 51.8698469261814
+    GM0532:
+        name: "Stede Broec"
+        start-coordinate-longitude: 5.207856732969303
+        start-coordinate-latitude: 52.68357296485769
+        request-exemption-url:  "https://www.stedebroec.nl/direct-regelen/wonen-verkeer-en-veiligheid/verkeer-en-vervoer/wegenverkeerswet-ontheffing/406/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0532"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.18537341832868
+            latitude-from: 52.6768293164881
+            longitude-to: 5.268962123547116
+            latitude-to: 52.71769718560853
+    GM0534:
+        name: "Hillegom"
+        start-coordinate-longitude: 4.571903181829711
+        start-coordinate-latitude: 52.27654139219345
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0534"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.542282225323722
+            latitude-from: 52.27124001875649
+            longitude-to: 4.611701294458763
+            latitude-to: 52.31839504978773
+    GM0537:
+        name: "Katwijk"
+        start-coordinate-longitude: 4.4308892957795445
+        start-coordinate-latitude: 52.205811795980736
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0537"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.360001773313135
+            latitude-from: 52.155652983916404
+            longitude-to: 4.466519620179243
+            latitude-to: 52.22524368844681
+    GM0542:
+        name: "Krimpen aan den IJssel"
+        start-coordinate-longitude: 4.599034285735048
+        start-coordinate-latitude: 51.907269649925034
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0542"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.549238435294191
+            latitude-from: 51.90236749522663
+            longitude-to: 4.643019107417909
+            latitude-to: 51.931050141757844
+    GM0546:
+        name: "Leiden"
+        start-coordinate-longitude: 4.454473181344476
+        start-coordinate-latitude: 52.170525234876045
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0546"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.438865156957472
+            latitude-from: 52.11895161082025
+            longitude-to: 4.524037681080605
+            latitude-to: 52.1846262469841
+    GM0547:
+        name: "Leiderdorp"
+        start-coordinate-longitude: 4.5613601071303655
+        start-coordinate-latitude: 52.166503623521066
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0547"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.514691525722331
+            latitude-from: 52.13190333267763
+            longitude-to: 4.5714809096293605
+            latitude-to: 52.182116258723454
+    GM0553:
+        name: "Lisse"
+        start-coordinate-longitude: 4.551238298401957
+        start-coordinate-latitude: 52.22379799179173
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0553"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.513522962541526
+            latitude-from: 52.22220541854057
+            longitude-to: 4.572749034624737
+            latitude-to: 52.286644158739136
+    GM0556:
+        name: "Maassluis"
+        start-coordinate-longitude: 4.264255429183895
+        start-coordinate-latitude: 51.91179151862411
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0556"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.212717692054358
+            latitude-from: 51.90533504262646
+            longitude-to: 4.292611008622887
+            latitude-to: 51.94799150223367
+    GM0569:
+        name: "Nieuwkoop"
+        start-coordinate-longitude: 4.78302298896493
+        start-coordinate-latitude: 52.20157179040027
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0569"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.681209371734903
+            latitude-from: 52.10648474721846
+            longitude-to: 4.8922726201862385
+            latitude-to: 52.22876187280356
+    GM0575:
+        name: "Noordwijk"
+        start-coordinate-longitude: 4.451414896185879
+        start-coordinate-latitude: 52.21920152029051
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0575"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.390975591825227
+            latitude-from: 52.20735558344884
+            longitude-to: 4.563707432469432
+            latitude-to: 52.3325109475691
+    GM0579:
+        name: "Oegstgeest"
+        start-coordinate-longitude: 4.456116226609685
+        start-coordinate-latitude: 52.175206615807475
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0579"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.434946833493466
+            latitude-from: 52.16205195674183
+            longitude-to: 4.497592228924357
+            latitude-to: 52.204798925947095
+    GM0589:
+        name: "Oudewater"
+        start-coordinate-longitude: 4.845112085564252
+        start-coordinate-latitude: 52.05599154256776
+        request-exemption-url:  "https://www.oudewater.nl/Parkeren"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0589"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.7987002080484435
+            latitude-from: 51.98614302050805
+            longitude-to: 4.926687697578935
+            latitude-to: 52.06344633272146
+    GM0590:
+        name: "Papendrecht"
+        start-coordinate-longitude: 4.705155741895373
+        start-coordinate-latitude: 51.84099723498289
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0590"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.669159323665313
+            latitude-from: 51.820394272426114
+            longitude-to: 4.74351435686061
+            latitude-to: 51.849093263726346
+    GM0597:
+        name: "Ridderkerk"
+        start-coordinate-longitude: 4.571395335098035
+        start-coordinate-latitude: 51.87402178991892
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0597"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.549253301815469
+            latitude-from: 51.838730078407885
+            longitude-to: 4.64733074267719
+            latitude-to: 51.903031720418
+    GM0599:
+        name: "Rotterdam"
+        start-coordinate-longitude: 4.536093051075638
+        start-coordinate-latitude: 51.91558575346474
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0599"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.9407495229301785
+            latitude-from: 51.842118255154816
+            longitude-to: 4.601808264069524
+            latitude-to: 52.00452762654686
+    GM0603:
+        name: "Rijswijk"
+        start-coordinate-longitude: 4.334042945681224
+        start-coordinate-latitude: 52.03498091456819
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0603"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.290951689262964
+            latitude-from: 52.01277857251499
+            longitude-to: 4.357853320051641
+            latitude-to: 52.061946817874535
+    GM0606:
+        name: "Schiedam"
+        start-coordinate-longitude: 4.402951924096618
+        start-coordinate-latitude: 51.925982761301526
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0606"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.350671358884093
+            latitude-from: 51.89667871422509
+            longitude-to: 4.4177129269942474
+            latitude-to: 51.96340662685287
+    GM0610:
+        name: "Sliedrecht"
+        start-coordinate-longitude: 4.7454120276286185
+        start-coordinate-latitude: 51.83140554981529
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0610"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.729638671276236
+            latitude-from: 51.81513261269358
+            longitude-to: 4.811415832610234
+            latitude-to: 51.846643221282726
+    GM0613:
+        name: "Albrandswaard"
+        start-coordinate-longitude: 4.464714869650953
+        start-coordinate-latitude: 51.862012566210595
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0613"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.383228670734835
+            latitude-from: 51.83164541331213
+            longitude-to: 4.492227114623801
+            latitude-to: 51.87319819625655
+    GM0622:
+        name: "Vlaardingen"
+        start-coordinate-longitude: 4.349252530539856
+        start-coordinate-latitude: 51.922651520749874
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0622"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.26757121065077
+            latitude-from: 51.8940399055796
+            longitude-to: 4.370622684571077
+            latitude-to: 51.95150652054205
+    GM0626:
+        name: "Voorschoten"
+        start-coordinate-longitude: 4.425263925682968
+        start-coordinate-latitude: 52.131200258239
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0626"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.401159065184204
+            latitude-from: 52.101470243744856
+            longitude-to: 4.469299857745486
+            latitude-to: 52.149880539375985
+    GM0627:
+        name: "Waddinxveen"
+        start-coordinate-longitude: 4.701973218434512
+        start-coordinate-latitude: 52.03842254617116
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0627"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.591089427780737
+            latitude-from: 52.01167990114544
+            longitude-to: 4.7060392893986105
+            latitude-to: 52.07704971507707
+    GM0629:
+        name: "Wassenaar"
+        start-coordinate-longitude: 4.4385337296869425
+        start-coordinate-latitude: 52.1525271574282
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0629"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.290063186977527
+            latitude-from: 52.094772594424555
+            longitude-to: 4.443939311443759
+            latitude-to: 52.192677395619164
+    GM0632:
+        name: "Woerden"
+        start-coordinate-longitude: 4.902839970796754
+        start-coordinate-latitude: 52.0711566664803
+        request-exemption-url:  "https://www.woerden.nl/Parkeren/Verkeersontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0632"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.792042722601034
+            latitude-from: 52.064949986759544
+            longitude-to: 5.005011260190549
+            latitude-to: 52.16205077709009
+    GM0637:
+        name: "Zoetermeer"
+        start-coordinate-longitude: 4.421769808974654
+        start-coordinate-latitude: 52.051909235413206
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0637"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.415230886606192
+            latitude-from: 52.031280576125376
+            longitude-to: 4.557686357752454
+            latitude-to: 52.093290331751156
+    GM0638:
+        name: "Zoeterwoude"
+        start-coordinate-longitude: 4.544764451803857
+        start-coordinate-latitude: 52.12855446904544
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0638"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.470825786445884
+            latitude-from: 52.080510732403745
+            longitude-to: 4.550733048313643
+            latitude-to: 52.14739786756342
+    GM0642:
+        name: "Zwijndrecht"
+        start-coordinate-longitude: 4.628766038986521
+        start-coordinate-latitude: 51.81540548737399
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0642"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.553608700546821
+            latitude-from: 51.800759979250564
+            longitude-to: 4.671708689632672
+            latitude-to: 51.84711677498693
+    GM0654:
+        name: "Borsele"
+        start-coordinate-longitude: 3.792090720764817
+        start-coordinate-latitude: 51.401602450135776
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0654"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.6956780844235513
+            latitude-from: 51.35574551144558
+            longitude-to: 3.963208555431021
+            latitude-to: 51.502455908838876
+    GM0664:
+        name: "Goes"
+        start-coordinate-longitude: 3.9040706771152847
+        start-coordinate-latitude: 51.47991091127861
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0664"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.7055363196782998
+            latitude-from: 51.479121579221285
+            longitude-to: 3.9714492210982124
+            latitude-to: 51.55341712138647
+    GM0668:
+        name: "West Maas en Waal"
+        start-coordinate-longitude: 5.497512422774536
+        start-coordinate-latitude: 51.88629293539758
+        request-exemption-url:  "https://www.westmaasenwaal.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0668"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.400633215656007
+            latitude-from: 51.80953597441015
+            longitude-to: 5.609857529194344
+            latitude-to: 51.894753366793225
+    GM0677:
+        name: "Hulst"
+        start-coordinate-longitude: 4.0814526257499315
+        start-coordinate-latitude: 51.27828493751818
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0677"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.9243623250718405
+            latitude-from: 51.24111344552365
+            longitude-to: 4.2368052727888506
+            latitude-to: 51.422010104130884
+    GM0678:
+        name: "Kapelle"
+        start-coordinate-longitude: 3.913194115143967
+        start-coordinate-latitude: 51.479295376476415
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0678"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.9077274317916344
+            latitude-from: 51.44701278551937
+            longitude-to: 4.017388120978767
+            latitude-to: 51.551477319205254
+    GM0687:
+        name: "Middelburg"
+        start-coordinate-longitude: 3.655507242526112
+        start-coordinate-latitude: 51.48410765181338
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0687"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.575296297301982
+            latitude-from: 51.46813937631397
+            longitude-to: 3.746943476753178
+            latitude-to: 51.53530335235675
+    GM0703:
+        name: "Reimerswaal"
+        start-coordinate-longitude: 4.008627589566976
+        start-coordinate-latitude: 51.46697525926637
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0703"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.9353515288625105
+            latitude-from: 51.34975544881036
+            longitude-to: 4.277424577929721
+            latitude-to: 51.53824424706917
+    GM0715:
+        name: "Terneuzen"
+        start-coordinate-longitude: 3.8287273123585526
+        start-coordinate-latitude: 51.29285777854328
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0715"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.644149001569285
+            latitude-from: 51.20016212162252
+            longitude-to: 4.0056929692503225
+            latitude-to: 51.397616395017856
+    GM0716:
+        name: "Tholen"
+        start-coordinate-longitude: 4.184919474578919
+        start-coordinate-latitude: 51.500338794132624
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0716"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.924760514467511
+            latitude-from: 51.47955528732784
+            longitude-to: 4.24278620235967
+            latitude-to: 51.660764315046535
+    GM0717:
+        name: "Veere"
+        start-coordinate-longitude: 3.62851521575138
+        start-coordinate-latitude: 51.585267278480856
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0717"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.4320622715471605
+            latitude-from: 51.46224614561543
+            longitude-to: 3.7488853849440074
+            latitude-to: 51.650363347684326
+    GM0718:
+        name: "Vlissingen"
+        start-coordinate-longitude: 3.6354132513373356
+        start-coordinate-latitude: 51.476651307207696
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0718"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.3079377141213984
+            latitude-from: 51.37288053643898
+            longitude-to: 3.7380349366265664
+            latitude-to: 51.61640775511581
+    GM0736:
+        name: "De Ronde Venen"
+        start-coordinate-longitude: 4.979483216973928
+        start-coordinate-latitude: 52.23062809283296
+        request-exemption-url:  "https://gemeente.derondevenen.nl/Wonen_en_leven/Parkeren_verkeer_en_vervoer/Parkeren/Verkeersontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0736"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.794419044301701
+            latitude-from: 52.16146081176449
+            longitude-to: 5.021926166008568
+            latitude-to: 52.30367703567621
+    GM0737:
+        name: "Tytsjerksteradiel"
+        start-coordinate-longitude: 5.973665475527745
+        start-coordinate-latitude: 53.15282935687621
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0737"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.829642747962746
+            latitude-from: 53.12160798617176
+            longitude-to: 6.114593421029397
+            latitude-to: 53.288649116472286
+    GM0743:
+        name: "Asten"
+        start-coordinate-longitude: 5.815464942846105
+        start-coordinate-latitude: 51.40351598825496
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0743"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.693983451957954
+            latitude-from: 51.33380458877766
+            longitude-to: 5.870359565007244
+            latitude-to: 51.44006690120464
+    GM0744:
+        name: "Baarle-Nassau"
+        start-coordinate-longitude: 4.933008332860972
+        start-coordinate-latitude: 51.42887995049066
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0744"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.766569689770332
+            latitude-from: 51.39368698248082
+            longitude-to: 5.010996354799124
+            latitude-to: 51.48092957007208
+    GM0748:
+        name: "Bergen op Zoom"
+        start-coordinate-longitude: 4.316692905387215
+        start-coordinate-latitude: 51.48755427881738
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0748"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.218747708192193
+            latitude-from: 51.43966698275867
+            longitude-to: 4.372798160722795
+            latitude-to: 51.570661266822164
+    GM0753:
+        name: "Best"
+        start-coordinate-longitude: 5.390032360928522
+        start-coordinate-latitude: 51.52663756095811
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0753"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.349361824433512
+            latitude-from: 51.483806182267784
+            longitude-to: 5.4475076923280605
+            latitude-to: 51.54835326808998
+    GM0755:
+        name: "Boekel"
+        start-coordinate-longitude: 5.752363563893248
+        start-coordinate-latitude: 51.61035633293888
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0755"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.626568498427946
+            latitude-from: 51.58236019653724
+            longitude-to: 5.758614587420398
+            latitude-to: 51.62906095998981
+    GM0757:
+        name: "Boxtel"
+        start-coordinate-longitude: 5.317402454259584
+        start-coordinate-latitude: 51.61619018886015
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0757"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.246177657263323
+            latitude-from: 51.54348863509217
+            longitude-to: 5.4052013031134996
+            latitude-to: 51.63463393519383
+    GM0758:
+        name: "Breda"
+        start-coordinate-longitude: 4.823584730304359
+        start-coordinate-latitude: 51.57575433612276
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0758"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.65798126216065
+            latitude-from: 51.485548206544145
+            longitude-to: 4.871684502761296
+            latitude-to: 51.64319803743077
+    GM0762:
+        name: "Deurne"
+        start-coordinate-longitude: 5.869674083955589
+        start-coordinate-latitude: 51.38996271160284
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0762"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.7171864380766175
+            latitude-from: 51.352534966026575
+            longitude-to: 5.9312875158085845
+            latitude-to: 51.5041444246825
+    GM0765:
+        name: "Pekela"
+        start-coordinate-longitude: 6.9900952340844364
+        start-coordinate-latitude: 53.054610319761146
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0765"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.905497735259015
+            latitude-from: 53.01386065707659
+            longitude-to: 7.042657835074743
+            latitude-to: 53.11919620737839
+    GM0766:
+        name: "Dongen"
+        start-coordinate-longitude: 4.9480275265178255
+        start-coordinate-latitude: 51.676453756701676
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0766"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.9042792111502305
+            latitude-from: 51.60709305471425
+            longitude-to: 5.004496595081024
+            latitude-to: 51.67891799901178
+    GM0770:
+        name: "Eersel"
+        start-coordinate-longitude: 5.279474131244309
+        start-coordinate-latitude: 51.353653701835995
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0770"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.237597737793324
+            latitude-from: 51.318237461122884
+            longitude-to: 5.3889070301494035
+            latitude-to: 51.46853668659017
+    GM0772:
+        name: "Eindhoven"
+        start-coordinate-longitude: 5.404852458505651
+        start-coordinate-latitude: 51.47007430479034
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0772"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.3567184467930495
+            latitude-from: 51.400047486815076
+            longitude-to: 5.548852806789442
+            latitude-to: 51.49707790628375
+    GM0777:
+        name: "Etten-Leur"
+        start-coordinate-longitude: 4.591967720275121
+        start-coordinate-latitude: 51.56052423784498
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0777"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.590420540452115
+            latitude-from: 51.517205239884625
+            longitude-to: 4.694634048112649
+            latitude-to: 51.63475472621024
+    GM0779:
+        name: "Geertruidenberg"
+        start-coordinate-longitude: 4.874563697057598
+        start-coordinate-latitude: 51.68547581259728
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0779"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.823610411152638
+            latitude-from: 51.67183546130774
+            longitude-to: 4.9331694213038055
+            latitude-to: 51.72014879368784
+    GM0784:
+        name: "Gilze en Rijen"
+        start-coordinate-longitude: 4.876385829095808
+        start-coordinate-latitude: 51.5588879284118
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0784"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.829084664107673
+            latitude-from: 51.51008128466315
+            longitude-to: 4.979565147844994
+            latitude-to: 51.61629452940704
+    GM0785:
+        name: "Goirle"
+        start-coordinate-longitude: 5.108491890392226
+        start-coordinate-latitude: 51.536284774607694
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0785"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.962572745934013
+            latitude-from: 51.47110814938933
+            longitude-to: 5.110645332850212
+            latitude-to: 51.54013286562536
+    GM0794:
+        name: "Helmond"
+        start-coordinate-longitude: 5.586580217224224
+        start-coordinate-latitude: 51.465683545140166
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0794"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.570156038505408
+            latitude-from: 51.43802997908997
+            longitude-to: 5.73609360759189
+            latitude-to: 51.50921733978689
+    GM0796:
+        name: "'s-Hertogenbosch"
+        start-coordinate-longitude: 5.267810111986667
+        start-coordinate-latitude: 51.71178223729753
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0796"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.2064941735584505
+            latitude-from: 51.66399664097984
+            longitude-to: 5.49965606871168
+            latitude-to: 51.765030277993255
+    GM0797:
+        name: "Heusden"
+        start-coordinate-longitude: 5.237359301731458
+        start-coordinate-latitude: 51.695155009886015
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0797"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.081760241388018
+            latitude-from: 51.63536043075127
+            longitude-to: 5.251611945163463
+            latitude-to: 51.743091745118605
+    GM0798:
+        name: "Hilvarenbeek"
+        start-coordinate-longitude: 5.115644257238572
+        start-coordinate-latitude: 51.5330947008684
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0798"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.048791776429387
+            latitude-from: 51.42824021885798
+            longitude-to: 5.2512498049003575
+            latitude-to: 51.54591897465773
+    GM0809:
+        name: "Loon op Zand"
+        start-coordinate-longitude: 5.0638053596921555
+        start-coordinate-latitude: 51.62426354911201
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0809"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.987262055261741
+            latitude-from: 51.60568095322774
+            longitude-to: 5.106136972578794
+            latitude-to: 51.676834692840764
+    GM0820:
+        name: "Nuenen, Gerwen en Nederwetten"
+        start-coordinate-longitude: 5.564704151405193
+        start-coordinate-latitude: 51.46155262214787
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0820"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.505408727780575
+            latitude-from: 51.43391171189284
+            longitude-to: 5.605231701027036
+            latitude-to: 51.53807588392167
+    GM0823:
+        name: "Oirschot"
+        start-coordinate-longitude: 5.356468256876705
+        start-coordinate-latitude: 51.492464150093376
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0823"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.1910248787961075
+            latitude-from: 51.42508279184498
+            longitude-to: 5.391186888150164
+            latitude-to: 51.552820793855695
+    GM0824:
+        name: "Oisterwijk"
+        start-coordinate-longitude: 5.182185794834627
+        start-coordinate-latitude: 51.53478732703338
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0824"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.1301961193654755
+            latitude-from: 51.507408650108545
+            longitude-to: 5.278743577593609
+            latitude-to: 51.62492842506138
+    GM0826:
+        name: "Oosterhout"
+        start-coordinate-longitude: 4.843766458593538
+        start-coordinate-latitude: 51.60381124482384
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0826"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.781071321374093
+            latitude-from: 51.57844190152702
+            longitude-to: 4.934410303254515
+            latitude-to: 51.68601745314102
+    GM0828:
+        name: "Oss"
+        start-coordinate-longitude: 5.624909297986895
+        start-coordinate-latitude: 51.75670695376859
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0828"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.353514362603158
+            latitude-from: 51.72586627542168
+            longitude-to: 5.711229945490504
+            latitude-to: 51.830750956526195
+    GM0840:
+        name: "Rucphen"
+        start-coordinate-longitude: 4.524074315000891
+        start-coordinate-latitude: 51.54719440600422
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0840"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.485380556042891
+            latitude-from: 51.473312594456225
+            longitude-to: 4.640110074891291
+            latitude-to: 51.56856189184362
+    GM0845:
+        name: "Sint-Michielsgestel"
+        start-coordinate-longitude: 5.3044878532249555
+        start-coordinate-latitude: 51.665838765207724
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0845"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.303797220796503
+            latitude-from: 51.600223878978895
+            longitude-to: 5.4568727279040585
+            latitude-to: 51.70150036098889
+    GM0847:
+        name: "Someren"
+        start-coordinate-longitude: 5.659478481177175
+        start-coordinate-latitude: 51.42373432312757
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0847"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.637854856513975
+            latitude-from: 51.31509401291462
+            longitude-to: 5.770448612871398
+            latitude-to: 51.4578098935946
+    GM0848:
+        name: "Son en Breugel"
+        start-coordinate-longitude: 5.4684092900732715
+        start-coordinate-latitude: 51.51728275693058
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0848"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.42379621421626
+            latitude-from: 51.49392721604363
+            longitude-to: 5.546272784675895
+            latitude-to: 51.541848370654805
+    GM0851:
+        name: "Steenbergen"
+        start-coordinate-longitude: 4.2910807733778285
+        start-coordinate-latitude: 51.58649446345508
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0851"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.190124099314367
+            latitude-from: 51.54372140771266
+            longitude-to: 4.4439992400697115
+            latitude-to: 51.662979063570766
+    GM0852:
+        name: "Waterland"
+        start-coordinate-longitude: 5.030215725561835
+        start-coordinate-latitude: 52.45643860959216
+        request-exemption-url:  "https://www.waterland.nl/verkeer-parkeren-en-bereikbaarheid"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0852"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.9468655453288966
+            latitude-from: 52.38865411676176
+            longitude-to: 5.185490009580687
+            latitude-to: 52.49788606207437
+    GM0855:
+        name: "Tilburg"
+        start-coordinate-longitude: 5.1030754586303235
+        start-coordinate-latitude: 51.53654007403997
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0855"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.947845950748845
+            latitude-from: 51.52950151193174
+            longitude-to: 5.210711377326629
+            latitude-to: 51.64166142504541
+    GM0858:
+        name: "Valkenswaard"
+        start-coordinate-longitude: 5.516103338364752
+        start-coordinate-latitude: 51.37813374145545
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0858"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.387803626226559
+            latitude-from: 51.26228572985176
+            longitude-to: 5.527180534883624
+            latitude-to: 51.37833551387407
+    GM0861:
+        name: "Veldhoven"
+        start-coordinate-longitude: 5.386258299279755
+        start-coordinate-latitude: 51.3960863841184
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0861"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.315808039191377
+            latitude-from: 51.3764601036559
+            longitude-to: 5.429856178028692
+            latitude-to: 51.43890879707071
+    GM0865:
+        name: "Vught"
+        start-coordinate-longitude: 5.293327336238047
+        start-coordinate-latitude: 51.6617903505319
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0865"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.154451888102599
+            latitude-from: 51.6125377546472
+            longitude-to: 5.321190718569859
+            latitude-to: 51.69003080751633
+    GM0866:
+        name: "Waalre"
+        start-coordinate-longitude: 5.516234677591948
+        start-coordinate-latitude: 51.378219709295536
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0866"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.417439226246093
+            latitude-from: 51.36601310540622
+            longitude-to: 5.516417602409428
+            latitude-to: 51.40534964450402
+    GM0867:
+        name: "Waalwijk"
+        start-coordinate-longitude: 4.955330602370395
+        start-coordinate-latitude: 51.69334032446914
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0867"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.91799115231977
+            latitude-from: 51.65153188446449
+            longitude-to: 5.111506127714036
+            latitude-to: 51.723061892444846
+    GM0873:
+        name: "Woensdrecht"
+        start-coordinate-longitude: 4.276221095123117
+        start-coordinate-latitude: 51.42680206235231
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0873"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.263732257132627
+            latitude-from: 51.35435189284554
+            longitude-to: 4.4316916717508965
+            latitude-to: 51.46680089623793
+    GM0879:
+        name: "Zundert"
+        start-coordinate-longitude: 4.649983715720152
+        start-coordinate-latitude: 51.45936091624328
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0879"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.529896463812417
+            latitude-from: 51.42201444647586
+            longitude-to: 4.744059744665019
+            latitude-to: 51.54979854237665
+    GM0880:
+        name: "Wormerland"
+        start-coordinate-longitude: 4.9254765142562
+        start-coordinate-latitude: 52.503455979319035
+        request-exemption-url:  "https://wormerland.nl/ontheffingen-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM0880"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.788692819801001
+            latitude-from: 52.46844416170628
+            longitude-to: 4.934724214821085
+            latitude-to: 52.5426893078802
+    GM0882:
+        name: "Landgraaf"
+        start-coordinate-longitude: 6.018914390263805
+        start-coordinate-latitude: 50.92163446360401
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0882"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.99062714313217
+            latitude-from: 50.870219878737416
+            longitude-to: 6.094183870125478
+            latitude-to: 50.93470139641924
+    GM0888:
+        name: "Beek"
+        start-coordinate-longitude: 5.7786133346967885
+        start-coordinate-latitude: 50.929707432664856
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0888"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.754845464296517
+            latitude-from: 50.898553366456184
+            longitude-to: 5.8569296604208825
+            latitude-to: 50.955143261813085
+    GM0889:
+        name: "Beesel"
+        start-coordinate-longitude: 6.067042290586486
+        start-coordinate-latitude: 51.26271532994715
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0889"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.005285381519202
+            latitude-from: 51.24256009186597
+            longitude-to: 6.124757904013862
+            latitude-to: 51.29745438170268
+    GM0893:
+        name: "Bergen (L)"
+        start-coordinate-longitude: 6.034568093430405
+        start-coordinate-latitude: 51.674826590683814
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0893"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.9766069376395565
+            latitude-from: 51.50308165641624
+            longitude-to: 6.2133612639704525
+            latitude-to: 51.6761652025672
+    GM0899:
+        name: "Brunssum"
+        start-coordinate-longitude: 5.93251983745382
+        start-coordinate-latitude: 50.93742969261003
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0899"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.92846998095532
+            latitude-from: 50.92643948785818
+            longitude-to: 6.018201659382992
+            latitude-to: 50.96252961306532
+    GM0907:
+        name: "Gennep"
+        start-coordinate-longitude: 6.030422062333432
+        start-coordinate-latitude: 51.674933371716754
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0907"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.919469547173511
+            latitude-from: 51.64378311161332
+            longitude-to: 6.04493914641198
+            latitude-to: 51.74802415871547
+    GM0917:
+        name: "Heerlen"
+        start-coordinate-longitude: 6.018687851438123
+        start-coordinate-latitude: 50.8248292159432
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0917"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.895409217921033
+            latitude-from: 50.81840317406115
+            longitude-to: 6.026379346848447
+            latitude-to: 50.93661221648551
+    GM0928:
+        name: "Kerkrade"
+        start-coordinate-longitude: 6.0455356637954685
+        start-coordinate-latitude: 50.90002332754194
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0928"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.000568450688106
+            latitude-from: 50.843676354853905
+            longitude-to: 6.088102299837568
+            latitude-to: 50.905770287813084
+    GM0935:
+        name: "Maastricht"
+        start-coordinate-longitude: 5.7219232772663995
+        start-coordinate-latitude: 50.81478746712901
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0935"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.638866056305393
+            latitude-from: 50.80380527626378
+            longitude-to: 5.762924779283883
+            latitude-to: 50.9120027797349
+    GM0938:
+        name: "Meerssen"
+        start-coordinate-longitude: 5.772925274320635
+        start-coordinate-latitude: 50.87783286121806
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0938"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.712476104671569
+            latitude-from: 50.86597244271382
+            longitude-to: 5.803481124536679
+            latitude-to: 50.94341102151393
+    GM0944:
+        name: "Mook en Middelaar"
+        start-coordinate-longitude: 5.869288306851388
+        start-coordinate-latitude: 51.762805692121546
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0944"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.864468842426063
+            latitude-from: 51.7176714990556
+            longitude-to: 5.938298605794925
+            latitude-to: 51.77862729185011
+    GM0946:
+        name: "Nederweert"
+        start-coordinate-longitude: 5.7257965612660175
+        start-coordinate-latitude: 51.291729788388565
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0946"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.6439967083499605
+            latitude-from: 51.236924741714446
+            longitude-to: 5.877823370093834
+            latitude-to: 51.346877063742795
+    GM0957:
+        name: "Roermond"
+        start-coordinate-longitude: 6.054742256686591
+        start-coordinate-latitude: 51.251669375906914
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0957"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.916652516359689
+            latitude-from: 51.15875269436908
+            longitude-to: 6.086024848880448
+            latitude-to: 51.25868299489437
+    GM0965:
+        name: "Simpelveld"
+        start-coordinate-longitude: 5.985425020978028
+        start-coordinate-latitude: 50.81780832042937
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0965"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.953252777449368
+            latitude-from: 50.80146245286846
+            longitude-to: 6.025028895819916
+            latitude-to: 50.860227718594004
+    GM0971:
+        name: "Stein"
+        start-coordinate-longitude: 5.754678296035806
+        start-coordinate-latitude: 50.95850384773569
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0971"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.719630268645387
+            latitude-from: 50.9279279413438
+            longitude-to: 5.7892471470690445
+            latitude-to: 51.01916650929498
+    GM0981:
+        name: "Vaals"
+        start-coordinate-longitude: 5.988843004505842
+        start-coordinate-latitude: 50.78814495993792
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0981"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.920541092069643
+            latitude-from: 50.75275998003941
+            longitude-to: 6.027930826908009
+            latitude-to: 50.80344035017573
+    GM0983:
+        name: "Venlo"
+        start-coordinate-longitude: 6.131400864742923
+        start-coordinate-latitude: 51.39386059389067
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0983"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.071780653062939
+            latitude-from: 51.27706101937431
+            longitude-to: 6.2267692691484795
+            latitude-to: 51.50781767101907
+    GM0984:
+        name: "Venray"
+        start-coordinate-longitude: 6.025036015006215
+        start-coordinate-latitude: 51.50270876984243
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0984"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.838238464254839
+            latitude-from: 51.446557721958605
+            longitude-to: 6.1410940432727195
+            latitude-to: 51.57024351813185
+    GM0986:
+        name: "Voerendaal"
+        start-coordinate-longitude: 5.900951171022586
+        start-coordinate-latitude: 50.88035635875206
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0986"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.861490661123583
+            latitude-from: 50.83965972236664
+            longitude-to: 5.969362332494597
+            latitude-to: 50.90484428767969
+    GM0988:
+        name: "Weert"
+        start-coordinate-longitude: 5.768051621300775
+        start-coordinate-latitude: 51.25408551977722
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0988"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.56604527370338
+            latitude-from: 51.18042069405307
+            longitude-to: 5.791770005564439
+            latitude-to: 51.290575489782015
+    GM0994:
+        name: "Valkenburg aan de Geul"
+        start-coordinate-longitude: 5.787454803059944
+        start-coordinate-latitude: 50.877181488481654
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0994"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.749286797748314
+            latitude-from: 50.82954880871741
+            longitude-to: 5.888009284683255
+            latitude-to: 50.8922088697072
+    GM0995:
+        name: "Lelystad"
+        start-coordinate-longitude: 5.48621313476484
+        start-coordinate-latitude: 52.47255778881827
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM0995"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.074623579990937
+            latitude-from: 52.38437741003497
+            longitude-to: 5.6058705635240695
+            latitude-to: 52.69284471436992
+    GM1507:
+        name: "Horst aan de Maas"
+        start-coordinate-longitude: 6.040967142601778
+        start-coordinate-latitude: 51.48825406485463
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1507"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.87496589337891
+            latitude-from: 51.378049889923616
+            longitude-to: 6.178979634193254
+            latitude-to: 51.52477734573039
+    GM1509:
+        name: "Oude IJsselstreek"
+        start-coordinate-longitude: 6.388202721796605
+        start-coordinate-latitude: 51.94493281161171
+        request-exemption-url:  "https://www.oude-ijsselstreek.nl/vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1509"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.2896530962857184
+            latitude-from: 51.827262653444556
+            longitude-to: 6.5328289820068415
+            latitude-to: 51.9782189093304
+    GM1525:
+        name: "Teylingen"
+        start-coordinate-longitude: 4.543710164146219
+        start-coordinate-latitude: 52.22171969297738
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1525"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.455648581070391
+            latitude-from: 52.179694630314536
+            longitude-to: 4.561704720086872
+            latitude-to: 52.25506742691937
+    GM1581:
+        name: "Utrechtse Heuvelrug"
+        start-coordinate-longitude: 5.394912853416314
+        start-coordinate-latitude: 52.05734358398929
+        request-exemption-url:  "https://www.heuvelrug.nl/inrijverbod-haarweg-en-de-groep-ontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1581"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.246989822771728
+            latitude-from: 51.97073019670433
+            longitude-to: 5.529381264407979
+            latitude-to: 52.08656772180554
+    GM1586:
+        name: "Oost Gelre"
+        start-coordinate-longitude: 6.63009039211225
+        start-coordinate-latitude: 52.05931698883827
+        request-exemption-url:  "https://www.oostgelre.nl/ontheffing-parkeren-blauwe-zone"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1586"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.459186820071461
+            latitude-from: 51.9625470126301
+            longitude-to: 6.687981177018598
+            latitude-to: 52.06804031608877
+    GM1598:
+        name: "Koggenland"
+        start-coordinate-longitude: 5.005961111560706
+        start-coordinate-latitude: 52.629283159296136
+        request-exemption-url:  "https://www.koggenland.nl/openingstijden-en-contact"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1598"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.862700342697699
+            latitude-from: 52.59528534296904
+            longitude-to: 5.039042901662783
+            latitude-to: 52.69991178688087
+    GM1621:
+        name: "Lansingerland"
+        start-coordinate-longitude: 4.539158320442865
+        start-coordinate-latitude: 52.036945773000106
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1621"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.424221525747045
+            latitude-from: 51.960286285429135
+            longitude-to: 4.5652014363867535
+            latitude-to: 52.06174116294992
+    GM1640:
+        name: "Leudal"
+        start-coordinate-longitude: 5.826999654456793
+        start-coordinate-latitude: 51.202463842101984
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1640"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.745619546769355
+            latitude-from: 51.151303860860125
+            longitude-to: 6.011014624159659
+            latitude-to: 51.31657769394109
+    GM1641:
+        name: "Maasgouw"
+        start-coordinate-longitude: 5.852643183667447
+        start-coordinate-latitude: 51.17471895037557
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1641"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.807668882330471
+            latitude-from: 51.099469775308634
+            longitude-to: 5.955477518409923
+            latitude-to: 51.216025279118206
+    GM1652:
+        name: "Gemert-Bakel"
+        start-coordinate-longitude: 5.71393852250706
+        start-coordinate-latitude: 51.50079375585806
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1652"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.651357251390277
+            latitude-from: 51.484083850488005
+            longitude-to: 5.85257370273587
+            latitude-to: 51.598208376742356
+    GM1655:
+        name: "Halderberge"
+        start-coordinate-longitude: 4.499858773704038
+        start-coordinate-latitude: 51.60471912907023
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1655"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.4266748007545065
+            latitude-from: 51.54923749541415
+            longitude-to: 4.613891623070723
+            latitude-to: 51.630406730082456
+    GM1658:
+        name: "Heeze-Leende"
+        start-coordinate-longitude: 5.564714450947936
+        start-coordinate-latitude: 51.339396265217474
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1658"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.473603484228224
+            latitude-from: 51.29520250654504
+            longitude-to: 5.6547071514835165
+            latitude-to: 51.422456484221605
+    GM1659:
+        name: "Laarbeek"
+        start-coordinate-longitude: 5.60689197578542
+        start-coordinate-latitude: 51.51834237436994
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1659"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.533083050327246
+            latitude-from: 51.49488316165786
+            longitude-to: 5.686005011325856
+            latitude-to: 51.56967852338117
+    GM1667:
+        name: "Reusel-De Mierden"
+        start-coordinate-longitude: 5.145396665914534
+        start-coordinate-latitude: 51.35658598981683
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1667"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.071181694993085
+            latitude-from: 51.31031660535702
+            longitude-to: 5.204697766203752
+            latitude-to: 51.43217425172353
+    GM1669:
+        name: "Roerdalen"
+        start-coordinate-longitude: 5.934873575519242
+        start-coordinate-latitude: 51.14621225922504
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1669"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.913748595503533
+            latitude-from: 51.0965314229011
+            longitude-to: 6.180724253072888
+            latitude-to: 51.194414120794754
+    GM1674:
+        name: "Roosendaal"
+        start-coordinate-longitude: 4.3970260843607045
+        start-coordinate-latitude: 51.508198128303555
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1674"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.306808899111007
+            latitude-from: 51.45148726246836
+            longitude-to: 4.523191561660756
+            latitude-to: 51.569234822824775
+    GM1676:
+        name: "Schouwen-Duiveland"
+        start-coordinate-longitude: 4.1546922069403065
+        start-coordinate-latitude: 51.68132761652489
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1676"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.6113410434025157
+            latitude-from: 51.593670711622835
+            longitude-to: 4.20270061326777
+            latitude-to: 51.781520478279326
+    GM1680:
+        name: "Aa en Hunze"
+        start-coordinate-longitude: 6.828443682638117
+        start-coordinate-latitude: 53.04374126664347
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1680"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.561504801657705
+            latitude-from: 52.868158816629936
+            longitude-to: 6.935684803872604
+            latitude-to: 53.09476066349915
+    GM1681:
+        name: "Borger-Odoorn"
+        start-coordinate-longitude: 6.780095985863933
+        start-coordinate-latitude: 52.96164734815831
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1681"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.7241751920524875
+            latitude-from: 52.804633945748336
+            longitude-to: 7.045571012075538
+            latitude-to: 52.99335254551787
+    GM1690:
+        name: "De Wolden"
+        start-coordinate-longitude: 6.382818768860837
+        start-coordinate-latitude: 52.6851286933992
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1690"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.216319806899431
+            latitude-from: 52.61219551277358
+            longitude-to: 6.530555815409507
+            latitude-to: 52.798978976044204
+    GM1695:
+        name: "Noord-Beveland"
+        start-coordinate-longitude: 3.838792119209052
+        start-coordinate-latitude: 51.57091767577402
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1695"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.630163660898534
+            latitude-from: 51.522352170324936
+            longitude-to: 3.9609589578223146
+            latitude-to: 51.60786085535265
+    GM1696:
+        name: "Wijdemeren"
+        start-coordinate-longitude: 5.077239807584286
+        start-coordinate-latitude: 52.2286676961358
+        request-exemption-url:  "https://www.wijdemeren.nl/4/wonenwerken/Verkeer-en-parkeren.html"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1696"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.0212929599485845
+            latitude-from: 52.165928988321916
+            longitude-to: 5.145769182348101
+            latitude-to: 52.2852154804323
+    GM1699:
+        name: "Noordenveld"
+        start-coordinate-longitude: 6.409543937331863
+        start-coordinate-latitude: 53.07462647941371
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1699"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.3052737612333365
+            latitude-from: 52.98552292733334
+            longitude-to: 6.540086943456689
+            latitude-to: 53.20383228013204
+    GM1700:
+        name: "Twenterand"
+        start-coordinate-longitude: 6.639572280945875
+        start-coordinate-latitude: 52.40446618949709
+        request-exemption-url:  "https://www.twenterand.nl/parkeren-voor-autobedrijven"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1700"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.447450064884259
+            latitude-from: 52.38362776282881
+            longitude-to: 6.7177066858855286
+            latitude-to: 52.494980733280094
+    GM1701:
+        name: "Westerveld"
+        start-coordinate-longitude: 6.186613535061956
+        start-coordinate-latitude: 52.7550331336131
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1701"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.119819889813953
+            latitude-from: 52.72930684193815
+            longitude-to: 6.480026129701924
+            latitude-to: 52.927641232936026
+    GM1705:
+        name: "Lingewaard"
+        start-coordinate-longitude: 5.882063192854158
+        start-coordinate-latitude: 51.899103501997615
+        request-exemption-url:  "https://www.lingewaard.nl/vergunningen-en-ontheffingen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1705"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.856874245303898
+            latitude-from: 51.85444929714556
+            longitude-to: 6.046284693441971
+            latitude-to: 51.96041566076744
+    GM1706:
+        name: "Cranendonck"
+        start-coordinate-longitude: 5.592185318154697
+        start-coordinate-latitude: 51.32413474074722
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1706"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.515773885506571
+            latitude-from: 51.22090940690338
+            longitude-to: 5.672110782047999
+            latitude-to: 51.353877286010004
+    GM1708:
+        name: "Steenwijkerland"
+        start-coordinate-longitude: 6.082828601669087
+        start-coordinate-latitude: 52.812011625403336
+        request-exemption-url:  "https://www.steenwijkerland.nl/Inwoners/Leefomgeving/Verkeer_en_vervoer/Parkeerontheffing_aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1708"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.795177033982438
+            latitude-from: 52.64136327418997
+            longitude-to: 6.201730742250664
+            latitude-to: 52.85421494321398
+    GM1709:
+        name: "Moerdijk"
+        start-coordinate-longitude: 4.599221904734475
+        start-coordinate-latitude: 51.667977722237254
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1709"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.361821590221419
+            latitude-from: 51.60674367873187
+            longitude-to: 4.709879089197776
+            latitude-to: 51.719067325039354
+    GM1711:
+        name: "Echt-Susteren"
+        start-coordinate-longitude: 5.89481170522473
+        start-coordinate-latitude: 51.13128015934515
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1711"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.795107063891369
+            latitude-from: 51.028338365034536
+            longitude-to: 6.036490658326373
+            latitude-to: 51.1359621333911
+    GM1714:
+        name: "Sluis"
+        start-coordinate-longitude: 3.6362083571497337
+        start-coordinate-latitude: 51.32252288540836
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1714"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.358378188835702
+            latitude-from: 51.24149251714227
+            longitude-to: 3.7124087083946415
+            latitude-to: 51.4090691601498
+    GM1719:
+        name: "Drimmelen"
+        start-coordinate-longitude: 4.781140396727793
+        start-coordinate-latitude: 51.663727977214876
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1719"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.645136584917956
+            latitude-from: 51.628862562742405
+            longitude-to: 4.853126169876117
+            latitude-to: 51.76656830368465
+    GM1721:
+        name: "Bernheze"
+        start-coordinate-longitude: 5.570136200146617
+        start-coordinate-latitude: 51.711145622115524
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1721"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.423389800540961
+            latitude-from: 51.626685978165206
+            longitude-to: 5.600605560862486
+            latitude-to: 51.74060680253308
+    GM1723:
+        name: "Alphen-Chaam"
+        start-coordinate-longitude: 4.8009255561640005
+        start-coordinate-latitude: 51.536510564091394
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1723"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.746995142028714
+            latitude-from: 51.45679034519914
+            longitude-to: 5.016672474970999
+            latitude-to: 51.55726955759773
+    GM1724:
+        name: "Bergeijk"
+        start-coordinate-longitude: 5.398788898211309
+        start-coordinate-latitude: 51.27080781474818
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1724"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.225971942754482
+            latitude-from: 51.26135314862724
+            longitude-to: 5.433922673052114
+            latitude-to: 51.38390500892574
+    GM1728:
+        name: "Bladel"
+        start-coordinate-longitude: 5.2791625461779335
+        start-coordinate-latitude: 51.353495413518026
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1728"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.183203492538665
+            latitude-from: 51.30566501082844
+            longitude-to: 5.313650094404876
+            latitude-to: 51.436500543471254
+    GM1729:
+        name: "Gulpen-Wittem"
+        start-coordinate-longitude: 5.875921499388494
+        start-coordinate-latitude: 50.81069928416179
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1729"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.819409552936611
+            latitude-from: 50.75036749286346
+            longitude-to: 5.983518167118568
+            latitude-to: 50.848889403674285
+    GM1730:
+        name: "Tynaarlo"
+        start-coordinate-longitude: 6.603957634374221
+        start-coordinate-latitude: 53.08442758442824
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1730"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.4802995545885365
+            latitude-from: 53.025773135456426
+            longitude-to: 6.77650937569127
+            latitude-to: 53.19830814966965
+    GM1731:
+        name: "Midden-Drenthe"
+        start-coordinate-longitude: 6.49620575802539
+        start-coordinate-latitude: 52.85810753420971
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1731"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.3595567415389365
+            latitude-from: 52.735689860115315
+            longitude-to: 6.728628699525087
+            latitude-to: 53.00540528001639
+    GM1734:
+        name: "Overbetuwe"
+        start-coordinate-longitude: 5.750562329798769
+        start-coordinate-latitude: 51.9149935185145
+        request-exemption-url:  "https://www.overbetuwe.nl/ontheffing-verkeersregels-en-verkeerstekens"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1734"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.646322703520309
+            latitude-from: 51.870265383174406
+            longitude-to: 5.898034375665264
+            latitude-to: 51.97364867027479
+    GM1735:
+        name: "Hof van Twente"
+        start-coordinate-longitude: 6.44082709130704
+        start-coordinate-latitude: 52.256089836421886
+        request-exemption-url:  "https://www.hofvantwente.nl/verkeer-en-vervoer"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1735"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.416313152924248
+            latitude-from: 52.16316630338368
+            longitude-to: 6.752959510449648
+            latitude-to: 52.30866601221974
+    GM1740:
+        name: "Neder-Betuwe"
+        start-coordinate-longitude: 5.609640462637235
+        start-coordinate-latitude: 51.9231648926015
+        request-exemption-url:  "http://www.nederbetuwe.nl/ondernemen/wetten-regels-en-vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1740"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.453376494419273
+            latitude-from: 51.88900894746641
+            longitude-to: 5.711021533555874
+            latitude-to: 51.95400932753461
+    GM1742:
+        name: "Rijssen-Holten"
+        start-coordinate-longitude: 6.3922010710821455
+        start-coordinate-latitude: 52.24832656064638
+        request-exemption-url:  "https://www.werkenvoorrijssen-holten.nl/direct-regelen/verkeer-vervoer-parkeren/verkeer/ontheffing-wegenverkeerswet/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1742"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.326529854159415
+            latitude-from: 52.24214646435724
+            longitude-to: 6.554008645759327
+            latitude-to: 52.32646224556006
+    GM1771:
+        name: "Geldrop-Mierlo"
+        start-coordinate-longitude: 5.639307862915074
+        start-coordinate-latitude: 51.422838834714284
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1771"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.525166820625878
+            latitude-from: 51.40313635688592
+            longitude-to: 5.656509271905612
+            latitude-to: 51.46050901813077
+    GM1773:
+        name: "Olst-Wijhe"
+        start-coordinate-longitude: 6.220152110179359
+        start-coordinate-latitude: 52.34469430149501
+        request-exemption-url:  "https://www.olst-wijhe.nl/voertuigparkeren"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1773"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.0660832892612495
+            latitude-from: 52.29762713914142
+            longitude-to: 6.235842524540116
+            latitude-to: 52.4535410312051
+    GM1774:
+        name: "Dinkelland"
+        start-coordinate-longitude: 6.8477189240560445
+        start-coordinate-latitude: 52.27997667907815
+        request-exemption-url:  "https://www.dinkelland.nl/inrij-en-parkeerontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1774"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.7590353525593105
+            latitude-from: 52.27296176768803
+            longitude-to: 7.072204707644941
+            latitude-to: 52.46976679447156
+    GM1783:
+        name: "Westland"
+        start-coordinate-longitude: 4.240971114647476
+        start-coordinate-latitude: 51.94301236161552
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1783"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.1101640759520555
+            latitude-from: 51.9413834610737
+            longitude-to: 4.309819261562608
+            latitude-to: 52.06145071891597
+    GM1842:
+        name: "Midden-Delfland"
+        start-coordinate-longitude: 4.267190482323786
+        start-coordinate-latitude: 51.925329176593074
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1842"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.233583221692914
+            latitude-from: 51.92123631982096
+            longitude-to: 4.403037936276798
+            latitude-to: 52.01992168218009
+    GM1859:
+        name: "Berkelland"
+        start-coordinate-longitude: 6.649674605788794
+        start-coordinate-latitude: 52.12484424574364
+        request-exemption-url:  "https://www.gemeenteberkelland.nl/direct-regelen/bouwen-verbouwen-ruimtelijke-plannen/vergunningen-en-ontheffingen/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1859"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.400538849296348
+            latitude-from: 52.020600985807626
+            longitude-to: 6.760572330352145
+            latitude-to: 52.18248783610298
+    GM1876:
+        name: "Bronckhorst"
+        start-coordinate-longitude: 6.4434301253649915
+        start-coordinate-latitude: 51.971297343296705
+        request-exemption-url:  "https://www.bronckhorst.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1876"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.110812830375012
+            latitude-from: 51.967978817218146
+            longitude-to: 6.475772863289004
+            latitude-to: 52.137712361675725
+    GM1883:
+        name: "Sittard-Geleen"
+        start-coordinate-longitude: 5.824429543067522
+        start-coordinate-latitude: 51.06455561113685
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1883"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.758002323492781
+            latitude-from: 50.94639833340236
+            longitude-to: 5.905517416588451
+            latitude-to: 51.07260986197215
+    GM1884:
+        name: "Kaag en Braassem"
+        start-coordinate-longitude: 4.5617959783720785
+        start-coordinate-latitude: 52.16634442966388
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1884"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.538147641000835
+            latitude-from: 52.152248317388924
+            longitude-to: 4.729703167398199
+            latitude-to: 52.23384336347134
+    GM1891:
+        name: "Dantumadiel"
+        start-coordinate-longitude: 5.972084357149783
+        start-coordinate-latitude: 53.30812273335637
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1891"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.882244592405062
+            latitude-from: 53.22769764005963
+            longitude-to: 6.077752685958167
+            latitude-to: 53.32563040742706
+    GM1892:
+        name: "Zuidplas"
+        start-coordinate-longitude: 4.58455428282175
+        start-coordinate-latitude: 51.96494200299748
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1892"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.546339275275271
+            latitude-from: 51.933492268470204
+            longitude-to: 4.688684512651072
+            latitude-to: 52.06554090929063
+    GM1894:
+        name: "Peel en Maas"
+        start-coordinate-longitude: 5.97704094056045
+        start-coordinate-latitude: 51.37750960749019
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1894"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.832075655036223
+            latitude-from: 51.26575905685065
+            longitude-to: 6.123253952556399
+            latitude-to: 51.39572924336427
+    GM1895:
+        name: "Oldambt"
+        start-coordinate-longitude: 7.047246595474219
+        start-coordinate-latitude: 53.15771183487216
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1895"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.9033000808776785
+            latitude-from: 53.110831060309536
+            longitude-to: 7.227498373224413
+            latitude-to: 53.33320640254215
+    GM1896:
+        name: "Zwartewaterland"
+        start-coordinate-longitude: 6.031373815102911
+        start-coordinate-latitude: 52.61305590689176
+        request-exemption-url:  "https://www.zwartewaterland.nl/vergunningen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1896"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.971341228641738
+            latitude-from: 52.55184063512061
+            longitude-to: 6.166814244979902
+            latitude-to: 52.66793686841845
+    GM1900:
+        name: "Súdwest-Fryslân"
+        start-coordinate-longitude: 5.496370265933683
+        start-coordinate-latitude: 53.067133144047766
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1900"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.164248984760172
+            latitude-from: 52.79595505758348
+            longitude-to: 5.788229256594239
+            latitude-to: 53.1538140344679
+    GM1901:
+        name: "Bodegraven-Reeuwijk"
+        start-coordinate-longitude: 4.730539358945939
+        start-coordinate-latitude: 52.060375804242724
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1901"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.659967730229895
+            latitude-from: 52.01324180974703
+            longitude-to: 4.873200411814841
+            latitude-to: 52.122287379380694
+    GM1903:
+        name: "Eijsden-Margraten"
+        start-coordinate-longitude: 5.722896301106632
+        start-coordinate-latitude: 50.811436754807026
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1903"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.6819721503755165
+            latitude-from: 50.754765008015006
+            longitude-to: 5.864135529510107
+            latitude-to: 50.85529059102325
+    GM1904:
+        name: "Stichtse Vecht"
+        start-coordinate-longitude: 4.986786315445515
+        start-coordinate-latitude: 52.18730263854455
+        request-exemption-url:  "https://stichtsevecht.nl/onderwerp/1967/ontheffing-voetgangerszone-kaatsbaan-maarssen/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1904"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.909637961372803
+            latitude-from: 52.11671591952704
+            longitude-to: 5.12052895061907
+            latitude-to: 52.28932013313658
+    GM1911:
+        name: "Hollands Kroon"
+        start-coordinate-longitude: 5.010036237020076
+        start-coordinate-latitude: 52.809466071659415
+        request-exemption-url:  "https://www.hollandskroon.nl/direct-regelen/ondernemen/agrarisch/ontheffing-landbouwvoertuigen-hoger-dan-4-meter/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1911"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.7588552603500744
+            latitude-from: 52.70680565294293
+            longitude-to: 5.215063783813582
+            latitude-to: 53.04428857321006
+    GM1916:
+        name: "Leidschendam-Voorburg"
+        start-coordinate-longitude: 4.463615811456227
+        start-coordinate-latitude: 52.113305598237574
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1916"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.3352131913616425
+            latitude-from: 52.05625471181962
+            longitude-to: 4.493018073759099
+            latitude-to: 52.12897989406246
+    GM1924:
+        name: "Goeree-Overflakkee"
+        start-coordinate-longitude: 4.398214086296065
+        start-coordinate-latitude: 51.695778911371725
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1924"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.7736753451207234
+            latitude-from: 51.64377788724588
+            longitude-to: 4.423549727577674
+            latitude-to: 51.858597898606185
+    GM1926:
+        name: "Pijnacker-Nootdorp"
+        start-coordinate-longitude: 4.389915116146206
+        start-coordinate-latitude: 51.99731342406591
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1926"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.372640430860879
+            latitude-from: 51.9681986057909
+            longitude-to: 4.476790253790953
+            latitude-to: 52.05405390077356
+    GM1930:
+        name: "Nissewaard"
+        start-coordinate-longitude: 4.26220268226468
+        start-coordinate-latitude: 51.85882947549687
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1930"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.185272527566671
+            latitude-from: 51.78277170262097
+            longitude-to: 4.432482336186938
+            latitude-to: 51.87298591099794
+    GM1931:
+        name: "Krimpenerwaard"
+        start-coordinate-longitude: 4.630763048399661
+        start-coordinate-latitude: 51.909157281584406
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1931"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.576328454045854
+            latitude-from: 51.889354568615055
+            longitude-to: 4.877792920155552
+            latitude-to: 52.022271728063274
+    GM1940:
+        name: "De Fryske Marren"
+        start-coordinate-longitude: 5.794996451207999
+        start-coordinate-latitude: 52.95051389391383
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1940"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.337841620636374
+            latitude-from: 52.76480520298613
+            longitude-to: 5.937846927466569
+            latitude-to: 53.05883930184374
+    GM1942:
+        name: "Gooise Meren"
+        start-coordinate-longitude: 5.175158502087314
+        start-coordinate-latitude: 52.29721968987163
+        request-exemption-url:  "https://gooisemeren.nl/vergunningen/ontheffing-inrijverbod-naarden-vesting/"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1942"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.012793853433831
+            latitude-from: 52.25579579964332
+            longitude-to: 5.230356664587415
+            latitude-to: 52.38865411676176
+    GM1945:
+        name: "Berg en Dal"
+        start-coordinate-longitude: 5.950265348136925
+        start-coordinate-latitude: 51.819987487089286
+        request-exemption-url:  "https://www.bergendal.nl/verkeersontheffing-aanvragen"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1945"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.879067186521058
+            latitude-from: 51.74102861130233
+            longitude-to: 6.06348555320026
+            latitude-to: 51.881671996392434
+    GM1948:
+        name: "Meierijstad"
+        start-coordinate-longitude: 5.511221073401528
+        start-coordinate-latitude: 51.59754273105812
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1948"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.370947502185829
+            latitude-from: 51.521296239629805
+            longitude-to: 5.65655581323861
+            latitude-to: 51.65570260778967
+    GM1949:
+        name: "Waadhoeke"
+        start-coordinate-longitude: 5.6432273655200325
+        start-coordinate-latitude: 53.200751590108716
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1949"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.432116349556083
+            latitude-from: 53.12414909636101
+            longitude-to: 5.749301099004796
+            latitude-to: 53.36795841604824
+    GM1950:
+        name: "Westerwolde"
+        start-coordinate-longitude: 7.076842703558984
+        start-coordinate-latitude: 53.097803333575186
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1950"
+        date-last-check: null
+        bounds:
+            longitude-from: 7.014799274866756
+            latitude-from: 52.83819613569312
+            longitude-to: 7.217445356723045
+            latitude-to: 53.16077367014772
+    GM1952:
+        name: "Midden-Groningen"
+        start-coordinate-longitude: 6.706904625450661
+        start-coordinate-latitude: 53.19155229826768
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1952"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.639468069394165
+            latitude-from: 53.070971583127346
+            longitude-to: 6.965855358093508
+            latitude-to: 53.298352317075036
+    GM1954:
+        name: "Beekdaelen"
+        start-coordinate-longitude: 5.885853299687664
+        start-coordinate-latitude: 50.927839622564015
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1954"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.796556971085379
+            latitude-from: 50.880648244041225
+            longitude-to: 6.026894457260918
+            latitude-to: 50.98841699817623
+    GM1955:
+        name: "Montferland"
+        start-coordinate-longitude: 6.192204288905855
+        start-coordinate-latitude: 51.941805402591775
+        request-exemption-url:  "https://www.montferland.info/parkeren-voor-autobedrijven"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1955"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.089514437785539
+            latitude-from: 51.86762620408194
+            longitude-to: 6.33227917101889
+            latitude-to: 51.98051869675125
+    GM1959:
+        name: "Altena"
+        start-coordinate-longitude: 4.893164975709056
+        start-coordinate-latitude: 51.72469953738115
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1959"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.676304223471826
+            latitude-from: 51.710813374651565
+            longitude-to: 5.1427138170622895
+            latitude-to: 51.82852919069758
+    GM1960:
+        name: "West Betuwe"
+        start-coordinate-longitude: 5.30130295602121
+        start-coordinate-latitude: 51.85941897516845
+        request-exemption-url:  "https://www.westbetuwe.nl/parkeerontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1960"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.993854672345494
+            latitude-from: 51.80396261279294
+            longitude-to: 5.415234177553451
+            latitude-to: 51.93548253955924
+    GM1961:
+        name: "Vijfheerenlanden"
+        start-coordinate-longitude: 5.140954120273332
+        start-coordinate-latitude: 51.94558804538421
+        request-exemption-url:  "https://www.vijfheerenlanden.nl/parkeervergunning-of-inrijontheffing"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1961"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.926301291212205
+            latitude-from: 51.85736068393065
+            longitude-to: 5.180226656080339
+            latitude-to: 52.00303512839195
+    GM1963:
+        name: "Hoeksche Waard"
+        start-coordinate-longitude: 4.419863570734144
+        start-coordinate-latitude: 51.76306602016831
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1963"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.213246844479086
+            latitude-from: 51.69247356033833
+            longitude-to: 4.631633308815734
+            latitude-to: 51.83704614680436
+    GM1966:
+        name: "Het Hogeland"
+        start-coordinate-longitude: 6.805975512085905
+        start-coordinate-latitude: 53.434500287876986
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1966"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.1674317519738615
+            latitude-from: 53.24944789235039
+            longitude-to: 6.91178599603384
+            latitude-to: 53.57642327097398
+    GM1969:
+        name: "Westerkwartier"
+        start-coordinate-longitude: 6.343338676644667
+        start-coordinate-latitude: 53.173164946341586
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1969"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.175234870261158
+            latitude-from: 53.08713492001728
+            longitude-to: 6.511442422369439
+            latitude-to: 53.34138175322407
+    GM1970:
+        name: "Noardeast-Fryslân"
+        start-coordinate-longitude: 6.092075948710135
+        start-coordinate-latitude: 53.3705617990184
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1970"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.7026827293091005
+            latitude-from: 53.243502476458495
+            longitude-to: 6.294361128314182
+            latitude-to: 53.492577463650335
+    GM1978:
+        name: "Molenlanden"
+        start-coordinate-longitude: 4.9656125833572835
+        start-coordinate-latitude: 51.874497335843735
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1978"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.619248844805532
+            latitude-from: 51.8319936677226
+            longitude-to: 5.027512074590091
+            latitude-to: 51.95092794425967
+    GM1979:
+        name: "Eemsdelta"
+        start-coordinate-longitude: 6.881969642294306
+        start-coordinate-latitude: 53.31677337871578
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1979"
+        date-last-check: null
+        bounds:
+            longitude-from: 6.592563466116784
+            latitude-from: 53.23695246888887
+            longitude-to: 7.134860480838194
+            latitude-to: 53.459428266380215
+    GM1980:
+        name: "Dijk en Waard"
+        start-coordinate-longitude: 4.792043394989626
+        start-coordinate-latitude: 52.642882040725404
+        request-exemption-url:  "https://www.dijkenwaard.nl/parkeren-en-verkeer/parkeervergunning/parkeervergunning-bedrijf"
+        search-distance-in-metres: 50000
+        municipality-id: "GM1980"
+        date-last-check: null
+        bounds:
+            longitude-from: 4.728853820601101
+            latitude-from: 52.632677859714185
+            longitude-to: 4.899897651576464
+            latitude-to: 52.731346878106486
+    GM1982:
+        name: "Land van Cuijk"
+        start-coordinate-longitude: 5.891103775491728
+        start-coordinate-latitude: 51.68635316993805
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1982"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.690858170095602
+            latitude-from: 51.55203086729036
+            longitude-to: 6.048120698761894
+            latitude-to: 51.77503386233294
+    GM1991:
+        name: "Maashorst"
+        start-coordinate-longitude: 5.5992441351650815
+        start-coordinate-latitude: 51.674042137432366
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1991"
+        date-last-check: null
+        bounds:
+            longitude-from: 5.5619663915899515
+            latitude-from: 51.62249637652121
+            longitude-to: 5.750478242151182
+            latitude-to: 51.768045890503466
+    GM1992:
+        name: "Voorne aan Zee"
+        start-coordinate-longitude: 4.183111346454005
+        start-coordinate-latitude: 51.871638521819605
+        request-exemption-url:  ""
+        search-distance-in-metres: 50000
+        municipality-id: "GM1992"
+        date-last-check: null
+        bounds:
+            longitude-from: 3.9555803787437767
+            latitude-from: 51.79111331209157
+            longitude-to: 4.2393831509799735
+            latitude-to: 51.93614160776871

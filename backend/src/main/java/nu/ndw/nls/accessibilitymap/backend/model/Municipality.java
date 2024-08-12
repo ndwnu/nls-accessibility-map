@@ -1,11 +1,13 @@
 package nu.ndw.nls.accessibilitymap.backend.model;
 
 import java.net.URL;
+import java.time.LocalDate;
 import lombok.Value;
 import org.locationtech.jts.geom.Point;
 
 @Value
 public class Municipality {
+
     Point startPoint;
     double searchDistanceInMetres;
     String municipalityId;
@@ -13,4 +15,5 @@ public class Municipality {
     String name;
     URL requestExemptionUrl;
     MunicipalityBoundingBox bounds;
+    LocalDate dateLastCheck;
 }
