@@ -23,6 +23,7 @@ extends:
   parameters:
     overrideAllowHelmDeploy: ${{ parameters.overrideAllowHelmDeploy }}
     isVersionedProject: true
+    jdkVersion: 1.21
     mavenReleaseGoal: deploy
     mavenDeployToNdwShared: true
     sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**'
