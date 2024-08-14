@@ -10,7 +10,7 @@ public class AccessibilityGeoJsonFeature {
 
     private static final String TYPE = "Feature";
 
-    Long id;
+    long id;
     LineStringGeojson geometry;
     AccessibilityGeoJsonProperties properties;
 

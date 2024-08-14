@@ -14,14 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccessibleRoadsService {
 
-    @Timed(description = "Time spent determining base accessible road sections")
+    @Timed(description = "Time spent determining base accessible road sections for entire map")
     public List<IsochroneMatch> getBaseAccessibleRoads(AccessibilityMap accessibilityMap, Point startPoint,
             double searchDistanceInMeters ) {
         return getVehicleAccessibleRoads(accessibilityMap, null, startPoint, searchDistanceInMeters, null);
     }
 
     @Cacheable(key = "#municipalityId", cacheNames = "baseAccessibleRoadsByMunicipality", sync = true)
-    @Timed(description = "Time spent determining base accessible road sections")
+    @Timed(description = "Time spent determining base accessible road sections within municipality")
     public List<IsochroneMatch> getBaseAccessibleRoadsByMunicipality(AccessibilityMap accessibilityMap,
             Point startPoint, double searchDistanceInMeters, int municipalityId) {
         return getVehicleAccessibleRoads(accessibilityMap, null, startPoint, searchDistanceInMeters, municipalityId);

@@ -5,16 +5,19 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
+import nu.ndw.nls.geometry.GeometryConfiguration;
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @ComponentScan
 @Configuration
 @RequiredArgsConstructor
+@Import({GeometryConfiguration.class})
 public class AccessibilityConfiguration {
 
     private final GraphHopperConfiguration graphHopperConfiguration;
