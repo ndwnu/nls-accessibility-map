@@ -36,26 +36,53 @@ nu:
       accessibilitymap:
         jobs:
           generate:
+            root-generation-destination: ./map-generation-destination
+            search-distance-in-meters: 1000000
+            start-location-latitude: 53.01546436904244
+            start-location-longitude: 5.197172571583729
             geojson:
               C6:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
                 rvv-code: C6
+                publisher-event-subject-type: accessibility_windows_times_rvv_code_c6
               C7:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
                 rvv-code: C7
+                publisher-event-subject-type: accessibility_windows_times_rvv_code_c7
               C7B:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
                 rvv-code: C7b
+                publisher-event-subject-type: accessibility_windows_times_rvv_code_c7b
               C12:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
                 rvv-code: C12
+                publisher-event-subject-type: accessibility_windows_times_rvv_code_c12
               C22C:
-                path-date-pattern: "'/api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
+                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
                 rvv-code: C22c
+                publisher-event-subject-type: accessibility_windows_times_rvv_code_c22c
+
 
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+          publish:
+            - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c6.geojson.published
+              expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
+              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6
+            - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c7.geojson.published
+              expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
+              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7
+            - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c7b.geojson.published
+              expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
+              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7B
+            - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c12.geojson.published
+              expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
+              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C12
+            - routingKey:  ndw.nls.maps.accessibility-window-times-rvv-code-c22c.geojson.published
+              expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
+              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C22C
+
 
 management:
   observations:

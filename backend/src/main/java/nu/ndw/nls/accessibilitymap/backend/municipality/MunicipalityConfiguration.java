@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.municipality;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
-import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityMapper;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,8 +19,8 @@ public class MunicipalityConfiguration {
             MunicipalityProperties municipalityProperties) {
         this.municipalityMapper = municipalityMapper;
 
-        this.municipalities = new HashMap<>();
 
+        this.municipalities = new HashMap<>();
         municipalityProperties.getMunicipalities()
                 .forEach((name, municipalityProperty) -> this.municipalities.put(name,
                         municipalityMapper.map(municipalityProperty)));

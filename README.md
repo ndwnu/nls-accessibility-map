@@ -75,3 +75,6 @@ To re-create the mocked response, download Amersfoort files, using the following
 https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?townCode=GM0307&rvvCode=C6&rvvCode=C7&rvvCode=C7a&rvvCode=C7b&rvvCode=C8&rvvCode=C9&rvvCode=C10&rvvCode=C11&rvvCode=C12&rvvCode=C22c&rvvCode=C17&rvvCode=C18&rvvCode=C19&rvvCode=C20&rvvCode=C21
 
 
+
+## Pretty printing geojson
+jq . c6WindowTimeSegments.geojson | sponge c6WindowTimeSegments.geojson

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.ResourceNotFoundException;
+import nu.ndw.nls.accessibilitymap.accessibility.exceptions.ResourceNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.APIErrorJson;

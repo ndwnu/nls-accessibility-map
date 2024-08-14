@@ -4,6 +4,33 @@ nu:
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
+          receive:
+              - queue: integration_test_window_times_rvv_code_c6
+                expected-event-types:
+                - MAP_GEOJSON_PUBLISHED_EVENT
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6
+                initialize: DECLARE
+              - queue: integration_test_window_times_rvv_code_c7
+                expected-event-types:
+                  - MAP_GEOJSON_PUBLISHED_EVENT
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7
+                initialize: DECLARE
+              - queue: integration_test_window_times_rvv_code_c7b
+                expected-event-types:
+                  - MAP_GEOJSON_PUBLISHED_EVENT
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7B
+                initialize: DECLARE
+              - queue: integration_test_window_times_rvv_code_c12
+                expected-event-types:
+                  - MAP_GEOJSON_PUBLISHED_EVENT
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C12
+                initialize: DECLARE
+              - queue: integration_test_window_times_rvv_code_c22c
+                expected-event-types:
+                  - MAP_GEOJSON_PUBLISHED_EVENT
+                eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C22C
+                initialize: DECLARE
+
 graphhopper:
   dir: ../../graphhopper
 spring:
@@ -11,3 +38,4 @@ spring:
     url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps
     password: nls-maps
+
