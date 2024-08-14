@@ -11,7 +11,7 @@ import org.locationtech.jts.geom.LineString;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class AccessibleRoadSection {
+public class AccessibilityRoadSection {
 
     private final int roadSectionId;
     private final LineString geometry;

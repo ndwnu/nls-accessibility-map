@@ -5,10 +5,10 @@ import lombok.Value;
 
 @Value
 @Builder
-public class AccessibilityProperties {
+public class AccessibilityGeoJsonProperties {
 
-    Long id;
-    Integer versionId;
+    long id;
+    int versionId;
     boolean accessible;
 
 }

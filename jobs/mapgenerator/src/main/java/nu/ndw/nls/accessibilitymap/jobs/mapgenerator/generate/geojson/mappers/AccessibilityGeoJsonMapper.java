@@ -19,10 +19,10 @@ public class AccessibilityGeoJsonMapper {
 
     private final AccessibilityGeoJsonFeatureMapper accessibilityGeoJsonFeatureMapper;
 
-    public AccessibilityGeoJsonFeatureCollection map(SortedMap<Integer, RoadSection> accessiblityResult,
+    public AccessibilityGeoJsonFeatureCollection map(SortedMap<Integer, RoadSection> accessibilityResult,
             int nwbVersion) {
 
-        List<AccessibilityGeoJsonFeature> features = accessiblityResult.values().stream()
+        List<AccessibilityGeoJsonFeature> features = accessibilityResult.values().stream()
                 .map(directionalRoadSectionMapper::map)
                 .flatMap(Collection::stream)
                 .map(directionalRoadSection ->

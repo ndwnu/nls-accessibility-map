@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.municipality.mappers;
+package nu.ndw.nls.accessibilitymap.backend.municipality.mappers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -12,7 +12,7 @@ public class AccessibilityGeoJsonFeature {
 
     Long id;
     LineStringGeojson geometry;
-    AccessibilityProperties properties;
+    AccessibilityGeoJsonProperties properties;
 
     public String getType() {
         return TYPE;

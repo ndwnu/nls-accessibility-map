@@ -1,10 +1,10 @@
-package nu.ndw.nls.accessibilitymap.accessibility.municipality;
+package nu.ndw.nls.accessibilitymap.backend.municipality;
 
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
-import nu.ndw.nls.accessibilitymap.accessibility.model.Municipality;
-import nu.ndw.nls.accessibilitymap.accessibility.municipality.mappers.MunicipalityMapper;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityMapper;
 import org.springframework.context.annotation.Configuration;
 
 @Getter

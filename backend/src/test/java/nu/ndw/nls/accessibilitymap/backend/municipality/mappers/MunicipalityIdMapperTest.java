@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.municipality.mappers;
+package nu.ndw.nls.accessibilitymap.backend.municipality.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.municipality;
+package nu.ndw.nls.accessibilitymap.backend.municipality;
 
 import java.net.URL;
 import lombok.Value;

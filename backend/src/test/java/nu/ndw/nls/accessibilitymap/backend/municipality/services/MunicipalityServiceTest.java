@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services;
+package nu.ndw.nls.accessibilitymap.backend.municipality.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.exceptions.MunicipalityNotFoundException;
-import nu.ndw.nls.accessibilitymap.accessibility.model.Municipality;
-import nu.ndw.nls.accessibilitymap.accessibility.municipality.MunicipalityConfiguration;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

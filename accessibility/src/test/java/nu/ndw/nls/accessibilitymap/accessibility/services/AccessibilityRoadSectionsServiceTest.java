@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.mappers.AccessibleRoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibleRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRoadSection;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.shared.nwb.services.NwbRoadSectionService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class AccessibleRoadSectionsServiceTest {
+class AccessibilityRoadSectionsServiceTest {
 
     private static final int VERSION = 20241231;
     private static final int MUNICIPALITY_ID = 1234;
@@ -39,24 +39,24 @@ class AccessibleRoadSectionsServiceTest {
     @Mock
     private NwbRoadSectionDto nwbRoadSectionDtoB;
     @Mock
-    private AccessibleRoadSection accessibleRoadSectionA;
+    private AccessibilityRoadSection accessibilityRoadSectionA;
     @Mock
-    private AccessibleRoadSection accessibleRoadSectionB;
+    private AccessibilityRoadSection accessibilityRoadSectionB;
 
     @Test
     void getRoadSectionIdToRoadSection_ok() {
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(VERSION);
         when(nwbRoadSectionService.findLazyCar(VERSION, Collections.singleton(MUNICIPALITY_ID)))
                 .thenReturn(Stream.of(nwbRoadSectionDtoA, nwbRoadSectionDtoB));
-        when(accessibleRoadSectionMapper.map(nwbRoadSectionDtoA)).thenReturn(accessibleRoadSectionA);
-        when(accessibleRoadSectionMapper.map(nwbRoadSectionDtoB)).thenReturn(accessibleRoadSectionB);
+        when(accessibleRoadSectionMapper.map(nwbRoadSectionDtoA)).thenReturn(accessibilityRoadSectionA);
+        when(accessibleRoadSectionMapper.map(nwbRoadSectionDtoB)).thenReturn(accessibilityRoadSectionB);
 
-        assertEquals(List.of(accessibleRoadSectionA, accessibleRoadSectionB),
-                accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID));
+        assertEquals(List.of(accessibilityRoadSectionA, accessibilityRoadSectionB),
+                accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID));
 
         // Second time to test if the response is cached
-        assertEquals(List.of(accessibleRoadSectionA, accessibleRoadSectionB),
-                accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID));
+        assertEquals(List.of(accessibilityRoadSectionA, accessibilityRoadSectionB),
+                accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID));
 
         // Response should be cached by municipality id, actual database call should only occur once
         verify(nwbRoadSectionService, times(1)).findLazyCar(VERSION, Collections.singleton(MUNICIPALITY_ID));
@@ -67,10 +67,10 @@ class AccessibleRoadSectionsServiceTest {
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(VERSION);
         when(nwbRoadSectionService.findLazyCar(VERSION, null))
                 .thenReturn(Stream.of(nwbRoadSectionDtoA, nwbRoadSectionDtoB));
-        when(accessibleRoadSectionMapper.map(nwbRoadSectionDtoA)).thenReturn(accessibleRoadSectionA);
-        when(accessibleRoadSectionMapper.map(nwbRoadSectionDtoB)).thenReturn(accessibleRoadSectionB);
+        when(accessibleRoadSectionMapper.map(nwbRoadSectionDtoA)).thenReturn(accessibilityRoadSectionA);
+        when(accessibleRoadSectionMapper.map(nwbRoadSectionDtoB)).thenReturn(accessibilityRoadSectionB);
 
-        assertEquals(List.of(accessibleRoadSectionA, accessibleRoadSectionB),
+        assertEquals(List.of(accessibilityRoadSectionA, accessibilityRoadSectionB),
                 accessibleRoadSectionsService.getRoadSections());
     }
 

@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.SortedMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibleRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.model.Municipality;
+import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
@@ -28,7 +27,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityMapServiceTest {
 
     private static final double SEARCH_DISTANCE_IN_METERS = 1000D;
-    private static final String MUNICIPALITY_ID_STRING = "GM307";
 
     private static final int ID_1 = 1;
     private static final int ID_2 = 2;
@@ -48,31 +46,27 @@ class AccessibilityMapServiceTest {
     private AccessibilityMapFactory accessibilityMapFactory;
     @Mock
     private NetworkGraphHopper networkGraphHopper;
-    @Mock
-    private MunicipalityService municipalityService;
+
     @Mock
     private AccessibleRoadsService accessibleRoadsService;
 
     @Mock
     private AccessibilityMap accessibilityMap;
     @Mock
-    private Municipality municipality;
-    @Mock
     private VehicleProperties vehicleProperties;
     @Mock
     private AccessibleRoadSectionsService accessibleRoadSectionsService;
     @InjectMocks
     private AccessibilityMapService accessibilityMapService;
-
     @Mock
     private Point startPoint;
 
 
-    private final AccessibleRoadSection NWB_ACCESSIBLE_BOTH = new AccessibleRoadSection(ID_1, LINE_STRING_1, true, true);
+    private final AccessibilityRoadSection NWB_ACCESSIBLE_BOTH = new AccessibilityRoadSection(ID_1, LINE_STRING_1, true, true);
 
-    private final AccessibleRoadSection NEW_ACCESSIBLE_FORWARD = new AccessibleRoadSection(ID_2, LINE_STRING_2, true, false);
+    private final AccessibilityRoadSection NEW_ACCESSIBLE_FORWARD = new AccessibilityRoadSection(ID_2, LINE_STRING_2, true, false);
 
-    private final AccessibleRoadSection NEW_ACCESSIBLE_REVERSED = new AccessibleRoadSection(ID_3, LINE_STRING_3, false, true);
+    private final AccessibilityRoadSection NEW_ACCESSIBLE_REVERSED = new AccessibilityRoadSection(ID_3, LINE_STRING_3, false, true);
 
     private static final IsochroneMatch ACCESSIBLE_MATCH = IsochroneMatch.builder()
             .matchedLinkId(ID_1)
@@ -98,15 +92,16 @@ class AccessibilityMapServiceTest {
         List<IsochroneMatch> restrictedIsochroneMatches = List.of(INACCESSIBLE_MATCH, INACCESSIBLE_MATCH_REVERSED);
 
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
-        when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
-        when(accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(accessibilityMap, municipality))
+
+        when(accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(accessibilityMap, startPoint,
+                SEARCH_DISTANCE_IN_METERS, MUNICIPALITY_ID_INTEGER))
                 .thenReturn(allIsochroneMatches);
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
-                municipality)).thenReturn(restrictedIsochroneMatches);
+                startPoint, SEARCH_DISTANCE_IN_METERS, MUNICIPALITY_ID_INTEGER)).thenReturn(restrictedIsochroneMatches);
 
         SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
-                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING,
-                        ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
+                .determineAccessibilityByRoadSection(vehicleProperties, startPoint, SEARCH_DISTANCE_IN_METERS,
+                        MUNICIPALITY_ID_INTEGER, ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
 
         assertThat(idToRoadSections).hasSize(2)
                 .containsEntry(ID_1, new RoadSection(ID_1, LINE_STRING_1, false, null))
@@ -178,18 +173,16 @@ class AccessibilityMapServiceTest {
     @Test
     void determineAccessibilityByRoadSection_ok_noAccessibleIsochroneSectionsEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
-        when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
-        when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
+        when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID_INTEGER))
                 .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
 
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
-                municipality)).thenReturn(List.of());
+                startPoint, SEARCH_DISTANCE_IN_METERS, MUNICIPALITY_ID_INTEGER)).thenReturn(List.of());
 
         SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
-                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING,
-                        ResultType.EFFECTIVE_ACCESSIBILITY);
+                .determineAccessibilityByRoadSection(vehicleProperties, startPoint, SEARCH_DISTANCE_IN_METERS,
+                        MUNICIPALITY_ID_INTEGER, ResultType.EFFECTIVE_ACCESSIBILITY);
 
         assertThat(idToRoadSections).hasSize(3)
                 .containsEntry(ID_1, new RoadSection(ID_1, LINE_STRING_1, false, false))
@@ -200,14 +193,13 @@ class AccessibilityMapServiceTest {
     @Test
     void determineAccessibilityByRoadSection_ok_allAccessibleIsochroneEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
-        when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
-        when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
+        when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID_INTEGER))
                 .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
 
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
-                municipality)).thenReturn(List.of(IsochroneMatch.builder()
+                startPoint, SEARCH_DISTANCE_IN_METERS, MUNICIPALITY_ID_INTEGER))
+                .thenReturn(List.of(IsochroneMatch.builder()
                         .matchedLinkId(ID_1)
                         .geometry(LINE_STRING_1)
                         .reversed(false)
@@ -229,8 +221,8 @@ class AccessibilityMapServiceTest {
                         .build()));
 
         SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
-                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING,
-                        ResultType.EFFECTIVE_ACCESSIBILITY);
+                .determineAccessibilityByRoadSection(vehicleProperties, startPoint, SEARCH_DISTANCE_IN_METERS,
+                        MUNICIPALITY_ID_INTEGER, ResultType.EFFECTIVE_ACCESSIBILITY);
 
         assertThat(idToRoadSections).hasSize(3)
                 .containsEntry(ID_1, new RoadSection(ID_1, LINE_STRING_1, true, true))
@@ -241,22 +233,21 @@ class AccessibilityMapServiceTest {
     @Test
     void determineAccessibilityByRoadSection_ok_isolatingAForwardAccessibleEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
-        when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
-        when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
+        when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID_INTEGER))
                 .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
 
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
-                municipality)).thenReturn(List.of(IsochroneMatch.builder()
+                startPoint, SEARCH_DISTANCE_IN_METERS, MUNICIPALITY_ID_INTEGER))
+                .thenReturn(List.of(IsochroneMatch.builder()
                         .matchedLinkId(ID_1)
                         .geometry(LINE_STRING_1)
                         .reversed(false)
                         .build()));
 
         SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
-                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING,
-                        ResultType.EFFECTIVE_ACCESSIBILITY);
+                .determineAccessibilityByRoadSection(vehicleProperties, startPoint, SEARCH_DISTANCE_IN_METERS,
+                        MUNICIPALITY_ID_INTEGER, ResultType.EFFECTIVE_ACCESSIBILITY);
 
         assertThat(idToRoadSections).hasSize(3)
                 .containsEntry(ID_1, new RoadSection(ID_1, LINE_STRING_1, true, false))
@@ -267,22 +258,21 @@ class AccessibilityMapServiceTest {
     @Test
     void determineAccessibilityByRoadSection_ok_isolatingAReverseAccessibleEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
-        when(municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING)).thenReturn(municipality);
-        when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(accessibleRoadSectionsService.getRoadSectionIdToRoadSection(MUNICIPALITY_ID_INTEGER))
+        when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID_INTEGER))
                 .thenReturn(List.of(NWB_ACCESSIBLE_BOTH, NEW_ACCESSIBLE_FORWARD, NEW_ACCESSIBLE_REVERSED));
 
         when(accessibleRoadsService.getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties,
-                municipality)).thenReturn(List.of(IsochroneMatch.builder()
-                        .matchedLinkId(ID_1)
-                        .geometry(LINE_STRING_1)
-                        .reversed(true)
+                startPoint, SEARCH_DISTANCE_IN_METERS, MUNICIPALITY_ID_INTEGER)).thenReturn(
+                        List.of(IsochroneMatch.builder()
+                            .matchedLinkId(ID_1)
+                            .geometry(LINE_STRING_1)
+                            .reversed(true)
                         .build()));
 
         SortedMap<Integer, RoadSection> idToRoadSections = accessibilityMapService
-                .determineAccessibilityByRoadSection(vehicleProperties, MUNICIPALITY_ID_STRING,
-                        ResultType.EFFECTIVE_ACCESSIBILITY);
+                .determineAccessibilityByRoadSection(vehicleProperties, startPoint, SEARCH_DISTANCE_IN_METERS,
+                        MUNICIPALITY_ID_INTEGER, ResultType.EFFECTIVE_ACCESSIBILITY);
 
         assertThat(idToRoadSections).hasSize(3)
                 .containsEntry(ID_1, new RoadSection(ID_1, LINE_STRING_1, false, true))

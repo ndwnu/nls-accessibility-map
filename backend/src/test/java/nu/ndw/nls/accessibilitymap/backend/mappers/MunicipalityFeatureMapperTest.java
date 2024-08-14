@@ -11,7 +11,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatur
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
-import nu.ndw.nls.accessibilitymap.accessibility.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.municipality;
+package nu.ndw.nls.accessibilitymap.backend.municipality;
 
 import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer.NotNull;
 import java.util.Map;

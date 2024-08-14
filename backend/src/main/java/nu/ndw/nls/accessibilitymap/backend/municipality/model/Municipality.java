@@ -1,7 +1,8 @@
-package nu.ndw.nls.accessibilitymap.accessibility.model;
+package nu.ndw.nls.accessibilitymap.backend.municipality.model;
 
 import java.net.URL;
 import lombok.Value;
+import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import org.locationtech.jts.geom.Point;
 
 @Value
