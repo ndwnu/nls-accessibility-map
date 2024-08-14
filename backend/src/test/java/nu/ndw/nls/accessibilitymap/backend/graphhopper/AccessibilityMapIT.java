@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.graphhopper;
 
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -15,7 +16,6 @@ import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
@@ -126,7 +126,7 @@ class AccessibilityMapIT {
 
     private void assertMatchesInDirection(List<IsochroneMatch> matches, List<Integer> expectedIds,
             Predicate<IsochroneMatch> directionPredicate) {
-        Assertions.assertThat(matches).filteredOn(directionPredicate)
+        assertThat(matches).filteredOn(directionPredicate)
                 .map(IsochroneMatch::getMatchedLinkId)
                 .containsExactlyInAnyOrderElementsOf(expectedIds);
     }

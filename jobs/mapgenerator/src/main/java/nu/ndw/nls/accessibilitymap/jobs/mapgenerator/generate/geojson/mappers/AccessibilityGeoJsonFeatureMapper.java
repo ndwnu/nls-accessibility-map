@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
 
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeature;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.LineStringGeojson;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
@@ -22,7 +22,7 @@ public class AccessibilityGeoJsonFeatureMapper {
                 .geometry(LineStringGeojson.builder()
                         .coordinates(geoJsonLineStringCoordinateMapper.map(directionalRoadSection.getGeometry()))
                         .build())
-                .properties(AccessibilityProperties.builder()
+                .properties(AccessibilityGeoJsonProperties.builder()
                         .id(directionalRoadSection.getRoadSectionId())
                         .versionId(version)
                         .accessible(directionalRoadSection.isAccessible())

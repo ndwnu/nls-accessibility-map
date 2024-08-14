@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.mappers.AccessibleRoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibleRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRoadSection;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.shared.nwb.services.NwbRoadSectionService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
@@ -26,15 +26,14 @@ public class AccessibleRoadSectionsService {
      * The context exists around a single NWB map version, therefor it is acceptable to use a map to cache the
      * sub-results
      */
-    private final Map<Integer, List<AccessibleRoadSection>> municipalityIdToRoadSections = new HashMap<>();
+    private final Map<Integer, List<AccessibilityRoadSection>> municipalityIdToRoadSections = new HashMap<>();
 
     @Transactional
-    public List<AccessibleRoadSection> getRoadSectionIdToRoadSection(int municipalityId) {
+    public List<AccessibilityRoadSection> getRoadSectionsByMunicipalityId(int municipalityId) {
         return municipalityIdToRoadSections.computeIfAbsent(municipalityId, this::createRoadSectionMap);
     }
 
-
-    private List<AccessibleRoadSection> createRoadSectionMap(int municipalityId) {
+    private List<AccessibilityRoadSection> createRoadSectionMap(int municipalityId) {
         try (Stream<NwbRoadSectionDto> roadSections =
                 nwbRoadSectionService.findLazyCar(accessibilityGraphhopperMetaData.nwbVersion(),
                         Collections.singleton(municipalityId))) {
@@ -44,7 +43,7 @@ public class AccessibleRoadSectionsService {
     }
 
     @Transactional
-    public List<AccessibleRoadSection> getRoadSections() {
+    public List<AccessibilityRoadSection> getRoadSections() {
         return nwbRoadSectionService.findLazyCar(accessibilityGraphhopperMetaData.nwbVersion(), null)
                 .map(accessibleRoadSectionMapper::map)
                 .toList();

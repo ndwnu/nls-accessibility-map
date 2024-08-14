@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.municipality.mappers;
+package nu.ndw.nls.accessibilitymap.backend.municipality.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -7,7 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
-import nu.ndw.nls.accessibilitymap.accessibility.municipality.MunicipalityProperty;
+import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

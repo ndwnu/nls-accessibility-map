@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeature;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.LineStringGeojson;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
@@ -43,8 +43,8 @@ class AccessibilityGeoJsonFeatureMapperTest {
                 .geometry(LineStringGeojson.builder()
                         .coordinates(geojsonLineString)
                         .build())
-                .properties(AccessibilityProperties.builder()
-                        .id((long) ROAD_SECTION_ID)
+                .properties(AccessibilityGeoJsonProperties.builder()
+                        .id(ROAD_SECTION_ID)
                         .versionId(NWB_VERSION)
                         .accessible(true)
                         .build())
@@ -64,8 +64,8 @@ class AccessibilityGeoJsonFeatureMapperTest {
                 .geometry(LineStringGeojson.builder()
                         .coordinates(geojsonLineString)
                         .build())
-                .properties(AccessibilityProperties.builder()
-                        .id((long) ROAD_SECTION_ID)
+                .properties(AccessibilityGeoJsonProperties.builder()
+                        .id(ROAD_SECTION_ID)
                         .versionId(NWB_VERSION)
                         .accessible(false)
                         .build())

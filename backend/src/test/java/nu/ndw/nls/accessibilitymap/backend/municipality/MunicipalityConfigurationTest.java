@@ -1,11 +1,11 @@
-package nu.ndw.nls.accessibilitymap.accessibility.municipality;
+package nu.ndw.nls.accessibilitymap.backend.municipality;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
-import nu.ndw.nls.accessibilitymap.accessibility.model.Municipality;
-import nu.ndw.nls.accessibilitymap.accessibility.municipality.mappers.MunicipalityMapper;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;

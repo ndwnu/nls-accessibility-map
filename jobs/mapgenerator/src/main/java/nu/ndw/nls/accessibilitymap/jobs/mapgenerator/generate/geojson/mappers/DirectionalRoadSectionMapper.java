@@ -24,7 +24,7 @@ public class DirectionalRoadSectionMapper {
     public List<DirectionalRoadSection> map(RoadSection roadSection) {
         List<DirectionalRoadSection> directionalRoadSections = new ArrayList<>();
 
-        if (isAccessibilePriorRestrictions(roadSection, false)) {
+        if (isAccessiblePriorRestrictions(roadSection, false)) {
             directionalRoadSections.add(DirectionalRoadSection.builder()
                     .roadSectionId(roadSection.getRoadSectionId())
                     .geometry(roadSection.getGeometry())
@@ -32,7 +32,7 @@ public class DirectionalRoadSectionMapper {
                     .build());
         }
 
-        if (isAccessibilePriorRestrictions(roadSection, true)) {
+        if (isAccessiblePriorRestrictions(roadSection, true)) {
             directionalRoadSections.add(DirectionalRoadSection.builder()
                     .roadSectionId(negateIdForReverseRoadSection(roadSection.getRoadSectionId()))
                     .geometry(reverseGeometryForReversedRoadSection(roadSection.getGeometry()))
@@ -62,7 +62,7 @@ public class DirectionalRoadSectionMapper {
      * @param reverse reverse
      * @return true if it has a non-null value
      */
-    private boolean isAccessibilePriorRestrictions(RoadSection roadSection, boolean reverse) {
+    private boolean isAccessiblePriorRestrictions(RoadSection roadSection, boolean reverse) {
         return getAccessibleForDirection(roadSection, reverse) != null;
     }
 

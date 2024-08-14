@@ -19,6 +19,8 @@ import nu.ndw.nls.accessibilitymap.backend.mappers.RoadSectionFeatureCollectionM
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
 import nu.ndw.nls.accessibilitymap.backend.services.PointMatchService;
 import nu.ndw.nls.accessibilitymap.backend.validators.PointValidator;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
@@ -38,6 +40,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     private final AccessibilityMapService accessibilityMapService;
     private final AccessibilityResponseMapper accessibilityResponseMapper;
     private final RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
+    private final MunicipalityService municipalityService;
 
     @Override
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
@@ -49,7 +52,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
-        SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(municipalityId, requestArguments);
+        SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(requestArguments, municipalityId);
 
         return ResponseEntity.ok(accessibilityResponseMapper.map(idToRoadSection, requestedRoadSectionId));
     }
@@ -64,7 +67,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
-        SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(municipalityId, requestArguments);
+        SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(requestArguments, municipalityId);
 
         return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(idToRoadSection, startPointMatch, accessible));
     }
@@ -93,10 +96,15 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         return null;
     }
 
-    private SortedMap<Integer, RoadSection> getAccessibility(String municipalityId, VehicleArguments requestArguments) {
+    private SortedMap<Integer, RoadSection> getAccessibility(VehicleArguments requestArguments,
+            String municipalityId) {
+
+        Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
+
         VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
-        return accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties, municipalityId,
-                ResultType.EFFECTIVE_ACCESSIBILITY);
+        return accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
+                municipality.getStartPoint(), municipality.getSearchDistanceInMetres(),
+                municipality.getMunicipalityIdInteger(), ResultType.EFFECTIVE_ACCESSIBILITY);
     }
 
     @Builder

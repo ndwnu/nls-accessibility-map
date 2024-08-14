@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibleRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.model.Municipality;
+import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -28,7 +27,6 @@ public class AccessibilityMapService {
 
     private final AccessibilityMapFactory accessibilityMapFactory;
     private final NetworkGraphHopper networkGraphHopper;
-    private final MunicipalityService municipalityService;
     private final AccessibleRoadsService accessibleRoadsService;
     private final AccessibleRoadSectionsService accessibleRoadSectionsService;
 
@@ -43,7 +41,7 @@ public class AccessibilityMapService {
         // Includes all NWB road sections to determine the accessibility and then uses isochrone to determine how
         // traffic signs are adding additional restrictions. The result is a map that indicates which road sections
         // you cannot reach from the start point.
-        EFFECTIVE_ACCESSIBILITY;
+        EFFECTIVE_ACCESSIBILITY
     }
 
     public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(VehicleProperties vehicleProperties,
@@ -64,20 +62,20 @@ public class AccessibilityMapService {
     }
 
     public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(VehicleProperties vehicleProperties,
-            String municipalityId, ResultType resultType) {
+            Point startPoint, double searchDistance, int municipalityId, ResultType resultType) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(networkGraphHopper);
-        Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
 
         List<IsochroneMatch> accessibleRoadsWithRestrictions = accessibleRoadsService
-                .getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties, municipality);
+                .getVehicleAccessibleRoadsByMunicipality(accessibilityMap, vehicleProperties, startPoint,
+                        searchDistance, municipalityId);
 
         if (resultType == ResultType.EFFECTIVE_ACCESSIBILITY) {
             return determineUnion(accessibleRoadsWithRestrictions,
-                    () -> accessibleRoadSectionsService.getRoadSectionIdToRoadSection(
-                            municipality.getMunicipalityIdInteger()));
+                    () -> accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(
+                            municipalityId));
         } else {
             List<IsochroneMatch> baseAccessibleIsochrone = accessibleRoadsService.getBaseAccessibleRoadsByMunicipality(
-                    accessibilityMap, municipality);
+                    accessibilityMap, startPoint, searchDistance, municipalityId);
 
             return determineAddedRestrictionsDifference(baseAccessibleIsochrone, accessibleRoadsWithRestrictions);
         }
@@ -114,7 +112,7 @@ public class AccessibilityMapService {
     }
 
     private SortedMap<Integer, RoadSection> determineUnion(List<IsochroneMatch> withRestrictions,
-            Supplier<List<AccessibleRoadSection>> listSupplier) {
+            Supplier<List<AccessibilityRoadSection>> listSupplier) {
 
         // For every road driving direction that is accessible for a car in the NWB municipality area, we initialize our
         // RoadSection with false. We then use the withRestrictions isochrone result to update all road section
@@ -127,7 +125,7 @@ public class AccessibilityMapService {
         //         with the restrictions applied to the isochrone
         SortedMap<Integer, RoadSection> roadSections =
                 listSupplier.get().stream()
-                .map(this::intializeRoadSection)
+                .map(this::initializeRoadSection)
                 .collect(Collectors.toMap(RoadSection::getRoadSectionId, Function.identity(), (a, b) -> a,
                         TreeMap::new));
 
@@ -143,11 +141,11 @@ public class AccessibilityMapService {
         return roadSections;
     }
 
-    private RoadSection intializeRoadSection(AccessibleRoadSection accessibleRoadSection) {
-        return new RoadSection( accessibleRoadSection.getRoadSectionId(),
-                                accessibleRoadSection.getGeometry(),
-                                initializeNwbAccessibleRoads(accessibleRoadSection.isForwardAccessible()),
-                                initializeNwbAccessibleRoads(accessibleRoadSection.isBackwardAccessible()));
+    private RoadSection initializeRoadSection(AccessibilityRoadSection accessibilityRoadSection) {
+        return new RoadSection( accessibilityRoadSection.getRoadSectionId(),
+                                accessibilityRoadSection.getGeometry(),
+                                initializeNwbAccessibleRoads(accessibilityRoadSection.isForwardAccessible()),
+                                initializeNwbAccessibleRoads(accessibilityRoadSection.isBackwardAccessible()));
     }
 
     private Boolean initializeNwbAccessibleRoads(boolean accessible) {
