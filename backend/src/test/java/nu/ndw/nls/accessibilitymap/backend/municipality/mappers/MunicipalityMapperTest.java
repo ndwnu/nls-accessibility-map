@@ -5,6 +5,9 @@ import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
+import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
@@ -27,6 +30,7 @@ class MunicipalityMapperTest {
     private static final String MUNICIPALITY_ID_STRING = "123";
     private static final String NAME = "name";
     private static final int MUNICIPALITY_ID = 123;
+    private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
     static {
         try {
@@ -60,7 +64,7 @@ class MunicipalityMapperTest {
     void map_ok() {
         MunicipalityProperty municipalityProperty = new MunicipalityProperty(NAME, START_COORDINATE_LONGITUDE,
                 START_COORDINATE_LATITUDE, SEARCH_DISTANCE_IN_METRES, MUNICIPALITY_ID_STRING,
-                URL, municipalityBoundingBox);
+                URL, municipalityBoundingBox, DATE_LAST_CHECK);
 
         when(municipalityCoordinateMapper.map(municipalityProperty)).thenReturn(point);
         when(municipalityIdMapper.map(MUNICIPALITY_ID_STRING)).thenReturn(MUNICIPALITY_ID);
@@ -73,6 +77,7 @@ class MunicipalityMapperTest {
         assertEquals(MUNICIPALITY_ID_STRING, municipality.getMunicipalityId());
         assertEquals(MUNICIPALITY_ID, municipality.getMunicipalityIdInteger());
         assertEquals(SEARCH_DISTANCE_IN_METRES, municipality.getSearchDistanceInMetres());
+        assertEquals(DATE_LAST_CHECK, municipality.getDateLastCheck());
 
         assertEquals(point, municipality.getStartPoint());
 

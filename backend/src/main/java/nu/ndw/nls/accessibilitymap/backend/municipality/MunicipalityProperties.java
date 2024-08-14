@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @SuppressWarnings("ConfigurationProperties")
 @Configuration
 @ConfigurationProperties
-@PropertySource(value = "classpath:municipality-v5-config.yml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value = "classpath:municipality-v6-config.yml", factory = YamlPropertySourceFactory.class)
 @Getter
 @Validated
 @RequiredArgsConstructor

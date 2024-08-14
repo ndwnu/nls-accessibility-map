@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
@@ -23,6 +24,7 @@ class MunicipalityFeatureMapperTest {
 
     private static final String MUNICIPALITY_ID = "GM0307";
     private static final Municipality MUNICIPALITY;
+    private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
     static {
         try {
@@ -33,7 +35,8 @@ class MunicipalityFeatureMapperTest {
                     307,
                     "Test",
                     new URL("http://iets-met-vergunningen.nl"),
-                    new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2));
+                    new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2),
+                    LocalDate.parse("2024-07-11"));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -48,7 +51,7 @@ class MunicipalityFeatureMapperTest {
 
     @Test
     void mapToMunicipalitiesToGeoJson_ok() {
-        MunicipalityFeatureCollectionJson expectedResult = createExpectedResult();
+        MunicipalityFeatureCollectionJson expectedResult = createExpectedResult(DATE_LAST_CHECK);
 
         MunicipalityFeatureCollectionJson geoJSON = municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(
                 List.of(MUNICIPALITY));
@@ -56,7 +59,34 @@ class MunicipalityFeatureMapperTest {
         assertEquals(expectedResult, geoJSON);
     }
 
-    private MunicipalityFeatureCollectionJson createExpectedResult() {
+    @Test
+    void mapToMunicipalitiesToGeoJson_emptyDateLastCheck() {
+        Municipality municipalityWithEmptyDate = createMunicipalityWithDateLastCheckNull();
+        MunicipalityFeatureCollectionJson expectedResult = createExpectedResult(null);
+
+        MunicipalityFeatureCollectionJson geoJSON = municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(
+                List.of(municipalityWithEmptyDate));
+
+        assertEquals(expectedResult, geoJSON);
+    }
+
+    private Municipality createMunicipalityWithDateLastCheckNull() {
+        try {
+            return new Municipality(new GeometryFactoryWgs84().createPoint(
+                    new Coordinate(5.0, 52.0)),
+                    50000,
+                    MUNICIPALITY_ID,
+                    307,
+                    "Test",
+                    new URL("http://iets-met-vergunningen.nl"),
+                    new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2),
+                    null);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private MunicipalityFeatureCollectionJson createExpectedResult(LocalDate dateLastCheck) {
         String municipalityId = MUNICIPALITY.getMunicipalityId();
         Point startPoint = MUNICIPALITY.getStartPoint();
         MunicipalityBoundingBox bounds = MUNICIPALITY.getBounds();
@@ -67,7 +97,8 @@ class MunicipalityFeatureMapperTest {
                 MUNICIPALITY.getName(),
                 (int) MUNICIPALITY.getSearchDistanceInMetres(),
                 List.of(boundsStart, boundsEnd),
-                MUNICIPALITY.getRequestExemptionUrl().toString());
+                MUNICIPALITY.getRequestExemptionUrl().toString(),
+                dateLastCheck);
         var featureJson = new MunicipalityFeatureJson(MunicipalityFeatureJson.TypeEnum.FEATURE, municipalityId,
                 pointJson);
         featureJson.properties(propertiesJson);

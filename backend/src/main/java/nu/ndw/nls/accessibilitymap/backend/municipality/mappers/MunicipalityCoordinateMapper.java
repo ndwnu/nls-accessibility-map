@@ -14,8 +14,8 @@ public class MunicipalityCoordinateMapper {
     private final GeometryFactoryWgs84 geometryFactoryWgs84;
 
     public Point map(MunicipalityProperty municipalityProperty) {
-        return geometryFactoryWgs84.createPoint(new Coordinate(municipalityProperty.getStartCoordinateLongitude(),
-                municipalityProperty.getStartCoordinateLatitude()));
+        return geometryFactoryWgs84.createPoint(new Coordinate(municipalityProperty.startCoordinateLongitude(),
+                municipalityProperty.startCoordinateLatitude()));
     }
 
 }
