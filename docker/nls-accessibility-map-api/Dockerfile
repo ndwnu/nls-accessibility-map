@@ -1,10 +1,10 @@
-FROM ndwnls.azurecr.io/docker.io/library/eclipse-temurin:17-focal as builder
+FROM ndwnls.azurecr.io/docker.io/library/eclipse-temurin:21-jammy as builder
 WORKDIR application
 COPY application.jar application.jar
 
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM ndwnls.azurecr.io/docker.io/library/eclipse-temurin:17-focal
+FROM ndwnls.azurecr.io/docker.io/library/eclipse-temurin:21-jammy
 
 # Add non-privileged user
 RUN useradd -u 1000 java
