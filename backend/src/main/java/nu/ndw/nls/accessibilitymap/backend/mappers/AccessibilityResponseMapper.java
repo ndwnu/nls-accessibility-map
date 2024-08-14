@@ -6,7 +6,7 @@ import java.util.SortedMap;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
-import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import org.springframework.stereotype.Component;
 
 @Component

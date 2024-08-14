@@ -1,13 +1,14 @@
 package nu.ndw.nls.accessibilitymap.backend.graphhopper;
 
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.List;
 import java.util.function.Predicate;
-import nu.ndw.nls.accessibilitymap.backend.graphhopper.factory.AccessibilityMapFactory;
-import nu.ndw.nls.accessibilitymap.backend.model.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.AccessibilityMap;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;

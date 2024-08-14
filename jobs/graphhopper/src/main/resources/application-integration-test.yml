@@ -4,6 +4,13 @@ nu:
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
+          receive:
+            - queue: integration_test_accessibility_routing_network_updated
+              expectedEventTypes:
+                - ACCESSIBILITY_ROUTING_NETWORK_UPDATED
+              eventSubjectType: ACCESSIBILITY_ROUTING_NETWORK
+              initialize: DECLARE
+
 graphhopper:
   dir: ../../graphhopper
 spring:
@@ -11,3 +18,5 @@ spring:
     url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
     username: nls-maps
     password: nls-maps
+
+

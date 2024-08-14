@@ -21,13 +21,23 @@ import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperProperties;
+import nu.ndw.nls.events.NlsEvent;
+import nu.ndw.nls.events.NlsEventSubject;
+import nu.ndw.nls.events.NlsEventSubjectType;
+import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
+import nu.ndw.nls.springboot.messaging.MessagingConfig;
+import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
+import nu.ndw.nls.springboot.messaging.services.MessageReceiveService.ReceiveKey;
+import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -51,6 +61,23 @@ class NlsAccessibilityMapJobsIT {
 
     @Autowired
     private GraphHopperProperties graphHopperProperties;
+
+    @Autowired
+    private MessageService messageService;
+
+    @Test
+    void publishedMessage_ok() {
+        MessageConsumeResult<NlsEvent> result = messageService.receive(ReceiveKey.builder()
+                .eventType(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED)
+                .eventSubjectType(NlsEventSubjectType.ACCESSIBILITY_ROUTING_NETWORK)
+                .build(), nlsEvent -> nlsEvent);
+
+        NlsEvent nlsEvent = result.getResult();
+
+        assertEquals(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED, nlsEvent.getType());
+        assertEquals(NlsEventSubjectType.ACCESSIBILITY_ROUTING_NETWORK, nlsEvent.getSubject().getType());
+        assertEquals("20240701", nlsEvent.getSubject().getNwbVersion());
+    }
 
     @SneakyThrows
     @Test

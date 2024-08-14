@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
-import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.springframework.stereotype.Component;
 

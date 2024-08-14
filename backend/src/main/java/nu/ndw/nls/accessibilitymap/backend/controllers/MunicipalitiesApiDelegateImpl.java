@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.MunicipalitiesApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.mappers.MunicipalityFeatureMapper;
-import nu.ndw.nls.accessibilitymap.backend.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

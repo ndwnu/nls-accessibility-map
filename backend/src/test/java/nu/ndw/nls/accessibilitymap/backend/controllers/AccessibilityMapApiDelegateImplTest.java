@@ -2,12 +2,15 @@ package nu.ndw.nls.accessibilitymap.backend.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import java.util.SortedMap;
+import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
+import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
+import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.backend.controllers.AccessibilityMapApiDelegateImpl.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
@@ -17,9 +20,8 @@ import nu.ndw.nls.accessibilitymap.backend.mappers.AccessibilityResponseMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.PointMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.RequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.RoadSectionFeatureCollectionMapper;
-import nu.ndw.nls.accessibilitymap.backend.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.backend.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.backend.services.AccessibilityMapService;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
 import nu.ndw.nls.accessibilitymap.backend.services.PointMatchService;
 import nu.ndw.nls.accessibilitymap.backend.validators.PointValidator;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
@@ -44,6 +46,8 @@ class AccessibilityMapApiDelegateImplTest {
     private static final int REQUESTED_ROAD_SECTION_ID = 123;
     private static final double REQUESTED_LONGITUDE = 3333;
     private static final double REQUESTED_LATITUDE = 222;
+    private static final int MUNICIPALITY_ID_INTEGER = 123;
+    private static final double SEARCH_DISTANCE_IN_METER = 1000D;
 
     @Mock
     private PointValidator pointValidator;
@@ -73,8 +77,17 @@ class AccessibilityMapApiDelegateImplTest {
     @Mock
     private RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson;
 
+    @Mock
+    private MunicipalityService municipalityService;
+
     @InjectMocks
     private AccessibilityMapApiDelegateImpl accessibilityMapApiDelegate;
+
+    @Mock
+    private Municipality municipality;
+
+    @Mock
+    private Point startPoint;
 
     @Test
     void getInaccessibleRoadSections_ok() {
@@ -168,7 +181,16 @@ class AccessibilityMapApiDelegateImplTest {
         when(pointMapper.mapCoordinateAllowNulls(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(requestedPoint);
         when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
         when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
-        when(accessibilityMapService.determineAccessibilityByRoadSection(eq(vehicleProperties), eq(MUNICIPALITY_ID)))
+        when(accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
+                startPoint,
+                SEARCH_DISTANCE_IN_METER,
+                MUNICIPALITY_ID_INTEGER,
+                ResultType.EFFECTIVE_ACCESSIBILITY))
                 .thenReturn(idToRoadSectionMap);
+
+        when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);
+        when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
+        when(municipality.getStartPoint()).thenReturn(startPoint);
+        when(municipality.getSearchDistanceInMetres()).thenReturn(SEARCH_DISTANCE_IN_METER);
     }
 }
