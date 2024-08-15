@@ -13,7 +13,6 @@ nu:
         trafficsignclient:
           api:
             base-url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
-            current-state-path: /current-state
             town-code: GM0307
         jobs:
           generate:

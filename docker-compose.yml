@@ -56,7 +56,7 @@ services:
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
       - ./graphhopper:/application/graphhopper
-      - ./map-generation-destination:/application/map-generation-destination
+      - ./map-generation-destination:/application/maps
     networks:
       - nls-accessibility-map-network
 

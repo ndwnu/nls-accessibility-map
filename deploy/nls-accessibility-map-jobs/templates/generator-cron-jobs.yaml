@@ -54,6 +54,8 @@ spec:
                   subPath: {{ $.Chart.Name }}
                 - mountPath: /application/maps
                   name: maps-volume
+                - mountPath: /application/graphhopper
+                  name: nls-accessibility-map-generator-cron-jobs-volume
           volumes:
             - name: nls-accessibility-map-jobs-secrets
               csi:
@@ -67,6 +69,9 @@ spec:
             - name: maps-volume
               persistentVolumeClaim:
                 claimName: maps-azure-blob-claim
+            - name: nls-accessibility-map-generator-cron-jobs-volume
+              persistentVolumeClaim:
+                claimName: nls-accessibility-map-api-pvc
           restartPolicy: Never
       # Don't retry 6 times on failure, just wait for next iteration.
       backoffLimit: 0

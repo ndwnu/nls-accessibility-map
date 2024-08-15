@@ -36,7 +36,7 @@ nu:
       accessibilitymap:
         jobs:
           generate:
-            root-generation-destination: ./map-generation-destination
+            root-generation-destination: /application/maps
             search-distance-in-meters: 1000000
             start-location-latitude: 53.01546436904244
             start-location-longitude: 5.197172571583729
@@ -61,7 +61,10 @@ nu:
                 path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
                 rvv-code: C22c
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c22c
-
+        trafficsignclient:
+          api:
+            base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+            current-state-path: /current-state
 
       springboot:
         messaging:
