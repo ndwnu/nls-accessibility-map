@@ -127,12 +127,12 @@ class MapGeneratorJobsIT {
     }
 
     private Path formatExpectedWindowTimesPath(String geojsonFileName) {
-        return Path.of("src/test/resources/expected-it-results/api/v1/windowTimes/20240808/geojson/")
+        return Path.of("src/test/resources/expected-it-results/v1/windowTimes/20240808/geojson/")
                 .resolve(geojsonFileName);
     }
 
     private Path formatGeneratedWindowTimesPath(String geojsonFileName) {
-        return Path.of(DESTINATION_PATH + "/api/v1/windowTimes/" + LocalDate.now()
+        return Path.of(DESTINATION_PATH + "/v1/windowTimes/" + LocalDate.now()
                 .format(DateTimeFormatter.BASIC_ISO_DATE) +
                 "/geojson/").resolve(geojsonFileName);
     }
