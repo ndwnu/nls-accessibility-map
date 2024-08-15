@@ -41,9 +41,9 @@ class BlobStorageLocationMapperTest {
         when(generateConfiguration.getGenerateProperties()).thenReturn(generateProperties);
         when(generateProperties.getRootGenerationDestination()).thenReturn(DESTINATION_PATH);
         when(geoJsonProperties.getPathDatePattern())
-                .thenReturn("'/api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'");
+                .thenReturn("'/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'");
 
-        assertEquals(DESTINATION_PATH.resolve("/api/v1/windowTimes/20240612/geojson/c6WindowTimeSegments.geojson"),
+        assertEquals(DESTINATION_PATH.resolve("/v1/windowTimes/20240612/geojson/c6WindowTimeSegments.geojson"),
                 blobStorageLocationMapper.map(GenerateGeoJsonType.C6, LocalDate.of(2024, 6, 12)));
 
         verify(generateConfiguration).getConfiguration(GenerateGeoJsonType.C6);

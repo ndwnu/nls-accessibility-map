@@ -42,23 +42,23 @@ nu:
             start-location-longitude: 5.197172571583729
             geojson:
               C6:
-                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
+                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
                 rvv-code: C6
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c6
               C7:
-                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
+                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
                 rvv-code: C7
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c7
               C7B:
-                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
+                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
                 rvv-code: C7b
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c7b
               C12:
-                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
+                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
                 rvv-code: C12
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c12
               C22C:
-                path-date-pattern: "'api/v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
+                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
                 rvv-code: C22c
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c22c
         trafficsignclient:
