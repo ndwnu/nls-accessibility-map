@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
@@ -32,7 +33,7 @@ class MunicipalityMapperTest {
 
     static {
         try {
-            URL = new URL("http://example.com");
+            URL = URI.create("http://example.com").toURL();
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

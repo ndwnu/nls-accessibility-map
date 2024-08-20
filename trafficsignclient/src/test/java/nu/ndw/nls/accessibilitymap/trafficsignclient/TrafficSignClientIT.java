@@ -55,14 +55,14 @@ class TrafficSignClientIT {
                 ROAD_SECTION_A);
         assertEquals(1, trafficSignsByRoadSectionA.size());
 
-        TrafficSignGeoJsonDto firstTrafficSignRoadSectionA = trafficSignsByRoadSectionA.iterator().next();
+        TrafficSignGeoJsonDto firstTrafficSignRoadSectionA = trafficSignsByRoadSectionA.getFirst();
         assertEquals("C6", firstTrafficSignRoadSectionA.getProperties().getRvvCode());
         assertEquals("GM0307", firstTrafficSignRoadSectionA.getProperties().getCountyCode());
 
         List<TrafficSignGeoJsonDto> trafficSignsByRoadSectionB = trafficSigns.trafficSignsByRoadSectionId().get(
                 ROAD_SECTION_B);
 
-        TrafficSignGeoJsonDto firstTrafficSignRoadSectionB = trafficSignsByRoadSectionB.iterator().next();
+        TrafficSignGeoJsonDto firstTrafficSignRoadSectionB = trafficSignsByRoadSectionB.getFirst();
         assertEquals("C7", firstTrafficSignRoadSectionB.getProperties().getRvvCode());
         assertEquals("ZE", firstTrafficSignRoadSectionB.getProperties().getZoneCode());
 
