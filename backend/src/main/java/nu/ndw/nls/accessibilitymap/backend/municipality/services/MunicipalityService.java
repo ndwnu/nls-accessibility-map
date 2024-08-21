@@ -16,7 +16,7 @@ public class MunicipalityService {
 
     public Municipality getMunicipalityById(String municipalityId) {
         if (!municipalityConfiguration.getMunicipalities().containsKey(municipalityId)) {
-            throw new MunicipalityNotFoundException(String.format(MESSAGE_TEMPLATE, municipalityId));
+            throw new MunicipalityNotFoundException(MESSAGE_TEMPLATE.formatted(municipalityId));
         }
         return municipalityConfiguration.getMunicipalities().get(municipalityId);
     }

@@ -409,7 +409,7 @@ public class StreamingJsonBodyExtractor {
                     return Collections.singletonList(tokenBuffer);
                 } else if (list.size() == 1) {
                     var newList = new ArrayList<TokenBuffer>(2);
-                    newList.add(list.get(0));
+                    newList.add(list.getFirst());
                     newList.add(tokenBuffer);
                     return newList;
                 } else {
