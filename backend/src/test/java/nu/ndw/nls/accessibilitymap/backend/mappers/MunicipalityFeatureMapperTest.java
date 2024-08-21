@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.mappers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +35,7 @@ class MunicipalityFeatureMapperTest {
                     MUNICIPALITY_ID,
                     307,
                     "Test",
-                    new URL("http://iets-met-vergunningen.nl"),
+                    URI.create("http://iets-met-vergunningen.nl").toURL(),
                     new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2),
                     LocalDate.parse("2024-07-11"));
         } catch (MalformedURLException e) {
@@ -78,7 +79,7 @@ class MunicipalityFeatureMapperTest {
                     MUNICIPALITY_ID,
                     307,
                     "Test",
-                    new URL("http://iets-met-vergunningen.nl"),
+                    URI.create("http://iets-met-vergunningen.nl").toURL(),
                     new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2),
                     null);
         } catch (MalformedURLException e) {

@@ -61,7 +61,7 @@ public class RequestMapper {
 
     public VehicleProperties mapToVehicleProperties(VehicleArguments requestArguments) {
         if (!VEHICLE_TYPE_CONFIGURATION.containsKey(requestArguments.vehicleType())) {
-            throw new VehicleTypeNotSupportedException(String.format(MESSAGE_TEMPLATE, requestArguments.vehicleType()));
+            throw new VehicleTypeNotSupportedException(MESSAGE_TEMPLATE.formatted(requestArguments.vehicleType()));
         }
 
         BiConsumer<VehiclePropertiesBuilder, Float> vehiclePropertiesConfiguration = VEHICLE_TYPE_CONFIGURATION.get(
