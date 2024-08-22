@@ -7,25 +7,25 @@ cronJobs:
   generateGeoJsonRvvC6:
     name: nls-accessibility-map-generate-rvv-c6-cron-job
     command: generateGeoJson C6
-    memory: 4Gi
+    memory: 5Gi
     schedule: "30 3 * * *"
   generateGeoJsonRvvC7:
     name: nls-accessibility-map-generate-rvv-c7-cron-job
     command: generateGeoJson C7
-    memory: 4Gi
+    memory: 5Gi
     schedule: "35 3 * * *"
   generateGeoJsonRvvC7B:
     name: nls-accessibility-map-generate-rvv-c7b-cron-job
     command: generateGeoJson C7B
-    memory: 4Gi
+    memory: 5Gi
     schedule: "40 3 * * *"
   generateGeoJsonRvvC12:
     name: nls-accessibility-map-generate-rvv-c12-cron-job
     command: generateGeoJson C12
-    memory: 4Gi
+    memory: 5Gi
     schedule: "45 3 * * *"
   generateGeoJsonRvvC22C:
     name: nls-accessibility-map-generate-rvv-c22c-cron-job
     command: generateGeoJson C22C
-    memory: 4Gi
+    memory: 5Gi
     schedule: "50 3 * * *"
