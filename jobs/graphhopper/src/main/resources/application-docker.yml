@@ -7,8 +7,8 @@ nu:
       accessibilitymap:
         trafficsignclient:
           api:
-            base-url: http://traffic-sign-api-stub:8080/api/rest/static-road-data/traffic-signs/v4
-            town-code: GM0307
+            url: http://traffic-sign-api-stub:8080/api/rest/static-road-data/traffic-signs/v4
+            town-codes: GM0307
 logging:
   level:
     root: INFO

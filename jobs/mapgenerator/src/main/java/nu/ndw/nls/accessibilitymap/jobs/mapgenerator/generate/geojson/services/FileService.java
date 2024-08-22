@@ -17,7 +17,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -33,7 +33,7 @@ public class FileService {
 
     private final BlobStorageLocationMapper blobStorageLocationMapper;
 
-    public Path createTmpGeoJsonFile(GenerateGeoJsonType type) {
+    public Path createTmpGeoJsonFile(CmdGenerateGeoJsonType type) {
         try {
             return Files.createTempFile("accessibility-" + type.toString().toLowerCase(Locale.ROOT) + "-", ".geojson",
                     FILE_PERMISSIONS);
@@ -42,7 +42,7 @@ public class FileService {
         }
     }
 
-    public void uploadFile(GenerateGeoJsonType type, Path geojsonTmpResult, LocalDate versionDate) {
+    public void uploadFile(CmdGenerateGeoJsonType type, Path geojsonTmpResult, LocalDate versionDate) {
         Path mapDestinationPath = blobStorageLocationMapper.map(type, versionDate);
 
         Path mapDirectoryPath = mapDestinationPath.getParent();

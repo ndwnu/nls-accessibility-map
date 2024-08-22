@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.dtos;
 
-public enum TrafficSignStatus {
+public enum TrafficSignStatusType {
 
     PLANNED,
     PLACED,

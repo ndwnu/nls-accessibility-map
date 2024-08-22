@@ -10,8 +10,8 @@
     <name>NLS Accessibility Map Traffic Sign Client</name>
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <groupId>nu.ndw.nls.springboot</groupId>
+            <artifactId>client-feign</artifactId>
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls</groupId>

@@ -12,8 +12,8 @@ nu:
       accessibilitymap:
         trafficsignclient:
           api:
-            base-url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
-            town-code: GM0307
+            url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
+            town-codes: GM0307
         jobs:
           generate:
             root-generation-destination: ./map-generation-destination

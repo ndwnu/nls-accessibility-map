@@ -8,7 +8,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -22,7 +22,7 @@ public class GenerateProperties {
     private Path rootGenerationDestination;
 
     @NotNull
-    private Map<GenerateGeoJsonType, GeoJsonProperties> geojson;
+    private Map<CmdGenerateGeoJsonType, GeoJsonProperties> geojson;
 
     @Min(50)
     @Max(54)

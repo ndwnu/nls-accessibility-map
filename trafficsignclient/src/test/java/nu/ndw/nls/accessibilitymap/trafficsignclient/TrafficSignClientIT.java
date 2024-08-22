@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ class TrafficSignClientIT {
 
     @Test
     void getTrafficSigns_ok_correctRvvAndZoneCodes() {
-        TrafficSignData trafficSigns = trafficSignService.getTrafficSigns(rvvCodes);
+        TrafficSignData trafficSigns = trafficSignService.getTrafficSigns(rvvCodes, Collections.emptySet());
         assertNotNull(trafficSigns);
         assertEquals(170, trafficSigns.trafficSignsByRoadSectionId().size());
         assertEquals(LocalDate.of(2024, 7, 1), trafficSigns.maxNwbReferenceDate());
@@ -65,7 +66,6 @@ class TrafficSignClientIT {
         TrafficSignGeoJsonDto firstTrafficSignRoadSectionB = trafficSignsByRoadSectionB.getFirst();
         assertEquals("C7", firstTrafficSignRoadSectionB.getProperties().getRvvCode());
         assertEquals("ZE", firstTrafficSignRoadSectionB.getProperties().getZoneCode());
-
     }
 
     @Import({TrafficSignConfiguration.class})

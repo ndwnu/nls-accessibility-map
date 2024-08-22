@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.ZoneCode;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.ZoneCodeType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +25,7 @@ class NotZoneEndsFilterPredicateTest {
 
     @Test
     void test_ok_includingZoneBegins() {
-        when(trafficSignPropertiesDto.getZoneCode()).thenReturn(ZoneCode.BEGIN.toString());
+        when(trafficSignPropertiesDto.getZoneCode()).thenReturn(ZoneCodeType.BEGIN.toString());
         when(trafficSignJsonDto.getProperties()).thenReturn(trafficSignPropertiesDto);
         assertTrue(notZoneEndsFilterPredicate.test(trafficSignJsonDto));
     }
@@ -39,7 +39,7 @@ class NotZoneEndsFilterPredicateTest {
 
     @Test
     void test_ok_excludingZoneEnds() {
-        when(trafficSignPropertiesDto.getZoneCode()).thenReturn(ZoneCode.END.toString());
+        when(trafficSignPropertiesDto.getZoneCode()).thenReturn(ZoneCodeType.END.toString());
         when(trafficSignJsonDto.getProperties()).thenReturn(trafficSignPropertiesDto);
         assertFalse(notZoneEndsFilterPredicate.test(trafficSignJsonDto));
     }

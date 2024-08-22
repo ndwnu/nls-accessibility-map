@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model;
 
 import java.util.function.Consumer;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties.Vehicle
 
 @Getter
 @RequiredArgsConstructor
-public enum GenerateGeoJsonType {
+public enum CmdGenerateGeoJsonType {
     C6(b -> b.carAccessForbiddenWt(true)),
     C7(b -> b.hgvAccessForbiddenWt(true)),
     C7B(b -> b.hgvAndBusAccessForbiddenWt(true)),

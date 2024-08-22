@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.signmappers.SignMapper.DtoSetter;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
@@ -30,7 +31,7 @@ class MaximumSignMapperTest {
 
     private static final String RVV_CODE = "C17";
     private static final String OTHER_RVV_CODE = "C18";
-    private static final int ROAD_SECTION_ID = 1;
+    private static final Long ROAD_SECTION_ID = 1L;
     private static final DirectionalDto<Double> NO_RESTRICTIONS = new DirectionalDto<>(Double.POSITIVE_INFINITY);
     @Mock
     private DtoSetter<Double> setter;
@@ -64,7 +65,7 @@ class MaximumSignMapperTest {
     void addToDto_ok_forward() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING);
-        when(propertiesA.getDrivingDirection()).thenReturn("H");
+        when(propertiesA.getDrivingDirection()).thenReturn(DirectionType.FORTH);
 
         DirectionalDto<Double> expectedDirectional = DirectionalDto.<Double>builder()
                 .forward(MAXIMUM_DOUBLE)
@@ -78,7 +79,7 @@ class MaximumSignMapperTest {
     void addToDto_ok_reverse() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING);
-        when(propertiesA.getDrivingDirection()).thenReturn("T");
+        when(propertiesA.getDrivingDirection()).thenReturn(DirectionType.BACK);
 
         DirectionalDto<Double> expectedDirectional = DirectionalDto.<Double>builder()
                 .forward(Double.POSITIVE_INFINITY)
@@ -106,11 +107,11 @@ class MaximumSignMapperTest {
     void addToDto_ok_multipleSigns() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING_MORE_RESTRICTIVE);
-        when(propertiesA.getDrivingDirection()).thenReturn("H");
+        when(propertiesA.getDrivingDirection()).thenReturn(DirectionType.FORTH);
 
         when(signB.getProperties()).thenReturn(propertiesB);
         when(propertiesB.getBlackCode()).thenReturn(MAXIMUM_STRING);
-        when(propertiesB.getDrivingDirection()).thenReturn("T");
+        when(propertiesB.getDrivingDirection()).thenReturn(DirectionType.BACK);
 
         DirectionalDto<Double> expectedDirectional = DirectionalDto.<Double>builder()
                 .forward(MAXIMUM_DOUBLE_MORE_RESTRICTIVE)

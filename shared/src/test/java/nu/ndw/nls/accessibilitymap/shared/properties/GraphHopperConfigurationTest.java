@@ -58,6 +58,7 @@ class GraphHopperConfigurationTest {
 
         assertEquals(RoutingNetworkSettings
                         .builder(AccessibilityLink.class)
+                        .indexed(true)
                         .graphhopperRootPath(graphHopperProperties.getDir())
                         .networkNameAndVersion(NETWORK_NAME)
                         .profiles(List.of(PROFILE))

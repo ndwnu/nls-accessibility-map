@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.signmappers.SignMapper.DtoSetter;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
@@ -53,7 +54,7 @@ class NoEntrySignMapperTest {
                 .reverse(false)
                 .build();
 
-        testMapping(expectedDirectional, List.of("H"));
+        testMapping(expectedDirectional, List.of(DirectionType.FORTH));
     }
 
     @Test
@@ -63,19 +64,19 @@ class NoEntrySignMapperTest {
                 .reverse(true)
                 .build();
 
-        testMapping(expectedDirectional, List.of("T"));
+        testMapping(expectedDirectional, List.of(DirectionType.BACK));
     }
 
     @Test
     void addToDto_ok_bothWays() {
         DirectionalDto<Boolean> expectedDirectional = new DirectionalDto<>(true);
-        testMapping(expectedDirectional, List.of("B"));
+        testMapping(expectedDirectional, List.of(DirectionType.BOTH));
     }
 
     @Test
     void addToDto_ok_multipleSigns() {
         DirectionalDto<Boolean> expectedDirectional = new DirectionalDto<>(true);
-        testMapping(expectedDirectional, List.of("H", "B"));
+        testMapping(expectedDirectional, List.of(DirectionType.FORTH, DirectionType.BOTH));
     }
 
     @Test
@@ -83,7 +84,7 @@ class NoEntrySignMapperTest {
         testMapping(NO_RESTRICTIONS, Map.of(OTHER_RVV_CODE, List.of(mock(TrafficSignGeoJsonDto.class))));
     }
 
-    private void testMapping(DirectionalDto<Boolean> expected, List<String> directions) {
+    private void testMapping(DirectionalDto<Boolean> expected, List<DirectionType> directions) {
         var trafficSigns = directions.stream().map(this::mockSign).toList();
         Map<String, List<TrafficSignGeoJsonDto>> trafficSignMap = Map.of(RVV_CODE, trafficSigns);
         testMapping(expected, trafficSignMap);
@@ -97,7 +98,7 @@ class NoEntrySignMapperTest {
         assertEquals(expected, setValueCaptor.getValue());
     }
 
-    private TrafficSignGeoJsonDto mockSign(String direction) {
+    private TrafficSignGeoJsonDto mockSign(DirectionType direction) {
         TrafficSignGeoJsonDto sign = mock(TrafficSignGeoJsonDto.class);
         TrafficSignPropertiesDto trafficSignPropertiesDto = mock(TrafficSignPropertiesDto.class);
 

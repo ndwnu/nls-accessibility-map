@@ -7,7 +7,7 @@ data:
   DD_TRACE_METHODS: picocli.CommandLine[execute]
   LOGGING_LEVEL_NU_NDW_NLS_ACCESSIBILITYMAP: {{ .Values.application.loggingLevelNuNdwNlsAccessibilityMap }}
   MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
-  NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNCLIENT_API_BASE_URL: {{ .Values.trafficSignApiUrl }}
+  NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNCLIENT_API_URL: {{ .Values.trafficSignApiUrl }}
   SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
   SPRING_DATASOURCE_URL: jdbc:postgresql://{{ .Values.application.databaseHost }}/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
   SPRING_DATASOURCE_USERNAME: nls

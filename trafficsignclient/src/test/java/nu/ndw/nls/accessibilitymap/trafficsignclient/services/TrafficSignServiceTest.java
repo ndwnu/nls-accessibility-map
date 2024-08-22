@@ -5,18 +5,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.TrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.CurrentStateStatus;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonFeatureCollectionDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.repositories.TrafficSignRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -25,18 +27,25 @@ class TrafficSignServiceTest {
 
     private static final String RVV_CODE_B = "rvv-code-b";
     private static final String RVV_CODE_A = "rvv-code-a";
-    private TrafficSignService trafficSignService;
+
     @Mock
     private TrafficSignRepository trafficSignRepository;
 
+    @Mock
+    private TrafficSignProperties trafficSignProperties;
 
-    @BeforeEach
-    void setUp() {
-        trafficSignService = new TrafficSignService(trafficSignRepository);
-    }
+    @InjectMocks
+    private TrafficSignService trafficSignService;
+
+    @Mock
+    private TrafficSignProperties.TrafficSignApiProperties api;
+
 
     @Test
     void getTrafficSigns_ok_filteredAndGrouped() {
+
+        when(trafficSignProperties.getApi()).thenReturn(api);
+
         TrafficSignPropertiesDto trafficSignPropertiesDto1 = TrafficSignPropertiesDto.builder()
                 .build();
         TrafficSignGeoJsonDto trafficSign1 = TrafficSignGeoJsonDto.builder()
@@ -51,7 +60,7 @@ class TrafficSignServiceTest {
                 .build();
 
         TrafficSignPropertiesDto trafficSignPropertiesDto3 = TrafficSignPropertiesDto.builder()
-                .roadSectionId(2)
+                .roadSectionId(2L)
                 .nwbVersion(LocalDate.of(2023, 10, 1))
                 .build();
         TrafficSignGeoJsonDto trafficSign3 = TrafficSignGeoJsonDto.builder()
@@ -59,7 +68,7 @@ class TrafficSignServiceTest {
                 .build();
 
         TrafficSignPropertiesDto trafficSignPropertiesDto4 = TrafficSignPropertiesDto.builder()
-                .roadSectionId(1)
+                .roadSectionId(1L)
                 .nwbVersion(LocalDate.of(2023, 9, 1))
                 .build();
         TrafficSignGeoJsonDto trafficSign4 = TrafficSignGeoJsonDto.builder()
@@ -67,7 +76,7 @@ class TrafficSignServiceTest {
                 .build();
 
         TrafficSignPropertiesDto trafficSignPropertiesDto5 = TrafficSignPropertiesDto.builder()
-                .roadSectionId(1)
+                .roadSectionId(1L)
                 .nwbVersion(LocalDate.of(2023, 9, 1))
                 .build();
         TrafficSignGeoJsonDto trafficSign5 = TrafficSignGeoJsonDto.builder()
@@ -75,17 +84,21 @@ class TrafficSignServiceTest {
                 .build();
 
         TrafficSignPropertiesDto trafficSignPropertiesDto6 = TrafficSignPropertiesDto.builder()
-                .roadSectionId(2)
+                .roadSectionId(2L)
                 .build();
         TrafficSignGeoJsonDto trafficSign6 = TrafficSignGeoJsonDto.builder()
                 .properties(trafficSignPropertiesDto6)
                 .build();
 
-        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, Set.of(RVV_CODE_A, RVV_CODE_B)))
-                .thenReturn(
-                        Stream.of(trafficSign1, trafficSign2, trafficSign3, trafficSign4, trafficSign5, trafficSign6));
+        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, Set.of(RVV_CODE_A, RVV_CODE_B),
+                Collections.emptySet(), Collections.emptySet()))
+                .thenReturn(TrafficSignGeoJsonFeatureCollectionDto.builder()
+                            .features(List.of(trafficSign1, trafficSign2, trafficSign3, trafficSign4, trafficSign5,
+                                    trafficSign6))
+                                .build());
 
-        TrafficSignData result = trafficSignService.getTrafficSigns(Set.of(RVV_CODE_A, RVV_CODE_B));
+        TrafficSignData result = trafficSignService.getTrafficSigns(Set.of(RVV_CODE_A, RVV_CODE_B),
+                Collections.emptySet());
 
         Map<Long, List<TrafficSignGeoJsonDto>> longListMap = result.trafficSignsByRoadSectionId();
 

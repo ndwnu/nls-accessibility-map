@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.SortedMap;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
@@ -24,7 +25,10 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.Ac
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.VehicleTypeVehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.RoadSectionAndTrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubject;
@@ -44,7 +48,7 @@ class GenerateGeoJsonServiceTest {
     private static final int GENERATION_VERSION_INT = 20240102;
     private static final int NWB_VERSION_INT = 20240101;
     private static final double SEARCH_DISTANCE = Double.MAX_VALUE;
-    private static final GenerateGeoJsonType GENERATE_GEO_JSON_TYPE = GenerateGeoJsonType.C6;
+    private static final CmdGenerateGeoJsonType GENERATE_GEO_JSON_TYPE = CmdGenerateGeoJsonType.C6;
     @Mock
     private GenerateProperties generateProperties;
 
@@ -75,6 +79,9 @@ class GenerateGeoJsonServiceTest {
     @Mock
     private VehicleTypeVehiclePropertiesMapper vehicleTypeVehiclePropertiesMapper;
 
+    @Mock
+    private EnrichTrafficSignService enrichTrafficSignService;
+
     @InjectMocks
     private GenerateGeoJsonService generateGeoJsonService;
 
@@ -86,6 +93,12 @@ class GenerateGeoJsonServiceTest {
 
     @Mock
     private SortedMap<Integer, RoadSection> idToRoadSectionSortedMap;
+
+    @Mock
+    private List<RoadSection> roadSections;
+
+    @Mock
+    private List<RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign>> directionalRoadSectionAndTrafficSigns;
 
     @Mock
     private AccessibilityGeoJsonFeatureCollection geoJson;
@@ -128,7 +141,12 @@ class GenerateGeoJsonServiceTest {
                 startLocation, SEARCH_DISTANCE, ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS))
                 .thenReturn(idToRoadSectionSortedMap);
 
-        when(accessibilityGeoJsonMapper.map(idToRoadSectionSortedMap, NWB_VERSION_INT))
+        when(idToRoadSectionSortedMap.values()).thenReturn(roadSections);
+
+        when(enrichTrafficSignService.addTrafficSigns(GENERATE_GEO_JSON_TYPE, roadSections))
+                .thenReturn(directionalRoadSectionAndTrafficSigns);
+
+        when(accessibilityGeoJsonMapper.map(directionalRoadSectionAndTrafficSigns, NWB_VERSION_INT))
                 .thenReturn(geoJson);
 
         when(fileService.createTmpGeoJsonFile(GENERATE_GEO_JSON_TYPE)).thenReturn(tmpFilePath);

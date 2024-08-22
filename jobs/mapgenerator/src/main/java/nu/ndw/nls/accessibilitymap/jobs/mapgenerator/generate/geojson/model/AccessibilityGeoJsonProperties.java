@@ -11,4 +11,7 @@ public class AccessibilityGeoJsonProperties {
     int versionId;
     boolean accessible;
 
+    TrafficSignType trafficSignType;
+    String windowTimes;
+
 }

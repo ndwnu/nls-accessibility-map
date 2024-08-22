@@ -5,6 +5,8 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.Acce
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.LineStringGeojson;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.RoadSectionAndTrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,11 @@ public class AccessibilityGeoJsonFeatureMapper {
 
     private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
 
-    public AccessibilityGeoJsonFeature map(DirectionalRoadSection directionalRoadSection, int version) {
+    public AccessibilityGeoJsonFeature map(
+            RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign> roadSectionAndTrafficSign, int version) {
+
+        DirectionalRoadSection directionalRoadSection = roadSectionAndTrafficSign.getRoadSection();
+        TrafficSign trafficSign = roadSectionAndTrafficSign.getTrafficSign();
 
         return AccessibilityGeoJsonFeature
                 .builder()
@@ -26,8 +32,11 @@ public class AccessibilityGeoJsonFeatureMapper {
                         .id(directionalRoadSection.getRoadSectionId())
                         .versionId(version)
                         .accessible(directionalRoadSection.isAccessible())
+                        .trafficSignType(trafficSign != null ? trafficSign.getTrafficSignType() : null)
+                        .windowTimes(trafficSign != null ? trafficSign.getWindowTimes() : null)
                         .build())
                 .build();
     }
+
 
 }

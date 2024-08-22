@@ -1,32 +1,28 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.SortedMap;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.RoadSectionAndTrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class AccessibilityGeoJsonMapper {
 
-    private final DirectionalRoadSectionMapper directionalRoadSectionMapper;
-
     private final AccessibilityGeoJsonFeatureCollectionMapper accessibilityGeoJsonFeatureCollectionMapper;
 
     private final AccessibilityGeoJsonFeatureMapper accessibilityGeoJsonFeatureMapper;
 
-    public AccessibilityGeoJsonFeatureCollection map(SortedMap<Integer, RoadSection> accessibilityResult,
-            int nwbVersion) {
+    public AccessibilityGeoJsonFeatureCollection map(List<RoadSectionAndTrafficSign<DirectionalRoadSection,
+            TrafficSign>>  idToRoadSectionAndTrafficSign, int nwbVersion) {
 
-        List<AccessibilityGeoJsonFeature> features = accessibilityResult.values().stream()
-                .map(directionalRoadSectionMapper::map)
-                .flatMap(Collection::stream)
-                .map(directionalRoadSection ->
-                        accessibilityGeoJsonFeatureMapper.map(directionalRoadSection, nwbVersion))
+        List<AccessibilityGeoJsonFeature> features = idToRoadSectionAndTrafficSign.stream()
+                .map(directionalRoadSectionAndTrafficSign ->
+                        accessibilityGeoJsonFeatureMapper.map(directionalRoadSectionAndTrafficSign, nwbVersion))
                 .toList();
 
         return accessibilityGeoJsonFeatureCollectionMapper.map(features);

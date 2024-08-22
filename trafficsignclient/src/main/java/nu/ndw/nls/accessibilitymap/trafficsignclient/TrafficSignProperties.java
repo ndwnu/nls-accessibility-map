@@ -1,10 +1,9 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient;
 
-
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.net.URI;
+import java.util.HashSet;
 import lombok.Value;
+import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -15,22 +14,16 @@ public class TrafficSignProperties {
 
 
     @NotNull
-    TrafficSignApiProperties api;
+    TrafficSignApiProperties api = new TrafficSignApiProperties();
 
     @Value
     @Validated
     public static class TrafficSignApiProperties {
 
-        @NotNull
-        URI baseUrl;
-
-        @NotBlank
-        String currentStatePath;
-
         /**
          * Can be used for testing on a smaller subsets
          */
-        String townCode;
+        Set<String> townCodes = new HashSet<>();
     }
 
 }

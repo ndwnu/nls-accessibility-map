@@ -49,6 +49,7 @@ public class GraphHopperConfiguration {
     private RoutingNetworkSettingsBuilder<AccessibilityLink> configureBaseRoutingNetworkSettingsBuilder() {
         return RoutingNetworkSettings
                 .builder(AccessibilityLink.class)
+                .indexed(true)
                 .graphhopperRootPath(graphHopperProperties.getDir())
                 .networkNameAndVersion(NETWORK_NAME)
                 .profiles(List.of(PROFILE));

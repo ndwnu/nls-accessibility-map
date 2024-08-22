@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.junit.jupiter.api.Test;
@@ -19,16 +20,16 @@ class NoEntrySignWindowedMapperTest {
 
     @Test
     void map_ok() {
-        testMapping("C6", "C6T", "TIJD");
-        testMapping("C7", "C7T", "TIJD");
-        testMapping("C7b", "C7bT", "TIJD");
-        testMapping("C12", "C12T", "TIJD");
-        testMapping("C22c", "C22cT", "TIJD");
-        testMapping("C20", "C20", "OTHER");
-        testMapping("C66", "C66T", "TIJD");
+        testMapping("C6", "C6T", TextSignType.TIME_PERIOD);
+        testMapping("C7", "C7T", TextSignType.TIME_PERIOD);
+        testMapping("C7b", "C7bT", TextSignType.TIME_PERIOD);
+        testMapping("C12", "C12T", TextSignType.TIME_PERIOD);
+        testMapping("C22c", "C22cT", TextSignType.TIME_PERIOD);
+        testMapping("C20", "C20", TextSignType.EMISSION_ZONE);
+        testMapping("C66", "C66T", TextSignType.TIME_PERIOD);
     }
 
-    private void testMapping(String inputRvvCode, String expectedRvvCode, String signType) {
+    private void testMapping(String inputRvvCode, String expectedRvvCode, TextSignType signType) {
         TextSignDto textSignDto = TextSignDto.builder()
                 .type(signType)
                 .build();

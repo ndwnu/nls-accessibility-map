@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.TrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.CurrentStateStatus;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -20,12 +21,15 @@ public class TrafficSignService {
 
     private final TrafficSignRepository trafficSignRepository;
 
-    public TrafficSignData getTrafficSigns(Set<String> rvvCodes) {
+    private final TrafficSignProperties trafficSignProperties;
+
+    public TrafficSignData getTrafficSigns(Set<String> rvvCodes, Set<Integer> roadSectionIds) {
         MaxNwbVersionTracker maxNwbVersionTracker = new MaxNwbVersionTracker();
 
         Map<Long, List<TrafficSignGeoJsonDto>> trafficSigns;
         Instant fetchTimestamp = Instant.now();
-        try (Stream<TrafficSignGeoJsonDto> stream = findTrafficSignByRvvCodes(rvvCodes)) {
+        try (Stream<TrafficSignGeoJsonDto> stream = findTrafficSignByRvvCodesAndRoadSectionIds(rvvCodes,
+                roadSectionIds)) {
             trafficSigns = stream
                     .filter(this::hasRoadSectionId)
                     .map(maxNwbVersionTracker::updateMaxNwbVersionAndContinue)
@@ -36,10 +40,10 @@ public class TrafficSignService {
         return new TrafficSignData(trafficSigns, maxNwbVersionTracker.getMaxNwbReferenceDate(), fetchTimestamp);
     }
 
-    private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodes(Set<String> rvvCodes) {
-        return trafficSignRepository.findCurrentState(
-                CurrentStateStatus.PLACED, rvvCodes);
-
+    private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodesAndRoadSectionIds(Set<String> rvvCodes,
+            Set<Integer> roadSectionIds) {
+        return trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, rvvCodes, roadSectionIds,
+                trafficSignProperties.getApi().getTownCodes()).getFeatures().stream();
     }
 
     private boolean hasRoadSectionId(TrafficSignGeoJsonDto t) {

@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
@@ -15,9 +16,6 @@ import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class SignMapper<T> {
-
-    private static final String DRIVING_DIRECTION_BACKWARD = "T";
-    private static final String DRIVING_DIRECTION_FORWARD = "H";
 
     @Getter
     private final String rvvCode;
@@ -47,12 +45,12 @@ public abstract class SignMapper<T> {
 
     private boolean isBackward(TrafficSignGeoJsonDto trafficSign) {
         // Driving direction null (unknown) is mapped to both directions.
-        return !DRIVING_DIRECTION_FORWARD.equals(trafficSign.getProperties().getDrivingDirection());
+        return DirectionType.FORTH != trafficSign.getProperties().getDrivingDirection();
     }
 
     private boolean isForward(TrafficSignGeoJsonDto trafficSign) {
         // Driving direction null (unknown) is mapped to both directions.
-        return !DRIVING_DIRECTION_BACKWARD.equals(trafficSign.getProperties().getDrivingDirection());
+        return DirectionType.BACK != trafficSign.getProperties().getDrivingDirection();
     }
 
     public interface DtoSetter<T> {

@@ -16,6 +16,7 @@ import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_WEI
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MAX_WIDTH;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MOTORCYCLE_ACCESS_FORBIDDEN;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MOTOR_VEHICLE_ACCESS_FORBIDDEN;
+import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.SLOW_VEHICLE_ACCESS_FORBIDDEN;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRACTOR_ACCESS_FORBIDDEN;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRAILER_ACCESS_FORBIDDEN;
@@ -52,7 +53,7 @@ public class RestrictionMapperProvider {
             CAR_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::carAccessForbiddenWt,
             HGV_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::hgvAccessForbiddenWt,
             HGV_AND_BUS_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::hgvAndBusAccessForbiddenWt,
-            MOTOR_VEHICLE_ACCESS_FORBIDDEN, VehicleProperties::motorVehicleAccessForbiddenWt,
+            MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::motorVehicleAccessForbiddenWt,
             LCV_AND_HGV_ACCESS_FORBIDDEN_WINDOWED, VehicleProperties::lcvAndHgvAccessForbiddenWt);
 
     private static final Map<String, Function<VehicleProperties, Double>> MAXIMUM_RESTRICTION_MAP = Map.of(

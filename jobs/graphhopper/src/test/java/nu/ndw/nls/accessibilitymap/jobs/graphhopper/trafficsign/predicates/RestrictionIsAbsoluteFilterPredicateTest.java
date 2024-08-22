@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.junit.jupiter.api.Test;
@@ -17,19 +18,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class RestrictionIsAbsoluteFilterPredicateTest {
 
-    private static final String IGNORED_TOKEN_CONTAINS_UIT = "UIT";
-    private static final String IGNORED_TOKEN_CONTAINS_VOOR = "VOOR";
-    private static final String IGNORED_TOKEN_CONTAINS_TIJD = "TIJD";
-    private static final String IGNORED_TOKEN_CONTAINS_VRIJ = "VRIJ";
-    private static final String FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS = "some text to %s test contains";
+    private static final TextSignType IGNORED_TOKEN_CONTAINS_UIT = TextSignType.EXCLUDING;
+    private static final TextSignType IGNORED_TOKEN_CONTAINS_VOOR = TextSignType.PRE_ANNOUNCEMENT;
+    private static final TextSignType IGNORED_TOKEN_CONTAINS_TIJD = TextSignType.TIME_PERIOD;
+    private static final TextSignType IGNORED_TOKEN_CONTAINS_VRIJ = TextSignType.FREE_TEXT;
 
     @InjectMocks
     private RestrictionIsAbsoluteFilterPredicate restrictionIsAbsoluteFilterPredicate;
-
-    @Test
-    void test_ok_includedBecauseItUsesNoBlacklistedTokens() {
-        restrictionIsAbsoluteFilterPredicate.test(mockSign("als pasen en pinksteren op één dag vallen"));
-    }
 
     @Test
     void test_ok_includedHasNoNullTextSigns() {
@@ -54,32 +49,24 @@ class RestrictionIsAbsoluteFilterPredicateTest {
     @Test
     void test_ok_excludedBecauseItContainsUit() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_UIT));
-        restrictionIsAbsoluteFilterPredicate.test(
-                mockSign(FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS.formatted(IGNORED_TOKEN_CONTAINS_UIT)));
     }
 
     @Test
     void test_ok_excludedBecauseItContainsVoor() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_VOOR));
-        restrictionIsAbsoluteFilterPredicate.test(
-                mockSign(FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS.formatted(IGNORED_TOKEN_CONTAINS_VOOR)));
     }
 
     @Test
     void test_ok_excludedBecauseItContainsTijd() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_TIJD));
-        restrictionIsAbsoluteFilterPredicate.test(
-                mockSign(FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS.formatted(IGNORED_TOKEN_CONTAINS_TIJD)));
     }
 
     @Test
     void test_ok_excludedBecauseItContainsVrij() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_VRIJ));
-        restrictionIsAbsoluteFilterPredicate.test(
-                mockSign(FORMAT_SOME_TEXT_TO_S_TEST_CONTAINS.formatted(IGNORED_TOKEN_CONTAINS_VRIJ)));
     }
 
-    private TrafficSignGeoJsonDto mockSign(String textSignType) {
+    private TrafficSignGeoJsonDto mockSign(TextSignType textSignType) {
         TextSignDto mockedTextSign = Mockito.mock(TextSignDto.class);
         TrafficSignPropertiesDto propertiesDto = Mockito.mock(TrafficSignPropertiesDto.class);
         TrafficSignGeoJsonDto trafficSignGeoJsonDto = Mockito.mock(TrafficSignGeoJsonDto.class);
