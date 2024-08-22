@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Objects;
 import java.util.SortedMap;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,15 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapServic
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.VehicleTypeVehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.RoadSectionAndTrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.springframework.stereotype.Service;
@@ -51,7 +55,10 @@ public class GenerateGeoJsonService {
 
     private final VehicleTypeVehiclePropertiesMapper vehicleTypeVehiclePropertiesMapper;
 
-    public void generate(GenerateGeoJsonType type) {
+    private final EnrichTrafficSignService enrichTrafficSignService;
+
+
+    public void generate(CmdGenerateGeoJsonType type) {
         LocalDateTime versionLocalDateTime = LocalDateTime.now();
         int version = localDateVersionMapper.map(versionLocalDateTime.toLocalDate());
         int nwbVersion = accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion();
@@ -60,14 +67,17 @@ public class GenerateGeoJsonService {
 
         VehicleProperties vehicleProperties = vehicleTypeVehiclePropertiesMapper.map(type);
 
-        SortedMap<Integer, RoadSection> idToRoadSectionSortedMap =
+        SortedMap<Integer, RoadSection> idToRoadSections =
                 accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
                         generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters()
                 , ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
 
-        logDebugStatistics(idToRoadSectionSortedMap);
+        logDebugStatistics(idToRoadSections);
 
-        AccessibilityGeoJsonFeatureCollection geoJson = accessibilityGeoJsonMapper.map(idToRoadSectionSortedMap,
+        List<RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign>> roadSectionAndTrafficSigns =
+                enrichTrafficSignService.addTrafficSigns(type, idToRoadSections.values());
+
+        AccessibilityGeoJsonFeatureCollection geoJson = accessibilityGeoJsonMapper.map(roadSectionAndTrafficSigns,
                 nwbVersion);
 
         Path tempFile = fileService.createTmpGeoJsonFile(type);

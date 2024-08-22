@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class TextSignDto {
 
-    private String type;
+    private TextSignType type;
     private String text;
     private String openingHours;
 

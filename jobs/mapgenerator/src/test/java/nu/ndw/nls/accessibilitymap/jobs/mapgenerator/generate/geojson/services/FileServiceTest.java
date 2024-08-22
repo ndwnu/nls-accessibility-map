@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,8 +42,8 @@ class FileServiceTest {
         Path tempDirectory = tempRootDirectory.resolve("v1/windowTimes");
         Path destinationFile = tempDirectory.resolve("result.json");
 
-        when(blobStorageLocationMapper.map(GenerateGeoJsonType.C6, VERSION_DATE)).thenReturn(destinationFile);
-        fileService.uploadFile(GenerateGeoJsonType.C6, generatedFile, VERSION_DATE);
+        when(blobStorageLocationMapper.map(CmdGenerateGeoJsonType.C6, VERSION_DATE)).thenReturn(destinationFile);
+        fileService.uploadFile(CmdGenerateGeoJsonType.C6, generatedFile, VERSION_DATE);
 
         assertTrue(Files.exists(destinationFile));
         assertEquals(TESTCONTENT, Files.readString(destinationFile));
@@ -63,8 +63,8 @@ class FileServiceTest {
         Files.createDirectories(tempDirectory);
         Files.writeString(destinationFile, DIFFERENTCONTENT);
 
-        when(blobStorageLocationMapper.map(GenerateGeoJsonType.C6, VERSION_DATE)).thenReturn(destinationFile);
-        fileService.uploadFile(GenerateGeoJsonType.C6, generatedFile, VERSION_DATE);
+        when(blobStorageLocationMapper.map(CmdGenerateGeoJsonType.C6, VERSION_DATE)).thenReturn(destinationFile);
+        fileService.uploadFile(CmdGenerateGeoJsonType.C6, generatedFile, VERSION_DATE);
 
         assertTrue(Files.exists(destinationFile));
         assertEquals(TESTCONTENT, Files.readString(destinationFile));
@@ -73,7 +73,7 @@ class FileServiceTest {
     @Test
     @SneakyThrows
     void createTempGeoJsonFile_ok() {
-        Path tempFile = fileService.createTmpGeoJsonFile(GenerateGeoJsonType.C6);
+        Path tempFile = fileService.createTmpGeoJsonFile(CmdGenerateGeoJsonType.C6);
 
         assertTrue(tempFile.getFileName().toString().startsWith("accessibility-c6-"));
         assertTrue(tempFile.getFileName().toString().endsWith(".geojson"));

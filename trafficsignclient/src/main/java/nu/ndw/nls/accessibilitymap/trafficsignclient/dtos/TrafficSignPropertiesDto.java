@@ -21,20 +21,22 @@ public class TrafficSignPropertiesDto {
     private String rvvCode;
     private String blackCode;
     private String zoneCode;
-    private TrafficSignStatus status;
+    private TrafficSignStatusType status;
     private List<TextSignDto> textSigns;
 
     // Location
-    private String placement;
-    private String side;
+    private PlacementType placement;
+    private LocationSideType side;
     private Integer bearing;
     private Integer nenTurningDirection;
     private Double fraction;
-    private String drivingDirection;
+    private DirectionType drivingDirection;
     private String roadName;
-    private Integer roadType;
+    private RoadType roadType;
     private Integer roadNumber;
-    private Integer roadSectionId;
+    // The API offers Integers, but we use long, so convert it to Long here to avoid a lot of conversions in our own
+    // code. Road section id's can be null, for example when the signs are attached to buildings
+    private Long roadSectionId;
     private LocalDate nwbVersion;
     private String countyName;
     private String countyCode;

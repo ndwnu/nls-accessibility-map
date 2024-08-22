@@ -36,8 +36,8 @@ nu:
     nls:
       accessibilitymap:
         trafficsignclient:
+          url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
           api:
-            base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
             current-state-path: /current-state
       springboot:
         messaging:

@@ -38,8 +38,8 @@ nu:
           generate:
             root-generation-destination: /application/maps
             search-distance-in-meters: 1000000
-            start-location-latitude: 53.01546436904244
-            start-location-longitude: 5.197172571583729
+            start-location-latitude: 52.12096528507054 # From municipality Amersfoort
+            start-location-longitude: 5.334845116067081
             geojson:
               C6:
                 path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
@@ -63,8 +63,8 @@ nu:
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c22c
         trafficsignclient:
           api:
-            base-url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
-            current-state-path: /current-state
+            url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+
 
       springboot:
         messaging:

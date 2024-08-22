@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class GenerateConfigurationTest {
     private GenerateConfiguration generateConfiguration;
 
     @Mock
-    private Map<GenerateGeoJsonType, GeoJsonProperties> typeToGeoJsonProperties;
+    private Map<CmdGenerateGeoJsonType, GeoJsonProperties> typeToGeoJsonProperties;
 
     @Mock
     private GeoJsonProperties geoJsonProperties;
@@ -39,8 +39,8 @@ class GenerateConfigurationTest {
     @Test
     void getConfiguration_ok() {
         when(generateProperties.getGeojson()).thenReturn(typeToGeoJsonProperties);
-        when(typeToGeoJsonProperties.get(GenerateGeoJsonType.C6)).thenReturn(geoJsonProperties);
-        assertEquals(geoJsonProperties, generateConfiguration.getConfiguration(GenerateGeoJsonType.C6));
+        when(typeToGeoJsonProperties.get(CmdGenerateGeoJsonType.C6)).thenReturn(geoJsonProperties);
+        assertEquals(geoJsonProperties, generateConfiguration.getConfiguration(CmdGenerateGeoJsonType.C6));
     }
 
     @Test

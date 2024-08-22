@@ -11,7 +11,24 @@ import org.locationtech.jts.geom.LineString;
 @Value
 @Builder
 public class DirectionalRoadSection {
+
+    /**
+     * This is the original road section id
+     */
+    long nwbRoadSectionId;
+
+    /**
+     * This ID will be negative if the direction is backwards
+     */
     long roadSectionId;
     LineString geometry;
     boolean accessible;
+
+    public boolean isForwards() {
+        return roadSectionId > 0;
+    }
+
+    public boolean isBackwards() {
+        return !isForwards();
+    }
 }

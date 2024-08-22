@@ -74,7 +74,11 @@ the correct NWB version.
 To re-create the mocked response, download Amersfoort files, using the following url:
 https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?townCode=GM0307&rvvCode=C6&rvvCode=C7&rvvCode=C7a&rvvCode=C7b&rvvCode=C8&rvvCode=C9&rvvCode=C10&rvvCode=C11&rvvCode=C12&rvvCode=C22c&rvvCode=C17&rvvCode=C18&rvvCode=C19&rvvCode=C20&rvvCode=C21
 
+## Window Times
 
+In the traffic sign API, traffic signs have text signs and some text signs are of type 'TIJD' and they have a field 
+called 'openingHours'. This field will be using the OSM standard for opening hours: 
+https://wiki.openstreetmap.org/wiki/Key:opening_hours
 
 ## Pretty printing geojson
 jq . c6WindowTimeSegments.geojson | sponge c6WindowTimeSegments.geojson

@@ -26,6 +26,7 @@ public class DirectionalRoadSectionMapper {
 
         if (isAccessiblePriorRestrictions(roadSection, false)) {
             directionalRoadSections.add(DirectionalRoadSection.builder()
+                    .nwbRoadSectionId(roadSection.getRoadSectionId())
                     .roadSectionId(roadSection.getRoadSectionId())
                     .geometry(roadSection.getGeometry())
                     .accessible(roadSection.getForwardAccessible())
@@ -34,6 +35,7 @@ public class DirectionalRoadSectionMapper {
 
         if (isAccessiblePriorRestrictions(roadSection, true)) {
             directionalRoadSections.add(DirectionalRoadSection.builder()
+                    .nwbRoadSectionId(roadSection.getRoadSectionId())
                     .roadSectionId(negateIdForReverseRoadSection(roadSection.getRoadSectionId()))
                     .geometry(reverseGeometryForReversedRoadSection(roadSection.getGeometry()))
                     .accessible(roadSection.getBackwardAccessible())

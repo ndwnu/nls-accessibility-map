@@ -95,7 +95,7 @@ class AccessibilityLinkServiceTest {
         Stream<NwbRoadSectionDto> roadSectionStream = spy(roadSections.stream());
         when(trafficSignMapperRegistry.getIncludedRvvCodes()).thenReturn(rvvCodesSet);
 
-        when(trafficSignService.getTrafficSigns(rvvCodesSet)).thenReturn(
+        when(trafficSignService.getTrafficSigns(rvvCodesSet, Collections.emptySet())).thenReturn(
                 new TrafficSignData(trafficSignsByRoadSectionId, MAX_NWB_REFERENCE_DATE, MAX_EVENT_TIMESTAMP));
         when(nwbVersionService.findLatestByReferenceDate(MAX_NWB_REFERENCE_DATE)).thenReturn(
                 Optional.of(NwbVersionDto.builder().versionId(NWB_VERSION_ID).build()));
@@ -118,7 +118,7 @@ class AccessibilityLinkServiceTest {
 
     private TrafficSignGeoJsonDto createTrafficSign(long roadSectionId2) {
         TrafficSignPropertiesDto trafficSignPropertiesDto = TrafficSignPropertiesDto.builder()
-                .roadSectionId((int) roadSectionId2)
+                .roadSectionId(roadSectionId2)
                 .build();
         return TrafficSignGeoJsonDto.builder()
                 .properties(trafficSignPropertiesDto)

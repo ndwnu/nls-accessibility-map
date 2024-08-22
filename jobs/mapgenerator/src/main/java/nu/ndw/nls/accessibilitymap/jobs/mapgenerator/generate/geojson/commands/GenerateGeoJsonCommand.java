@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services.GenerateGeoJsonService;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -18,7 +18,7 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     private final GenerateGeoJsonService generateGeoJsonService;
 
     @Parameters(index = "0", description = "The GeoJson map type to generate.")
-    private GenerateGeoJsonType type;
+    private CmdGenerateGeoJsonType type;
 
     @Override
     public Integer call() {

@@ -4,9 +4,8 @@ nu:
       accessibilitymap:
         trafficsignclient:
           api:
-            base-url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
-            current-state-path: /current-state
-            town-code: GM0307
+            url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
+            town-codes: GM0307
 logging:
   level:
     root: INFO

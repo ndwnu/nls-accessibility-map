@@ -48,6 +48,7 @@ class DirectionalRoadSectionMapperTest {
         when(roadSection.getBackwardAccessible()).thenReturn(null);
         assertEquals(List.of(
                 DirectionalRoadSection.builder()
+                        .nwbRoadSectionId(ROAD_SECTION_ID)
                         .roadSectionId(ROAD_SECTION_ID)
                         .geometry(geometryForward)
                         .accessible(true)
@@ -64,6 +65,7 @@ class DirectionalRoadSectionMapperTest {
         when(roadSection.getBackwardAccessible()).thenReturn(true);
         assertEquals(List.of(
                 DirectionalRoadSection.builder()
+                        .nwbRoadSectionId(ROAD_SECTION_ID)
                         .roadSectionId(ROAD_SECTION_ID_NEGATED_FOR_REVERSE)
                         .geometry(geometryReversed)
                         .accessible(true)
@@ -80,11 +82,13 @@ class DirectionalRoadSectionMapperTest {
         when(roadSection.getBackwardAccessible()).thenReturn(false);
         assertEquals(List.of(
                 DirectionalRoadSection.builder()
+                        .nwbRoadSectionId(ROAD_SECTION_ID)
                         .roadSectionId(ROAD_SECTION_ID)
                         .geometry(geometryForward)
                         .accessible(true)
                         .build(),
                 DirectionalRoadSection.builder()
+                        .nwbRoadSectionId(ROAD_SECTION_ID)
                         .roadSectionId(ROAD_SECTION_ID_NEGATED_FOR_REVERSE)
                         .geometry(geometryReversed)
                         .accessible(false)
@@ -102,11 +106,13 @@ class DirectionalRoadSectionMapperTest {
         when(roadSection.getBackwardAccessible()).thenReturn(true);
         assertEquals(List.of(
                 DirectionalRoadSection.builder()
+                        .nwbRoadSectionId(ROAD_SECTION_ID)
                         .roadSectionId(ROAD_SECTION_ID)
                         .geometry(geometryForward)
                         .accessible(false)
                         .build(),
                 DirectionalRoadSection.builder()
+                        .nwbRoadSectionId(ROAD_SECTION_ID)
                         .roadSectionId(ROAD_SECTION_ID_NEGATED_FOR_REVERSE)
                         .geometry(geometryReversed)
                         .accessible(true)

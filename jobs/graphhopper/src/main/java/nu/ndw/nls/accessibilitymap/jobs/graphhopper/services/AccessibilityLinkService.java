@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper.services;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class AccessibilityLinkService {
     @Transactional(readOnly = true)
     public AccessibilityLinkData getLinks() {
         TrafficSignData trafficSignData = trafficSignService.getTrafficSigns(
-                trafficSignMapperRegistry.getIncludedRvvCodes());
+                trafficSignMapperRegistry.getIncludedRvvCodes(), Collections.emptySet());
         int nwbVersionId = nwbVersionService.findLatestByReferenceDate(trafficSignData.maxNwbReferenceDate())
                 .orElseThrow(() -> new IllegalStateException("NWB version " + trafficSignData.maxNwbReferenceDate()
                         + " from traffic signs response not found in database"))

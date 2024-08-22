@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +23,7 @@ class GeneratePropertiesIT {
 
     @Test
     void configuration_ok_configExistsForEachGenerateGeoJsonType() {
-        assertTrue(generateProperties.getGeojson().keySet().containsAll(List.of(GenerateGeoJsonType.values())),
-                "There should be a configuration for each: " + GenerateGeoJsonType.class.getSimpleName());
+        assertTrue(generateProperties.getGeojson().keySet().containsAll(List.of(CmdGenerateGeoJsonType.values())),
+                "There should be a configuration for each: " + CmdGenerateGeoJsonType.class.getSimpleName());
     }
 }
