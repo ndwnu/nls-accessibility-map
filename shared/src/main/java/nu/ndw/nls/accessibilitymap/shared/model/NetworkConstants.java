@@ -1,21 +1,11 @@
 package nu.ndw.nls.accessibilitymap.shared.model;
 
 import com.graphhopper.config.Profile;
-import com.graphhopper.util.CustomModel;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class NetworkConstants {
 
-    public static final String CAR = "car";
-    private static final String PROFILE_NAME = "motor_vehicle_custom";
-    public static final Profile PROFILE = new Profile(PROFILE_NAME).setVehicle(CAR);
-
-
-    private NetworkConstants() {}
-
-    public static Profile profileWithCustomModel(CustomModel customModel) {
-        return new Profile(PROFILE_NAME)
-                .setVehicle(CAR)
-                .setCustomModel(customModel);
-    }
-
+    public static final String VEHICLE_NAME_CAR = "car";
+    public static final Profile PROFILE = new Profile(VEHICLE_NAME_CAR);
 }

@@ -13,7 +13,7 @@ public class AccessibilityLinkCarMapper extends LinkVehicleMapper<AccessibilityL
     private static final DirectionalDto<Double> DEFAULT_SPEED = new DirectionalDto<>(50.0);
 
     public AccessibilityLinkCarMapper() {
-        super(NetworkConstants.CAR, AccessibilityLink.class);
+        super(NetworkConstants.VEHICLE_NAME_CAR, AccessibilityLink.class);
     }
 
     @Override

@@ -21,9 +21,10 @@ public class AccessibilityMap {
     private final IsochroneService isochroneService;
 
     public List<IsochroneMatch> getAccessibleRoadSections(AccessibilityRequest accessibilityRequest) {
+        Profile profile = network.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
         CustomModel model = modelFactory.getModel(accessibilityRequest.vehicleProperties());
-        Profile profile = NetworkConstants.profileWithCustomModel(model);
-        Weighting weighting = network.createWeighting(profile, new PMap());
+        PMap hints = createCustomModelHints(model);
+        Weighting weighting = network.createWeighting(profile, hints);
 
         return isochroneService.getIsochroneMatchesByMunicipalityId(IsochroneArguments.builder()
                         .weighting(weighting)
@@ -31,5 +32,10 @@ public class AccessibilityMap {
                         .municipalityId(accessibilityRequest.municipalityId())
                         .searchDistanceInMetres(accessibilityRequest.searchDistanceInMetres())
                         .build());
+    }
+
+    private PMap createCustomModelHints(CustomModel model) {
+        return new PMap()
+                .putObject(CustomModel.KEY, model);
     }
 }
