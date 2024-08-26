@@ -60,15 +60,6 @@ class RequestMapperTest {
                 .weight((double) VEHICLE_WEIGHT)
                 .build();
 
-        VehicleArguments commercialVehicleLightRequest = VehicleArguments
-                .builder()
-                .vehicleType(VehicleTypeJson.COMMERCIAL_VEHICLE)
-                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
-                .vehicleWidth(VEHICLE_WIDTH)
-                .vehicleHeight(VEHICLE_HEIGHT)
-                .vehicleLength(VEHICLE_LENGTH)
-                .vehicleWeight(VEHICLE_WEIGHT)
-                .build();
         VehicleArguments lightCommercialVehicleRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.LIGHT_COMMERCIAL_VEHICLE)
@@ -92,15 +83,6 @@ class RequestMapperTest {
                 .weight((double) VEHICLE_WEIGHT)
                 .build();
 
-        VehicleArguments commercialVehicleHeavyRequest = VehicleArguments
-                .builder()
-                .vehicleType(VehicleTypeJson.COMMERCIAL_VEHICLE)
-                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
-                .vehicleWidth(VEHICLE_WIDTH)
-                .vehicleHeight(VEHICLE_HEIGHT)
-                .vehicleLength(VEHICLE_LENGTH)
-                .vehicleWeight(HGV_VEHICLE_WEIGHT)
-                .build();
         VehicleArguments truckRequest = VehicleArguments
                 .builder()
                 .vehicleType(VehicleTypeJson.TRUCK)
@@ -191,13 +173,9 @@ class RequestMapperTest {
                 Arguments.of(named("carScenario",
                         new ImmutablePair<>(carRequest, expectedCarVehicleProperties))),
 
-                Arguments.of(named("commercialVehicleLightScenario",
-                        new ImmutablePair<>(commercialVehicleLightRequest, expectedLightCommercialVehicleProperties))),
                 Arguments.of(named("lightCommercialVehicleScenario",
                         new ImmutablePair<>(lightCommercialVehicleRequest, expectedLightCommercialVehicleProperties))),
 
-                Arguments.of(named("commercialVehicleHeavyScenario",
-                        new ImmutablePair<>(commercialVehicleHeavyRequest, expectedHgvCommercialVehicleProperties))),
                 Arguments.of(named("truckScenario",
                         new ImmutablePair<>(truckRequest, expectedHgvCommercialVehicleProperties))),
 
