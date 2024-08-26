@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.PointMatchingRoadSectionNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
@@ -46,7 +45,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude) {
-        checkWeightConstraint(vehicleType, vehicleWeight);
         CandidateMatch startPointMatch = matchStartPoint(latitude, longitude);
         Integer requestedRoadSectionId = startPointMatch != null ? startPointMatch.getMatchedLinkId() : null;
 
@@ -62,7 +60,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
             Double longitude) {
-        checkWeightConstraint(vehicleType, vehicleWeight);
         CandidateMatch startPointMatch = matchStartPoint(latitude, longitude);
 
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
@@ -70,13 +67,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(requestArguments, municipalityId);
 
         return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(idToRoadSection, startPointMatch, accessible));
-    }
-
-    private static void checkWeightConstraint(VehicleTypeJson vehicleType, Float vehicleWeight) {
-        if (VehicleTypeJson.COMMERCIAL_VEHICLE == vehicleType && vehicleWeight == null) {
-            throw new VehicleWeightRequiredException("When selecting 'commercial_vehicle' as vehicle type "
-                    + "vehicle weight is required");
-        }
     }
 
     private CandidateMatch matchStartPoint(Double latitude, Double longitude) {

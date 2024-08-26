@@ -167,7 +167,6 @@ components:
       name: vehicleWeight
       description: |
         The weight of the specified vehicle in metric tonnes including load and trailer.
-        This field is required when selecting vehicle type commercial_vehicle.
       required: false
       schema:
         type: number
@@ -223,11 +222,9 @@ components:
   schemas:
     VehicleType:
       type: string
-      description: commercial_vehicle is deprecated. Use light_commercial_vehicle (<= 3.5 t) or truck (> 3.5 t) instead
       enum:
         - bus
         - car
-        - commercial_vehicle
         - light_commercial_vehicle
         - motorcycle
         - tractor
