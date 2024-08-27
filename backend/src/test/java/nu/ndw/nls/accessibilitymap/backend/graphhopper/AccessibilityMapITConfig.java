@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.graphhopper;
 
-import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.CAR;
+import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.VEHICLE_NAME_CAR;
 
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import java.util.List;
@@ -38,7 +38,7 @@ class AccessibilityMapITConfig {
     @Bean
     public LinkVehicleMapper<AccessibilityLink> linkVehicleMapper() {
         // Redefine mapper to avoid dependency on jobs module
-        return new LinkVehicleMapper<>(CAR, AccessibilityLink.class) {
+        return new LinkVehicleMapper<>(VEHICLE_NAME_CAR, AccessibilityLink.class) {
             @Override
             public DirectionalDto<Boolean> getAccessibility(AccessibilityLink link) {
                 return link.getAccessibility();
