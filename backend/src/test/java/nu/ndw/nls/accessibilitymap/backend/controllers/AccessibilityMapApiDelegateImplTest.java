@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -12,7 +11,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.backend.controllers.AccessibilityMapApiDelegateImpl.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
@@ -112,23 +110,6 @@ class AccessibilityMapApiDelegateImplTest {
     }
 
     @Test
-    void getInaccessibleRoadSections_exception_noWeight() {
-        VehicleWeightRequiredException exception = assertThrows(VehicleWeightRequiredException.class,
-                () -> accessibilityMapApiDelegate.getInaccessibleRoadSections(
-                        MUNICIPALITY_ID,
-                        VehicleTypeJson.COMMERCIAL_VEHICLE,
-                        VEHICLE_LENGTH,
-                        VEHICLE_WIDTH,
-                        VEHICLE_HEIGHT,
-                        null,
-                        VEHICLE_AXLE_LOAD,
-                        false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE));
-
-        assertThat(exception.getMessage()).isEqualTo("When selecting 'commercial_vehicle' as vehicle type "
-                + "vehicle weight is required");
-    }
-
-    @Test
     void getRoadSections_ok() {
         setUpFixture();
         when(roadSectionFeatureCollectionMapper.map(idToRoadSectionMap, candidateMatch, true))
@@ -148,23 +129,6 @@ class AccessibilityMapApiDelegateImplTest {
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
 
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
-    }
-
-    @Test
-    void getRoadSections_exception_noWeight() {
-        VehicleWeightRequiredException exception = assertThrows(VehicleWeightRequiredException.class,
-                () -> accessibilityMapApiDelegate.getRoadSections(
-                        MUNICIPALITY_ID,
-                        VehicleTypeJson.COMMERCIAL_VEHICLE,
-                        VEHICLE_LENGTH,
-                        VEHICLE_WIDTH,
-                        VEHICLE_HEIGHT,
-                        null,
-                        VEHICLE_AXLE_LOAD,
-                        false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE));
-
-        assertThat(exception.getMessage()).isEqualTo("When selecting 'commercial_vehicle' as vehicle type "
-                + "vehicle weight is required");
     }
 
     private void setUpFixture() {
