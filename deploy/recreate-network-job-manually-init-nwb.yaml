@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nls-accessibility-map-graphhopper-cron-job
-          image: ndwnls.azurecr.io/nls-accessibility-map-jobs:20240827.2 #variable: pick the version you need
+          image: ndwnls.azurecr.io/nls-accessibility-map-graphhopper-job:20240828.4 #variable: pick the version you need
           imagePullPolicy: Always
           resources:
             limits:
@@ -49,7 +49,7 @@ spec:
               secretProviderClass: nls-accessibility-map-jobs-spc
         - name: nls-accessibility-map-graphhopper-cron-jobs-volume
           persistentVolumeClaim:
-            claimName: nls-accessibility-map-api-pvc-gh9
+            claimName: nls-accessibility-map-api-pvc
         - name: nls-accessibility-map-graphhopper-cron-jobs-heapdump-volume
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
