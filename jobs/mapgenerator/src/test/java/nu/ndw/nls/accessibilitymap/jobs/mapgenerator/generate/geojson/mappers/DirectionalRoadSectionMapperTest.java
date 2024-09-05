@@ -6,7 +6,8 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalRoadSection;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.LineString;
@@ -18,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class DirectionalRoadSectionMapperTest {
 
     private static final int ROAD_SECTION_ID = 20;
-    private static final int ROAD_SECTION_ID_NEGATED_FOR_REVERSE = -20;
 
     @InjectMocks
     private DirectionalRoadSectionMapper directionalRoadSectionMapper;
@@ -29,8 +29,6 @@ class DirectionalRoadSectionMapperTest {
     @Mock
     private LineString geometryForward;
 
-    @Mock
-    private LineString geometryReversed;
 
     @Test
     void map_ok_bothAccessibleNullValuesNotAccessiblePriorRestrictions() {
@@ -49,9 +47,9 @@ class DirectionalRoadSectionMapperTest {
         assertEquals(List.of(
                 DirectionalRoadSection.builder()
                         .nwbRoadSectionId(ROAD_SECTION_ID)
-                        .roadSectionId(ROAD_SECTION_ID)
-                        .geometry(geometryForward)
+                        .nwbGeometry(geometryForward)
                         .accessible(true)
+                        .direction(Direction.FORWARD)
                         .build()), directionalRoadSectionMapper.map(roadSection));
     }
 
@@ -59,15 +57,14 @@ class DirectionalRoadSectionMapperTest {
     void map_ok_backwardAccessibleOnly() {
         when(roadSection.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.getGeometry()).thenReturn(geometryForward);
-        when(geometryForward.reverse()).thenReturn(geometryReversed);
 
         when(roadSection.getForwardAccessible()).thenReturn(null);
         when(roadSection.getBackwardAccessible()).thenReturn(true);
         assertEquals(List.of(
                 DirectionalRoadSection.builder()
                         .nwbRoadSectionId(ROAD_SECTION_ID)
-                        .roadSectionId(ROAD_SECTION_ID_NEGATED_FOR_REVERSE)
-                        .geometry(geometryReversed)
+                        .nwbGeometry(geometryForward)
+                        .direction(Direction.BACKWARD)
                         .accessible(true)
                         .build()), directionalRoadSectionMapper.map(roadSection));
     }
@@ -76,22 +73,21 @@ class DirectionalRoadSectionMapperTest {
     void map_ok_forwardAccessibleBackwardsInaccessible() {
         when(roadSection.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.getGeometry()).thenReturn(geometryForward);
-        when(geometryForward.reverse()).thenReturn(geometryReversed);
 
         when(roadSection.getForwardAccessible()).thenReturn(true);
         when(roadSection.getBackwardAccessible()).thenReturn(false);
         assertEquals(List.of(
                 DirectionalRoadSection.builder()
                         .nwbRoadSectionId(ROAD_SECTION_ID)
-                        .roadSectionId(ROAD_SECTION_ID)
-                        .geometry(geometryForward)
-                        .accessible(true)
+                        .nwbGeometry(geometryForward)
+                        .accessible(false)
+                        .direction(Direction.BACKWARD)
                         .build(),
                 DirectionalRoadSection.builder()
                         .nwbRoadSectionId(ROAD_SECTION_ID)
-                        .roadSectionId(ROAD_SECTION_ID_NEGATED_FOR_REVERSE)
-                        .geometry(geometryReversed)
-                        .accessible(false)
+                        .nwbGeometry(geometryForward)
+                        .accessible(true)
+                        .direction(Direction.FORWARD)
                         .build()), directionalRoadSectionMapper.map(roadSection));
 
     }
@@ -100,22 +96,21 @@ class DirectionalRoadSectionMapperTest {
     void map_ok_forwardInaccessibleBackwardsAccessible() {
         when(roadSection.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.getGeometry()).thenReturn(geometryForward);
-        when(geometryForward.reverse()).thenReturn(geometryReversed);
 
         when(roadSection.getForwardAccessible()).thenReturn(false);
         when(roadSection.getBackwardAccessible()).thenReturn(true);
         assertEquals(List.of(
                 DirectionalRoadSection.builder()
                         .nwbRoadSectionId(ROAD_SECTION_ID)
-                        .roadSectionId(ROAD_SECTION_ID)
-                        .geometry(geometryForward)
-                        .accessible(false)
+                        .nwbGeometry(geometryForward)
+                        .direction(Direction.BACKWARD)
+                        .accessible(true)
                         .build(),
                 DirectionalRoadSection.builder()
                         .nwbRoadSectionId(ROAD_SECTION_ID)
-                        .roadSectionId(ROAD_SECTION_ID_NEGATED_FOR_REVERSE)
-                        .geometry(geometryReversed)
-                        .accessible(true)
+                        .nwbGeometry(geometryForward)
+                        .accessible(false)
+                        .direction(Direction.FORWARD)
                         .build()), directionalRoadSectionMapper.map(roadSection));
 
     }

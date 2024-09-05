@@ -5,8 +5,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalTrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services.TextSignFilterService;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -18,12 +19,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class TrafficSignMapperTest {
+class DirectionalTrafficSignMapperTest {
 
     private static final String TRAFFIC_SIGN_API_RVV_CODE = "C6";
     private static final long ROAD_SECTION_ID = 124L;
     private static final TrafficSignType TRAFFIC_SIGN_TYPE = TrafficSignType.C6;
     private static final String TEXT = "TEXT";
+    private static final double FRACTION_FORWARD = 0.2;
 
     @Mock
     private TrafficSignApiRvvCodeMapper trafficSignApiRvvCodeMapper;
@@ -32,7 +34,7 @@ class TrafficSignMapperTest {
     private TextSignFilterService textSignFilterService;
 
     @InjectMocks
-    private TrafficSignMapper trafficSignMapper;
+    private DirectionalTrafficSignMapper directionalTrafficSignMapper;
 
     @Mock
     private TrafficSignGeoJsonDto trafficSignGeoJsonDto;
@@ -53,6 +55,8 @@ class TrafficSignMapperTest {
         when(trafficSignPropertiesDto.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(trafficSignPropertiesDto.getRvvCode()).thenReturn(TRAFFIC_SIGN_API_RVV_CODE);
         when(trafficSignPropertiesDto.getTextSigns()).thenReturn(textSignDtos);
+        when(trafficSignPropertiesDto.getFraction()).thenReturn(FRACTION_FORWARD);
+
 
         when(trafficSignApiRvvCodeMapper.map(TRAFFIC_SIGN_API_RVV_CODE)).thenReturn(TRAFFIC_SIGN_TYPE);
         when(textSignFilterService.findFirstWindowTimeTextSign(textSignDtos))
@@ -60,10 +64,16 @@ class TrafficSignMapperTest {
 
         when(firstWindowSignTextSignDto.getText()).thenReturn(TEXT);
 
-        assertThat(trafficSignMapper.map(trafficSignGeoJsonDto)).isEqualTo(TrafficSign.builder()
-                .roadSectionId(ROAD_SECTION_ID)
-                .trafficSignType(TRAFFIC_SIGN_TYPE)
-                .windowTimes(TEXT)
-                .build());
+        assertThat(directionalTrafficSignMapper.map(trafficSignGeoJsonDto, Direction.FORWARD))
+                .isEqualTo(DirectionalTrafficSign.builder()
+                    .direction(Direction.FORWARD)
+                    .nwbRoadSectionId(ROAD_SECTION_ID)
+                    .trafficSignType(TRAFFIC_SIGN_TYPE)
+                    .windowTimes(TEXT)
+                    .nwbFraction(FRACTION_FORWARD)
+                    .direction(Direction.FORWARD)
+                    .build());
     }
+
+
 }

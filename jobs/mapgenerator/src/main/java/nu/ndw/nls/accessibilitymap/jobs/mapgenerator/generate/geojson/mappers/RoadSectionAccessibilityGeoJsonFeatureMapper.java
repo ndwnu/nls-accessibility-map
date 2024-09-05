@@ -3,40 +3,46 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.LineStringGeojson;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.RoadSectionAndTrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalTrafficSign;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.springframework.stereotype.Component;
 
+/**
+ * Output geometry in driving direction entirely as accessible or not accessible
+ */
 @Component
 @RequiredArgsConstructor
-public class AccessibilityGeoJsonFeatureMapper {
+public class RoadSectionAccessibilityGeoJsonFeatureMapper {
 
     private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
 
-    public AccessibilityGeoJsonFeature map(
-            RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign> roadSectionAndTrafficSign, int version) {
+    public AccessibilityGeoJsonFeature map(DirectionalRoadSectionAndTrafficSign roadSectionAndTrafficSign,
+            int version, long id) {
 
         DirectionalRoadSection directionalRoadSection = roadSectionAndTrafficSign.getRoadSection();
-        TrafficSign trafficSign = roadSectionAndTrafficSign.getTrafficSign();
+        DirectionalTrafficSign directionalTrafficSign = roadSectionAndTrafficSign.getTrafficSign();
 
         return AccessibilityGeoJsonFeature
                 .builder()
-                .id(directionalRoadSection.getRoadSectionId())
+                .id(id)
                 .geometry(LineStringGeojson.builder()
                         .coordinates(geoJsonLineStringCoordinateMapper.map(directionalRoadSection.getGeometry()))
                         .build())
                 .properties(AccessibilityGeoJsonProperties.builder()
-                        .id(directionalRoadSection.getRoadSectionId())
+                        .id(directionalRoadSection.getNwbRoadSectionId())
                         .versionId(version)
-                        .accessible(directionalRoadSection.isAccessible())
-                        .trafficSignType(trafficSign != null ? trafficSign.getTrafficSignType() : null)
-                        .windowTimes(trafficSign != null ? trafficSign.getWindowTimes() : null)
+                        .accessible(directionalRoadSection.getAccessible())
+                        .trafficSignType(directionalTrafficSign != null ?
+                                directionalTrafficSign.getTrafficSignType() : null)
+                        .windowTimes(directionalTrafficSign != null ?
+                                directionalTrafficSign.getWindowTimes() : null)
                         .build())
                 .build();
     }
+
 
 
 }

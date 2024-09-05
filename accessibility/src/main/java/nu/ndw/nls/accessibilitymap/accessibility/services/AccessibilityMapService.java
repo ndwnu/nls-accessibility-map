@@ -118,7 +118,7 @@ public class AccessibilityMapService {
         // RoadSection with false. We then use the withRestrictions isochrone result to update all road section
         // directions which are accessible with true and effectively end up with RoadSection objects that have
         // accessible states with three values:
-        // - null: road section driving direction not accessible in NWB
+        // - null: road section driving direction not exist as NWB link
         // - false: road section driving direction accessible in NWB, but did not exist in the isochrone response and is
         //          inaccessible with the restrictions applied to the isochrone
         // - true: road section driving direction exists in NWB and was found in isochrone response and is accessible

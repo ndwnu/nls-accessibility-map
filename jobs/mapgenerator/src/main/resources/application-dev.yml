@@ -10,6 +10,7 @@ nu:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
       accessibilitymap:
+
         trafficsignclient:
           api:
             url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
@@ -17,7 +18,7 @@ nu:
         jobs:
           generate:
             root-generation-destination: ./map-generation-destination
-
+            prettyPrintJson: true
 logging:
   level:
     root: INFO

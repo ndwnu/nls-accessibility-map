@@ -26,13 +26,19 @@ public class GenerateProperties {
 
     @Min(50)
     @Max(54)
-    public double startLocationLatitude;
+    private double startLocationLatitude;
 
     @Min(3)
     @Max(8)
-    public double startLocationLongitude;
+    private double startLocationLongitude;
 
     @Min(1)
-    public double searchDistanceInMeters;
+    private double searchDistanceInMeters;
+
+    /**
+     * When true, will instruct the object mapper to pretty print the output. Usually
+     * only enabled when developing the application
+     */
+    private boolean prettyPrintJson;
 
 }

@@ -11,12 +11,15 @@ import nu.ndw.nls.accessibilitymap.accessibility.model.WindowTimeEncodedValue;
 import nu.ndw.nls.accessibilitymap.accessibility.services.NetworkService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.DirectionalRoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.RoadSectionAndTrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.EnrichedRoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSignGroupedById;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalTrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.mappers.RvvCodeWindowTimeEncodedValueMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsignapi.mappers.DirectionalTrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsignapi.mappers.TrafficSignApiRvvCodeMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsignapi.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
@@ -49,10 +52,13 @@ class EnrichTrafficSignServiceTest {
     private NetworkService networkService;
 
     @Mock
-    private TrafficSignMapper trafficSignMapper;
+    private DirectionalTrafficSignMapper directionalTrafficSignMapper;
 
     @Mock
     private TrafficSignFilterService trafficSignFilterService;
+
+    @Mock
+    private EnrichedRoadSectionMapper enrichedRoadSectionMapper;
 
     @InjectMocks
     private EnrichTrafficSignService enrichTrafficSignService;
@@ -74,7 +80,7 @@ class EnrichTrafficSignServiceTest {
     @Mock
     private TrafficSignGeoJsonDto roadSectionASecondWindowTimeTrafficSignForward;
     @Mock
-    private TrafficSign firstTrafficSignForward;
+    private DirectionalTrafficSign firstDirectionalTrafficSignBackwards;
 
     @Mock
     private DirectionalRoadSection directionalRoadSectionAForward;
@@ -86,7 +92,9 @@ class EnrichTrafficSignServiceTest {
     @Mock
     private DirectionalRoadSection directionalRoadSectionBBackwards;
     @Mock
-    private TrafficSign trafficSignAForward;
+    private DirectionalTrafficSign directionalTrafficSignAForward;
+    @Mock
+    private List<DirectionalRoadSectionAndTrafficSignGroupedById> directionalRoadSectionAndTrafficSignGroupedByIds;
 
     @Test
     void addTrafficSigns_ok() {
@@ -104,64 +112,68 @@ class EnrichTrafficSignServiceTest {
         when(roadSectionB.getForwardAccessible()).thenReturn(Boolean.TRUE);
         when(roadSectionB.getBackwardAccessible()).thenReturn(Boolean.TRUE);
 
-        when(networkService.hasWindowTimeByRoadSectionId((long) ROAD_SECTION_A_ID, WINDOW_TIME_ENCODED_VALUE_C6))
+        // Only A has backward inaccessible traffic sign
+        when(networkService.hasWindowTimeByRoadSectionId( ROAD_SECTION_A_ID, WINDOW_TIME_ENCODED_VALUE_C6))
                 .thenReturn(true);
 
         // Only a has a traffic sign and requires a lookup
-        when(trafficSignService.getTrafficSigns(rvvCodesC6, Set.of(ROAD_SECTION_A_ID)))
-                .thenReturn(trafficSignDataA);
+        when(trafficSignService.getTrafficSigns(rvvCodesC6, Set.of(ROAD_SECTION_A_ID))).thenReturn(trafficSignDataA);
 
         when(trafficSignDataA.getTrafficSignsByRoadSectionId((long) ROAD_SECTION_A_ID))
                 .thenReturn(roadSectionATrafficSignsFromApi);
 
         // Two signs in forward direction
-        when(trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(roadSectionATrafficSignsFromApi, true))
-                .thenReturn(List.of(roadSectionAFirstWindowTimeTrafficSignForward,
-                                    roadSectionASecondWindowTimeTrafficSignForward));
+        when(trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(roadSectionATrafficSignsFromApi,
+                Direction.BACKWARD)).thenReturn(List.of( roadSectionAFirstWindowTimeTrafficSignForward,
+                                                         roadSectionASecondWindowTimeTrafficSignForward));
 
         // No signs in reverse direction
-        when(trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(roadSectionATrafficSignsFromApi, false))
-                .thenReturn(List.of());
+        when(trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(roadSectionATrafficSignsFromApi,
+                Direction.FORWARD)).thenReturn(List.of());
 
         // Only the first one should be used and mapped
-        when(trafficSignMapper.map(roadSectionAFirstWindowTimeTrafficSignForward)).thenReturn(firstTrafficSignForward);
+        when(directionalTrafficSignMapper.map(roadSectionAFirstWindowTimeTrafficSignForward, Direction.BACKWARD))
+                .thenReturn(firstDirectionalTrafficSignBackwards);
 
         when(directionalRoadSectionMapper.map(roadSectionA)).thenReturn(List.of(directionalRoadSectionAForward,
                 directionalRoadSectionABackwards));
         when(directionalRoadSectionMapper.map(roadSectionB)).thenReturn(List.of(directionalRoadSectionBForward,
                 directionalRoadSectionBBackwards));
 
-        when(directionalRoadSectionAForward.isForwards()).thenReturn(true);
-        when(directionalRoadSectionABackwards.isForwards()).thenReturn(false);
+        when(directionalRoadSectionAForward.getDirection()).thenReturn(Direction.FORWARD);
+        when(directionalRoadSectionABackwards.getDirection()).thenReturn(Direction.BACKWARD);
 
-        List<RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign>> result =
-                enrichTrafficSignService.addTrafficSigns(CMD_GENERATE_GEO_JSON_TYPE_C6,
-                        List.of(roadSectionA, roadSectionB));
+        List<DirectionalRoadSectionAndTrafficSign> enrichedResultList =
+                new ArrayList<>();
 
-        List<RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign>> expected = new ArrayList<>();
-
-        expected.add(RoadSectionAndTrafficSign.<DirectionalRoadSection, TrafficSign>builder()
+        enrichedResultList.add(DirectionalRoadSectionAndTrafficSign.builder()
                 .roadSection(directionalRoadSectionAForward)
-                .trafficSign(firstTrafficSignForward)
-                .build());
-
-        expected.add(RoadSectionAndTrafficSign.<DirectionalRoadSection,
-                        TrafficSign>builder()
-                .roadSection(directionalRoadSectionABackwards)
                 .trafficSign(null)
                 .build());
 
-        expected.add(RoadSectionAndTrafficSign.<DirectionalRoadSection, TrafficSign>builder()
+        enrichedResultList.add(DirectionalRoadSectionAndTrafficSign.builder()
+                .roadSection(directionalRoadSectionABackwards)
+                .trafficSign(firstDirectionalTrafficSignBackwards)
+                .build());
+
+        enrichedResultList.add(DirectionalRoadSectionAndTrafficSign.builder()
                 .roadSection(directionalRoadSectionBForward)
                 .trafficSign(null)
                 .build());
 
-        expected.add(RoadSectionAndTrafficSign.<DirectionalRoadSection,
-                        TrafficSign>builder()
+        enrichedResultList.add(DirectionalRoadSectionAndTrafficSign.builder()
                 .roadSection(directionalRoadSectionBBackwards)
                 .trafficSign(null)
                 .build());
 
-        assertThat(result).isEqualTo(expected);
+        when(enrichedRoadSectionMapper.map(enrichedResultList)).thenReturn(
+                directionalRoadSectionAndTrafficSignGroupedByIds);
+
+        List<DirectionalRoadSectionAndTrafficSignGroupedById> result = enrichTrafficSignService.addTrafficSigns(
+                CMD_GENERATE_GEO_JSON_TYPE_C6,
+                List.of(roadSectionA, roadSectionB));
+
+        assertThat(result).isEqualTo(directionalRoadSectionAndTrafficSignGroupedByIds);
+
     }
 }

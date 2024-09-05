@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.stream.Stream;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
@@ -20,15 +21,18 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapServic
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonGeneratedEventMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.EffectivelyAccessibleGeoJsonMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.FullRoadSectionAccessibilityGeoJsonMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.TrafficSignSplitRoadSectionAccessibilityGeoJsonMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.VehicleTypeVehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.RoadSectionAndTrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSignGroupedById;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GeoJsonOutputFormat;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubject;
@@ -49,6 +53,8 @@ class GenerateGeoJsonServiceTest {
     private static final int NWB_VERSION_INT = 20240101;
     private static final double SEARCH_DISTANCE = Double.MAX_VALUE;
     private static final CmdGenerateGeoJsonType GENERATE_GEO_JSON_TYPE = CmdGenerateGeoJsonType.C6;
+    private static final boolean PRODUCE_MESSAGE = true;
+
     @Mock
     private GenerateProperties generateProperties;
 
@@ -57,9 +63,6 @@ class GenerateGeoJsonServiceTest {
 
     @Mock
     private AccessibilityMapService accessibilityMapService;
-
-    @Mock
-    private AccessibilityGeoJsonMapper accessibilityGeoJsonMapper;
 
     @Mock
     private FileService fileService;
@@ -98,7 +101,25 @@ class GenerateGeoJsonServiceTest {
     private List<RoadSection> roadSections;
 
     @Mock
-    private List<RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign>> directionalRoadSectionAndTrafficSigns;
+    private List<DirectionalRoadSectionAndTrafficSignGroupedById> directionalRoadSectionAndTrafficSignGroupedById;
+
+    @Mock
+    private DirectionalRoadSectionAndTrafficSignGroupedById directionalRoadSectionAndTrafficSignGroupedByIdA;
+
+    @Mock
+    private DirectionalRoadSectionAndTrafficSignGroupedById directionalRoadSectionAndTrafficSignGroupedByIdB;
+
+    @Mock
+    private List<DirectionalRoadSectionAndTrafficSign> directionalRoadSectionAndTrafficSignsA;
+
+    @Mock
+    private DirectionalRoadSectionAndTrafficSign directionalRoadSectionAndTrafficSignA;
+
+    @Mock
+    private List<DirectionalRoadSectionAndTrafficSign> directionalRoadSectionAndTrafficSignsB;
+
+    @Mock
+    private DirectionalRoadSectionAndTrafficSign directionalRoadSectionAndTrafficSignB;
 
     @Mock
     private AccessibilityGeoJsonFeatureCollection geoJson;
@@ -121,10 +142,38 @@ class GenerateGeoJsonServiceTest {
     @Mock
     private VehicleProperties vehicleProperties;
 
+    @Mock
+    private FullRoadSectionAccessibilityGeoJsonMapper fullRoadSectionAccessibilityGeoJsonMapper;
+
+    @Mock
+    private TrafficSignSplitRoadSectionAccessibilityGeoJsonMapper trafficSignSplitRoadSectionAccessibilityGeoJsonMapper;
+
+    @Mock
+    private EffectivelyAccessibleGeoJsonMapper effectivelyAccessibleGeoJsonMapper;
+
+    @Mock
+    private EffectiveAccessibilityService effectiveAccessibilityService;
+
 
     @Test
     @SneakyThrows
-    void generate_ok() {
+    void generate_ok_fullRoadSections() {
+        testByGeoJsonOutput(GeoJsonOutputFormat.FULL_ROAD_SECTION);
+    }
+
+    @Test
+    @SneakyThrows
+    void generate_ok_trafficSignSplit() {
+        testByGeoJsonOutput(GeoJsonOutputFormat.TRAFFIC_SIGN_SPLIT);
+    }
+
+    @Test
+    void generate_ok_effectivelyAccessibleSplit() {
+        testByGeoJsonOutput(GeoJsonOutputFormat.EFFECTIVELY_ACCESSIBLE_SPLIT);
+    }
+
+    @SneakyThrows
+    void testByGeoJsonOutput(GeoJsonOutputFormat geoJsonOutputFormat) {
 
         LocalDate versionDate = LocalDate.now();
         when(localDateVersionMapper.map(versionDate)).thenReturn(GENERATION_VERSION_INT);
@@ -144,10 +193,35 @@ class GenerateGeoJsonServiceTest {
         when(idToRoadSectionSortedMap.values()).thenReturn(roadSections);
 
         when(enrichTrafficSignService.addTrafficSigns(GENERATE_GEO_JSON_TYPE, roadSections))
-                .thenReturn(directionalRoadSectionAndTrafficSigns);
+                .thenReturn(directionalRoadSectionAndTrafficSignGroupedById);
 
-        when(accessibilityGeoJsonMapper.map(directionalRoadSectionAndTrafficSigns, NWB_VERSION_INT))
-                .thenReturn(geoJson);
+        if (geoJsonOutputFormat == GeoJsonOutputFormat.FULL_ROAD_SECTION) {
+            when(fullRoadSectionAccessibilityGeoJsonMapper.map(any(GeoJsonIdSequenceSupplier.class),
+                    eq(directionalRoadSectionAndTrafficSignGroupedById), eq(NWB_VERSION_INT))).thenReturn(geoJson);
+        } else if (geoJsonOutputFormat == GeoJsonOutputFormat.TRAFFIC_SIGN_SPLIT) {
+            when(trafficSignSplitRoadSectionAccessibilityGeoJsonMapper.map(any(GeoJsonIdSequenceSupplier.class),
+                    eq(directionalRoadSectionAndTrafficSignGroupedById), eq(NWB_VERSION_INT))).thenReturn(geoJson);
+        } else {
+            when(directionalRoadSectionAndTrafficSignGroupedById.stream()).thenReturn(
+                    Stream.of(directionalRoadSectionAndTrafficSignGroupedByIdA,
+                            directionalRoadSectionAndTrafficSignGroupedByIdB));
+
+            when(effectiveAccessibilityService.determineEffectiveAccessibility(
+                    directionalRoadSectionAndTrafficSignGroupedByIdA))
+                    .thenReturn(directionalRoadSectionAndTrafficSignsA);
+            when(directionalRoadSectionAndTrafficSignsA.stream())
+                    .thenReturn(Stream.of(directionalRoadSectionAndTrafficSignA));
+
+            when(effectiveAccessibilityService.determineEffectiveAccessibility(
+                    directionalRoadSectionAndTrafficSignGroupedByIdB))
+                    .thenReturn(directionalRoadSectionAndTrafficSignsB);
+            when(directionalRoadSectionAndTrafficSignsB.stream())
+                    .thenReturn(Stream.of(directionalRoadSectionAndTrafficSignB));
+
+            when(effectivelyAccessibleGeoJsonMapper.map(any(GeoJsonIdSequenceSupplier.class),
+                    eq(List.of(directionalRoadSectionAndTrafficSignA, directionalRoadSectionAndTrafficSignB)),
+                    eq(NWB_VERSION_INT))).thenReturn(geoJson);
+        }
 
         when(fileService.createTmpGeoJsonFile(GENERATE_GEO_JSON_TYPE)).thenReturn(tmpFilePath);
         when(tmpFilePath.toFile()).thenReturn(tmpFile);
@@ -161,7 +235,8 @@ class GenerateGeoJsonServiceTest {
         when(nlsEvent.getSubject()).thenReturn(nlsEventSubject);
         when(nlsEventSubject.getType()).thenReturn(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6);
 
-        generateGeoJsonService.generate(GENERATE_GEO_JSON_TYPE);
+        generateGeoJsonService.generate(GENERATE_GEO_JSON_TYPE, geoJsonOutputFormat,
+                PRODUCE_MESSAGE);
 
         verify(objectMapper).writeValue(tmpFile, geoJson);
 
