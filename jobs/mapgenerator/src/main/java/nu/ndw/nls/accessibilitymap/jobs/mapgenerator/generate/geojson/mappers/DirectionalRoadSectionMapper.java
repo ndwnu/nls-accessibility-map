@@ -3,8 +3,8 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
 import java.util.ArrayList;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
-import org.locationtech.jts.geom.LineString;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalRoadSection;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,52 +24,43 @@ public class DirectionalRoadSectionMapper {
     public List<DirectionalRoadSection> map(RoadSection roadSection) {
         List<DirectionalRoadSection> directionalRoadSections = new ArrayList<>();
 
-        if (isAccessiblePriorRestrictions(roadSection, false)) {
+        if (isAccessiblePriorRestrictions(roadSection, Direction.BACKWARD)) {
             directionalRoadSections.add(DirectionalRoadSection.builder()
+                    .direction(Direction.BACKWARD)
                     .nwbRoadSectionId(roadSection.getRoadSectionId())
-                    .roadSectionId(roadSection.getRoadSectionId())
-                    .geometry(roadSection.getGeometry())
-                    .accessible(roadSection.getForwardAccessible())
+                    .nwbGeometry(roadSection.getGeometry())
+                    .accessible(roadSection.getBackwardAccessible())
                     .build());
         }
 
-        if (isAccessiblePriorRestrictions(roadSection, true)) {
+        if (isAccessiblePriorRestrictions(roadSection, Direction.FORWARD)) {
             directionalRoadSections.add(DirectionalRoadSection.builder()
-                    .nwbRoadSectionId(roadSection.getRoadSectionId())
-                    .roadSectionId(negateIdForReverseRoadSection(roadSection.getRoadSectionId()))
-                    .geometry(reverseGeometryForReversedRoadSection(roadSection.getGeometry()))
-                    .accessible(roadSection.getBackwardAccessible())
-                    .build());
+                            .direction(Direction.FORWARD)
+                            .nwbRoadSectionId(roadSection.getRoadSectionId())
+                            .nwbGeometry(roadSection.getGeometry())
+                            .accessible(roadSection.getForwardAccessible())
+                            .build());
         }
 
         return directionalRoadSections;
     }
 
-    private LineString reverseGeometryForReversedRoadSection(LineString geometry) {
-        return geometry.reverse();
-    }
-
-    /**
-     * To have unique id's for forward and reverse direction response, we negate the id of the reverse direction
-     * @param id the id for a reverse direction road section
-     * @return negated id
-     */
-    private long negateIdForReverseRoadSection(long id) {
-        return -id;
-    }
-
     /**
      *
      * @param roadSection the road section
-     * @param reverse reverse
+     * @param direction direction
      * @return true if it has a non-null value
      */
-    private boolean isAccessiblePriorRestrictions(RoadSection roadSection, boolean reverse) {
-        return getAccessibleForDirection(roadSection, reverse) != null;
+    private boolean isAccessiblePriorRestrictions(RoadSection roadSection, Direction direction) {
+        return getAccessibleForDirection(roadSection, direction) != null;
     }
 
-    private Boolean getAccessibleForDirection(RoadSection roadSection, boolean reverse) {
-        return reverse ? roadSection.getBackwardAccessible() : roadSection.getForwardAccessible();
+    private Boolean getAccessibleForDirection(RoadSection roadSection, Direction direction) {
+        if (direction == Direction.FORWARD) {
+            return roadSection.getForwardAccessible();
+        } else {
+            return roadSection.getBackwardAccessible();
+        }
     }
 
 }

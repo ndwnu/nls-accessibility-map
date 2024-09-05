@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsignapi.mappers.TrafficSignApiDrivingDirection;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import org.springframework.stereotype.Service;
@@ -14,15 +15,14 @@ public class TrafficSignFilterService {
     private final TextSignFilterService textSignFilterService;
 
     public List<TrafficSignGeoJsonDto> findWindowTimeTrafficSignsOrderInDrivingDirection(
-            List<TrafficSignGeoJsonDto> trafficSignGeoJsonDtos, boolean drivingDirectionForward) {
+            List<TrafficSignGeoJsonDto> trafficSignGeoJsonDtos, Direction direction) {
 
         return trafficSignGeoJsonDtos
                 .stream()
-                .filter(trafficSignGeoJsonDto -> isInSameDrivingDirection(  trafficSignGeoJsonDto,
-                                                                            drivingDirectionForward))
+                .filter(trafficSignGeoJsonDto -> isInSameDrivingDirection(  trafficSignGeoJsonDto, direction))
                 .filter(this::hasWindowTimeTextSign)
                 .filter(this::hasNoExcludingOrPreAnnouncementTextSign)
-                .sorted(sortByFraction(drivingDirectionForward))
+                .sorted(sortByFraction(direction))
                 .toList();
     }
 
@@ -35,16 +35,16 @@ public class TrafficSignFilterService {
                 .getTextSigns());
     }
 
-    private boolean isInSameDrivingDirection(TrafficSignGeoJsonDto trafficSignGeoJsonDto, boolean forward) {
+    private boolean isInSameDrivingDirection(TrafficSignGeoJsonDto trafficSignGeoJsonDto, Direction direction) {
         return TrafficSignApiDrivingDirection.from(trafficSignGeoJsonDto.getProperties().getDrivingDirection())
-                .isForward() == forward;
+                .isForward() == direction.isForward();
     }
 
-    private Comparator<TrafficSignGeoJsonDto> sortByFraction(boolean forward) {
+    private Comparator<TrafficSignGeoJsonDto> sortByFraction(Direction direction) {
         Comparator<TrafficSignGeoJsonDto> sortByFractionAsc = Comparator.comparing(
                 (TrafficSignGeoJsonDto trafficSignGeoJsonDto) -> trafficSignGeoJsonDto.getProperties().getFraction());
 
-        if (!forward) {
+        if (direction == Direction.BACKWARD) {
             return sortByFractionAsc.reversed();
         }
 

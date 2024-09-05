@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -75,7 +76,7 @@ class TrafficSignFilterServiceTest {
 
         List<TrafficSignGeoJsonDto> result =
                 trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(List.of(trafficSignA,
-                                trafficSignB, trafficSignC), true);
+                                trafficSignB, trafficSignC), Direction.FORWARD);
 
         assertThat(result).isEqualTo(List.of(trafficSignC));
     }
@@ -86,7 +87,8 @@ class TrafficSignFilterServiceTest {
         when(propertiesA.getDrivingDirection()).thenReturn(DirectionType.BACK);
 
         List<TrafficSignGeoJsonDto> result =
-                trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(List.of(trafficSignA), true);
+                trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(List.of(trafficSignA),
+                        Direction.FORWARD);
 
         assertThat(result).isEqualTo(List.of());
     }
@@ -115,7 +117,7 @@ class TrafficSignFilterServiceTest {
 
         List<TrafficSignGeoJsonDto> result =
                 trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(List.of(trafficSignA,
-                        trafficSignB, trafficSignC), true);
+                        trafficSignB, trafficSignC), Direction.FORWARD);
 
         assertThat(result).isEqualTo(List.of(trafficSignA, trafficSignB, trafficSignC));
     }
@@ -144,7 +146,7 @@ class TrafficSignFilterServiceTest {
 
         List<TrafficSignGeoJsonDto> result =
                 trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(List.of(trafficSignA,
-                        trafficSignB, trafficSignC), false);
+                        trafficSignB, trafficSignC), Direction.BACKWARD);
 
         assertThat(result).isEqualTo(List.of(trafficSignC, trafficSignB, trafficSignA));
     }

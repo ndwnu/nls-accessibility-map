@@ -2,8 +2,8 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -28,6 +28,10 @@ public class GenerateConfiguration {
 
         objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(Include.NON_NULL);
+
+        if (generateProperties.isPrettyPrintJson()) {
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        }
     }
 
     public GeoJsonProperties getConfiguration(CmdGenerateGeoJsonType cmdGenerateGeoJsonType) {

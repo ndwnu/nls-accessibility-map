@@ -11,12 +11,14 @@ import nu.ndw.nls.accessibilitymap.accessibility.model.WindowTimeEncodedValue;
 import nu.ndw.nls.accessibilitymap.accessibility.services.NetworkService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.DirectionalRoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.RoadSectionAndTrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.EnrichedRoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSignGroupedById;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalTrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.mappers.RvvCodeWindowTimeEncodedValueMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsignapi.mappers.DirectionalTrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsignapi.mappers.TrafficSignApiRvvCodeMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsignapi.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
@@ -37,26 +39,27 @@ public class EnrichTrafficSignService {
 
     private final NetworkService networkService;
 
-    private final TrafficSignMapper trafficSignMapper;
+    private final DirectionalTrafficSignMapper directionalTrafficSignMapper;
 
     private final TrafficSignFilterService trafficSignFilterService;
 
-    public List<RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign>> addTrafficSigns(
+    private final EnrichedRoadSectionMapper enrichedRoadSectionMapper;
+
+    public List<DirectionalRoadSectionAndTrafficSignGroupedById> addTrafficSigns(
             CmdGenerateGeoJsonType type, Collection<RoadSection> roadSections) {
 
         WindowTimeEncodedValue windowTimeEncodedValue = rvvCodeWindowTimeEncodedValueMapper.map(type);
         Set<String> trafficSignApiRvvCodes = trafficSignApiRvvCodeMapper.mapRvvCode(type);
 
-        return roadSections.stream()
+        return enrichedRoadSectionMapper.map(roadSections.stream()
                 .map(roadSection -> map(roadSection, windowTimeEncodedValue, trafficSignApiRvvCodes))
                 .flatMap(Collection::stream)
-                .toList();
+                .toList());
     }
 
-    private List<RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign>>
+    private List<DirectionalRoadSectionAndTrafficSign>
                 map(RoadSection roadSection, WindowTimeEncodedValue windowTimeEncodedValue,
                     Set<String> trafficSignRvvCodes) {
-
 
         List<TrafficSignGeoJsonDto> roadSectionTrafficSigns;
 
@@ -79,13 +82,12 @@ public class EnrichTrafficSignService {
         return mapToDirectionalRoadSectionAndInaccessibleWithTrafficSigns(roadSection, roadSectionTrafficSigns);
     }
 
-    private List<RoadSectionAndTrafficSign<DirectionalRoadSection, TrafficSign>>
+    private List<DirectionalRoadSectionAndTrafficSign>
         mapToDirectionalRoadSectionAndInaccessibleWithTrafficSigns(RoadSection roadSection,
                                                                    List<TrafficSignGeoJsonDto> roadSectionTrafficSigns){
         return directionalRoadSectionMapper.map(roadSection)
                 .stream()
-                .map(directionalRoadSection ->
-                        RoadSectionAndTrafficSign.<DirectionalRoadSection, TrafficSign>builder()
+                .map(directionalRoadSection -> DirectionalRoadSectionAndTrafficSign.builder()
                                 .roadSection(directionalRoadSection)
                                 .trafficSign(findFirstWindowTrafficSignForThisDirection(roadSectionTrafficSigns,
                                         directionalRoadSection))
@@ -93,15 +95,16 @@ public class EnrichTrafficSignService {
                 .toList();
     }
 
-    private TrafficSign findFirstWindowTrafficSignForThisDirection(List<TrafficSignGeoJsonDto> trafficSignGeoJsons,
-            DirectionalRoadSection directionalRoadSection) {
+    private DirectionalTrafficSign findFirstWindowTrafficSignForThisDirection(
+            List<TrafficSignGeoJsonDto> trafficSignGeoJsons, DirectionalRoadSection directionalRoadSection) {
 
         // null results are possible, because we don't know for which direction we have a traffic sign
         return trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(
-                        trafficSignGeoJsons, directionalRoadSection.isForwards())
+                        trafficSignGeoJsons, directionalRoadSection.getDirection())
                 .stream()
                 .findFirst()
-                .map(trafficSignMapper::map)
+                .map(trafficSignGeoJsonDto -> directionalTrafficSignMapper.map(trafficSignGeoJsonDto,
+                        directionalRoadSection.getDirection()))
                 .orElse(null);
     }
 
