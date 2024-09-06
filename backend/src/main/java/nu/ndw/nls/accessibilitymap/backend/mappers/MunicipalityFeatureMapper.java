@@ -4,7 +4,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum;
@@ -12,12 +13,15 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatur
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
-import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
+import nu.ndw.nls.geometry.rounding.dto.RoundDoubleConfiguration;
+import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MunicipalityFeatureMapper {
+
+    private final RoundDoubleMapper doubleMapper;
 
     private static final String EMPTY_STRING = "";
 
@@ -44,7 +48,9 @@ public class MunicipalityFeatureMapper {
     }
 
     private PointJson mapStartPoint(Municipality m) {
-        return mapPointJson(m.getStartPoint().getX(), m.getStartPoint().getY());
+        double roundedX = roundCoordinate(m.getStartPoint().getX());
+        double roundedY = roundCoordinate(m.getStartPoint().getY());
+        return mapPointJson(roundedX, roundedY);
     }
 
     private static PointJson mapPointJson(double x, double y) {
@@ -52,8 +58,14 @@ public class MunicipalityFeatureMapper {
     }
 
     private List<List<Double>> mapMunicipalityBounds(MunicipalityBoundingBox boundingBox) {
-        List<Double> from = List.of(boundingBox.longitudeFrom(), boundingBox.latitudeFrom());
-        List<Double> to = List.of(boundingBox.longitudeTo(), boundingBox.latitudeTo());
+        List<Double> from = List.of(roundCoordinate(boundingBox.longitudeFrom()),
+                roundCoordinate(boundingBox.latitudeFrom()));
+        List<Double> to = List.of(roundCoordinate(boundingBox.longitudeTo()),
+                roundCoordinate(boundingBox.latitudeTo()));
         return List.of(from, to);
+    }
+
+    private Double roundCoordinate(double unRounded) {
+        return doubleMapper.round(unRounded, RoundDoubleConfiguration.ROUND_7_HALF_UP);
     }
 }
