@@ -30,7 +30,7 @@ spec:
               - name: COMMAND
                 value: createOrUpdateNetwork
               - name: JAVA_TOOL_OPTIONS
-                value: -XX:MaxRAMPercentage=70 -Dorg.jooq.no-tips=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/
+                value: -XX:MaxRAMPercentage=70 -Dorg.jooq.no-tips=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/ -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
           volumeMounts:
             - mountPath: /application/config
               name: nls-accessibility-map-graphhopper-cron-jobs-secrets
