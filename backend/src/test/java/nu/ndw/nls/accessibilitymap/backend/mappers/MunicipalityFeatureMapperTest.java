@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum;
@@ -14,8 +14,8 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatur
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
-import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
+import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -47,7 +47,7 @@ class MunicipalityFeatureMapperTest {
 
     @BeforeEach
     void setup() {
-        municipalityFeatureMapper = new MunicipalityFeatureMapper();
+        municipalityFeatureMapper = new MunicipalityFeatureMapper(new RoundDoubleMapper());
     }
 
     @Test
