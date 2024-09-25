@@ -117,7 +117,7 @@ class EnrichTrafficSignServiceTest {
                 .thenReturn(true);
 
         // Only a has a traffic sign and requires a lookup
-        when(trafficSignService.getTrafficSigns(rvvCodesC6, Set.of(ROAD_SECTION_A_ID))).thenReturn(trafficSignDataA);
+        when(trafficSignService.getTrafficSigns(rvvCodesC6, Set.of((long) ROAD_SECTION_A_ID))).thenReturn(trafficSignDataA);
 
         when(trafficSignDataA.getTrafficSignsByRoadSectionId((long) ROAD_SECTION_A_ID))
                 .thenReturn(roadSectionATrafficSignsFromApi);

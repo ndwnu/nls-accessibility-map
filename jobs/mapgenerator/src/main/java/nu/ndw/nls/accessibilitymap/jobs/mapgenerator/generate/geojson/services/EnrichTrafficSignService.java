@@ -72,7 +72,7 @@ public class EnrichTrafficSignService {
 
             // At least one window time traffic sign on this road section
             TrafficSignData trafficSignData = trafficSignService.getTrafficSigns(trafficSignRvvCodes,
-                    Set.of(roadSection.getRoadSectionId()));
+                    Set.of((long) roadSection.getRoadSectionId()));
 
             // Get traffic signs
             roadSectionTrafficSigns = trafficSignData.getTrafficSignsByRoadSectionId(

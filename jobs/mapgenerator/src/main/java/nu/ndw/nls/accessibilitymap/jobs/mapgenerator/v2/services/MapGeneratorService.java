@@ -1,8 +1,10 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services;
 
+import com.esotericsoftware.kryo.kryo5.minlog.Log;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
@@ -17,7 +19,9 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.Lo
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.VehicleTypeVehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionWithDirection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.service.TrafficSignFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,51 +40,83 @@ public class MapGeneratorService {
 
     private final AccessibilityConfiguration accessibilityConfiguration;
 
+    private final TrafficSignFactory trafficSignFactory;
 
-    public List<RoadSectionWithDirection> getInaccessibleRoadSections(CmdGenerateGeoJsonType type) {
-        LocalDateTime versionLocalDateTime = LocalDateTime.now();
-        int version = localDateVersionMapper.map(versionLocalDateTime.toLocalDate());
+    public void generate(MapGenerationProperties mapGenerationProperties) {
+
+        if (mapGenerationProperties.trafficSigns().size() != 1) {
+            throw new IllegalArgumentException("Exactly one traffic sign is supported right now.");
+        }
+
+        int version = localDateVersionMapper.map(LocalDateTime.now().toLocalDate());
         int nwbVersion = accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion();
-        log.info("Generating geojson: {} version: {} based on NWB version: {}", type, version, nwbVersion);
+        log.info("Generating geojson: {} version: {} based on NWB version: {}",
+                mapGenerationProperties.trafficSigns().stream()
+                        .map(Enum::name)
+                        .collect(Collectors.joining("-")),
+                version,
+                nwbVersion);
 
-        VehicleProperties vehicleProperties = vehicleTypeVehiclePropertiesMapper.map(type);
+        CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
+                mapGenerationProperties.trafficSigns().stream()
+                        .map(Enum::name)
+                        .findFirst()
+                        .orElseThrow()
+        );
 
+        List<RoadSectionWithDirection> inaccessibleRoadSections = getInaccessibleRoadSections(cmdGenerateGeoJsonType);
+
+        trafficSignFactory.addTrafficSignDataToRoadSections(inaccessibleRoadSections, mapGenerationProperties);
+        // TODO: ndwDataService.addNdwDataToRoadSections(inaccessibleRoadSections);
+
+        log.info("Map generation done.");
+
+        List<RoadSectionWithDirection> roadSectionsWithTrafficSigns = inaccessibleRoadSections.stream()
+                .filter(roadSectionWithDirection ->
+                        !roadSectionWithDirection.getForward().getTrafficSigns().isEmpty()
+                                || !roadSectionWithDirection.getBackward().getTrafficSigns().isEmpty())
+                .toList();
+        log.info("Found {} with road sections with traffic signs. {}", roadSectionsWithTrafficSigns.size(), roadSectionsWithTrafficSigns);
+    }
+
+    private List<RoadSectionWithDirection> getInaccessibleRoadSections(CmdGenerateGeoJsonType cmdGenerateGeoJsonType) {
+
+        VehicleProperties vehicleProperties = vehicleTypeVehiclePropertiesMapper.map(cmdGenerateGeoJsonType);
         SortedMap<Integer, RoadSection> idToRoadSections =
                 accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
                         generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters()
                         , ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
 
         List<RoadSection> inaccessibleRoads = idToRoadSections.values().stream()
-                .filter(MapGeneratorService::isInaccessible)
+                .filter(this::isInaccessible)
                 .toList();
         return inaccessibleRoads
                 .stream()
-                .map(r ->
+                .map(roadSection ->
                         RoadSectionWithDirection
                                 .builder()
-                                .roadSectionId(r.getRoadSectionId())
+                                .roadSectionId(roadSection.getRoadSectionId())
                                 .forward(DirectionalSegment
                                         .builder()
-                                        .accessible(r.getForwardAccessible())
+                                        .accessible(roadSection.getForwardAccessible())
                                         .direction(Direction.FORWARD)
-                                        .lineString(r.getGeometry())
-                                        //.trafficSign(//trafficSignService.getTrafficSign(roadSection,geometry,Direction.Forward).orElse(null))
+                                        .lineString(roadSection.getGeometry())
                                         .build())
                                 .backward(DirectionalSegment
                                         .builder()
-                                        .accessible(r.getBackwardAccessible())
+                                        .accessible(roadSection.getBackwardAccessible())
                                         .direction(Direction.BACKWARD)
-                                        .lineString(r.getGeometry().reverse())
-                                        //.trafficSign(//trafficSignService.getTrafficSign(roadSection,geometry,Direction.BACKWAR).orElse(null))
+                                        .lineString(roadSection.getGeometry().reverse())
                                         .build())
                                 .build()
 
                 ).toList();
     }
 
-    private static boolean isInaccessible(RoadSection r) {
-        return r.getBackwardAccessible() != null && !r.getBackwardAccessible()
-                || r.getBackwardAccessible() != null && !r.getForwardAccessible() || r.getBackwardAccessible() == null;
+    private boolean isInaccessible(RoadSection roadSection) {
+        return roadSection.getBackwardAccessible() != null && !roadSection.getBackwardAccessible()
+                || roadSection.getBackwardAccessible() != null && !roadSection.getForwardAccessible()
+                || roadSection.getBackwardAccessible() == null;
     }
 
 
