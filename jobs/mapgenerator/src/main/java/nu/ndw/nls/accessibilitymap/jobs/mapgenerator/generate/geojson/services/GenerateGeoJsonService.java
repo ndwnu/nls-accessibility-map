@@ -80,18 +80,18 @@ public class GenerateGeoJsonService {
 
         VehicleProperties vehicleProperties = vehicleTypeVehiclePropertiesMapper.map(type);
 
-        SortedMap<Integer, RoadSection> idToRoadSections =
+        SortedMap<Integer, RoadSection> accessibilityRoadSectionsGroupedById =
                 accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
                         generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters()
                 , ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
 
-        logDebugStatistics(idToRoadSections);
+        logDebugStatistics(accessibilityRoadSectionsGroupedById);
 
-        List<DirectionalRoadSectionAndTrafficSignGroupedById> directionalRoadSectionAndTrafficSignGroupedByIds =
-                enrichTrafficSignService.addTrafficSigns(type, idToRoadSections.values());
+        List<DirectionalRoadSectionAndTrafficSignGroupedById> directionalRoadSectionsWithTrafficSignsGroupedByIds =
+                enrichTrafficSignService.addTrafficSigns(type, accessibilityRoadSectionsGroupedById.values());
 
         AccessibilityGeoJsonFeatureCollection geoJson = createGeoJson(outputFormat,
-                directionalRoadSectionAndTrafficSignGroupedByIds, nwbVersion);
+                directionalRoadSectionsWithTrafficSignsGroupedByIds, nwbVersion);
 
         Path tempFile = fileService.createTmpGeoJsonFile(type);
         try {
@@ -107,7 +107,8 @@ public class GenerateGeoJsonService {
         }
     }
 
-    private AccessibilityGeoJsonFeatureCollection createGeoJson(GeoJsonOutputFormat outputFormat,
+    private AccessibilityGeoJsonFeatureCollection createGeoJson(
+            GeoJsonOutputFormat outputFormat,
             List<DirectionalRoadSectionAndTrafficSignGroupedById> directionalRoadSectionAndTrafficSignGroupedByIds,
             int nwbVersion) {
 
@@ -122,19 +123,24 @@ public class GenerateGeoJsonService {
                     directionalRoadSectionAndTrafficSignGroupedByIds, nwbVersion);
         }
 
-        // Determine effective accessiblity
+        // Determine effective accessibility
         List<DirectionalRoadSectionAndTrafficSign> directionalRoadSectionAndTrafficSigns =
                 directionalRoadSectionAndTrafficSignGroupedByIds.stream()
                         .map(effectiveAccessibilityService::determineEffectiveAccessibility)
                         .flatMap(Collection::stream)
                         .toList();
 
-        return effectivelyAccessibleGeoJsonMapper.map(geoJsonIdSequenceSupplier,
-                directionalRoadSectionAndTrafficSigns, nwbVersion);
+        return effectivelyAccessibleGeoJsonMapper.map(
+                geoJsonIdSequenceSupplier,
+                directionalRoadSectionAndTrafficSigns,
+                nwbVersion);
 
     }
 
-    private void sendMessage(CmdGenerateGeoJsonType type, int version, int nwbVersion,
+    private void sendMessage(
+            CmdGenerateGeoJsonType type,
+            int version,
+            int nwbVersion,
             LocalDateTime versionLocalDateTime) {
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(type, version, nwbVersion,
                 versionLocalDateTime.toInstant(ZoneOffset.UTC));
@@ -146,7 +152,7 @@ public class GenerateGeoJsonService {
         messageService.publish(nlsEvent);
     }
 
-    private void logDebugStatistics(SortedMap<Integer, RoadSection> idToRoadSectionSortedMap ) {
+    private void logDebugStatistics(SortedMap<Integer, RoadSection> idToRoadSectionSortedMap) {
         if (!log.isDebugEnabled()) {
             return;
         }

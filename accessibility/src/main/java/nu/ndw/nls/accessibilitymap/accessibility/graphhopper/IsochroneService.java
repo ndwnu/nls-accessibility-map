@@ -56,8 +56,8 @@ public class IsochroneService {
         QueryGraph queryGraph = QueryGraph.create(baseGraph, startSegment);
         IsochroneByTimeDistanceAndWeight accessibilityPathTree = shortestPathTreeFactory
                 .createShortestPathTreeByTimeDistanceAndWeight(isochroneArguments.weighting(), queryGraph,
-                        TraversalMode.EDGE_BASED,
-                        isochroneArguments.searchDistanceInMetres(), IsochroneUnit.METERS, false);
+                        TraversalMode.EDGE_BASED, isochroneArguments.searchDistanceInMetres(), IsochroneUnit.METERS,
+                        false, false);
         List<IsoLabel> isoLabels = new ArrayList<>();
         accessibilityPathTree.search(startSegment.getClosestNode(), isoLabels::add);
 
@@ -65,7 +65,7 @@ public class IsochroneService {
                 .filter(isoLabel -> isoLabel.getEdge() != ROOT_PARENT)
                 .filter(isoLabel ->  filterMunicipality(queryGraph, isoLabel, isochroneArguments))
                 .map(isoLabel -> isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY,
-                        queryGraph, startSegment.getClosestEdge()))
+                        queryGraph, startSegment.getClosestEdge(), false))
                 .toList();
     }
 
