@@ -67,7 +67,7 @@ public class EnrichTrafficSignService {
 
         // In GraphHopper and TrafficSign API the data is encoded on a road section level, so it makes sense to
         // retrieve the data once and then re-use the result where possible for both driving directions
-        if (roadSection.isInaccessibleInAtLeastOneDirection()
+        if (hasInaccessibility(roadSection)
                 && hasWindowTimeTrafficSignInRoutingNetwork(roadSection, windowTimeEncodedValue)) {
 
             // At least one window time traffic sign on this road section
@@ -120,4 +120,8 @@ public class EnrichTrafficSignService {
                 windowTimeEncodedValue);
     }
 
+    private boolean hasInaccessibility(RoadSection roadsection) {
+        return roadsection.getForwardAccessible() == Boolean.FALSE ||
+                roadsection.getBackwardAccessible() == Boolean.FALSE;
+    }
 }
