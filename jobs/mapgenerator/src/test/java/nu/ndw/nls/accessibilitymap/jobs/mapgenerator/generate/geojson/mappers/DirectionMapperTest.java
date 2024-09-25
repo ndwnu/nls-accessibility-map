@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import org.junit.jupiter.api.Test;
 
 class DirectionMapperTest {

@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
 import java.util.ArrayList;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalRoadSection;
 import org.springframework.stereotype.Component;
 

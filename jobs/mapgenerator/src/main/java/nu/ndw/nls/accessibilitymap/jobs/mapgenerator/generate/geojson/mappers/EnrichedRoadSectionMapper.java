@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSignGroupedById;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
