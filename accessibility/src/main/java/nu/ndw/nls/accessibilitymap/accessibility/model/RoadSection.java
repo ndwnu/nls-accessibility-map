@@ -14,4 +14,10 @@ public class RoadSection {
     private final LineString geometry;
     private Boolean forwardAccessible;
     private Boolean backwardAccessible;
+
+    public boolean isInaccessibleInAtLeastOneDirection() {
+
+        return getForwardAccessible() == Boolean.FALSE ||
+                getBackwardAccessible() == Boolean.FALSE;
+    }
 }
