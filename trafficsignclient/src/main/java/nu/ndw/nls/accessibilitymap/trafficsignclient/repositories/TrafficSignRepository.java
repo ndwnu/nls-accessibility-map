@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
         configuration = ClientConfiguration.class)
 public interface TrafficSignRepository {
 
-
     @GetMapping(
             value = "/current-state",
             produces = {  MediaType.APPLICATION_JSON_VALUE },
@@ -24,9 +23,6 @@ public interface TrafficSignRepository {
     TrafficSignGeoJsonFeatureCollectionDto findCurrentState(
             @RequestParam(value = "status", required = false) CurrentStateStatus currentStateStatus,
             @RequestParam(value = "rvvCode", required = false) Set<String> rvvCodes,
-            @RequestParam(value = "roadSectionId", required = false) Set<Integer> roadSectionIds,
+            @RequestParam(value = "roadSectionId", required = false) Set<Long> roadSectionIds,
             @RequestParam(value = "townCode", required = false) Set<String> townCodes);
-
-
-
 }

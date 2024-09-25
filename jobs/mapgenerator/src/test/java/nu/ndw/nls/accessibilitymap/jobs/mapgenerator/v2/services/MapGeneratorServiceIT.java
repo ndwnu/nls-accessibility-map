@@ -1,6 +1,8 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services;
 
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
+import java.util.Set;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,12 +12,16 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("integration-test")
 class MapGeneratorServiceIT {
 
-
     @Autowired
     private MapGeneratorService service;
 
     @Test
-    void getInaccessibleRoadSections_ok() {
-        service.getInaccessibleRoadSections(CmdGenerateGeoJsonType.C6);
+    void generate_ok() {
+
+        MapGenerationProperties mapGenerationProperties = MapGenerationProperties.builder()
+                .trafficSigns(Set.of(TrafficSignType.C6))
+                .build();
+
+        service.generate(mapGenerationProperties);
     }
 }

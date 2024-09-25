@@ -23,7 +23,7 @@ public class TrafficSignService {
 
     private final TrafficSignProperties trafficSignProperties;
 
-    public TrafficSignData getTrafficSigns(Set<String> rvvCodes, Set<Integer> roadSectionIds) {
+    public TrafficSignData getTrafficSigns(Set<String> rvvCodes, Set<Long> roadSectionIds) {
         MaxNwbVersionTracker maxNwbVersionTracker = new MaxNwbVersionTracker();
 
         Map<Long, List<TrafficSignGeoJsonDto>> trafficSigns;
@@ -40,8 +40,9 @@ public class TrafficSignService {
         return new TrafficSignData(trafficSigns, maxNwbVersionTracker.getMaxNwbReferenceDate(), fetchTimestamp);
     }
 
-    private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodesAndRoadSectionIds(Set<String> rvvCodes,
-            Set<Integer> roadSectionIds) {
+    private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodesAndRoadSectionIds(
+            Set<String> rvvCodes,
+            Set<Long> roadSectionIds) {
         return trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, rvvCodes, roadSectionIds,
                 trafficSignProperties.getApi().getTownCodes()).getFeatures().stream();
     }
