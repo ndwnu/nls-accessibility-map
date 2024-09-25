@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.dire
 @Value
 @Builder
 public class DirectionalRoadSectionAndTrafficSign {
+
     DirectionalRoadSection roadSection;
     DirectionalTrafficSign trafficSign;
 }

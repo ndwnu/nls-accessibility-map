@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.dir
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import org.junit.jupiter.api.Test;
 
 class DirectionTest {

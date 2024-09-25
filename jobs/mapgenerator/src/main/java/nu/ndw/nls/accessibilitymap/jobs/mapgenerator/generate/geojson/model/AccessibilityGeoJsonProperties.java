@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model;
 
 import lombok.Builder;
 import lombok.Value;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
 
 @Value
 @Builder
