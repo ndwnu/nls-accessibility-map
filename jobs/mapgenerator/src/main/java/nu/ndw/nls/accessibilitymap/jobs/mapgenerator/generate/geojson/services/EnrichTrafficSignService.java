@@ -46,7 +46,8 @@ public class EnrichTrafficSignService {
     private final EnrichedRoadSectionMapper enrichedRoadSectionMapper;
 
     public List<DirectionalRoadSectionAndTrafficSignGroupedById> addTrafficSigns(
-            CmdGenerateGeoJsonType type, Collection<RoadSection> roadSections) {
+            CmdGenerateGeoJsonType type,
+            Collection<RoadSection> roadSections) {
 
         WindowTimeEncodedValue windowTimeEncodedValue = rvvCodeWindowTimeEncodedValueMapper.map(type);
         Set<String> trafficSignApiRvvCodes = trafficSignApiRvvCodeMapper.mapRvvCode(type);
@@ -57,16 +58,17 @@ public class EnrichTrafficSignService {
                 .toList());
     }
 
-    private List<DirectionalRoadSectionAndTrafficSign>
-                map(RoadSection roadSection, WindowTimeEncodedValue windowTimeEncodedValue,
-                    Set<String> trafficSignRvvCodes) {
+    private List<DirectionalRoadSectionAndTrafficSign> map(
+            RoadSection roadSection,
+            WindowTimeEncodedValue windowTimeEncodedValue,
+            Set<String> trafficSignRvvCodes) {
 
         List<TrafficSignGeoJsonDto> roadSectionTrafficSigns;
 
-        // In GrapHopper and TrafficSign API the data is encoded on a road section level, so it makes sense to
+        // In GraphHopper and TrafficSign API the data is encoded on a road section level, so it makes sense to
         // retrieve the data once and then re-use the result where possible for both driving directions
-        if (    hasInaccessibility(roadSection) &&
-                hasWindowTimeTrafficSignInRoutingNetwork(roadSection, windowTimeEncodedValue)) {
+        if (hasInaccessibility(roadSection)
+                && hasWindowTimeTrafficSignInRoutingNetwork(roadSection, windowTimeEncodedValue)) {
 
             // At least one window time traffic sign on this road section
             TrafficSignData trafficSignData = trafficSignService.getTrafficSigns(trafficSignRvvCodes,
@@ -82,21 +84,23 @@ public class EnrichTrafficSignService {
         return mapToDirectionalRoadSectionAndInaccessibleWithTrafficSigns(roadSection, roadSectionTrafficSigns);
     }
 
-    private List<DirectionalRoadSectionAndTrafficSign>
-        mapToDirectionalRoadSectionAndInaccessibleWithTrafficSigns(RoadSection roadSection,
-                                                                   List<TrafficSignGeoJsonDto> roadSectionTrafficSigns){
+    private List<DirectionalRoadSectionAndTrafficSign> mapToDirectionalRoadSectionAndInaccessibleWithTrafficSigns(
+            RoadSection roadSection,
+            List<TrafficSignGeoJsonDto> roadSectionTrafficSigns) {
+
         return directionalRoadSectionMapper.map(roadSection)
                 .stream()
                 .map(directionalRoadSection -> DirectionalRoadSectionAndTrafficSign.builder()
-                                .roadSection(directionalRoadSection)
-                                .trafficSign(findFirstWindowTrafficSignForThisDirection(roadSectionTrafficSigns,
-                                        directionalRoadSection))
-                                .build())
+                        .roadSection(directionalRoadSection)
+                        .trafficSign(findFirstWindowTrafficSignForThisDirection(roadSectionTrafficSigns,
+                                directionalRoadSection))
+                        .build())
                 .toList();
     }
 
     private DirectionalTrafficSign findFirstWindowTrafficSignForThisDirection(
-            List<TrafficSignGeoJsonDto> trafficSignGeoJsons, DirectionalRoadSection directionalRoadSection) {
+            List<TrafficSignGeoJsonDto> trafficSignGeoJsons,
+            DirectionalRoadSection directionalRoadSection) {
 
         // null results are possible, because we don't know for which direction we have a traffic sign
         return trafficSignFilterService.findWindowTimeTrafficSignsOrderInDrivingDirection(
@@ -108,8 +112,10 @@ public class EnrichTrafficSignService {
                 .orElse(null);
     }
 
-    private boolean hasWindowTimeTrafficSignInRoutingNetwork(RoadSection roadSection,
+    private boolean hasWindowTimeTrafficSignInRoutingNetwork(
+            RoadSection roadSection,
             WindowTimeEncodedValue windowTimeEncodedValue) {
+
         return networkService.hasWindowTimeByRoadSectionId(roadSection.getRoadSectionId(),
                 windowTimeEncodedValue);
     }

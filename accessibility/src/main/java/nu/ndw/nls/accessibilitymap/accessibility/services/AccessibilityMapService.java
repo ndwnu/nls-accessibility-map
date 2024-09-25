@@ -7,11 +7,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.Point;
@@ -44,8 +44,11 @@ public class AccessibilityMapService {
         EFFECTIVE_ACCESSIBILITY
     }
 
-    public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(VehicleProperties vehicleProperties,
-            Point startPoint, double searchDistanceInMeters, ResultType resultType) {
+    public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(
+            VehicleProperties vehicleProperties,
+            Point startPoint,
+            double searchDistanceInMeters,
+            ResultType resultType) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(networkGraphHopper);
 
         List<IsochroneMatch> accessibleRoadsWithRestrictions = accessibleRoadsService
@@ -54,15 +57,20 @@ public class AccessibilityMapService {
         if (resultType == ResultType.EFFECTIVE_ACCESSIBILITY) {
             return determineUnion(accessibleRoadsWithRestrictions, accessibleRoadSectionsService::getRoadSections);
         } else {
-            List<IsochroneMatch> baseAccessibleIsochrone = accessibleRoadsService.getBaseAccessibleRoads(
+            List<IsochroneMatch> baseAccessibleWithoutRestriction = accessibleRoadsService.getBaseAccessibleRoads(
                     accessibilityMap, startPoint, searchDistanceInMeters);
 
-            return determineAddedRestrictionsDifference(baseAccessibleIsochrone, accessibleRoadsWithRestrictions);
+            return determineAddedRestrictionsDifference(baseAccessibleWithoutRestriction,
+                    accessibleRoadsWithRestrictions);
         }
     }
 
-    public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(VehicleProperties vehicleProperties,
-            Point startPoint, double searchDistance, int municipalityId, ResultType resultType) {
+    public SortedMap<Integer, RoadSection> determineAccessibilityByRoadSection(
+            VehicleProperties vehicleProperties,
+            Point startPoint,
+            double searchDistance,
+            int municipalityId,
+            ResultType resultType) {
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(networkGraphHopper);
 
         List<IsochroneMatch> accessibleRoadsWithRestrictions = accessibleRoadsService
@@ -82,36 +90,46 @@ public class AccessibilityMapService {
     }
 
     private SortedMap<Integer, RoadSection> determineAddedRestrictionsDifference(
-            List<IsochroneMatch> withoutRestrictions, List<IsochroneMatch> withRestrictions) {
+            List<IsochroneMatch> withoutRestrictions,
+            List<IsochroneMatch> withRestrictions) {
+
         SortedMap<Integer, RoadSection> roadSections = new TreeMap<>();
-        for (IsochroneMatch m : withoutRestrictions) {
+        for (IsochroneMatch isochroneMatch : withoutRestrictions) {
             // Graphhopper returns the geometry in the driving direction, we want this geometry in its original
             // direction. Flip the geometry if isochrone returns the reversed as first result
-            roadSections.computeIfAbsent(m.getMatchedLinkId(), i -> new RoadSection(i,
-                    m.isReversed() ? m.getGeometry().reverse() : m.getGeometry()));
-            RoadSection r = roadSections.get(m.getMatchedLinkId());
+            roadSections.computeIfAbsent(
+                    isochroneMatch.getMatchedLinkId(),
+                    id -> new RoadSection(
+                            id,
+                            isochroneMatch.isReversed()
+                                    ? isochroneMatch.getGeometry().reverse()
+                                    : isochroneMatch.getGeometry()));
+            RoadSection roadSection = roadSections.get(isochroneMatch.getMatchedLinkId());
+
             // Accessible remains null in case road section is not present in both directions in baseline.
             // This way, non-existing directions of one-way roads (null) can be distinguished from inaccessible
             // directions due to restrictions (false).
-            if (m.isReversed()) {
-                r.setBackwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_NWB_INITIALIZE_AS_INACCESSIBLE);
+            if (isochroneMatch.isReversed()) {
+                roadSection.setBackwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_NWB_INITIALIZE_AS_INACCESSIBLE);
             } else {
-                r.setForwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_NWB_INITIALIZE_AS_INACCESSIBLE);
+                roadSection.setForwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_NWB_INITIALIZE_AS_INACCESSIBLE);
             }
         }
-        for (IsochroneMatch m : withRestrictions) {
-            RoadSection r = roadSections.get(m.getMatchedLinkId());
-            if (m.isReversed()) {
-                r.setBackwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_ISOCHRONE_RESULT);
+
+        for (IsochroneMatch isochroneMatch : withRestrictions) {
+            RoadSection roadSection = roadSections.get(isochroneMatch.getMatchedLinkId());
+            if (isochroneMatch.isReversed()) {
+                roadSection.setBackwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_ISOCHRONE_RESULT);
             } else {
-                r.setForwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_ISOCHRONE_RESULT);
+                roadSection.setForwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_ISOCHRONE_RESULT);
             }
         }
 
         return roadSections;
     }
 
-    private SortedMap<Integer, RoadSection> determineUnion(List<IsochroneMatch> withRestrictions,
+    private SortedMap<Integer, RoadSection> determineUnion(
+            List<IsochroneMatch> withRestrictions,
             Supplier<List<AccessibilityRoadSection>> listSupplier) {
 
         // For every road driving direction that is accessible for a car in the NWB municipality area, we initialize our
@@ -125,16 +143,19 @@ public class AccessibilityMapService {
         //         with the restrictions applied to the isochrone
         SortedMap<Integer, RoadSection> roadSections =
                 listSupplier.get().stream()
-                .map(this::initializeRoadSection)
-                .collect(Collectors.toMap(RoadSection::getRoadSectionId, Function.identity(), (a, b) -> a,
-                        TreeMap::new));
+                        .map(this::initializeRoadSection)
+                        .collect(Collectors.toMap(
+                                RoadSection::getRoadSectionId,
+                                Function.identity(),
+                                (a, b) -> a,
+                                TreeMap::new));
 
-        for (IsochroneMatch m : withRestrictions) {
-            RoadSection r = roadSections.get(m.getMatchedLinkId());
-            if (m.isReversed()) {
-                r.setBackwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_ISOCHRONE_RESULT);
+        for (IsochroneMatch isochroneMatch : withRestrictions) {
+            RoadSection roadSection = roadSections.get(isochroneMatch.getMatchedLinkId());
+            if (isochroneMatch.isReversed()) {
+                roadSection.setBackwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_ISOCHRONE_RESULT);
             } else {
-                r.setForwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_ISOCHRONE_RESULT);
+                roadSection.setForwardAccessible(ACCESSIBLE_ROAD_DIRECTION_IN_ISOCHRONE_RESULT);
             }
         }
 
@@ -142,10 +163,10 @@ public class AccessibilityMapService {
     }
 
     private RoadSection initializeRoadSection(AccessibilityRoadSection accessibilityRoadSection) {
-        return new RoadSection( accessibilityRoadSection.getRoadSectionId(),
-                                accessibilityRoadSection.getGeometry(),
-                                initializeNwbAccessibleRoads(accessibilityRoadSection.isForwardAccessible()),
-                                initializeNwbAccessibleRoads(accessibilityRoadSection.isBackwardAccessible()));
+        return new RoadSection(accessibilityRoadSection.getRoadSectionId(),
+                accessibilityRoadSection.getGeometry(),
+                initializeNwbAccessibleRoads(accessibilityRoadSection.isForwardAccessible()),
+                initializeNwbAccessibleRoads(accessibilityRoadSection.isBackwardAccessible()));
     }
 
     private Boolean initializeNwbAccessibleRoads(boolean accessible) {
