@@ -87,6 +87,7 @@ class IsochroneServiceTest {
                 eq(TraversalMode.EDGE_BASED),
                 anyDouble(),
                 eq(IsochroneUnit.METERS),
+                eq(false),
                 eq(false)))
                 .thenReturn(isochroneAlgorithm);
 
@@ -101,7 +102,7 @@ class IsochroneServiceTest {
             return null;
         }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
         when(isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY, queryGraph,
-                startSegment.getClosestEdge())).thenReturn(IsochroneMatch.builder().build());
+                startSegment.getClosestEdge(), false)).thenReturn(IsochroneMatch.builder().build());
         wrapWithStaticMock(() -> isochroneService.getIsochroneMatchesByMunicipalityId(IsochroneArguments.builder()
                         .weighting(weighting)
                         .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
@@ -110,7 +111,7 @@ class IsochroneServiceTest {
                         .build())
                 );
         verify(shortestPathTreeFactory).createShortestPathTreeByTimeDistanceAndWeight(weighting, queryGraph,
-                TraversalMode.EDGE_BASED, ISOCHRONE_VALUE_METERS, IsochroneUnit.METERS, false);
+                TraversalMode.EDGE_BASED, ISOCHRONE_VALUE_METERS, IsochroneUnit.METERS, false, false);
     }
 
     private void wrapWithStaticMock(Runnable function) {
