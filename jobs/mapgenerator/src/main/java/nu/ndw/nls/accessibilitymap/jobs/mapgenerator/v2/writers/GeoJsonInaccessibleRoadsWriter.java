@@ -3,6 +3,8 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.writers;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -11,14 +13,19 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfigurat
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.OutputFormat;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.AccessibilityGeoJsonFeature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.AccessibilityGeoJsonProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.LineStringGeojson;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.LineStringGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.PointGeometry;
+import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,6 +35,7 @@ public class GeoJsonInaccessibleRoadsWriter implements OutputWriter {
     private final FileService uploadService;
     private final GenerateConfiguration generateConfiguration;
     private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
+    private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Override
     public void writeToFile(List<RoadSection> roadSections,
@@ -38,16 +46,17 @@ public class GeoJsonInaccessibleRoadsWriter implements OutputWriter {
                         .map(Enum::name)
                         .findFirst()
                         .orElseThrow());
+
         Path tempFile = uploadService.createTmpGeoJsonFile(type);
+
         GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier = new GeoJsonIdSequenceSupplier();
-        List<AccessibilityGeoJsonFeature> features = roadSections
-                .stream()
-                .map(r -> mapToFeatures(r, mapGenerationProperties, geoJsonIdSequenceSupplier))
-                .flatMap(List::stream)
-                .toList();
+
         AccessibilityGeoJsonFeatureCollection geoJson = AccessibilityGeoJsonFeatureCollection
                 .builder()
-                .features(features)
+                .features(roadSections.stream()
+                        .map(roadSection -> createFeatures(roadSection, geoJsonIdSequenceSupplier))
+                        .flatMap(List::stream)
+                        .toList())
                 .build();
 
         try {
@@ -60,30 +69,82 @@ public class GeoJsonInaccessibleRoadsWriter implements OutputWriter {
 
     }
 
-    private List<AccessibilityGeoJsonFeature> mapToFeatures(RoadSection roadSection,
-            MapGenerationProperties mapGenerationProperties, GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier) {
+    private List<AccessibilityGeoJsonFeature> createFeatures(
+            RoadSection roadSection,
+            GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier) {
+
         return Stream.of(roadSection.getBackward(),
                         roadSection.getForward())
                 .filter(Objects::nonNull)
-                .map(directionalSegment -> AccessibilityGeoJsonFeature
+                .map(directionalSegment -> {
+                    List<AccessibilityGeoJsonFeature> features = new ArrayList<>();
+
+                    features.add(buildLineString(roadSection, geoJsonIdSequenceSupplier, directionalSegment));
+                    features.addAll(directionalSegment.getTrafficSigns().stream()
+                            .map(trafficSign ->
+                                    buildPoint(geoJsonIdSequenceSupplier, trafficSign, directionalSegment))
+                            .toList());
+
+                    return features;
+                })
+                .flatMap(Collection::stream)
+                .toList();
+    }
+
+    private AccessibilityGeoJsonFeature buildPoint(
+            GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
+            TrafficSign trafficSign,
+            DirectionalSegment directionalSegment) {
+
+        LineString trafficSignLineString = fractionAndDistanceCalculator.getSubLineString(
+                directionalSegment.getLineString(),
+                directionalSegment.getDirection().isForward()
+                        ? trafficSign.fraction()
+                        : 1 - trafficSign.fraction());
+
+        return AccessibilityGeoJsonFeature.builder()
+                .id(geoJsonIdSequenceSupplier.next())
+                .geometry(PointGeometry
                         .builder()
-                        .id(geoJsonIdSequenceSupplier.next())
-                        .geometry(LineStringGeojson
-                                .builder()
-                                .coordinates(geoJsonLineStringCoordinateMapper.map(directionalSegment.getLineString()))
-                                .build())
-                        .properties(AccessibilityGeoJsonProperties
-                                .builder()
-                                .id(roadSection.getRoadSectionId())
-                                .direction(directionalSegment.getDirection())
-                                .trafficSignType(
-                                        directionalSegment.hasTrafficSigns() ? directionalSegment.getTrafficSigns()
-                                                .getFirst().trafficSignType() : null)
-                                .windowTimes(directionalSegment.hasTrafficSigns() ? directionalSegment.getTrafficSigns()
-                                        .getFirst().windowTimes() : null)
-                                .accessible(directionalSegment.isAccessible())
-                                .build())
-                        .build()).toList();
+                        .coordinates(List.of(
+                                trafficSignLineString.getEndPoint().getX(),
+                                trafficSignLineString.getEndPoint().getY()))
+                        .build())
+                .properties(AccessibilityGeoJsonProperties
+                        .builder()
+                        .trafficSignType(trafficSign.trafficSignType())
+                        .windowTimes(trafficSign.windowTimes())
+                        .iconUrl(trafficSign.iconUri())
+                        .build())
+                .build();
+    }
+
+    private AccessibilityGeoJsonFeature buildLineString(
+            RoadSection roadSection,
+            GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
+            DirectionalSegment directionalSegment) {
+
+        return AccessibilityGeoJsonFeature.builder()
+                .id(geoJsonIdSequenceSupplier.next())
+                .geometry(LineStringGeometry
+                        .builder()
+                        .coordinates(geoJsonLineStringCoordinateMapper.map(directionalSegment.getLineString()))
+                        .build())
+                .properties(AccessibilityGeoJsonProperties
+                        .builder()
+                        .id(roadSection.getRoadSectionId())
+                        .direction(directionalSegment.getDirection())
+                        .trafficSignType(
+                                directionalSegment.hasTrafficSigns()
+                                        ? directionalSegment.getTrafficSigns().getFirst().trafficSignType()
+                                        : null)
+                        .windowTimes(
+                                directionalSegment.hasTrafficSigns()
+                                        ? directionalSegment.getTrafficSigns().getFirst().windowTimes()
+                                        : null)
+                        .accessible(directionalSegment.isAccessible())
+                        .build())
+                .build();
     }
 
     @Override

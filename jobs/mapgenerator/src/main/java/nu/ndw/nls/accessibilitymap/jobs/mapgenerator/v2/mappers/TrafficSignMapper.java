@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers;
 
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
@@ -19,6 +20,7 @@ public class TrafficSignMapper {
                 .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
                 .windowTimes(findWindowTimes(trafficSignGeoJsonDto))
                 .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
+                .iconUri(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()))
                 .build();
     }
 
