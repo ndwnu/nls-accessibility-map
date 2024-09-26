@@ -6,6 +6,6 @@ import lombok.Builder;
 public record TrafficSign(
         TrafficSignType trafficSignType,
         String windowTimes,
-        Double nwbFraction) {
+        double fraction) {
 
 }

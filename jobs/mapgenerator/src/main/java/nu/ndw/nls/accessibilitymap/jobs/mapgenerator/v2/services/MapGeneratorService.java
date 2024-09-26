@@ -49,6 +49,7 @@ public class MapGeneratorService {
             throw new IllegalArgumentException("Exactly one traffic sign is supported right now.");
         }
 
+        // TODO: Move this section the command
         mapGenerationProperties.setExportVersion(localDateVersionMapper.map(LocalDateTime.now().toLocalDate()));
         mapGenerationProperties.setNwbVersion(
                 accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion());
@@ -70,14 +71,14 @@ public class MapGeneratorService {
         List<RoadSection> inaccessibleRoadSections = getInaccessibleRoadSections(cmdGenerateGeoJsonType);
 
         trafficSignFactory.addTrafficSignDataToRoadSections(inaccessibleRoadSections, mapGenerationProperties);
-        ndwDataService.addNdwDataToRoadSections(mapGenerationProperties.getNwbVersion(), inaccessibleRoadSections);
+        ndwDataService.addNdwDataToRoadSections(inaccessibleRoadSections, mapGenerationProperties.getNwbVersion());
 
         log.info("Map generation done.");
 
         List<RoadSection> roadSectionsWithTrafficSigns = inaccessibleRoadSections.stream()
-                .filter(roadSectionWithDirection ->
-                        !roadSectionWithDirection.getForward().getTrafficSigns().isEmpty()
-                                || !roadSectionWithDirection.getBackward().getTrafficSigns().isEmpty())
+                .filter(roadSection ->
+                        !roadSection.getForward().getTrafficSigns().isEmpty()
+                                || !roadSection.getBackward().getTrafficSigns().isEmpty())
                 .toList();
         log.info("Found {} with road sections with traffic signs. {}", roadSectionsWithTrafficSigns.size(),
                 roadSectionsWithTrafficSigns);
