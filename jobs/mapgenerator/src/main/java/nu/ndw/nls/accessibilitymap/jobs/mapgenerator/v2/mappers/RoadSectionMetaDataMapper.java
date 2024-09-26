@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mapper;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers;
 
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionMetaData;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;

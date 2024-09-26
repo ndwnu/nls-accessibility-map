@@ -1,11 +1,11 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.service;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services;
 
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mapper.TrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionWithDirection;
