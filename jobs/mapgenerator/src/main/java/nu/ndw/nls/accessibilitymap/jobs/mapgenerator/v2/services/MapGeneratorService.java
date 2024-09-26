@@ -19,8 +19,8 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.NdwDataService;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TrafficSignFactory;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.services.NdwDataService;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TrafficSignDataService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -39,7 +39,7 @@ public class MapGeneratorService {
 
     private final AccessibilityConfiguration accessibilityConfiguration;
 
-    private final TrafficSignFactory trafficSignFactory;
+    private final TrafficSignDataService trafficSignFactory;
 
     private final NdwDataService ndwDataService;
 
