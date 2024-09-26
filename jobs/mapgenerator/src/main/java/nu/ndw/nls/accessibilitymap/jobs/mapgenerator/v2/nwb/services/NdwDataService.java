@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.services;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

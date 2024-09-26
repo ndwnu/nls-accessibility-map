@@ -13,14 +13,15 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class TrafficSignFactory {
+public class TrafficSignDataService {
 
     final TrafficSignMapper trafficSignMapper;
-    final nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService trafficSignDataService;
+    final TrafficSignService trafficSignService;
 
     public void addTrafficSignDataToRoadSections(
             List<RoadSection> roadSections,
@@ -64,7 +65,7 @@ public class TrafficSignFactory {
                 .map(Enum::name)
                 .collect(Collectors.toSet());
 
-        return trafficSignDataService.getTrafficSigns(trafficSignCodes, Set.of(roadSectionIds));
+        return trafficSignService.getTrafficSigns(trafficSignCodes, Set.of(roadSectionIds));
     }
 
     private boolean filterByMapGenerationProperties(
