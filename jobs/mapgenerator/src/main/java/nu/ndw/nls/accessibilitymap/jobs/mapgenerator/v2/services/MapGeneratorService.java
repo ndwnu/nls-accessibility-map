@@ -21,7 +21,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionWithDirection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.NdwDataService;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.service.TrafficSignFactory;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TrafficSignFactory;
 import org.springframework.stereotype.Service;
 
 @Service
