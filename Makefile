@@ -17,6 +17,7 @@ start-infra:
 
 update-data-traffic-signs:
 	curl "https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?rvvCode=C6&townCode=GM0307&status=PLACED" > docker/traffic-sign-api-stub/responses/realdata-C6_GM0307.json
+	curl "https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?rvvCode=C12&townCode=GM0307&status=PLACED" > docker/traffic-sign-api-stub/responses/realdata-C12_GM0307.json
 
 integration-test:                     ## Build and run it tests via maven
 	mvn clean verify -Pregression-test
