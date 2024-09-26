@@ -16,8 +16,10 @@ public final class DirectionalSegment {
     private final Direction direction;
 
     private final LineString lineString;
-
     private List<TrafficSign> trafficSigns;
+    private final boolean accessible;
 
-    private final Boolean accessible;
+    public boolean hasTrafficSigns() {
+        return trafficSigns != null && !trafficSigns.isEmpty();
+    }
 }
