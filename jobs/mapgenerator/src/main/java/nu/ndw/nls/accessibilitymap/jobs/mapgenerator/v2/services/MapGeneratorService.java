@@ -1,6 +1,9 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services;
 
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
@@ -43,7 +46,9 @@ public class MapGeneratorService {
 
     private final NdwDataService ndwDataService;
 
-    public void generate(MapGenerationProperties mapGenerationProperties) {
+    public void generate(@Valid MapGenerationProperties mapGenerationProperties) {
+
+        OffsetDateTime startTime = OffsetDateTime.now();
 
         if (mapGenerationProperties.getTrafficSigns().size() != 1) {
             throw new IllegalArgumentException("Exactly one traffic sign is supported right now.");
@@ -73,7 +78,7 @@ public class MapGeneratorService {
         trafficSignFactory.addTrafficSignDataToRoadSections(inaccessibleRoadSections, mapGenerationProperties);
         ndwDataService.addNdwDataToRoadSections(inaccessibleRoadSections, mapGenerationProperties.getNwbVersion());
 
-        log.info("Map generation done.");
+        log.info("Map generation done. It took: %s ms".formatted(ChronoUnit.MILLIS.between(startTime, OffsetDateTime.now())));
 
         List<RoadSection> roadSectionsWithTrafficSigns = inaccessibleRoadSections.stream()
                 .filter(roadSection ->

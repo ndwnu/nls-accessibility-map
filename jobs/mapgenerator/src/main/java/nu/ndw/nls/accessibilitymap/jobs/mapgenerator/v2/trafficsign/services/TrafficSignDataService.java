@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.util.CollectionUtil;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -21,24 +22,30 @@ import org.springframework.stereotype.Component;
 public class TrafficSignDataService {
 
     final TrafficSignMapper trafficSignMapper;
+
     final TrafficSignService trafficSignService;
 
     public void addTrafficSignDataToRoadSections(
             List<RoadSection> roadSections,
             MapGenerationProperties mapGenerationProperties) {
 
-        roadSections.forEach(roadSection -> {
-            TrafficSignData trafficSignData = getTrafficData(mapGenerationProperties.getTrafficSigns(),
-                    roadSection.getRoadSectionId());
+        CollectionUtil.batch(roadSections, mapGenerationProperties.getTrafficSignsRequestBatchSize())
+                .forEach(roadSectionsBatch -> {
+                    TrafficSignData trafficSignData = getTrafficData(
+                            mapGenerationProperties.getTrafficSigns(),
+                            roadSectionsBatch);
 
-            List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections = trafficSignData.getTrafficSignsByRoadSectionId(
-                    roadSection.getRoadSectionId());
+                    roadSectionsBatch.forEach(roadSection -> {
+                        List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections = trafficSignData.getTrafficSignsByRoadSectionId(
+                                roadSection.getRoadSectionId());
 
-            addTrafficSignToDirectionalSegment(roadSection.getForward(), trafficSignDataInAllDirections,
-                    isInForwardDirection, mapGenerationProperties);
-            addTrafficSignToDirectionalSegment(roadSection.getBackward(), trafficSignDataInAllDirections,
-                    isInBackwardDirection, mapGenerationProperties);
-        });
+                        addTrafficSignToDirectionalSegment(roadSection.getForward(), trafficSignDataInAllDirections,
+                                isInForwardDirection, mapGenerationProperties);
+                        addTrafficSignToDirectionalSegment(roadSection.getBackward(), trafficSignDataInAllDirections,
+                                isInBackwardDirection, mapGenerationProperties);
+                    });
+
+                });
     }
 
     private void addTrafficSignToDirectionalSegment(
@@ -59,13 +66,17 @@ public class TrafficSignDataService {
 
     private TrafficSignData getTrafficData(
             Set<TrafficSignType> trafficSignTypes,
-            Long roadSectionIds) {
+            List<RoadSection> roadSections) {
 
         Set<String> trafficSignCodes = trafficSignTypes.stream()
                 .map(Enum::name)
                 .collect(Collectors.toSet());
 
-        return trafficSignService.getTrafficSigns(trafficSignCodes, Set.of(roadSectionIds));
+        Set<Long> roadSectionIds = roadSections.stream()
+                .map(RoadSection::getRoadSectionId)
+                .collect(Collectors.toSet());
+
+        return trafficSignService.getTrafficSigns(trafficSignCodes, roadSectionIds);
     }
 
     private boolean filterByMapGenerationProperties(
