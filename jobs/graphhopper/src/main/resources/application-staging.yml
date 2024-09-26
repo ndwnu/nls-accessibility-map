@@ -3,6 +3,10 @@ management:
     metrics:
       export:
         enabled: false
+
+  observations:
+    annotations:
+      enabled: false
 nu:
   ndw:
     nls:
@@ -10,11 +14,10 @@ nu:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
       accessibilitymap:
-
         trafficsignclient:
           api:
-            url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
-            town-codes: GM0307
+            url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+            current-state-path: /current-state
         jobs:
           generate:
             root-generation-destination: ../../map-generation-destination
@@ -24,13 +27,10 @@ logging:
     root: INFO
     nu.ndw.nls: DEBUG
 graphhopper:
-  dir: ../../graphhopper
+  dir: graphhopper
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
-    username: nls-maps
-    password: nls-map
-  cloud:
-    openfeign:
-      micrometer:
-        enabled: false
+    url: jdbc:postgresql://localhost:25432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
+    username: nls
+    password: JrUYIqvWaRik4c6IUWeo172J1kawqD
+

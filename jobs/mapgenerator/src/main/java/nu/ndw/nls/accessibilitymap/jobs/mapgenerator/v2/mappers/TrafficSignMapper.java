@@ -28,7 +28,8 @@ public class TrafficSignMapper {
         // @todo: replace getText() with getOpeningHours() when this text field is in use
         return textSignFilterService.findFirstWindowTimeTextSign(trafficSignGeoJsonDto.getProperties().getTextSigns())
                 .map(TextSignDto::getText)
-                .orElseThrow(() -> new IllegalStateException("Failed to find window time text sign for traffic sign by "
-                        + "id: " + trafficSignGeoJsonDto.getId()));
+                .orElse(null);
+//                .orElseThrow(() -> new IllegalStateException("Failed to find window time text sign for traffic sign by "
+//                        + "id: " + trafficSignGeoJsonDto.getId()));
     }
 }
