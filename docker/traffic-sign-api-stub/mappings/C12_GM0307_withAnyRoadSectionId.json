@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/api/rest/static-road-data/traffic-signs/v4/current-state",
+    "queryParameters": {
+      "status": {
+        "equalTo": "PLACED"
+      },
+      "townCode": {
+        "equalTo": "GM0307"
+      },
+      "rvvCode": {
+        "equalTo": "C12"
+      },
+      "roadSectionId": {
+        "contains": ""
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/geo+json; charset=utf-8;"
+    },
+    "transformers": ["response-template"],
+    "bodyFileName": "responses/realdata-C12_GM0307.json"
+  }
+}
