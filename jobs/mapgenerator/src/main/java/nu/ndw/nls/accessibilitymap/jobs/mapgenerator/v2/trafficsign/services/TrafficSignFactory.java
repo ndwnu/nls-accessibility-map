@@ -41,7 +41,7 @@ public class TrafficSignFactory {
     }
 
     private void addTrafficSignToDirectionalSegment(
-            DirectionalSegment roadSection,
+            DirectionalSegment directionalSegment,
             List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections,
             Predicate<TrafficSignGeoJsonDto> isInForwardDirection, MapGenerationProperties mapGenerationProperties) {
 
@@ -51,7 +51,7 @@ public class TrafficSignFactory {
                         mapGenerationProperties))
                 .toList();
 
-        roadSection.setTrafficSigns(forwardTrafficSigns.stream()
+        directionalSegment.setTrafficSigns(forwardTrafficSigns.stream()
                 .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
                 .toList());
     }

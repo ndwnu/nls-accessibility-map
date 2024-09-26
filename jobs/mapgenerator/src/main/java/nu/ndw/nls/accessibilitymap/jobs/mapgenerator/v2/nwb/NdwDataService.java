@@ -17,23 +17,23 @@ public class NdwDataService {
 
     private final RoadSectionMetaDataMapper roadSectionMetaDataMapper;
 
-    public void addNdwDataToRoadSections(int nwbVersion, List<RoadSection> roadSectionWithDirections) {
+    public void addNdwDataToRoadSections(List<RoadSection> roadSections, int nwbVersion) {
 
-        roadSectionWithDirections.forEach(roadSectionWithDirection ->
-                addNdwDataToRoadSectionWithDirection(nwbVersion, roadSectionWithDirection));
+        roadSections.forEach(roadSection ->
+                addNdwDataToRoadSection(roadSection, nwbVersion));
     }
 
-    private void addNdwDataToRoadSectionWithDirection(
-            int nwbVersion,
-            RoadSection roadSectionWithDirection) {
+    private void addNdwDataToRoadSection(
+            RoadSection roadSection,
+            int nwbVersion) {
 
         NwbRoadSectionDto nwbRoadSection = nwbRoadSectionCrudService
-                .findById(new Id(nwbVersion, roadSectionWithDirection.getRoadSectionId()))
+                .findById(new Id(nwbVersion, roadSection.getRoadSectionId()))
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Failed to find road section with id '%s' and by version '%s'".formatted(
-                                roadSectionWithDirection.getRoadSectionId(),
+                                roadSection.getRoadSectionId(),
                                 nwbVersion)));
 
-        roadSectionWithDirection.setMetaData(roadSectionMetaDataMapper.map(nwbRoadSection));
+        roadSection.setMetaData(roadSectionMetaDataMapper.map(nwbRoadSection));
     }
 }

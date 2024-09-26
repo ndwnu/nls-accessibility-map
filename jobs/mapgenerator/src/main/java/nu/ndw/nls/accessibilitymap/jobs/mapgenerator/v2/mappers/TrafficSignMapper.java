@@ -12,6 +12,7 @@ public class TrafficSignMapper {
 
         return TrafficSign.builder()
                 .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
+                .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
                 .build();
     }
 }
