@@ -1,18 +1,21 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers;
 
 import java.net.URI;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TextSignFilterService;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TrafficSignMapper {
-   private final TextSignFilterService textSignFilterService;
+
+    private final TextSignFilterService textSignFilterService;
 
     public TrafficSign mapFromTrafficSignGeoJsonDto(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
 
@@ -20,8 +23,16 @@ public class TrafficSignMapper {
                 .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
                 .windowTimes(findWindowTimes(trafficSignGeoJsonDto))
                 .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
-                .iconUri(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()))
+                .iconUri(createIconUri(trafficSignGeoJsonDto.getProperties()))
                 .build();
+    }
+
+    private URI createIconUri(TrafficSignPropertiesDto trafficSignPropertiesDto) {
+        if (Objects.isNull(trafficSignPropertiesDto.getImageUrl())) {
+            return null;
+        }
+        
+        return URI.create(trafficSignPropertiesDto.getImageUrl());
     }
 
     private String findWindowTimes(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
