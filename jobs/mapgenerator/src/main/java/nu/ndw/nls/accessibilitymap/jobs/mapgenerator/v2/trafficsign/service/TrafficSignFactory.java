@@ -9,6 +9,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionWithDirection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.mapper.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -32,19 +33,24 @@ public class TrafficSignFactory {
             List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections = trafficSignData.getTrafficSignsByRoadSectionId(
                     roadSection.getRoadSectionId());
 
-            addTrafficSign(roadSection.getForward(), trafficSignDataInAllDirections, isInForwardDirection);
-            addTrafficSign(roadSection.getBackward(), trafficSignDataInAllDirections, isInBackwardDirection);
+            addTrafficSignToDirectionalSegment(roadSection.getForward(), trafficSignDataInAllDirections,
+                    isInForwardDirection, mapGenerationProperties);
+            addTrafficSignToDirectionalSegment(roadSection.getBackward(), trafficSignDataInAllDirections,
+                    isInBackwardDirection, mapGenerationProperties);
         });
     }
 
-    private void addTrafficSign(
+    private void addTrafficSignToDirectionalSegment(
             DirectionalSegment roadSection,
             List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections,
-            Predicate<TrafficSignGeoJsonDto> isInForwardDirection) {
+            Predicate<TrafficSignGeoJsonDto> isInForwardDirection, MapGenerationProperties mapGenerationProperties) {
 
         List<TrafficSignGeoJsonDto> forwardTrafficSigns = trafficSignDataInAllDirections.stream()
                 .filter(isInForwardDirection)
+                .filter(trafficSignGeoJsonDto -> filterByMapGenerationProperties(trafficSignGeoJsonDto,
+                        mapGenerationProperties))
                 .toList();
+
         roadSection.setTrafficSigns(forwardTrafficSigns.stream()
                 .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
                 .toList());
@@ -59,6 +65,14 @@ public class TrafficSignFactory {
                 .collect(Collectors.toSet());
 
         return trafficSignDataService.getTrafficSigns(trafficSignCodes, Set.of(roadSectionIds));
+    }
+
+    private boolean filterByMapGenerationProperties(
+            TrafficSignGeoJsonDto trafficSignGeoJsonDto,
+            MapGenerationProperties mapGenerationProperties) {
+
+        // TODO: take other options from mapGenerationProperties into account like timed / non timed windows.
+        return true;
     }
 
     private final Predicate<TrafficSignGeoJsonDto> isInForwardDirection = trafficSignGeoJsonDto ->

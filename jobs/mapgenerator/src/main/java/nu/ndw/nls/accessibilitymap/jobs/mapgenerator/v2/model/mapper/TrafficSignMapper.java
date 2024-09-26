@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.service;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.mapper;
 
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
