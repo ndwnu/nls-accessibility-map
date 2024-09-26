@@ -97,8 +97,7 @@ public class MapGeneratorService {
         return inaccessibleRoads
                 .stream()
                 .map(roadSection ->
-                        RoadSection
-                                .builder()
+                        RoadSection.builder()
                                 .roadSectionId(roadSection.getRoadSectionId())
                                 .forward(DirectionalSegment
                                         .builder()
@@ -113,7 +112,6 @@ public class MapGeneratorService {
                                         .lineString(roadSection.getGeometry().reverse())
                                         .build())
                                 .build()
-
                 ).toList();
     }
 
