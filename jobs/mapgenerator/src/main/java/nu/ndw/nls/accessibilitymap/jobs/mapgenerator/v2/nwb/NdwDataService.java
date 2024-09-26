@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers.RoadSectionMetaDataMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionWithDirection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto.Id;
 import nu.ndw.nls.db.nwb.jooq.services.NwbRoadSectionCrudService;
@@ -17,7 +17,7 @@ public class NdwDataService {
 
     private final RoadSectionMetaDataMapper roadSectionMetaDataMapper;
 
-    public void addNdwDataToRoadSections(int nwbVersion, List<RoadSectionWithDirection> roadSectionWithDirections) {
+    public void addNdwDataToRoadSections(int nwbVersion, List<RoadSection> roadSectionWithDirections) {
 
         roadSectionWithDirections.forEach(roadSectionWithDirection ->
                 addNdwDataToRoadSectionWithDirection(nwbVersion, roadSectionWithDirection));
@@ -25,7 +25,7 @@ public class NdwDataService {
 
     private void addNdwDataToRoadSectionWithDirection(
             int nwbVersion,
-            RoadSectionWithDirection roadSectionWithDirection) {
+            RoadSection roadSectionWithDirection) {
 
         NwbRoadSectionDto nwbRoadSection = nwbRoadSectionCrudService
                 .findById(new Id(nwbVersion, roadSectionWithDirection.getRoadSectionId()))

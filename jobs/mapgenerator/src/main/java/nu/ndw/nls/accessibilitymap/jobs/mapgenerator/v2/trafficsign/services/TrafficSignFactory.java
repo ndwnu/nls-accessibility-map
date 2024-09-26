@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionWithDirection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
@@ -23,7 +23,7 @@ public class TrafficSignFactory {
     final nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService trafficSignDataService;
 
     public void addTrafficSignDataToRoadSections(
-            List<RoadSectionWithDirection> roadSections,
+            List<RoadSection> roadSections,
             MapGenerationProperties mapGenerationProperties) {
 
         roadSections.forEach(roadSection -> {

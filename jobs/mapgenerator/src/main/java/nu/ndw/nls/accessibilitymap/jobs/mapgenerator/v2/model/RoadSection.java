@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Builder
-public final class RoadSectionWithDirection {
+public final class RoadSection {
 
     private final long roadSectionId;
 
