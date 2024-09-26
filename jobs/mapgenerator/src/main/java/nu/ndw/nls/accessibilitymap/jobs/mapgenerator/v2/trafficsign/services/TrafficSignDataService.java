@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -39,15 +40,17 @@ public class TrafficSignDataService {
                         List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections = trafficSignData.getTrafficSignsByRoadSectionId(
                                 roadSection.getRoadSectionId());
 
-                        addTrafficSignToDirectionalSegment(roadSection.getForward(), trafficSignDataInAllDirections,
+                        addTrafficSignToDirectionalSegment(
+                                roadSection.getForward(),
+                                trafficSignDataInAllDirections,
                                 isInForwardDirection, mapGenerationProperties);
-                        if (!roadSection.isOneWay()) {
-                            addTrafficSignToDirectionalSegment(roadSection.getBackward(),
-                                    trafficSignDataInAllDirections,
-                                    isInBackwardDirection, mapGenerationProperties);
-                        }
-                    });
 
+                        addTrafficSignToDirectionalSegment(
+                                roadSection.getBackward(),
+                                trafficSignDataInAllDirections,
+                                isInBackwardDirection,
+                                mapGenerationProperties);
+                    });
                 });
     }
 
@@ -56,6 +59,10 @@ public class TrafficSignDataService {
             List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections,
             Predicate<TrafficSignGeoJsonDto> isInForwardDirection, MapGenerationProperties mapGenerationProperties) {
 
+        if (Objects.isNull(directionalSegment)) {
+            return;
+        }
+
         List<TrafficSignGeoJsonDto> forwardTrafficSigns = trafficSignDataInAllDirections.stream()
                 .filter(isInForwardDirection)
                 .filter(trafficSignGeoJsonDto -> filterByMapGenerationProperties(trafficSignGeoJsonDto,
@@ -63,8 +70,8 @@ public class TrafficSignDataService {
                 .toList();
 
         directionalSegment.setTrafficSigns(forwardTrafficSigns.stream()
-                        .filter(trafficSignGeoJsonDto -> mapGenerationProperties.getTrafficSignsAsString()
-                                .contains(trafficSignGeoJsonDto.getProperties().getRvvCode()))
+                .filter(trafficSignGeoJsonDto -> mapGenerationProperties.getTrafficSignsAsString()
+                        .contains(trafficSignGeoJsonDto.getProperties().getRvvCode()))
                 .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
                 .toList());
     }
