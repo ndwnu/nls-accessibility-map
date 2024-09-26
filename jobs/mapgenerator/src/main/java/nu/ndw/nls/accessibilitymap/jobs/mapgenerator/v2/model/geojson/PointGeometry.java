@@ -1,24 +1,19 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 
-
-
 @Value
 @Builder
-public class AccessibilityGeoJsonFeature {
+public class PointGeometry implements Geometry {
 
-    private static final String TYPE = "Feature";
+    private static final String TYPE = "Point";
 
-    long id;
+    List<Double> coordinates;
 
-    Geometry geometry;
-
-    AccessibilityGeoJsonProperties properties;
-
+    @Override
     public String getType() {
         return TYPE;
     }
-
 }

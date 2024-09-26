@@ -6,12 +6,13 @@ import lombok.Value;
 
 @Value
 @Builder
-public class LineStringGeojson {
+public class LineStringGeometry implements Geometry {
 
     private static final String TYPE = "LineString";
 
     List<List<Double>> coordinates;
 
+    @Override
     public String getType() {
         return TYPE;
     }
