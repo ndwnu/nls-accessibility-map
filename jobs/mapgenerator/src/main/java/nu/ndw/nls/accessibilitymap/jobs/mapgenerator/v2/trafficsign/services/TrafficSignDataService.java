@@ -41,8 +41,11 @@ public class TrafficSignDataService {
 
                         addTrafficSignToDirectionalSegment(roadSection.getForward(), trafficSignDataInAllDirections,
                                 isInForwardDirection, mapGenerationProperties);
-                        addTrafficSignToDirectionalSegment(roadSection.getBackward(), trafficSignDataInAllDirections,
-                                isInBackwardDirection, mapGenerationProperties);
+                        if (!roadSection.isOneWay()) {
+                            addTrafficSignToDirectionalSegment(roadSection.getBackward(),
+                                    trafficSignDataInAllDirections,
+                                    isInBackwardDirection, mapGenerationProperties);
+                        }
                     });
 
                 });
@@ -60,6 +63,8 @@ public class TrafficSignDataService {
                 .toList();
 
         directionalSegment.setTrafficSigns(forwardTrafficSigns.stream()
+                        .filter(trafficSignGeoJsonDto -> mapGenerationProperties.getTrafficSignsAsString()
+                                .contains(trafficSignGeoJsonDto.getProperties().getRvvCode()))
                 .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
                 .toList());
     }

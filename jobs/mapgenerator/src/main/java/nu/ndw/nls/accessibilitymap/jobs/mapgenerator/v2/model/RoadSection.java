@@ -19,4 +19,8 @@ public final class RoadSection {
 
     private final DirectionalSegment backward;
 
+    public boolean isOneWay() {
+        return backward == null;
+    }
+
 }

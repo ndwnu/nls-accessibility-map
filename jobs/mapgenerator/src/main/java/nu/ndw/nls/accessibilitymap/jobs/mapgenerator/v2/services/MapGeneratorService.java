@@ -24,6 +24,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationPrope
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.services.NdwDataService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TrafficSignDataService;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.writers.OutputWriter;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,6 +46,7 @@ public class MapGeneratorService {
     private final TrafficSignDataService trafficSignFactory;
 
     private final NdwDataService ndwDataService;
+    private final List<OutputWriter> outputWriters;
 
     public void generate(@Valid MapGenerationProperties mapGenerationProperties) {
 
@@ -78,15 +80,21 @@ public class MapGeneratorService {
         trafficSignFactory.addTrafficSignDataToRoadSections(inaccessibleRoadSections, mapGenerationProperties);
         ndwDataService.addNdwDataToRoadSections(inaccessibleRoadSections, mapGenerationProperties.getNwbVersion());
 
-        log.info("Map generation done. It took: %s ms".formatted(ChronoUnit.MILLIS.between(startTime, OffsetDateTime.now())));
+        log.info("Map generation done. It took: %s ms".formatted(
+                ChronoUnit.MILLIS.between(startTime, OffsetDateTime.now())));
 
         List<RoadSection> roadSectionsWithTrafficSigns = inaccessibleRoadSections.stream()
                 .filter(roadSection ->
                         !roadSection.getForward().getTrafficSigns().isEmpty()
-                                || !roadSection.getBackward().getTrafficSigns().isEmpty())
+                                || (!roadSection.isOneWay() && !roadSection.getBackward().getTrafficSigns().isEmpty()))
                 .toList();
         log.info("Found {} with road sections with traffic signs. {}", roadSectionsWithTrafficSigns.size(),
                 roadSectionsWithTrafficSigns);
+
+        outputWriters.forEach(
+                outputWriter -> outputWriter.writeToFile(inaccessibleRoadSections, mapGenerationProperties));
+
+
     }
 
     private List<RoadSection> getInaccessibleRoadSections(CmdGenerateGeoJsonType cmdGenerateGeoJsonType) {
@@ -97,7 +105,9 @@ public class MapGeneratorService {
                         generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters()
                         , ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
 
-        var inaccessibleRoads = idToRoadSections.values().stream()
+        var inaccessibleRoads = idToRoadSections
+                .values()
+                .stream()
                 .filter(this::isInaccessible)
                 .toList();
         return inaccessibleRoads
@@ -111,20 +121,20 @@ public class MapGeneratorService {
                                         .direction(Direction.FORWARD)
                                         .lineString(roadSection.getGeometry())
                                         .build())
-                                .backward(DirectionalSegment
+                                // oneway road sections have no backward segment
+                                .backward(roadSection.getBackwardAccessible() != null ? DirectionalSegment
                                         .builder()
                                         .accessible(roadSection.getBackwardAccessible())
                                         .direction(Direction.BACKWARD)
                                         .lineString(roadSection.getGeometry().reverse())
-                                        .build())
+                                        .build() : null)
                                 .build()
                 ).toList();
     }
 
     private boolean isInaccessible(nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection roadSection) {
-        return roadSection.getBackwardAccessible() != null && !roadSection.getBackwardAccessible()
-                || roadSection.getBackwardAccessible() != null && !roadSection.getForwardAccessible()
-                || roadSection.getBackwardAccessible() == null;
+        return (roadSection.getBackwardAccessible() != null && !roadSection.getBackwardAccessible())
+                || !roadSection.getForwardAccessible();
     }
 
 

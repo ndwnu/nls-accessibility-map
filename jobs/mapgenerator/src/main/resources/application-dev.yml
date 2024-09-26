@@ -17,14 +17,14 @@ nu:
             town-codes: GM0307
         jobs:
           generate:
-            root-generation-destination: ./map-generation-destination
+            root-generation-destination: ../../map-generation-destination
             prettyPrintJson: true
 logging:
   level:
     root: INFO
     nu.ndw.nls: DEBUG
 graphhopper:
-  dir: graphhopper
+  dir: ../../graphhopper
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified

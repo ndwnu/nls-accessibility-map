@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-@ActiveProfiles("integration-test")
+@ActiveProfiles("dev")
 class MapGeneratorServiceIT {
 
     @Autowired
@@ -19,7 +19,7 @@ class MapGeneratorServiceIT {
     void generate_ok() {
 
         MapGenerationProperties mapGenerationProperties = MapGenerationProperties.builder()
-                .trafficSigns(Set.of(TrafficSignType.C6))
+                .trafficSigns(Set.of(TrafficSignType.C12))
                 .build();
 
         service.generate(mapGenerationProperties);
