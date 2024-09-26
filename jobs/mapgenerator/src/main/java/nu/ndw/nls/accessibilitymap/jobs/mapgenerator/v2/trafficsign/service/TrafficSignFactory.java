@@ -27,7 +27,7 @@ public class TrafficSignFactory {
             MapGenerationProperties mapGenerationProperties) {
 
         roadSections.forEach(roadSection -> {
-            TrafficSignData trafficSignData = getTrafficData(mapGenerationProperties.trafficSigns(),
+            TrafficSignData trafficSignData = getTrafficData(mapGenerationProperties.getTrafficSigns(),
                     roadSection.getRoadSectionId());
 
             List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections = trafficSignData.getTrafficSignsByRoadSectionId(

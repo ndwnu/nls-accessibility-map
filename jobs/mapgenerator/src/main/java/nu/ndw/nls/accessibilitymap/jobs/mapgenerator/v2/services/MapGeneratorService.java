@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services;
 
-import com.esotericsoftware.kryo.kryo5.minlog.Log;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.SortedMap;
@@ -21,6 +20,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionWithDirection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.NdwDataService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.service.TrafficSignFactory;
 import org.springframework.stereotype.Service;
 
@@ -42,23 +42,27 @@ public class MapGeneratorService {
 
     private final TrafficSignFactory trafficSignFactory;
 
+    private final NdwDataService ndwDataService;
+
     public void generate(MapGenerationProperties mapGenerationProperties) {
 
-        if (mapGenerationProperties.trafficSigns().size() != 1) {
+        if (mapGenerationProperties.getTrafficSigns().size() != 1) {
             throw new IllegalArgumentException("Exactly one traffic sign is supported right now.");
         }
 
-        int version = localDateVersionMapper.map(LocalDateTime.now().toLocalDate());
-        int nwbVersion = accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion();
+        mapGenerationProperties.setExportVersion(localDateVersionMapper.map(LocalDateTime.now().toLocalDate()));
+        mapGenerationProperties.setNwbVersion(
+                accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion());
+
         log.info("Generating geojson: {} version: {} based on NWB version: {}",
-                mapGenerationProperties.trafficSigns().stream()
+                mapGenerationProperties.getTrafficSigns().stream()
                         .map(Enum::name)
                         .collect(Collectors.joining("-")),
-                version,
-                nwbVersion);
+                mapGenerationProperties.getExportVersion(),
+                mapGenerationProperties.getNwbVersion());
 
         CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
-                mapGenerationProperties.trafficSigns().stream()
+                mapGenerationProperties.getTrafficSigns().stream()
                         .map(Enum::name)
                         .findFirst()
                         .orElseThrow()
@@ -67,7 +71,7 @@ public class MapGeneratorService {
         List<RoadSectionWithDirection> inaccessibleRoadSections = getInaccessibleRoadSections(cmdGenerateGeoJsonType);
 
         trafficSignFactory.addTrafficSignDataToRoadSections(inaccessibleRoadSections, mapGenerationProperties);
-        // TODO: ndwDataService.addNdwDataToRoadSections(inaccessibleRoadSections);
+        ndwDataService.addNdwDataToRoadSections(mapGenerationProperties.getNwbVersion(), inaccessibleRoadSections);
 
         log.info("Map generation done.");
 
@@ -76,7 +80,8 @@ public class MapGeneratorService {
                         !roadSectionWithDirection.getForward().getTrafficSigns().isEmpty()
                                 || !roadSectionWithDirection.getBackward().getTrafficSigns().isEmpty())
                 .toList();
-        log.info("Found {} with road sections with traffic signs. {}", roadSectionsWithTrafficSigns.size(), roadSectionsWithTrafficSigns);
+        log.info("Found {} with road sections with traffic signs. {}", roadSectionsWithTrafficSigns.size(),
+                roadSectionsWithTrafficSigns);
     }
 
     private List<RoadSectionWithDirection> getInaccessibleRoadSections(CmdGenerateGeoJsonType cmdGenerateGeoJsonType) {
