@@ -115,12 +115,12 @@ public class MapGeneratorService {
                 .map(roadSection ->
                         RoadSection.builder()
                                 .roadSectionId(roadSection.getRoadSectionId())
-                                .forward(DirectionalSegment
+                                .forward(roadSection.getForwardAccessible() != null ? DirectionalSegment
                                         .builder()
                                         .accessible(roadSection.getForwardAccessible())
                                         .direction(Direction.FORWARD)
                                         .lineString(roadSection.getGeometry())
-                                        .build())
+                                        .build() : null)
                                 // oneway road sections have no backward segment
                                 .backward(roadSection.getBackwardAccessible() != null ? DirectionalSegment
                                         .builder()
@@ -134,7 +134,7 @@ public class MapGeneratorService {
 
     private boolean isInaccessible(nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection roadSection) {
         return (roadSection.getBackwardAccessible() != null && !roadSection.getBackwardAccessible())
-                || !roadSection.getForwardAccessible();
+                || (roadSection.getForwardAccessible() != null && !roadSection.getForwardAccessible());
     }
 
 
