@@ -6,7 +6,6 @@ import lombok.Builder;
 @Builder
 public record RoadSectionMetaData(
 
-        int versionId,
         LocalDate validFrom,
         String name,
         String nameSource,

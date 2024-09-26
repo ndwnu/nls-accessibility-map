@@ -2,8 +2,8 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mapper.RoadSectionMetaDataMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionWithDirection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.mapper.RoadSectionMetaDataMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto.Id;
 import nu.ndw.nls.db.nwb.jooq.services.NwbRoadSectionCrudService;
