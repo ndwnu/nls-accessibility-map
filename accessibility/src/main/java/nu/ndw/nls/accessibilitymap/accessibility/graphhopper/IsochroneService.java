@@ -4,11 +4,8 @@ import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MUNICIP
 
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
-import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.util.TraversalMode;
-import com.graphhopper.storage.BaseGraph;
-import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.ArrayList;
@@ -27,10 +24,8 @@ public class IsochroneService {
 
     private static final int ROOT_PARENT = -1;
     private final EncodingManager encodingManager;
-    private final BaseGraph baseGraph;
     private final IsochroneMatchMapper isochroneMatchMapper;
     private final ShortestPathTreeFactory shortestPathTreeFactory;
-    private final LocationIndexTree locationIndexTree;
 
     /**
      * Creates Isochrone for an entire municipality based on start point. The start point has to be within the
@@ -38,22 +33,16 @@ public class IsochroneService {
      * has no restriction and consequently calling this method with a weighting that has restrictions based on vehicles
      * dimensions etc.
      *
-     * @param isochroneArguments  The isochrone arguments
+     * @param isochroneArguments The isochrone arguments
      * @return The list of isochrone matches
      * @see <a href="https://github.com/graphhopper/graphhopper/blob/master/docs/core/custom-models.md">Custom
      * models</a>
      */
-    public List<IsochroneMatch> getIsochroneMatchesByMunicipalityId(IsochroneArguments isochroneArguments) {
-        double latitude = isochroneArguments.startPoint().getY();
-        double longitude = isochroneArguments.startPoint().getX();
+    public List<IsochroneMatch> getIsochroneMatchesByMunicipalityId(
+            IsochroneArguments isochroneArguments,
+            QueryGraph queryGraph,
+            Snap startSegment) {
 
-        Snap startSegment = locationIndexTree.findClosest(latitude, longitude, EdgeFilter.ALL_EDGES);
-        /*
-            Lookup will create virtual edges based on the snapped point, thereby cutting the segment in 2 line strings.
-            It also sets the closestNode of the matchedQueryResult to the virtual node id. In this way it creates a
-            start point for isochrone calculation based on the snapped point coordinates.
-        */
-        QueryGraph queryGraph = QueryGraph.create(baseGraph, startSegment);
         IsochroneByTimeDistanceAndWeight accessibilityPathTree = shortestPathTreeFactory
                 .createShortestPathTreeByTimeDistanceAndWeight(isochroneArguments.weighting(), queryGraph,
                         TraversalMode.EDGE_BASED, isochroneArguments.searchDistanceInMetres(), IsochroneUnit.METERS,
@@ -63,13 +52,17 @@ public class IsochroneService {
 
         return isoLabels.stream()
                 .filter(isoLabel -> isoLabel.getEdge() != ROOT_PARENT)
-                .filter(isoLabel ->  filterMunicipality(queryGraph, isoLabel, isochroneArguments))
+                .filter(isoLabel -> filterMunicipality(queryGraph, isoLabel, isochroneArguments))
                 .map(isoLabel -> isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY,
                         queryGraph, startSegment.getClosestEdge(), false))
                 .toList();
     }
 
-    private boolean filterMunicipality(QueryGraph queryGraph, IsoLabel isoLabel, IsochroneArguments isochroneArguments){
+    private boolean filterMunicipality(
+            QueryGraph queryGraph,
+            IsoLabel isoLabel,
+            IsochroneArguments isochroneArguments) {
+
         if (isochroneArguments.getMunicipalityId().isEmpty()) {
             return true;
         }
