@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class GeoJsonInaccessibleRoadsWriter implements OutputWriter {
+public class GeoJsonRoadSectionWriter implements OutputWriter {
 
     private final FileService uploadService;
     private final GenerateConfiguration generateConfiguration;
