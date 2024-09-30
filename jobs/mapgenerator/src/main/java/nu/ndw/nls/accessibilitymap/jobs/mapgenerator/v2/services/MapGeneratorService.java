@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.SortedMap;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,19 +92,19 @@ public class MapGeneratorService {
 
         outputWriters.forEach(
                 outputWriter -> outputWriter.writeToFile(inaccessibleRoadSections, mapGenerationProperties));
-
-
     }
 
     private List<RoadSection> getInaccessibleRoadSections(CmdGenerateGeoJsonType cmdGenerateGeoJsonType) {
 
         VehicleProperties vehicleProperties = vehicleTypeVehiclePropertiesMapper.map(cmdGenerateGeoJsonType);
-        SortedMap<Integer, nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection> idToRoadSections =
-                accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
-                        generateConfiguration.getStartLocation(), generateProperties.getSearchDistanceInMeters()
-                        , ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
+        var roadSectionsGroupedById =
+                accessibilityMapService.determineAccessibilityByRoadSection(
+                        vehicleProperties,
+                        generateConfiguration.getStartLocation(),
+                        generateProperties.getSearchDistanceInMeters(),
+                        ResultType.DIFFERENCE_OF_ADDED_RESTRICTIONS);
 
-        var inaccessibleRoads = idToRoadSections
+        var inaccessibleRoads = roadSectionsGroupedById
                 .values()
                 .stream()
                 .filter(this::isInaccessible)
