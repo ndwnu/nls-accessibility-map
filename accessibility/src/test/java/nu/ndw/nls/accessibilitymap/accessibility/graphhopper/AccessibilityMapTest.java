@@ -7,7 +7,10 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.BaseGraph;
+import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
@@ -24,6 +27,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Point;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,7 +59,7 @@ class AccessibilityMapTest {
     private List<IsochroneMatch> matches;
 
     @Mock
-    private NetworkGraphHopper network;
+    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private VehicleRestrictionsModelFactory modelFactory;
@@ -66,7 +71,13 @@ class AccessibilityMapTest {
     private QueryGraph queryGraph;
 
     @Mock
-    private Snap snap;
+    private BaseGraph baseGraph;
+
+    @Mock
+    private Snap startSegment;
+
+    @Mock
+    private LocationIndexTree locationIndexTree;
 
     @InjectMocks
     private AccessibilityMap accessibilityMap;
@@ -75,8 +86,19 @@ class AccessibilityMapTest {
     void getAccessibleRoadSections_ok() {
         when(accessibilityRequest.vehicleProperties()).thenReturn(vehicleProperties);
         when(modelFactory.getModel(vehicleProperties)).thenReturn(model);
-        when(network.getProfile(NetworkConstants.VEHICLE_NAME_CAR)).thenReturn(profile);
-        when(network.createWeighting(eq(profile), any(PMap.class))).thenReturn(weighting);
+
+        when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
+        when(networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR)).thenReturn(profile);
+        when(networkGraphHopper.createWeighting(eq(profile), any(PMap.class))).thenReturn(weighting);
+        when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
+
+        when(locationIndexTree.findClosest(2d, 3d, EdgeFilter.ALL_EDGES)).thenReturn(startSegment);
+        when(startPoint.getX()).thenReturn(2d);
+        when(startPoint.getY()).thenReturn(3d);
+
+        MockedStatic<QueryGraph> queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class);
+        queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, startSegment)).thenReturn(queryGraph);
+
         when(accessibilityRequest.startPoint()).thenReturn(startPoint);
         when(accessibilityRequest.municipalityId()).thenReturn(MUNICIPALITY_ID);
         when(accessibilityRequest.searchDistanceInMetres()).thenReturn(SEARCH_DISTANCE);
@@ -88,9 +110,17 @@ class AccessibilityMapTest {
                         .municipalityId(MUNICIPALITY_ID)
                         .build(),
                 queryGraph,
-                snap)).thenReturn(matches);
+                startSegment)).thenReturn(matches);
 
         List<IsochroneMatch> result = accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
         assertEquals(matches, result);
     }
+
+    private void wrapWithStaticMock(Runnable function) {
+        try (MockedStatic<QueryGraph> queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class)) {
+            queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
+            function.run();
+        }
+    }
+
 }
