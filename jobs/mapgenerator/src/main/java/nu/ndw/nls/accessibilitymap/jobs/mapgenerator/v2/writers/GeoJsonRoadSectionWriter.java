@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
@@ -23,6 +22,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.Accessibil
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.AccessibilityGeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.PointGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services.dto.Accessibility;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.locationtech.jts.geom.LineString;
@@ -38,7 +38,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Override
-    public void writeToFile(List<RoadSection> roadSections,
+    public void writeToFile(Accessibility accessibility,
             MapGenerationProperties mapGenerationProperties) {
 
         CmdGenerateGeoJsonType type = CmdGenerateGeoJsonType.valueOf(
@@ -53,7 +53,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
         AccessibilityGeoJsonFeatureCollection geoJson = AccessibilityGeoJsonFeatureCollection
                 .builder()
-                .features(roadSections.stream()
+                .features(accessibility.mergedAccessibility().stream()
                         .map(roadSection -> createFeatures(roadSection, geoJsonIdSequenceSupplier))
                         .flatMap(List::stream)
                         .toList())
@@ -66,15 +66,13 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         }
 
         uploadService.uploadFile(type, tempFile, LocalDateTime.now().toLocalDate());
-
     }
 
     private List<AccessibilityGeoJsonFeature> createFeatures(
             RoadSection roadSection,
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier) {
 
-        return Stream.of(roadSection.getBackward(),
-                        roadSection.getForward())
+        return roadSection.getSegments().stream()
                 .filter(Objects::nonNull)
                 .map(directionalSegment -> {
                     List<AccessibilityGeoJsonFeature> features = new ArrayList<>();
@@ -98,9 +96,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
         LineString trafficSignLineString = fractionAndDistanceCalculator.getSubLineString(
                 directionalSegment.getLineString(),
-                directionalSegment.getDirection().isForward()
-                        ? trafficSign.fraction()
-                        : 1 - trafficSign.fraction());
+                trafficSign.fraction());
 
         return AccessibilityGeoJsonFeature.builder()
                 .id(geoJsonIdSequenceSupplier.next())
