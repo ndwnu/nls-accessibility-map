@@ -6,7 +6,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.config.Profile;
+import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
 import java.util.List;
@@ -20,8 +22,6 @@ import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Point;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,25 +34,39 @@ class AccessibilityMapTest {
 
     @Mock
     private Weighting weighting;
+
     @Mock
     private AccessibilityRequest accessibilityRequest;
+
     @Mock
     private VehicleProperties vehicleProperties;
+
     @Mock
     private Profile profile;
+
     @Mock
     private CustomModel model;
+
     @Mock
     private Point startPoint;
+
     @Mock
     private List<IsochroneMatch> matches;
 
     @Mock
     private NetworkGraphHopper network;
+
     @Mock
     private VehicleRestrictionsModelFactory modelFactory;
+
     @Mock
     private IsochroneService isochroneService;
+
+    @Mock
+    private QueryGraph queryGraph;
+
+    @Mock
+    private Snap snap;
 
     @InjectMocks
     private AccessibilityMap accessibilityMap;
@@ -72,7 +86,9 @@ class AccessibilityMapTest {
                         .weighting(weighting)
                         .searchDistanceInMetres(SEARCH_DISTANCE)
                         .municipalityId(MUNICIPALITY_ID)
-                        .build())).thenReturn(matches);
+                        .build(),
+                queryGraph,
+                snap)).thenReturn(matches);
 
         List<IsochroneMatch> result = accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
         assertEquals(matches, result);

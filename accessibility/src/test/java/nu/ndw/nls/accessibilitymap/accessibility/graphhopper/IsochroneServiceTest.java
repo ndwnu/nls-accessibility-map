@@ -61,18 +61,27 @@ class IsochroneServiceTest {
 
     @Mock
     private QueryGraph queryGraph;
+
     @Mock
     private Point point;
+
     @Mock
     private Snap startSegment;
+
     @Mock
     private IsochroneByTimeDistanceAndWeight isochroneAlgorithm;
+
     @Mock
     private EdgeIteratorState currentEdge;
+
     @Mock
     private IntEncodedValue intEncodedValue;
+
     @Mock
     private Weighting weighting;
+
+    @Mock
+    private Snap snap;
 
     @InjectMocks
     private IsochroneService isochroneService;
@@ -104,12 +113,12 @@ class IsochroneServiceTest {
         when(isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY, queryGraph,
                 startSegment.getClosestEdge(), false)).thenReturn(IsochroneMatch.builder().build());
         wrapWithStaticMock(() -> isochroneService.getIsochroneMatchesByMunicipalityId(IsochroneArguments.builder()
-                        .weighting(weighting)
-                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
-                        .startPoint(point)
-                        .municipalityId(MUNICIPALITY_ID)
-                        .build())
-                );
+                .weighting(weighting)
+                .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
+                .startPoint(point)
+                .municipalityId(MUNICIPALITY_ID)
+                .build(), queryGraph, snap)
+        );
         verify(shortestPathTreeFactory).createShortestPathTreeByTimeDistanceAndWeight(weighting, queryGraph,
                 TraversalMode.EDGE_BASED, ISOCHRONE_VALUE_METERS, IsochroneUnit.METERS, false, false);
     }
