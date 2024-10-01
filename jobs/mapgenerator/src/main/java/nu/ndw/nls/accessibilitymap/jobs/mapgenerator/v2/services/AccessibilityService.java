@@ -49,33 +49,36 @@ public class AccessibilityService {
 
         //TODO loop through snaps and check all virtual nodes and update properties.
 
-        IsochroneArguments withoutRestrictions = IsochroneArguments.builder()
+        IsochroneArguments arguments = IsochroneArguments.builder()
                 .weighting(buildWeightingWithoutRestrictions(accessibilityRequest))
                 .startPoint(accessibilityRequest.startPoint())
                 .municipalityId(accessibilityRequest.municipalityId())
                 .searchDistanceInMetres(accessibilityRequest.searchDistanceInMetres())
                 .build();
 
-        IsochroneArguments withRestrictions = IsochroneArguments.builder()
-                .weighting(buildWeightingWithoutRestrictions(accessibilityRequest))
+        IsochroneArguments argumentsWithRestrictionsApplied = IsochroneArguments.builder()
+                .weighting(buildWeightingWithRestrictions(accessibilityRequest))
                 .startPoint(accessibilityRequest.startPoint())
                 .municipalityId(accessibilityRequest.municipalityId())
                 .searchDistanceInMetres(accessibilityRequest.searchDistanceInMetres())
                 .build();
+
+        // Todo create diff?
 
         return Accessibility.builder()
                 .noAppliedRestrictions(
                         isochroneService.getIsochroneMatchesByMunicipalityId(
-                                withoutRestrictions,
+                                arguments,
                                 queryGraph,
                                 startSegment)
                 )
                 .accessibilityWithRestrictions(
                         isochroneService.getIsochroneMatchesByMunicipalityId(
-                                withRestrictions,
+                                argumentsWithRestrictionsApplied,
                                 queryGraph,
                                 startSegment)
                 )
+                .mergedAccessibility(null) // add diff
                 .build();
     }
 

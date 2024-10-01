@@ -7,7 +7,8 @@ import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 @Builder
 public record Accessibility(
         List<IsochroneMatch> noAppliedRestrictions,
-        List<IsochroneMatch> accessibilityWithRestrictions
+        List<IsochroneMatch> accessibilityWithRestrictions,
+        List<IsochroneMatch> mergedAccessibility
 ) {
 
 }
