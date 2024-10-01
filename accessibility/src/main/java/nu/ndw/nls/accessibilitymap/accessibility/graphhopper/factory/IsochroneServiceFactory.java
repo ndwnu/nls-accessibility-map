@@ -4,9 +4,7 @@ import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.BaseGraph;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
-import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.util.PMap;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
@@ -26,16 +24,13 @@ public class IsochroneServiceFactory {
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     public IsochroneService createService(NetworkGraphHopper network) {
-        LocationIndexTree locationIndexTree = network.getLocationIndex();
-        BaseGraph baseGraph = network.getBaseGraph();
         EncodingManager encodingManager = network.getEncodingManager();
 
         IsochroneMatchMapper isochroneMatchMapper = new IsochroneMatchMapper(encodingManager,
                 edgeIteratorStateReverseExtractor, new PointListUtil(), fractionAndDistanceCalculator);
         Weighting weighting = network.createWeighting(PROFILE, new PMap());
         ShortestPathTreeFactory shortestPathTreeFactory = new ShortestPathTreeFactory(weighting);
-        return new IsochroneService(encodingManager, baseGraph, isochroneMatchMapper, shortestPathTreeFactory,
-                locationIndexTree);
+        return new IsochroneService(encodingManager, isochroneMatchMapper, shortestPathTreeFactory);
     }
 
 }
