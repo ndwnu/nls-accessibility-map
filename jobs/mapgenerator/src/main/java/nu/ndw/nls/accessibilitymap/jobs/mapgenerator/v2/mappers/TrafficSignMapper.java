@@ -23,6 +23,9 @@ public class TrafficSignMapper {
                 .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
                 .windowTimes(findWindowTimes(trafficSignGeoJsonDto))
                 .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
+                .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
+                .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
+                .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
                 .iconUri(createIconUri(trafficSignGeoJsonDto.getProperties()))
                 .build();
     }
@@ -31,7 +34,7 @@ public class TrafficSignMapper {
         if (Objects.isNull(trafficSignPropertiesDto.getImageUrl())) {
             return null;
         }
-        
+
         return URI.create(trafficSignPropertiesDto.getImageUrl());
     }
 

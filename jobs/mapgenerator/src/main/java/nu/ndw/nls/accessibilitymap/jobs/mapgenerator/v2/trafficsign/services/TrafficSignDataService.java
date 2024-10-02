@@ -1,10 +1,13 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers.TrafficSignMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import org.springframework.stereotype.Component;
 
@@ -16,33 +19,16 @@ public class TrafficSignDataService {
 
     final TrafficSignService trafficSignService;
 
-    public void addTrafficSignDataToRoadSections(
-            Collection<RoadSection> roadSections,
-            MapGenerationProperties mapGenerationProperties) {
+    public List<TrafficSign> findAllByType(Set<TrafficSignType> trafficSignTypes) {
+        Set<String> trafficSignCodes = trafficSignTypes.stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet());
 
-        // TODO: Fix this
-//        CollectionUtil.batch(roadSections, mapGenerationProperties.getTrafficSignsRequestBatchSize())
-//                .forEach(roadSectionsBatch -> {
-//                    TrafficSignData trafficSignData = getTrafficData(
-//                            mapGenerationProperties.getTrafficSigns(),
-//                            roadSectionsBatch);
-//
-//                    roadSectionsBatch.forEach(roadSection -> {
-//                        List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections = trafficSignData.getTrafficSignsByRoadSectionId(
-//                                roadSection.getRoadSectionId());
-//
-//                        addTrafficSignToDirectionalSegment(
-//                                roadSection.getForward(),
-//                                trafficSignDataInAllDirections,
-//                                isInForwardDirection, mapGenerationProperties);
-//
-//                        addTrafficSignToDirectionalSegment(
-//                                roadSection.getBackward(),
-//                                trafficSignDataInAllDirections,
-//                                isInBackwardDirection,
-//                                mapGenerationProperties);
-//                    });
-//                });
+        return trafficSignService.getTrafficSigns(trafficSignCodes)
+                .trafficSignsByRoadSectionId().values().stream()
+                .flatMap(Collection::stream)
+                .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
+                .toList();
     }
 //
 //    private void addTrafficSignToDirectionalSegment(

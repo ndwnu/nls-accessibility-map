@@ -25,6 +25,7 @@ public class TrafficSignPropertiesDto {
     private List<TextSignDto> textSigns;
 
     // Location
+    private Geometry geometry;
     private PlacementType placement;
     private LocationSideType side;
     private Integer bearing;

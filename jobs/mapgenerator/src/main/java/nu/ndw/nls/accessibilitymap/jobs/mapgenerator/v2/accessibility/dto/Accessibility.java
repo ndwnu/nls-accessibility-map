@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services.dto;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto;
 
 import java.util.Collection;
 import lombok.Builder;

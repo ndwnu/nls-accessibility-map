@@ -23,6 +23,11 @@ public class TrafficSignService {
 
     private final TrafficSignProperties trafficSignProperties;
 
+    public TrafficSignData getTrafficSigns(Set<String> rvvCodes) {
+
+        return getTrafficSigns(rvvCodes, null);
+    }
+
     public TrafficSignData getTrafficSigns(Set<String> rvvCodes, Set<Long> roadSectionIds) {
         MaxNwbVersionTracker maxNwbVersionTracker = new MaxNwbVersionTracker();
 
