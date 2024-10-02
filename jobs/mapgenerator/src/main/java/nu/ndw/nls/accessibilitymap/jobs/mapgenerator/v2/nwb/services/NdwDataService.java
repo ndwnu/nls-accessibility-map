@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.services;
 
-import java.util.Collection;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers.RoadSectionMetaDataMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
@@ -17,9 +17,15 @@ public class NdwDataService {
 
     private final RoadSectionMetaDataMapper roadSectionMetaDataMapper;
 
-    public void addNdwDataToRoadSections(Collection<RoadSection> roadSections, int nwbVersion) {
+    public void addNwbDataToAccessibility(Accessibility accessibility, int nwbVersion) {
 
-        roadSections.forEach(roadSection ->
+        accessibility.mergedAccessibility().forEach(roadSection ->
+                addNdwDataToRoadSection(roadSection, nwbVersion));
+
+        accessibility.accessibleRoadSectionsWithAppliedRestrictions().forEach(roadSection ->
+                addNdwDataToRoadSection(roadSection, nwbVersion));
+
+        accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions().forEach(roadSection ->
                 addNdwDataToRoadSection(roadSection, nwbVersion));
     }
 

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility;
 
 import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
@@ -7,6 +7,7 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,14 +19,16 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsModelFactory;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AdditionalSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services.dto.AdditionalSnap;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -43,21 +46,22 @@ public class AccessibilityService {
 
     private final NetworkGraphHopper networkGraphHopper;
 
+    private final TrafficSignDataService trafficSignDataService;
+
     public Accessibility calculateAccessibility(
-            AccessibilityRequest accessibilityRequest,
-            List<AdditionalSnap> additionalSnaps) {
+            AccessibilityRequest accessibilityRequest) {
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
-        List<Snap> snaps = additionalSnaps.stream()
-                .map(AdditionalSnap::snap)
-                .toList();
+        List<AdditionalSnap> additionalSnaps = buildTrafficSignSnaps(accessibilityRequest);
 
         Snap startSegment = networkGraphHopper.getLocationIndex()
-                .findClosest(accessibilityRequest.startPoint().getX(), accessibilityRequest.startPoint().getY(),
+                .findClosest(accessibilityRequest.getStartPoint().getY(), accessibilityRequest.getStartPoint().getX(),
                         EdgeFilter.ALL_EDGES);
-        snaps.add(startSegment);
+        additionalSnaps.add(AdditionalSnap.builder()
+                .snap(startSegment)
+                .build());
 
-        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
+        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), List.of(startSegment));
 
         //TODO loop through snaps and check all virtual nodes and update properties.
 
@@ -66,9 +70,9 @@ public class AccessibilityService {
                         isochroneService.getIsochroneMatchesByMunicipalityId(
                                 IsochroneArguments.builder()
                                         .weighting(buildWeightingWithoutRestrictions(accessibilityRequest))
-                                        .startPoint(accessibilityRequest.startPoint())
-                                        .municipalityId(accessibilityRequest.municipalityId())
-                                        .searchDistanceInMetres(accessibilityRequest.searchDistanceInMetres())
+                                        .startPoint(accessibilityRequest.getStartPoint())
+                                        .municipalityId(accessibilityRequest.getMunicipalityId())
+                                        .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
                                         .build(),
                                 queryGraph,
                                 startSegment));
@@ -78,9 +82,9 @@ public class AccessibilityService {
                         isochroneService.getIsochroneMatchesByMunicipalityId(
                                 IsochroneArguments.builder()
                                         .weighting(buildWeightingWithRestrictions(accessibilityRequest))
-                                        .startPoint(accessibilityRequest.startPoint())
-                                        .municipalityId(accessibilityRequest.municipalityId())
-                                        .searchDistanceInMetres(accessibilityRequest.searchDistanceInMetres())
+                                        .startPoint(accessibilityRequest.getStartPoint())
+                                        .municipalityId(accessibilityRequest.getMunicipalityId())
+                                        .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
                                         .build(),
                                 queryGraph,
                                 startSegment));
@@ -93,6 +97,25 @@ public class AccessibilityService {
                                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                                 accessibleRoadSectionsWithAppliedRestrictions))
                 .build();
+    }
+
+    private List<AdditionalSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
+
+        if (!accessibilityRequest.getTrafficSigns().isEmpty()) {
+            List<TrafficSign> trafficSigns = trafficSignDataService.findAllByType(
+                    accessibilityRequest.getTrafficSigns());
+
+            return trafficSigns.stream()
+                    .map(trafficSign -> AdditionalSnap.builder()
+                            .trafficSign(trafficSign)
+                            .snap(networkGraphHopper.getLocationIndex().findClosest(
+                                    trafficSign.latitude(),
+                                    trafficSign.longitude(),
+                                    EdgeFilter.ALL_EDGES))
+                            .build())
+                    .toList();
+        }
+        return new ArrayList<>();
     }
 
     private Collection<RoadSection> mapToRoadSections(List<IsochroneMatch> isochroneMatches) {
@@ -174,7 +197,7 @@ public class AccessibilityService {
     private Weighting buildWeightingWithoutRestrictions(AccessibilityRequest accessibilityRequest) {
         accessibilityRequest = accessibilityRequest.withVehicleProperties(null);
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-        CustomModel model = modelFactory.getModel(accessibilityRequest.vehicleProperties());
+        CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
 
         return network.createWeighting(profile, hints);
@@ -182,7 +205,7 @@ public class AccessibilityService {
 
     private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest) {
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-        CustomModel model = modelFactory.getModel(accessibilityRequest.vehicleProperties());
+        CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
 
         return network.createWeighting(profile, hints);

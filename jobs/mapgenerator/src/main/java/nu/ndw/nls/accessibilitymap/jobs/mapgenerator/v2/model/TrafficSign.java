@@ -5,7 +5,11 @@ import lombok.Builder;
 
 @Builder
 public record TrafficSign(
+        int roadSectionId,
         TrafficSignType trafficSignType,
+        double latitude,
+        double longitude,
+        Direction direction,
         String windowTimes,
         double fraction,
         URI iconUri) {

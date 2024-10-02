@@ -9,18 +9,16 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.VehicleTypeVehiclePropertiesMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.services.NdwDataService;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.writers.OutputWriter;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +33,9 @@ public class MapGeneratorService {
 
     private final GenerateConfiguration generateConfiguration;
 
-    private final AccessibilityMapService accessibilityMapService;
-
     private final VehicleTypeVehiclePropertiesMapper vehicleTypeVehiclePropertiesMapper;
 
     private final AccessibilityConfiguration accessibilityConfiguration;
-
-    private final TrafficSignDataService trafficSignFactory;
 
     private final NdwDataService ndwDataService;
 
@@ -69,6 +63,23 @@ public class MapGeneratorService {
                 mapGenerationProperties.getExportVersion(),
                 mapGenerationProperties.getNwbVersion());
 
+        Accessibility accessibility = getAccessibility(mapGenerationProperties);
+
+        log.info("Map generation done. It took: %s ms".formatted(
+                ChronoUnit.MILLIS.between(startTime, OffsetDateTime.now())));
+
+        long roadSectionsWithTrafficSigns = accessibility.mergedAccessibility().stream()
+                .flatMap(roadSection -> roadSection.getSegments().stream())
+                .filter(segment -> !segment.getTrafficSigns().isEmpty())
+                .count();
+        log.info("Found {} with road sections with traffic signs.", roadSectionsWithTrafficSigns);
+
+        outputWriters.forEach(
+                outputWriter -> outputWriter.writeToFile(accessibility, mapGenerationProperties));
+    }
+
+    private Accessibility getAccessibility(@Valid MapGenerationProperties mapGenerationProperties) {
+
         CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
                 mapGenerationProperties.getTrafficSigns().stream()
                         .map(Enum::name)
@@ -76,44 +87,17 @@ public class MapGeneratorService {
                         .orElseThrow()
         );
 
-        Accessibility accessibility = getAccessibility(cmdGenerateGeoJsonType);
+        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
+                .vehicleProperties(vehicleTypeVehiclePropertiesMapper.map(cmdGenerateGeoJsonType))
+                .startPoint(generateConfiguration.getStartLocation())
+                .searchDistanceInMetres(generateProperties.getSearchDistanceInMeters())
+                .build();
 
-        // TODO: Fix this
-//        trafficSignFactory.addTrafficSignDataToRoadSections(accessibility.mergedAccessibility(), mapGenerationProperties);
-        ndwDataService.addNdwDataToRoadSections(accessibility.mergedAccessibility(), mapGenerationProperties.getNwbVersion());
+        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
-        log.info("Map generation done. It took: %s ms".formatted(
-                ChronoUnit.MILLIS.between(startTime, OffsetDateTime.now())));
-//
-//        List<RoadSection> roadSectionsWithTrafficSigns = inaccessibleRoadSections.stream()
-//                .filter(roadSection ->
-//                        !roadSection.getForward().getTrafficSigns().isEmpty()
-//                                || (!roadSection.isOneWay() && !roadSection.getBackward().getTrafficSigns().isEmpty()))
-//                .toList();
-//        log.info("Found {} with road sections with traffic signs. {}", roadSectionsWithTrafficSigns.size(),
-//                roadSectionsWithTrafficSigns);
+        // TODO: can be moved to accessibilityService?
+        ndwDataService.addNwbDataToAccessibility(accessibility, mapGenerationProperties.getNwbVersion());
 
-        outputWriters.forEach(
-                outputWriter -> outputWriter.writeToFile(accessibility, mapGenerationProperties));
+        return accessibility;
     }
-
-    private Accessibility getAccessibility(CmdGenerateGeoJsonType cmdGenerateGeoJsonType) {
-
-        VehicleProperties vehicleProperties = vehicleTypeVehiclePropertiesMapper.map(cmdGenerateGeoJsonType);
-       return accessibilityService.calculateAccessibility(
-                AccessibilityRequest.builder()
-                        .vehicleProperties(vehicleProperties)
-                        .startPoint(generateConfiguration.getStartLocation())
-                        .searchDistanceInMetres(generateProperties.getSearchDistanceInMeters())
-                        .build(),
-                List.of()); // TODO add traffic sign snaps here.
-
-    }
-
-    private boolean isInaccessible(nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection roadSection) {
-        return (roadSection.getBackwardAccessible() != null && !roadSection.getBackwardAccessible())
-                || (roadSection.getForwardAccessible() != null && !roadSection.getForwardAccessible());
-    }
-
-
 }

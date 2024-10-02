@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -25,10 +25,6 @@ public final class MapGenerationProperties {
     private int trafficSignsRequestBatchSize = 500;
 
     @NotNull
-    private final Set<TrafficSignType> trafficSigns;
-
-    public List<String> getTrafficSignsAsString() {
-
-        return trafficSigns.stream().map(t -> t.name()).toList();
-    }
+    @Default
+    private final Set<TrafficSignType> trafficSigns = new HashSet<>();
 }
