@@ -21,18 +21,17 @@ public class RestrictionWeightingAdapter implements Weighting {
 
     private final Weighting adaptedWeighting;
 
-    private final Map<Integer, List<AdditionalSnap>> snappedTrafficSignsByRoadSection;
+    private final Map<Integer, List<AdditionalSnap>> snappedTrafficSignsByRoadSectionId;
 
     private final EncodingManager encodingManager;
 
     public RestrictionWeightingAdapter(Weighting adaptedWeighting, List<AdditionalSnap> snappedTrafficSigns,
             EncodingManager encodingManager) {
         this.adaptedWeighting = adaptedWeighting;
-        this.snappedTrafficSignsByRoadSection = snappedTrafficSigns
+        this.snappedTrafficSignsByRoadSectionId = snappedTrafficSigns
                 .stream()
-                .filter(a-> a.getTrafficSign()!=null)
-                .collect(groupingBy(tr -> tr.getTrafficSign()
-                        .roadSectionId()));
+                .filter(additionalSnap -> additionalSnap.getTrafficSign() != null)
+                .collect(groupingBy(tr -> tr.getTrafficSign().roadSectionId()));
         this.encodingManager = encodingManager;
     }
 
@@ -44,19 +43,18 @@ public class RestrictionWeightingAdapter implements Weighting {
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reverse) {
         if (edgeHasTrafficSigns(getLinkId(edgeIteratorState))) {
-            Predicate<AdditionalSnap> filterOnDirection = reverse ? (snap) -> snap
-                    .getTrafficSign()
-                    .direction()
-                    .isBackward()
+            Predicate<AdditionalSnap> filterOnDirection = reverse
+                    ? (snap) -> snap.getTrafficSign().direction().isBackward()
                     : (snap) -> snap.getTrafficSign().direction().isForward();
-            List<AdditionalSnap> additionalSnaps = snappedTrafficSignsByRoadSection
+
+            List<AdditionalSnap> additionalSnaps = snappedTrafficSignsByRoadSectionId
                     .get(getLinkId(edgeIteratorState))
                     .stream().filter(filterOnDirection)
                     .toList();
             log.info("Found traffic signs {}", additionalSnaps);
             for (AdditionalSnap additionalSnap : additionalSnaps) {
                 if (isEdgeBehindTrafficSign(additionalSnap, edgeIteratorState, reverse)) {
-                    log.info("Blocking access to edge {} {} {}", additionalSnap,edgeIteratorState,reverse);
+                    log.info("Blocking access to edge {} {} {}", additionalSnap, edgeIteratorState, reverse);
                     return Double.POSITIVE_INFINITY;
                 }
             }
@@ -93,7 +91,7 @@ public class RestrictionWeightingAdapter implements Weighting {
     }
 
     private boolean edgeHasTrafficSigns(int linkId) {
-        return snappedTrafficSignsByRoadSection.containsKey(linkId);
+        return snappedTrafficSignsByRoadSectionId.containsKey(linkId);
     }
 
     @Override

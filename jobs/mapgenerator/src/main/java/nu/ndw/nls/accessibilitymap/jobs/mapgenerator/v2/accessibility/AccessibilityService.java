@@ -75,12 +75,15 @@ public class AccessibilityService {
         Snap startSegment = networkGraphHopper.getLocationIndex()
                 .findClosest(startPoint.getY(), startPoint.getX(),
                         EdgeFilter.ALL_EDGES);
+
         List<Snap> snaps = additionalSnaps
                 .stream()
                 .map(AdditionalSnap::getSnap)
                 .collect(toCollection(ArrayList::new));
         snaps.add(startSegment);
+
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
+
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 mapToRoadSections(
                         isochroneService.getIsochroneMatchesByMunicipalityId(
