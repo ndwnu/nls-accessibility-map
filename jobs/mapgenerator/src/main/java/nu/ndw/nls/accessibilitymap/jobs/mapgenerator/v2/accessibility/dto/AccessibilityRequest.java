@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.locationtech.jts.geom.Point;
 
 @Builder

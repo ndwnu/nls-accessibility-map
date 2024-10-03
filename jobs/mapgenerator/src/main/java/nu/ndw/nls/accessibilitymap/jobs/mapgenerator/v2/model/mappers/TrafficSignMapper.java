@@ -5,12 +5,10 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignDirection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TextSignFilterService;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignDirection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.springframework.stereotype.Service;
@@ -19,8 +17,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TrafficSignMapper {
-
-    private final TextSignFilterService textSignFilterService;
 
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
 
@@ -32,14 +28,15 @@ public class TrafficSignMapper {
         return Optional.of(TrafficSign.builder()
                 .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
                 .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
-                .windowTimes(findWindowTimes(trafficSignGeoJsonDto))
                 .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
                 .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
                 .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
                 .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
                 .iconUri(createIconUri(trafficSignGeoJsonDto.getProperties()))
+                .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
                 .build());
     }
+
 
     private TrafficSignDirection createDirection(DirectionType drivingDirection) {
 
@@ -64,14 +61,5 @@ public class TrafficSignMapper {
         }
 
         return URI.create(trafficSignPropertiesDto.getImageUrl());
-    }
-
-    private String findWindowTimes(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
-        // @todo: replace getText() with getOpeningHours() when this text field is in use
-        return textSignFilterService.findFirstWindowTimeTextSign(trafficSignGeoJsonDto.getProperties().getTextSigns())
-                .map(TextSignDto::getText)
-                .orElse(null);
-//                .orElseThrow(() -> new IllegalStateException("Failed to find window time text sign for traffic sign by "
-//                        + "id: " + trafficSignGeoJsonDto.getId()));
     }
 }
