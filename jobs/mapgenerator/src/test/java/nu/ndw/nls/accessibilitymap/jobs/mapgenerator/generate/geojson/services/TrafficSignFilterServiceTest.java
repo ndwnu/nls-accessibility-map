@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.junit.jupiter.api.Test;
@@ -43,13 +43,13 @@ class TrafficSignFilterServiceTest {
     private TrafficSignPropertiesDto propertiesC;
 
     @Mock
-    private List<TextSignDto> textSignsA;
+    private List<TextSign> textSignsA;
 
     @Mock
-    private List<TextSignDto> textSignsB;
+    private List<TextSign> textSignsB;
 
     @Mock
-    private List<TextSignDto> textSignsC;
+    private List<TextSign> textSignsC;
 
     @Test
     void findWindowTimeTrafficSignsOrderInDrivingDirection_ok_complexScenario() {

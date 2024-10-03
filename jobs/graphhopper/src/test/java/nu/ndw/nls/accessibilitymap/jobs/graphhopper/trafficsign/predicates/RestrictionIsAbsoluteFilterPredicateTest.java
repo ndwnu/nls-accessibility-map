@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
@@ -67,7 +67,7 @@ class RestrictionIsAbsoluteFilterPredicateTest {
     }
 
     private TrafficSignGeoJsonDto mockSign(TextSignType textSignType) {
-        TextSignDto mockedTextSign = Mockito.mock(TextSignDto.class);
+        TextSign mockedTextSign = Mockito.mock(TextSign.class);
         TrafficSignPropertiesDto propertiesDto = Mockito.mock(TrafficSignPropertiesDto.class);
         TrafficSignGeoJsonDto trafficSignGeoJsonDto = Mockito.mock(TrafficSignGeoJsonDto.class);
 

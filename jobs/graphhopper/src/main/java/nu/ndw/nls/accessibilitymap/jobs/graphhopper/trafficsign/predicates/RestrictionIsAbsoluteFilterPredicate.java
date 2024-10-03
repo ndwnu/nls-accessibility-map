@@ -2,10 +2,10 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.predicates;
 
 import java.util.List;
 import java.util.Objects;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper.TrafficSignIncludedFilterPredicate;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper.TrafficSignIncludedFilterPredicate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -27,7 +27,7 @@ public class RestrictionIsAbsoluteFilterPredicate implements TrafficSignIncluded
             return true;
         }
         return trafficSignJsonDto.getProperties().getTextSigns().stream()
-                .map(TextSignDto::getType)
+                .map(TextSign::getType)
                 .filter(Objects::nonNull)
                 .noneMatch(IGNORED_TEXT_SIGN_TYPES::contains);
     }

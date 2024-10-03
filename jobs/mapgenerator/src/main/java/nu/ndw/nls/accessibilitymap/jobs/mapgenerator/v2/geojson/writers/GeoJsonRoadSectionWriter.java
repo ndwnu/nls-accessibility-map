@@ -13,11 +13,11 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.m
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.AccessibilityGeoJsonFeature;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.AccessibilityGeoJsonFeatureCollection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.AccessibilityGeoJsonProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.Feature;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.PointGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.Properties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
@@ -51,7 +51,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
         GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier = new GeoJsonIdSequenceSupplier();
 
-        AccessibilityGeoJsonFeatureCollection geoJson = AccessibilityGeoJsonFeatureCollection
+        FeatureCollection geoJson = FeatureCollection
                 .builder()
                 .features(accessibility.mergedAccessibility().stream()
                         .map(roadSection -> createFeatures(roadSection, geoJsonIdSequenceSupplier))
@@ -68,14 +68,14 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         uploadService.uploadFile(type, tempFile, LocalDateTime.now().toLocalDate());
     }
 
-    private List<AccessibilityGeoJsonFeature> createFeatures(
+    private List<Feature> createFeatures(
             RoadSection roadSection,
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier) {
 
         return roadSection.getSegments().stream()
                 .filter(Objects::nonNull)
                 .map(directionalSegment -> {
-                    List<AccessibilityGeoJsonFeature> features = new ArrayList<>();
+                    List<Feature> features = new ArrayList<>();
 
                     features.add(buildLineString(roadSection, geoJsonIdSequenceSupplier, directionalSegment));
                     features.addAll(directionalSegment.getTrafficSigns().stream()
@@ -89,7 +89,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .toList();
     }
 
-    private AccessibilityGeoJsonFeature buildPoint(
+    private Feature buildPoint(
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
             TrafficSign trafficSign,
             DirectionalSegment directionalSegment) {
@@ -98,7 +98,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 directionalSegment.getLineString(),
                 trafficSign.fraction());
 
-        return AccessibilityGeoJsonFeature.builder()
+        return Feature.builder()
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(PointGeometry
                         .builder()
@@ -106,7 +106,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                                 trafficSignLineString.getEndPoint().getX(),
                                 trafficSignLineString.getEndPoint().getY()))
                         .build())
-                .properties(AccessibilityGeoJsonProperties
+                .properties(Properties
                         .builder()
                         .trafficSignType(trafficSign.trafficSignType())
                         .windowTimes(buildWindowTime(trafficSign))
@@ -115,18 +115,18 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .build();
     }
 
-    private AccessibilityGeoJsonFeature buildLineString(
+    private Feature buildLineString(
             RoadSection roadSection,
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
             DirectionalSegment directionalSegment) {
 
-        return AccessibilityGeoJsonFeature.builder()
+        return Feature.builder()
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(LineStringGeometry
                         .builder()
                         .coordinates(geoJsonLineStringCoordinateMapper.map(directionalSegment.getLineString()))
                         .build())
-                .properties(AccessibilityGeoJsonProperties
+                .properties(Properties
                         .builder()
                         .id(roadSection.getRoadSectionId())
                         .direction(directionalSegment.getDirection())

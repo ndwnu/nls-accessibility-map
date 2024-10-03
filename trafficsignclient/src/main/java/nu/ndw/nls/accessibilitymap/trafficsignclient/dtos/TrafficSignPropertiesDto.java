@@ -22,7 +22,7 @@ public class TrafficSignPropertiesDto {
     private String blackCode;
     private String zoneCode;
     private TrafficSignStatusType status;
-    private List<TextSignDto> textSigns;
+    private List<TextSign> textSigns;
 
     // Location
     private Geometry geometry;
