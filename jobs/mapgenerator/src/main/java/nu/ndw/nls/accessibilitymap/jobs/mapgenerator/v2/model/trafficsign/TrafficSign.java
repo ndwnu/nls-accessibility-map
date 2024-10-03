@@ -20,19 +20,13 @@ public record TrafficSign(
         List<TextSign> textSigns
 ) {
 
-    public boolean hasWindowTime() {
+    public boolean hasTimeWindowedSign() {
         return textSigns
                 .stream()
                 .anyMatch(TextSign::hasWindowTime);
     }
 
-    public boolean hasNoExcludingOrPreAnnouncement() {
-        return textSigns
-                .stream()
-                .anyMatch(TextSign::hasNoExcludingOrPreAnnouncement);
-    }
-
-    public Optional<TextSign> findFirstWindowTimeTextSign() {
+    public Optional<TextSign> findFirstTimeWindowedSign() {
         return textSigns
                 .stream()
                 .filter(TextSign::hasWindowTime)

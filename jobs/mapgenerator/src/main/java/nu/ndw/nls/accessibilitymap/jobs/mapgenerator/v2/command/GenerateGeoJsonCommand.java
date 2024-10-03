@@ -1,11 +1,12 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
@@ -21,27 +22,36 @@ import picocli.CommandLine.Option;
 public class GenerateGeoJsonCommand implements Callable<Integer> {
 
     private final MapGeneratorService mapGeneratorService;
+
     private final LocalDateVersionMapper localDateVersionMapper;
+
     private final AccessibilityConfiguration accessibilityConfiguration;
 
-    @Option(names = {"-t", "--traffic-sign"},
-            description = "Traffic signs to generate the map for.",
-            required = true)
-    private Set<TrafficSignType> trafficSignTypes;
+    private final GenerateProperties generateProperties;
 
-    @Option(names = {"-m", "--message"},
-            description = "Whether it should result into sending a Rabbit MQ message",
+    @Option(names = {"-t", "--traffic-sign"},
+            description = "Traffic sign to generate the map for.",
+            required = true)
+    private TrafficSignType trafficSignType;
+    @Option(names = {"-tw", "--include-only-time-windowed-signs"},
+            description = "Traffic sign to generate the map for.")
+    private boolean includeOnlyTimeWindowedSigns;
+
+    @Option(names = {"-p", "--publish-event"},
+            description = "Whether it should publish results as events onto Rabbit MQ message",
             defaultValue = "true")
-    private boolean produceMessage;
+    private boolean publishEvents;
 
     @Override
     public Integer call() {
         try {
             MapGenerationProperties mapGeneratorProperties = MapGenerationProperties.builder()
-                    .trafficSigns(trafficSignTypes)
+                    .trafficSignType(trafficSignType)
+                    .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .exportVersion(localDateVersionMapper.map(LocalDateTime.now().toLocalDate()))
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
-                    .produceMessage(produceMessage)
+                    .publishEvents(publishEvents)
+                    .geoJsonProperties(generateProperties.getGeojson().get(CmdGenerateGeoJsonType.valueOf(trafficSignType.name())))
                     .build();
 
             log.info("Generating GeoJson");

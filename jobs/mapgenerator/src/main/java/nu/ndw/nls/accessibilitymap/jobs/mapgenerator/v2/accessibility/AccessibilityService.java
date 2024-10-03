@@ -112,21 +112,24 @@ public class AccessibilityService {
 
     private List<AdditionalSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
 
-        if (!accessibilityRequest.getTrafficSigns().isEmpty()) {
-            List<TrafficSign> trafficSigns = trafficSignDataService.findAllByType(
-                    accessibilityRequest.getTrafficSigns());
+        List<TrafficSign> trafficSigns = trafficSignDataService.findAllByType(
+                accessibilityRequest.getTrafficSignType());
 
-            return trafficSigns.stream()
-                    .map(trafficSign -> AdditionalSnap.builder()
-                            .trafficSign(trafficSign)
-                            .snap(networkGraphHopper.getLocationIndex().findClosest(
-                                    trafficSign.latitude(),
-                                    trafficSign.longitude(),
-                                    EdgeFilter.ALL_EDGES))
-                            .build())
-                    .collect(Collectors.toCollection(ArrayList::new));
-        }
-        return new ArrayList<>();
+        return trafficSigns.stream()
+                .filter(trafficSign -> applyTimeWindowedSignFilter(accessibilityRequest, trafficSign))
+                .map(trafficSign -> AdditionalSnap.builder()
+                        .trafficSign(trafficSign)
+                        .snap(networkGraphHopper.getLocationIndex().findClosest(
+                                trafficSign.latitude(),
+                                trafficSign.longitude(),
+                                EdgeFilter.ALL_EDGES))
+                        .build())
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private boolean applyTimeWindowedSignFilter(AccessibilityRequest accessibilityRequest, TrafficSign trafficSign) {
+
+        return accessibilityRequest.isIncludeOnlyTimeWindowedSigns() ? trafficSign.hasTimeWindowedSign() : false;
     }
 
     private Collection<RoadSection> mapToRoadSections(List<IsochroneMatch> isochroneMatches) {
@@ -152,7 +155,7 @@ public class AccessibilityService {
         return roadSectionsGroupedById.values();
     }
 
-    private static DirectionalSegment buildDirectionalSegment(
+    private  DirectionalSegment buildDirectionalSegment(
             Direction direction,
             IsochroneMatch isochroneMatch,
             RoadSection roadSection) {
@@ -195,7 +198,7 @@ public class AccessibilityService {
         return roadSectionsGroupedById.values();
     }
 
-    private static void addNewDirectionSegmentToRoadSection(
+    private void addNewDirectionSegmentToRoadSection(
             RoadSection roadSection,
             DirectionalSegment directionalSegmentToCopyFrom,
             DirectionalSegment accessibleDirectionSegment) {
