@@ -1,11 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services;
 
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
@@ -45,40 +41,21 @@ public class MapGeneratorService {
 
     public void generate(@Valid MapGenerationProperties mapGenerationProperties) {
 
-        OffsetDateTime startTime = OffsetDateTime.now();
-
-        if (mapGenerationProperties.getTrafficSigns().size() != 1) {
-            throw new IllegalArgumentException("Exactly one traffic sign is supported right now.");
-        }
-
-        // TODO: Move this section the command
-        mapGenerationProperties.setExportVersion(localDateVersionMapper.map(LocalDateTime.now().toLocalDate()));
-        mapGenerationProperties.setNwbVersion(
-                accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion());
-
-        log.info("Generating geojson: {} version: {} based on NWB version: {}",
-                mapGenerationProperties.getTrafficSigns().stream()
-                        .map(Enum::name)
-                        .collect(Collectors.joining("-")),
-                mapGenerationProperties.getExportVersion(),
-                mapGenerationProperties.getNwbVersion());
-
-        Accessibility accessibility = getAccessibility(mapGenerationProperties);
-
-        log.info("Map generation done. It took: %s ms".formatted(
-                ChronoUnit.MILLIS.between(startTime, OffsetDateTime.now())));
+        Accessibility accessibility = calculateAccessibility(mapGenerationProperties);
 
         long roadSectionsWithTrafficSigns = accessibility.mergedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getSegments().stream())
                 .filter(segment -> !segment.getTrafficSigns().isEmpty())
                 .count();
-        log.info("Found {} with road sections with traffic signs.", roadSectionsWithTrafficSigns);
+        log.debug("Found {} with road sections with traffic signs.", roadSectionsWithTrafficSigns);
 
         outputWriters.forEach(
                 outputWriter -> outputWriter.writeToFile(accessibility, mapGenerationProperties));
     }
 
-    private Accessibility getAccessibility(@Valid MapGenerationProperties mapGenerationProperties) {
+    private Accessibility calculateAccessibility(MapGenerationProperties mapGenerationProperties) {
+
+        log.debug("Generating with the following properties: {}", mapGenerationProperties);
 
         CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
                 mapGenerationProperties.getTrafficSigns().stream()

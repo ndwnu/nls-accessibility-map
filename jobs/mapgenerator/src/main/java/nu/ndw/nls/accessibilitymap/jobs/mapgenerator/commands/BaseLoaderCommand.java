@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.commands;
 
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.GenerateGeoJsonCommand;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.GenerateGeoJsonCommand;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 

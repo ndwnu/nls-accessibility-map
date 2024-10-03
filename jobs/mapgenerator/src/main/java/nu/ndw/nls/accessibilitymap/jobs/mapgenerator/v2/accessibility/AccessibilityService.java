@@ -7,6 +7,9 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
+import io.micrometer.core.annotation.Timed;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
@@ -34,6 +38,7 @@ import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AccessibilityService {
@@ -48,8 +53,10 @@ public class AccessibilityService {
 
     private final TrafficSignDataService trafficSignDataService;
 
-    public Accessibility calculateAccessibility(
-            AccessibilityRequest accessibilityRequest) {
+    @Timed(description = "Time spent calculating accessibility")
+    public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
+
+        OffsetDateTime startTime = OffsetDateTime.now();
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
         List<AdditionalSnap> additionalSnaps = buildTrafficSignSnaps(accessibilityRequest);
@@ -89,7 +96,7 @@ public class AccessibilityService {
                                 queryGraph,
                                 startSegment));
 
-        return Accessibility.builder()
+        Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
                 .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
                 .mergedAccessibility(
@@ -97,6 +104,10 @@ public class AccessibilityService {
                                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                                 accessibleRoadSectionsWithAppliedRestrictions))
                 .build();
+
+        log.debug("Accessibility generation done. It took: %s ms"
+                .formatted(ChronoUnit.MILLIS.between(startTime, OffsetDateTime.now())));
+        return accessibility;
     }
 
     private List<AdditionalSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
