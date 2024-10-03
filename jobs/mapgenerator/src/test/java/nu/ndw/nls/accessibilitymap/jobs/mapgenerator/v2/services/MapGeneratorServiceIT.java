@@ -19,7 +19,7 @@ class MapGeneratorServiceIT {
     void generate_ok() {
 
         MapGenerationProperties mapGenerationProperties = MapGenerationProperties.builder()
-                .trafficSigns(Set.of(TrafficSignType.C12))
+                .trafficSigns(Set.of(TrafficSignType.C6))
                 .build();
 
         service.generate(mapGenerationProperties);
