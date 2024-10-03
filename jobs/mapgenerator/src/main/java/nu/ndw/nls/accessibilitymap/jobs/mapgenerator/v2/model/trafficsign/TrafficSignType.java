@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign;
 
 public enum TrafficSignType {
     C6,

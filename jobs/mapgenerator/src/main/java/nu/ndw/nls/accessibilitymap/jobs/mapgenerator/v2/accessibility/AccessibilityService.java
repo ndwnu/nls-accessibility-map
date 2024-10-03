@@ -27,7 +27,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Additi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
@@ -113,7 +113,7 @@ public class AccessibilityService {
                                     trafficSign.longitude(),
                                     EdgeFilter.ALL_EDGES))
                             .build())
-                    .toList();
+                    .collect(Collectors.toCollection(ArrayList::new));
         }
         return new ArrayList<>();
     }

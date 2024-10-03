@@ -17,12 +17,12 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.Accessibil
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.AccessibilityGeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.LineStringGeometry;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.OutputFormat;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.PointGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.locationtech.jts.geom.LineString;
@@ -109,7 +109,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .properties(AccessibilityGeoJsonProperties
                         .builder()
                         .trafficSignType(trafficSign.trafficSignType())
-                        .windowTimes(trafficSign.windowTimes())
+                        .windowTimes(buildWindowTime(trafficSign))
                         .iconUrl(trafficSign.iconUri())
                         .build())
                 .build();
@@ -136,11 +136,17 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                                         : null)
                         .windowTimes(
                                 directionalSegment.hasTrafficSigns()
-                                        ? directionalSegment.getTrafficSigns().getFirst().windowTimes()
+                                        ? buildWindowTime(directionalSegment.getTrafficSigns().getFirst())
                                         : null)
                         .accessible(directionalSegment.isAccessible())
                         .build())
                 .build();
+    }
+
+    private String buildWindowTime(TrafficSign trafficSign) {
+        return trafficSign.findFirstWindowTimeTextSign()
+                .map(TextSign::getText)
+                .orElse(null);
     }
 
     @Override
