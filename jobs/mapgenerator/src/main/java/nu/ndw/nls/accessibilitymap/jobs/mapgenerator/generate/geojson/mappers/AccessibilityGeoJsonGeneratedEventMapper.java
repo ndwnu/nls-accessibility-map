@@ -16,7 +16,10 @@ public class AccessibilityGeoJsonGeneratedEventMapper {
 
     private final GenerateConfiguration generateConfiguration;
 
-    public NlsEvent map(CmdGenerateGeoJsonType cmdGenerateGeoJsonType, int version, int nwbVersionId,
+    public NlsEvent map(
+            CmdGenerateGeoJsonType cmdGenerateGeoJsonType,
+            int version,
+            int nwbVersionId,
             Instant trafficSignTimestamp) {
 
         GeoJsonProperties geoJsonProperties = generateConfiguration.getConfiguration(cmdGenerateGeoJsonType);

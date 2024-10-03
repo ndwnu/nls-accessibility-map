@@ -46,10 +46,7 @@ public class MapGeneratorService {
 
         LocalDateTime startTime = LocalDateTime.now();
         CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
-                mapGenerationProperties.getTrafficSigns().stream()
-                        .map(Enum::name)
-                        .findFirst()
-                        .orElseThrow()
+                mapGenerationProperties.getTrafficSignType().name()
         );
 
         Accessibility accessibility = calculateAccessibility(mapGenerationProperties, cmdGenerateGeoJsonType);
@@ -63,8 +60,8 @@ public class MapGeneratorService {
         outputWriters.forEach(
                 outputWriter -> outputWriter.writeToFile(accessibility, mapGenerationProperties));
 
-        if (mapGenerationProperties.isProduceMessage()) {
-            sendMessage(cmdGenerateGeoJsonType, mapGenerationProperties, startTime);
+        if (mapGenerationProperties.isPublishEvents()) {
+            sendEventGeneratingDone(cmdGenerateGeoJsonType, mapGenerationProperties, startTime);
         }
     }
 
@@ -78,7 +75,8 @@ public class MapGeneratorService {
                 .vehicleProperties(vehicleTypeVehiclePropertiesMapper.map(cmdGenerateGeoJsonType))
                 .startPoint(generateConfiguration.getStartLocation())
                 .searchDistanceInMetres(generateProperties.getSearchDistanceInMeters())
-                .trafficSigns(mapGenerationProperties.getTrafficSigns())
+                .trafficSignType(mapGenerationProperties.getTrafficSignType())
+                .includeOnlyTimeWindowedSigns(mapGenerationProperties.isIncludeOnlyTimeWindowedSigns())
                 .build();
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
@@ -89,7 +87,7 @@ public class MapGeneratorService {
         return accessibility;
     }
 
-    private void sendMessage(
+    private void sendEventGeneratingDone(
             CmdGenerateGeoJsonType type,
             MapGenerationProperties mapGenerationProperties,
             LocalDateTime versionLocalDateTime) {

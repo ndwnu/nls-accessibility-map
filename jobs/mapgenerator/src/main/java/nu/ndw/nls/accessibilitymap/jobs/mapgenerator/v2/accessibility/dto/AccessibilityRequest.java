@@ -1,10 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.With;
@@ -28,6 +25,8 @@ public final class AccessibilityRequest {
     private final VehicleProperties vehicleProperties;
 
     @NotNull
-    @Default
-    private final Set<TrafficSignType> trafficSigns = new HashSet<>();
+    private final TrafficSignType trafficSignType;
+
+    @NotNull
+    private final boolean includeOnlyTimeWindowedSigns;
 }

@@ -42,56 +42,50 @@ nu:
             start-location-longitude: 5.334845116067081
             # Meta-properties, to be re-used for all our jobs
             generation:
-              include-acccessible: true
+              include-accessible: true
               include-inaccessible: true
               output-directionality: true
-              type: OUTPUT_AS_10M_LINE_STRINGS
             geojson:
               C6:
                 path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
                 rvv-code: C6
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c6
                 generation:
-                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-acccessible}
+                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
                   include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
                   output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-                  type: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.type}
               C7:
                 path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
                 rvv-code: C7
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c7
                 generation:
-                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-acccessible}
+                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
                   include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
                   output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-                  type: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.type}
               C7B:
                 path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
                 rvv-code: C7b
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c7b
                 generation:
-                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-acccessible}
+                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
                   include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
                   output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-                  type: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.type}
               C12:
                 path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
                 rvv-code: C12
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c12
                 generation:
-                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-acccessible}
+                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
                   include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
                   output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-                  type: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.type}
               C22C:
                 path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
                 rvv-code: C22c
                 publisher-event-subject-type: accessibility_windows_times_rvv_code_c22c
                 generation:
-                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-acccessible}
+                  include-acccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
                   include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
                   output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-                  type: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.type}
         trafficsignclient:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4

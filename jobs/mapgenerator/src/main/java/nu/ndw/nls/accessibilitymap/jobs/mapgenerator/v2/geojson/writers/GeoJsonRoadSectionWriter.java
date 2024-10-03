@@ -38,14 +38,13 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Override
-    public void writeToFile(Accessibility accessibility,
+    public void writeToFile(
+            Accessibility accessibility,
             MapGenerationProperties mapGenerationProperties) {
 
         CmdGenerateGeoJsonType type = CmdGenerateGeoJsonType.valueOf(
-                mapGenerationProperties.getTrafficSigns().stream()
-                        .map(Enum::name)
-                        .findFirst()
-                        .orElseThrow());
+                mapGenerationProperties.getTrafficSignType().name()
+        );
 
         Path tempFile = uploadService.createTmpGeoJsonFile(type);
 
@@ -144,7 +143,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     }
 
     private String buildWindowTime(TrafficSign trafficSign) {
-        return trafficSign.findFirstWindowTimeTextSign()
+        return trafficSign.findFirstTimeWindowedSign()
                 .map(TextSign::getText)
                 .orElse(null);
     }

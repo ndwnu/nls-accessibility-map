@@ -4,11 +4,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +19,9 @@ public class TrafficSignDataService {
 
     final TrafficSignService trafficSignService;
 
-    public List<TrafficSign> findAllByType(Set<TrafficSignType> trafficSignTypes) {
-        Set<String> trafficSignCodes = trafficSignTypes.stream()
-                .map(Enum::name)
-                .collect(Collectors.toSet());
+    public List<TrafficSign> findAllByType(TrafficSignType trafficSignType) {
 
-        return trafficSignService.getTrafficSigns(trafficSignCodes)
+        return trafficSignService.getTrafficSigns(Set.of(trafficSignType.name()))
                 .trafficSignsByRoadSectionId().values().stream()
                 .flatMap(Collection::stream)
                 .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
