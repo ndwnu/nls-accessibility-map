@@ -18,7 +18,6 @@ public final class RoadSection {
 
     private final long roadSectionId;
 
-    @NonNull
     private RoadSectionMetaData metaData;
 
     @Default
