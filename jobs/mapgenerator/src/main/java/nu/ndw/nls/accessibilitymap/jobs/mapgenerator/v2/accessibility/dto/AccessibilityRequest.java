@@ -20,17 +20,12 @@ public final class AccessibilityRequest {
     @NonNull
     private final Point startPoint;
 
-    @NonNull
     private final Integer municipalityId;
 
     @NonNull
     private final Double searchDistanceInMetres;
 
-    @NonNull
     private final VehicleProperties vehicleProperties;
-
-    @NonNull
-    private final Integer nwbVersion;
 
     @NotNull
     @Default

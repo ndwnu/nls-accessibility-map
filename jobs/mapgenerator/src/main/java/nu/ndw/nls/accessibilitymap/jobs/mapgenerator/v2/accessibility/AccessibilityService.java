@@ -130,19 +130,25 @@ public class AccessibilityService {
                             .build());
 
             if (isochroneMatch.isReversed()) {
-                roadSection.getBackwardSegments().add(buildDirectionalSegment(isochroneMatch, roadSection));
+                roadSection.getBackwardSegments().add(
+                        buildDirectionalSegment(Direction.BACKWARD, isochroneMatch, roadSection));
             } else {
-                roadSection.getForwardSegments().add(buildDirectionalSegment(isochroneMatch, roadSection));
+                roadSection.getForwardSegments().add(
+                        buildDirectionalSegment(Direction.FORWARD, isochroneMatch, roadSection));
             }
         });
 
         return roadSectionsGroupedById.values();
     }
 
-    private static DirectionalSegment buildDirectionalSegment(IsochroneMatch isochroneMatch, RoadSection roadSection) {
+    private static DirectionalSegment buildDirectionalSegment(
+            Direction direction,
+            IsochroneMatch isochroneMatch,
+            RoadSection roadSection) {
 
         return DirectionalSegment.builder()
                 .id(isochroneMatch.getEdgeKey())
+                .direction(direction)
                 .accessible(true)
                 .lineString(isochroneMatch.getGeometry())
                 .roadSection(roadSection)
