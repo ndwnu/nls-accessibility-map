@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateConfiguration;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubject;
 import nu.ndw.nls.events.NlsEventSubjectType;
@@ -27,7 +27,7 @@ class AccessibilityGeoJsonGeneratedEventMapperTest {
     private static final Instant TRAFFIC_SIGN_TIMESTAMP = Instant.parse(TRAFFIC_SIGN_TIMESTAMP_STRING);
     private static final int VERSION = 202301002;
     private static final String VERSION_AS_STRING = "202301002";
-    private static final CmdGenerateGeoJsonType GENERATE_GEO_JSON_TYPE = CmdGenerateGeoJsonType.C6;
+    private static final TrafficSignType GENERATE_GEO_JSON_TYPE = TrafficSignType.C6;
     private static final NlsEventSubjectType NLS_EVENT_SUBJECT_TYPE =
             NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6;
 

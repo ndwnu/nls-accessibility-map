@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -8,7 +8,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -22,7 +22,7 @@ public class GenerateProperties {
     private Path rootGenerationDestination;
 
     @NotNull
-    private Map<CmdGenerateGeoJsonType, GeoJsonProperties> geojson;
+    private Map<TrafficSignType, GeoJsonProperties> geoJsonProperties;
 
     @Min(50)
     @Max(54)
@@ -33,7 +33,7 @@ public class GenerateProperties {
     private double startLocationLongitude;
 
     @Min(1)
-    private double searchDistanceInMeters;
+    private double searchRadiusInMeters;
 
     /**
      * When true, will instruct the object mapper to pretty print the output. Usually

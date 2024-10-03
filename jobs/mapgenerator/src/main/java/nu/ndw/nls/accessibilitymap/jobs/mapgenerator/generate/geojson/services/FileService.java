@@ -16,8 +16,9 @@ import java.util.Locale;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -42,8 +43,8 @@ public class FileService {
         }
     }
 
-    public void uploadFile(CmdGenerateGeoJsonType type, Path geojsonTmpResult, LocalDate versionDate) {
-        Path mapDestinationPath = blobStorageLocationMapper.map(type, versionDate);
+    public void uploadFile(TrafficSignType trafficSignType, Path geojsonTmpResult, LocalDate versionDate) {
+        Path mapDestinationPath = blobStorageLocationMapper.map(trafficSignType, versionDate);
 
         Path mapDirectoryPath = mapDestinationPath.getParent();
 

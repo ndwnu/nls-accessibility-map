@@ -12,8 +12,9 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Set;
 import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,8 +43,8 @@ class FileServiceTest {
         Path tempDirectory = tempRootDirectory.resolve("v1/windowTimes");
         Path destinationFile = tempDirectory.resolve("result.json");
 
-        when(blobStorageLocationMapper.map(CmdGenerateGeoJsonType.C6, VERSION_DATE)).thenReturn(destinationFile);
-        fileService.uploadFile(CmdGenerateGeoJsonType.C6, generatedFile, VERSION_DATE);
+        when(blobStorageLocationMapper.map(TrafficSignType.C6, VERSION_DATE)).thenReturn(destinationFile);
+        fileService.uploadFile(TrafficSignType.C6, generatedFile, VERSION_DATE);
 
         assertTrue(Files.exists(destinationFile));
         assertEquals(TESTCONTENT, Files.readString(destinationFile));
@@ -63,8 +64,8 @@ class FileServiceTest {
         Files.createDirectories(tempDirectory);
         Files.writeString(destinationFile, DIFFERENTCONTENT);
 
-        when(blobStorageLocationMapper.map(CmdGenerateGeoJsonType.C6, VERSION_DATE)).thenReturn(destinationFile);
-        fileService.uploadFile(CmdGenerateGeoJsonType.C6, generatedFile, VERSION_DATE);
+        when(blobStorageLocationMapper.map(TrafficSignType.C6, VERSION_DATE)).thenReturn(destinationFile);
+        fileService.uploadFile(TrafficSignType.C6, generatedFile, VERSION_DATE);
 
         assertTrue(Files.exists(destinationFile));
         assertEquals(TESTCONTENT, Files.readString(destinationFile));

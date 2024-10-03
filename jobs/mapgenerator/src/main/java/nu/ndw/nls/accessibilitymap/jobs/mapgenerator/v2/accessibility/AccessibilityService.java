@@ -34,8 +34,11 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -53,6 +56,8 @@ public class AccessibilityService {
 
     private final TrafficSignDataService trafficSignDataService;
 
+    private final GeometryFactoryWgs84 geometryFactoryWgs84;
+
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
 
@@ -60,10 +65,12 @@ public class AccessibilityService {
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
         List<AdditionalSnap> additionalSnaps = buildTrafficSignSnaps(accessibilityRequest);
+        Point startPoint = createPoint(
+                accessibilityRequest.getStartLocationLatitude(),
+                accessibilityRequest.getStartLocationLongitude());
 
         Snap startSegment = networkGraphHopper.getLocationIndex()
-                .findClosest(accessibilityRequest.getStartPoint().getY(), accessibilityRequest.getStartPoint().getX(),
-                        EdgeFilter.ALL_EDGES);
+                .findClosest(startPoint.getY(), startPoint.getX(),EdgeFilter.ALL_EDGES);
         additionalSnaps.add(AdditionalSnap.builder()
                 .snap(startSegment)
                 .build());
@@ -77,7 +84,7 @@ public class AccessibilityService {
                         isochroneService.getIsochroneMatchesByMunicipalityId(
                                 IsochroneArguments.builder()
                                         .weighting(buildWeightingWithoutRestrictions(accessibilityRequest))
-                                        .startPoint(accessibilityRequest.getStartPoint())
+                                        .startPoint(startPoint)
                                         .municipalityId(accessibilityRequest.getMunicipalityId())
                                         .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
                                         .build(),
@@ -89,7 +96,7 @@ public class AccessibilityService {
                         isochroneService.getIsochroneMatchesByMunicipalityId(
                                 IsochroneArguments.builder()
                                         .weighting(buildWeightingWithRestrictions(accessibilityRequest))
-                                        .startPoint(accessibilityRequest.getStartPoint())
+                                        .startPoint(startPoint)
                                         .municipalityId(accessibilityRequest.getMunicipalityId())
                                         .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
                                         .build(),
@@ -230,4 +237,9 @@ public class AccessibilityService {
 
         return network.createWeighting(profile, hints);
     }
+
+    private Point createPoint(double latitude, double longitude) {
+        return geometryFactoryWgs84.createPoint(new Coordinate(longitude, latitude));
+    }
+
 }
