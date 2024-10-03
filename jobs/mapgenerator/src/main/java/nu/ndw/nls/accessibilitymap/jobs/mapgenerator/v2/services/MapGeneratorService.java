@@ -91,6 +91,7 @@ public class MapGeneratorService {
                 .vehicleProperties(vehicleTypeVehiclePropertiesMapper.map(cmdGenerateGeoJsonType))
                 .startPoint(generateConfiguration.getStartLocation())
                 .searchDistanceInMetres(generateProperties.getSearchDistanceInMeters())
+                .trafficSigns(mapGenerationProperties.getTrafficSigns())
                 .build();
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
