@@ -5,6 +5,7 @@ import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.shapes.GHPoint;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AdditionalSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignDirection;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
 
 @Slf4j
 public class RestrictionWeightingAdapter implements Weighting {
@@ -24,6 +26,8 @@ public class RestrictionWeightingAdapter implements Weighting {
     private final Map<Integer, List<AdditionalSnap>> snappedTrafficSignsByRoadSectionId;
 
     private final EncodingManager encodingManager;
+
+    private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor = new EdgeIteratorStateReverseExtractor();
 
     public RestrictionWeightingAdapter(Weighting adaptedWeighting, List<AdditionalSnap> snappedTrafficSigns,
             EncodingManager encodingManager) {
@@ -42,8 +46,10 @@ public class RestrictionWeightingAdapter implements Weighting {
 
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reverse) {
-        if (edgeHasTrafficSigns(getLinkId(edgeIteratorState))) {
-            Predicate<AdditionalSnap> filterOnDirection = reverse
+        int linkId = getLinkId(edgeIteratorState);
+        boolean directionReversed = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState);
+        if (edgeHasTrafficSigns(linkId)) {
+            Predicate<AdditionalSnap> filterOnDirection = directionReversed
                     ? (snap) -> snap.getTrafficSign().direction().isBackward()
                     : (snap) -> snap.getTrafficSign().direction().isForward();
 
@@ -53,8 +59,8 @@ public class RestrictionWeightingAdapter implements Weighting {
                     .toList();
             log.info("Found traffic signs {}", additionalSnaps);
             for (AdditionalSnap additionalSnap : additionalSnaps) {
-                if (isEdgeBehindTrafficSign(additionalSnap, edgeIteratorState, reverse)) {
-                    log.info("Blocking access to edge {} {} {}", additionalSnap, edgeIteratorState, reverse);
+                if (isEdgeBehindTrafficSign(additionalSnap, edgeIteratorState, directionReversed)) {
+                    log.info("Blocking access to edge {} {} {}", additionalSnap, edgeIteratorState, directionReversed);
                     return Double.POSITIVE_INFINITY;
                 }
             }
@@ -73,15 +79,16 @@ public class RestrictionWeightingAdapter implements Weighting {
 
     private static Coordinate getEdgeCoordinate(AdditionalSnap additionalSnap, EdgeIteratorState edgeIteratorState,
             boolean reverse) {
+        LineString lineString = edgeIteratorState.fetchWayGeometry(FetchMode.ALL)
+                .toLineString(false);
+
         if (isBidirectionalAndReverse(additionalSnap, reverse)) {
             log.info("Bidirectional traffic sign on reverse edge {}", additionalSnap);
-            return edgeIteratorState.fetchWayGeometry(FetchMode.ALL)
-                    .toLineString(false)
+            return lineString
                     .getEndPoint()
                     .getCoordinate();
         } else {
-            return edgeIteratorState.fetchWayGeometry(FetchMode.ALL)
-                    .toLineString(false)
+            return lineString
                     .getStartPoint().getCoordinate();
         }
     }
