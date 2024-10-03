@@ -10,6 +10,7 @@ public record TrafficSign(
         @NonNull TrafficSignType trafficSignType,
         @NonNull Double latitude,
         @NonNull Double longitude,
+        @NonNull TrafficSignDirection direction,
         String windowTimes,
         @NonNull Double fraction,
         URI iconUri) {
