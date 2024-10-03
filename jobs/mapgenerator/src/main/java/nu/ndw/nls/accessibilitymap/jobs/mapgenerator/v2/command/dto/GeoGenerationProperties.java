@@ -1,5 +1,7 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 @Builder
 @Validated
-public final class MapGenerationProperties {
+public final class GeoGenerationProperties {
 
     private int exportVersion;
 
@@ -28,4 +30,15 @@ public final class MapGenerationProperties {
 
     @NotNull
     private GeoJsonProperties geoJsonProperties;
+
+    @Min(50)
+    @Max(54)
+    private double startLocationLatitude;
+
+    @Min(3)
+    @Max(8)
+    private double startLocationLongitude;
+
+    @Min(1)
+    private double searchRadiusInMeters;
 }

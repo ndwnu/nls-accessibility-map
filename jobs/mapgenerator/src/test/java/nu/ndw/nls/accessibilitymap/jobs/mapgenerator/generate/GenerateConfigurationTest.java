@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateConfiguration;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +30,7 @@ class GenerateConfigurationTest {
     private GenerateConfiguration generateConfiguration;
 
     @Mock
-    private Map<CmdGenerateGeoJsonType, GeoJsonProperties> typeToGeoJsonProperties;
+    private Map<TrafficSignType, GeoJsonProperties> typeToGeoJsonProperties;
 
     @Mock
     private GeoJsonProperties geoJsonProperties;
@@ -38,9 +40,9 @@ class GenerateConfigurationTest {
 
     @Test
     void getConfiguration_ok() {
-        when(generateProperties.getGeojson()).thenReturn(typeToGeoJsonProperties);
-        when(typeToGeoJsonProperties.get(CmdGenerateGeoJsonType.C6)).thenReturn(geoJsonProperties);
-        assertEquals(geoJsonProperties, generateConfiguration.getConfiguration(CmdGenerateGeoJsonType.C6));
+        when(generateProperties.getGeoJsonProperties()).thenReturn(typeToGeoJsonProperties);
+        when(typeToGeoJsonProperties.get(TrafficSignType.C6)).thenReturn(geoJsonProperties);
+        assertEquals(geoJsonProperties, generateConfiguration.getConfiguration(TrafficSignType.C6));
     }
 
     @Test

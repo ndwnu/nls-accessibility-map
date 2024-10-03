@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +25,7 @@ class GeneratePropertiesIT {
 
     @Test
     void configuration_ok_configExistsForEachGenerateGeoJsonType() {
-        assertTrue(generateProperties.getGeojson().keySet().containsAll(List.of(CmdGenerateGeoJsonType.values())),
+        assertTrue(generateProperties.getGeoJsonProperties().keySet().containsAll(List.of(TrafficSignType.values())),
                 "There should be a configuration for each: " + CmdGenerateGeoJsonType.class.getSimpleName());
     }
 }

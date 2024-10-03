@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

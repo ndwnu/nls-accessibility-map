@@ -8,18 +8,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.PointGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.Properties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
@@ -33,20 +33,23 @@ import org.springframework.stereotype.Component;
 public class GeoJsonRoadSectionWriter implements OutputWriter {
 
     private final FileService uploadService;
+
     private final GenerateConfiguration generateConfiguration;
+
     private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
+
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Override
     public void writeToFile(
             Accessibility accessibility,
-            MapGenerationProperties mapGenerationProperties) {
+            GeoGenerationProperties mapGenerationProperties) {
 
-        CmdGenerateGeoJsonType type = CmdGenerateGeoJsonType.valueOf(
+        CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
                 mapGenerationProperties.getTrafficSignType().name()
         );
 
-        Path tempFile = uploadService.createTmpGeoJsonFile(type);
+        Path tempFile = uploadService.createTmpGeoJsonFile(cmdGenerateGeoJsonType);
 
         GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier = new GeoJsonIdSequenceSupplier();
 
@@ -64,7 +67,8 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
             throw new IllegalStateException("Failed to serialize geojson to file: " + tempFile, e);
         }
 
-        uploadService.uploadFile(type, tempFile, LocalDateTime.now().toLocalDate());
+        uploadService.uploadFile(mapGenerationProperties.getTrafficSignType(), tempFile,
+                LocalDateTime.now().toLocalDate());
     }
 
     private List<Feature> createFeatures(

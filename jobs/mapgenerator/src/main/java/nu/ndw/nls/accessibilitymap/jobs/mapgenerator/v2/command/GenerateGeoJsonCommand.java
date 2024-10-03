@@ -5,10 +5,9 @@ import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services.MapGeneratorService;
 import org.springframework.stereotype.Component;
@@ -45,13 +44,17 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     @Override
     public Integer call() {
         try {
-            MapGenerationProperties mapGeneratorProperties = MapGenerationProperties.builder()
+            GeoGenerationProperties mapGeneratorProperties = GeoGenerationProperties.builder()
                     .trafficSignType(trafficSignType)
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .exportVersion(localDateVersionMapper.map(LocalDateTime.now().toLocalDate()))
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                     .publishEvents(publishEvents)
-                    .geoJsonProperties(generateProperties.getGeojson().get(CmdGenerateGeoJsonType.valueOf(trafficSignType.name())))
+                    .startLocationLatitude(generateProperties.getStartLocationLatitude())
+                    .startLocationLongitude(generateProperties.getStartLocationLongitude())
+                    .searchRadiusInMeters(generateProperties.getSearchRadiusInMeters())
+                    .geoJsonProperties(
+                            generateProperties.getGeoJsonProperties().get(trafficSignType))
                     .build();
 
             log.info("Generating GeoJson");

@@ -6,16 +6,15 @@ import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.GenerateProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.VehicleTypeVehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.writers.OutputWriter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.services.NdwDataService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
@@ -25,10 +24,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class MapGeneratorService {
-
-    private final GenerateProperties generateProperties;
-
-    private final GenerateConfiguration generateConfiguration;
 
     private final VehicleTypeVehiclePropertiesMapper vehicleTypeVehiclePropertiesMapper;
 
@@ -42,7 +37,7 @@ public class MapGeneratorService {
 
     private final MessageService messageService;
 
-    public void generate(@Valid MapGenerationProperties mapGenerationProperties) {
+    public void generate(@Valid GeoGenerationProperties mapGenerationProperties) {
 
         LocalDateTime startTime = LocalDateTime.now();
         CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
@@ -61,20 +56,21 @@ public class MapGeneratorService {
                 outputWriter -> outputWriter.writeToFile(accessibility, mapGenerationProperties));
 
         if (mapGenerationProperties.isPublishEvents()) {
-            sendEventGeneratingDone(cmdGenerateGeoJsonType, mapGenerationProperties, startTime);
+            sendEventGeneratingDone(mapGenerationProperties.getTrafficSignType(), mapGenerationProperties, startTime);
         }
     }
 
     private Accessibility calculateAccessibility(
-            MapGenerationProperties mapGenerationProperties,
+            GeoGenerationProperties mapGenerationProperties,
             CmdGenerateGeoJsonType cmdGenerateGeoJsonType) {
 
         log.debug("Generating with the following properties: {}", mapGenerationProperties);
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .vehicleProperties(vehicleTypeVehiclePropertiesMapper.map(cmdGenerateGeoJsonType))
-                .startPoint(generateConfiguration.getStartLocation())
-                .searchDistanceInMetres(generateProperties.getSearchDistanceInMeters())
+                .startLocationLatitude(mapGenerationProperties.getStartLocationLatitude())
+                .startLocationLongitude(mapGenerationProperties.getStartLocationLongitude())
+                .searchDistanceInMetres(mapGenerationProperties.getSearchRadiusInMeters())
                 .trafficSignType(mapGenerationProperties.getTrafficSignType())
                 .includeOnlyTimeWindowedSigns(mapGenerationProperties.isIncludeOnlyTimeWindowedSigns())
                 .build();
@@ -88,12 +84,12 @@ public class MapGeneratorService {
     }
 
     private void sendEventGeneratingDone(
-            CmdGenerateGeoJsonType type,
-            MapGenerationProperties mapGenerationProperties,
+            TrafficSignType trafficSignType,
+            GeoGenerationProperties mapGenerationProperties,
             LocalDateTime versionLocalDateTime) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
-                type,
+                trafficSignType,
                 mapGenerationProperties.getExportVersion(),
                 mapGenerationProperties.getNwbVersion(),
                 versionLocalDateTime.toInstant(ZoneOffset.UTC));
@@ -107,4 +103,5 @@ public class MapGeneratorService {
 
         messageService.publish(nlsEvent);
     }
+
 }

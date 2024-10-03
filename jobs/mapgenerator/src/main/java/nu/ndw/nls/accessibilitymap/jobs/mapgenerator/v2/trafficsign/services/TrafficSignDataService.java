@@ -33,7 +33,7 @@ public class TrafficSignDataService {
 //    private void addTrafficSignToDirectionalSegment(
 //            DirectionalSegment directionalSegment,
 //            List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections,
-//            Predicate<TrafficSignGeoJsonDto> isInForwardDirection, MapGenerationProperties mapGenerationProperties) {
+//            Predicate<TrafficSignGeoJsonDto> isInForwardDirection, GeoGenerationProperties mapGenerationProperties) {
 //
 //        if (Objects.isNull(directionalSegment)) {
 //            return;
@@ -69,7 +69,7 @@ public class TrafficSignDataService {
 //
 //    private boolean filterByMapGenerationProperties(
 //            TrafficSignGeoJsonDto trafficSignGeoJsonDto,
-//            MapGenerationProperties mapGenerationProperties) {
+//            GeoGenerationProperties mapGenerationProperties) {
 //
 //        // TODO: take other options from mapGenerationProperties into account like timed / non timed windows.
 //        return true;
