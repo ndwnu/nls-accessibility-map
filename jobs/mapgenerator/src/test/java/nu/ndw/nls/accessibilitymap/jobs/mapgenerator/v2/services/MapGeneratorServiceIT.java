@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Set;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.junit.jupiter.api.Test;
@@ -25,8 +24,9 @@ class MapGeneratorServiceIT {
     void generate_ok() {
 
         MapGenerationProperties mapGenerationProperties = MapGenerationProperties.builder()
-                .trafficSigns(Set.of(TrafficSignType.C6))
+                .trafficSignType(TrafficSignType.C6)
                 .exportVersion(Integer.parseInt(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)))
+                .includeOnlyTimeWindowedSigns(true)
                 .nwbVersion(20240701)
                 .build();
 
