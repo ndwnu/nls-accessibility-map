@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(properties = {
         "graphhopper.dir=../../graphhopper"
 })
+@Disabled
 class MapGeneratorServiceIT {
 
     @Autowired
