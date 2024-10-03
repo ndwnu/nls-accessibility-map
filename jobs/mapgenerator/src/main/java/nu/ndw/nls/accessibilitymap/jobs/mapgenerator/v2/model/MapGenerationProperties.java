@@ -27,5 +27,6 @@ public final class MapGenerationProperties {
 
     @NotNull
     @Default
+    @Min(1)
     private final Set<TrafficSignType> trafficSigns = new HashSet<>();
 }

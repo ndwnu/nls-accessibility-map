@@ -20,23 +20,23 @@ public class TrafficSignMapper {
 
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
 
-        if (Objects.isNull(trafficSignGeoJsonDto.getProperties().getFraction())
-                || Objects.isNull(trafficSignGeoJsonDto.getProperties().getDrivingDirection())) {
-            log.warn("Traffic sign with id '{}' is incomplete", trafficSignGeoJsonDto.getId());
+        try {
+            return Optional.of(TrafficSign.builder()
+                    .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
+                    .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
+                    .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
+                    .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
+                    .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
+                    .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
+                    .iconUri(createIconUri(trafficSignGeoJsonDto.getProperties()))
+                    .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
+                    .build());
+        } catch (Exception exception) {
+            log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
+                    trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto, exception);
             return Optional.empty();
         }
-        return Optional.of(TrafficSign.builder()
-                .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
-                .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
-                .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
-                .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
-                .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
-                .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
-                .iconUri(createIconUri(trafficSignGeoJsonDto.getProperties()))
-                .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
-                .build());
     }
-
 
     private TrafficSignDirection createDirection(DirectionType drivingDirection) {
 
