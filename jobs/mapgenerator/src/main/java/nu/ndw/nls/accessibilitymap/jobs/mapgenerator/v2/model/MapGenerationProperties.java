@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
@@ -21,6 +22,8 @@ public final class MapGenerationProperties {
 
     private int nwbVersion;
 
+    private boolean produceMessage;
+
     @Min(1)
     @Default
     private int trafficSignsRequestBatchSize = 500;
@@ -28,5 +31,6 @@ public final class MapGenerationProperties {
     @NotNull
     @Default
     @Min(1)
+    @Max(value = 1, message = "We only support max one trafficSign because of older parts of the code cannot deal with multiple traffic signs at the same time.")
     private final Set<TrafficSignType> trafficSigns = new HashSet<>();
 }
