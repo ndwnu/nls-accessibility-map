@@ -6,8 +6,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignDirection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services.TextSignFilterService;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
@@ -22,7 +24,8 @@ public class TrafficSignMapper {
 
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
 
-        if(Objects.isNull(trafficSignGeoJsonDto.getProperties().getFraction())) {
+        if (Objects.isNull(trafficSignGeoJsonDto.getProperties().getFraction())
+                || Objects.isNull(trafficSignGeoJsonDto.getProperties().getDrivingDirection())) {
             log.warn("Traffic sign with id '{}' is incomplete", trafficSignGeoJsonDto.getId());
             return Optional.empty();
         }
@@ -30,11 +33,29 @@ public class TrafficSignMapper {
                 .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
                 .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
                 .windowTimes(findWindowTimes(trafficSignGeoJsonDto))
+                .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
                 .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
                 .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
                 .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
                 .iconUri(createIconUri(trafficSignGeoJsonDto.getProperties()))
                 .build());
+    }
+
+    private TrafficSignDirection createDirection(DirectionType drivingDirection) {
+
+        switch (drivingDirection) {
+            case FORTH -> {
+                return TrafficSignDirection.FORWARD;
+            }
+            case BACK -> {
+                return TrafficSignDirection.BACKWARD;
+            }
+            case BOTH -> {
+                return TrafficSignDirection.BOTH;
+            }
+        }
+
+        throw new IllegalArgumentException("Driving direction '%s' could not be mapped.".formatted(drivingDirection));
     }
 
     private URI createIconUri(TrafficSignPropertiesDto trafficSignPropertiesDto) {

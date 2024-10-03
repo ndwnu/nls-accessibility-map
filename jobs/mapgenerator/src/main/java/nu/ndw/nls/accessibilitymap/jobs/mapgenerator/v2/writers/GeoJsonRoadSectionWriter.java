@@ -15,13 +15,13 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.OutputFormat;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.AccessibilityGeoJsonFeature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.AccessibilityGeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.LineStringGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.OutputFormat;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.geojson.PointGeometry;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
