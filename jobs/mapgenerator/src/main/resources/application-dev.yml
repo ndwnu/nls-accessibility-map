@@ -29,7 +29,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps
-    password: nls-map
+    password: nls-maps
   cloud:
     openfeign:
       micrometer:
