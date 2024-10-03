@@ -17,9 +17,9 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.Ve
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.writers.OutputWriter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.services.NdwDataService;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.writers.OutputWriter;
 import org.springframework.stereotype.Service;
 
 @Service

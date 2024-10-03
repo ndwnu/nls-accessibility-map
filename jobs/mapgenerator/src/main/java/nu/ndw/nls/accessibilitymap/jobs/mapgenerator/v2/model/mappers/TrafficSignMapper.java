@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.mappers;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.mappers;
 
 import java.net.URI;
 import java.util.Objects;
