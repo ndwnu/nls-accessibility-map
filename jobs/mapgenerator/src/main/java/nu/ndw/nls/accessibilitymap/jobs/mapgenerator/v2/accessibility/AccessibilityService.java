@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility;
 
+import static java.util.stream.Collectors.toCollection;
+
 import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
@@ -28,6 +30,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsMod
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AdditionalSnap;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
@@ -64,14 +67,12 @@ public class AccessibilityService {
         Snap startSegment = networkGraphHopper.getLocationIndex()
                 .findClosest(accessibilityRequest.getStartPoint().getY(), accessibilityRequest.getStartPoint().getX(),
                         EdgeFilter.ALL_EDGES);
-        additionalSnaps.add(AdditionalSnap.builder()
-                .snap(startSegment)
-                .build());
-
-        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), List.of(startSegment));
-
-        //TODO loop through snaps and check all virtual nodes and update properties.
-
+        List<Snap> snaps = additionalSnaps
+                .stream()
+                .map(AdditionalSnap::getSnap)
+                .collect(toCollection(ArrayList::new));
+        snaps.add(startSegment);
+        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 mapToRoadSections(
                         isochroneService.getIsochroneMatchesByMunicipalityId(
@@ -88,7 +89,8 @@ public class AccessibilityService {
                 mapToRoadSections(
                         isochroneService.getIsochroneMatchesByMunicipalityId(
                                 IsochroneArguments.builder()
-                                        .weighting(buildWeightingWithRestrictions(accessibilityRequest))
+                                        .weighting(
+                                                buildWeightingWithRestrictions(accessibilityRequest, additionalSnaps))
                                         .startPoint(accessibilityRequest.getStartPoint())
                                         .municipalityId(accessibilityRequest.getMunicipalityId())
                                         .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
@@ -124,7 +126,7 @@ public class AccessibilityService {
                                 trafficSign.longitude(),
                                 EdgeFilter.ALL_EDGES))
                         .build())
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(toCollection(ArrayList::new));
     }
 
     private boolean applyTimeWindowedSignFilter(AccessibilityRequest accessibilityRequest, TrafficSign trafficSign) {
@@ -155,7 +157,7 @@ public class AccessibilityService {
         return roadSectionsGroupedById.values();
     }
 
-    private  DirectionalSegment buildDirectionalSegment(
+    private DirectionalSegment buildDirectionalSegment(
             Direction direction,
             IsochroneMatch isochroneMatch,
             RoadSection roadSection) {
@@ -223,11 +225,14 @@ public class AccessibilityService {
         return network.createWeighting(profile, hints);
     }
 
-    private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest) {
-        Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-        CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
-        PMap hints = new PMap().putObject(CustomModel.KEY, model);
-
-        return network.createWeighting(profile, hints);
+    private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest,
+            List<AdditionalSnap> additionalSnaps) {
+        Weighting weighting = buildWeightingWithoutRestrictions(accessibilityRequest);
+        return new RestrictionWeightingAdapter(weighting, additionalSnaps, networkGraphHopper.getEncodingManager());
+//        Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
+//        CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
+//        PMap hints = new PMap().putObject(CustomModel.KEY, model);
+//
+//        return network.createWeighting(profile, hints);
     }
 }
