@@ -22,6 +22,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsMod
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Point;
@@ -82,6 +84,18 @@ class AccessibilityMapTest {
     @InjectMocks
     private AccessibilityMap accessibilityMap;
 
+    private static MockedStatic<QueryGraph> queryGraphStaticMock;
+
+    @BeforeAll
+    static void setUp() {
+        queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class);
+    }
+
+    @AfterAll
+    static void tearDown() {
+        queryGraphStaticMock.close();
+    }
+
     @Test
     void getAccessibleRoadSections_ok() {
         when(accessibilityRequest.vehicleProperties()).thenReturn(vehicleProperties);
@@ -95,10 +109,7 @@ class AccessibilityMapTest {
         when(locationIndexTree.findClosest(2d, 3d, EdgeFilter.ALL_EDGES)).thenReturn(startSegment);
         when(startPoint.getX()).thenReturn(2d);
         when(startPoint.getY()).thenReturn(3d);
-
-        MockedStatic<QueryGraph> queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class);
         queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, startSegment)).thenReturn(queryGraph);
-
         when(accessibilityRequest.startPoint()).thenReturn(startPoint);
         when(accessibilityRequest.municipalityId()).thenReturn(MUNICIPALITY_ID);
         when(accessibilityRequest.searchDistanceInMetres()).thenReturn(SEARCH_DISTANCE);
@@ -115,12 +126,4 @@ class AccessibilityMapTest {
         List<IsochroneMatch> result = accessibilityMap.getAccessibleRoadSections(accessibilityRequest);
         assertEquals(matches, result);
     }
-
-    private void wrapWithStaticMock(Runnable function) {
-        try (MockedStatic<QueryGraph> queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class)) {
-            queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
-            function.run();
-        }
-    }
-
 }

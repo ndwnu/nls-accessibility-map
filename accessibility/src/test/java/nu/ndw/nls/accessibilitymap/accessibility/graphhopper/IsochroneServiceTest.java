@@ -26,6 +26,8 @@ import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneUnit;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Point;
@@ -83,6 +85,18 @@ class IsochroneServiceTest {
     @InjectMocks
     private IsochroneService isochroneService;
 
+    private static MockedStatic<QueryGraph> queryGraphStaticMock;
+
+    @BeforeAll
+    static void setup() {
+        queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class);
+    }
+
+    @AfterAll
+    static void tearDown() {
+        queryGraphStaticMock.close();
+    }
+
     @Test
     void getIsochroneMatchesByMunicipalityId_ok() {
         IsoLabel isoLabel = createIsoLabel();
@@ -115,8 +129,6 @@ class IsochroneServiceTest {
         ).thenReturn(isochroneMatch);
 
         when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
-
-        MockedStatic<QueryGraph> queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class);
         queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
 
         List<IsochroneMatch> result = isochroneService.getIsochroneMatchesByMunicipalityId(
