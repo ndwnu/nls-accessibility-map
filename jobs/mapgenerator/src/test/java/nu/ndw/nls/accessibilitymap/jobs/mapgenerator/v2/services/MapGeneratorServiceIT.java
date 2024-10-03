@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.services;
 
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.MapGenerationProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

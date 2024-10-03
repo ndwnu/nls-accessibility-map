@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
@@ -30,7 +30,7 @@ class NoEntrySignWindowedMapperTest {
     }
 
     private void testMapping(String inputRvvCode, String expectedRvvCode, TextSignType signType) {
-        TextSignDto textSignDto = TextSignDto.builder()
+        TextSign textSignDto = TextSign.builder()
                 .type(signType)
                 .build();
 

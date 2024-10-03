@@ -8,10 +8,10 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.Acce
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.LineStringGeojson;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalRoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalTrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class RoadSectionAccessibilityGeoJsonFeatureMapperTest {
+class RoadSectionFeatureMapperTest {
 
     private static final int NWB_VERSION = 20240101;
     private static final int ROAD_SECTION_ID_INT = 123;

@@ -7,11 +7,11 @@ import lombok.Value;
 
 @Value
 @Builder
-public class AccessibilityGeoJsonFeatureCollection {
+public class FeatureCollection {
 
     private static final String TYPE = "FeatureCollection";
 
-    List<AccessibilityGeoJsonFeature> features;
+    List<Feature> features;
 
     public String getType() {
         return TYPE;

@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeature;
@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class AccessibilityGeoJsonFeatureCollectionMapperTest {
+class FeatureCollectionMapperTest {
 
     @InjectMocks
     private AccessibilityGeoJsonFeatureCollectionMapper accessibilityGeoJsonFeatureCollectionMapper;

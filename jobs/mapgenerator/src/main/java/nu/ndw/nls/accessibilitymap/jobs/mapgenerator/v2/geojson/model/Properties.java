@@ -8,7 +8,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.Traffi
 
 @Value
 @Builder
-public class AccessibilityGeoJsonProperties {
+public class Properties {
 
     long id;
 

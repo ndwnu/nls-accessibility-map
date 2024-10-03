@@ -5,11 +5,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.directional.DirectionalTrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services.TextSignFilterService;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.junit.jupiter.api.Test;
@@ -43,10 +43,10 @@ class DirectionalTrafficSignMapperTest {
     private TrafficSignPropertiesDto trafficSignPropertiesDto;
 
     @Mock
-    private List<TextSignDto> textSignDtos;
+    private List<TextSign> textSignDtos;
 
     @Mock
-    private TextSignDto firstWindowSignTextSignDto;
+    private TextSign firstWindowSignTextSignDto;
 
 
     @Test

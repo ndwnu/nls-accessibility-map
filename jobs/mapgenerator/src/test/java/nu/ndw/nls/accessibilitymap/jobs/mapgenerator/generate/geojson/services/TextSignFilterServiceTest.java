@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,21 +22,21 @@ class TextSignFilterServiceTest {
     private TextSignFilterService textSignFilterService;
 
     @Mock
-    private TextSignDto textSignDtoA;
+    private TextSign textSignDtoA;
     @Mock
-    private TextSignDto textSignDtoB;
+    private TextSign textSignDtoB;
     @Mock
-    private TextSignDto textSignDtoC;
+    private TextSign textSignDtoC;
     @Mock
-    private TextSignDto textSignDtoD;
+    private TextSign textSignDtoD;
     @Mock
-    private TextSignDto textSignDtoE;
+    private TextSign textSignDtoE;
     @Mock
-    private TextSignDto textSignDtoF;
+    private TextSign textSignDtoF;
     @Mock
-    private TextSignDto textSignDtoG;
+    private TextSign textSignDtoG;
     @Mock
-    private TextSignDto textSignDtoH;
+    private TextSign textSignDtoH;
 
     @Test
     void findFirstWindowTimeTextSign_ok_findsFirst() {
