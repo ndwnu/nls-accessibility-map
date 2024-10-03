@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,8 @@ public class TrafficSignDataService {
                 .trafficSignsByRoadSectionId().values().stream()
                 .flatMap(Collection::stream)
                 .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
     }
 //
