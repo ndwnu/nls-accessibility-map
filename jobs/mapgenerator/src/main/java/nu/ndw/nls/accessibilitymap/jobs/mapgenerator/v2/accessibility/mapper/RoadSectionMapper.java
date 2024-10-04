@@ -21,7 +21,7 @@ public class RoadSectionMapper {
 
     public Collection<RoadSection> mapToRoadSections(
             List<IsochroneMatch> isochroneMatches,
-            Map<Integer, TrafficSign> trafficSignByEdgeKey) {
+            Map<Integer, TrafficSign> trafficSignById) {
 
         SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
@@ -56,7 +56,7 @@ public class RoadSectionMapper {
                                 Direction.BACKWARD,
                                 isochroneMatch.getGeometry(),
                                 roadSectionFragmentById.get(roadSectionFragmentId),
-                                trafficSignByEdgeKey.get(directionalSegmentId)));
+                                trafficSignById.get(directionalSegmentId))); // TODO: replace with encodedValue
             } else {
                 roadSectionFragment.getForwardSegments().add(
                         buildDirectionalSegment(
@@ -64,7 +64,7 @@ public class RoadSectionMapper {
                                 Direction.FORWARD,
                                 isochroneMatch.getGeometry(),
                                 roadSectionFragmentById.get(roadSectionFragmentId),
-                                trafficSignByEdgeKey.get(directionalSegmentId)));
+                                trafficSignById.get(directionalSegmentId)));  // TODO: replace with encodedValue
             }
         });
 
