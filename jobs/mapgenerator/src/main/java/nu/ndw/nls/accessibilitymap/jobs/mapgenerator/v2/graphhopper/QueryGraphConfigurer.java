@@ -21,8 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.model.WindowTimeEncodedValue;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AdditionalSnap;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignDirection;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -40,6 +38,7 @@ public class QueryGraphConfigurer {
                 .stream()
                 .collect(groupingBy(additionalSnap -> additionalSnap.getTrafficSign().roadSectionId()));
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
+
         for (int startNode = 0; startNode < queryGraph.getNodes(); startNode++) {
             EdgeIterator edgeIterator = edgeExplorer.setBaseNode(startNode);
             while (edgeIterator.next()) {
@@ -54,20 +53,21 @@ public class QueryGraphConfigurer {
                             .stream()
                             .filter(filterOnDirection)
                             .toList();
-                    log.info("Found traffic signs {}", additionalSnaps);
+
+                    log.debug("Found traffic signs {}", additionalSnaps);
                     for (AdditionalSnap additionalSnap : additionalSnaps) {
-                        if (isEdgeBehindTrafficSign(additionalSnap, edgeIterator, directionReversed) && isBlocked(
+                        if (isEdgeBehindTrafficSign(additionalSnap, edgeIterator) && isBlocked(
                                 additionalSnap, edgeIterator)) {
-                            log.info("Assigning traffic-sign id to  edge {} ", edgeIterator);
+                            log.debug("Assigning traffic-sign id to  edge {} ", edgeIterator);
                             IntEncodedValue intEncodedValue = encodingManager.getIntEncodedValue(TRAFFIC_SIGN_ID);
-                            if(directionReversed) {
+                            if (directionReversed) {
                                 edgeIterator.setReverse(intEncodedValue, additionalSnap.getTrafficSign().id());
-                            }else{
+                            } else {
                                 edgeIterator.set(intEncodedValue, additionalSnap.getTrafficSign().id());
                             }
                         }
 
-                        if (isEdgeBeforeTrafficSign(additionalSnap, edgeIterator, directionReversed) && isBlocked(
+                        if (isEdgeBeforeTrafficSign(additionalSnap, edgeIterator) && isBlocked(
                                 additionalSnap, edgeIterator)) {
                             String key = WindowTimeEncodedValue
                                     .valueOf(additionalSnap.getTrafficSign().trafficSignType().name())
@@ -76,11 +76,8 @@ public class QueryGraphConfigurer {
                             log.info("Unblocking edge {} ", edgeIterator);
                             edgeIterator.set(booleanEncodedValue, false);
                         }
-
                     }
-
                 }
-
             }
         }
     }
@@ -95,12 +92,10 @@ public class QueryGraphConfigurer {
         return blocked;
     }
 
-    private boolean isEdgeBeforeTrafficSign(AdditionalSnap additionalSnap, EdgeIterator edgeIterator,
-            boolean directionReversed) {
+    private boolean isEdgeBeforeTrafficSign(AdditionalSnap additionalSnap, EdgeIterator edgeIterator) {
         GHPoint point = additionalSnap.getSnap().getSnappedPoint();
         Coordinate snapCoordinate = new Coordinate(point.lon, point.lat);
-        Coordinate edgeCoordinate = getEdgeCoordinateBefore(additionalSnap.getTrafficSign(), edgeIterator,
-                directionReversed);
+        Coordinate edgeCoordinate = getEdgeCoordinateBefore(edgeIterator);
         return edgeCoordinate.equals2D(snapCoordinate, 0.00001);
     }
 
@@ -114,44 +109,23 @@ public class QueryGraphConfigurer {
 
     private boolean isEdgeBehindTrafficSign(
             AdditionalSnap additionalSnap,
-            EdgeIteratorState edgeIteratorState,
-            boolean reverse) {
+            EdgeIteratorState edgeIteratorState) {
 
         GHPoint point = additionalSnap.getSnap().getSnappedPoint();
         Coordinate snapCoordinate = new Coordinate(point.lon, point.lat);
-        Coordinate edgeCoordinate = getEdgeCoordinateBehind(additionalSnap.getTrafficSign(), edgeIteratorState,
-                reverse);
+        Coordinate edgeCoordinate = getEdgeCoordinateBehind(edgeIteratorState);
 
         return edgeCoordinate.equals2D(snapCoordinate, 0.00001);
     }
 
-    private static Coordinate getEdgeCoordinateBefore(
-            TrafficSign trafficSign,
-            EdgeIteratorState edgeIteratorState,
-            boolean reverse) {
+    private static Coordinate getEdgeCoordinateBefore(EdgeIteratorState edgeIteratorState) {
         LineString lineString = edgeIteratorState.fetchWayGeometry(FetchMode.ALL).toLineString(false);
-        if (isBidirectionalAndReverse(trafficSign, reverse)) {
-            log.info("Bidirectional traffic sign on reverse edge {}", trafficSign);
-            return lineString.getStartPoint().getCoordinate();
-        } else {
-            return lineString.getEndPoint().getCoordinate();
-        }
+        return lineString.getEndPoint().getCoordinate();
     }
 
-    private static Coordinate getEdgeCoordinateBehind(
-            TrafficSign trafficSign,
-            EdgeIteratorState edgeIteratorState,
-            boolean reverse) {
+    private static Coordinate getEdgeCoordinateBehind(EdgeIteratorState edgeIteratorState) {
         LineString lineString = edgeIteratorState.fetchWayGeometry(FetchMode.ALL).toLineString(false);
-        if (isBidirectionalAndReverse(trafficSign, reverse)) {
-            log.debug("Bidirectional traffic sign on reverse edge {}", trafficSign);
-            return lineString.getEndPoint().getCoordinate();
-        } else {
-            return lineString.getStartPoint().getCoordinate();
-        }
+        return lineString.getStartPoint().getCoordinate();
     }
 
-    private static boolean isBidirectionalAndReverse(TrafficSign trafficSign, boolean reverse) {
-        return TrafficSignDirection.BOTH == trafficSign.direction() && reverse;
-    }
 }

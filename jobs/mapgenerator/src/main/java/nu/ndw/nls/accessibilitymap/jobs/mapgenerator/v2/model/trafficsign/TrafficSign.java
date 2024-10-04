@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.NonNull;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 
 @Builder
@@ -14,7 +15,7 @@ public record TrafficSign(
         @NonNull TrafficSignType trafficSignType,
         @NonNull Double latitude,
         @NonNull Double longitude,
-        @NonNull TrafficSignDirection direction,
+        @NonNull Direction direction,
         @NonNull Double fraction,
         URI iconUri,
         @NonNull

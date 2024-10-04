@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AdditionalSnap;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignDirection;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
@@ -65,7 +63,7 @@ public class RestrictionWeightingAdapter implements Weighting {
                     .toList();
             log.info("Found traffic signs {}", additionalSnaps);
             for (AdditionalSnap additionalSnap : additionalSnaps) {
-                if (isEdgeBehindTrafficSign(additionalSnap, edgeIteratorState, directionReversed)) {
+                if (isEdgeBehindTrafficSign(additionalSnap, edgeIteratorState)) {
                     log.info("Blocking access to edge {} {} {}", additionalSnap, edgeIteratorState, directionReversed);
                     return Double.POSITIVE_INFINITY;
                 }
@@ -77,33 +75,20 @@ public class RestrictionWeightingAdapter implements Weighting {
 
     private boolean isEdgeBehindTrafficSign(
             AdditionalSnap additionalSnap,
-            EdgeIteratorState edgeIteratorState,
-            boolean reverse) {
+            EdgeIteratorState edgeIteratorState) {
 
         GHPoint point = additionalSnap.getSnap().getSnappedPoint();
         Coordinate snapCoordinate = new Coordinate(point.lon, point.lat);
-        Coordinate edgeCoordinate = getEdgeCoordinate(additionalSnap.getTrafficSign(), edgeIteratorState, reverse);
+        Coordinate edgeCoordinate = getEdgeCoordinate(edgeIteratorState);
 
         return edgeCoordinate.equals2D(snapCoordinate, 0.00001);
     }
 
-    private static Coordinate getEdgeCoordinate(
-            TrafficSign trafficSign,
-            EdgeIteratorState edgeIteratorState,
-            boolean reverse) {
+    private Coordinate getEdgeCoordinate(
+            EdgeIteratorState edgeIteratorState) {
 
         LineString lineString = edgeIteratorState.fetchWayGeometry(FetchMode.ALL).toLineString(false);
-
-        if (isBidirectionalAndReverse(trafficSign, reverse)) {
-            log.debug("Bidirectional traffic sign on reverse edge {}", trafficSign);
-            return lineString.getEndPoint().getCoordinate();
-        } else {
-            return lineString.getStartPoint().getCoordinate();
-        }
-    }
-
-    private static boolean isBidirectionalAndReverse(TrafficSign trafficSign, boolean reverse) {
-        return TrafficSignDirection.BOTH == trafficSign.direction() && reverse;
+        return lineString.getStartPoint().getCoordinate();
     }
 
     private boolean edgeHasTrafficSigns(int linkId) {
