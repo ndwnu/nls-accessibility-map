@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AdditionalSnap;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignDirection;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
@@ -23,19 +24,22 @@ public class RestrictionWeightingAdapter implements Weighting {
 
     private final Weighting adaptedWeighting;
 
-    private final Map<Integer, List<AdditionalSnap>> snappedTrafficSignsByRoadSectionId;
+    private final Map<Integer, List<AdditionalSnap>> additionalSnapByRoadSectionId;
 
     private final EncodingManager encodingManager;
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor = new EdgeIteratorStateReverseExtractor();
 
-    public RestrictionWeightingAdapter(Weighting adaptedWeighting, List<AdditionalSnap> snappedTrafficSigns,
+    public RestrictionWeightingAdapter(
+            Weighting adaptedWeighting,
+            List<AdditionalSnap> snappedTrafficSigns,
             EncodingManager encodingManager) {
+
         this.adaptedWeighting = adaptedWeighting;
-        this.snappedTrafficSignsByRoadSectionId = snappedTrafficSigns
+        this.additionalSnapByRoadSectionId = snappedTrafficSigns
                 .stream()
                 .filter(additionalSnap -> additionalSnap.getTrafficSign() != null)
-                .collect(groupingBy(tr -> tr.getTrafficSign().roadSectionId()));
+                .collect(groupingBy(additionalSnap -> additionalSnap.getTrafficSign().roadSectionId()));
         this.encodingManager = encodingManager;
     }
 
@@ -46,14 +50,16 @@ public class RestrictionWeightingAdapter implements Weighting {
 
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reverse) {
+
         int linkId = getLinkId(edgeIteratorState);
         boolean directionReversed = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState);
+
         if (edgeHasTrafficSigns(linkId)) {
             Predicate<AdditionalSnap> filterOnDirection = directionReversed
                     ? (snap) -> snap.getTrafficSign().direction().isBackward()
                     : (snap) -> snap.getTrafficSign().direction().isForward();
 
-            List<AdditionalSnap> additionalSnaps = snappedTrafficSignsByRoadSectionId
+            List<AdditionalSnap> additionalSnaps = additionalSnapByRoadSectionId
                     .get(getLinkId(edgeIteratorState))
                     .stream().filter(filterOnDirection)
                     .toList();
@@ -65,40 +71,43 @@ public class RestrictionWeightingAdapter implements Weighting {
                 }
             }
         }
+
         return adaptedWeighting.calcEdgeWeight(edgeIteratorState, reverse);
     }
 
-    private boolean isEdgeBehindTrafficSign(AdditionalSnap additionalSnap, EdgeIteratorState edgeIteratorState,
+    private boolean isEdgeBehindTrafficSign(
+            AdditionalSnap additionalSnap,
+            EdgeIteratorState edgeIteratorState,
             boolean reverse) {
+
         GHPoint point = additionalSnap.getSnap().getSnappedPoint();
-        Coordinate snapCoordinate = new Coordinate(point.lon,
-                point.lat);
-        Coordinate edgeCoordinate = getEdgeCoordinate(additionalSnap, edgeIteratorState, reverse);
+        Coordinate snapCoordinate = new Coordinate(point.lon, point.lat);
+        Coordinate edgeCoordinate = getEdgeCoordinate(additionalSnap.getTrafficSign(), edgeIteratorState, reverse);
+
         return edgeCoordinate.equals2D(snapCoordinate, 0.00001);
     }
 
-    private static Coordinate getEdgeCoordinate(AdditionalSnap additionalSnap, EdgeIteratorState edgeIteratorState,
+    private static Coordinate getEdgeCoordinate(
+            TrafficSign trafficSign,
+            EdgeIteratorState edgeIteratorState,
             boolean reverse) {
-        LineString lineString = edgeIteratorState.fetchWayGeometry(FetchMode.ALL)
-                .toLineString(false);
 
-        if (isBidirectionalAndReverse(additionalSnap, reverse)) {
-            log.info("Bidirectional traffic sign on reverse edge {}", additionalSnap);
-            return lineString
-                    .getEndPoint()
-                    .getCoordinate();
+        LineString lineString = edgeIteratorState.fetchWayGeometry(FetchMode.ALL).toLineString(false);
+
+        if (isBidirectionalAndReverse(trafficSign, reverse)) {
+            log.debug("Bidirectional traffic sign on reverse edge {}", trafficSign);
+            return lineString.getEndPoint().getCoordinate();
         } else {
-            return lineString
-                    .getStartPoint().getCoordinate();
+            return lineString.getStartPoint().getCoordinate();
         }
     }
 
-    private static boolean isBidirectionalAndReverse(AdditionalSnap additionalSnap, boolean reverse) {
-        return TrafficSignDirection.BOTH == additionalSnap.getTrafficSign().direction() && reverse;
+    private static boolean isBidirectionalAndReverse(TrafficSign trafficSign, boolean reverse) {
+        return TrafficSignDirection.BOTH == trafficSign.direction() && reverse;
     }
 
     private boolean edgeHasTrafficSigns(int linkId) {
-        return snappedTrafficSignsByRoadSectionId.containsKey(linkId);
+        return additionalSnapByRoadSectionId.containsKey(linkId);
     }
 
     @Override
