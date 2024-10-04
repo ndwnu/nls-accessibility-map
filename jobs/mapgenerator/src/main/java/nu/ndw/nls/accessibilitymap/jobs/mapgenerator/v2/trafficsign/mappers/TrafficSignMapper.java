@@ -5,8 +5,8 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignDirection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.util.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TrafficSignMapper {
 
-    public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(TrafficSignGeoJsonDto trafficSignGeoJsonDto, IntegerSequenceSupplier integerSequenceSupplier) {
+    public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
+            TrafficSignGeoJsonDto trafficSignGeoJsonDto,
+            IntegerSequenceSupplier integerSequenceSupplier) {
 
         try {
             return Optional.of(TrafficSign.builder()
@@ -40,17 +42,14 @@ public class TrafficSignMapper {
         }
     }
 
-    private TrafficSignDirection createDirection(DirectionType drivingDirection) {
+    private Direction createDirection(DirectionType drivingDirection) {
 
         switch (drivingDirection) {
             case FORTH -> {
-                return TrafficSignDirection.FORWARD;
+                return Direction.FORWARD;
             }
             case BACK -> {
-                return TrafficSignDirection.BACKWARD;
-            }
-            case BOTH -> {
-                return TrafficSignDirection.BOTH;
+                return Direction.BACKWARD;
             }
         }
 

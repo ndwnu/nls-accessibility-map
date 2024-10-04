@@ -112,6 +112,8 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                         .build())
                 .properties(Properties
                         .builder()
+                        .id(trafficSign.roadSectionId())
+                        .direction(trafficSign.direction())
                         .trafficSignType(trafficSign.trafficSignType())
                         .windowTimes(buildWindowTime(trafficSign))
                         .iconUrl(trafficSign.iconUri())
