@@ -179,27 +179,28 @@ public class AccessibilityService {
                         .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                         .collect(Collectors.toMap(DirectionalSegment::getId, Function.identity()));
 
-        SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
+        SortedMap<Long, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionsFragmentsById = new TreeMap<>();
 
         allDirectionalSegments.forEach(
                 directionalSegmentToCopyFrom -> {
                     RoadSection newRoadSection = roadSectionsById.computeIfAbsent(
-                            directionalSegmentToCopyFrom.getId(),
-                            roadSectionId -> {
-                                RoadSection roadSectionToCopyFrom = directionalSegmentToCopyFrom
-                                        .getRoadSectionFragment()
-                                        .getRoadSection();
-
-                                return roadSectionToCopyFrom.withId(roadSectionId);
-                            });
+                            directionalSegmentToCopyFrom.getRoadSectionFragment().getRoadSection().getId(),
+                            roadSectionId -> RoadSection.builder()
+                                    .id(roadSectionId)
+                                    .build());
 
                     RoadSectionFragment newRoadSectionFraction = roadSectionsFragmentsById.computeIfAbsent(
                             directionalSegmentToCopyFrom.getRoadSectionFragment().getId(),
-                            roadSectionFragmentId -> RoadSectionFragment.builder()
-                                    .id(roadSectionFragmentId)
-                                    .roadSection(newRoadSection)
-                                    .build());
+                            roadSectionFragmentId -> {
+                                RoadSectionFragment newRoadSectionFragment = RoadSectionFragment.builder()
+                                        .id(roadSectionFragmentId)
+                                        .roadSection(newRoadSection)
+                                        .build();
+
+                                newRoadSection.getRoadSectionFragments().add(newRoadSectionFragment);
+                                return newRoadSectionFragment;
+                            });
 
                     addNewDirectionSegmentToRoadSection(
                             newRoadSectionFraction,
@@ -215,14 +216,16 @@ public class AccessibilityService {
             DirectionalSegment directionalSegmentToCopyFrom,
             DirectionalSegment accessibleDirectionSegment) {
 
+        DirectionalSegment newDirectionSegment = directionalSegmentToCopyFrom
+                .withAccessible(
+                        Objects.nonNull(accessibleDirectionSegment) && accessibleDirectionSegment.isAccessible()
+                )
+                .withRoadSectionFragment(newRoadSectionFraction);
+
         if (directionalSegmentToCopyFrom.getDirection() == Direction.BACKWARD) {
-            newRoadSectionFraction.getBackwardSegments().add(directionalSegmentToCopyFrom.withAccessible(
-                    Objects.nonNull(accessibleDirectionSegment) && accessibleDirectionSegment.isAccessible()
-            ));
+            newRoadSectionFraction.getBackwardSegments().add(newDirectionSegment);
         } else {
-            newRoadSectionFraction.getForwardSegments().add(directionalSegmentToCopyFrom.withAccessible(
-                    Objects.nonNull(accessibleDirectionSegment) && accessibleDirectionSegment.isAccessible()
-            ));
+            newRoadSectionFraction.getForwardSegments().add(newDirectionSegment);
         }
     }
 

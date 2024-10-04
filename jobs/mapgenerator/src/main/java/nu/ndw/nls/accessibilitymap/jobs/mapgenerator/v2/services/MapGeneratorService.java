@@ -14,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Access
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.writers.OutputWriter;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.nwb.services.NdwDataService;
 import nu.ndw.nls.events.NlsEvent;
@@ -49,7 +50,7 @@ public class MapGeneratorService {
         long roadSectionsWithTrafficSigns = accessibility.mergedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                .filter(segment -> !segment.hasTrafficSign())
+                .filter(DirectionalSegment::hasTrafficSign)
                 .count();
         log.debug("Found {} with road sections with traffic signs.", roadSectionsWithTrafficSigns);
 
