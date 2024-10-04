@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.mappers.TrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.util.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +22,11 @@ public class TrafficSignDataService {
 
     public List<TrafficSign> findAllByType(TrafficSignType trafficSignType) {
 
+        IntegerSequenceSupplier IntegerSequenceSupplier = new IntegerSequenceSupplier();
         return trafficSignService.getTrafficSigns(Set.of(trafficSignType.name()))
                 .trafficSignsByRoadSectionId().values().stream()
                 .flatMap(Collection::stream)
-                .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
+                .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(trafficSignGeoJsonDto, IntegerSequenceSupplier))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();

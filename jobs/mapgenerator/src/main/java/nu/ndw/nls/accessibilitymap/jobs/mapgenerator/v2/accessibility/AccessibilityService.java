@@ -88,7 +88,7 @@ public class AccessibilityService {
         snaps.add(startSegment);
 
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
-        Map<Integer, TrafficSign> trafficSignByEdgeKey = buildTrafficSignByEdgeKeyMap(additionalSnaps);
+        Map<Integer, TrafficSign> trafficSignById = buildTrafficSignById(additionalSnaps);
 
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 roadSectionMapper.mapToRoadSections(
@@ -101,7 +101,7 @@ public class AccessibilityService {
                                         .build(),
                                 queryGraph,
                                 startSegment),
-                        trafficSignByEdgeKey);
+                        trafficSignById);
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 roadSectionMapper.mapToRoadSections(
@@ -115,7 +115,7 @@ public class AccessibilityService {
                                         .build(),
                                 queryGraph,
                                 startSegment),
-                        trafficSignByEdgeKey);
+                        trafficSignById);
 
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
@@ -131,17 +131,11 @@ public class AccessibilityService {
         return accessibility;
     }
 
-    private Map<Integer, TrafficSign> buildTrafficSignByEdgeKeyMap(List<AdditionalSnap> additionalSnaps) {
+    private Map<Integer, TrafficSign> buildTrafficSignById(List<AdditionalSnap> additionalSnaps) {
 
         return additionalSnaps.stream()
                 .collect(Collectors.toMap(
-                        additionalSnap -> {
-                            if(additionalSnap.getTrafficSign().direction().isForward()) {
-                                return additionalSnap.getSnap().getClosestEdge().getEdgeKey();
-                            } else {
-                                return additionalSnap.getSnap().getClosestEdge().getReverseEdgeKey();
-                            }
-                        },
+                        additionalSnap -> additionalSnap.getTrafficSign().id(),
                         AdditionalSnap::getTrafficSign));
     }
 
