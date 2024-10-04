@@ -17,7 +17,8 @@ import org.locationtech.jts.geom.LineString;
 @With
 public final class DirectionalSegment {
 
-    private final int id;
+    @NonNull
+    private final Integer id;
 
     @NonNull
     private final Direction direction;
@@ -35,6 +36,5 @@ public final class DirectionalSegment {
     public boolean hasTrafficSign() {
 
         return Objects.nonNull(trafficSign);
-
     }
 }
