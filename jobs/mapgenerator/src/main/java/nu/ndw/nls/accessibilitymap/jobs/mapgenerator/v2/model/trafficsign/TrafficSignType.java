@@ -11,4 +11,8 @@ public enum TrafficSignType {
     C22C("C22C");
 
     private final String rvvCode;
+
+//    public String getEncodedValueAttribute(boolean isTimeWindowed) {
+//        return "car_access_forbidden_windowed"
+//    }
 }
