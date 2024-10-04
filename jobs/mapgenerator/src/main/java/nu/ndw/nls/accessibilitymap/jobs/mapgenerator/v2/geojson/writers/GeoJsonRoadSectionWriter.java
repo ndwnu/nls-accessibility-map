@@ -83,7 +83,9 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
                     features.add(buildLineString(geoJsonIdSequenceSupplier, directionalSegment));
                     if (directionalSegment.hasTrafficSign()) {
-                        features.add(buildPoint(geoJsonIdSequenceSupplier, directionalSegment.getTrafficSign(),
+                        features.add(addTrafficSign(
+                                geoJsonIdSequenceSupplier,
+                                directionalSegment.getTrafficSign(),
                                 directionalSegment));
                     }
 
@@ -93,22 +95,16 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .toList();
     }
 
-    private Feature buildPoint(
+    private Feature addTrafficSign(
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
             TrafficSign trafficSign,
             DirectionalSegment directionalSegment) {
-
-        LineString trafficSignLineString = fractionAndDistanceCalculator.getSubLineString(
-                directionalSegment.getLineString(),
-                trafficSign.fraction());
 
         return Feature.builder()
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(PointGeometry
                         .builder()
-                        .coordinates(List.of(
-                                trafficSignLineString.getEndPoint().getX(),
-                                trafficSignLineString.getEndPoint().getY()))
+                        .coordinates(buildTrafficSignCoordinates(trafficSign, directionalSegment))
                         .build())
                 .properties(Properties
                         .builder()
@@ -119,6 +115,17 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                         .iconUrl(trafficSign.iconUri())
                         .build())
                 .build();
+    }
+
+    private List<Double> buildTrafficSignCoordinates(TrafficSign trafficSign, DirectionalSegment directionalSegment) {
+
+        LineString trafficSignLineString = fractionAndDistanceCalculator.getSubLineString(
+                directionalSegment.getLineString(),
+                directionalSegment.getDirection().isForward() ? trafficSign.fraction() : 1 - trafficSign.fraction());
+
+        return List.of(
+                trafficSignLineString.getStartPoint().getX(),
+                trafficSignLineString.getStartPoint().getY());
     }
 
     private Feature buildLineString(
