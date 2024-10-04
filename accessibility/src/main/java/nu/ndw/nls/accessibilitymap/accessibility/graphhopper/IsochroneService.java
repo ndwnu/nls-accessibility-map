@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MUNICIPALITY_CODE;
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
@@ -11,11 +12,11 @@ import com.graphhopper.util.EdgeIteratorState;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.ShortestPathTreeFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
 
+import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneUnit;
@@ -43,11 +44,11 @@ public class IsochroneService {
             IsochroneArguments isochroneArguments,
             QueryGraph queryGraph,
             Snap startSegment) {
-
+        int matchedLinkId = getLinkId(startSegment.getClosestEdge());
         IsochroneByTimeDistanceAndWeight accessibilityPathTree = shortestPathTreeFactory
                 .createShortestPathTreeByTimeDistanceAndWeight(isochroneArguments.weighting(), queryGraph,
                         TraversalMode.EDGE_BASED, isochroneArguments.searchDistanceInMetres(), IsochroneUnit.METERS,
-                        false, false);
+                        false, false,matchedLinkId);
         List<IsoLabel> isoLabels = new ArrayList<>();
         accessibilityPathTree.search(startSegment.getClosestNode(), isoLabels::add);
 
@@ -75,5 +76,9 @@ public class IsochroneService {
     private int getMunicipalityCode(IsoLabel isoLabel, QueryGraph queryGraph, IntEncodedValue idEnc) {
         EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(isoLabel.getEdge(), isoLabel.getNode());
         return currentEdge.get(idEnc);
+    }
+
+    private int getLinkId(EdgeIteratorState edge) {
+        return edge.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
     }
 }

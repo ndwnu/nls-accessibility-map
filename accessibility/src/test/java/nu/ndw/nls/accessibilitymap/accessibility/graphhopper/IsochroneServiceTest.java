@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -46,6 +47,8 @@ class IsochroneServiceTest {
     private static final int MUNICIPALITY_ID = 1;
     private static final String MUNICIPALITY_CODE_KEY = "municipality_code";
 
+    private static final int LINK_ID = 5;
+
     @Mock
     private EncodingManager encodingManager;
 
@@ -74,8 +77,13 @@ class IsochroneServiceTest {
     private EdgeIteratorState currentEdge;
 
     @Mock
+    private EdgeIteratorState startEdge;
+
+    @Mock
     private IntEncodedValue intEncodedValue;
 
+    @Mock
+    private IntEncodedValue idIntEncodedValue;
     @Mock
     private Weighting weighting;
 
@@ -108,11 +116,13 @@ class IsochroneServiceTest {
                 ISOCHRONE_VALUE_METERS,
                 IsochroneUnit.METERS,
                 false,
-                false))
+                false,LINK_ID))
                 .thenReturn(isochroneAlgorithm);
 
         when(queryGraph.getEdgeIteratorState(anyInt(), anyInt())).thenReturn(currentEdge);
         when(encodingManager.getIntEncodedValue(MUNICIPALITY_CODE_KEY)).thenReturn(intEncodedValue);
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
+        when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
         when(currentEdge.get(intEncodedValue)).thenReturn(MUNICIPALITY_ID);
         doAnswer(ans -> {
             Consumer<IsoLabel> callback = ans.getArgument(1, Consumer.class);
@@ -120,6 +130,7 @@ class IsochroneServiceTest {
             return null;
         }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
 
+        when(startSegment.getClosestEdge()).thenReturn(startEdge);
         when(isochroneMatchMapper.mapToIsochroneMatch(
                 isoLabel,
                 Double.POSITIVE_INFINITY,

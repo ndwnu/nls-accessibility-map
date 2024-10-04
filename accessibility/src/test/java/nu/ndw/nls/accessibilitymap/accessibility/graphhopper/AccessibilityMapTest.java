@@ -81,6 +81,7 @@ class AccessibilityMapTest {
     @Mock
     private LocationIndexTree locationIndexTree;
 
+
     @InjectMocks
     private AccessibilityMap accessibilityMap;
 
