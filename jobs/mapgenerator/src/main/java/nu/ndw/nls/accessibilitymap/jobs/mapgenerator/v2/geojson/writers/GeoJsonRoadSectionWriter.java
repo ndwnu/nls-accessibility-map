@@ -75,16 +75,14 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
             RoadSection roadSection,
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier) {
 
-        return roadSection.getSegments().stream()
+        return roadSection.getRoadSectionFragments().stream()
+                .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(Objects::nonNull)
                 .map(directionalSegment -> {
                     List<Feature> features = new ArrayList<>();
 
-                    features.add(buildLineString(roadSection, geoJsonIdSequenceSupplier, directionalSegment));
-                    features.addAll(directionalSegment.getTrafficSigns().stream()
-                            .map(trafficSign ->
-                                    buildPoint(geoJsonIdSequenceSupplier, trafficSign, directionalSegment))
-                            .toList());
+                    features.add(buildLineString(geoJsonIdSequenceSupplier, directionalSegment));
+                    features.add(buildPoint(geoJsonIdSequenceSupplier, directionalSegment.getTrafficSign(), directionalSegment));
 
                     return features;
                 })
@@ -119,7 +117,6 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     }
 
     private Feature buildLineString(
-            RoadSection roadSection,
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
             DirectionalSegment directionalSegment) {
 
@@ -131,16 +128,8 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                         .build())
                 .properties(Properties
                         .builder()
-                        .id(roadSection.getRoadSectionId())
+                        .id(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
                         .direction(directionalSegment.getDirection())
-                        .trafficSignType(
-                                directionalSegment.hasTrafficSigns()
-                                        ? directionalSegment.getTrafficSigns().getFirst().trafficSignType()
-                                        : null)
-                        .windowTimes(
-                                directionalSegment.hasTrafficSigns()
-                                        ? buildWindowTime(directionalSegment.getTrafficSigns().getFirst())
-                                        : null)
                         .accessible(directionalSegment.isAccessible())
                         .build())
                 .build();

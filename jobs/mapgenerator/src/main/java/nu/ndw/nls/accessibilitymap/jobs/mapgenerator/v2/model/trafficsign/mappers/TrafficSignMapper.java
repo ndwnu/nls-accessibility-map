@@ -22,6 +22,7 @@ public class TrafficSignMapper {
 
         try {
             return Optional.of(TrafficSign.builder()
+                    .id(trafficSignGeoJsonDto.getId())
                     .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
                     .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
                     .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))

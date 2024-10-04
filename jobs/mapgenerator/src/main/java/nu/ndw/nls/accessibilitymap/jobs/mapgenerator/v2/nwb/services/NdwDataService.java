@@ -34,10 +34,10 @@ public class NdwDataService {
             int nwbVersion) {
 
         NwbRoadSectionDto nwbRoadSection = nwbRoadSectionCrudService
-                .findById(new Id(nwbVersion, roadSection.getRoadSectionId()))
+                .findById(new Id(nwbVersion, roadSection.getId()))
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Failed to find road section with id '%s' and by version '%s'".formatted(
-                                roadSection.getRoadSectionId(),
+                                roadSection.getId(),
                                 nwbVersion)));
 
         roadSection.setMetaData(roadSectionMetaDataMapper.map(nwbRoadSection));
