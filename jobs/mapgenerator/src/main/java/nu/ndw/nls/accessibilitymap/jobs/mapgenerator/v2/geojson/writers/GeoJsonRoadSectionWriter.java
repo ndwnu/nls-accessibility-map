@@ -82,7 +82,10 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                     List<Feature> features = new ArrayList<>();
 
                     features.add(buildLineString(geoJsonIdSequenceSupplier, directionalSegment));
-                    features.add(buildPoint(geoJsonIdSequenceSupplier, directionalSegment.getTrafficSign(), directionalSegment));
+                    if (directionalSegment.hasTrafficSign()) {
+                        features.add(buildPoint(geoJsonIdSequenceSupplier, directionalSegment.getTrafficSign(),
+                                directionalSegment));
+                    }
 
                     return features;
                 })
