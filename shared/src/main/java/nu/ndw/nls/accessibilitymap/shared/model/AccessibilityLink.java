@@ -31,6 +31,7 @@ public class AccessibilityLink extends Link {
     public static final String MAX_HEIGHT = "max_height";
     public static final String MAX_AXLE_LOAD = "max_axle_load";
     public static final String MAX_WEIGHT = "max_weight";
+    public static final String TRAFFIC_SIGN_ID = "traffic_sign_id";
 
     private final DirectionalDto<Boolean> accessibility;
 
@@ -97,6 +98,9 @@ public class AccessibilityLink extends Link {
     @EncodedValue(key = MUNICIPALITY_CODE, bits = 17)
     private final Integer municipalityCode;
 
+    @EncodedValue(key = TRAFFIC_SIGN_ID, bits = 31)
+    private final Integer trafficSignId;
+
     @Builder
     protected AccessibilityLink(long id, long fromNodeId, long toNodeId,
             DirectionalDto<Boolean> accessibility, double distanceInMeters,
@@ -117,7 +121,8 @@ public class AccessibilityLink extends Link {
             DirectionalDto<Boolean> lcvAndHgvAccessForbiddenWindowed,
             DirectionalDto<Double> maxLength, DirectionalDto<Double> maxWidth,
             DirectionalDto<Double> maxHeight, DirectionalDto<Double> maxAxleLoad,
-            DirectionalDto<Double> maxWeight, Integer municipalityCode) {
+            DirectionalDto<Double> maxWeight, Integer municipalityCode,
+            Integer trafficSignId) {
         super(id, fromNodeId, toNodeId, distanceInMeters, geometry);
         this.accessibility = accessibility;
         this.carAccessForbidden = carAccessForbidden;
@@ -141,5 +146,6 @@ public class AccessibilityLink extends Link {
         this.maxAxleLoad = maxAxleLoad;
         this.maxWeight = maxWeight;
         this.municipalityCode = municipalityCode;
+        this.trafficSignId = trafficSignId;
     }
 }
