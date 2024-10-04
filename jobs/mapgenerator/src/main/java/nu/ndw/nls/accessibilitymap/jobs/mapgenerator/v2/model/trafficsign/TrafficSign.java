@@ -3,13 +3,14 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.Builder;
 import lombok.NonNull;
-import lombok.ToString;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 
 @Builder
 public record TrafficSign(
+        @NonNull UUID id,
         @NonNull Integer roadSectionId,
         @NonNull TrafficSignType trafficSignType,
         @NonNull Double latitude,

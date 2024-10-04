@@ -47,8 +47,9 @@ public class MapGeneratorService {
         Accessibility accessibility = calculateAccessibility(mapGenerationProperties, cmdGenerateGeoJsonType);
 
         long roadSectionsWithTrafficSigns = accessibility.mergedAccessibility().stream()
-                .flatMap(roadSection -> roadSection.getSegments().stream())
-                .filter(segment -> !segment.getTrafficSigns().isEmpty())
+                .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
+                .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
+                .filter(segment -> !segment.hasTrafficSign())
                 .count();
         log.debug("Found {} with road sections with traffic signs.", roadSectionsWithTrafficSigns);
 
@@ -78,7 +79,7 @@ public class MapGeneratorService {
         Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
         // TODO: can be moved to accessibilityService?
-       // ndwDataService.addNwbDataToAccessibility(accessibility, mapGenerationProperties.getNwbVersion());
+        // ndwDataService.addNwbDataToAccessibility(accessibility, mapGenerationProperties.getNwbVersion());
 
         return accessibility;
     }

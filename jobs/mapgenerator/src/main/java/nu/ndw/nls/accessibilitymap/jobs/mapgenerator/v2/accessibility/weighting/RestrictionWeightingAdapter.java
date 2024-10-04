@@ -56,8 +56,8 @@ public class RestrictionWeightingAdapter implements Weighting {
 
         if (edgeHasTrafficSigns(linkId)) {
             Predicate<AdditionalSnap> filterOnDirection = directionReversed
-                    ? (snap) -> snap.getTrafficSign().direction().isBackward()
-                    : (snap) -> snap.getTrafficSign().direction().isForward();
+                    ? snap -> snap.getTrafficSign().direction().isBackward()
+                    : snap -> snap.getTrafficSign().direction().isForward();
 
             List<AdditionalSnap> additionalSnaps = additionalSnapByRoadSectionId
                     .get(getLinkId(edgeIteratorState))
