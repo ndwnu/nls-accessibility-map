@@ -24,5 +24,5 @@ public interface TrafficSignRepository {
             @RequestParam(value = "status", required = false) CurrentStateStatus currentStateStatus,
             @RequestParam(value = "rvvCode", required = false) Set<String> rvvCodes,
             @RequestParam(value = "roadSectionId", required = false) Set<Long> roadSectionIds,
-            @RequestParam(value = "townCode", required = false) Set<String> townCodes);
+            @RequestParam(value = "countyCode", required = false) Set<String> countyCodes);
 }
