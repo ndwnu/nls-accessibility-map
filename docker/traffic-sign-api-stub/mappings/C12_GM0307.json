@@ -6,7 +6,7 @@
       "status": {
         "equalTo": "PLACED"
       },
-      "countyCode": {
+      "townCode": {
         "equalTo": "GM0307"
       },
       "rvvCode": {
