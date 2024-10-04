@@ -32,7 +32,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Access
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AdditionalSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.mapper.RoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.weighting.RestrictionWeightingAdapter;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.graphhopper.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
@@ -65,6 +65,7 @@ public class AccessibilityService {
 
     private final RoadSectionMapper roadSectionMapper;
     private final RoadSectionFragmentService roadSectionFragmentService;
+    private final QueryGraphConfigurer queryGraphConfigurer;
 
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
@@ -88,6 +89,7 @@ public class AccessibilityService {
         snaps.add(startSegment);
 
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
+        queryGraphConfigurer.configure(queryGraph, additionalSnaps);
         Map<Integer, TrafficSign> trafficSignById = buildTrafficSignById(additionalSnaps);
 
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
@@ -108,7 +110,7 @@ public class AccessibilityService {
                         isochroneService.getIsochroneMatchesByMunicipalityId(
                                 IsochroneArguments.builder()
                                         .weighting(
-                                                buildWeightingWithRestrictions(accessibilityRequest, additionalSnaps))
+                                                buildWeightingWithRestrictions(accessibilityRequest))
                                         .startPoint(startPoint)
                                         .municipalityId(accessibilityRequest.getMunicipalityId())
                                         .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
@@ -233,15 +235,11 @@ public class AccessibilityService {
         return network.createWeighting(profile, hints);
     }
 
-    private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest,
-            List<AdditionalSnap> additionalSnaps) {
-        Weighting weighting = buildWeightingWithoutRestrictions(accessibilityRequest);
-        return new RestrictionWeightingAdapter(weighting, additionalSnaps, networkGraphHopper.getEncodingManager());
-//        Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-//        CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
-//        PMap hints = new PMap().putObject(CustomModel.KEY, model);
-//
-//        return network.createWeighting(profile, hints);
+    private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest) {
+        Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
+        CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
+        PMap hints = new PMap().putObject(CustomModel.KEY, model);
+        return network.createWeighting(profile, hints);
     }
 
     private Point createPoint(double latitude, double longitude) {
