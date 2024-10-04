@@ -60,7 +60,11 @@ public class QueryGraphConfigurer {
                                 additionalSnap, edgeIterator)) {
                             log.info("Assigning traffic-sign id to  edge {} ", edgeIterator);
                             IntEncodedValue intEncodedValue = encodingManager.getIntEncodedValue(TRAFFIC_SIGN_ID);
-                            edgeIterator.set(intEncodedValue, additionalSnap.getTrafficSign().id());
+                            if(directionReversed) {
+                                edgeIterator.setReverse(intEncodedValue, additionalSnap.getTrafficSign().id());
+                            }else{
+                                edgeIterator.set(intEncodedValue, additionalSnap.getTrafficSign().id());
+                            }
                         }
 
                         if (isEdgeBeforeTrafficSign(additionalSnap, edgeIterator, directionReversed) && isBlocked(
