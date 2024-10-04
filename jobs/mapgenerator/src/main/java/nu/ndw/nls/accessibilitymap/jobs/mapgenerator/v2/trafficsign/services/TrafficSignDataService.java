@@ -7,7 +7,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.mappers.TrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.trafficsign.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import org.springframework.stereotype.Component;
 

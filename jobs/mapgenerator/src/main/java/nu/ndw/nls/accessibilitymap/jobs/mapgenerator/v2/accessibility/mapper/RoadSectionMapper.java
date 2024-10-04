@@ -1,34 +1,35 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.mapper;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class RoadSectionMapper {
 
     public Collection<RoadSection> mapToRoadSections(
             List<IsochroneMatch> isochroneMatches,
-            Map<Integer, TrafficSign> edgeStateByTrafficSignId) {
+            Map<Integer, TrafficSign> trafficSignByEdgeKey) {
 
         SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
-
-        SortedMap<Integer, List<DirectionalSegment>> directionalSegmentsByRoadSectionFragmentId = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
 
         isochroneMatches.forEach(isochroneMatch -> {
             int roadSectionId = isochroneMatch.getMatchedLinkId();
             int roadSectionFragmentId = isochroneMatch.getEdgeId();
+            int directionalSegmentId = isochroneMatch.getEdgeKey();
 
             RoadSection roadSection = roadSectionsById.computeIfAbsent(
                     roadSectionId,
@@ -36,31 +37,34 @@ public class RoadSectionMapper {
                             .id(id)
                             .build());
 
-            List<DirectionalSegment> directionalSegments = directionalSegmentsByRoadSectionFragmentId.computeIfAbsent(
+            RoadSectionFragment roadSectionFragment = roadSectionFragmentById.computeIfAbsent(
                     roadSectionFragmentId,
-                    id -> new ArrayList<>());
+                    id -> {
+                        RoadSectionFragment roadSectionFragmentNew = RoadSectionFragment.builder()
+                                .id(id)
+                                .roadSection(roadSection)
+                                .build();
 
-            roadSectionFragmentById.computeIfAbsent(
-                    roadSectionFragmentId,
-                    id -> RoadSectionFragment.builder()
-                            .id(id)
-                            .roadSection(roadSection)
-                            .build());
+                        roadSection.getRoadSectionFragments().add(roadSectionFragmentNew);
+                        return roadSectionFragmentNew;
+                    });
 
             if (isochroneMatch.isReversed()) {
-                directionalSegments.add(
+                roadSectionFragment.getBackwardSegments().add(
                         buildDirectionalSegment(
+                                directionalSegmentId,
                                 Direction.BACKWARD,
-                                isochroneMatch,
+                                isochroneMatch.getGeometry(),
                                 roadSectionFragmentById.get(roadSectionFragmentId),
-                                edgeStateByTrafficSignId.get(isochroneMatch.getEdgeKey())));
+                                trafficSignByEdgeKey.get(directionalSegmentId)));
             } else {
-                directionalSegments.add(
+                roadSectionFragment.getForwardSegments().add(
                         buildDirectionalSegment(
+                                directionalSegmentId,
                                 Direction.FORWARD,
-                                isochroneMatch,
+                                isochroneMatch.getGeometry(),
                                 roadSectionFragmentById.get(roadSectionFragmentId),
-                                edgeStateByTrafficSignId.get(isochroneMatch.getEdgeKey())));
+                                trafficSignByEdgeKey.get(directionalSegmentId)));
             }
         });
 
@@ -68,16 +72,17 @@ public class RoadSectionMapper {
     }
 
     private DirectionalSegment buildDirectionalSegment(
+            Integer id,
             Direction direction,
-            IsochroneMatch isochroneMatch,
+            LineString geometry,
             RoadSectionFragment roadSectionFragment,
             TrafficSign trafficSign) {
 
         return DirectionalSegment.builder()
-                .id(isochroneMatch.getEdgeKey())
+                .id(id)
                 .direction(direction)
                 .accessible(true)
-                .lineString(isochroneMatch.getGeometry())
+                .lineString(geometry)
                 .roadSectionFragment(roadSectionFragment)
                 .trafficSign(trafficSign)
                 .build();

@@ -88,7 +88,7 @@ public class AccessibilityService {
         snaps.add(startSegment);
 
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
-        Map<Integer, TrafficSign> trafficSignByEdgeKeyMap = buildTrafficSignByEdgeKeyMap(additionalSnaps);
+        Map<Integer, TrafficSign> trafficSignByEdgeKey = buildTrafficSignByEdgeKeyMap(additionalSnaps);
 
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 roadSectionMapper.mapToRoadSections(
@@ -101,7 +101,7 @@ public class AccessibilityService {
                                         .build(),
                                 queryGraph,
                                 startSegment),
-                        trafficSignByEdgeKeyMap);
+                        trafficSignByEdgeKey);
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 roadSectionMapper.mapToRoadSections(
@@ -115,7 +115,7 @@ public class AccessibilityService {
                                         .build(),
                                 queryGraph,
                                 startSegment),
-                        trafficSignByEdgeKeyMap);
+                        trafficSignByEdgeKey);
 
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
