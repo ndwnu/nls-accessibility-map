@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
@@ -47,11 +45,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
             Accessibility accessibility,
             GeoGenerationProperties mapGenerationProperties) {
 
-        CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
-                mapGenerationProperties.getTrafficSignType().name()
-        );
-
-        Path tempFile = uploadService.createTmpGeoJsonFile(cmdGenerateGeoJsonType);
+        Path tempFile = uploadService.createTmpGeoJsonFile(mapGenerationProperties);
 
         GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier = new GeoJsonIdSequenceSupplier();
 

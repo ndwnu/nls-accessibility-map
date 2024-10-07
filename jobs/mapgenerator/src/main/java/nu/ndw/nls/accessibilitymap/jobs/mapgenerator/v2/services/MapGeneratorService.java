@@ -6,9 +6,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.AccessibilityGeoJsonGeneratedEventMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.VehicleTypeVehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
@@ -26,8 +24,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MapGeneratorService {
 
-    private final VehicleTypeVehiclePropertiesMapper vehicleTypeVehiclePropertiesMapper;
-
     private final AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
 
     private final NdwDataService ndwDataService;
@@ -41,11 +37,8 @@ public class MapGeneratorService {
     public void generate(@Valid GeoGenerationProperties mapGenerationProperties) {
 
         LocalDateTime startTime = LocalDateTime.now();
-        CmdGenerateGeoJsonType cmdGenerateGeoJsonType = CmdGenerateGeoJsonType.valueOf(
-                mapGenerationProperties.getTrafficSignType().name()
-        );
 
-        Accessibility accessibility = calculateAccessibility(mapGenerationProperties, cmdGenerateGeoJsonType);
+        Accessibility accessibility = calculateAccessibility(mapGenerationProperties);
 
         long roadSectionsWithTrafficSigns = accessibility.mergedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
@@ -63,13 +56,12 @@ public class MapGeneratorService {
     }
 
     private Accessibility calculateAccessibility(
-            GeoGenerationProperties mapGenerationProperties,
-            CmdGenerateGeoJsonType cmdGenerateGeoJsonType) {
+            GeoGenerationProperties mapGenerationProperties) {
 
         log.debug("Generating with the following properties: {}", mapGenerationProperties);
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .vehicleProperties(vehicleTypeVehiclePropertiesMapper.map(cmdGenerateGeoJsonType))
+                .vehicleProperties(mapGenerationProperties.getVehicleProperties())
                 .startLocationLatitude(mapGenerationProperties.getStartLocationLatitude())
                 .startLocationLongitude(mapGenerationProperties.getStartLocationLongitude())
                 .searchDistanceInMetres(mapGenerationProperties.getSearchRadiusInMeters())

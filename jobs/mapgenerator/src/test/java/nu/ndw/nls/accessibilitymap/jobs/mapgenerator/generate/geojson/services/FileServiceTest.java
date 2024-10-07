@@ -12,8 +12,9 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Set;
 import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.commands.model.CmdGenerateGeoJsonType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.writers.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,7 +75,9 @@ class FileServiceTest {
     @Test
     @SneakyThrows
     void createTempGeoJsonFile_ok() {
-        Path tempFile = fileService.createTmpGeoJsonFile(CmdGenerateGeoJsonType.C6);
+        Path tempFile = fileService.createTmpGeoJsonFile(GeoGenerationProperties.builder()
+                .trafficSignType(TrafficSignType.C6)
+                .build());
 
         assertTrue(tempFile.getFileName().toString().startsWith("accessibility-c6-"));
         assertTrue(tempFile.getFileName().toString().endsWith(".geojson"));
