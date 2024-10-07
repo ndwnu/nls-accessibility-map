@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.v2.geojson.writers;
 
 import static java.nio.file.attribute.PosixFilePermission.OTHERS_READ;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
