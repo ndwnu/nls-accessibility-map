@@ -1,11 +1,11 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.writers;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateConfiguration;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.springframework.stereotype.Component;
 

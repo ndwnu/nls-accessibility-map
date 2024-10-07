@@ -1,12 +1,9 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.Test;
@@ -17,7 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith( MockitoExtension.class )
+@ExtendWith(MockitoExtension.class)
 class GenerateConfigurationTest {
 
     private static final double LONGITUDE = 1D;

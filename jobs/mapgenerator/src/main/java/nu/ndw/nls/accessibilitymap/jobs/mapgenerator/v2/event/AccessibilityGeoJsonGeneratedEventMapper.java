@@ -1,9 +1,9 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.event;
 
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateConfiguration;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubject;
