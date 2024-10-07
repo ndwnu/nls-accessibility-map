@@ -140,7 +140,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                         .map(TextSign::getText)
                         .orElse(null))
                 .iconUrl(trafficSign.iconUri())
-                .iconUrl(trafficSign.iconUri())
+                .isTrafficSign(true)
                 .build();
     }
 
