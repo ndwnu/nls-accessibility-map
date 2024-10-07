@@ -5,6 +5,8 @@ import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties.VehiclePropertiesBuilder;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateProperties;
@@ -44,8 +46,9 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     @Override
     public Integer call() {
         try {
-            GeoGenerationProperties mapGeneratorProperties = GeoGenerationProperties.builder()
+            GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
                     .trafficSignType(trafficSignType)
+                    .vehicleProperties(buildVehicleProperties(trafficSignType))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .exportVersion(localDateVersionMapper.map(LocalDateTime.now().toLocalDate()))
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
@@ -58,11 +61,25 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
                     .build();
 
             log.info("Generating GeoJson");
-            mapGeneratorService.generate(mapGeneratorProperties);
+            mapGeneratorService.generate(geoGenerationProperties);
             return 0;
         } catch (RuntimeException e) {
             log.error("Could not generate GeoJson because of: ", e);
             return 1;
         }
+    }
+
+    private VehicleProperties buildVehicleProperties(TrafficSignType trafficSignType) {
+
+        VehiclePropertiesBuilder vehiclePropertiesBuilder = VehicleProperties.builder();
+        switch (trafficSignType) {
+            case C6 -> vehiclePropertiesBuilder.carAccessForbiddenWt(true);
+            case C7 -> vehiclePropertiesBuilder.hgvAccessForbiddenWt(true);
+            case C7B -> vehiclePropertiesBuilder.hgvAndBusAccessForbiddenWt(true);
+            case C12 -> vehiclePropertiesBuilder.motorVehicleAccessForbiddenWt(true);
+            case C22C -> vehiclePropertiesBuilder.lcvAndHgvAccessForbiddenWt(true);
+        }
+
+        return vehiclePropertiesBuilder.build();
     }
 }

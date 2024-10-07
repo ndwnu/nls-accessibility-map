@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.properties.GeoJsonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +25,9 @@ public final class GeoGenerationProperties {
 
     @NotNull
     private TrafficSignType trafficSignType;
+
+    @NotNull
+    private final VehicleProperties vehicleProperties;
 
     @NotNull
     private boolean includeOnlyTimeWindowedSigns;
