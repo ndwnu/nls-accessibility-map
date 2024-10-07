@@ -8,7 +8,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.Acce
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSignGroupedById;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.util.LongSequenceSupplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,7 +47,7 @@ class FullRoadSectionAccessibilityGeoJsonMapperTest {
     private AccessibilityGeoJsonFeatureCollection accessibilityGeoJsonFeatureCollection;
 
     @Mock
-    private GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier;
+    private LongSequenceSupplier geoJsonIdSequenceSupplier;
 
 
     @Test
