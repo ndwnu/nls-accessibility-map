@@ -27,7 +27,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsModelFactory;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.roadsectionfraction.services.RoadSectionFragmentService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.AdditionalSnap;
@@ -64,7 +63,7 @@ public class AccessibilityService {
     private final GeometryFactoryWgs84 geometryFactoryWgs84;
 
     private final RoadSectionMapper roadSectionMapper;
-    private final RoadSectionFragmentService roadSectionFragmentService;
+
     private final QueryGraphConfigurer queryGraphConfigurer;
 
     @Timed(description = "Time spent calculating accessibility")
