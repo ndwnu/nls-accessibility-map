@@ -18,7 +18,8 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.PointGeometry;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.Properties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.RoadSectionProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.TrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
@@ -38,6 +39,8 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
+
+    private static final double TRAFFIC_SIGN_LINE_STRING_DISTANCE_IN_METERS = 1;
 
     @Override
     public void writeToFile(
@@ -80,8 +83,12 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .map(directionalSegment -> {
                     List<Feature> features = new ArrayList<>();
 
-                    features.add(buildLineString(geoJsonIdSequenceSupplier, directionalSegment));
+                    features.add(buildRoadSection(geoJsonIdSequenceSupplier, directionalSegment));
                     if (directionalSegment.hasTrafficSign()) {
+                        features.add(buildTrafficSign(
+                                geoJsonIdSequenceSupplier,
+                                directionalSegment.getTrafficSign(),
+                                directionalSegment));
                         features.add(addTrafficSignAsPoint(
                                 geoJsonIdSequenceSupplier,
                                 directionalSegment.getTrafficSign(),
@@ -103,27 +110,47 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(PointGeometry
                         .builder()
-                        .coordinates(buildTrafficSignCoordinates(directionalSegment))
+                        .coordinates(List.of(
+                                directionalSegment.getLineString().getStartPoint().getX(),
+                                directionalSegment.getLineString().getStartPoint().getY()))
                         .build())
-                .properties(Properties
-                        .builder()
-                        .id(trafficSign.roadSectionId())
-                        .direction(trafficSign.direction())
-                        .trafficSignType(trafficSign.trafficSignType())
-                        .windowTimes(buildWindowTime(trafficSign))
-                        .iconUrl(trafficSign.iconUri())
-                        .build())
+                .properties(buildTrafficSignProperties(trafficSign))
                 .build();
     }
 
-    private List<Double> buildTrafficSignCoordinates(DirectionalSegment directionalSegment) {
+    private Feature buildTrafficSign(
+            GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
+            TrafficSign trafficSign,
+            DirectionalSegment directionalSegment) {
 
-        return List.of(
-                directionalSegment.getLineString().getStartPoint().getX(),
-                directionalSegment.getLineString().getStartPoint().getY());
+        return Feature.builder()
+                .id(geoJsonIdSequenceSupplier.next())
+                .geometry(LineStringGeometry
+                        .builder()
+                        .coordinates(geoJsonLineStringCoordinateMapper.map(
+                                fractionAndDistanceCalculator.getSubLineStringByLengthInMeters(
+                                        directionalSegment.getLineString(),
+                                        TRAFFIC_SIGN_LINE_STRING_DISTANCE_IN_METERS)))
+                        .build())
+                .properties(buildTrafficSignProperties(trafficSign))
+                .build();
     }
 
-    private Feature buildLineString(
+    private TrafficSignProperties buildTrafficSignProperties(TrafficSign trafficSign) {
+        return TrafficSignProperties
+                .builder()
+                .nwbRoadSectionId(trafficSign.roadSectionId())
+                .direction(trafficSign.direction())
+                .trafficSignType(trafficSign.trafficSignType())
+                .windowTimes(trafficSign.findFirstTimeWindowedSign()
+                        .map(TextSign::getText)
+                        .orElse(null))
+                .iconUrl(trafficSign.iconUri())
+                .iconUrl(trafficSign.iconUri())
+                .build();
+    }
+
+    private Feature buildRoadSection(
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
             DirectionalSegment directionalSegment) {
 
@@ -133,23 +160,12 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                         .builder()
                         .coordinates(geoJsonLineStringCoordinateMapper.map(directionalSegment.getLineString()))
                         .build())
-                .properties(Properties
+                .properties(RoadSectionProperties
                         .builder()
-                        .id(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
+                        .nwbRoadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
                         .direction(directionalSegment.getDirection())
                         .accessible(directionalSegment.isAccessible())
                         .build())
                 .build();
-    }
-
-    private String buildWindowTime(TrafficSign trafficSign) {
-        return trafficSign.findFirstTimeWindowedSign()
-                .map(TextSign::getText)
-                .orElse(null);
-    }
-
-    @Override
-    public OutputFormat getOutputFormat() {
-        return OutputFormat.GEO_JSON_INACCESSIBLE;
     }
 }
