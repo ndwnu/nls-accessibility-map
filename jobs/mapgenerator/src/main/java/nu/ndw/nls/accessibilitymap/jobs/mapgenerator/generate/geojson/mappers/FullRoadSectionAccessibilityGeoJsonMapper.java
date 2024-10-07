@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSignGroupedById;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.util.LongSequenceSupplier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,7 +21,7 @@ public class FullRoadSectionAccessibilityGeoJsonMapper {
 
     private final RoadSectionAccessibilityGeoJsonFeatureMapper roadSectionAccessibilityGeoJsonFeatureMapper;
 
-    public AccessibilityGeoJsonFeatureCollection map(GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
+    public AccessibilityGeoJsonFeatureCollection map(LongSequenceSupplier geoJsonIdSequenceSupplier,
             List<DirectionalRoadSectionAndTrafficSignGroupedById> directionalRoadSectionAndTrafficSignGroupedByIds,
             int nwbVersion) {
 

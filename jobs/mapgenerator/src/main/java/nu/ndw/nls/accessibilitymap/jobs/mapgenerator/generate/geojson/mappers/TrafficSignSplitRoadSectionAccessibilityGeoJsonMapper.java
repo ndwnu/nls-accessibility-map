@@ -9,7 +9,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.Acce
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.AccessibilityGeoJsonFeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSignGroupedById;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.services.DirectionalRoadSectionSplitAtTrafficSignService;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.util.LongSequenceSupplier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,7 +26,7 @@ public class TrafficSignSplitRoadSectionAccessibilityGeoJsonMapper {
 
     private final DirectionalRoadSectionSplitAtTrafficSignService directionalRoadSectionSplitAtTrafficSignService;
 
-    public AccessibilityGeoJsonFeatureCollection map(GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
+    public AccessibilityGeoJsonFeatureCollection map(LongSequenceSupplier geoJsonIdSequenceSupplier,
             List<DirectionalRoadSectionAndTrafficSignGroupedById> directionalRoadSectionAndTrafficSignGroupedByIds,
             int nwbVersion) {
 

@@ -32,7 +32,7 @@
 //import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSign;
 //import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.DirectionalRoadSectionAndTrafficSignGroupedById;
 //import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.model.GeoJsonOutputFormat;
-//import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
+//import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.util.LongSequenceSupplier;
 //import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
 //import nu.ndw.nls.events.NlsEvent;
 //import nu.ndw.nls.events.NlsEventSubject;
@@ -196,10 +196,10 @@
 //                .thenReturn(directionalRoadSectionAndTrafficSignGroupedById);
 //
 //        if (geoJsonOutputFormat == GeoJsonOutputFormat.FULL_ROAD_SECTION) {
-//            when(fullRoadSectionAccessibilityGeoJsonMapper.map(any(GeoJsonIdSequenceSupplier.class),
+//            when(fullRoadSectionAccessibilityGeoJsonMapper.map(any(LongSequenceSupplier.class),
 //                    eq(directionalRoadSectionAndTrafficSignGroupedById), eq(NWB_VERSION_INT))).thenReturn(geoJson);
 //        } else if (geoJsonOutputFormat == GeoJsonOutputFormat.TRAFFIC_SIGN_SPLIT) {
-//            when(trafficSignSplitRoadSectionAccessibilityGeoJsonMapper.map(any(GeoJsonIdSequenceSupplier.class),
+//            when(trafficSignSplitRoadSectionAccessibilityGeoJsonMapper.map(any(LongSequenceSupplier.class),
 //                    eq(directionalRoadSectionAndTrafficSignGroupedById), eq(NWB_VERSION_INT))).thenReturn(geoJson);
 //        } else {
 //            when(directionalRoadSectionAndTrafficSignGroupedById.stream()).thenReturn(
@@ -218,7 +218,7 @@
 //            when(directionalRoadSectionAndTrafficSignsB.stream())
 //                    .thenReturn(Stream.of(directionalRoadSectionAndTrafficSignB));
 //
-//            when(effectivelyAccessibleGeoJsonMapper.map(any(GeoJsonIdSequenceSupplier.class),
+//            when(effectivelyAccessibleGeoJsonMapper.map(any(LongSequenceSupplier.class),
 //                    eq(List.of(directionalRoadSectionAndTrafficSignA, directionalRoadSectionAndTrafficSignB)),
 //                    eq(NWB_VERSION_INT))).thenReturn(geoJson);
 //        }

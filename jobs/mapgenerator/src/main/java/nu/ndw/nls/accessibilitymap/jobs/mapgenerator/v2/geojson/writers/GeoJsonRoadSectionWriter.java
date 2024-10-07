@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.suppliers.GeoJsonIdSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateConfiguration;
@@ -21,6 +20,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.geojson.model.TrafficSig
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
@@ -47,12 +47,12 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
         Path tempFile = uploadService.createTmpGeoJsonFile(mapGenerationProperties);
 
-        GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier = new GeoJsonIdSequenceSupplier();
+        LongSequenceSupplier idSequenceSupplier = new LongSequenceSupplier();
 
         FeatureCollection geoJson = FeatureCollection
                 .builder()
                 .features(accessibility.mergedAccessibility().stream()
-                        .map(roadSection -> createFeatures(roadSection, geoJsonIdSequenceSupplier))
+                        .map(roadSection -> createFeatures(roadSection, idSequenceSupplier))
                         .flatMap(List::stream)
                         .toList())
                 .build();
@@ -69,7 +69,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
     private List<Feature> createFeatures(
             RoadSection roadSection,
-            GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier) {
+            LongSequenceSupplier idSequenceSupplier) {
 
         return roadSection.getRoadSectionFragments().stream()
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
@@ -77,14 +77,14 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .map(directionalSegment -> {
                     List<Feature> features = new ArrayList<>();
 
-                    features.add(buildRoadSection(geoJsonIdSequenceSupplier, directionalSegment));
+                    features.add(buildRoadSection(idSequenceSupplier, directionalSegment));
                     if (directionalSegment.hasTrafficSign()) {
                         features.add(buildTrafficSign(
-                                geoJsonIdSequenceSupplier,
+                                idSequenceSupplier,
                                 directionalSegment.getTrafficSign(),
                                 directionalSegment));
                         features.add(addTrafficSignAsPoint(
-                                geoJsonIdSequenceSupplier,
+                                idSequenceSupplier,
                                 directionalSegment.getTrafficSign(),
                                 directionalSegment));
                     }
@@ -96,7 +96,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     }
 
     private Feature addTrafficSignAsPoint(
-            GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
+            LongSequenceSupplier geoJsonIdSequenceSupplier,
             TrafficSign trafficSign,
             DirectionalSegment directionalSegment) {
 
@@ -113,7 +113,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     }
 
     private Feature buildTrafficSign(
-            GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
+            LongSequenceSupplier geoJsonIdSequenceSupplier,
             TrafficSign trafficSign,
             DirectionalSegment directionalSegment) {
 
@@ -145,7 +145,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     }
 
     private Feature buildRoadSection(
-            GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
+            LongSequenceSupplier geoJsonIdSequenceSupplier,
             DirectionalSegment directionalSegment) {
 
         return Feature.builder()
