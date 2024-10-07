@@ -25,7 +25,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.Traffi
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
-import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -83,7 +82,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
                     features.add(buildLineString(geoJsonIdSequenceSupplier, directionalSegment));
                     if (directionalSegment.hasTrafficSign()) {
-                        features.add(addTrafficSign(
+                        features.add(addTrafficSignAsPoint(
                                 geoJsonIdSequenceSupplier,
                                 directionalSegment.getTrafficSign(),
                                 directionalSegment));
@@ -95,7 +94,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .toList();
     }
 
-    private Feature addTrafficSign(
+    private Feature addTrafficSignAsPoint(
             GeoJsonIdSequenceSupplier geoJsonIdSequenceSupplier,
             TrafficSign trafficSign,
             DirectionalSegment directionalSegment) {
@@ -104,7 +103,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(PointGeometry
                         .builder()
-                        .coordinates(buildTrafficSignCoordinates(trafficSign, directionalSegment))
+                        .coordinates(buildTrafficSignCoordinates(directionalSegment))
                         .build())
                 .properties(Properties
                         .builder()
@@ -117,15 +116,11 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                 .build();
     }
 
-    private List<Double> buildTrafficSignCoordinates(TrafficSign trafficSign, DirectionalSegment directionalSegment) {
-
-        LineString trafficSignLineString = fractionAndDistanceCalculator.getSubLineString(
-                directionalSegment.getLineString(),
-                directionalSegment.getDirection().isForward() ? trafficSign.fraction() : 1 - trafficSign.fraction());
+    private List<Double> buildTrafficSignCoordinates(DirectionalSegment directionalSegment) {
 
         return List.of(
-                trafficSignLineString.getStartPoint().getX(),
-                trafficSignLineString.getStartPoint().getY());
+                directionalSegment.getLineString().getStartPoint().getX(),
+                directionalSegment.getLineString().getStartPoint().getY());
     }
 
     private Feature buildLineString(
