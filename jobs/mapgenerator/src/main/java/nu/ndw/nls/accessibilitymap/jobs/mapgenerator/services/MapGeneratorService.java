@@ -69,7 +69,7 @@ public class MapGeneratorService {
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
-        ndwDataService.addNwbDataToAccessibility(accessibility, mapGenerationProperties.getNwbVersion());
+//        ndwDataService.addNwbDataToAccessibility(accessibility, mapGenerationProperties.getNwbVersion());
 
         return accessibility;
     }

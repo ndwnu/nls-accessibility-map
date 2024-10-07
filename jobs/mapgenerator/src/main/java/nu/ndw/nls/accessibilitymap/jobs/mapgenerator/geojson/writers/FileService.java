@@ -34,9 +34,10 @@ public class FileService {
     private final BlobStorageLocationMapper blobStorageLocationMapper;
 
     public Path createTmpGeoJsonFile(GeoGenerationProperties geoGenerationProperties) {
+
         try {
             return Files.createTempFile(
-                    "accessibility-" + geoGenerationProperties.getTrafficSignType().toString().toLowerCase(Locale.ROOT)
+                    "accessibility-" + geoGenerationProperties.getTrafficSignType().name().toLowerCase(Locale.ROOT)
                             + "-", ".geojson",
                     FILE_PERMISSIONS);
         } catch (IOException e) {
@@ -45,6 +46,7 @@ public class FileService {
     }
 
     public void uploadFile(TrafficSignType trafficSignType, Path geojsonTmpResult, LocalDate versionDate) {
+
         Path mapDestinationPath = blobStorageLocationMapper.map(trafficSignType, versionDate);
 
         Path mapDirectoryPath = mapDestinationPath.getParent();

@@ -17,8 +17,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 @Slf4j
-@Component("GenerateGeoJsonCommandV2")
-@Command(name = "generateGeoJsonV2")
+@Component
+@Command(name = "generateGeoJson")
 @RequiredArgsConstructor
 public class GenerateGeoJsonCommand implements Callable<Integer> {
 
@@ -32,6 +32,7 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             description = "Traffic sign to generate the map for.",
             required = true)
     private TrafficSignType trafficSignType;
+
     @Option(names = {"-tw", "--include-only-time-windowed-signs"},
             description = "Traffic sign to generate the map for.")
     private boolean includeOnlyTimeWindowedSigns;

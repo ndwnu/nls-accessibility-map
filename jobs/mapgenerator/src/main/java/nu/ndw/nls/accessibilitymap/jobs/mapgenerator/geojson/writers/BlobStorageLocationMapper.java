@@ -16,6 +16,7 @@ public class BlobStorageLocationMapper {
     private final GenerateConfiguration generateConfiguration;
 
     public Path map(TrafficSignType trafficSignType, LocalDate version) {
+
         GeoJsonProperties properties = generateConfiguration.getConfiguration(trafficSignType);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(properties.getPathDatePattern());
 
