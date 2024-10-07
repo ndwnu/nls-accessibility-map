@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.services;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class TrafficSignService {
 
     public TrafficSignData getTrafficSigns(Set<String> rvvCodes) {
 
-        return getTrafficSigns(rvvCodes, null);
+        return getTrafficSigns(rvvCodes, Collections.emptySet());
     }
 
     public TrafficSignData getTrafficSigns(Set<String> rvvCodes, Set<Long> roadSectionIds) {
@@ -48,8 +49,12 @@ public class TrafficSignService {
     private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodesAndRoadSectionIds(
             Set<String> rvvCodes,
             Set<Long> roadSectionIds) {
-        return trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, rvvCodes, roadSectionIds,
-                trafficSignProperties.getApi().getTownCodes()).getFeatures().stream();
+        return trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, rvvCodes,
+                roadSectionIds.isEmpty() ? null : roadSectionIds,
+                trafficSignProperties.getApi().getTownCodes().isEmpty() ? null
+                        : trafficSignProperties.getApi().getTownCodes())
+                .getFeatures().stream();
+
     }
 
     private boolean hasRoadSectionId(TrafficSignGeoJsonDto t) {
