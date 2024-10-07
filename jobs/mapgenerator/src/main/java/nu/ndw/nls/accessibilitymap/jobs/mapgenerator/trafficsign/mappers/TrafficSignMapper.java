@@ -51,9 +51,9 @@ public class TrafficSignMapper {
             case BACK -> {
                 return Direction.BACKWARD;
             }
+            default -> throw new IllegalArgumentException(
+                    "Driving direction '%s' could not be mapped.".formatted(drivingDirection));
         }
-
-        throw new IllegalArgumentException("Driving direction '%s' could not be mapped.".formatted(drivingDirection));
     }
 
     private URI createIconUri(TrafficSignPropertiesDto trafficSignPropertiesDto) {

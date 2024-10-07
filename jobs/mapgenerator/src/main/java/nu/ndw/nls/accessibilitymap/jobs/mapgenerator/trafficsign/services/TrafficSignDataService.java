@@ -22,67 +22,14 @@ public class TrafficSignDataService {
 
     public List<TrafficSign> findAllByType(TrafficSignType trafficSignType) {
 
-        IntegerSequenceSupplier IntegerSequenceSupplier = new IntegerSequenceSupplier();
+        IntegerSequenceSupplier idSupplier = new IntegerSequenceSupplier();
+
         return trafficSignService.getTrafficSigns(Set.of(trafficSignType.name()))
                 .trafficSignsByRoadSectionId().values().stream()
                 .flatMap(Collection::stream)
-                .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(trafficSignGeoJsonDto, IntegerSequenceSupplier))
+                .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(trafficSignGeoJsonDto, idSupplier))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
     }
-//
-//    private void addTrafficSignToDirectionalSegment(
-//            DirectionalSegment directionalSegment,
-//            List<TrafficSignGeoJsonDto> trafficSignDataInAllDirections,
-//            Predicate<TrafficSignGeoJsonDto> isInForwardDirection, GeoGenerationProperties mapGenerationProperties) {
-//
-//        if (Objects.isNull(directionalSegment)) {
-//            return;
-//        }
-//
-//        List<TrafficSignGeoJsonDto> forwardTrafficSigns = trafficSignDataInAllDirections.stream()
-//                .filter(isInForwardDirection)
-//                .filter(trafficSignGeoJsonDto -> filterByMapGenerationProperties(trafficSignGeoJsonDto,
-//                        mapGenerationProperties))
-//                .toList();
-//
-//        directionalSegment.setTrafficSigns(forwardTrafficSigns.stream()
-//                .filter(trafficSignGeoJsonDto -> mapGenerationProperties.getTrafficSignsAsString()
-//                        .contains(trafficSignGeoJsonDto.getProperties().getRvvCode()))
-//                .map(trafficSignMapper::mapFromTrafficSignGeoJsonDto)
-//                .toList());
-//    }
-//
-//    private TrafficSignData getTrafficData(
-//            Set<TrafficSignType> trafficSignTypes,
-//            List<RoadSection> roadSections) {
-//
-//        Set<String> trafficSignCodes = trafficSignTypes.stream()
-//                .map(Enum::name)
-//                .collect(Collectors.toSet());
-//
-//        Set<Long> roadSectionIds = roadSections.stream()
-//                .map(RoadSection::getRoadSectionId)
-//                .collect(Collectors.toSet());
-//
-//        return trafficSignService.getTrafficSigns(trafficSignCodes, roadSectionIds);
-//    }
-//
-//    private boolean filterByMapGenerationProperties(
-//            TrafficSignGeoJsonDto trafficSignGeoJsonDto,
-//            GeoGenerationProperties mapGenerationProperties) {
-//
-//        // TODO: take other options from mapGenerationProperties into account like timed / non timed windows.
-//        return true;
-//    }
-//
-//    private final Predicate<TrafficSignGeoJsonDto> isInForwardDirection = trafficSignGeoJsonDto ->
-//            trafficSignGeoJsonDto.getProperties().getDrivingDirection() == DirectionType.FORTH
-//                    || trafficSignGeoJsonDto.getProperties().getDrivingDirection() == DirectionType.BOTH;
-//
-//    private final Predicate<TrafficSignGeoJsonDto> isInBackwardDirection = trafficSignGeoJsonDto ->
-//            trafficSignGeoJsonDto.getProperties().getDrivingDirection() == DirectionType.BACK
-//                    || trafficSignGeoJsonDto.getProperties().getDrivingDirection() == DirectionType.BOTH;
-
 }
