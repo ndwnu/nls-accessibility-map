@@ -168,7 +168,7 @@ public class AccessibilityService {
 
     private boolean applyTimeWindowedSignFilter(AccessibilityRequest accessibilityRequest, TrafficSign trafficSign) {
 
-        return accessibilityRequest.isIncludeOnlyTimeWindowedSigns() ? trafficSign.hasTimeWindowedSign() : false;
+        return accessibilityRequest.isIncludeOnlyTimeWindowedSigns() && trafficSign.hasTimeWindowedSign();
     }
 
     private Weighting buildWeightingWithoutRestrictions(AccessibilityRequest accessibilityRequest) {
