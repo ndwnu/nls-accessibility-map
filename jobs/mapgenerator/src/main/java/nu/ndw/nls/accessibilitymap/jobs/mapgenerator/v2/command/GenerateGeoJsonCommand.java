@@ -1,13 +1,13 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties.VehiclePropertiesBuilder;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.LocalDateVersionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.configuration.GenerateProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
@@ -23,8 +23,6 @@ import picocli.CommandLine.Option;
 public class GenerateGeoJsonCommand implements Callable<Integer> {
 
     private final MapGeneratorService mapGeneratorService;
-
-    private final LocalDateVersionMapper localDateVersionMapper;
 
     private final AccessibilityConfiguration accessibilityConfiguration;
 
@@ -50,7 +48,7 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
                     .trafficSignType(trafficSignType)
                     .vehicleProperties(buildVehicleProperties(trafficSignType))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
-                    .exportVersion(localDateVersionMapper.map(LocalDateTime.now().toLocalDate()))
+                    .exportVersion(Integer.parseInt(LocalDateTime.now().toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)))
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                     .publishEvents(publishEvents)
                     .startLocationLatitude(generateProperties.getStartLocationLatitude())

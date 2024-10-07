@@ -16,7 +16,6 @@ import java.util.Locale;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.generate.geojson.mappers.BlobStorageLocationMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.v2.model.trafficsign.TrafficSignType;
 import org.springframework.stereotype.Component;
