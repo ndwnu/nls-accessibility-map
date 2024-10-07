@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("staging")
 @TestPropertySource(properties = {
         "graphhopper.dir=../../graphhopper"
 })
@@ -29,7 +29,7 @@ class MapGeneratorServiceIT {
     @Test
     void generate_ok() {
 
-        TrafficSignType trafficSignType = TrafficSignType.C12;
+        TrafficSignType trafficSignType = TrafficSignType.C6;
         GeoGenerationProperties mapGenerationProperties = GeoGenerationProperties.builder()
                 .trafficSignType(trafficSignType)
                 .exportVersion(Integer.parseInt(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)))
