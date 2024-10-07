@@ -16,10 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +28,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AdditionalSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphConfigurer;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.Direction;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
@@ -66,6 +59,8 @@ public class AccessibilityService {
 
     private final QueryGraphConfigurer queryGraphConfigurer;
 
+    private final RoadSectionMerger roadSectionMerger;
+
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
 
@@ -78,8 +73,7 @@ public class AccessibilityService {
                 accessibilityRequest.getStartLocationLongitude());
 
         Snap startSegment = networkGraphHopper.getLocationIndex()
-                .findClosest(startPoint.getY(), startPoint.getX(),
-                        EdgeFilter.ALL_EDGES);
+                .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
 
         List<Snap> snaps = additionalSnaps
                 .stream()
@@ -92,37 +86,30 @@ public class AccessibilityService {
         Map<Integer, TrafficSign> trafficSignById = buildTrafficSignById(additionalSnaps);
 
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
-                roadSectionMapper.mapToRoadSections(
-                        isochroneService.getIsochroneMatchesByMunicipalityId(
-                                IsochroneArguments.builder()
-                                        .weighting(buildWeightingWithoutRestrictions(accessibilityRequest))
-                                        .startPoint(startPoint)
-                                        .municipalityId(accessibilityRequest.getMunicipalityId())
-                                        .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
-                                        .build(),
-                                queryGraph,
-                                startSegment),
-                        trafficSignById);
+                getRoadSections(
+                        accessibilityRequest,
+                        isochroneService,
+                        startPoint,
+                        queryGraph,
+                        startSegment,
+                        trafficSignById,
+                        buildWeightingWithoutRestrictions(accessibilityRequest));
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
-                roadSectionMapper.mapToRoadSections(
-                        isochroneService.getIsochroneMatchesByMunicipalityId(
-                                IsochroneArguments.builder()
-                                        .weighting(
-                                                buildWeightingWithRestrictions(accessibilityRequest))
-                                        .startPoint(startPoint)
-                                        .municipalityId(accessibilityRequest.getMunicipalityId())
-                                        .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
-                                        .build(),
-                                queryGraph,
-                                startSegment),
-                        trafficSignById);
+                getRoadSections(
+                        accessibilityRequest,
+                        isochroneService,
+                        startPoint,
+                        queryGraph,
+                        startSegment,
+                        trafficSignById,
+                        buildWeightingWithRestrictions(accessibilityRequest));
 
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
                 .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
                 .mergedAccessibility(
-                        mergeNoRestrictionsWithAccessibilityRestrictions(
+                        roadSectionMerger.mergeNoRestrictionsWithAccessibilityRestrictions(
                                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                                 accessibleRoadSectionsWithAppliedRestrictions))
                 .build();
@@ -130,6 +117,28 @@ public class AccessibilityService {
         log.debug("Accessibility generation done. It took: %s ms"
                 .formatted(ChronoUnit.MILLIS.between(startTime, OffsetDateTime.now())));
         return accessibility;
+    }
+
+    private Collection<RoadSection> getRoadSections(
+            AccessibilityRequest accessibilityRequest,
+            IsochroneService isochroneService,
+            Point startPoint,
+            QueryGraph queryGraph,
+            Snap startSegment,
+            Map<Integer, TrafficSign> trafficSignById,
+            Weighting weighting) {
+
+        return roadSectionMapper.mapToRoadSections(
+                isochroneService.getIsochroneMatchesByMunicipalityId(
+                        IsochroneArguments.builder()
+                                .weighting(weighting)
+                                .startPoint(startPoint)
+                                .municipalityId(accessibilityRequest.getMunicipalityId())
+                                .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
+                                .build(),
+                        queryGraph,
+                        startSegment),
+                trafficSignById);
     }
 
     private Map<Integer, TrafficSign> buildTrafficSignById(List<AdditionalSnap> additionalSnaps) {
@@ -160,72 +169,6 @@ public class AccessibilityService {
     private boolean applyTimeWindowedSignFilter(AccessibilityRequest accessibilityRequest, TrafficSign trafficSign) {
 
         return accessibilityRequest.isIncludeOnlyTimeWindowedSigns() ? trafficSign.hasTimeWindowedSign() : false;
-    }
-
-    private Collection<RoadSection> mergeNoRestrictionsWithAccessibilityRestrictions(
-            Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
-            Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions) {
-
-        List<DirectionalSegment> allDirectionalSegments =
-                accessibleRoadsSectionsWithoutAppliedRestrictions.stream()
-                        .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
-                        .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                        .toList();
-
-        Map<Integer, DirectionalSegment> directionalSegmentsThatAreAccessible =
-                accessibleRoadSectionsWithAppliedRestrictions.stream()
-                        .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
-                        .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                        .collect(Collectors.toMap(DirectionalSegment::getId, Function.identity()));
-
-        SortedMap<Long, RoadSection> roadSectionsById = new TreeMap<>();
-        SortedMap<Integer, RoadSectionFragment> roadSectionsFragmentsById = new TreeMap<>();
-
-        allDirectionalSegments.forEach(
-                directionalSegmentToCopyFrom -> {
-                    RoadSection newRoadSection = roadSectionsById.computeIfAbsent(
-                            directionalSegmentToCopyFrom.getRoadSectionFragment().getRoadSection().getId(),
-                            roadSectionId -> RoadSection.builder()
-                                    .id(roadSectionId)
-                                    .build());
-
-                    RoadSectionFragment newRoadSectionFraction = roadSectionsFragmentsById.computeIfAbsent(
-                            directionalSegmentToCopyFrom.getRoadSectionFragment().getId(),
-                            roadSectionFragmentId -> {
-                                RoadSectionFragment newRoadSectionFragment = RoadSectionFragment.builder()
-                                        .id(roadSectionFragmentId)
-                                        .roadSection(newRoadSection)
-                                        .build();
-
-                                newRoadSection.getRoadSectionFragments().add(newRoadSectionFragment);
-                                return newRoadSectionFragment;
-                            });
-
-                    addNewDirectionSegmentToRoadSection(
-                            newRoadSectionFraction,
-                            directionalSegmentToCopyFrom,
-                            directionalSegmentsThatAreAccessible.get(directionalSegmentToCopyFrom.getId()));
-                });
-
-        return roadSectionsById.values();
-    }
-
-    private void addNewDirectionSegmentToRoadSection(
-            RoadSectionFragment newRoadSectionFraction,
-            DirectionalSegment directionalSegmentToCopyFrom,
-            DirectionalSegment accessibleDirectionSegment) {
-
-        DirectionalSegment newDirectionSegment = directionalSegmentToCopyFrom
-                .withAccessible(
-                        Objects.nonNull(accessibleDirectionSegment) && accessibleDirectionSegment.isAccessible()
-                )
-                .withRoadSectionFragment(newRoadSectionFraction);
-
-        if (directionalSegmentToCopyFrom.getDirection() == Direction.BACKWARD) {
-            newRoadSectionFraction.getBackwardSegments().add(newDirectionSegment);
-        } else {
-            newRoadSectionFraction.getForwardSegments().add(newDirectionSegment);
-        }
     }
 
     private Weighting buildWeightingWithoutRestrictions(AccessibilityRequest accessibilityRequest) {

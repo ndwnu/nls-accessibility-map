@@ -38,6 +38,7 @@ public class MapGeneratorService {
 
         LocalDateTime startTime = LocalDateTime.now();
 
+        log.info("Generating with the following properties: {}", mapGenerationProperties);
         Accessibility accessibility = calculateAccessibility(mapGenerationProperties);
 
         long roadSectionsWithTrafficSigns = accessibility.mergedAccessibility().stream()
@@ -55,10 +56,7 @@ public class MapGeneratorService {
         }
     }
 
-    private Accessibility calculateAccessibility(
-            GeoGenerationProperties mapGenerationProperties) {
-
-        log.debug("Generating with the following properties: {}", mapGenerationProperties);
+    private Accessibility calculateAccessibility(GeoGenerationProperties mapGenerationProperties) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .vehicleProperties(mapGenerationProperties.getVehicleProperties())
@@ -71,8 +69,7 @@ public class MapGeneratorService {
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
-        // TODO: can be moved to accessibilityService?
-        // ndwDataService.addNwbDataToAccessibility(accessibility, mapGenerationProperties.getNwbVersion());
+        ndwDataService.addNwbDataToAccessibility(accessibility, mapGenerationProperties.getNwbVersion());
 
         return accessibility;
     }
