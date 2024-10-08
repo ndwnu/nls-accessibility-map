@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.mapper.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
@@ -31,14 +31,17 @@ public class MapGeneratorService {
 
     private final MessageService messageService;
 
+    private final AccessibilityRequestMapper accessibilityRequestMapper;
+
     private final ClockService clockService;
 
-    public void generate(@Valid GeoGenerationProperties mapGenerationProperties) {
+    public void generate(@Valid GeoGenerationProperties geoGenerationProperties) {
 
         OffsetDateTime startTime = clockService.now();
 
-        log.info("Generating with the following properties: {}", mapGenerationProperties);
-        Accessibility accessibility = calculateAccessibility(mapGenerationProperties);
+        log.info("Generating with the following properties: {}", geoGenerationProperties);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(
+                accessibilityRequestMapper.map(geoGenerationProperties));
 
         long roadSectionsWithTrafficSigns = accessibility.mergedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
@@ -48,27 +51,11 @@ public class MapGeneratorService {
         log.debug("Found {} with road sections with traffic signs.", roadSectionsWithTrafficSigns);
 
         outputWriters.forEach(
-                outputWriter -> outputWriter.writeToFile(accessibility, mapGenerationProperties));
+                outputWriter -> outputWriter.writeToFile(accessibility, geoGenerationProperties));
 
-        if (mapGenerationProperties.isPublishEvents()) {
-            sendEventGeneratingDone(mapGenerationProperties.getTrafficSignType(), mapGenerationProperties, startTime);
+        if (geoGenerationProperties.isPublishEvents()) {
+            sendEventGeneratingDone(geoGenerationProperties.getTrafficSignType(), geoGenerationProperties, startTime);
         }
-    }
-
-    private Accessibility calculateAccessibility(GeoGenerationProperties mapGenerationProperties) {
-
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .vehicleProperties(mapGenerationProperties.getVehicleProperties())
-                .startLocationLatitude(mapGenerationProperties.getStartLocationLatitude())
-                .startLocationLongitude(mapGenerationProperties.getStartLocationLongitude())
-                .searchDistanceInMetres(mapGenerationProperties.getSearchRadiusInMeters())
-                .trafficSignType(mapGenerationProperties.getTrafficSignType())
-                .includeOnlyTimeWindowedSigns(mapGenerationProperties.isIncludeOnlyTimeWindowedSigns())
-                .build();
-
-        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
-
-        return accessibility;
     }
 
     private void sendEventGeneratingDone(

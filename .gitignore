@@ -19,4 +19,5 @@ docker/nls-accessibility-map-graphhopper-job/application.jar
 docker/nls-accessibility-map-generator-jobs/application.jar
 docker/traffic-sign-api-stub/responses/realdata-*
 
+**/application-local*.yml
 secrets-*.yaml
