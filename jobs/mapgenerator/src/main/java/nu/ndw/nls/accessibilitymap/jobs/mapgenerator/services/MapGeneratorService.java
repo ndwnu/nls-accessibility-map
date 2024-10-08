@@ -36,7 +36,7 @@ public class MapGeneratorService {
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 accessibilityRequestMapper.map(geoGenerationProperties));
 
-        long roadSectionsWithTrafficSigns = accessibility.mergedAccessibility().stream()
+        long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(DirectionalSegment::hasTrafficSign)

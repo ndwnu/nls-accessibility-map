@@ -15,9 +15,9 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSectionFragm
 import org.springframework.stereotype.Component;
 
 @Component
-public class RoadSectionMerger {
+public class RoadSectionCombinator {
 
-    public Collection<RoadSection> mergeNoRestrictionsWithAccessibilityRestrictions(
+    public Collection<RoadSection> combineNoRestrictionsWithAccessibilityRestrictions(
             Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
             Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions) {
 

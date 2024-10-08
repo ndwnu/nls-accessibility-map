@@ -19,7 +19,7 @@ public class NdwDataService {
 
     public void addNwbDataToAccessibility(Accessibility accessibility, int nwbVersion) {
 
-        accessibility.mergedAccessibility().forEach(roadSection ->
+        accessibility.combinedAccessibility().forEach(roadSection ->
                 addNdwDataToRoadSection(roadSection, nwbVersion));
 
         accessibility.accessibleRoadSectionsWithAppliedRestrictions().forEach(roadSection ->

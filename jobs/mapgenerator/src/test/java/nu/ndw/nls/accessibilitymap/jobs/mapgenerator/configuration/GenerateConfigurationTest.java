@@ -120,6 +120,7 @@ class GenerateConfigurationTest extends ValidationTest {
 
     @Override
     protected Class<?> getClassToTest() {
-        return GenerateConfiguration.class;
+
+        return generateConfiguration.getClass();
     }
 }

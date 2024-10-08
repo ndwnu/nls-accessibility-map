@@ -80,7 +80,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
         FeatureCollection geoJson = FeatureCollection
                 .builder()
-                .features(accessibility.mergedAccessibility().stream()
+                .features(accessibility.combinedAccessibility().stream()
                         .map(roadSection -> createFeatures(roadSection, idSequenceSupplier))
                         .flatMap(List::stream)
                         .toList())
