@@ -15,13 +15,13 @@ import org.springframework.validation.annotation.Validated;
 @With
 @Validated
 public record GeoGenerationProperties(
-        int exportVersion,
-        int nwbVersion,
-        boolean publishEvents,
+        @NotNull Integer exportVersion,
+        @NotNull Integer nwbVersion,
+        @NotNull Boolean publishEvents,
         @NotNull OffsetDateTime startTime,
         @NotNull TrafficSignType trafficSignType,
         @NotNull VehicleProperties vehicleProperties,
-        @NotNull boolean includeOnlyTimeWindowedSigns,
+        @NotNull Boolean includeOnlyTimeWindowedSigns,
         @NotNull GenerateConfiguration generateConfiguration,
         @Min(50) @Max(54) double startLocationLatitude,
         @Min(3) @Max(8) double startLocationLongitude,
