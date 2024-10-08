@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.nwb.services;
 
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.nwb.mappers.RoadSectionMetaDataMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto.Id;

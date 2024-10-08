@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
 
 import lombok.Builder;
 import lombok.Value;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.Direction;
 
 @Value
 @Builder

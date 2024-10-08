@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign;
 
 import lombok.AllArgsConstructor;
 

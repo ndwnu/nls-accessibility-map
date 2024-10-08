@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.stereotype.Service;
 
 @ExtendWith(MockitoExtension.class)
 class TrafficSignDataServiceTest {
@@ -82,6 +84,16 @@ class TrafficSignDataServiceTest {
 
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign2, trafficSign3);
     }
+    @Test
+    void class_configurationAnnotation() {
+
+        AnnotationUtil.classContainsAnnotation(
+                trafficSignDataService.getClass(),
+                Service.class,
+                annotation -> assertThat(annotation).isNotNull()
+        );
+    }
+
 
     private void mockMapperCalls(TrafficSignGeoJsonDto trafficSignGeoJsonDto, TrafficSign trafficSign) {
         when(trafficSignMapper.mapFromTrafficSignGeoJsonDto(

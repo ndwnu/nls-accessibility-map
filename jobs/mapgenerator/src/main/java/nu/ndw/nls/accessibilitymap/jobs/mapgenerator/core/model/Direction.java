@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model;
 
 public enum Direction {
     FORWARD,
