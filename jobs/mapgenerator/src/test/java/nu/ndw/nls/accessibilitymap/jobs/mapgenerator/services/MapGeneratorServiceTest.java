@@ -75,6 +75,8 @@ class MapGeneratorServiceTest {
 
         geoGenerationProperties = GeoGenerationProperties.builder()
                 .startTime(timestamp)
+                .exportVersion(1)
+                .nwbVersion(2)
                 .trafficSignType(TrafficSignType.C7)
                 .publishEvents(true)
                 .build();
