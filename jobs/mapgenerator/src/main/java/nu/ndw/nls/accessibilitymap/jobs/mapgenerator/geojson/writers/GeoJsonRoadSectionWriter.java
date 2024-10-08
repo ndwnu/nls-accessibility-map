@@ -63,7 +63,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
             throw new IllegalStateException("Failed to serialize geojson to file: " + tempFile, e);
         }
 
-        uploadService.uploadFile(mapGenerationProperties.getTrafficSignType(), tempFile,
+        uploadService.uploadFile(mapGenerationProperties.trafficSignType(), tempFile,
                 LocalDateTime.now().toLocalDate());
     }
 

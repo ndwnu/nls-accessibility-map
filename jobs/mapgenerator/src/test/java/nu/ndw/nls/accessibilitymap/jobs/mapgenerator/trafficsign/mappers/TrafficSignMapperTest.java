@@ -87,7 +87,8 @@ class TrafficSignMapperTest {
 
         if (directionType == DirectionType.BOTH) {
             assertThat(trafficSign).isEmpty();
-            loggerExtension.containsLog(Level.WARN,
+            loggerExtension.containsLog(
+                    Level.WARN,
                     "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
                             .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
                     "Driving direction '%s' could not be mapped.".formatted(directionType));

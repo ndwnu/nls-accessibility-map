@@ -10,7 +10,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.mapper.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.OutputWriter;
@@ -53,30 +52,21 @@ public class MapGeneratorService {
         outputWriters.forEach(
                 outputWriter -> outputWriter.writeToFile(accessibility, geoGenerationProperties));
 
-        if (geoGenerationProperties.isPublishEvents()) {
-            sendEventGeneratingDone(geoGenerationProperties.getTrafficSignType(), geoGenerationProperties, startTime);
+        if (geoGenerationProperties.publishEvents()) {
+            sendEventGeneratingDone(geoGenerationProperties, startTime);
         }
     }
 
     private void sendEventGeneratingDone(
-            TrafficSignType trafficSignType,
-            GeoGenerationProperties mapGenerationProperties,
+            GeoGenerationProperties geoGenerationProperties,
             OffsetDateTime timestamp) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
-                trafficSignType,
-                mapGenerationProperties.getExportVersion(),
-                mapGenerationProperties.getNwbVersion(),
+                geoGenerationProperties.trafficSignType(),
+                geoGenerationProperties.exportVersion(),
+                geoGenerationProperties.nwbVersion(),
                 timestamp.toInstant());
-
-        log.debug("Sending {} created event for type {}, version {}, NWB version {} and traffic sign timestamp {}",
-                nlsEvent.getType().getLabel(),
-                nlsEvent.getSubject().getType(),
-                nlsEvent.getSubject().getVersion(),
-                nlsEvent.getSubject().getNwbVersion(),
-                timestamp);
 
         messageService.publish(nlsEvent);
     }
-
 }

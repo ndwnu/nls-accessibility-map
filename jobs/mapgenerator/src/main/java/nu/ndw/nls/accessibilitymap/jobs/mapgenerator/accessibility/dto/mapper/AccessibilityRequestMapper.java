@@ -10,12 +10,12 @@ public final class AccessibilityRequestMapper {
     public AccessibilityRequest map(GeoGenerationProperties geoGenerationProperties) {
 
         return AccessibilityRequest.builder()
-                .vehicleProperties(geoGenerationProperties.getVehicleProperties())
-                .startLocationLatitude(geoGenerationProperties.getStartLocationLatitude())
-                .startLocationLongitude(geoGenerationProperties.getStartLocationLongitude())
-                .searchDistanceInMetres(geoGenerationProperties.getSearchRadiusInMeters())
-                .trafficSignType(geoGenerationProperties.getTrafficSignType())
-                .includeOnlyTimeWindowedSigns(geoGenerationProperties.isIncludeOnlyTimeWindowedSigns())
+                .vehicleProperties(geoGenerationProperties.vehicleProperties())
+                .startLocationLatitude(geoGenerationProperties.startLocationLatitude())
+                .startLocationLongitude(geoGenerationProperties.startLocationLongitude())
+                .searchDistanceInMetres(geoGenerationProperties.searchRadiusInMeters())
+                .trafficSignType(geoGenerationProperties.trafficSignType())
+                .includeOnlyTimeWindowedSigns(geoGenerationProperties.includeOnlyTimeWindowedSigns())
                 .build();
     }
 }
