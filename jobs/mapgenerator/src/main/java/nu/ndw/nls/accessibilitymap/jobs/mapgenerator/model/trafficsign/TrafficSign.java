@@ -1,25 +1,26 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign;
 
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
-import lombok.NonNull;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.Direction;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
+import org.springframework.validation.annotation.Validated;
 
 @Builder
+@Validated
 public record TrafficSign(
-        @NonNull Integer id,
-        @NonNull Integer roadSectionId,
-        @NonNull TrafficSignType trafficSignType,
-        @NonNull Double latitude,
-        @NonNull Double longitude,
-        @NonNull Direction direction,
-        @NonNull Double fraction,
+        @NotNull Integer id,
+        @NotNull Integer roadSectionId,
+        @NotNull TrafficSignType trafficSignType,
+        @NotNull Double latitude,
+        @NotNull Double longitude,
+        @NotNull Direction direction,
+        @NotNull Double fraction,
         URI iconUri,
-        @NonNull
-        List<TextSign> textSigns
+        @NotNull List<TextSign> textSigns
 ) {
 
     public boolean hasTimeWindowedSign() {

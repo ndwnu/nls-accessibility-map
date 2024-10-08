@@ -1,34 +1,38 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSign;
 import org.locationtech.jts.geom.LineString;
+import org.springframework.validation.annotation.Validated;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
 @With
+@Validated
 public final class DirectionalSegment {
 
-    @NonNull
+    @NotNull
     private final Integer id;
 
-    @NonNull
+    @NotNull
     private final Direction direction;
 
-    @NonNull
+    @NotNull
     private final LineString lineString;
 
-    @NonNull
+    @NotNull
     private final RoadSectionFragment roadSectionFragment;
 
+    @Valid
     private final TrafficSign trafficSign;
 
     private final boolean accessible;
