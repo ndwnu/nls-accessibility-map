@@ -19,7 +19,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.OutputWriter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
@@ -51,9 +50,6 @@ class MapGeneratorServiceTest {
     private MessageService messageService;
 
     @Mock
-    private ClockService clockService;
-
-    @Mock
     private AccessibilityRequestMapper accessibilityRequestMapper;
 
     @Mock
@@ -78,6 +74,7 @@ class MapGeneratorServiceTest {
     void setUp() {
 
         geoGenerationProperties = GeoGenerationProperties.builder()
+                .startTime(timestamp)
                 .trafficSignType(TrafficSignType.C7)
                 .publishEvents(true)
                 .build();
@@ -87,8 +84,7 @@ class MapGeneratorServiceTest {
                 List.of(outputWriter),
                 accessibilityService,
                 messageService,
-                accessibilityRequestMapper,
-                clockService
+                accessibilityRequestMapper
         );
 
         roadSections = List.of(
@@ -115,7 +111,6 @@ class MapGeneratorServiceTest {
     @Test
     void generate_ok() {
 
-        when(clockService.now()).thenReturn(timestamp);
         when(accessibilityRequestMapper.map(geoGenerationProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.mergedAccessibility()).thenReturn(roadSections);
@@ -145,7 +140,6 @@ class MapGeneratorServiceTest {
 
         geoGenerationProperties = geoGenerationProperties.withPublishEvents(false);
 
-        when(clockService.now()).thenReturn(timestamp);
         when(accessibilityRequestMapper.map(geoGenerationProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.mergedAccessibility()).thenReturn(roadSections);

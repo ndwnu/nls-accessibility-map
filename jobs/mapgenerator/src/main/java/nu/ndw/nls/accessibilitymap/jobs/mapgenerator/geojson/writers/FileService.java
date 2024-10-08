@@ -9,15 +9,12 @@ import static java.nio.file.attribute.PosixFilePermission.OWNER_WRITE;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.time.LocalDate;
-import java.util.Locale;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -31,40 +28,32 @@ public class FileService {
     private static final FileAttribute<?> FOLDER_PERMISSIONS = PosixFilePermissions.asFileAttribute(
             Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE));
 
-    private final BlobStorageLocationMapper blobStorageLocationMapper;
-
-    public Path createTmpGeoJsonFile(GeoGenerationProperties geoGenerationProperties) {
+    public Path createTmpFile(String fileName, String fileExtension) {
 
         try {
-            return Files.createTempFile(
-                    "accessibility-" + geoGenerationProperties.trafficSignType().name().toLowerCase(Locale.ROOT)
-                            + "-", ".geojson",
-                    FILE_PERMISSIONS);
+            return Files.createTempFile(fileName, ".geojson", FILE_PERMISSIONS);
         } catch (IOException e) {
-            throw new IllegalStateException("Failed to create tmp file for geojson response", e);
+            throw new IllegalStateException("Failed to create tmp file.", e);
         }
     }
 
-    public void uploadFile(TrafficSignType trafficSignType, Path geojsonTmpResult, LocalDate versionDate) {
+    public void moveFile(Path tempFile, Path exportFile) {
 
-        Path mapDestinationPath = blobStorageLocationMapper.map(trafficSignType, versionDate);
-
-        Path mapDirectoryPath = mapDestinationPath.getParent();
+        Path mapDirectoryPath = exportFile.getParent();
 
         try {
-            if (Files.exists(mapDestinationPath)) {
-                log.warn("Overwriting existing file {}", mapDestinationPath);
-                Files.delete(mapDestinationPath);
+            if (Files.exists(exportFile)) {
+                log.warn("Overwriting existing file {}", exportFile);
             } else {
                 Files.createDirectories(mapDirectoryPath, FOLDER_PERMISSIONS);
             }
 
-            Files.move(geojsonTmpResult, mapDestinationPath);
+            Files.move(tempFile, exportFile, StandardCopyOption.REPLACE_EXISTING);
 
-        } catch (IOException e) {
-            throw new IllegalStateException("Error moving file from " + geojsonTmpResult + " to " + mapDestinationPath,
-                    e);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Error moving file from %s to %s.".formatted(tempFile, exportFile),
+                    exception);
         }
     }
-
 }

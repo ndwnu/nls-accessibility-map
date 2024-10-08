@@ -1,37 +1,50 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.nio.file.Path;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import lombok.Getter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
-import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import lombok.Setter;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 @Getter
-@Configuration
-@EnableConfigurationProperties(GenerateProperties.class)
+@Setter
+@Validated
+@ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.jobs.generate")
 public class GenerateConfiguration {
 
-    private final GenerateProperties generateProperties;
-    private final GeometryFactoryWgs84 geometryFactoryWgs84;
+    @NotNull
+    private ZoneId zone;
 
-    private final ObjectMapper objectMapper;
+    @NotNull
+    private Path rootExportDirectory;
 
-    public GenerateConfiguration(GenerateProperties generateProperties, GeometryFactoryWgs84 geometryFactoryWgs84) {
-        this.generateProperties = generateProperties;
-        this.geometryFactoryWgs84 = geometryFactoryWgs84;
+    @NotBlank
+    private String relativeExportDirectoryPattern;
 
-        objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(Include.NON_NULL);
+    @Min(50)
+    @Max(54)
+    private double startLocationLatitude;
 
-        if (generateProperties.isPrettyPrintJson()) {
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        }
-    }
+    @Min(3)
+    @Max(8)
+    private double startLocationLongitude;
 
-    public GeoJsonProperties getConfiguration(TrafficSignType trafficSignType) {
-        return generateProperties.getGeoJsonProperties().get(trafficSignType);
+    @Min(1)
+    private double searchRadiusInMeters;
+
+    private boolean prettyPrintJson;
+
+    public Path getGenerationDirectionPath(GeoGenerationProperties geoGenerationProperties) {
+
+        return rootExportDirectory.resolve(
+                DateTimeFormatter.ofPattern(relativeExportDirectoryPattern)
+                        .format(geoGenerationProperties.startTime().atZoneSameInstant(zone)));
     }
 }

@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services;
 
 import jakarta.validation.Valid;
-import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +9,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.mapper.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.OutputWriter;
 import nu.ndw.nls.events.NlsEvent;
@@ -32,11 +30,7 @@ public class MapGeneratorService {
 
     private final AccessibilityRequestMapper accessibilityRequestMapper;
 
-    private final ClockService clockService;
-
     public void generate(@Valid GeoGenerationProperties geoGenerationProperties) {
-
-        OffsetDateTime startTime = clockService.now();
 
         log.info("Generating with the following properties: {}", geoGenerationProperties);
         Accessibility accessibility = accessibilityService.calculateAccessibility(
@@ -53,19 +47,18 @@ public class MapGeneratorService {
                 outputWriter -> outputWriter.writeToFile(accessibility, geoGenerationProperties));
 
         if (geoGenerationProperties.publishEvents()) {
-            sendEventGeneratingDone(geoGenerationProperties, startTime);
+            sendEventGeneratingDone(geoGenerationProperties);
         }
     }
 
     private void sendEventGeneratingDone(
-            GeoGenerationProperties geoGenerationProperties,
-            OffsetDateTime timestamp) {
+            GeoGenerationProperties geoGenerationProperties) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
                 geoGenerationProperties.trafficSignType(),
                 geoGenerationProperties.exportVersion(),
                 geoGenerationProperties.nwbVersion(),
-                timestamp.toInstant());
+                geoGenerationProperties.startTime().toInstant());
 
         messageService.publish(nlsEvent);
     }
