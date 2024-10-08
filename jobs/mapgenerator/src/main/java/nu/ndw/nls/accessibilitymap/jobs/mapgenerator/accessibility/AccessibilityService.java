@@ -108,7 +108,7 @@ public class AccessibilityService {
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
                 .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
-                .mergedAccessibility(
+                .combinedAccessibility(
                         roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
                                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                                 accessibleRoadSectionsWithAppliedRestrictions))
