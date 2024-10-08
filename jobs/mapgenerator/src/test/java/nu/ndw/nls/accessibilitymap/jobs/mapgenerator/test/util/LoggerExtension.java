@@ -7,6 +7,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -15,12 +16,12 @@ import org.slf4j.LoggerFactory;
 
 public class LoggerExtension implements BeforeEachCallback, AfterEachCallback {
 
-    private final SynchronizedListAppender<ILoggingEvent> synchronizedListAppender = new SynchronizedListAppender<>();
+    private SynchronizedListAppender<ILoggingEvent> synchronizedListAppender = new SynchronizedListAppender<>();
 
-    private final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    private Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
     @Override
-    public void afterEach(final ExtensionContext extensionContext) {
+    public void afterEach(ExtensionContext extensionContext) {
 
         synchronizedListAppender.stop();
         synchronizedListAppender.clear();
@@ -28,7 +29,7 @@ public class LoggerExtension implements BeforeEachCallback, AfterEachCallback {
     }
 
     @Override
-    public void beforeEach(final ExtensionContext extensionContext) {
+    public void beforeEach(ExtensionContext extensionContext) {
 
         ((LoggerContext) LoggerFactory.getILoggerFactory()).reset();
         logger.setLevel(Level.DEBUG);
@@ -41,24 +42,24 @@ public class LoggerExtension implements BeforeEachCallback, AfterEachCallback {
         assertThat(synchronizedListAppender.list).isEmpty();
     }
 
-    public void containsLog(final Level level, final String message) {
+    public void containsLog(Level level, String message) {
 
         containsLog(level, message, null, 1);
     }
 
-    public void containsLog(final Level level, final String message, final String causeMessage) {
+    public void containsLog(Level level, String message, String causeMessage) {
 
         containsLog(level, message, causeMessage, 1);
     }
 
-    public void containsLog(final Level level, final String message, final int times) {
+    public void containsLog(Level level, String message, int times) {
 
         containsLog(level, message, null, times);
     }
 
-    public void containsLog(final Level level, final String message, final String causeMessage, final int times) {
+    public void containsLog(Level level, String message, String causeMessage, int times) {
 
-        final var anyMatchingTotal = synchronizedListAppender.stream()
+        var anyMatchingTotal = synchronizedListAppender.stream()
                 .filter(logEvent -> level.equals(logEvent.getLevel()))
                 .filter(logEvent -> message.equals(logEvent.getFormattedMessage()))
                 .filter(logEvent -> Objects.isNull(causeMessage) || causeMessage.equals(
@@ -66,13 +67,14 @@ public class LoggerExtension implements BeforeEachCallback, AfterEachCallback {
                 .count();
 
         if (anyMatchingTotal != times) {
-            final var messages = synchronizedListAppender.stream()
+            List<String> messages = synchronizedListAppender.stream()
                     .map(logEvent -> String.format("%n Level: '%s', \tMessage: '%s', \tCause: '%s'",
                             logEvent.getLevel(),
                             logEvent.getFormattedMessage(),
-                            Objects.isNull(logEvent.getThrowableProxy()) ? null
+                            Objects.isNull(logEvent.getThrowableProxy())
+                                    ? null
                                     : logEvent.getThrowableProxy().getMessage()))
-					.toList();
+                    .toList();
 
             if (times == 1) {
                 fail(String.format(

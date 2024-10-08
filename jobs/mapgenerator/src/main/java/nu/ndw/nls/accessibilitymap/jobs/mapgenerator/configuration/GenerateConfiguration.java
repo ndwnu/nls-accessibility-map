@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import java.nio.file.Path;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +18,8 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @Validated
+@Builder
+@With
 @ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.jobs.generate")
 public class GenerateConfiguration {
 

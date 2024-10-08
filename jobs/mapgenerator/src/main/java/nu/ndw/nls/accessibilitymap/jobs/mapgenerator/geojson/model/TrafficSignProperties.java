@@ -2,25 +2,25 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
 
 import java.net.URI;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
 
-@Value
+@Getter
 @Builder
 public class TrafficSignProperties implements Properties {
 
-    long nwbRoadSectionId;
+    private long nwbRoadSectionId;
 
-    boolean accessible;
+    private boolean accessible;
 
-    Direction direction;
+    private Direction direction;
 
-    TrafficSignType trafficSignType;
+    private TrafficSignType trafficSignType;
 
-    String windowTimes;
+    private String windowTimes;
 
-    URI iconUrl;
+    private URI iconUrl;
 
-    boolean isTrafficSign;
+    private boolean isTrafficSign;
 }
