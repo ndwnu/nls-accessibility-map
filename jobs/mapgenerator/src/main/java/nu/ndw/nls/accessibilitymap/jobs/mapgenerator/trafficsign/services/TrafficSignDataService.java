@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class TrafficSignDataService {
 
-    final TrafficSignMapper trafficSignMapper;
+    private final TrafficSignMapper trafficSignMapper;
 
-    final TrafficSignService trafficSignService;
+    private final TrafficSignService trafficSignService;
 
     public List<TrafficSign> findAllByType(TrafficSignType trafficSignType) {
 
@@ -27,7 +27,9 @@ public class TrafficSignDataService {
         return trafficSignService.getTrafficSigns(Set.of(trafficSignType.name()))
                 .trafficSignsByRoadSectionId().values().stream()
                 .flatMap(Collection::stream)
-                .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(trafficSignGeoJsonDto, idSupplier))
+                .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                        trafficSignGeoJsonDto,
+                        idSupplier))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
