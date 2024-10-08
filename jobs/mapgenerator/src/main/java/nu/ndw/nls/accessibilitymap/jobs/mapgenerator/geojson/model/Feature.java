@@ -1,24 +1,23 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
 
 
-@Value
+@Getter
 @Builder
 public class Feature {
 
     private static final String TYPE = "Feature";
 
-    long id;
+    private final long id;
 
-    Geometry geometry;
+    private final Geometry geometry;
 
-    Properties properties;
+    private final Properties properties;
 
     public String getType() {
         return TYPE;
     }
-
 }

@@ -2,15 +2,15 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
 
 import java.util.List;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
-@Value
+@Getter
 @Builder
 public class LineStringGeometry implements Geometry {
 
     private static final String TYPE = "LineString";
 
-    List<List<Double>> coordinates;
+    private final List<List<Double>> coordinates;
 
     @Override
     public String getType() {

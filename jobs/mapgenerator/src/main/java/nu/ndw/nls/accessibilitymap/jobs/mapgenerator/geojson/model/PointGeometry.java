@@ -2,15 +2,15 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
 
 import java.util.List;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 
-@Value
+@Getter
 @Builder
 public class PointGeometry implements Geometry {
 
     private static final String TYPE = "Point";
 
-    List<Double> coordinates;
+    private final List<Double> coordinates;
 
     @Override
     public String getType() {

@@ -1,16 +1,16 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
 
 import lombok.Builder;
-import lombok.Value;
+import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.Direction;
 
-@Value
+@Getter
 @Builder
 public class RoadSectionProperties implements Properties {
 
-    long nwbRoadSectionId;
+    private final long nwbRoadSectionId;
 
-    boolean accessible;
+    private final boolean accessible;
 
-    Direction direction;
+    private final Direction direction;
 }
