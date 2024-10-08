@@ -7,9 +7,10 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.Direction;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
@@ -18,6 +19,7 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.geojson.Point;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +27,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.stereotype.Component;
 
 @ExtendWith(MockitoExtension.class)
 class TrafficSignMapperTest {
@@ -104,6 +107,16 @@ class TrafficSignMapperTest {
                 integerSequenceSupplier);
 
         assertThat(trafficSign.get().iconUri()).isNull();
+    }
+
+    @Test
+    void class_configurationAnnotation() {
+
+        AnnotationUtil.classContainsAnnotation(
+                trafficSignMapper.getClass(),
+                Component.class,
+                annotation -> assertThat(annotation).isNotNull()
+        );
     }
 
     private void validateTrafficSign(TrafficSign trafficSign) {

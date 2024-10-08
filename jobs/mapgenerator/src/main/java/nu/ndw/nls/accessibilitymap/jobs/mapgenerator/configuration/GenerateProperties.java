@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 

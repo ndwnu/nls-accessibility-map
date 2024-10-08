@@ -27,9 +27,9 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AdditionalSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mapper.RoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphConfigurer;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;

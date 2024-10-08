@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
-@Component
+@Service
 public class TrafficSignDataService {
 
     private final TrafficSignMapper trafficSignMapper;

@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GeoJsonProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,8 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services;
 
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +9,11 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.Accessibility
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.OutputWriter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.nwb.services.NdwDataService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.springframework.stereotype.Service;
@@ -26,17 +25,17 @@ public class MapGeneratorService {
 
     private final AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
 
-    private final NdwDataService ndwDataService;
-
     private final List<OutputWriter> outputWriters;
 
     private final AccessibilityService accessibilityService;
 
     private final MessageService messageService;
 
+    private final ClockService clockService;
+
     public void generate(@Valid GeoGenerationProperties mapGenerationProperties) {
 
-        LocalDateTime startTime = LocalDateTime.now();
+        OffsetDateTime startTime = clockService.now();
 
         log.info("Generating with the following properties: {}", mapGenerationProperties);
         Accessibility accessibility = calculateAccessibility(mapGenerationProperties);
@@ -69,28 +68,26 @@ public class MapGeneratorService {
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
-//        ndwDataService.addNwbDataToAccessibility(accessibility, mapGenerationProperties.getNwbVersion());
-
         return accessibility;
     }
 
     private void sendEventGeneratingDone(
             TrafficSignType trafficSignType,
             GeoGenerationProperties mapGenerationProperties,
-            LocalDateTime versionLocalDateTime) {
+            OffsetDateTime timestamp) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
                 trafficSignType,
                 mapGenerationProperties.getExportVersion(),
                 mapGenerationProperties.getNwbVersion(),
-                versionLocalDateTime.toInstant(ZoneOffset.UTC));
+                timestamp.toInstant());
 
         log.debug("Sending {} created event for type {}, version {}, NWB version {} and traffic sign timestamp {}",
                 nlsEvent.getType().getLabel(),
                 nlsEvent.getSubject().getType(),
                 nlsEvent.getSubject().getVersion(),
                 nlsEvent.getSubject().getNwbVersion(),
-                versionLocalDateTime);
+                timestamp);
 
         messageService.publish(nlsEvent);
     }

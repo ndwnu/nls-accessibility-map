@@ -8,10 +8,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.Direction;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSectionFragment;
 import org.springframework.stereotype.Component;
 
 @Component
