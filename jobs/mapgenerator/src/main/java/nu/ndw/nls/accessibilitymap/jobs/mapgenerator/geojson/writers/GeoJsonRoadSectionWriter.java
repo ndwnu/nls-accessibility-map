@@ -108,7 +108,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                                 directionalSegment.getLineString().getStartPoint().getX(),
                                 directionalSegment.getLineString().getStartPoint().getY()))
                         .build())
-                .properties(buildTrafficSignProperties(trafficSign))
+                .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
                 .build();
     }
 
@@ -126,15 +126,18 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                                         directionalSegment.getLineString(),
                                         TRAFFIC_SIGN_LINE_STRING_DISTANCE_IN_METERS)))
                         .build())
-                .properties(buildTrafficSignProperties(trafficSign))
+                .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
                 .build();
     }
 
-    private TrafficSignProperties buildTrafficSignProperties(TrafficSign trafficSign) {
+    private TrafficSignProperties buildTrafficSignProperties(
+            TrafficSign trafficSign,
+            DirectionalSegment directionalSegment) {
         return TrafficSignProperties
                 .builder()
                 .nwbRoadSectionId(trafficSign.roadSectionId())
                 .direction(trafficSign.direction())
+                .accessible(directionalSegment.isAccessible())
                 .trafficSignType(trafficSign.trafficSignType())
                 .windowTimes(trafficSign.findFirstTimeWindowedSign()
                         .map(TextSign::getText)
