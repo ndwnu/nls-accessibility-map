@@ -38,5 +38,4 @@ public class AccessibilityGeoJsonGeneratedEventMapper {
                         .formatted(trafficSignType.name())
                         .toUpperCase());
     }
-
 }
