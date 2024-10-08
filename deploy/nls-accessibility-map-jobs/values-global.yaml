@@ -11,21 +11,21 @@ cronJobs:
     schedule: "30 3 * * *"
   generateGeoJsonRvvC7:
     name: nls-accessibility-map-generate-rvv-c7-cron-job
-    command: generateGeoJson --traffic-sign  C7 --include-only-time-windowed-signs --publish-event
+    command: generateGeoJson --traffic-sign C7 --include-only-time-windowed-signs --publish-event
     memory: 6Gi
     schedule: "35 3 * * *"
   generateGeoJsonRvvC7B:
     name: nls-accessibility-map-generate-rvv-c7b-cron-job
-    command: generateGeoJson --traffic-sign  C7B --include-only-time-windowed-signs --publish-event
+    command: generateGeoJson --traffic-sign C7B --include-only-time-windowed-signs --publish-event
     memory: 6Gi
     schedule: "40 3 * * *"
   generateGeoJsonRvvC12:
     name: nls-accessibility-map-generate-rvv-c12-cron-job
-    command: generateGeoJson --traffic-sign  C12 --include-only-time-windowed-signs --publish-event
+    command: generateGeoJson --traffic-sign C12 --include-only-time-windowed-signs --publish-event
     memory: 6Gi
     schedule: "45 3 * * *"
   generateGeoJsonRvvC22C:
     name: nls-accessibility-map-generate-rvv-c22c-cron-job
-    command: generateGeoJson --traffic-sign  C22C --include-only-time-windowed-signs --publish-event
+    command: generateGeoJson --traffic-sign C22C --include-only-time-windowed-signs --publish-event
     memory: 6Gi
     schedule: "50 3 * * *"
