@@ -95,7 +95,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         Path exportFile = geoGenerationProperties.generateConfiguration()
                 .getGenerationDirectionPath(geoGenerationProperties)
                 .resolve(exportFileName.concat(exportFileExtension));
-        fileService.moveFile(tempFile, exportFile);
+        fileService.moveFileAndOverride(tempFile, exportFile);
     }
 
     private List<Feature> createFeatures(
