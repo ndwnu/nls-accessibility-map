@@ -2,6 +2,8 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
+import nu.ndw.nls.accessibilitymap.accessibility.model.WindowTimeEncodedValue;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.model.trafficsign.TrafficSignType;
@@ -29,9 +31,14 @@ class MapGeneratorServiceIT {
     @Test
     void generate_ok() {
 
-        TrafficSignType trafficSignType = TrafficSignType.C6;
+        TrafficSignType trafficSignType = TrafficSignType.C12;
+
         GeoGenerationProperties mapGenerationProperties = GeoGenerationProperties.builder()
                 .trafficSignType(trafficSignType)
+                .vehicleProperties(VehicleProperties
+                        .builder()
+                        .motorVehicleAccessForbiddenWt(true)
+                        .build())
                 .exportVersion(Integer.parseInt(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)))
                 .includeOnlyTimeWindowedSigns(true)
                 .nwbVersion(20240701)
