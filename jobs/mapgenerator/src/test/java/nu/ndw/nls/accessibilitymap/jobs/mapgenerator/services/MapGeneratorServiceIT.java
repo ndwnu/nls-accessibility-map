@@ -32,7 +32,7 @@ class MapGeneratorServiceIT {
 
         TrafficSignType trafficSignType = TrafficSignType.C12;
 
-        GeoGenerationProperties mapGenerationProperties = GeoGenerationProperties.builder()
+        GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
                 .trafficSignType(trafficSignType)
                 .vehicleProperties(VehicleProperties
                         .builder()
@@ -47,6 +47,6 @@ class MapGeneratorServiceIT {
                 .generateConfiguration(generateProperties)
                 .build();
 
-        service.generate(mapGenerationProperties);
+        service.generate(geoGenerationProperties);
     }
 }

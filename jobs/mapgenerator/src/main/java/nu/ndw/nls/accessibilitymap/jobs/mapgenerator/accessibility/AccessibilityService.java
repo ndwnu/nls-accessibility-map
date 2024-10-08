@@ -59,7 +59,7 @@ public class AccessibilityService {
 
     private final QueryGraphConfigurer queryGraphConfigurer;
 
-    private final RoadSectionMerger roadSectionMerger;
+    private final RoadSectionCombinator roadSectionCombinator;
 
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
@@ -109,7 +109,7 @@ public class AccessibilityService {
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
                 .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
                 .mergedAccessibility(
-                        roadSectionMerger.mergeNoRestrictionsWithAccessibilityRestrictions(
+                        roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
                                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                                 accessibleRoadSectionsWithAppliedRestrictions))
                 .build();

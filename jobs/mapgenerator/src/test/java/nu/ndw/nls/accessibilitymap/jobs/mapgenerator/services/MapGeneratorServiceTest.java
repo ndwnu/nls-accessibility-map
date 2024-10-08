@@ -113,7 +113,7 @@ class MapGeneratorServiceTest {
 
         when(accessibilityRequestMapper.map(geoGenerationProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
-        when(accessibility.mergedAccessibility()).thenReturn(roadSections);
+        when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(accessibilityGeoJsonGeneratedEventMapper.map(
                 geoGenerationProperties.trafficSignType(),
@@ -142,7 +142,7 @@ class MapGeneratorServiceTest {
 
         when(accessibilityRequestMapper.map(geoGenerationProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
-        when(accessibility.mergedAccessibility()).thenReturn(roadSections);
+        when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         mapGeneratorService.generate(geoGenerationProperties);
 
