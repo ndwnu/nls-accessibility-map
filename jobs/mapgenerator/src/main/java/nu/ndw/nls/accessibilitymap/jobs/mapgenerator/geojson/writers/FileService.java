@@ -31,21 +31,19 @@ public class FileService {
     public Path createTmpFile(String fileName, String fileExtension) {
 
         try {
-            return Files.createTempFile(fileName, ".geojson", FILE_PERMISSIONS);
+            return Files.createTempFile(fileName, fileExtension, FILE_PERMISSIONS);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to create tmp file.", e);
         }
     }
 
-    public void moveFile(Path tempFile, Path exportFile) {
-
-        Path mapDirectoryPath = exportFile.getParent();
+    public void moveFileAndOverride(Path tempFile, Path exportFile) {
 
         try {
             if (Files.exists(exportFile)) {
                 log.warn("Overwriting existing file {}", exportFile);
             } else {
-                Files.createDirectories(mapDirectoryPath, FOLDER_PERMISSIONS);
+                Files.createDirectories(exportFile.getParent(), FOLDER_PERMISSIONS);
             }
 
             Files.move(tempFile, exportFile, StandardCopyOption.REPLACE_EXISTING);
