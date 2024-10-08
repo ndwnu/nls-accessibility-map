@@ -17,7 +17,7 @@ nu:
 
         jobs:
           generate:
-            root-generation-destination: ../../map-generation-destination
+            root-export-directory: map-generation-destination
             prettyPrintJson: true
 logging:
   level:

@@ -9,8 +9,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties.VehiclePropertiesBuilder;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services.MapGeneratorService;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -26,7 +27,9 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
 
     private final AccessibilityConfiguration accessibilityConfiguration;
 
-    private final GenerateProperties generateProperties;
+    private final GenerateConfiguration generateProperties;
+
+    private final ClockService clockService;
 
     @Option(names = {"-t", "--traffic-sign"},
             description = "Traffic sign to generate the map for.",
@@ -46,6 +49,7 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     public Integer call() {
         try {
             GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
+                    .startTime(clockService.now())
                     .trafficSignType(trafficSignType)
                     .vehicleProperties(buildVehicleProperties(trafficSignType))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
@@ -55,8 +59,7 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
                     .startLocationLatitude(generateProperties.getStartLocationLatitude())
                     .startLocationLongitude(generateProperties.getStartLocationLongitude())
                     .searchRadiusInMeters(generateProperties.getSearchRadiusInMeters())
-                    .geoJsonProperties(
-                            generateProperties.getGeoJsonProperties().get(trafficSignType))
+                    .generateConfiguration(generateProperties)
                     .build();
 
             log.info("Generating GeoJson");

@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class MapGeneratorServiceIT {
     private MapGeneratorService service;
 
     @Autowired
-    private GenerateProperties generateProperties;
+    private GenerateConfiguration generateProperties;
 
     @Test
     void generate_ok() {
@@ -44,8 +44,7 @@ class MapGeneratorServiceIT {
                 .startLocationLatitude(52.12096528507054)
                 .startLocationLongitude(5.334845116067081)
                 .searchRadiusInMeters(1000000)
-                .geoJsonProperties(
-                        generateProperties.getGeoJsonProperties().get(trafficSignType.name()))
+                .generateConfiguration(generateProperties)
                 .build();
 
         service.generate(mapGenerationProperties);

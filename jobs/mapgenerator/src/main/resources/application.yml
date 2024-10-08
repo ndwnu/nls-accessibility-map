@@ -36,51 +36,12 @@ nu:
       accessibilitymap:
         jobs:
           generate:
-            root-generation-destination: /application/maps
+            zone: "Europe/Amsterdam"
+            root-export-directory: "/application/maps"
+            relative-export-directory-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/'"
             search-radius-in-meters: 1000000
             start-location-latitude: 52.12096528507054 # From municipality Amersfoort
             start-location-longitude: 5.334845116067081
-            # Meta-properties, to be re-used for all our jobs
-            generation:
-              include-accessible: true
-              include-inaccessible: true
-              output-directionality: true
-            geojsonProperties:
-              C6:
-                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c6WindowTimeSegments.geojson'"
-                publisher-event-subject-type: accessibility_windows_times_rvv_code_c6
-                generation:
-                  include-accessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
-                  include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
-                  output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-              C7:
-                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c7WindowTimeSegments.geojson'"
-                publisher-event-subject-type: accessibility_windows_times_rvv_code_c7
-                generation:
-                  include-accessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
-                  include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
-                  output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-              C7B:
-                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c7bWindowTimeSegments.geojson'"
-                publisher-event-subject-type: accessibility_windows_times_rvv_code_c7b
-                generation:
-                  include-accessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
-                  include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
-                  output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-              C12:
-                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c12WindowTimeSegments.geojson'"
-                publisher-event-subject-type: accessibility_windows_times_rvv_code_c12
-                generation:
-                  include-accessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
-                  include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
-                  output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
-              C22C:
-                path-date-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/c22cWindowTimeSegments.geojson'"
-                publisher-event-subject-type: accessibility_windows_times_rvv_code_c22c
-                generation:
-                  include-accessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-accessible}
-                  include-inaccessible: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.include-inaccessible}
-                  output-directionality: ${nu.ndw.nls.accessibilitymap.jobs.generate.generation.output-directionality}
         trafficsignclient:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
