@@ -37,7 +37,7 @@ public class FileService {
 
         try {
             return Files.createTempFile(
-                    "accessibility-" + geoGenerationProperties.getTrafficSignType().name().toLowerCase(Locale.ROOT)
+                    "accessibility-" + geoGenerationProperties.trafficSignType().name().toLowerCase(Locale.ROOT)
                             + "-", ".geojson",
                     FILE_PERMISSIONS);
         } catch (IOException e) {
