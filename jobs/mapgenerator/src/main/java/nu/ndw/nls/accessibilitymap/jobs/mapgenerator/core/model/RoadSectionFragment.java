@@ -53,8 +53,12 @@ public class RoadSectionFragment {
                 .toList();
     }
 
-    public boolean isAccessibleFromAllSegments() {
+    public boolean isInaccessibleFromAllSegments() {
         return getSegments().stream()
                 .noneMatch(DirectionalSegment::isAccessible);
+    }
+    public boolean isAccessibleFromAllSegments() {
+        return getSegments().stream()
+                .allMatch(DirectionalSegment::isAccessible);
     }
 }

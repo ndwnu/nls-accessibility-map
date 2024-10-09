@@ -125,23 +125,30 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
             GeoGenerationProperties geoGenerationProperties) {
         List<Feature> features = new ArrayList<>();
 
-        if (geoGenerationProperties.generateConfiguration()
-                .addOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections()) {
-            if (directionalSegment.getRoadSectionFragment().isAccessibleFromAllSegments()){
+        GenerateConfiguration generateConfiguration = geoGenerationProperties.generateConfiguration();
+        if (generateConfiguration.addAllRoadSectionFragments()) {
+            features.add(buildRoadSection(directionalSegment, idSequenceSupplier));
+        } else {
+            if (generateConfiguration.addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections()
+                    && directionalSegment.getRoadSectionFragment().isInaccessibleFromAllSegments()) {
                 features.add(buildRoadSection(directionalSegment, idSequenceSupplier));
             }
-        } else {
-            features.add(buildRoadSection(directionalSegment, idSequenceSupplier));
+
+            if (generateConfiguration.addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections()
+                    && directionalSegment.getRoadSectionFragment().isAccessibleFromAllSegments()) {
+                features.add(buildRoadSection(directionalSegment, idSequenceSupplier));
+            }
+
         }
 
         if (directionalSegment.hasTrafficSign()) {
-            if (geoGenerationProperties.generateConfiguration().addTrafficSignsAsLineStrings()) {
+            if (generateConfiguration.addTrafficSignsAsLineStrings()) {
                 features.add(buildTrafficSignAsLineString(
                         idSequenceSupplier,
                         directionalSegment.getTrafficSign(),
                         directionalSegment));
             }
-            if (geoGenerationProperties.generateConfiguration().addTrafficSignsAsPoints()) {
+            if (generateConfiguration.addTrafficSignsAsPoints()) {
                 features.add(buildTrafficSignAsPoint(
                         idSequenceSupplier,
                         directionalSegment.getTrafficSign(),
