@@ -1,6 +1,7 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public final class RoadSection {
     private RoadSectionMetaData metaData;
 
     @Default
-    @NotNull
+    @NotEmpty
     @Valid
     private List<RoadSectionFragment> roadSectionFragments = new ArrayList<>();
 

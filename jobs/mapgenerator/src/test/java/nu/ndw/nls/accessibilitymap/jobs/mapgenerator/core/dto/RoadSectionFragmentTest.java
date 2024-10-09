@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

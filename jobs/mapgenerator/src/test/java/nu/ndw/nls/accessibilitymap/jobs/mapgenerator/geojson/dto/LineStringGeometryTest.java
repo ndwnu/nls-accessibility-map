@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

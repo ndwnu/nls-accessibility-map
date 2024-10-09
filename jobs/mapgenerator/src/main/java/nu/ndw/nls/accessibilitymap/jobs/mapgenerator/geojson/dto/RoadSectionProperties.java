@@ -1,8 +1,8 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.Direction;
 
 @Getter
 @Builder

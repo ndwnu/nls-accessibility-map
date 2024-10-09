@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.LineStringGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.LineStringGeometry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

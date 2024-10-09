@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mapper;
 
 import com.graphhopper.routing.ev.IntEncodedValue;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -8,11 +9,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.Direction;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -26,7 +27,7 @@ public class RoadSectionMapper {
 
     private final NetworkGraphHopper networkGraphHopper;
 
-    public Collection<RoadSection> mapToRoadSections(
+    public @Valid Collection<RoadSection> mapToRoadSections(
             List<IsochroneMatch> isochroneMatches,
             Map<Integer, TrafficSign> trafficSignById) {
 

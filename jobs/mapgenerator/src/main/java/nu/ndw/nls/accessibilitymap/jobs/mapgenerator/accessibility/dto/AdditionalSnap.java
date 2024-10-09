@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.With;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import org.springframework.validation.annotation.Validated;
 
 @Builder
