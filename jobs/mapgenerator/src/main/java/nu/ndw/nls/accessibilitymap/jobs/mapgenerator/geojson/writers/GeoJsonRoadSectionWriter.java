@@ -59,7 +59,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(Include.NON_NULL);
 
-        if (generateConfiguration.isPrettyPrintJson()) {
+        if (generateConfiguration.prettyPrintJson()) {
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
         }
 

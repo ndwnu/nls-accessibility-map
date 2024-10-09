@@ -56,9 +56,6 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
                     .exportVersion(Integer.parseInt(LocalDateTime.now().toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)))
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                     .publishEvents(publishEvents)
-                    .startLocationLatitude(generateProperties.getStartLocationLatitude())
-                    .startLocationLongitude(generateProperties.getStartLocationLongitude())
-                    .searchRadiusInMeters(generateProperties.getSearchRadiusInMeters())
                     .generateConfiguration(generateProperties)
                     .build();
 

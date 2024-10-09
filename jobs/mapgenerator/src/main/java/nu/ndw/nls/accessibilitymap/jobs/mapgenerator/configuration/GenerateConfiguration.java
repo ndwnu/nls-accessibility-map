@@ -8,45 +8,33 @@ import java.nio.file.Path;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-@Getter
-@Setter
-@Validated
 @Builder
 @With
 @ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.jobs.generate")
-public class GenerateConfiguration {
+@Validated
+public record GenerateConfiguration(
 
-    @NotNull
-    private ZoneId zone;
+        @NotNull ZoneId zone,
 
-    @NotNull
-    private Path rootExportDirectory;
+        @NotNull Path rootExportDirectory,
 
-    @NotBlank
-    private String relativeExportDirectoryPattern;
+        @NotBlank String relativeExportDirectoryPattern,
 
-    @Min(50)
-    @Max(54)
-    private double startLocationLatitude;
+        @Min(50) @Max(54) double startLocationLatitude,
 
-    @Min(3)
-    @Max(8)
-    private double startLocationLongitude;
+        @Min(3) @Max(8) double startLocationLongitude,
 
-    @Min(1)
-    private double searchRadiusInMeters;
+        @Min(1) double searchRadiusInMeters,
 
-    private boolean prettyPrintJson;
+        boolean prettyPrintJson
+) {
 
     public Path getGenerationDirectionPath(GeoGenerationProperties geoGenerationProperties) {
-
         return rootExportDirectory.resolve(
                 DateTimeFormatter.ofPattern(relativeExportDirectoryPattern)
                         .format(geoGenerationProperties.startTime().atZoneSameInstant(zone)));
