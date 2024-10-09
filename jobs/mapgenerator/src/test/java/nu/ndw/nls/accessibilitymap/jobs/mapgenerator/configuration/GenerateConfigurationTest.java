@@ -1,7 +1,10 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import jakarta.validation.constraints.Null;
 import java.nio.file.Path;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
@@ -24,8 +27,8 @@ class GenerateConfigurationTest extends ValidationTest {
 
         generateConfiguration = GenerateConfiguration.builder()
                 .zone(ZoneId.of("Europe/Amsterdam"))
-                .rootExportDirectory(Path.of("tmp.tmp"))
-                .relativeExportDirectoryPattern("dirPattern")
+                .rootExportDirectory(Path.of("tmp/tmp/"))
+                .relativeExportDirectoryPattern("'v1/windowTimes/'yyyyMMdd'/geojson/'")
                 .startLocationLatitude(50)
                 .startLocationLongitude(3)
                 .searchRadiusInMeters(1)
@@ -215,6 +218,14 @@ class GenerateConfigurationTest extends ValidationTest {
                 generateConfiguration,
                 List.of("trafficSignLineStringDistanceInMeters"),
                 List.of("must not be null"));
+    }
+
+    @Test
+    void getGenerationDirectoryPath() {
+
+        Path directoryPath = generateConfiguration.getGenerationDirectoryPath(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"));
+
+        assertThat(directoryPath).hasToString("tmp/tmp/v1/windowTimes/20220311/geojson");
     }
 
     @Override
