@@ -31,6 +31,7 @@ public record GenerateConfiguration(
         @NotNull Boolean writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible,
         @NotNull Boolean addTrafficSignsAsPoints,
         @NotNull Boolean addTrafficSignsAsLineStrings,
+        @NotNull @Min(1) Integer trafficSignLineStringDistanceInMeters,
         boolean prettyPrintJson
 ) {
 
