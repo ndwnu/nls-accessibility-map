@@ -25,12 +25,12 @@ public record GenerateConfiguration(
         @Min(50) @Max(54) double startLocationLatitude,
         @Min(3) @Max(8) double startLocationLongitude,
         @Min(1) double searchRadiusInMeters,
-        @NotNull Boolean addTrafficSignsAsPoints,
-        @NotNull Boolean addTrafficSignsAsLineStrings,
         @NotNull Boolean addAllRoadSectionFragments,
         @NotNull Boolean addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections,
         @NotNull Boolean addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections,
         @NotNull Boolean writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible,
+        @NotNull Boolean addTrafficSignsAsPoints,
+        @NotNull Boolean addTrafficSignsAsLineStrings,
         boolean prettyPrintJson
 ) {
 
