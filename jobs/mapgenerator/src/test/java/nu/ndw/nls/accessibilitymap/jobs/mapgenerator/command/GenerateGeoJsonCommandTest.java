@@ -32,13 +32,10 @@ import picocli.CommandLine;
 @ExtendWith(MockitoExtension.class)
 class GenerateGeoJsonCommandTest {
 
-
     private GenerateGeoJsonCommand generateGeoJsonCommand;
-
 
     @Mock
     private MapGeneratorService mapGeneratorService;
-
 
     @Mock
     private AccessibilityConfiguration accessibilityConfiguration;
@@ -58,15 +55,15 @@ class GenerateGeoJsonCommandTest {
     @Mock
     private AccessibilityGraphhopperMetaData accessibilityGraphhopperMetaData;
 
+    @RegisterExtension
+    LoggerExtension loggerExtension = new LoggerExtension();
+
     @BeforeEach
     void setUp() {
 
         generateGeoJsonCommand = new GenerateGeoJsonCommand(mapGeneratorService, accessibilityConfiguration,
                 generateConfiguration, vehiclePropertiesMapper, clockService);
     }
-
-    @RegisterExtension
-    LoggerExtension loggerExtension = new LoggerExtension();
 
     @ParameterizedTest
     @EnumSource(value = TrafficSignType.class)

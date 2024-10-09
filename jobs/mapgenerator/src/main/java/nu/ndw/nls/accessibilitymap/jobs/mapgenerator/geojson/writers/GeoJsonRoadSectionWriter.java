@@ -80,7 +80,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         }
 
         Path exportFile = geoGenerationProperties.generateConfiguration()
-                .getGenerationDirectionPath(geoGenerationProperties)
+                .getGenerationDirectoryPath(geoGenerationProperties.startTime())
                 .resolve(exportFileName.concat(exportFileExtension));
         fileService.moveFileAndOverride(tempFile, exportFile);
     }

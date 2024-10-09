@@ -5,11 +5,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.nio.file.Path;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import lombok.Builder;
 import lombok.With;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -35,9 +35,10 @@ public record GenerateConfiguration(
         boolean prettyPrintJson
 ) {
 
-    public Path getGenerationDirectionPath(GeoGenerationProperties geoGenerationProperties) {
+    public Path getGenerationDirectoryPath(OffsetDateTime startTime) {
+
         return rootExportDirectory.resolve(
                 DateTimeFormatter.ofPattern(relativeExportDirectoryPattern)
-                        .format(geoGenerationProperties.startTime().atZoneSameInstant(zone)));
+                        .format(startTime.atZoneSameInstant(zone)));
     }
 }
