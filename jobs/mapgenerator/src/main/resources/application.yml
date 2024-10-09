@@ -48,6 +48,7 @@ nu:
             add-road-segment-fragments-that-are-blocked-in-all-available-directions: true
             add-road-segment-fragments-that-are-accessible-in-all-available-directions: true
             write-road-segment-fragments-that-are-partially-accessible-as-accessible: true
+            traffic-sign-line-string-distance-in-meters: 1
         trafficsignclient:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
