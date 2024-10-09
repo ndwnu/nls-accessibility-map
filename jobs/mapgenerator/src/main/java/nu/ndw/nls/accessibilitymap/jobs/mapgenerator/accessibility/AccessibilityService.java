@@ -1,13 +1,16 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility;
 
 import static java.util.stream.Collectors.toCollection;
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.CustomModel;
+import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
@@ -16,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +50,6 @@ public class AccessibilityService {
 
     private final IsochroneServiceFactory isochroneServiceFactory;
 
-    private final NetworkGraphHopper network;
 
     private final VehicleRestrictionsModelFactory modelFactory;
 
@@ -60,6 +64,7 @@ public class AccessibilityService {
     private final QueryGraphConfigurer queryGraphConfigurer;
 
     private final RoadSectionCombinator roadSectionCombinator;
+
 
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
@@ -154,16 +159,28 @@ public class AccessibilityService {
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllByType(
                 accessibilityRequest.getTrafficSignType());
 
-        return trafficSigns.stream()
+        return trafficSigns
+                .stream()
                 .filter(trafficSign -> applyTimeWindowedSignFilter(accessibilityRequest, trafficSign))
                 .map(trafficSign -> AdditionalSnap.builder()
                         .trafficSign(trafficSign)
-                        .snap(networkGraphHopper.getLocationIndex().findClosest(
-                                trafficSign.latitude(),
-                                trafficSign.longitude(),
-                                EdgeFilter.ALL_EDGES))
+                        .snap(findClosestPointOnNetwork(trafficSign)
+                                .orElse(null))
                         .build())
+                .filter(a -> Objects.nonNull(a.getSnap()))
                 .collect(toCollection(ArrayList::new));
+    }
+
+    private Optional<Snap> findClosestPointOnNetwork(TrafficSign trafficSign) {
+
+        Snap snap = networkGraphHopper.getLocationIndex().findClosest(
+                trafficSign.latitudeOnNwb(),
+                trafficSign.longitudeOnNwb(),
+                (edgeIteratorState -> {
+                    int linkId = getLinkId(edgeIteratorState);
+                    return linkId == trafficSign.roadSectionId();
+                }));
+        return snap.isValid() ? Optional.of(snap) : Optional.empty();
     }
 
     private boolean applyTimeWindowedSignFilter(AccessibilityRequest accessibilityRequest, TrafficSign trafficSign) {
@@ -177,18 +194,22 @@ public class AccessibilityService {
         CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
 
-        return network.createWeighting(profile, hints);
+        return networkGraphHopper.createWeighting(profile, hints);
     }
 
     private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest) {
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
         CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
-        return network.createWeighting(profile, hints);
+        return networkGraphHopper.createWeighting(profile, hints);
     }
 
     private Point createPoint(double latitude, double longitude) {
         return geometryFactoryWgs84.createPoint(new Coordinate(longitude, latitude));
+    }
+
+    private int getLinkId(EdgeIteratorState edge) {
+        return edge.get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
     }
 
 }
