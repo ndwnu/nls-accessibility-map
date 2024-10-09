@@ -14,7 +14,6 @@ nu:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
       accessibilitymap:
-
         jobs:
           generate:
             root-export-directory: map-generation-destination

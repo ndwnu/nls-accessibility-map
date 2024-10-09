@@ -17,6 +17,8 @@ public record TrafficSign(
         @NotNull TrafficSignType trafficSignType,
         @NotNull Double latitude,
         @NotNull Double longitude,
+        @NotNull Double longitudeOnNwb,
+        @NotNull Double latitudeOnNwb,
         @NotNull Direction direction,
         @NotNull Double fraction,
         URI iconUri,
