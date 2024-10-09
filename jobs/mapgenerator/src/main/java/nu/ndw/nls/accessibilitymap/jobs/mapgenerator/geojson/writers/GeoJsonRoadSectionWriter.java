@@ -23,15 +23,13 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
     private final ObjectMapper geoJsonObjectMapper;
 
-
     private final FileService fileService;
 
-    private final FeatureBuilder featureBuilder;
-
+    private final FeatureFactory featureBuilder;
 
     public GeoJsonRoadSectionWriter(
             FileService fileService,
-            FeatureBuilder featureBuilder,
+            FeatureFactory featureBuilder,
             GenerateConfiguration generateConfiguration) {
 
         this.featureBuilder = featureBuilder;
@@ -95,13 +93,12 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         return roadSection.getRoadSectionFragments().stream()
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(Objects::nonNull)
-                .map(directionalSegment -> featureBuilder.buildFeaturesForDirectionalSegment(
+                .map(directionalSegment -> featureBuilder.createFeaturesForDirectionalSegment(
                         directionalSegment,
                         idSequenceSupplier,
                         generateConfiguration))
                 .flatMap(Collection::stream)
                 .toList();
-
     }
 
     private String buildExportFileName(GeoGenerationProperties geoGenerationProperties) {

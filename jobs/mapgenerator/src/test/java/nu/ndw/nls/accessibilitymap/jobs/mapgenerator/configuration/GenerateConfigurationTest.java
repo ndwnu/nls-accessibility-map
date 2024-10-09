@@ -35,6 +35,7 @@ class GenerateConfigurationTest extends ValidationTest {
                 .writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(true)
                 .addTrafficSignsAsLineStrings(true)
                 .addTrafficSignsAsPoints(true)
+                .trafficSignLineStringDistanceInMeters(5)
                 .build();
     }
 
@@ -107,7 +108,6 @@ class GenerateConfigurationTest extends ValidationTest {
         }
     }
 
-
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
             0, must be greater than or equal to 1,
@@ -135,25 +135,37 @@ class GenerateConfigurationTest extends ValidationTest {
     @Test
     void validate_addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections_null() {
 
-        generateConfiguration = generateConfiguration.withAddRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(null);
+        generateConfiguration = generateConfiguration
+                .withAddRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(null);
 
-        validate(generateConfiguration, List.of("addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections"), List.of("must not be null"));
+        validate(
+                generateConfiguration,
+                List.of("addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections"),
+                List.of("must not be null"));
     }
 
     @Test
     void validate_addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections_null() {
 
-        generateConfiguration = generateConfiguration.withAddRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(null);
+        generateConfiguration = generateConfiguration
+                .withAddRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(null);
 
-        validate(generateConfiguration, List.of("addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections"), List.of("must not be null"));
+        validate(
+                generateConfiguration,
+                List.of("addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections"),
+                List.of("must not be null"));
     }
 
     @Test
     void validate_writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible_null() {
 
-        generateConfiguration = generateConfiguration.withWriteRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(null);
+        generateConfiguration = generateConfiguration
+                .withWriteRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(null);
 
-        validate(generateConfiguration, List.of("writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible"), List.of("must not be null"));
+        validate(
+                generateConfiguration,
+                List.of("writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible"),
+                List.of("must not be null"));
     }
 
     @Test
@@ -170,6 +182,39 @@ class GenerateConfigurationTest extends ValidationTest {
         generateConfiguration = generateConfiguration.withAddTrafficSignsAsPoints(null);
 
         validate(generateConfiguration, List.of("addTrafficSignsAsPoints"), List.of("must not be null"));
+    }
+
+    @ParameterizedTest
+    @CsvSource(nullValues = "null", textBlock = """
+            0, must be greater than or equal to 1,
+            1, null,
+            """)
+    void validate_trafficSignLineStringDistanceInMeters_edgeCases(
+            int trafficSignLineStringDistanceInMeters,
+            String expectedError) {
+
+        generateConfiguration = generateConfiguration
+                .withTrafficSignLineStringDistanceInMeters(trafficSignLineStringDistanceInMeters);
+
+        if (Objects.nonNull(expectedError)) {
+            validate(
+                    generateConfiguration,
+                    List.of("trafficSignLineStringDistanceInMeters"),
+                    List.of(expectedError));
+        } else {
+            validate(generateConfiguration, List.of(), List.of());
+        }
+    }
+
+    @Test
+    void validate_trafficSignLineStringDistanceInMeters_null() {
+
+        generateConfiguration = generateConfiguration.withTrafficSignLineStringDistanceInMeters(null);
+
+        validate(
+                generateConfiguration,
+                List.of("trafficSignLineStringDistanceInMeters"),
+                List.of("must not be null"));
     }
 
     @Override

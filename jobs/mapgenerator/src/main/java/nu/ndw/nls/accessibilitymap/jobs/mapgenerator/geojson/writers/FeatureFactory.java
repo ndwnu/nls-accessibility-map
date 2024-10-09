@@ -20,16 +20,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FeatureBuilder {
+public class FeatureFactory {
 
     private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
-    private static final double TRAFFIC_SIGN_LINE_STRING_DISTANCE_IN_METERS = 1;
-
     @NotNull
-    public List<Feature> buildFeaturesForDirectionalSegment(
+    public List<Feature> createFeaturesForDirectionalSegment(
             DirectionalSegment directionalSegment,
             LongSequenceSupplier idSequenceSupplier,
             GenerateConfiguration generateConfiguration) {
@@ -53,7 +51,8 @@ public class FeatureBuilder {
                 features.add(buildTrafficSignAsLineString(
                         idSequenceSupplier,
                         directionalSegment.getTrafficSign(),
-                        directionalSegment));
+                        directionalSegment,
+                        generateConfiguration.trafficSignLineStringDistanceInMeters()));
             }
             if (generateConfiguration.addTrafficSignsAsPoints()) {
                 features.add(buildTrafficSignAsPoint(
@@ -108,7 +107,8 @@ public class FeatureBuilder {
     private Feature buildTrafficSignAsLineString(
             LongSequenceSupplier geoJsonIdSequenceSupplier,
             TrafficSign trafficSign,
-            DirectionalSegment directionalSegment) {
+            DirectionalSegment directionalSegment,
+            int trafficSignLineStringDistanceInMeters) {
 
         return Feature.builder()
                 .id(geoJsonIdSequenceSupplier.next())
@@ -117,7 +117,7 @@ public class FeatureBuilder {
                         .coordinates(geoJsonLineStringCoordinateMapper.map(
                                 fractionAndDistanceCalculator.getSubLineStringByLengthInMeters(
                                         directionalSegment.getLineString(),
-                                        TRAFFIC_SIGN_LINE_STRING_DISTANCE_IN_METERS)))
+                                        trafficSignLineStringDistanceInMeters)))
                         .build())
                 .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
                 .build();
