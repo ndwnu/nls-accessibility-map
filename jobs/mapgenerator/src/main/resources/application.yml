@@ -42,6 +42,9 @@ nu:
             search-radius-in-meters: 1000000
             start-location-latitude: 52.12096528507054 # From municipality Amersfoort
             start-location-longitude: 5.334845116067081
+            add-traffic-signs-as-points: true
+            add-traffic-signs-as-line-strings: true
+            add-only-roadSegment-fractions-that-are-blocked-in-all-available-directions: true
         trafficsignclient:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4

@@ -37,16 +37,7 @@ class RoadSectionCombinatorTest {
         );
 
         //Adding a DirectionalSegment that does not exist in roadSectionsWithRestrictions
-        roadSectionsWithoutRestrictions.getFirst().getRoadSectionFragments().getFirst().getForwardSegments().add(
-                DirectionalSegment.builder()
-                        .id(Integer.MAX_VALUE)
-                        .direction(Direction.FORWARD)
-                        .lineString(mock(LineString.class))
-                        .trafficSign(mock(TrafficSign.class))
-                        .roadSectionFragment(roadSectionsWithoutRestrictions.getFirst().getRoadSectionFragments().getFirst())
-                        .accessible(true)
-                        .build()
-        );
+        addRoadSectionFragmentThatIsAccessible(roadSectionsWithoutRestrictions.getFirst());
 
         List<RoadSection> roadSectionsWithRestrictions = List.of(
                 buildRoadSection(id -> id % 2 == 0)
@@ -64,18 +55,43 @@ class RoadSectionCombinatorTest {
         RoadSection roadSection = combinedRoadSections.stream().findFirst().get();
         assertThat(roadSection.getId()).isEqualTo(1);
 
-        assertThat(roadSection.getRoadSectionFragments()).hasSize(1);
+        assertThat(roadSection.getRoadSectionFragments()).hasSize(3);
         assertThat(roadSection.getRoadSectionFragments())
                 .doesNotContainAnyElementsOf(roadSectionsWithoutRestrictions.getFirst().getRoadSectionFragments());
         assertThat(roadSection.getRoadSectionFragments())
                 .doesNotContainAnyElementsOf(roadSectionsWithRestrictions.getFirst().getRoadSectionFragments());
 
-        RoadSectionFragment roadSectionFragment = roadSection.getRoadSectionFragments().getFirst();
-        assertThat(roadSectionFragment.getId()).isEqualTo(1);
-        assertThat(roadSectionFragment.getRoadSection()).isEqualTo(roadSection);
+        verifyRoadSectionFragment(
+                roadSection.getRoadSectionFragments().getFirst(),
+                0,
+                roadSection,
+                roadSectionsWithoutRestrictions,
+                roadSectionsWithRestrictions);
 
-        assertThat(roadSectionFragment.getForwardSegments()).hasSize(3);
-        assertThat(roadSectionFragment.getBackwardSegments()).hasSize(2);
+        verifyRoadSectionFragment(
+                roadSection.getRoadSectionFragments().get(1),
+                1,
+                roadSection,
+                roadSectionsWithoutRestrictions,
+                roadSectionsWithRestrictions);
+
+        verifyRoadSectionFragment(
+                roadSection.getRoadSectionFragments().get(2),
+                Integer.MAX_VALUE,
+                roadSection,
+                roadSectionsWithoutRestrictions,
+                roadSectionsWithRestrictions);
+    }
+
+    private void verifyRoadSectionFragment(
+            RoadSectionFragment roadSectionFragment,
+            int expectedRoadSectionFragmentId,
+            RoadSection expectedRoadSection,
+            List<RoadSection> roadSectionsWithoutRestrictions,
+            List<RoadSection> roadSectionsWithRestrictions) {
+
+        assertThat(roadSectionFragment.getId()).isEqualTo(expectedRoadSectionFragmentId);
+        assertThat(roadSectionFragment.getRoadSection()).isEqualTo(expectedRoadSection);
 
         roadSectionFragment.getSegments().forEach(directionalSegment -> {
             verifyDirection(
@@ -84,6 +100,23 @@ class RoadSectionCombinatorTest {
                     roadSectionsWithoutRestrictions,
                     roadSectionsWithRestrictions);
         });
+    }
+
+    private void addRoadSectionFragmentThatIsAccessible(RoadSection roadSection) {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .id(Integer.MAX_VALUE)
+                .roadSection(roadSection)
+                .build();
+        DirectionalSegment directionalSegment = DirectionalSegment.builder()
+                .id(Integer.MAX_VALUE)
+                .direction(Direction.FORWARD)
+                .lineString(mock(LineString.class))
+                .trafficSign(mock(TrafficSign.class))
+                .roadSectionFragment(roadSectionFragment)
+                .accessible(true)
+                .build();
+        roadSectionFragment.setForwardSegment(directionalSegment);
+        roadSection.getRoadSectionFragments().add(roadSectionFragment);
     }
 
     private void verifyDirection(
@@ -104,7 +137,7 @@ class RoadSectionCombinatorTest {
         verifyDirectionIsNotInCollection(directionalSegment, roadSectionsWithoutRestrictions);
         verifyDirectionIsNotInCollection(directionalSegment, roadSectionsWithRestrictions);
 
-        if (roadSectionFragment.getForwardSegments().contains(directionalSegment)) {
+        if (roadSectionFragment.getForwardSegment() == directionalSegment) {
             assertThat(directionalSegment.getDirection()).isEqualTo(Direction.FORWARD);
         } else {
             assertThat(directionalSegment.getDirection()).isEqualTo(Direction.BACKWARD);
@@ -147,35 +180,34 @@ class RoadSectionCombinatorTest {
                 .id(1)
                 .build();
 
-        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
-                .id(1)
-                .roadSection(roadsection)
-                .build();
-        roadsection.getRoadSectionFragments().add(roadSectionFragment);
+        IntStream.range(0, 2)
+                .forEach(roadSectionFragmentId -> {
+                    RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                            .id(roadSectionFragmentId)
+                            .roadSection(roadsection)
+                            .build();
+                    roadsection.getRoadSectionFragments().add(roadSectionFragment);
 
-        roadSectionFragment.getForwardSegments().addAll(
-                IntStream.range(0, 2)
-                        .mapToObj(id -> DirectionalSegment.builder()
-                                .id(id)
-                                .direction(Direction.FORWARD)
-                                .lineString(mock(LineString.class))
-                                .trafficSign(mock(TrafficSign.class))
-                                .roadSectionFragment(roadSectionFragment)
-                                .accessible(accessibleSupplier.apply(id))
-                                .build())
-                        .toList());
+                    roadSectionFragment.setForwardSegment(
+                            DirectionalSegment.builder()
+                                    .id(roadSectionFragmentId+10)
+                                    .direction(Direction.FORWARD)
+                                    .lineString(mock(LineString.class))
+                                    .trafficSign(mock(TrafficSign.class))
+                                    .roadSectionFragment(roadSectionFragment)
+                                    .accessible(accessibleSupplier.apply(roadSectionFragmentId))
+                                    .build());
 
-        roadSectionFragment.getBackwardSegments().addAll(
-                IntStream.range(2, 2 * 2)
-                        .mapToObj(id -> DirectionalSegment.builder()
-                                .id(id)
-                                .direction(Direction.BACKWARD)
-                                .lineString(mock(LineString.class))
-                                .trafficSign(mock(TrafficSign.class))
-                                .roadSectionFragment(roadSectionFragment)
-                                .accessible(accessibleSupplier.apply(id))
-                                .build())
-                        .toList());
+                    roadSectionFragment.setBackwardSegment(
+                            DirectionalSegment.builder()
+                                    .id(roadSectionFragmentId+20)
+                                    .direction(Direction.BACKWARD)
+                                    .lineString(mock(LineString.class))
+                                    .trafficSign(mock(TrafficSign.class))
+                                    .roadSectionFragment(roadSectionFragment)
+                                    .accessible(accessibleSupplier.apply(roadSectionFragmentId))
+                                    .build());
+                });
 
         return roadsection;
     }

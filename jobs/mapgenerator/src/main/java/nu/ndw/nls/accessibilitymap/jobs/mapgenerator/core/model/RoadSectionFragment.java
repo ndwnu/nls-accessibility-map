@@ -2,12 +2,11 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,18 +21,40 @@ public class RoadSectionFragment {
 
     private RoadSection roadSection;
 
-    @Default
     @NotNull
     @Valid
-    private final List<DirectionalSegment> forwardSegments = new ArrayList<>();
+    private DirectionalSegment forwardSegment;
 
-    @Default
-    @NotNull
     @Valid
-    private final List<DirectionalSegment> backwardSegments = new ArrayList<>();
+    private DirectionalSegment backwardSegment;
+
+    public void setForwardSegment(@NotNull @Valid DirectionalSegment forwardSegment) {
+
+        if(Objects.nonNull(this.forwardSegment)) {
+            throw new IllegalStateException("forwardSegment has already been assigned. "
+                    + "There should be always only one forwardSegment per RoadSectionFragment.");
+        }
+        this.forwardSegment = forwardSegment;
+    }
+
+    public void setBackwardSegment(@NotNull DirectionalSegment backwardSegment) {
+
+        if(Objects.nonNull(this.backwardSegment)) {
+            throw new IllegalStateException("backSegment has already been assigned. "
+                    + "There should be always only one backSegment per RoadSectionFragment.");
+        }
+        this.backwardSegment = backwardSegment;
+    }
 
     public List<DirectionalSegment> getSegments() {
 
-        return Stream.concat(forwardSegments.stream(), backwardSegments.stream()).toList();
+        return Stream.of(forwardSegment, backwardSegment)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    public boolean isAccessibleFromAllSegments() {
+        return getSegments().stream()
+                .noneMatch(DirectionalSegment::isAccessible);
     }
 }

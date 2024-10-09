@@ -77,9 +77,9 @@ public class RoadSectionCombinator {
                 .withRoadSectionFragment(newRoadSectionFraction);
 
         if (directionalSegmentToCopyFrom.getDirection() == Direction.BACKWARD) {
-            newRoadSectionFraction.getBackwardSegments().add(newDirectionSegment);
+            newRoadSectionFraction.setBackwardSegment(newDirectionSegment);
         } else {
-            newRoadSectionFraction.getForwardSegments().add(newDirectionSegment);
+            newRoadSectionFraction.setForwardSegment(newDirectionSegment);
         }
     }
 }
