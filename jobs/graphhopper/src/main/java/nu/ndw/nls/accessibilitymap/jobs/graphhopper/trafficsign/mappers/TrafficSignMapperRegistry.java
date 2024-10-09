@@ -67,7 +67,6 @@ public class TrafficSignMapperRegistry {
     private Set<String> extractRvvCodes(List<SignMapper<?>> signMappers) {
         List<String> allCodes = signMappers.stream()
                 .map(SignMapper::getRvvCode)
-                .filter(s-> !s.endsWith("T"))
                 .toList();
         Set<String> uniqueCodes = new HashSet<>(allCodes);
         if (uniqueCodes.size() < allCodes.size()) {
