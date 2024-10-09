@@ -28,5 +28,5 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:25432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls
-    password: JrUYIqvWaRik4c6IUWeo172J1kawqD
+    password: notingit
 
