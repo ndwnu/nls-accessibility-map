@@ -29,6 +29,9 @@ class GenerateConfigurationTest extends ValidationTest {
                 .startLocationLatitude(50)
                 .startLocationLongitude(3)
                 .searchRadiusInMeters(1)
+                .addOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections(true)
+                .addTrafficSignsAsLineStrings(true)
+                .addTrafficSignsAsPoints(true)
                 .build();
     }
 
@@ -116,6 +119,30 @@ class GenerateConfigurationTest extends ValidationTest {
         } else {
             validate(generateConfiguration, List.of(), List.of());
         }
+    }
+
+    @Test
+    void validate_addOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections_null() {
+
+        generateConfiguration = generateConfiguration.withAddOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections(null);
+
+        validate(generateConfiguration, List.of("addOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_addTrafficSignsAsLineStrings_null() {
+
+        generateConfiguration = generateConfiguration.withAddTrafficSignsAsLineStrings(null);
+
+        validate(generateConfiguration, List.of("addTrafficSignsAsLineStrings"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_addTrafficSignsAsPoints_null() {
+
+        generateConfiguration = generateConfiguration.withAddTrafficSignsAsPoints(null);
+
+        validate(generateConfiguration, List.of("addTrafficSignsAsPoints"), List.of("must not be null"));
     }
 
     @Override
