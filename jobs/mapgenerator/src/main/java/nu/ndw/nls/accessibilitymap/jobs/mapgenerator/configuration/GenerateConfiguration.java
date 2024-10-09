@@ -30,6 +30,7 @@ public record GenerateConfiguration(
         @NotNull Boolean addAllRoadSectionFragments,
         @NotNull Boolean addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections,
         @NotNull Boolean addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections,
+        @NotNull Boolean writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible,
         boolean prettyPrintJson
 ) {
 

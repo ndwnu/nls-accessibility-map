@@ -109,7 +109,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         return roadSection.getRoadSectionFragments().stream()
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(Objects::nonNull)
-                .map(directionalSegment -> buildFeaturesFroDirectionalSegment(
+                .map(directionalSegment -> buildFeaturesForDirectionalSegment(
                         directionalSegment,
                         idSequenceSupplier,
                         geoGenerationProperties))
@@ -119,7 +119,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     }
 
     @NotNull
-    private List<Feature> buildFeaturesFroDirectionalSegment(
+    private List<Feature> buildFeaturesForDirectionalSegment(
             DirectionalSegment directionalSegment,
             LongSequenceSupplier idSequenceSupplier,
             GeoGenerationProperties geoGenerationProperties) {
@@ -127,18 +127,20 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
         GenerateConfiguration generateConfiguration = geoGenerationProperties.generateConfiguration();
         if (generateConfiguration.addAllRoadSectionFragments()) {
-            features.add(buildRoadSection(directionalSegment, idSequenceSupplier));
+            features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
         } else {
             if (generateConfiguration.addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections()
-                    && directionalSegment.getRoadSectionFragment().isInaccessibleFromAllSegments()) {
-                features.add(buildRoadSection(directionalSegment, idSequenceSupplier));
-            }
-
-            if (generateConfiguration.addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections()
+                    && directionalSegment.getRoadSectionFragment().isNotAccessibleFromAllSegments()) {
+                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
+            } else if (generateConfiguration.addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections()
                     && directionalSegment.getRoadSectionFragment().isAccessibleFromAllSegments()) {
-                features.add(buildRoadSection(directionalSegment, idSequenceSupplier));
+                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
+            } else if (generateConfiguration.writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible()
+                    && directionalSegment.getRoadSectionFragment().isPartiallyAccessible()) {
+                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, true));
+            } else {
+                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
             }
-
         }
 
         if (directionalSegment.hasTrafficSign()) {
@@ -212,7 +214,8 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
     private Feature buildRoadSection(
             DirectionalSegment directionalSegment,
-            LongSequenceSupplier geoJsonIdSequenceSupplier) {
+            LongSequenceSupplier geoJsonIdSequenceSupplier,
+            boolean overrideAccessibilityAsAccessible) {
 
         return Feature.builder()
                 .id(geoJsonIdSequenceSupplier.next())
@@ -224,7 +227,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                         .builder()
                         .nwbRoadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
                         .direction(directionalSegment.getDirection())
-                        .accessible(directionalSegment.isAccessible())
+                        .accessible(overrideAccessibilityAsAccessible || directionalSegment.isAccessible())
                         .build())
                 .build();
     }

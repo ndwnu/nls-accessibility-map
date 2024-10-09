@@ -30,7 +30,7 @@ public class RoadSectionFragment {
 
     public void setForwardSegment(@NotNull @Valid DirectionalSegment forwardSegment) {
 
-        if(Objects.nonNull(this.forwardSegment)) {
+        if (Objects.nonNull(this.forwardSegment)) {
             throw new IllegalStateException("forwardSegment has already been assigned. "
                     + "There should be always only one forwardSegment per RoadSectionFragment.");
         }
@@ -39,7 +39,7 @@ public class RoadSectionFragment {
 
     public void setBackwardSegment(@NotNull DirectionalSegment backwardSegment) {
 
-        if(Objects.nonNull(this.backwardSegment)) {
+        if (Objects.nonNull(this.backwardSegment)) {
             throw new IllegalStateException("backSegment has already been assigned. "
                     + "There should be always only one backSegment per RoadSectionFragment.");
         }
@@ -53,12 +53,19 @@ public class RoadSectionFragment {
                 .toList();
     }
 
-    public boolean isInaccessibleFromAllSegments() {
+    public boolean isNotAccessibleFromAllSegments() {
         return getSegments().stream()
                 .noneMatch(DirectionalSegment::isAccessible);
     }
+
     public boolean isAccessibleFromAllSegments() {
         return getSegments().stream()
                 .allMatch(DirectionalSegment::isAccessible);
+    }
+
+    public boolean isPartiallyAccessible() {
+
+        return getSegments().stream()
+                .anyMatch(DirectionalSegment::isAccessible);
     }
 }
