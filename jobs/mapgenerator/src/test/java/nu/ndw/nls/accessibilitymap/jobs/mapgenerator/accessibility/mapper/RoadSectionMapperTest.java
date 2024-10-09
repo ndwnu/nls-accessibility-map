@@ -94,22 +94,21 @@ class RoadSectionMapperTest {
         assertThat(roadSectionFragment.getRoadSection()).isEqualTo(roadSection);
 
         if (isReversed) {
-            validateSegments(roadSectionFragment.getBackwardSegments(), roadSectionFragment, Direction.BACKWARD);
-            assertThat(roadSectionFragment.getForwardSegments()).isEmpty();
+            validateSegments(roadSectionFragment.getBackwardSegment(), roadSectionFragment, Direction.BACKWARD);
+            assertThat(roadSectionFragment.getForwardSegment()).isNull();
         } else {
-            validateSegments(roadSectionFragment.getForwardSegments(), roadSectionFragment, Direction.FORWARD);
-            assertThat(roadSectionFragment.getBackwardSegments()).isEmpty();
+            validateSegments(roadSectionFragment.getForwardSegment(), roadSectionFragment, Direction.FORWARD);
+            assertThat(roadSectionFragment.getBackwardSegment()).isNull();
         }
     }
 
-    private void validateSegments(List<DirectionalSegment> segments, RoadSectionFragment roadSectionFragment, Direction direction) {
+    private void validateSegments(DirectionalSegment segment, RoadSectionFragment roadSectionFragment, Direction direction) {
 
-        assertThat(segments).hasSize(1);
-        assertThat(segments.getFirst().getId()).isEqualTo(3);
-        assertThat(segments.getFirst().getDirection()).isEqualTo(direction);
-        assertThat(segments.getFirst().getTrafficSign()).isEqualTo(trafficSign);
-        assertThat(segments.getFirst().getRoadSectionFragment()).isEqualTo(roadSectionFragment);
-        assertThat(segments.getFirst().isAccessible()).isTrue();
-        assertThat(segments.getFirst().getLineString()).isEqualTo(geometry);
+        assertThat(segment.getId()).isEqualTo(3);
+        assertThat(segment.getDirection()).isEqualTo(direction);
+        assertThat(segment.getTrafficSign()).isEqualTo(trafficSign);
+        assertThat(segment.getRoadSectionFragment()).isEqualTo(roadSectionFragment);
+        assertThat(segment.isAccessible()).isTrue();
+        assertThat(segment.getLineString()).isEqualTo(geometry);
     }
 }

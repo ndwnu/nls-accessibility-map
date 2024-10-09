@@ -59,7 +59,7 @@ public class RoadSectionMapper {
                     });
 
             if (isochroneMatch.isReversed()) {
-                roadSectionFragment.getBackwardSegments().add(
+                roadSectionFragment.setBackwardSegment(
                         buildDirectionalSegment(
                                 directionalSegmentId,
                                 Direction.BACKWARD,
@@ -67,7 +67,7 @@ public class RoadSectionMapper {
                                 roadSectionFragmentById.get(roadSectionFragmentId),
                                 trafficSignById.get(isochroneMatch.getEdge().get(trafficSignEncodedValueAttribute))));
             } else {
-                roadSectionFragment.getForwardSegments().add(
+                roadSectionFragment.setForwardSegment(
                         buildDirectionalSegment(
                                 directionalSegmentId,
                                 Direction.FORWARD,

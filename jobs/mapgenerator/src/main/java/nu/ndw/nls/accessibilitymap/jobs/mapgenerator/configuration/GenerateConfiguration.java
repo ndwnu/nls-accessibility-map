@@ -20,17 +20,14 @@ import org.springframework.validation.annotation.Validated;
 public record GenerateConfiguration(
 
         @NotNull ZoneId zone,
-
         @NotNull Path rootExportDirectory,
-
         @NotBlank String relativeExportDirectoryPattern,
-
         @Min(50) @Max(54) double startLocationLatitude,
-
         @Min(3) @Max(8) double startLocationLongitude,
-
         @Min(1) double searchRadiusInMeters,
-
+        @NotNull Boolean addTrafficSignsAsPoints,
+        @NotNull Boolean addTrafficSignsAsLineStrings,
+        @NotNull Boolean addOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections,
         boolean prettyPrintJson
 ) {
 
