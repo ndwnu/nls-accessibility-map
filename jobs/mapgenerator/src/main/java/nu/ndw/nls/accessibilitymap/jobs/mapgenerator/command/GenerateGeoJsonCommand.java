@@ -6,9 +6,8 @@ import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties.VehiclePropertiesBuilder;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.mapper.VehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
@@ -28,6 +27,8 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     private final AccessibilityConfiguration accessibilityConfiguration;
 
     private final GenerateConfiguration generateProperties;
+
+    private final VehiclePropertiesMapper vehiclePropertiesMapper;
 
     private final ClockService clockService;
 
@@ -54,7 +55,7 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
                     .startTime(startTime)
                     .trafficSignType(trafficSignType)
-                    .vehicleProperties(buildVehicleProperties(trafficSignType))
+                    .vehicleProperties(vehiclePropertiesMapper.map(trafficSignType))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .exportVersion(Integer.parseInt(startTime.toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)))
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
@@ -69,19 +70,5 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             log.error("Could not generate GeoJson because of: ", exception);
             return 1;
         }
-    }
-
-    private VehicleProperties buildVehicleProperties(TrafficSignType trafficSignType) {
-
-        VehiclePropertiesBuilder vehiclePropertiesBuilder = VehicleProperties.builder();
-        switch (trafficSignType) {
-            case C6 -> vehiclePropertiesBuilder.carAccessForbiddenWt(true);
-            case C7 -> vehiclePropertiesBuilder.hgvAccessForbiddenWt(true);
-            case C7B -> vehiclePropertiesBuilder.hgvAndBusAccessForbiddenWt(true);
-            case C12 -> vehiclePropertiesBuilder.motorVehicleAccessForbiddenWt(true);
-            case C22C -> vehiclePropertiesBuilder.lcvAndHgvAccessForbiddenWt(true);
-        }
-
-        return vehiclePropertiesBuilder.build();
     }
 }
