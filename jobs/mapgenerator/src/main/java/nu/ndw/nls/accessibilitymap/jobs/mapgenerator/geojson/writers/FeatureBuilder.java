@@ -33,6 +33,7 @@ public class FeatureBuilder {
             DirectionalSegment directionalSegment,
             LongSequenceSupplier idSequenceSupplier,
             GenerateConfiguration generateConfiguration) {
+
         List<Feature> features = new ArrayList<>();
 
         addRoadSections(directionalSegment, idSequenceSupplier, generateConfiguration, features);
@@ -41,8 +42,12 @@ public class FeatureBuilder {
         return features;
     }
 
-    private void addTrafficSigns(DirectionalSegment directionalSegment, LongSequenceSupplier idSequenceSupplier,
-            GenerateConfiguration generateConfiguration, List<Feature> features) {
+    private void addTrafficSigns(
+            DirectionalSegment directionalSegment,
+            LongSequenceSupplier idSequenceSupplier,
+            GenerateConfiguration generateConfiguration,
+            List<Feature> features) {
+
         if (directionalSegment.hasTrafficSign()) {
             if (generateConfiguration.addTrafficSignsAsLineStrings()) {
                 features.add(buildTrafficSignAsLineString(
@@ -59,8 +64,12 @@ public class FeatureBuilder {
         }
     }
 
-    private void addRoadSections(DirectionalSegment directionalSegment, LongSequenceSupplier idSequenceSupplier,
-            GenerateConfiguration generateConfiguration, List<Feature> features) {
+    private void addRoadSections(
+            DirectionalSegment directionalSegment,
+            LongSequenceSupplier idSequenceSupplier,
+            GenerateConfiguration generateConfiguration,
+            List<Feature> features) {
+
         if (generateConfiguration.addAllRoadSectionFragments()) {
             features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
         } else {
@@ -150,5 +159,4 @@ public class FeatureBuilder {
                         .build())
                 .build();
     }
-
 }
