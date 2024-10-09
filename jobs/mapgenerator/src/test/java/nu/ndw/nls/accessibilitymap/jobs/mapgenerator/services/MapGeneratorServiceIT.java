@@ -41,9 +41,6 @@ class MapGeneratorServiceIT {
                 .exportVersion(Integer.parseInt(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)))
                 .includeOnlyTimeWindowedSigns(true)
                 .nwbVersion(20240701)
-                .startLocationLatitude(52.12096528507054)
-                .startLocationLongitude(5.334845116067081)
-                .searchRadiusInMeters(1000000)
                 .generateConfiguration(generateProperties)
                 .build();
 
