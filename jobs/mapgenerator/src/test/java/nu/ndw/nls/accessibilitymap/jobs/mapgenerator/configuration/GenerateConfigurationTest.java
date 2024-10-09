@@ -32,6 +32,7 @@ class GenerateConfigurationTest extends ValidationTest {
                 .addAllRoadSectionFragments(true)
                 .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(true)
                 .addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(true)
+                .writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(true)
                 .addTrafficSignsAsLineStrings(true)
                 .addTrafficSignsAsPoints(true)
                 .build();
@@ -145,6 +146,14 @@ class GenerateConfigurationTest extends ValidationTest {
         generateConfiguration = generateConfiguration.withAddRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(null);
 
         validate(generateConfiguration, List.of("addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible_null() {
+
+        generateConfiguration = generateConfiguration.withWriteRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(null);
+
+        validate(generateConfiguration, List.of("writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible"), List.of("must not be null"));
     }
 
     @Test

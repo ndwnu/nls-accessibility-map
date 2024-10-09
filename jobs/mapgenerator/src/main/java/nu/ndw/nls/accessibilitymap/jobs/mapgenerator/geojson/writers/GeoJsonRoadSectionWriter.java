@@ -5,26 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.FeatureCollection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.LineStringGeometry;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.PointGeometry;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.RoadSectionProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.TrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.LongSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
-import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
-import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -33,23 +23,19 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
     private final ObjectMapper geoJsonObjectMapper;
 
-    private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
 
     private final FileService fileService;
 
-    private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
+    private final FeatureBuilder featureBuilder;
 
-    private static final double TRAFFIC_SIGN_LINE_STRING_DISTANCE_IN_METERS = 1;
 
     public GeoJsonRoadSectionWriter(
-            GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper,
             FileService fileService,
-            FractionAndDistanceCalculator fractionAndDistanceCalculator,
+            FeatureBuilder featureBuilder,
             GenerateConfiguration generateConfiguration) {
 
-        this.geoJsonLineStringCoordinateMapper = geoJsonLineStringCoordinateMapper;
+        this.featureBuilder = featureBuilder;
         this.fileService = fileService;
-        this.fractionAndDistanceCalculator = fractionAndDistanceCalculator;
         geoJsonObjectMapper = createGeoJsonObjectMapper(generateConfiguration);
     }
 
@@ -84,7 +70,7 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
                         .map(roadSection -> createFeatures(
                                 roadSection,
                                 idSequenceSupplier,
-                                geoGenerationProperties))
+                                geoGenerationProperties.generateConfiguration()))
                         .flatMap(List::stream)
                         .toList())
                 .build();
@@ -104,132 +90,18 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
     private List<Feature> createFeatures(
             RoadSection roadSection,
             LongSequenceSupplier idSequenceSupplier,
-            GeoGenerationProperties geoGenerationProperties) {
+            GenerateConfiguration generateConfiguration) {
 
         return roadSection.getRoadSectionFragments().stream()
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(Objects::nonNull)
-                .map(directionalSegment -> buildFeaturesForDirectionalSegment(
+                .map(directionalSegment -> featureBuilder.buildFeaturesForDirectionalSegment(
                         directionalSegment,
                         idSequenceSupplier,
-                        geoGenerationProperties))
+                        generateConfiguration))
                 .flatMap(Collection::stream)
                 .toList();
 
-    }
-
-    @NotNull
-    private List<Feature> buildFeaturesForDirectionalSegment(
-            DirectionalSegment directionalSegment,
-            LongSequenceSupplier idSequenceSupplier,
-            GeoGenerationProperties geoGenerationProperties) {
-        List<Feature> features = new ArrayList<>();
-
-        GenerateConfiguration generateConfiguration = geoGenerationProperties.generateConfiguration();
-        if (generateConfiguration.addAllRoadSectionFragments()) {
-            features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
-        } else {
-            if (generateConfiguration.addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections()
-                    && directionalSegment.getRoadSectionFragment().isNotAccessibleFromAllSegments()) {
-                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
-            } else if (generateConfiguration.addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections()
-                    && directionalSegment.getRoadSectionFragment().isAccessibleFromAllSegments()) {
-                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
-            } else if (generateConfiguration.writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible()
-                    && directionalSegment.getRoadSectionFragment().isPartiallyAccessible()) {
-                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, true));
-            } else {
-                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
-            }
-        }
-
-        if (directionalSegment.hasTrafficSign()) {
-            if (generateConfiguration.addTrafficSignsAsLineStrings()) {
-                features.add(buildTrafficSignAsLineString(
-                        idSequenceSupplier,
-                        directionalSegment.getTrafficSign(),
-                        directionalSegment));
-            }
-            if (generateConfiguration.addTrafficSignsAsPoints()) {
-                features.add(buildTrafficSignAsPoint(
-                        idSequenceSupplier,
-                        directionalSegment.getTrafficSign(),
-                        directionalSegment));
-            }
-        }
-        return features;
-    }
-
-    private Feature buildTrafficSignAsPoint(
-            LongSequenceSupplier geoJsonIdSequenceSupplier,
-            TrafficSign trafficSign,
-            DirectionalSegment directionalSegment) {
-
-        return Feature.builder()
-                .id(geoJsonIdSequenceSupplier.next())
-                .geometry(PointGeometry
-                        .builder()
-                        .coordinates(List.of(
-                                directionalSegment.getLineString().getStartPoint().getX(),
-                                directionalSegment.getLineString().getStartPoint().getY()))
-                        .build())
-                .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
-                .build();
-    }
-
-    private Feature buildTrafficSignAsLineString(
-            LongSequenceSupplier geoJsonIdSequenceSupplier,
-            TrafficSign trafficSign,
-            DirectionalSegment directionalSegment) {
-
-        return Feature.builder()
-                .id(geoJsonIdSequenceSupplier.next())
-                .geometry(LineStringGeometry
-                        .builder()
-                        .coordinates(geoJsonLineStringCoordinateMapper.map(
-                                fractionAndDistanceCalculator.getSubLineStringByLengthInMeters(
-                                        directionalSegment.getLineString(),
-                                        TRAFFIC_SIGN_LINE_STRING_DISTANCE_IN_METERS)))
-                        .build())
-                .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
-                .build();
-    }
-
-    private TrafficSignProperties buildTrafficSignProperties(
-            TrafficSign trafficSign,
-            DirectionalSegment directionalSegment) {
-        return TrafficSignProperties
-                .builder()
-                .nwbRoadSectionId(trafficSign.roadSectionId())
-                .direction(trafficSign.direction())
-                .accessible(directionalSegment.isAccessible())
-                .trafficSignType(trafficSign.trafficSignType())
-                .windowTimes(trafficSign.findFirstTimeWindowedSign()
-                        .map(TextSign::getText)
-                        .orElse(null))
-                .iconUrl(trafficSign.iconUri())
-                .isTrafficSign(true)
-                .build();
-    }
-
-    private Feature buildRoadSection(
-            DirectionalSegment directionalSegment,
-            LongSequenceSupplier geoJsonIdSequenceSupplier,
-            boolean overrideAccessibilityAsAccessible) {
-
-        return Feature.builder()
-                .id(geoJsonIdSequenceSupplier.next())
-                .geometry(LineStringGeometry
-                        .builder()
-                        .coordinates(geoJsonLineStringCoordinateMapper.map(directionalSegment.getLineString()))
-                        .build())
-                .properties(RoadSectionProperties
-                        .builder()
-                        .nwbRoadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
-                        .direction(directionalSegment.getDirection())
-                        .accessible(overrideAccessibilityAsAccessible || directionalSegment.isAccessible())
-                        .build())
-                .build();
     }
 
     private String buildExportFileName(GeoGenerationProperties geoGenerationProperties) {
