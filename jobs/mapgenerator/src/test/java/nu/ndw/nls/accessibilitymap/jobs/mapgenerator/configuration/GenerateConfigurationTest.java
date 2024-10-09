@@ -29,7 +29,9 @@ class GenerateConfigurationTest extends ValidationTest {
                 .startLocationLatitude(50)
                 .startLocationLongitude(3)
                 .searchRadiusInMeters(1)
-                .addOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections(true)
+                .addAllRoadSectionFragments(true)
+                .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(true)
+                .addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(true)
                 .addTrafficSignsAsLineStrings(true)
                 .addTrafficSignsAsPoints(true)
                 .build();
@@ -122,11 +124,27 @@ class GenerateConfigurationTest extends ValidationTest {
     }
 
     @Test
-    void validate_addOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections_null() {
+    void validate_addAllRoadSectionFragments_null() {
 
-        generateConfiguration = generateConfiguration.withAddOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections(null);
+        generateConfiguration = generateConfiguration.withAddAllRoadSectionFragments(null);
 
-        validate(generateConfiguration, List.of("addOnlyRoadSegmentFractionsThatAreBlockedInAllAvailableDirections"), List.of("must not be null"));
+        validate(generateConfiguration, List.of("addAllRoadSectionFragments"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections_null() {
+
+        generateConfiguration = generateConfiguration.withAddRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(null);
+
+        validate(generateConfiguration, List.of("addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections_null() {
+
+        generateConfiguration = generateConfiguration.withAddRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(null);
+
+        validate(generateConfiguration, List.of("addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections"), List.of("must not be null"));
     }
 
     @Test
