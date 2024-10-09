@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -9,16 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.validation.annotation.Validated;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
+@Validated
 public class RoadSectionFragment {
 
     @NotNull
     private Integer id;
 
+    @NotNull
     private RoadSection roadSection;
 
     @NotNull
@@ -54,18 +57,20 @@ public class RoadSectionFragment {
     }
 
     public boolean isNotAccessibleFromAllSegments() {
+
         return getSegments().stream()
                 .noneMatch(DirectionalSegment::isAccessible);
     }
 
     public boolean isAccessibleFromAllSegments() {
+
         return getSegments().stream()
                 .allMatch(DirectionalSegment::isAccessible);
     }
 
     public boolean isPartiallyAccessible() {
 
-        return getSegments().stream()
-                .anyMatch(DirectionalSegment::isAccessible);
+        return getSegments().stream().anyMatch(DirectionalSegment::isAccessible)
+                && getSegments().stream().anyMatch(directionalSegment -> !directionalSegment.isAccessible());
     }
 }

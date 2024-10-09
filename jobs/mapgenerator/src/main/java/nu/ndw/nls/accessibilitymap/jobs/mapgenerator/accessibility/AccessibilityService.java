@@ -7,7 +7,6 @@ import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.EdgeIteratorState;
@@ -32,8 +31,8 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AdditionalSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mapper.RoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services.TrafficSignDataService;
@@ -190,6 +189,7 @@ public class AccessibilityService {
     }
 
     private Weighting buildWeightingWithoutRestrictions(AccessibilityRequest accessibilityRequest) {
+
         accessibilityRequest = accessibilityRequest.withVehicleProperties(null);
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
         CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
@@ -199,6 +199,7 @@ public class AccessibilityService {
     }
 
     private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest) {
+
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
         CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
@@ -206,10 +207,12 @@ public class AccessibilityService {
     }
 
     private Point createPoint(double latitude, double longitude) {
+
         return geometryFactoryWgs84.createPoint(new Coordinate(longitude, latitude));
     }
 
     private int getLinkId(EdgeIteratorState edge) {
+
         return edge.get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
     }
 

@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event;
 
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubject;
 import nu.ndw.nls.events.NlsEventSubjectType;

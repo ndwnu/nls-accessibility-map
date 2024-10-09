@@ -1,10 +1,10 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto;
 
 import java.net.URI;
 import lombok.Builder;
 import lombok.Getter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.Direction;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 
 @Getter
 @Builder

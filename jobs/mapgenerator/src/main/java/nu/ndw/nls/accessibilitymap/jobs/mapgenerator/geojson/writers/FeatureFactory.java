@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.Feature;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.LineStringGeometry;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.PointGeometry;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.RoadSectionProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.model.TrafficSignProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.LineStringGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.PointGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.RoadSectionProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.TrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
@@ -78,11 +78,12 @@ public class FeatureFactory {
             } else if (generateConfiguration.addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections()
                     && directionalSegment.getRoadSectionFragment().isAccessibleFromAllSegments()) {
                 features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
-            } else if (generateConfiguration.writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible()
-                    && directionalSegment.getRoadSectionFragment().isPartiallyAccessible()) {
-                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, true));
-            } else {
-                features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
+            } else if (directionalSegment.getRoadSectionFragment().isPartiallyAccessible()) {
+                if (generateConfiguration.writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible()) {
+                    features.add(buildRoadSection(directionalSegment, idSequenceSupplier, true));
+                } else {
+                    features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
+                }
             }
         }
     }

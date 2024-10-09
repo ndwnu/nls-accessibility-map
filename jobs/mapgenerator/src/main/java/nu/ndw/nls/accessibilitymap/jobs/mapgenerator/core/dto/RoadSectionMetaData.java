@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto;
 
 import java.time.LocalDate;
 import lombok.Builder;

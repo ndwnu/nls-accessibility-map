@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.nwb.mappers;
 
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.model.RoadSectionMetaData;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionMetaData;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import org.springframework.stereotype.Component;
 
