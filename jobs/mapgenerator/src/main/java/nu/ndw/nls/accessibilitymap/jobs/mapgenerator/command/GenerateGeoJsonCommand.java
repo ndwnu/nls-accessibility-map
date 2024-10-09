@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
@@ -37,23 +37,26 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     private TrafficSignType trafficSignType;
 
     @Option(names = {"-tw", "--include-only-time-windowed-signs"},
-            description = "Traffic sign to generate the map for.")
+            description = "Traffic sign to generate the map for.",
+            defaultValue = "false")
     private boolean includeOnlyTimeWindowedSigns;
 
-    @Option(names = {"-p", "--publish-event"},
+    @Option(names = {"-p", "--publish-events"},
             description = "Whether it should publish results as events onto Rabbit MQ message",
-            defaultValue = "true")
+            defaultValue = "false")
     private boolean publishEvents;
 
     @Override
     public Integer call() {
+
         try {
+            OffsetDateTime startTime = clockService.now();
             GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
-                    .startTime(clockService.now())
+                    .startTime(startTime)
                     .trafficSignType(trafficSignType)
                     .vehicleProperties(buildVehicleProperties(trafficSignType))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
-                    .exportVersion(Integer.parseInt(LocalDateTime.now().toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)))
+                    .exportVersion(Integer.parseInt(startTime.toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)))
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                     .publishEvents(publishEvents)
                     .generateConfiguration(generateProperties)
@@ -62,8 +65,8 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             log.info("Generating GeoJson");
             mapGeneratorService.generate(geoGenerationProperties);
             return 0;
-        } catch (RuntimeException e) {
-            log.error("Could not generate GeoJson because of: ", e);
+        } catch (RuntimeException exception) {
+            log.error("Could not generate GeoJson because of: ", exception);
             return 1;
         }
     }
