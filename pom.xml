@@ -43,7 +43,7 @@
         <nls-geometry.version>3.1.0</nls-geometry.version>
         <jackson-geojson.version>1.14</jackson-geojson.version>
         <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
-        <jsonassert.version>1.5.3</jsonassert.version>
+        <json-unit.version>3.2.7</json-unit.version>
     </properties>
     <distributionManagement>
         <repository>
@@ -209,9 +209,9 @@
                 <version>${jsurfer-jackson.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.skyscreamer</groupId>
-                <artifactId>jsonassert</artifactId>
-                <version>${jsonassert.version}</version>
+                <groupId>net.javacrumbs.json-unit</groupId>
+                <artifactId>json-unit-assertj</artifactId>
+                <version>${json-unit.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
