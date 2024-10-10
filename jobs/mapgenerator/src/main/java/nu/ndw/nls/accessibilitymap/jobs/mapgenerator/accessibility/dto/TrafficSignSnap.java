@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto;
 import com.graphhopper.storage.index.Snap;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.With;
@@ -14,7 +15,8 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @ToString
 @Validated
-public class AdditionalSnap {
+@EqualsAndHashCode
+public class TrafficSignSnap {
 
     @NotNull
     private final Snap snap;

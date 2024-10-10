@@ -10,9 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class AdditionalSnapTest extends ValidationTest {
+class TrafficSignSnapTest extends ValidationTest {
 
-    private AdditionalSnap additionalSnap;
+    private TrafficSignSnap additionalSnap;
 
     @Mock
     private Snap snap;
@@ -20,7 +20,7 @@ class AdditionalSnapTest extends ValidationTest {
     @BeforeEach
     void setUp() {
 
-        additionalSnap = AdditionalSnap.builder()
+        additionalSnap = TrafficSignSnap.builder()
                 .snap(snap)
                 .build();
     }

@@ -17,6 +17,7 @@ import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.shapes.GHPoint;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,7 @@ import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.model.WindowTimeEncodedValue;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AdditionalSnap;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -39,87 +40,72 @@ public class QueryGraphConfigurer {
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
     private final EncodingManager encodingManager;
 
-    public void configure(QueryGraph queryGraph, List<AdditionalSnap> snappedTrafficSigns) {
-        Map<Integer, List<AdditionalSnap>> additionalSnapByRoadSectionId = snappedTrafficSigns
+    public void configure(QueryGraph queryGraph, List<TrafficSignSnap> snappedTrafficSigns) {
+        Map<Integer, List<TrafficSignSnap>> trafficSignSnapsByRoadSection = snappedTrafficSigns
                 .stream()
                 .collect(groupingBy(additionalSnap -> additionalSnap.getTrafficSign().roadSectionId()));
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         int totalNodes = queryGraph.getNodes();
-        List<EdgeIteratorState> unBlockedEdges = new ArrayList<>();
         List<EdgeIteratorState> edgesWithTrafficSigns = new ArrayList<>();
-        Set<AdditionalSnap> original = new HashSet<>(snappedTrafficSigns);
-        Set<AdditionalSnap> assigned = new HashSet<>();
-        Set<AdditionalSnap> notAssigned = Sets.difference(original, assigned);
-
+        Set<TrafficSignSnap> original = new HashSet<>(snappedTrafficSigns);
+        Set<TrafficSignSnap> assigned = new HashSet<>();
         log.debug("Configuring query graph total nodes {} total edges {}", totalNodes, queryGraph.getEdges());
         for (int startNode = 0; startNode < queryGraph.getNodes(); startNode++) {
             EdgeIterator edgeIterator = edgeExplorer.setBaseNode(startNode);
             while (edgeIterator.next()) {
                 int linkId = getLinkId(edgeIterator);
                 boolean directionReversed = edgeIteratorStateReverseExtractor.hasReversed(edgeIterator);
-                if (edgeHasTrafficSigns(linkId, additionalSnapByRoadSectionId)) {
-                    Predicate<AdditionalSnap> filterOnDirection = directionReversed
+                unblockEdge(edgeIterator);
+                if (edgeHasTrafficSigns(linkId, trafficSignSnapsByRoadSection)) {
+                    Predicate<TrafficSignSnap> filterOnDirection = directionReversed
                             ? snap -> snap.getTrafficSign().direction().isBackward()
                             : snap -> snap.getTrafficSign().direction().isForward();
-                    List<AdditionalSnap> additionalSnaps = additionalSnapByRoadSectionId
+
+                    List<TrafficSignSnap> trafficSignSnaps = trafficSignSnapsByRoadSection
                             .get(linkId)
                             .stream()
                             .filter(filterOnDirection)
                             .toList();
 
-                    for (AdditionalSnap additionalSnap : additionalSnaps) {
-                       /* if (edgeKey(edgeIterator, queryGraph) == additionalSnap.getSnap().getClosestEdge()
-                                .getEdgeKey()) {
-                            IntEncodedValue intEncodedValue = encodingManager.getIntEncodedValue(TRAFFIC_SIGN_ID);
-                            if (directionReversed) {
-                                edgeIterator.setReverse(intEncodedValue, additionalSnap.getTrafficSign().id());
-                            } else {
-                                edgeIterator.set(intEncodedValue, additionalSnap.getTrafficSign().id());
-                            }
-                            assigned.add(additionalSnap);
-                        }*/
+                    for (TrafficSignSnap trafficSignSnap : trafficSignSnaps) {
 
-                        if (isEdgeBehindTrafficSign(additionalSnap, edgeIterator)) {
+                        if (isEdgeBehindTrafficSign(trafficSignSnap, edgeIterator)) {
                             edgesWithTrafficSigns.add(edgeIterator);
                             IntEncodedValue intEncodedValue = encodingManager.getIntEncodedValue(TRAFFIC_SIGN_ID);
                             if (directionReversed) {
-                                edgeIterator.setReverse(intEncodedValue, additionalSnap.getTrafficSign().id());
+                                edgeIterator.setReverse(intEncodedValue, trafficSignSnap.getTrafficSign().id());
                             } else {
-                                edgeIterator.set(intEncodedValue, additionalSnap.getTrafficSign().id());
+                                edgeIterator.set(intEncodedValue, trafficSignSnap.getTrafficSign().id());
                             }
                             String key = WindowTimeEncodedValue
-                                    .valueOf(additionalSnap.getTrafficSign().trafficSignType().name())
+                                    .valueOf(trafficSignSnap.getTrafficSign().trafficSignType().name())
                                     .getEncodedValue();
                             BooleanEncodedValue booleanEncodedValue = encodingManager.getBooleanEncodedValue(key);
                             edgeIterator.set(booleanEncodedValue, true);
-                            assigned.add(additionalSnap);
+                            assigned.add(trafficSignSnap);
                         }
 
-                        if (isEdgeBeforeTrafficSign(additionalSnap, edgeIterator) ) {
-                            String key = WindowTimeEncodedValue
-                                    .valueOf(additionalSnap.getTrafficSign().trafficSignType().name())
-                                    .getEncodedValue();
-                            BooleanEncodedValue booleanEncodedValue = encodingManager.getBooleanEncodedValue(key);
-                            unBlockedEdges.add(edgeIterator);
-                            edgeIterator.set(booleanEncodedValue, false);
-                        }
                     }
                 }
             }
         }
-
-        Map<Integer, List<AdditionalSnap>> notAssignedByRoadSectionId = notAssigned.stream()
+        Set<TrafficSignSnap> notAssigned = Sets.difference(original, assigned);
+        Map<Integer, List<TrafficSignSnap>> notAssignedByRoadSectionId = notAssigned.stream()
                 .collect(groupingBy(s -> s.getTrafficSign().roadSectionId()));
         log.info(
                 "Query graph configuration summary. "
                         + "Total traffic signs in request {} "
-                        + "Total unblocked edges {}, "
-                        + "Total edges assigned with traffic sign {}, UnblockedEdges {}, AssignedEdges {}",
-                snappedTrafficSigns.size(), unBlockedEdges.size(), edgesWithTrafficSigns.size(), unBlockedEdges,
-                edgesWithTrafficSigns);
+                        + "Total edges assigned with traffic sign {}, "
+                        + "Total not assignable with traffic sign {}, "
+                        + "AssignedEdges {} ,"
+                        + "notAssigned {} ",
+                snappedTrafficSigns.size(),
+                edgesWithTrafficSigns.size(),
+                notAssignedByRoadSectionId.size(),
+                edgesWithTrafficSigns,notAssignedByRoadSectionId);
     }
 
-    private boolean isBlocked(AdditionalSnap additionalSnap, EdgeIterator edgeIterator) {
+    private boolean isBlocked(TrafficSignSnap additionalSnap, EdgeIterator edgeIterator) {
         String key = WindowTimeEncodedValue
                 .valueOf(additionalSnap.getTrafficSign().trafficSignType().name())
                 .getEncodedValue();
@@ -128,14 +114,24 @@ public class QueryGraphConfigurer {
         return blocked;
     }
 
-    private boolean isEdgeBeforeTrafficSign(AdditionalSnap additionalSnap, EdgeIterator edgeIterator) {
+    private void unblockEdge(EdgeIterator edgeIterator) {
+        Arrays.stream(WindowTimeEncodedValue.values())
+                .map(e -> e.getEncodedValue()).toList()
+                .forEach(key ->
+                {
+                    BooleanEncodedValue booleanEncodedValue = encodingManager.getBooleanEncodedValue(key);
+                    edgeIterator.set(booleanEncodedValue, false);
+                });
+    }
+
+    private boolean isEdgeBeforeTrafficSign(TrafficSignSnap additionalSnap, EdgeIterator edgeIterator) {
         GHPoint point = additionalSnap.getSnap().getSnappedPoint();
         Coordinate snapCoordinate = new Coordinate(point.lon, point.lat);
         Coordinate edgeCoordinate = getEdgeCoordinateBefore(edgeIterator);
         return edgeCoordinate.equals2D(snapCoordinate, TOLERANCE);
     }
 
-    private boolean edgeHasTrafficSigns(int linkId, Map<Integer, List<AdditionalSnap>> additionalSnapByRoadSectionId) {
+    private boolean edgeHasTrafficSigns(int linkId, Map<Integer, List<TrafficSignSnap>> additionalSnapByRoadSectionId) {
         return additionalSnapByRoadSectionId.containsKey(linkId);
     }
 
@@ -144,14 +140,12 @@ public class QueryGraphConfigurer {
     }
 
     private boolean isEdgeBehindTrafficSign(
-            AdditionalSnap additionalSnap,
+            TrafficSignSnap additionalSnap,
             EdgeIteratorState edgeIteratorState) {
 
         GHPoint point = additionalSnap.getSnap().getSnappedPoint();
         Coordinate snapCoordinate = new Coordinate(point.lon, point.lat);
         Coordinate edgeCoordinate = getEdgeCoordinateBehind(edgeIteratorState);
-        //additionalSnap.getSnap().getClosestEdge().getEdgeKey()
-
         return edgeCoordinate.equals2D(snapCoordinate, TOLERANCE);
     }
 
