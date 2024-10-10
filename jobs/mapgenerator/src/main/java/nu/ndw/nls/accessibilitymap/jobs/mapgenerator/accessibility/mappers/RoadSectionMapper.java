@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mapper;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers;
 
 import com.graphhopper.routing.ev.IntEncodedValue;
 import jakarta.validation.Valid;
