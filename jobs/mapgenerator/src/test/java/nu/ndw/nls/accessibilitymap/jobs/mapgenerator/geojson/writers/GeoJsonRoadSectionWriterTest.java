@@ -172,6 +172,7 @@ class GeoJsonRoadSectionWriterTest {
                                      },
                                      "properties":{
                                         "nwbRoadSectionId":11,
+                                        "roadSectionFragmentId":100,
                                         "accessible":true,
                                         "direction":"FORWARD"
                                      },
@@ -232,6 +233,7 @@ class GeoJsonRoadSectionWriterTest {
                                         .properties(RoadSectionProperties.builder()
                                                 .direction(Direction.FORWARD)
                                                 .nwbRoadSectionId(11)
+                                                .roadSectionFragmentId(100)
                                                 .accessible(true)
                                                 .build())
                                         .build())
