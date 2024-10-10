@@ -31,6 +31,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.RoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.TrafficSingSnapMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
@@ -65,6 +66,7 @@ public class AccessibilityService {
     private final RoadSectionCombinator roadSectionCombinator;
 
     private final ClockService clockService;
+    private final TrafficSingSnapMapper trafficSingSnapMapper;
 
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
@@ -156,34 +158,7 @@ public class AccessibilityService {
 
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllByType(
                 accessibilityRequest.getTrafficSignType());
-
-        return trafficSigns
-                .stream()
-                .filter(trafficSign -> applyTimeWindowedSignFilter(accessibilityRequest, trafficSign))
-                .map(trafficSign -> TrafficSignSnap.builder()
-                        .trafficSign(trafficSign)
-                        .snap(findClosestPointOnNetwork(trafficSign)
-                                .orElse(null))
-                        .build())
-                .filter(a -> Objects.nonNull(a.getSnap()))
-                .collect(toCollection(ArrayList::new));
-    }
-
-    private Optional<Snap> findClosestPointOnNetwork(TrafficSign trafficSign) {
-
-        Snap snap = networkGraphHopper.getLocationIndex().findClosest(
-                trafficSign.latitudeOnNwb(),
-                trafficSign.longitudeOnNwb(),
-                (edgeIteratorState -> {
-                    int linkId = getLinkId(edgeIteratorState);
-                    return linkId == trafficSign.roadSectionId();
-                }));
-        return snap.isValid() ? Optional.of(snap) : Optional.empty();
-    }
-
-    private boolean applyTimeWindowedSignFilter(AccessibilityRequest accessibilityRequest, TrafficSign trafficSign) {
-
-        return accessibilityRequest.isIncludeOnlyTimeWindowedSigns() && trafficSign.hasTimeWindowedSign();
+        return trafficSingSnapMapper.map(trafficSigns, accessibilityRequest);
     }
 
     private Weighting buildWeightingWithoutRestrictions(AccessibilityRequest accessibilityRequest) {
@@ -207,11 +182,6 @@ public class AccessibilityService {
     private Point createPoint(double latitude, double longitude) {
 
         return geometryFactoryWgs84.createPoint(new Coordinate(longitude, latitude));
-    }
-
-    private int getLinkId(EdgeIteratorState edge) {
-
-        return edge.get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
     }
 
 }
