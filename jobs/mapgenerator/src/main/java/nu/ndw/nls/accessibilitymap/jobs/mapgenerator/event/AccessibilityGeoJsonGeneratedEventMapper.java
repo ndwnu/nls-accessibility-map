@@ -7,7 +7,6 @@ import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubject;
 import nu.ndw.nls.events.NlsEventSubjectType;
 import nu.ndw.nls.events.NlsEventType;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -31,8 +30,7 @@ public class AccessibilityGeoJsonGeneratedEventMapper {
                 .build();
     }
 
-    @NotNull
-    private static NlsEventSubjectType mapNlsEventSubjectType(TrafficSignType trafficSignType) {
+    private NlsEventSubjectType mapNlsEventSubjectType(TrafficSignType trafficSignType) {
         return NlsEventSubjectType.valueOf(
                 "accessibility_windows_times_rvv_code_%s"
                         .formatted(trafficSignType.name())
