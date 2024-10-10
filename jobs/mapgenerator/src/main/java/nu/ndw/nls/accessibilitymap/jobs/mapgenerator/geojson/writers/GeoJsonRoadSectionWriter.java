@@ -18,7 +18,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GeoJsonRoadSectionWriter implements OutputWriter {
+public class GeoJsonRoadSectionWriter {
 
     private final ObjectMapper geoJsonObjectMapper;
 
@@ -36,19 +36,6 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         geoJsonObjectMapper = createGeoJsonObjectMapper(generateConfiguration);
     }
 
-    private ObjectMapper createGeoJsonObjectMapper(GenerateConfiguration generateConfiguration) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(Include.NON_NULL);
-
-        if (generateConfiguration.prettyPrintJson()) {
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        }
-
-        return objectMapper;
-    }
-
-    @Override
     public void writeToFile(
             Accessibility accessibility,
             GeoGenerationProperties geoGenerationProperties) {
@@ -108,5 +95,17 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         }
 
         return exportFileName.toString();
+    }
+
+    private ObjectMapper createGeoJsonObjectMapper(GenerateConfiguration generateConfiguration) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(Include.NON_NULL);
+
+        if (generateConfiguration.prettyPrintJson()) {
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+        }
+
+        return objectMapper;
     }
 }
