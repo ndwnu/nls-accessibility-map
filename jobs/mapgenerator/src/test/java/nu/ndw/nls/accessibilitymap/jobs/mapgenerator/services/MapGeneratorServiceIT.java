@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
@@ -34,6 +35,7 @@ class MapGeneratorServiceIT {
 
         GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
                 .trafficSignType(trafficSignType)
+                .startTime(OffsetDateTime.now())
                 .vehicleProperties(VehicleProperties
                         .builder()
                         .motorVehicleAccessForbiddenWt(true)
@@ -41,6 +43,7 @@ class MapGeneratorServiceIT {
                 .exportVersion(Integer.parseInt(LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE)))
                 .includeOnlyTimeWindowedSigns(true)
                 .nwbVersion(20240701)
+                .publishEvents(false)
                 .generateConfiguration(generateProperties)
                 .build();
 
