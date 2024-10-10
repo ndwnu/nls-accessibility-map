@@ -287,6 +287,7 @@ class FeatureBuilderTest {
                    },
                    "properties":{
                       "nwbRoadSectionId":1,
+                      "roadSectionFragmentId": 10,
                       "accessible":%s,
                       "direction":"FORWARD"
                    },
@@ -362,6 +363,7 @@ class FeatureBuilderTest {
             boolean backwardAccessible,
             boolean addTrafficSign) {
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .id(10)
                 .roadSection(RoadSection.builder()
                         .id(1)
                         .build())
