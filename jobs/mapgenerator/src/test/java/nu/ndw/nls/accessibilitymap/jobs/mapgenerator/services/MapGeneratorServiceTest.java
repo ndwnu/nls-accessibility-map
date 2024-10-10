@@ -20,7 +20,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragmen
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.OutputWriter;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonRoadSectionWriter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
 import nu.ndw.nls.events.NlsEvent;
@@ -41,7 +41,7 @@ class MapGeneratorServiceTest {
     private AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
 
     @Mock
-    private OutputWriter outputWriter;
+    private GeoJsonRoadSectionWriter outputWriter;
 
     @Mock
     private AccessibilityService accessibilityService;
@@ -83,7 +83,7 @@ class MapGeneratorServiceTest {
 
         mapGeneratorService = new MapGeneratorService(
                 accessibilityGeoJsonGeneratedEventMapper,
-                List.of(outputWriter),
+                outputWriter,
                 accessibilityService,
                 messageService,
                 accessibilityRequestMapper
