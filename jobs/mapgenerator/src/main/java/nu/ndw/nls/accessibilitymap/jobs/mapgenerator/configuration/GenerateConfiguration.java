@@ -51,8 +51,7 @@ public record GenerateConfiguration(
 
         @NotNull @Min(1) Integer trafficSignLineStringDistanceInMeters,
 
-        boolean prettyPrintJson
-) {
+        boolean prettyPrintJson) {
 
     public Path getGenerationDirectoryPath(OffsetDateTime startTime) {
 
