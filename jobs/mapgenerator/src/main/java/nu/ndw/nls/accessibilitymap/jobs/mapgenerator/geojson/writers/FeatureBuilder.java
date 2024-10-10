@@ -15,7 +15,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,7 +25,6 @@ public class FeatureBuilder {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
-    @NotNull
     public List<Feature> createFeaturesForDirectionalSegment(
             DirectionalSegment directionalSegment,
             LongSequenceSupplier idSequenceSupplier,
