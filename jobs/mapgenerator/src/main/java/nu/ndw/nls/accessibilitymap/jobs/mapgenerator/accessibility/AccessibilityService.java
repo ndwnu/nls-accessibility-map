@@ -29,8 +29,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsModelFactory;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AdditionalSnap;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mapper.RoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
@@ -72,24 +72,22 @@ public class AccessibilityService {
         OffsetDateTime startTime = OffsetDateTime.now();
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
-        List<AdditionalSnap> additionalSnaps = buildTrafficSignSnaps(accessibilityRequest);
+        List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
         Point startPoint = createPoint(
                 accessibilityRequest.getStartLocationLatitude(),
                 accessibilityRequest.getStartLocationLongitude());
-
         Snap startSegment = networkGraphHopper.getLocationIndex()
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
-
-        List<Snap> snaps = additionalSnaps
+        List<Snap> snaps = snappedTrafficSigns
                 .stream()
-                .map(AdditionalSnap::getSnap)
+                .map(TrafficSignSnap::getSnap)
                 .collect(toCollection(ArrayList::new));
         snaps.add(startSegment);
 
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
-        queryGraphConfigurer.configure(queryGraph, additionalSnaps);
-        Map<Integer, TrafficSign> trafficSignById = buildTrafficSignById(additionalSnaps);
+        queryGraphConfigurer.configure(queryGraph, snappedTrafficSigns);
 
+        Map<Integer, TrafficSign> trafficSignById = buildTrafficSignById(snappedTrafficSigns);
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 getRoadSections(
                         accessibilityRequest,
@@ -146,15 +144,15 @@ public class AccessibilityService {
                 trafficSignById);
     }
 
-    private Map<Integer, TrafficSign> buildTrafficSignById(List<AdditionalSnap> additionalSnaps) {
+    private Map<Integer, TrafficSign> buildTrafficSignById(List<TrafficSignSnap> additionalSnaps) {
 
         return additionalSnaps.stream()
                 .collect(Collectors.toMap(
                         additionalSnap -> additionalSnap.getTrafficSign().id(),
-                        AdditionalSnap::getTrafficSign));
+                        TrafficSignSnap::getTrafficSign));
     }
 
-    private List<AdditionalSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
+    private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
 
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllByType(
                 accessibilityRequest.getTrafficSignType());
@@ -162,7 +160,7 @@ public class AccessibilityService {
         return trafficSigns
                 .stream()
                 .filter(trafficSign -> applyTimeWindowedSignFilter(accessibilityRequest, trafficSign))
-                .map(trafficSign -> AdditionalSnap.builder()
+                .map(trafficSign -> TrafficSignSnap.builder()
                         .trafficSign(trafficSign)
                         .snap(findClosestPointOnNetwork(trafficSign)
                                 .orElse(null))

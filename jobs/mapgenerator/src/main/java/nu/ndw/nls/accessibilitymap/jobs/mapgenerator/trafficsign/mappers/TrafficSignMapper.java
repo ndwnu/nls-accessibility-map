@@ -39,7 +39,6 @@ public class TrafficSignMapper {
 
         try {
             int nwbVersion = networkMetaDataService.loadMetaData().nwbVersion();
-
             NwbRoadSectionDto roadSectionDto = roadSectionService.findById(
                             new Id(nwbVersion, trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue()))
                     .orElseThrow();

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AdditionalSnap;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
@@ -22,7 +22,7 @@ public class RestrictionWeightingAdapter implements Weighting {
 
     private final Weighting adaptedWeighting;
 
-    private final Map<Integer, List<AdditionalSnap>> additionalSnapByRoadSectionId;
+    private final Map<Integer, List<TrafficSignSnap>> additionalSnapByRoadSectionId;
 
     private final EncodingManager encodingManager;
 
@@ -30,7 +30,7 @@ public class RestrictionWeightingAdapter implements Weighting {
 
     public RestrictionWeightingAdapter(
             Weighting adaptedWeighting,
-            List<AdditionalSnap> snappedTrafficSigns,
+            List<TrafficSignSnap> snappedTrafficSigns,
             EncodingManager encodingManager) {
 
         this.adaptedWeighting = adaptedWeighting;
@@ -53,16 +53,16 @@ public class RestrictionWeightingAdapter implements Weighting {
         boolean directionReversed = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState);
 
         if (edgeHasTrafficSigns(linkId)) {
-            Predicate<AdditionalSnap> filterOnDirection = directionReversed
+            Predicate<TrafficSignSnap> filterOnDirection = directionReversed
                     ? snap -> snap.getTrafficSign().direction().isBackward()
                     : snap -> snap.getTrafficSign().direction().isForward();
 
-            List<AdditionalSnap> additionalSnaps = additionalSnapByRoadSectionId
+            List<TrafficSignSnap> additionalSnaps = additionalSnapByRoadSectionId
                     .get(getLinkId(edgeIteratorState))
                     .stream().filter(filterOnDirection)
                     .toList();
             log.info("Found traffic signs {}", additionalSnaps);
-            for (AdditionalSnap additionalSnap : additionalSnaps) {
+            for (TrafficSignSnap additionalSnap : additionalSnaps) {
                 if (isEdgeBehindTrafficSign(additionalSnap, edgeIteratorState)) {
                     log.info("Blocking access to edge {} {} {}", additionalSnap, edgeIteratorState, directionReversed);
                     return Double.POSITIVE_INFINITY;
@@ -74,7 +74,7 @@ public class RestrictionWeightingAdapter implements Weighting {
     }
 
     private boolean isEdgeBehindTrafficSign(
-            AdditionalSnap additionalSnap,
+            TrafficSignSnap additionalSnap,
             EdgeIteratorState edgeIteratorState) {
 
         GHPoint point = additionalSnap.getSnap().getSnappedPoint();

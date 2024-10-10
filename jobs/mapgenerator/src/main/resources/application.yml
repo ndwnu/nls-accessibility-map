@@ -46,7 +46,7 @@ nu:
             add-traffic-signs-as-line-strings: true
             add-all-road-section-fragments: false
             add-road-segment-fragments-that-are-blocked-in-all-available-directions: true
-            add-road-segment-fragments-that-are-accessible-in-all-available-directions: true
+            add-road-segment-fragments-that-are-accessible-in-all-available-directions: false
             write-road-segment-fragments-that-are-partially-accessible-as-accessible: true
             traffic-sign-line-string-distance-in-meters: 1
         trafficsignclient:
