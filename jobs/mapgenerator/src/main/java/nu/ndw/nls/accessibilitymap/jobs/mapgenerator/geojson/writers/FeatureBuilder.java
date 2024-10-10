@@ -154,6 +154,7 @@ public class FeatureBuilder {
                         .build())
                 .properties(RoadSectionProperties
                         .builder()
+                        .roadSectionFragmentId(directionalSegment.getRoadSectionFragment().getId())
                         .nwbRoadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
                         .direction(directionalSegment.getDirection())
                         .accessible(overrideAccessibilityAsAccessible || directionalSegment.isAccessible())

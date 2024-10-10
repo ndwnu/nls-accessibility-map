@@ -13,4 +13,6 @@ public class RoadSectionProperties implements Properties {
     private final boolean accessible;
 
     private final Direction direction;
+
+    private final long roadSectionFragmentId;
 }
