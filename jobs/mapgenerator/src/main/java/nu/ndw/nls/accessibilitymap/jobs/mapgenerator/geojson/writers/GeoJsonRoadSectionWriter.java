@@ -15,7 +15,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.LongSequenceSupplier;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,11 +24,11 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
 
     private final FileService fileService;
 
-    private final FeatureFactory featureBuilder;
+    private final FeatureBuilder featureBuilder;
 
     public GeoJsonRoadSectionWriter(
             FileService fileService,
-            FeatureFactory featureBuilder,
+            FeatureBuilder featureBuilder,
             GenerateConfiguration generateConfiguration) {
 
         this.featureBuilder = featureBuilder;
@@ -37,7 +36,6 @@ public class GeoJsonRoadSectionWriter implements OutputWriter {
         geoJsonObjectMapper = createGeoJsonObjectMapper(generateConfiguration);
     }
 
-    @NotNull
     private ObjectMapper createGeoJsonObjectMapper(GenerateConfiguration generateConfiguration) {
 
         ObjectMapper objectMapper = new ObjectMapper();

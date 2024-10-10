@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class FeatureFactory {
+public class FeatureBuilder {
 
     private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
 
@@ -129,7 +129,7 @@ public class FeatureFactory {
             DirectionalSegment directionalSegment) {
         return TrafficSignProperties
                 .builder()
-                .nwbRoadSectionId(trafficSign.roadSectionId())
+                .nwbRoadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
                 .direction(trafficSign.direction())
                 .accessible(directionalSegment.isAccessible())
                 .trafficSignType(trafficSign.trafficSignType())
