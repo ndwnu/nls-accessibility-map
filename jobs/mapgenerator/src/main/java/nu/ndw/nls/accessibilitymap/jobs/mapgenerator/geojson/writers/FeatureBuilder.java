@@ -11,7 +11,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.LineStringGeome
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.PointGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.RoadSectionProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.TrafficSignProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.LongSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;

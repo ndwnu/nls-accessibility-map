@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils;
 
 public class LongSequenceSupplier {
 
