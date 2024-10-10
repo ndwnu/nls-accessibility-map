@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mapper;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -9,7 +9,6 @@ import com.graphhopper.util.EdgeIteratorState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
