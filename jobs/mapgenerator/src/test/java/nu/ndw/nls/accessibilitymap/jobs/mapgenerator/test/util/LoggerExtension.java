@@ -21,20 +21,20 @@ public class LoggerExtension implements BeforeEachCallback, AfterEachCallback {
     private Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
     @Override
-    public void afterEach(ExtensionContext extensionContext) {
-
-        synchronizedListAppender.stop();
-        synchronizedListAppender.clear();
-        logger.detachAppender(synchronizedListAppender);
-    }
-
-    @Override
     public void beforeEach(ExtensionContext extensionContext) {
 
         ((LoggerContext) LoggerFactory.getILoggerFactory()).reset();
         logger.setLevel(Level.DEBUG);
         logger.addAppender(synchronizedListAppender);
         synchronizedListAppender.start();
+    }
+
+    @Override
+    public void afterEach(ExtensionContext extensionContext) {
+
+        synchronizedListAppender.stop();
+        synchronizedListAppender.clear();
+        logger.detachAppender(synchronizedListAppender);
     }
 
     public void isEmpty() {

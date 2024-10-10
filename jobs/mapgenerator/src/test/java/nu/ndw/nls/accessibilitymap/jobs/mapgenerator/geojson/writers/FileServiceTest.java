@@ -93,15 +93,9 @@ class FileServiceTest {
         } catch (Exception exception) {
             fail("Something went wrong.", exception);
         } finally {
-            if (source.toFile().exists()) {
-                Files.delete(source);
-            }
-            if (destination.toFile().exists()) {
-                Files.delete(destination);
-            }
-            if (destinationDir.toFile().exists()) {
-                Files.delete(destinationDir);
-            }
+            deleteFile(source);
+            deleteFile(destination);
+            deleteFile(destinationDir);
         }
     }
 
@@ -122,12 +116,8 @@ class FileServiceTest {
         } finally {
             loggerExtension.containsLog(Level.WARN, "Overwriting existing file %s".formatted(destination));
 
-            if (source.toFile().exists()) {
-                Files.delete(source);
-            }
-            if (destination.toFile().exists()) {
-                Files.delete(destination);
-            }
+            deleteFile(source);
+            deleteFile(destination);
         }
     }
 
@@ -145,6 +135,12 @@ class FileServiceTest {
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessage("Error moving file from %s to %s.".formatted(source, destination))
                     .hasCause(exception);
+        }
+    }
+
+    private void deleteFile(Path source) throws IOException {
+        if (source.toFile().exists()) {
+            Files.delete(source);
         }
     }
 }
