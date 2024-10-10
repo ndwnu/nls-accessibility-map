@@ -29,7 +29,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.RoadSectionProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.TrafficSignProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.LongSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

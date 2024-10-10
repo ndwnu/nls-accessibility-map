@@ -16,7 +16,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragmen
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.LongSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
