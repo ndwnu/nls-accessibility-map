@@ -14,7 +14,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.FeatureCollection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.util.LongSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import org.springframework.stereotype.Component;
 
 @Component
