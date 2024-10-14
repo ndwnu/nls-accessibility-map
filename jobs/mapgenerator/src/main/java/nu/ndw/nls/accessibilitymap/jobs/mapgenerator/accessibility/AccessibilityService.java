@@ -1,25 +1,18 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility;
 
-import static java.util.stream.Collectors.toCollection;
-import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
-
 import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.CustomModel;
-import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +24,12 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.RoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.TrafficSingSnapMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphConfigurer;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -66,7 +60,10 @@ public class AccessibilityService {
     private final RoadSectionCombinator roadSectionCombinator;
 
     private final ClockService clockService;
-    private final TrafficSingSnapMapper trafficSingSnapMapper;
+
+    private final TrafficSignSnapMapper trafficSingSnapMapper;
+
+    private final QueryGraphFactory queryGraphFactory;
 
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
@@ -80,14 +77,7 @@ public class AccessibilityService {
                 accessibilityRequest.getStartLocationLongitude());
         Snap startSegment = networkGraphHopper.getLocationIndex()
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
-        List<Snap> snaps = snappedTrafficSigns
-                .stream()
-                .map(TrafficSignSnap::getSnap)
-                .collect(toCollection(ArrayList::new));
-        snaps.add(startSegment);
-
-        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
-        queryGraphConfigurer.configure(queryGraph, snappedTrafficSigns);
+        QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
 
         Map<Integer, TrafficSign> trafficSignById = buildTrafficSignById(snappedTrafficSigns);
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
@@ -162,17 +152,14 @@ public class AccessibilityService {
     }
 
     private Weighting buildWeightingWithoutRestrictions(AccessibilityRequest accessibilityRequest) {
-
         accessibilityRequest = accessibilityRequest.withVehicleProperties(null);
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
         CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
-
         return networkGraphHopper.createWeighting(profile, hints);
     }
 
     private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest) {
-
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
         CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
         PMap hints = new PMap().putObject(CustomModel.KEY, model);

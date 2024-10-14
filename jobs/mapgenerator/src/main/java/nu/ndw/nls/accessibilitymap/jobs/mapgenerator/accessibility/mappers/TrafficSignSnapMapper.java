@@ -18,6 +18,7 @@ import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataServic
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto.Id;
 import nu.ndw.nls.db.nwb.jooq.services.NwbRoadSectionCrudService;
+import nu.ndw.nls.geometry.constants.SRID;
 import nu.ndw.nls.geometry.crs.CrsTransformer;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class TrafficSingSnapMapper {
+public class TrafficSignSnapMapper {
 
     private final NwbRoadSectionCrudService roadSectionService;
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
@@ -50,47 +51,52 @@ public class TrafficSingSnapMapper {
                 .collect(toCollection(ArrayList::new));
     }
 
+
+
+
     private Optional<Snap> findClosestPointOnNetwork(TrafficSign trafficSign) {
         int nwbVersion = networkMetaDataService.loadMetaData().nwbVersion();
-        return getCoordinateAndBearing(
-                trafficSign, nwbVersion)
-                .map(c -> {
-                    //Latitude is the Y axis, longitude is the X axis.
-                    Snap snap = networkGraphHopper.getLocationIndex()
-                            .findClosest(
-                                    c.coordinate().getY(),
-                                    c.coordinate().getX(),
-                                    (edgeIteratorState -> linkIdIsRoadSection(trafficSign, edgeIteratorState)
-                                    ));
-                    if (!snap.isValid()) {
-                        log.warn(
-                                "No road section present for traffic sign {} road section {} in nwb version {} on graphhopper network",
-                                trafficSign.externalId(), trafficSign.roadSectionId(), nwbVersion);
-                    }
-                    return snap.isValid() ? snap : null;
-                });
-
-    }
-
-    private Optional<CoordinateAndBearing> getCoordinateAndBearing(TrafficSign trafficSign, int nwbVersion) {
         return Optional.ofNullable(roadSectionService.findById(
                         new Id(nwbVersion, trafficSign.roadSectionId()))
-                .map(r -> mapToCoordinateAndBearing(trafficSign, r))
-                .orElseGet(() -> logWarningAndReturnNull(trafficSign, nwbVersion)));
+                .map(roadSectionDto -> mapToCoordinateAndBearing(trafficSign, roadSectionDto))
+                        .orElseGet(() -> logWarningAndReturnNull(trafficSign, nwbVersion)))
+                .map(coordinateAndBearing -> toSnap(trafficSign, coordinateAndBearing, nwbVersion));
     }
 
     private static CoordinateAndBearing logWarningAndReturnNull(TrafficSign trafficSign, int nwbVersion) {
-        log.warn("No road section present for traffic sign {} road section {} in nwb version {}",
+        log.warn("No road section present for traffic sign id {} " +
+                 "with road section id {} " +
+                 "for nwb map version {} " +
+                 "in the NWB road section database",
                 trafficSign.externalId(), trafficSign.roadSectionId(), nwbVersion);
         return null;
     }
 
-    private CoordinateAndBearing mapToCoordinateAndBearing(TrafficSign trafficSign, NwbRoadSectionDto r) {
+    private CoordinateAndBearing mapToCoordinateAndBearing(TrafficSign trafficSign, NwbRoadSectionDto roadSectionDto) {
         LineString lineStringWgs84 = (LineString) crsTransformer.transformFromRdNewToWgs84(
-                r.getGeometry());
-        lineStringWgs84.setSRID(4326);
+                roadSectionDto.getGeometry());
+        lineStringWgs84.setSRID(SRID.WGS84.value);
         return fractionAndDistanceCalculator.getCoordinateAndBearing(
                 lineStringWgs84, trafficSign.fraction());
+    }
+
+    private Snap toSnap(TrafficSign trafficSign, CoordinateAndBearing coordinateAndBearing, int nwbVersion) {
+        //Latitude is the Y axis, longitude is the X axis.
+        Snap snap = networkGraphHopper.getLocationIndex()
+                .findClosest(
+                        coordinateAndBearing.coordinate().getY(),
+                        coordinateAndBearing.coordinate().getX(),
+                        edgeIteratorState -> linkIdIsRoadSection(trafficSign, edgeIteratorState)
+                        );
+        if (!snap.isValid()) {
+            log.warn(
+                    "No road section present for traffic sign id {} " +
+                    "with road section id {} " +
+                    "in nwb map version {} " +
+                    "on graphhopper network",
+                    trafficSign.externalId(), trafficSign.roadSectionId(), nwbVersion);
+        }
+        return snap.isValid() ? snap : null;
     }
 
     private boolean linkIdIsRoadSection(TrafficSign trafficSign, EdgeIteratorState edgeIteratorState) {
@@ -99,12 +105,10 @@ public class TrafficSingSnapMapper {
     }
 
     private boolean applyTimeWindowedSignFilter(AccessibilityRequest accessibilityRequest, TrafficSign trafficSign) {
-
         return accessibilityRequest.isIncludeOnlyTimeWindowedSigns() && trafficSign.hasTimeWindowedSign();
     }
 
     private int getLinkId(EdgeIteratorState edge) {
-
         return edge.get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
     }
 }
