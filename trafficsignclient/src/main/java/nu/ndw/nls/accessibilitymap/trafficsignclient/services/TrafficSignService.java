@@ -49,10 +49,11 @@ public class TrafficSignService {
     private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodesAndRoadSectionIds(
             Set<String> rvvCodes,
             Set<Long> roadSectionIds) {
-        return trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, rvvCodes,
-                roadSectionIds.isEmpty() ? null : roadSectionIds,
-                trafficSignProperties.getApi().getTownCodes().isEmpty() ? null
-                        : trafficSignProperties.getApi().getTownCodes())
+        return trafficSignRepository.findCurrentState(
+                        CurrentStateStatus.PLACED,
+                        rvvCodes,
+                        roadSectionIds,
+                        trafficSignProperties.getApi().getTownCodes())
                 .getFeatures().stream();
 
     }
