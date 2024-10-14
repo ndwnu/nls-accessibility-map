@@ -2,11 +2,16 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -31,6 +36,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.RoadSectionProp
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.TrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -50,10 +56,10 @@ class GeoJsonRoadSectionWriterTest {
     private GenerateConfiguration generateConfiguration;
 
     @Mock
-    private Accessibility accessibility;
+    private GeoGenerationProperties geoGenerationProperties;
 
     @Mock
-    private GeoGenerationProperties geoGenerationProperties;
+    private Accessibility accessibility;
 
     @Mock
     private RoadSection roadSection;
@@ -107,10 +113,10 @@ class GeoJsonRoadSectionWriterTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            true, true,
-            false, false
+            true,
+            false
             """)
-    void writeToFile_ok(boolean prettyPrint, boolean includeOnlyTimeWindowedSigns) throws IOException {
+    void writeToFile_ok(boolean includeOnlyTimeWindowedSigns) throws IOException {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
@@ -118,11 +124,11 @@ class GeoJsonRoadSectionWriterTest {
                 includeOnlyTimeWindowedSigns);
         try {
             String expectedFileName = "c7".concat(includeOnlyTimeWindowedSigns ? "WindowTimeSegments" : "");
-            when(generateConfiguration.prettyPrintJson()).thenReturn(prettyPrint);
             GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
                     fileService,
                     featureBuilder,
-                    generateConfiguration);
+                    generateConfiguration,
+                    new GeoJsonObjectMapperFactory());
 
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
@@ -136,12 +142,6 @@ class GeoJsonRoadSectionWriterTest {
             prepareCreateFeaturesForDirectionalSegment(directionalSegmentBackward2, 22, true);
 
             geoJsonRoadSectionWriter.writeToFile(accessibility, geoGenerationProperties);
-
-            if (prettyPrint) {
-                assertThat(Files.readString(exportTmpFilePath).lines().count()).isGreaterThan(1);
-            } else {
-                assertThat(Files.readString(exportTmpFilePath).lines().count()).isEqualTo(1);
-            }
 
             assertThatJson(Files.readString(exportTmpFilePath))
                     .isEqualTo("""
@@ -195,6 +195,39 @@ class GeoJsonRoadSectionWriterTest {
                             }
                             """);
             verify(fileService).moveFileAndOverride(exportTmpFilePath, exportFile);
+        } finally {
+            Files.deleteIfExists(exportTmpFilePath);
+        }
+    }
+
+    @Test
+    void writeToFile_ok_writeException() throws IOException {
+
+        Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
+
+        geoGenerationProperties = geoGenerationProperties.withIncludeOnlyTimeWindowedSigns(false);
+        GeoJsonObjectMapperFactory geoJsonObjectMapperFactory = mock(GeoJsonObjectMapperFactory.class);
+        ObjectMapper goeJsonObjectMapper = mock(ObjectMapper.class);
+
+        when(geoJsonObjectMapperFactory.create(generateConfiguration)).thenReturn(goeJsonObjectMapper);
+        try {
+            String expectedFileName = "c7";
+            GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
+                    fileService,
+                    featureBuilder,
+                    generateConfiguration,
+                    geoJsonObjectMapperFactory
+                    );
+
+            when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
+            when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
+
+            doThrow(new IOException("some exception")).when(goeJsonObjectMapper).writeValue(any(File.class), any(Object.class));
+            prepareCreateFeaturesForDirectionalSegment(directionalSegmentForward1, 11, false);
+
+            assertThat(catchThrowable(() -> geoJsonRoadSectionWriter.writeToFile(accessibility, geoGenerationProperties)))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("Failed to serialize geojson to file: %s".formatted(exportTmpFilePath));
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }

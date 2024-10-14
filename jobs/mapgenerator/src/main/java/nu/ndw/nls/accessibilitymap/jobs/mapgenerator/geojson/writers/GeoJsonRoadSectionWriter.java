@@ -1,8 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -29,11 +27,12 @@ public class GeoJsonRoadSectionWriter {
     public GeoJsonRoadSectionWriter(
             FileService fileService,
             FeatureBuilder featureBuilder,
-            GenerateConfiguration generateConfiguration) {
+            GenerateConfiguration generateConfiguration,
+            GeoJsonObjectMapperFactory geoJsonObjectMapperFactory) {
 
         this.featureBuilder = featureBuilder;
         this.fileService = fileService;
-        geoJsonObjectMapper = createGeoJsonObjectMapper(generateConfiguration);
+        geoJsonObjectMapper = geoJsonObjectMapperFactory.create(generateConfiguration);
     }
 
     public void writeToFile(
@@ -95,17 +94,5 @@ public class GeoJsonRoadSectionWriter {
         }
 
         return exportFileName.toString();
-    }
-
-    private ObjectMapper createGeoJsonObjectMapper(GenerateConfiguration generateConfiguration) {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(Include.NON_NULL);
-
-        if (generateConfiguration.prettyPrintJson()) {
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        }
-
-        return objectMapper;
     }
 }
