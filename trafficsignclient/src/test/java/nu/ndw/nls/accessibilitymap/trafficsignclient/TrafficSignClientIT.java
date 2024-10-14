@@ -14,7 +14,6 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.springboot.test.keycloak.KeycloakTestConfiguration;
 import nu.ndw.nls.springboot.test.main.MainTestConfiguration;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -31,7 +30,6 @@ import org.springframework.test.context.ContextConfiguration;
 @EnableConfigurationProperties
 @EnableAutoConfiguration
 @Import({MainTestConfiguration.class, KeycloakTestConfiguration.class})
-@Disabled
 class TrafficSignClientIT {
 
     private final static Set<String> rvvCodes = Set.of("C6", "C7", "C7a", "C7b", "C8", "C9", "C10", "C11", "C12",
