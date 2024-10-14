@@ -5,7 +5,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.List;
 import java.util.function.Predicate;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
@@ -90,11 +89,12 @@ class AccessibilityMapIT {
 
     @Test
     void getAccessibleRoadSections_ok_restrictedAccessRoadsInsideMunicipality() {
+
         // Access roads are blocked, and inside the municipality. Therefore, both these and the inner ring are returned.
-        List<AccessibilityLink> accessRoads = createAccessRoads(true, 1);
-        graphHopper = createGhNetwork(accessRoads);
+        List<AccessibilityLink> additionalRoadSectionsBlocked = createAccessRoads(true, 1);
+        graphHopper = createGhNetwork(additionalRoadSectionsBlocked);
         List<IsochroneMatch> notAccessible = getIsochroneMatches();
-        assertMatches(notAccessible, join(List.of(INNER_RING, accessRoads)));
+        assertMatches(notAccessible, join(List.of(INNER_RING, additionalRoadSectionsBlocked)));
     }
 
     @Test
@@ -132,11 +132,15 @@ class AccessibilityMapIT {
     }
 
     private List<IsochroneMatch> getIsochroneMatches() {
-        AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(graphHopper);
-        List<IsochroneMatch> allAccessible = accessibilityMap.getAccessibleRoadSections(REQUEST_UNRESTRICTED);
-        List<IsochroneMatch> restrictedAccess = accessibilityMap.getAccessibleRoadSections(REQUEST_RESTRICTED);
+
+        var accessibilityMap = accessibilityMapFactory.createMapMatcher(graphHopper);
+        var allAccessible = accessibilityMap.getAccessibleRoadSections(REQUEST_UNRESTRICTED);
+        var accessibleWithRestrictions = accessibilityMap.getAccessibleRoadSections(REQUEST_RESTRICTED);
+
         return allAccessible.stream()
-                .filter(m -> !restrictedAccess.contains(m))
+                .filter(isochroneMatch -> accessibleWithRestrictions.stream()
+                        .noneMatch(accessibleWithRestriction ->
+                                accessibleWithRestriction.getMatchedLinkId() == isochroneMatch.getMatchedLinkId()))
                 .toList();
     }
 
