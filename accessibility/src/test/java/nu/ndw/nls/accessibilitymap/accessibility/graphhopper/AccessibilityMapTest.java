@@ -108,8 +108,8 @@ class AccessibilityMapTest {
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
 
         when(locationIndexTree.findClosest(2d, 3d, EdgeFilter.ALL_EDGES)).thenReturn(startSegment);
-        when(startPoint.getX()).thenReturn(2d);
-        when(startPoint.getY()).thenReturn(3d);
+        when(startPoint.getX()).thenReturn(3d);
+        when(startPoint.getY()).thenReturn(2d);
         queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, startSegment)).thenReturn(queryGraph);
         when(accessibilityRequest.startPoint()).thenReturn(startPoint);
         when(accessibilityRequest.municipalityId()).thenReturn(MUNICIPALITY_ID);
