@@ -68,7 +68,7 @@ class TrafficSignClientIT {
                         .willReturn(aResponse()
                                 .withStatus(HttpStatus.OK.value())
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(buildFeatureCollection())));
+                                .withBody(buildFeatureCollectionResponse())));
 
         TrafficSignData trafficSigns = trafficSignService.getTrafficSigns(rvvCodes, Collections.emptySet());
         assertNotNull(trafficSigns);
@@ -95,7 +95,7 @@ class TrafficSignClientIT {
         assertEquals("ZE", firstTrafficSignRoadSectionB.getProperties().getZoneCode());
     }
 
-    private String buildFeatureCollection() {
+    private String buildFeatureCollectionResponse() {
         return """
                 {
                     "type":"FeatureCollection",
