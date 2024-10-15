@@ -84,6 +84,7 @@ class TrafficSignDataServiceTest {
 
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign2, trafficSign3);
     }
+
     @Test
     void class_configurationAnnotation() {
 
@@ -94,13 +95,11 @@ class TrafficSignDataServiceTest {
         );
     }
 
-
     private void mockMapperCalls(TrafficSignGeoJsonDto trafficSignGeoJsonDto, TrafficSign trafficSign) {
+
         when(trafficSignMapper.mapFromTrafficSignGeoJsonDto(
                 eq(trafficSignGeoJsonDto),
                 any(IntegerSequenceSupplier.class))
         ).thenReturn(Optional.ofNullable(trafficSign));
     }
-
-
 }
