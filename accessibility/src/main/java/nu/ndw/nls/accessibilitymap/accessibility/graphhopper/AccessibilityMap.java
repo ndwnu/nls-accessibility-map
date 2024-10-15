@@ -30,7 +30,7 @@ public class AccessibilityMap {
         Weighting weighting = networkGraphHopper.createWeighting(profile, hints);
 
         Snap startSegment = networkGraphHopper.getLocationIndex()
-                .findClosest(accessibilityRequest.startPoint().getX(), accessibilityRequest.startPoint().getY(), EdgeFilter.ALL_EDGES);
+                .findClosest(accessibilityRequest.startPoint().getY(), accessibilityRequest.startPoint().getX(), EdgeFilter.ALL_EDGES);
         /*
             Lookup will create virtual edges based on the snapped point, thereby cutting the segment in 2 line strings.
             It also sets the closestNode of the matchedQueryResult to the virtual node id. In this way it creates a
