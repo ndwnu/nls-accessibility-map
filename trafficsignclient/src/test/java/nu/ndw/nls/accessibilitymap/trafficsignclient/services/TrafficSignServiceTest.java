@@ -92,14 +92,15 @@ class TrafficSignServiceTest {
         when(trafficSignRepository.findCurrentState(
                 CurrentStateStatus.PLACED,
                 Set.of(RVV_CODE_A, RVV_CODE_B),
-                Collections.emptySet(),
-                Collections.emptySet())
+                null,
+                null)
         ).thenReturn(TrafficSignGeoJsonFeatureCollectionDto.builder()
                 .features(List.of(trafficSign1, trafficSign2, trafficSign3, trafficSign4, trafficSign5,
                         trafficSign6))
                 .build());
 
-        TrafficSignData result = trafficSignService.getTrafficSigns(Set.of(RVV_CODE_A, RVV_CODE_B),
+        TrafficSignData result = trafficSignService.getTrafficSigns(
+                Set.of(RVV_CODE_A, RVV_CODE_B),
                 Collections.emptySet());
 
         Map<Long, List<TrafficSignGeoJsonDto>> longListMap = result.trafficSignsByRoadSectionId();
