@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.List;
 import java.util.function.Predicate;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.AccessibilityMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
@@ -133,9 +134,10 @@ class AccessibilityMapIT {
 
     private List<IsochroneMatch> getIsochroneMatches() {
 
-        var accessibilityMap = accessibilityMapFactory.createMapMatcher(graphHopper);
-        var allAccessible = accessibilityMap.getAccessibleRoadSections(REQUEST_UNRESTRICTED);
-        var accessibleWithRestrictions = accessibilityMap.getAccessibleRoadSections(REQUEST_RESTRICTED);
+        AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(graphHopper);
+        List<IsochroneMatch> allAccessible = accessibilityMap.getAccessibleRoadSections(REQUEST_UNRESTRICTED);
+        List<IsochroneMatch> accessibleWithRestrictions = accessibilityMap
+                .getAccessibleRoadSections(REQUEST_RESTRICTED);
 
         return allAccessible.stream()
                 .filter(isochroneMatch -> accessibleWithRestrictions.stream()
