@@ -24,7 +24,7 @@ public class TrafficSignDataService {
 
         IntegerSequenceSupplier idSupplier = new IntegerSequenceSupplier();
 
-        return trafficSignService.getTrafficSigns(Set.of(trafficSignType.name()))
+        return trafficSignService.getTrafficSigns(Set.of(mapTrafficSignTypeToRvvCode(trafficSignType)))
                 .trafficSignsByRoadSectionId().values().stream()
                 .flatMap(Collection::stream)
                 .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(
@@ -33,5 +33,10 @@ public class TrafficSignDataService {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
+    }
+
+    private String mapTrafficSignTypeToRvvCode(TrafficSignType trafficSignType) {
+        return trafficSignType.name().charAt(0)
+                + trafficSignType.name().substring(1).toLowerCase();
     }
 }
