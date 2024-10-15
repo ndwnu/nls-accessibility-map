@@ -259,7 +259,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C6</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C6 --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
@@ -274,7 +274,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C7</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C7 --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
@@ -289,7 +289,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C7B</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C7B --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
@@ -304,7 +304,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C12</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C12 --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
@@ -319,7 +319,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C22C</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C22C --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
