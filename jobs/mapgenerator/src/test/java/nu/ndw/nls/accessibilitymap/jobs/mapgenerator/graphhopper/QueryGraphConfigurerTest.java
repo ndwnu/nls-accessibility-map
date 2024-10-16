@@ -51,8 +51,8 @@ class QueryGraphConfigurerTest {
     private static final int TRAFFIC_SIGN_ID_VALUE = 1;
     private static final int NO_MATCH_ROAD_SECTION_ID = 456;
     private static final String MESSAGE_NOT_ASSIGNED = "Query graph configuration summary. "
-                                                       + "Total traffic signs in request 1 Total edges assigned with traffic sign 0, "
-                                                       + "Total not assignable with traffic sign 1, AssignedEdges [] ,notAssigned {123=[trafficSignSnap]}";
+            + "Total traffic signs in request 1. "
+            + "Total not assignable road sections with traffic sign 1, notAssigned {123=[trafficSignSnap]}";
 
     @Mock
     private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
@@ -131,18 +131,20 @@ class QueryGraphConfigurerTest {
 
         if (reversed) {
             verify(edgeIterator).setReverse(intEncodedValueTrafficSignId, TRAFFIC_SIGN_ID_VALUE);
+            verify(edgeIterator).setReverse(booleanEncodedValue, true);
         } else {
             verify(edgeIterator).set(intEncodedValueTrafficSignId, TRAFFIC_SIGN_ID_VALUE);
+            verify(edgeIterator).set(booleanEncodedValue, true);
         }
 
-        verify(edgeIterator).set(booleanEncodedValue, true);
         verify(encodingManager, times(WindowTimeEncodedValue.values().length + 1))
                 .getBooleanEncodedValue(encodedValueKeyCaptor.capture());
 
-        loggerExtension.containsLog(Level.INFO, "Query graph configuration summary. "
-                                                + "Total traffic signs in request 1 "
-                                                + "Total edges assigned with traffic sign 1, "
-                                                + "Total not assignable with traffic sign 0, AssignedEdges [edgeIterator] ,notAssigned {}");
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Query graph configuration summary. "
+                        + "Total traffic signs in request 1. "
+                        + "Total not assignable road sections with traffic sign 0, notAssigned {}");
 
         List<String> allKeys = Arrays.stream(WindowTimeEncodedValue.values())
                 .map(windowTimeEncodedValue -> windowTimeEncodedValue.getEncodedValue())
@@ -153,28 +155,27 @@ class QueryGraphConfigurerTest {
 
         assertThat(encodedValueKeyCaptor.getAllValues().getLast())
                 .isEqualTo(WindowTimeEncodedValue.C12.getEncodedValue());
-
     }
-
 
     @Test
     void configure_ok_notAssigned_noTrafficSign() {
+
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(encodingManager.getBooleanEncodedValue(any())).thenReturn(booleanEncodedValue);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
         when(edgeIterator.get(intEncodedValueWayId)).thenReturn(NO_MATCH_ROAD_SECTION_ID);
+
         queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
+
         verifyNoAssignment();
-        loggerExtension.containsLog(Level.INFO,
-                MESSAGE_NOT_ASSIGNED);
-
-
+        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED);
     }
 
     @Test
     void configure_ok_notAssigned_noTrafficSign_inDirection() {
+
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
         when(trafficSign.direction()).thenReturn(Direction.FORWARD);
@@ -183,16 +184,17 @@ class QueryGraphConfigurerTest {
         when(encodingManager.getBooleanEncodedValue(any())).thenReturn(booleanEncodedValue);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
         when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
-        queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
-        verifyNoAssignment();
-        loggerExtension.containsLog(Level.INFO,
-                MESSAGE_NOT_ASSIGNED);
 
+        queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
+
+        verifyNoAssignment();
+        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED);
     }
 
 
     @Test
     void configure_ok_notAssigned_edgeNotBehind() {
+
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
         when(trafficSignSnap.getSnap()).thenReturn(snap);
@@ -210,19 +212,22 @@ class QueryGraphConfigurerTest {
         when(lineString.getStartPoint()).thenReturn(point);
         //Latitude is the Y axis, longitude is the X axis
         when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
+
         queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
+
         verify(encodingManager, times(0))
                 .getIntEncodedValue(AccessibilityLink.TRAFFIC_SIGN_ID);
-        loggerExtension.containsLog(Level.INFO,
-                MESSAGE_NOT_ASSIGNED);
+        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED);
     }
 
     private void setupFixtureForTrafficSignSnap() {
+
         when(trafficSignSnap.getTrafficSign()).thenReturn(trafficSign);
 
     }
 
     private void setupFixtureForQueryGraph() {
+
         when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
         when(queryGraph.getNodes()).thenReturn(1);
         when(queryGraph.getEdges()).thenReturn(1);
@@ -231,6 +236,7 @@ class QueryGraphConfigurerTest {
     }
 
     private void verifyNoAssignment() {
+
         verify(trafficSignSnap, times(0)).getSnap();
         verify(encodingManager, times(0))
                 .getIntEncodedValue(AccessibilityLink.TRAFFIC_SIGN_ID);
