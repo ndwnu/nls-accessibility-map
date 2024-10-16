@@ -32,7 +32,7 @@ nu:
                 initialize: DECLARE
 
 graphhopper:
-  dir: ../../graphhopper
+  dir: graphhopper
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
