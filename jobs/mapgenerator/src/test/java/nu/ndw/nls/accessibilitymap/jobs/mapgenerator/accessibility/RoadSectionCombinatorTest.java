@@ -177,7 +177,7 @@ class RoadSectionCombinatorTest {
     private RoadSection buildRoadSection(Function<Integer, Boolean> accessibleSupplier) {
 
         RoadSection roadsection = RoadSection.builder()
-                .id(1)
+                .id(1L)
                 .build();
 
         IntStream.range(0, 2)

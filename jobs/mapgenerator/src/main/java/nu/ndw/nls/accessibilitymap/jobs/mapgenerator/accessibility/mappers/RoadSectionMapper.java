@@ -44,7 +44,7 @@ public class RoadSectionMapper {
             RoadSection roadSection = roadSectionsById.computeIfAbsent(
                     roadSectionId,
                     id -> RoadSection.builder()
-                            .id(id)
+                            .id(Long.valueOf(id))
                             .build());
 
             RoadSectionFragment roadSectionFragment = roadSectionFragmentById.computeIfAbsent(

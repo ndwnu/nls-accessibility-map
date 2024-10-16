@@ -22,7 +22,7 @@ import org.springframework.validation.annotation.Validated;
 public final class RoadSection {
 
     @NotNull
-    private final long id;
+    private final Long id;
 
     private RoadSectionMetaData metaData;
 

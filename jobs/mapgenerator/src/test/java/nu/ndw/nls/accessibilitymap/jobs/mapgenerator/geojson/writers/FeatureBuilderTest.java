@@ -362,10 +362,11 @@ class FeatureBuilderTest {
             boolean forwardAccessible,
             boolean backwardAccessible,
             boolean addTrafficSign) {
+
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
                 .id(10)
                 .roadSection(RoadSection.builder()
-                        .id(1)
+                        .id(1L)
                         .build())
                 .build();
 
