@@ -9,12 +9,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 import org.springframework.validation.annotation.Validated;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
+@With
 @Validated
 public class RoadSectionFragment {
 
@@ -40,7 +42,7 @@ public class RoadSectionFragment {
         this.forwardSegment = forwardSegment;
     }
 
-    public void setBackwardSegment(@NotNull DirectionalSegment backwardSegment) {
+    public void setBackwardSegment(@NotNull @Valid DirectionalSegment backwardSegment) {
 
         if (Objects.nonNull(this.backwardSegment)) {
             throw new IllegalStateException("backSegment has already been assigned. "

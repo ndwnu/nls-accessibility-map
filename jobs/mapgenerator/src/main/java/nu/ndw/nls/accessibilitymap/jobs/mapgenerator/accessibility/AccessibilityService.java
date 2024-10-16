@@ -69,7 +69,6 @@ public class AccessibilityService {
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
 
         OffsetDateTime startTime = OffsetDateTime.now();
-        IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
         List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
         Point startPoint = createPoint(
@@ -79,6 +78,7 @@ public class AccessibilityService {
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
         QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
 
+        IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
         Map<Integer, TrafficSign> trafficSignById = buildTrafficSignById(snappedTrafficSigns);
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 getRoadSections(

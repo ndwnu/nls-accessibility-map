@@ -32,13 +32,13 @@ class NdwDataServiceTest {
     private RoadSectionMetaDataMapper roadSectionMetaDataMapper;
 
     @Mock
-    private NwbRoadSectionDto NwbRoadSectionDto1;
+    private NwbRoadSectionDto nwbRoadSectionDto1;
 
     @Mock
-    private NwbRoadSectionDto NwbRoadSectionDto2;
+    private NwbRoadSectionDto nwbRoadSectionDto2;
 
     @Mock
-    private NwbRoadSectionDto NwbRoadSectionDto3;
+    private NwbRoadSectionDto nwbRoadSectionDto3;
 
     @Mock
     private RoadSectionMetaData roadSectionMetaData1;
@@ -61,7 +61,7 @@ class NdwDataServiceTest {
         ndwDataService = new NdwDataService(nwbRoadSectionCrudService, roadSectionMetaDataMapper);
     }
 
-    private RoadSection buildRoadSection(int id) {
+    private RoadSection buildRoadSection(long id) {
         return RoadSection.builder()
                 .id(id)
                 .build();
@@ -70,13 +70,13 @@ class NdwDataServiceTest {
     @Test
     void addNwbDataToAccessibility_ok() {
 
-        when(nwbRoadSectionCrudService.findById(new Id(1, 1))).thenReturn(Optional.of(NwbRoadSectionDto1));
-        when(nwbRoadSectionCrudService.findById(new Id(1, 2))).thenReturn(Optional.of(NwbRoadSectionDto2));
-        when(nwbRoadSectionCrudService.findById(new Id(1, 3))).thenReturn(Optional.of(NwbRoadSectionDto3));
+        when(nwbRoadSectionCrudService.findById(new Id(1, 1))).thenReturn(Optional.of(nwbRoadSectionDto1));
+        when(nwbRoadSectionCrudService.findById(new Id(1, 2))).thenReturn(Optional.of(nwbRoadSectionDto2));
+        when(nwbRoadSectionCrudService.findById(new Id(1, 3))).thenReturn(Optional.of(nwbRoadSectionDto3));
 
-        when(roadSectionMetaDataMapper.map(NwbRoadSectionDto1)).thenReturn(roadSectionMetaData1);
-        when(roadSectionMetaDataMapper.map(NwbRoadSectionDto2)).thenReturn(roadSectionMetaData2);
-        when(roadSectionMetaDataMapper.map(NwbRoadSectionDto3)).thenReturn(roadSectionMetaData3);
+        when(roadSectionMetaDataMapper.map(nwbRoadSectionDto1)).thenReturn(roadSectionMetaData1);
+        when(roadSectionMetaDataMapper.map(nwbRoadSectionDto2)).thenReturn(roadSectionMetaData2);
+        when(roadSectionMetaDataMapper.map(nwbRoadSectionDto3)).thenReturn(roadSectionMetaData3);
 
         ndwDataService.addNwbDataToAccessibility(accessibility, 1);
 
