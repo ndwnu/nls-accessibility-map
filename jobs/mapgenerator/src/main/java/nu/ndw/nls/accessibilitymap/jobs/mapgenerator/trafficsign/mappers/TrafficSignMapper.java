@@ -45,16 +45,12 @@ public class TrafficSignMapper {
 
     private Direction createDirection(DirectionType drivingDirection) {
 
-        switch (drivingDirection) {
-            case FORTH -> {
-                return Direction.FORWARD;
-            }
-            case BACK -> {
-                return Direction.BACKWARD;
-            }
+        return switch (drivingDirection) {
+            case FORTH -> Direction.FORWARD;
+            case BACK -> Direction.BACKWARD;
             default -> throw new IllegalArgumentException(
                     "Driving direction '%s' could not be mapped.".formatted(drivingDirection));
-        }
+        };
     }
 
     private URI createIconUri(TrafficSignPropertiesDto trafficSignPropertiesDto) {

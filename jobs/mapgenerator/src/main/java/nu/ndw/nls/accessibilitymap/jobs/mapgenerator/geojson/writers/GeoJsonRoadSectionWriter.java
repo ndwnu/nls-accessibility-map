@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
@@ -88,7 +89,7 @@ public class GeoJsonRoadSectionWriter {
     private String buildExportFileName(GeoGenerationProperties geoGenerationProperties) {
         StringBuilder exportFileName = new StringBuilder();
 
-        exportFileName.append(geoGenerationProperties.trafficSignType().name().toLowerCase());
+        exportFileName.append(geoGenerationProperties.trafficSignType().name().toLowerCase(Locale.US));
         if (geoGenerationProperties.includeOnlyTimeWindowedSigns()) {
             exportFileName.append("WindowTimeSegments");
         }

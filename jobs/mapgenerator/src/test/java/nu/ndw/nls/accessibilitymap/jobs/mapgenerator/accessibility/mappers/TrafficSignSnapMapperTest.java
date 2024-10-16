@@ -136,7 +136,7 @@ class TrafficSignSnapMapperTest {
         List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), accessibilityRequest);
         assertThat(trafficSignSnaps).hasSize(0);
         loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with "
-                                                 + "road section id %s in nwb map version %s on graphhopper network")
+                + "road section id %s in nwb map version %s on graphhopper network")
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID, NWB_VERSION));
     }
 
@@ -153,9 +153,9 @@ class TrafficSignSnapMapperTest {
         when(networkMetaDataService.loadMetaData())
                 .thenReturn(accessibilityGraphhopperMetaData);
         List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), accessibilityRequest);
-        assertThat(trafficSignSnaps).hasSize(0);
-        loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with "
-                                                 + "road section id %s for nwb map version %s in the NWB road section database")
+        assertThat(trafficSignSnaps).isEmpty();
+        loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with road section "
+                + "id %s for nwb map version %s in the NWB road section database")
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID, NWB_VERSION));
     }
 

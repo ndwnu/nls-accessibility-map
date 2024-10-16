@@ -8,7 +8,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 public record Accessibility(
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions,
-        Collection<RoadSection> combinedAccessibility
-) {
+        Collection<RoadSection> combinedAccessibility) {
 
 }

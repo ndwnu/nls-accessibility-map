@@ -121,6 +121,7 @@ class TrafficSignMapperTest {
     }
 
     private void validateTrafficSign(TrafficSign trafficSign) {
+        
         assertThat(trafficSign.id()).isEqualTo(1);
         assertThat(trafficSign.roadSectionId()).isEqualTo(
                 trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue());

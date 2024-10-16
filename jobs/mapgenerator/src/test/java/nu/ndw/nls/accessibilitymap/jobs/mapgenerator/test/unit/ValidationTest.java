@@ -20,7 +20,7 @@ public abstract class ValidationTest {
 	@BeforeEach
 	void setUpLocale() {
 
-		Locale.setDefault(Locale.ENGLISH);
+		Locale.setDefault(Locale.US);
 	}
 
 	protected void validate(Object objectToValidate, List<String> propertyErrors, List<String> errorMessages) {

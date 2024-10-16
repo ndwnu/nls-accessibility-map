@@ -131,12 +131,11 @@ class QueryGraphConfigurerTest {
 
         if (reversed) {
             verify(edgeIterator).setReverse(intEncodedValueTrafficSignId, TRAFFIC_SIGN_ID_VALUE);
-            verify(edgeIterator).setReverse(booleanEncodedValue, true);
         } else {
             verify(edgeIterator).set(intEncodedValueTrafficSignId, TRAFFIC_SIGN_ID_VALUE);
-            verify(edgeIterator).set(booleanEncodedValue, true);
         }
 
+        verify(edgeIterator).set(booleanEncodedValue, true);
         verify(encodingManager, times(WindowTimeEncodedValue.values().length + 1))
                 .getBooleanEncodedValue(encodedValueKeyCaptor.capture());
 

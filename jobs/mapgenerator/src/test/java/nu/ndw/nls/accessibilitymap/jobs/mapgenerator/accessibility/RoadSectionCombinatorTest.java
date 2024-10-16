@@ -48,17 +48,18 @@ class RoadSectionCombinatorTest {
                 roadSectionsWithRestrictions
         );
 
-        assertThat(combinedRoadSections).hasSize(1);
-        assertThat(combinedRoadSections).doesNotContainAnyElementsOf(roadSectionsWithoutRestrictions);
-        assertThat(combinedRoadSections).doesNotContainAnyElementsOf(roadSectionsWithRestrictions);
+        assertThat(combinedRoadSections)
+                .hasSize(1)
+                .doesNotContainAnyElementsOf(roadSectionsWithoutRestrictions)
+                .doesNotContainAnyElementsOf(roadSectionsWithRestrictions);
 
         RoadSection roadSection = combinedRoadSections.stream().findFirst().get();
         assertThat(roadSection.getId()).isEqualTo(1);
 
-        assertThat(roadSection.getRoadSectionFragments()).hasSize(3);
         assertThat(roadSection.getRoadSectionFragments())
-                .doesNotContainAnyElementsOf(roadSectionsWithoutRestrictions.getFirst().getRoadSectionFragments());
-        assertThat(roadSection.getRoadSectionFragments())
+                .hasSize(3)
+                .doesNotContainAnyElementsOf(roadSectionsWithoutRestrictions.getFirst().getRoadSectionFragments())
+
                 .doesNotContainAnyElementsOf(roadSectionsWithRestrictions.getFirst().getRoadSectionFragments());
 
         verifyRoadSectionFragment(
@@ -103,10 +104,12 @@ class RoadSectionCombinatorTest {
     }
 
     private void addRoadSectionFragmentThatIsAccessible(RoadSection roadSection) {
+
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
                 .id(Integer.MAX_VALUE)
                 .roadSection(roadSection)
                 .build();
+
         DirectionalSegment directionalSegment = DirectionalSegment.builder()
                 .id(Integer.MAX_VALUE)
                 .direction(Direction.FORWARD)
@@ -115,6 +118,7 @@ class RoadSectionCombinatorTest {
                 .roadSectionFragment(roadSectionFragment)
                 .accessible(true)
                 .build();
+
         roadSectionFragment.setForwardSegment(directionalSegment);
         roadSection.getRoadSectionFragments().add(roadSectionFragment);
     }
@@ -190,7 +194,7 @@ class RoadSectionCombinatorTest {
 
                     roadSectionFragment.setForwardSegment(
                             DirectionalSegment.builder()
-                                    .id(roadSectionFragmentId+10)
+                                    .id(roadSectionFragmentId + 10)
                                     .direction(Direction.FORWARD)
                                     .lineString(mock(LineString.class))
                                     .trafficSign(mock(TrafficSign.class))
@@ -200,7 +204,7 @@ class RoadSectionCombinatorTest {
 
                     roadSectionFragment.setBackwardSegment(
                             DirectionalSegment.builder()
-                                    .id(roadSectionFragmentId+20)
+                                    .id(roadSectionFragmentId + 20)
                                     .direction(Direction.BACKWARD)
                                     .lineString(mock(LineString.class))
                                     .trafficSign(mock(TrafficSign.class))

@@ -10,7 +10,6 @@ public record RoadSectionMetaData(
         String name,
         String nameSource,
         String townName,
-        String municipalityName
-) {
+        String municipalityName) {
 
 }

@@ -28,7 +28,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.Traff
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
@@ -54,8 +53,6 @@ public class AccessibilityService {
     private final GeometryFactoryWgs84 geometryFactoryWgs84;
 
     private final RoadSectionMapper roadSectionMapper;
-
-    private final QueryGraphConfigurer queryGraphConfigurer;
 
     private final RoadSectionCombinator roadSectionCombinator;
 
@@ -88,7 +85,7 @@ public class AccessibilityService {
                         queryGraph,
                         startSegment,
                         trafficSignById,
-                        buildWeightingWithoutRestrictions(accessibilityRequest));
+                        buildWeightingWithoutRestrictions());
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(
@@ -151,18 +148,21 @@ public class AccessibilityService {
         return trafficSingSnapMapper.map(trafficSigns, accessibilityRequest);
     }
 
-    private Weighting buildWeightingWithoutRestrictions(AccessibilityRequest accessibilityRequest) {
-        accessibilityRequest = accessibilityRequest.withVehicleProperties(null);
+    private Weighting buildWeightingWithoutRestrictions() {
+
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-        CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
+        CustomModel model = modelFactory.getModel(null);
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
+
         return networkGraphHopper.createWeighting(profile, hints);
     }
 
     private Weighting buildWeightingWithRestrictions(AccessibilityRequest accessibilityRequest) {
+
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
         CustomModel model = modelFactory.getModel(accessibilityRequest.getVehicleProperties());
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
+
         return networkGraphHopper.createWeighting(profile, hints);
     }
 

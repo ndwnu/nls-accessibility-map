@@ -59,26 +59,53 @@ public class RoadSectionMapper {
                         return roadSectionFragmentNew;
                     });
 
-            if (isochroneMatch.isReversed()) {
-                roadSectionFragment.setBackwardSegment(
-                        buildDirectionalSegment(
-                                directionalSegmentId,
-                                Direction.BACKWARD,
-                                isochroneMatch.getGeometry(),
-                                roadSectionFragmentById.get(roadSectionFragmentId),
-                                trafficSignById.get(isochroneMatch.getEdge().get(trafficSignEncodedValueAttribute))));
-            } else {
-                roadSectionFragment.setForwardSegment(
-                        buildDirectionalSegment(
-                                directionalSegmentId,
-                                Direction.FORWARD,
-                                isochroneMatch.getGeometry(),
-                                roadSectionFragmentById.get(roadSectionFragmentId),
-                                trafficSignById.get(isochroneMatch.getEdge().get(trafficSignEncodedValueAttribute))));
-            }
+            addSegmentsToRoadSectionFragment(
+                    roadSectionFragment,
+                    isochroneMatch,
+                    getTrafficSign(trafficSignById, isochroneMatch, trafficSignEncodedValueAttribute),
+                    directionalSegmentId,
+                    roadSectionFragmentById);
         });
 
         return roadSectionsById.values();
+    }
+
+    private static TrafficSign getTrafficSign(
+            Map<Integer, TrafficSign> trafficSignById,
+            IsochroneMatch isochroneMatch,
+            IntEncodedValue trafficSignEncodedValueAttribute) {
+
+        if (isochroneMatch.isReversed()) {
+            return trafficSignById.get(isochroneMatch.getEdge().getReverse(trafficSignEncodedValueAttribute));
+        }
+
+        return trafficSignById.get(isochroneMatch.getEdge().get(trafficSignEncodedValueAttribute));
+    }
+
+    private void addSegmentsToRoadSectionFragment(
+            RoadSectionFragment roadSectionFragment,
+            IsochroneMatch isochroneMatch,
+            TrafficSign trafficSign,
+            int directionalSegmentId,
+            SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById) {
+
+        if (isochroneMatch.isReversed()) {
+            roadSectionFragment.setBackwardSegment(
+                    buildDirectionalSegment(
+                            directionalSegmentId,
+                            Direction.BACKWARD,
+                            isochroneMatch.getGeometry(),
+                            roadSectionFragmentById.get(roadSectionFragment.getId()),
+                            trafficSign));
+        } else {
+            roadSectionFragment.setForwardSegment(
+                    buildDirectionalSegment(
+                            directionalSegmentId,
+                            Direction.FORWARD,
+                            isochroneMatch.getGeometry(),
+                            roadSectionFragmentById.get(roadSectionFragment.getId()),
+                            trafficSign));
+        }
     }
 
     private DirectionalSegment buildDirectionalSegment(

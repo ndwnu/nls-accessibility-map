@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,6 @@ public class TrafficSignDataService {
 
     private String mapTrafficSignTypeToRvvCode(TrafficSignType trafficSignType) {
         return trafficSignType.name().charAt(0)
-                + trafficSignType.name().substring(1).toLowerCase();
+                + trafficSignType.name().substring(1).toLowerCase(Locale.US);
     }
 }
