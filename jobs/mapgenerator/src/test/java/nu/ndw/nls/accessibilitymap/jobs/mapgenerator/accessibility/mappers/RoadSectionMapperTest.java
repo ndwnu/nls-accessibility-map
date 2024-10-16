@@ -46,7 +46,9 @@ class RoadSectionMapperTest {
     private EdgeIteratorState edgeIteratorState;
 
     @Mock
-    private TrafficSign trafficSign;
+    private TrafficSign trafficSignForward;
+    @Mock
+    private TrafficSign trafficSignBackward;
 
     @Mock
     private LineString geometry;
@@ -66,7 +68,8 @@ class RoadSectionMapperTest {
 
         List<IsochroneMatch> isochroneMatches = List.of(isochroneMatch);
         Map<Integer, TrafficSign> trafficSignById = Map.of(
-                10, trafficSign
+                10, trafficSignForward,
+                20, trafficSignBackward
         );
 
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
@@ -75,14 +78,20 @@ class RoadSectionMapperTest {
         when(isochroneMatch.getEdge()).thenReturn(edgeIteratorState);
         when(edgeIteratorState.getEdge()).thenReturn(2);
         when(edgeIteratorState.getEdgeKey()).thenReturn(3);
-        when(edgeIteratorState.get(intEncodedValue)).thenReturn(10);
+
+        if (isReversed) {
+            when(edgeIteratorState.getReverse(intEncodedValue)).thenReturn(20);
+        } else {
+            when(edgeIteratorState.get(intEncodedValue)).thenReturn(10);
+        }
         when(isochroneMatch.isReversed()).thenReturn(isReversed);
         when(isochroneMatch.getGeometry()).thenReturn(geometry);
 
         Collection<RoadSection> roadSections = roadSectionMapper.mapToRoadSections(isochroneMatches, trafficSignById);
 
-        assertThat(roadSections).isNotEmpty();
-        assertThat(roadSections).hasSize(1);
+        assertThat(roadSections)
+                .isNotEmpty()
+                .hasSize(1);
 
         RoadSection roadSection = roadSections.iterator().next();
         assertThat(roadSection.getId()).isEqualTo(1);
@@ -94,15 +103,19 @@ class RoadSectionMapperTest {
         assertThat(roadSectionFragment.getRoadSection()).isEqualTo(roadSection);
 
         if (isReversed) {
-            validateSegments(roadSectionFragment.getBackwardSegment(), roadSectionFragment, Direction.BACKWARD);
+            validateSegments(roadSectionFragment.getBackwardSegment(), roadSectionFragment, Direction.BACKWARD, trafficSignBackward);
             assertThat(roadSectionFragment.getForwardSegment()).isNull();
         } else {
-            validateSegments(roadSectionFragment.getForwardSegment(), roadSectionFragment, Direction.FORWARD);
+            validateSegments(roadSectionFragment.getForwardSegment(), roadSectionFragment, Direction.FORWARD, trafficSignForward);
             assertThat(roadSectionFragment.getBackwardSegment()).isNull();
         }
     }
 
-    private void validateSegments(DirectionalSegment segment, RoadSectionFragment roadSectionFragment, Direction direction) {
+    private void validateSegments(
+            DirectionalSegment segment,
+            RoadSectionFragment roadSectionFragment,
+            Direction direction,
+            TrafficSign trafficSign) {
 
         assertThat(segment.getId()).isEqualTo(3);
         assertThat(segment.getDirection()).isEqualTo(direction);

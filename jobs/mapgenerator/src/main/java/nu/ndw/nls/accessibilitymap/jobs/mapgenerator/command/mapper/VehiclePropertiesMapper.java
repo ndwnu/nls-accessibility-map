@@ -17,7 +17,8 @@ public class VehiclePropertiesMapper {
             case C7B -> vehiclePropertiesBuilder.hgvAndBusAccessForbiddenWt(true);
             case C12 -> vehiclePropertiesBuilder.motorVehicleAccessForbiddenWt(true);
             case C22C -> vehiclePropertiesBuilder.lcvAndHgvAccessForbiddenWt(true);
-            default -> throw new IllegalArgumentException("TrafficSignType is not defined and therefor vehicleProperties could not be created.");
+            default -> throw new IllegalArgumentException(
+                    "TrafficSignType is not defined and therefor vehicleProperties could not be created.");
         }
 
         return vehiclePropertiesBuilder.build();

@@ -7,7 +7,6 @@ import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_WRITE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -90,8 +89,6 @@ class FileServiceTest {
 
             assertThat(Files.exists(destinationDir)).isTrue();
             assertEquals(Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE), Files.getPosixFilePermissions(destinationDir));
-        } catch (Exception exception) {
-            fail("Something went wrong.", exception);
         } finally {
             deleteFile(source);
             deleteFile(destination);
@@ -111,8 +108,6 @@ class FileServiceTest {
             fileService.moveFileAndOverride(source, destination);
 
             assertThat(Files.readString(destination)).isEqualTo("abc");
-        } catch (Exception exception) {
-            fail("Something went wrong.", exception);
         } finally {
             loggerExtension.containsLog(Level.WARN, "Overwriting existing file %s".formatted(destination));
 

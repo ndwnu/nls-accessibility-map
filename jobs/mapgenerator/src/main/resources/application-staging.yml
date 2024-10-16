@@ -23,7 +23,7 @@ logging:
     root: INFO
     nu.ndw.nls: DEBUG
 graphhopper:
-  dir: ../../graphhopper
+  dir: graphhopper
 spring:
   datasource:
     url: jdbc:postgresql://localhost:25432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified

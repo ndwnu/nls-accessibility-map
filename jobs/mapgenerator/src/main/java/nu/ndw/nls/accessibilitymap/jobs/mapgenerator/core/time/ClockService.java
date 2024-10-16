@@ -3,21 +3,21 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 @Getter
 @Setter
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ClockService {
 
-	private Clock clock;
+    private final Clock clock;
 
-	public OffsetDateTime now() {
+    public OffsetDateTime now() {
 
-		return OffsetDateTime.now(clock).atZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime();
-	}
+        return OffsetDateTime.now(clock).atZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime();
+    }
 }

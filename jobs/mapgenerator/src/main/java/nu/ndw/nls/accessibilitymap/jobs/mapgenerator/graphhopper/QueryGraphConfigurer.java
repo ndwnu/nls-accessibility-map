@@ -73,8 +73,10 @@ public class QueryGraphConfigurer {
                         .filter(trafficSignSnap -> isTrafficSignInSameDirectionAsEdge(edgeIterator, trafficSignSnap))
                         .filter(trafficSignSnap -> isTrafficSignInFrontOfEdge(edgeIterator, trafficSignSnap))
                         .forEach(trafficSignSnap -> {
+                            assignTrafficSignIdToEdge(edgeIterator, trafficSignSnap.getTrafficSign().id());
+                            blockEdgeWithTrafficSignRestrictions(edgeIterator, trafficSignSnap.getTrafficSign());
+
                             assignedTrafficSignSnaps.add(trafficSignSnap);
-                            blockEdge(edgeIterator, trafficSignSnap.getTrafficSign());
                         });
             }
         }
@@ -106,12 +108,6 @@ public class QueryGraphConfigurer {
                 });
     }
 
-    private void blockEdge(EdgeIterator edgeIterator, TrafficSign trafficSign) {
-
-        assignTrafficSignIdToEdge(edgeIterator, trafficSign.id());
-        applyTrafficSignRestrictionToEdge(edgeIterator, trafficSign);
-    }
-
     private void assignTrafficSignIdToEdge(
             EdgeIterator edgeIterator,
             Integer trafficSignId) {
@@ -124,19 +120,14 @@ public class QueryGraphConfigurer {
         }
     }
 
-    private void applyTrafficSignRestrictionToEdge(
+    private void blockEdgeWithTrafficSignRestrictions(
             EdgeIterator edgeIterator,
             TrafficSign trafficSign) {
 
         String trafficSignAttributeKey = WindowTimeEncodedValue.valueOf(trafficSign.trafficSignType().name())
                 .getEncodedValue();
         BooleanEncodedValue booleanEncodedValue = encodingManager.getBooleanEncodedValue(trafficSignAttributeKey);
-
-        if (edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)) {
-            edgeIterator.setReverse(booleanEncodedValue, true);
-        } else {
-            edgeIterator.set(booleanEncodedValue, true);
-        }
+        edgeIterator.set(booleanEncodedValue, true);
     }
 
     private boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {

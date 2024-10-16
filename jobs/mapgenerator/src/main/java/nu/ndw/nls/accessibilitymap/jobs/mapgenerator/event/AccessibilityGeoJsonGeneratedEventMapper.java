@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event;
 
 import java.time.Instant;
+import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.events.NlsEvent;
@@ -34,6 +35,6 @@ public class AccessibilityGeoJsonGeneratedEventMapper {
         return NlsEventSubjectType.valueOf(
                 "accessibility_windows_times_rvv_code_%s"
                         .formatted(trafficSignType.name())
-                        .toUpperCase());
+                        .toUpperCase(Locale.US));
     }
 }
