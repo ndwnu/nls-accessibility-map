@@ -16,7 +16,6 @@ import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.List;
 import java.util.Optional;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
@@ -47,30 +46,39 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TrafficSignSnapMapperTest {
 
     private static final int NWB_VERSION = 20241001;
+
     public static final double FRACTION = 0.5;
+
     private static final double X_COORDINATE = 0D;
+
     private static final double Y_COORDINATE = 1D;
+
     private static final int ROAD_SECTION_ID = 123;
+
     private static final String TRAFFIC_SIGN_ID = "id";
+
     // injected dependencies
     @Mock
-    private NwbRoadSectionCrudService roadSectionService;
+    private NwbRoadSectionCrudService nwbRoadSectionCrudService;
+
     @Mock
     private FractionAndDistanceCalculator fractionAndDistanceCalculator;
+
     @Mock
     private NetworkMetaDataService networkMetaDataService;
+
     @Mock
     private CrsTransformer crsTransformer;
+
     @Mock
     private NetworkGraphHopper networkGraphHopper;
 
-    // other mocks
-    @Mock
-    private AccessibilityRequest accessibilityRequest;
     @Mock
     private TrafficSign trafficSign;
+
     @Mock
     private NwbRoadSectionDto nwbRoadSectionDto;
+
     @Captor
     private ArgumentCaptor<Id> idArgumentCaptor;
 
@@ -88,6 +96,7 @@ class TrafficSignSnapMapperTest {
 
     @Mock
     private LocationIndexTree locationIndexTree;
+
     @Mock
     private Coordinate snappedCoordinate;
 
@@ -96,8 +105,10 @@ class TrafficSignSnapMapperTest {
 
     @Mock
     private EncodingManager encodingManager;
+
     @Mock
     private IntEncodedValue intEncodedValue;
+
     @Mock
     private EdgeIteratorState edgeIteratorState;
 
@@ -111,30 +122,41 @@ class TrafficSignSnapMapperTest {
 
     @BeforeEach
     void setUp() {
+
         accessibilityGraphhopperMetaData = new AccessibilityGraphhopperMetaData(NWB_VERSION);
+
+        trafficSingSnapMapper = new TrafficSignSnapMapper(
+                nwbRoadSectionCrudService,
+                fractionAndDistanceCalculator,
+                networkMetaDataService,
+                crsTransformer,
+                networkGraphHopper);
     }
 
     @Test
     void map_ok() {
         setupBaseFixture();
         when(snap.isValid()).thenReturn(true);
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), accessibilityRequest);
+        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), true);
         assertThat(trafficSignSnaps).hasSize(1);
         assertThat(trafficSignSnaps.getFirst().getSnap()).isEqualTo(snap);
         assertThat(trafficSignSnaps.getFirst().getTrafficSign()).isEqualTo(trafficSign);
+
         verifyIdCreatedOk();
         verifyEdgeFilterOk();
         verifyEdgeFilterNoMatch();
     }
 
-
     @Test
     void map_ok_snap_invalid() {
-        when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
+
         setupBaseFixture();
+        when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
         when(snap.isValid()).thenReturn(false);
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), accessibilityRequest);
-        assertThat(trafficSignSnaps).hasSize(0);
+
+        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), true);
+
+        assertThat(trafficSignSnaps).isEmpty();
         loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with "
                 + "road section id %s in nwb map version %s on graphhopper network")
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID, NWB_VERSION));
@@ -143,22 +165,22 @@ class TrafficSignSnapMapperTest {
     @Test
     void map_ok_no_roadSection() {
         when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
-        when(roadSectionService.findById(any(Id.class)))
-                .thenReturn(Optional.empty());
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
-        when(accessibilityRequest.isIncludeOnlyTimeWindowedSigns())
-                .thenReturn(true);
         when(trafficSign.hasTimeWindowedSign())
                 .thenReturn(true);
+
+        when(nwbRoadSectionCrudService.findById(any(Id.class)))
+                .thenReturn(Optional.empty());
         when(networkMetaDataService.loadMetaData())
                 .thenReturn(accessibilityGraphhopperMetaData);
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), accessibilityRequest);
+
+        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), true);
+
         assertThat(trafficSignSnaps).isEmpty();
         loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with road section "
                 + "id %s for nwb map version %s in the NWB road section database")
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID, NWB_VERSION));
     }
-
 
     @ParameterizedTest
     @CsvSource(textBlock = """
@@ -166,48 +188,49 @@ class TrafficSignSnapMapperTest {
             true, false
             """)
     void map_ok_no_textSign(boolean isIncludeOnlyTimeWindowedSigns, boolean hasTimeWindowedSign) {
-        when(accessibilityRequest.isIncludeOnlyTimeWindowedSigns())
-                .thenReturn(isIncludeOnlyTimeWindowedSigns);
+
         if (isIncludeOnlyTimeWindowedSigns) {
             when(trafficSign.hasTimeWindowedSign())
                     .thenReturn(hasTimeWindowedSign);
         }
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), accessibilityRequest);
-        assertThat(trafficSignSnaps).hasSize(0);
+
+        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign),
+                isIncludeOnlyTimeWindowedSigns);
+        assertThat(trafficSignSnaps).isEmpty();
     }
 
     private void setupBaseFixture() {
-        when(accessibilityRequest.isIncludeOnlyTimeWindowedSigns())
-                .thenReturn(true);
-        when(trafficSign.hasTimeWindowedSign())
-                .thenReturn(true);
-        when(networkMetaDataService.loadMetaData())
-                .thenReturn(accessibilityGraphhopperMetaData);
+
+        when(trafficSign.hasTimeWindowedSign()).thenReturn(true);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
-        when(roadSectionService.findById(any(Id.class)))
-                .thenReturn(Optional.of(nwbRoadSectionDto));
-        when(nwbRoadSectionDto.getGeometry()).thenReturn(lineStringRd);
-        when(crsTransformer.transformFromRdNewToWgs84(lineStringRd))
-                .thenReturn(lineStringWgs84);
         when(trafficSign.fraction()).thenReturn(FRACTION);
+        when(networkMetaDataService.loadMetaData()).thenReturn(accessibilityGraphhopperMetaData);
+        when(nwbRoadSectionCrudService.findById(any(Id.class))).thenReturn(Optional.of(nwbRoadSectionDto));
+        when(nwbRoadSectionDto.getGeometry()).thenReturn(lineStringRd);
+        when(crsTransformer.transformFromRdNewToWgs84(lineStringRd)).thenReturn(lineStringWgs84);
         when(fractionAndDistanceCalculator.getCoordinateAndBearing(lineStringWgs84, FRACTION))
                 .thenReturn(coordinateAndBearing);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
         when(coordinateAndBearing.coordinate()).thenReturn(snappedCoordinate);
         when(snappedCoordinate.getX()).thenReturn(X_COORDINATE);
         when(snappedCoordinate.getY()).thenReturn(Y_COORDINATE);
-        when(locationIndexTree.findClosest(eq(Y_COORDINATE),
-                eq(X_COORDINATE), edgeFilterCaptor.capture())).thenReturn(snap);
+        when(locationIndexTree.findClosest(
+                eq(Y_COORDINATE),
+                eq(X_COORDINATE),
+                edgeFilterCaptor.capture())
+        ).thenReturn(snap);
     }
 
     private void verifyIdCreatedOk() {
-        verify(roadSectionService).findById(idArgumentCaptor.capture());
+
+        verify(nwbRoadSectionCrudService).findById(idArgumentCaptor.capture());
         Id createdId = idArgumentCaptor.getValue();
         assertThat(createdId.getRoadSectionId()).isEqualTo(ROAD_SECTION_ID);
         assertThat(createdId.getVersionId()).isEqualTo(NWB_VERSION);
     }
 
     private void verifyEdgeFilterOk() {
+
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(ROAD_SECTION_ID);
@@ -215,6 +238,7 @@ class TrafficSignSnapMapperTest {
     }
 
     private void verifyEdgeFilterNoMatch() {
+
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(1);

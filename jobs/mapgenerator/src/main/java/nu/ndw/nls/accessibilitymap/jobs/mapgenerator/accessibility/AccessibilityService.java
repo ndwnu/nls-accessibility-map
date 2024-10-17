@@ -145,7 +145,7 @@ public class AccessibilityService {
 
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllByType(
                 accessibilityRequest.getTrafficSignType());
-        return trafficSingSnapMapper.map(trafficSigns, accessibilityRequest);
+        return trafficSingSnapMapper.map(trafficSigns, accessibilityRequest.isIncludeOnlyTimeWindowedSigns());
     }
 
     private Weighting buildWeightingWithoutRestrictions() {
