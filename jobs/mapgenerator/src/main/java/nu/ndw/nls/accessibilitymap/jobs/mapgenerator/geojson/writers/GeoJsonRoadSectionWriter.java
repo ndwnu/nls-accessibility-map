@@ -1,0 +1,99 @@
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.FeatureCollection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
+import org.springframework.stereotype.Component;
+
+@Component
+public class GeoJsonRoadSectionWriter {
+
+    private final ObjectMapper geoJsonObjectMapper;
+
+    private final FileService fileService;
+
+    private final FeatureBuilder featureBuilder;
+
+    public GeoJsonRoadSectionWriter(
+            FileService fileService,
+            FeatureBuilder featureBuilder,
+            GenerateConfiguration generateConfiguration,
+            GeoJsonObjectMapperFactory geoJsonObjectMapperFactory) {
+
+        this.featureBuilder = featureBuilder;
+        this.fileService = fileService;
+        geoJsonObjectMapper = geoJsonObjectMapperFactory.create(generateConfiguration);
+    }
+
+    public void writeToFile(
+            Accessibility accessibility,
+            GeoGenerationProperties geoGenerationProperties) {
+
+        String exportFileName = buildExportFileName(geoGenerationProperties);
+        String exportFileExtension = ".geojson";
+
+        Path tempFile = fileService.createTmpFile(exportFileName, exportFileExtension);
+
+        LongSequenceSupplier idSequenceSupplier = new LongSequenceSupplier();
+
+        FeatureCollection geoJson = FeatureCollection
+                .builder()
+                .features(accessibility.combinedAccessibility().stream()
+                        .map(roadSection -> createFeatures(
+                                roadSection,
+                                idSequenceSupplier,
+                                geoGenerationProperties.generateConfiguration()))
+                        .flatMap(List::stream)
+                        .toList())
+                .build();
+
+        try {
+            geoJsonObjectMapper.writeValue(tempFile.toFile(), geoJson);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to serialize geojson to file: " + tempFile, e);
+        }
+
+        Path exportFile = geoGenerationProperties.generateConfiguration()
+                .getGenerationDirectoryPath(geoGenerationProperties.startTime())
+                .resolve(exportFileName.concat(exportFileExtension));
+        fileService.moveFileAndOverride(tempFile, exportFile);
+    }
+
+    private List<Feature> createFeatures(
+            RoadSection roadSection,
+            LongSequenceSupplier idSequenceSupplier,
+            GenerateConfiguration generateConfiguration) {
+
+        return roadSection.getRoadSectionFragments().stream()
+                .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
+                .filter(Objects::nonNull)
+                .map(directionalSegment -> featureBuilder.createFeaturesForDirectionalSegment(
+                        directionalSegment,
+                        idSequenceSupplier,
+                        generateConfiguration))
+                .flatMap(Collection::stream)
+                .toList();
+    }
+
+    private String buildExportFileName(GeoGenerationProperties geoGenerationProperties) {
+        StringBuilder exportFileName = new StringBuilder();
+
+        exportFileName.append(geoGenerationProperties.trafficSignType().name().toLowerCase(Locale.US));
+        if (geoGenerationProperties.includeOnlyTimeWindowedSigns()) {
+            exportFileName.append("WindowTimeSegments");
+        }
+
+        return exportFileName.toString();
+    }
+}

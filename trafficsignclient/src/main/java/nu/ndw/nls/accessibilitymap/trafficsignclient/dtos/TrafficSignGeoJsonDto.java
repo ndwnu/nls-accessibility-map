@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.geojson.Point;
 
 /*
@@ -19,6 +20,7 @@ import org.geojson.Point;
 @Getter
 @Setter
 @JsonPropertyOrder({"type", "id", "geometry", "properties"})
+@ToString
 public class TrafficSignGeoJsonDto {
 
     private static final String TYPE = "Feature";

@@ -40,7 +40,6 @@ class TrafficSignServiceTest {
     @Mock
     private TrafficSignProperties.TrafficSignApiProperties api;
 
-
     @Test
     void getTrafficSigns_ok_filteredAndGrouped() {
 
@@ -90,14 +89,18 @@ class TrafficSignServiceTest {
                 .properties(trafficSignPropertiesDto6)
                 .build();
 
-        when(trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, Set.of(RVV_CODE_A, RVV_CODE_B),
-                Collections.emptySet(), Collections.emptySet()))
-                .thenReturn(TrafficSignGeoJsonFeatureCollectionDto.builder()
-                            .features(List.of(trafficSign1, trafficSign2, trafficSign3, trafficSign4, trafficSign5,
-                                    trafficSign6))
-                                .build());
+        when(trafficSignRepository.findCurrentState(
+                CurrentStateStatus.PLACED,
+                Set.of(RVV_CODE_A, RVV_CODE_B),
+                null,
+                null)
+        ).thenReturn(TrafficSignGeoJsonFeatureCollectionDto.builder()
+                .features(List.of(trafficSign1, trafficSign2, trafficSign3, trafficSign4, trafficSign5,
+                        trafficSign6))
+                .build());
 
-        TrafficSignData result = trafficSignService.getTrafficSigns(Set.of(RVV_CODE_A, RVV_CODE_B),
+        TrafficSignData result = trafficSignService.getTrafficSigns(
+                Set.of(RVV_CODE_A, RVV_CODE_B),
                 Collections.emptySet());
 
         Map<Long, List<TrafficSignGeoJsonDto>> longListMap = result.trafficSignsByRoadSectionId();
@@ -115,5 +118,4 @@ class TrafficSignServiceTest {
         assertTrue(trafficSignGeoJsonDtos.contains(trafficSign6));
         assertEquals(LocalDate.of(2023, 10, 1), result.maxNwbReferenceDate());
     }
-
 }

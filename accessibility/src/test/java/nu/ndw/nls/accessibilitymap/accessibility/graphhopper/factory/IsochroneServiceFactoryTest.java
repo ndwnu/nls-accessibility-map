@@ -27,9 +27,6 @@ class IsochroneServiceFactoryTest {
         isochroneServiceFactory.createService(network);
 
         verify(network).createWeighting(eq(PROFILE), any(PMap.class));
-        verify(network).getLocationIndex();
-        verify(network).getBaseGraph();
         verify(network).getEncodingManager();
     }
-
 }

@@ -90,11 +90,12 @@ class AccessibilityMapIT {
 
     @Test
     void getAccessibleRoadSections_ok_restrictedAccessRoadsInsideMunicipality() {
+
         // Access roads are blocked, and inside the municipality. Therefore, both these and the inner ring are returned.
-        List<AccessibilityLink> accessRoads = createAccessRoads(true, 1);
-        graphHopper = createGhNetwork(accessRoads);
+        List<AccessibilityLink> additionalRoadSectionsBlocked = createAccessRoads(true, 1);
+        graphHopper = createGhNetwork(additionalRoadSectionsBlocked);
         List<IsochroneMatch> notAccessible = getIsochroneMatches();
-        assertMatches(notAccessible, join(List.of(INNER_RING, accessRoads)));
+        assertMatches(notAccessible, join(List.of(INNER_RING, additionalRoadSectionsBlocked)));
     }
 
     @Test
@@ -132,11 +133,16 @@ class AccessibilityMapIT {
     }
 
     private List<IsochroneMatch> getIsochroneMatches() {
+
         AccessibilityMap accessibilityMap = accessibilityMapFactory.createMapMatcher(graphHopper);
         List<IsochroneMatch> allAccessible = accessibilityMap.getAccessibleRoadSections(REQUEST_UNRESTRICTED);
-        List<IsochroneMatch> restrictedAccess = accessibilityMap.getAccessibleRoadSections(REQUEST_RESTRICTED);
+        List<IsochroneMatch> accessibleWithRestrictions = accessibilityMap
+                .getAccessibleRoadSections(REQUEST_RESTRICTED);
+
         return allAccessible.stream()
-                .filter(m -> !restrictedAccess.contains(m))
+                .filter(isochroneMatch -> accessibleWithRestrictions.stream()
+                        .noneMatch(accessibleWithRestriction ->
+                                accessibleWithRestriction.getMatchedLinkId() == isochroneMatch.getMatchedLinkId()))
                 .toList();
     }
 
@@ -151,18 +157,24 @@ class AccessibilityMapIT {
     }
 
     private static AccessibilityLink createBaseRoad(long id, long fromNodeId, long toNodeId) {
-        return createNoEntryRestrictedLink(id, fromNodeId, toNodeId, 1, Double.POSITIVE_INFINITY, false);
+        return createAccessibilityLink(id, fromNodeId, toNodeId, 1, Double.POSITIVE_INFINITY, false);
     }
 
     private static List<AccessibilityLink> createAccessRoads(boolean restrict, int municipalityCode) {
         return List.of(
-                createNoEntryRestrictedLink(12, 7, 1, municipalityCode, restrict ? 3.0 : Double.POSITIVE_INFINITY,
+                createAccessibilityLink(12, 7, 1, municipalityCode, restrict ? 3.0 : Double.POSITIVE_INFINITY,
                         false),
-                createNoEntryRestrictedLink(13, 10, 4, municipalityCode, Double.POSITIVE_INFINITY, restrict));
+                createAccessibilityLink(13, 10, 4, municipalityCode, Double.POSITIVE_INFINITY, restrict));
     }
 
-    private static AccessibilityLink createNoEntryRestrictedLink(long id, long fromNodeId, long toNodeId,
-            int municipalityCode, double maxAxleLoad, boolean hgvAccessForbidden) {
+    private static AccessibilityLink createAccessibilityLink(
+            long id,
+            long fromNodeId,
+            long toNodeId,
+            int municipalityCode,
+            double maxAxleLoad,
+            boolean hgvAccessForbidden) {
+
         return AccessibilityLink.builder()
                 .id(id)
                 .fromNodeId(fromNodeId)
