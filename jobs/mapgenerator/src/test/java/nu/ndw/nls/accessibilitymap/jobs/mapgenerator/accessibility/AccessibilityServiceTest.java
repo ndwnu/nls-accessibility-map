@@ -31,7 +31,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
@@ -40,6 +39,7 @@ import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -47,7 +47,6 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -79,9 +78,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private RoadSectionMapper roadSectionMapper;
-
-    @Mock
-    private QueryGraphConfigurer queryGraphConfigurer;
 
     @Mock
     private RoadSectionCombinator roadSectionCombinator;
@@ -157,8 +153,15 @@ class AccessibilityServiceTest {
     private ArgumentCaptor<IsochroneArguments> isochroneArgumentsArgumentCaptor;
 
 
-    @InjectMocks
     private AccessibilityService accessibilityService;
+
+    @BeforeEach
+    void setUp() {
+
+        accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper, modelFactory,
+                trafficSignDataService, geometryFactoryWgs84, roadSectionMapper, roadSectionCombinator, clockService,
+                trafficSingSnapMapper, queryGraphFactory);
+    }
 
     @Test
     void calculateAccessibility_ok() {
@@ -179,7 +182,7 @@ class AccessibilityServiceTest {
                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
                 .includeOnlyTimeWindowedSigns(true)
                 .build();
-        mockTrafficSignData(TrafficSignType.C12);
+        mockTrafficSignData();
         // Latitude is the Y axis, longitude is the X axis.
         when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
@@ -241,7 +244,7 @@ class AccessibilityServiceTest {
         assertThat(hints).hasSize(2);
         assertThat(isochroneArguments.getFirst())
                 .isEqualTo(IsochroneArguments.builder()
-                .weighting(weightingNoRestrictions)
+                        .weighting(weightingNoRestrictions)
                         .startPoint(startPoint)
                         .municipalityId(MUNICIPALITY_ID)
                         .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES).build());
@@ -257,8 +260,9 @@ class AccessibilityServiceTest {
 
     }
 
-    private void mockTrafficSignData(TrafficSignType trafficSignType) {
-        when(trafficSignDataService.findAllByType(trafficSignType)).thenReturn(List.of(trafficSign));
+    private void mockTrafficSignData() {
+        when(trafficSignDataService.findAllByType(TrafficSignType.C12))
+                .thenReturn(List.of(trafficSign));
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID);
         when(trafficSignSnap.getTrafficSign()).thenReturn(trafficSign);
 
