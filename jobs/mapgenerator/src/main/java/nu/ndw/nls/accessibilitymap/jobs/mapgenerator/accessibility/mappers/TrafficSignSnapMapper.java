@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
@@ -38,10 +37,10 @@ public class TrafficSignSnapMapper {
 
     private final NetworkGraphHopper networkGraphHopper;
 
-    public List<TrafficSignSnap> map(List<TrafficSign> trafficSigns, AccessibilityRequest accessibilityRequest) {
+    public List<TrafficSignSnap> map(List<TrafficSign> trafficSigns, boolean includeOnlyTimeWindowedSigns) {
 
         return trafficSigns.stream()
-                .filter(trafficSign -> applyTimeWindowedSignFilter(accessibilityRequest, trafficSign))
+                .filter(trafficSign -> applyTimeWindowedSignFilter(includeOnlyTimeWindowedSigns, trafficSign))
                 .map(trafficSign -> findClosestSnapOnNetwork(trafficSign)
                         .map(snap -> TrafficSignSnap
                                 .builder()
@@ -118,9 +117,9 @@ public class TrafficSignSnapMapper {
         return getLinkId(edgeIteratorState) == trafficSign.roadSectionId();
     }
 
-    private boolean applyTimeWindowedSignFilter(AccessibilityRequest accessibilityRequest, TrafficSign trafficSign) {
+    private boolean applyTimeWindowedSignFilter(boolean includeOnlyTimeWindowedSigns, TrafficSign trafficSign) {
 
-        return accessibilityRequest.isIncludeOnlyTimeWindowedSigns() && trafficSign.hasTimeWindowedSign();
+        return includeOnlyTimeWindowedSigns && trafficSign.hasTimeWindowedSign();
     }
 
     private int getLinkId(EdgeIteratorState edge) {
