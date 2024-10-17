@@ -56,35 +56,49 @@ class QueryGraphConfigurerTest {
 
     @Mock
     private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
     @Mock
     private EncodingManager encodingManager;
 
     @Mock
     private QueryGraph queryGraph;
+
     @Mock
     private TrafficSignSnap trafficSignSnap;
+
     @Mock
     private TrafficSign trafficSign;
+
     @Mock
     private Snap snap;
+
     @Mock
     private EdgeExplorer edgeExplorer;
+
     @Mock
     private EdgeIterator edgeIterator;
+
     @Mock
     private BooleanEncodedValue booleanEncodedValue;
+
     @Mock
     private IntEncodedValue intEncodedValueWayId;
+
     @Mock
     private IntEncodedValue intEncodedValueTrafficSignId;
+
     @Mock
     private GHPoint3D ghPoint;
+
     @Mock
     private PointList pointList;
+
     @Mock
     private LineString lineString;
+
     @Mock
     private Point point;
+
     @Captor
     private ArgumentCaptor<String> encodedValueKeyCaptor;
 
@@ -127,6 +141,7 @@ class QueryGraphConfigurerTest {
         when(encodingManager.getIntEncodedValue(AccessibilityLink.TRAFFIC_SIGN_ID))
                 .thenReturn(intEncodedValueTrafficSignId);
         when(trafficSign.trafficSignType()).thenReturn(TrafficSignType.C12);
+
         queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
 
         if (reversed) {
