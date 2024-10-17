@@ -57,7 +57,6 @@ class TrafficSignSnapMapperTest {
 
     private static final String TRAFFIC_SIGN_ID = "id";
 
-    // injected dependencies
     @Mock
     private NwbRoadSectionCrudService nwbRoadSectionCrudService;
 
