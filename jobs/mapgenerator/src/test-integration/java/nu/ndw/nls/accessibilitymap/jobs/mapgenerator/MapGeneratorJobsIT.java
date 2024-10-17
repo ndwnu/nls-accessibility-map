@@ -20,7 +20,6 @@ import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
 import nu.ndw.nls.springboot.messaging.services.MessageReceiveService.ReceiveKey;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +39,7 @@ class MapGeneratorJobsIT {
     @Configuration
     @Import(MessagingConfig.class)
     public static class TestConfig {
+
     }
 
     @Autowired
@@ -110,7 +110,7 @@ class MapGeneratorJobsIT {
         assertTrue(Files.exists(geojsonFilePath), "GeoJson file must exist");
         assertTrue(Files.size(geojsonFilePath) > 0, "GeoJson file must not be 0 bytes");
 
-        String actualJson =  Files.readString(geojsonFilePath);
+        String actualJson = Files.readString(geojsonFilePath);
 
         String expectedJson = readTestDataFromFile("expected-it-results/MapGeneratorJobsIT", geojsonFileName);
 
@@ -140,15 +140,11 @@ class MapGeneratorJobsIT {
                 "/geojson/").resolve(geojsonFileName);
     }
 
-    public String readTestDataFromFile(final String folder, final String file) {
+    public String readTestDataFromFile(final String folder, final String file) throws IOException {
 
-        try {
-            return FileUtils.readFileToString(
-                    ResourceUtils.getFile("classpath:" + folder + File.separator + file), StandardCharsets.UTF_8.toString());
-        } catch (final Exception e) {
-            Assertions.fail(e.getMessage());
-            return null;
-        }
+        return FileUtils.readFileToString(
+                ResourceUtils.getFile("classpath:" + folder + File.separator + file),
+                StandardCharsets.UTF_8.toString());
     }
 
 }
