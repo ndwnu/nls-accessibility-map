@@ -29,17 +29,20 @@ import org.springframework.stereotype.Component;
 public class TrafficSignSnapMapper {
 
     private final NwbRoadSectionCrudService roadSectionService;
+
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
+
     private final NetworkMetaDataService networkMetaDataService;
+
     private final CrsTransformer crsTransformer;
+
     private final NetworkGraphHopper networkGraphHopper;
 
     public List<TrafficSignSnap> map(List<TrafficSign> trafficSigns, AccessibilityRequest accessibilityRequest) {
 
-        return trafficSigns
-                .stream()
+        return trafficSigns.stream()
                 .filter(trafficSign -> applyTimeWindowedSignFilter(accessibilityRequest, trafficSign))
-                .map(trafficSign ->  findClosestPointOnNetwork(trafficSign)
+                .map(trafficSign -> findClosestSnapOnNetwork(trafficSign)
                         .map(snap -> TrafficSignSnap
                                 .builder()
                                 .trafficSign(trafficSign)
@@ -50,23 +53,23 @@ public class TrafficSignSnapMapper {
                 .toList();
     }
 
-    private Optional<Snap> findClosestPointOnNetwork(TrafficSign trafficSign) {
+    private Optional<Snap> findClosestSnapOnNetwork(TrafficSign trafficSign) {
 
         int nwbVersion = networkMetaDataService.loadMetaData().nwbVersion();
-        return Optional.ofNullable(roadSectionService.findById(
-                                new Id(nwbVersion, trafficSign.roadSectionId()))
-                        .map(roadSectionDto -> mapToCoordinateAndBearing(trafficSign, roadSectionDto))
-                        .orElseGet(() -> logWarningAndReturnNull(trafficSign, nwbVersion)))
-                .map(coordinateAndBearing -> toSnap(trafficSign, coordinateAndBearing, nwbVersion));
-    }
 
-    private CoordinateAndBearing logWarningAndReturnNull(TrafficSign trafficSign, int nwbVersion) {
+        Optional<NwbRoadSectionDto> foundRoadSection = roadSectionService
+                .findById(new Id(nwbVersion, trafficSign.roadSectionId()));
 
-        log.warn("No road section present for traffic sign id {} with road section id {} for nwb map version {} "
-                        + "in the NWB road section database",
-                trafficSign.externalId(), trafficSign.roadSectionId(), nwbVersion);
-
-        return null;
+        if (foundRoadSection.isPresent()) {
+            return foundRoadSection
+                    .map(roadSectionDto -> mapToCoordinateAndBearing(trafficSign, roadSectionDto))
+                    .map(coordinateAndBearing -> buildSnap(trafficSign, coordinateAndBearing, nwbVersion));
+        } else {
+            log.warn("No road section present for traffic sign id {} with road section id {} for nwb map version {} "
+                            + "in the NWB road section database",
+                    trafficSign.externalId(), trafficSign.roadSectionId(), nwbVersion);
+            return Optional.empty();
+        }
     }
 
     private CoordinateAndBearing mapToCoordinateAndBearing(TrafficSign trafficSign, NwbRoadSectionDto roadSectionDto) {
@@ -79,7 +82,7 @@ public class TrafficSignSnapMapper {
                 lineStringWgs84, trafficSign.fraction());
     }
 
-    private Snap toSnap(TrafficSign trafficSign, CoordinateAndBearing coordinateAndBearing, int nwbVersion) {
+    private Snap buildSnap(TrafficSign trafficSign, CoordinateAndBearing coordinateAndBearing, int nwbVersion) {
 
         Snap snap = networkGraphHopper.getLocationIndex()
                 .findClosest(
@@ -106,7 +109,7 @@ public class TrafficSignSnapMapper {
      * lane. If we one hava a graph that contains only road sections accessible by motorized vehicles it will be linked
      * to the closest road and thus will be placed incorrectly. That is why we check this.
      *
-     * @param trafficSign - The traffic sign to compare to
+     * @param trafficSign       - The traffic sign to compare to
      * @param edgeIteratorState - The edge that it should be linked up with.
      * @return - True if they match, false if they don't.
      */
