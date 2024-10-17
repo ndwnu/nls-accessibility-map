@@ -66,8 +66,7 @@ public class AccessibilityService {
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
 
-        OffsetDateTime startTime = OffsetDateTime.now();
-
+        OffsetDateTime startTime = clockService.now();
         List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
         Point startPoint = createPoint(
                 accessibilityRequest.getStartLocationLatitude(),
