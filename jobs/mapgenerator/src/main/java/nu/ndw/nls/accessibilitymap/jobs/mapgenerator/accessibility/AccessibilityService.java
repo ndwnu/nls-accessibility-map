@@ -47,7 +47,7 @@ public class AccessibilityService {
 
     private final NetworkGraphHopper networkGraphHopper;
 
-    private final VehicleRestrictionsModelFactory modelFactory;
+    private final VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory;
 
     private final TrafficSignDataService trafficSignDataService;
 
@@ -151,7 +151,7 @@ public class AccessibilityService {
     private Weighting buildWeighting(VehicleProperties vehicleProperties) {
 
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-        CustomModel model = modelFactory.getModel(vehicleProperties);
+        CustomModel model = vehicleRestrictionsModelFactory.getModel(vehicleProperties);
         PMap hints = new PMap().putObject(CustomModel.KEY, model);
 
         return networkGraphHopper.createWeighting(profile, hints);
