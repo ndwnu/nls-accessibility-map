@@ -6,12 +6,12 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>3.0.24</version>
+        <version>3.0.25-SNAPSHOT</version>
     </parent>
 
     <artifactId>backend</artifactId>
 
-    <version>3.0.24</version>
+    <version>3.0.25-SNAPSHOT</version>
     <name>NLS Accessibility Map Backend</name>
 
     <description>Accessibility Map REST API</description>
