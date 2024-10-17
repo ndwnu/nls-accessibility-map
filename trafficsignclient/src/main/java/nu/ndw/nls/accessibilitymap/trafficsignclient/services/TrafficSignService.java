@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.services;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,12 @@ public class TrafficSignService {
 
     private final TrafficSignProperties trafficSignProperties;
 
-    public TrafficSignData getTrafficSigns(Set<String> rvvCodes, Set<Integer> roadSectionIds) {
+    public TrafficSignData getTrafficSigns(Set<String> rvvCodes) {
+
+        return getTrafficSigns(rvvCodes, Collections.emptySet());
+    }
+
+    public TrafficSignData getTrafficSigns(Set<String> rvvCodes, Set<Long> roadSectionIds) {
         MaxNwbVersionTracker maxNwbVersionTracker = new MaxNwbVersionTracker();
 
         Map<Long, List<TrafficSignGeoJsonDto>> trafficSigns;
@@ -40,10 +46,19 @@ public class TrafficSignService {
         return new TrafficSignData(trafficSigns, maxNwbVersionTracker.getMaxNwbReferenceDate(), fetchTimestamp);
     }
 
-    private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodesAndRoadSectionIds(Set<String> rvvCodes,
-            Set<Integer> roadSectionIds) {
-        return trafficSignRepository.findCurrentState(CurrentStateStatus.PLACED, rvvCodes, roadSectionIds,
-                trafficSignProperties.getApi().getTownCodes()).getFeatures().stream();
+    private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodesAndRoadSectionIds(
+            Set<String> rvvCodes,
+            Set<Long> roadSectionIds) {
+
+        Set<String> townCodes = trafficSignProperties.getApi().getTownCodes();
+
+        return trafficSignRepository.findCurrentState(
+                CurrentStateStatus.PLACED,
+                        rvvCodes,
+                        roadSectionIds.isEmpty() ? null : roadSectionIds,
+                        townCodes.isEmpty() ? null : townCodes)
+                .getFeatures().stream();
+
     }
 
     private boolean hasRoadSectionId(TrafficSignGeoJsonDto t) {

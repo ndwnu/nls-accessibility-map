@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility;
 
+import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
@@ -38,5 +39,10 @@ public class AccessibilityConfiguration {
     @Bean
     public EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor() {
         return new EdgeIteratorStateReverseExtractor();
+    }
+
+    @Bean
+    public EncodingManager encodingManger(NetworkGraphHopper networkGraphHopper) {
+        return networkGraphHopper.getEncodingManager();
     }
 }

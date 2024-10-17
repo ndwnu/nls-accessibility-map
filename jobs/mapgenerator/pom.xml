@@ -83,8 +83,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.skyscreamer</groupId>
-            <artifactId>jsonassert</artifactId>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit-assertj</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -151,6 +151,38 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-test-source</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/test-integration/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-test-resource</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>add-test-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/test-integration/resources</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -259,7 +291,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C6</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C6 --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
@@ -274,7 +306,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C7</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C7 --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
@@ -289,7 +321,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C7B</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C7B --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
@@ -304,7 +336,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C12</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C12 --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>
@@ -319,7 +351,7 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>-e</argument>
-                                        <argument>COMMAND=generateGeoJson C22C</argument>
+                                        <argument>COMMAND=generateGeoJson --traffic-sign=C22C --include-only-time-windowed-signs --publish-events</argument>
                                         <argument>nls-accessibility-map-generator-jobs</argument>
                                     </arguments>
                                 </configuration>

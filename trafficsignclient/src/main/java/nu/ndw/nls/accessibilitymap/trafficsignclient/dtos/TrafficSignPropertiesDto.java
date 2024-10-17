@@ -7,12 +7,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class TrafficSignPropertiesDto {
 
     private String externalId;
@@ -22,9 +24,10 @@ public class TrafficSignPropertiesDto {
     private String blackCode;
     private String zoneCode;
     private TrafficSignStatusType status;
-    private List<TextSignDto> textSigns;
+    private List<TextSign> textSigns;
 
     // Location
+    private Geometry geometry;
     private PlacementType placement;
     private LocationSideType side;
     private Integer bearing;
