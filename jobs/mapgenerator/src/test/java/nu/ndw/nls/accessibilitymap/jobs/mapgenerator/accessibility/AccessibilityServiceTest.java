@@ -58,6 +58,7 @@ class AccessibilityServiceTest {
     private static final int MUNICIPALITY_ID = 11;
     private static final int TRAFFIC_SIGN_ID = 345;
     private static final double SEARCH_DISTANCE_IN_METRES = 200D;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -68,7 +69,7 @@ class AccessibilityServiceTest {
     private NetworkGraphHopper networkGraphHopper;
 
     @Mock
-    private VehicleRestrictionsModelFactory modelFactory;
+    private VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory;
 
     @Mock
     private TrafficSignDataService trafficSignDataService;
@@ -115,7 +116,6 @@ class AccessibilityServiceTest {
     @Mock
     private Profile profile;
 
-
     @Mock
     private CustomModel modelNoRestrictions;
 
@@ -152,15 +152,14 @@ class AccessibilityServiceTest {
     @Captor
     private ArgumentCaptor<IsochroneArguments> isochroneArgumentsArgumentCaptor;
 
-
     private AccessibilityService accessibilityService;
 
     @BeforeEach
     void setUp() {
 
-        accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper, modelFactory,
-                trafficSignDataService, geometryFactoryWgs84, roadSectionMapper, roadSectionCombinator, clockService,
-                trafficSingSnapMapper, queryGraphFactory);
+        accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper,
+                vehicleRestrictionsModelFactory, trafficSignDataService, geometryFactoryWgs84, roadSectionMapper,
+                roadSectionCombinator, clockService, trafficSingSnapMapper, queryGraphFactory);
     }
 
     @Test
@@ -183,32 +182,28 @@ class AccessibilityServiceTest {
                 .includeOnlyTimeWindowedSigns(true)
                 .build();
         mockTrafficSignData();
-        // Latitude is the Y axis, longitude is the X axis.
+
         when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
         when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
-        when(locationIndexTree.findClosest(START_LOCATION_LATITUDE, START_LOCATION_LONGITUDE,
+        when(locationIndexTree.findClosest(
+                START_LOCATION_LATITUDE,
+                START_LOCATION_LONGITUDE,
                 EdgeFilter.ALL_EDGES)).thenReturn(startSegmentSnap);
-        when(trafficSingSnapMapper.map(List.of(trafficSign),
-                true))
+        when(trafficSingSnapMapper.map(List.of(trafficSign), true))
                 .thenReturn(List.of(trafficSignSnap));
         when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture()))
                 .thenReturn(startPoint);
         when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap))
                 .thenReturn(queryGraph);
-        when(networkGraphHopper
-                .getProfile(NetworkConstants.VEHICLE_NAME_CAR))
-                .thenReturn(profile);
-        when(modelFactory.getModel(isNull())).thenReturn(modelNoRestrictions);
-        when(modelFactory.getModel(vehicleProperties)).thenReturn(modelRestrictions);
-        when(networkGraphHopper.createWeighting(eq(profile), hintArgumentCaptor.capture()))
-                .thenReturn(weightingNoRestrictions)
-                .thenReturn(weightingRestrictions);
-        when(isochroneService
-                .getIsochroneMatchesByMunicipalityId(isochroneArgumentsArgumentCaptor.capture(),
-                        eq(queryGraph),
-                        eq(startSegmentSnap)))
+
+        mockWeighting(vehicleProperties);
+
+        when(isochroneService.getIsochroneMatchesByMunicipalityId(
+                isochroneArgumentsArgumentCaptor.capture(),
+                eq(queryGraph),
+                eq(startSegmentSnap)))
                 .thenReturn(List.of(isochroneMatchNoRestriction))
                 .thenReturn(List.of(isochroneMatchRestriction));
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchNoRestriction),
@@ -225,39 +220,48 @@ class AccessibilityServiceTest {
 
         Accessibility result = accessibilityService.calculateAccessibility(accessibilityRequest);
 
-        Accessibility expected = Accessibility
-                .builder()
+        assertThat(result).isEqualTo(Accessibility.builder()
                 .combinedAccessibility(List.of(roadSectionCombined))
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
                 .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .build();
+                .build());
 
-        assertThat(result).isEqualTo(expected);
         Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
         assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
         assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
+
         List<PMap> hints = hintArgumentCaptor.getAllValues();
         assertThat(hints).hasSize(2);
         assertThat(hints.getFirst().toMap().get(CustomModel.KEY)).isEqualTo(modelNoRestrictions);
         assertThat(hints.getLast().toMap().get(CustomModel.KEY)).isSameAs(modelRestrictions);
+
         List<IsochroneArguments> isochroneArguments = isochroneArgumentsArgumentCaptor.getAllValues();
         assertThat(hints).hasSize(2);
-        assertThat(isochroneArguments.getFirst())
-                .isEqualTo(IsochroneArguments.builder()
-                        .weighting(weightingNoRestrictions)
-                        .startPoint(startPoint)
-                        .municipalityId(MUNICIPALITY_ID)
-                        .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES).build());
+        assertIsochroneArgument(isochroneArguments.getFirst(), weightingNoRestrictions);
+        assertIsochroneArgument(isochroneArguments.getLast(), weightingRestrictions);
+    }
 
-        assertThat(isochroneArguments.getLast())
+    private void mockWeighting(VehicleProperties vehicleProperties) {
+
+        when(networkGraphHopper
+                .getProfile(NetworkConstants.VEHICLE_NAME_CAR))
+                .thenReturn(profile);
+
+        when(vehicleRestrictionsModelFactory.getModel(isNull())).thenReturn(modelNoRestrictions);
+        when(vehicleRestrictionsModelFactory.getModel(vehicleProperties)).thenReturn(modelRestrictions);
+        when(networkGraphHopper.createWeighting(eq(profile), hintArgumentCaptor.capture()))
+                .thenReturn(weightingNoRestrictions)
+                .thenReturn(weightingRestrictions);
+    }
+
+    private void assertIsochroneArgument(IsochroneArguments isochroneArguments, Weighting weightingRestrictions) {
+        assertThat(isochroneArguments)
                 .isEqualTo(IsochroneArguments.builder()
                         .weighting(weightingRestrictions)
                         .startPoint(startPoint)
                         .municipalityId(MUNICIPALITY_ID)
                         .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
                         .build());
-
-
     }
 
     private void mockTrafficSignData() {
