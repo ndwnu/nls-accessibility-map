@@ -60,6 +60,7 @@ class AccessibilityServiceTest {
     private static final int MUNICIPALITY_ID = 11;
     private static final int TRAFFIC_SIGN_ID = 345;
     private static final double SEARCH_DISTANCE_IN_METRES = 200D;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -70,7 +71,7 @@ class AccessibilityServiceTest {
     private NetworkGraphHopper networkGraphHopper;
 
     @Mock
-    private VehicleRestrictionsModelFactory modelFactory;
+    private VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory;
 
     @Mock
     private TrafficSignDataService trafficSignDataService;
@@ -152,9 +153,9 @@ class AccessibilityServiceTest {
     @BeforeEach
     void setUp() {
 
-        accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper, modelFactory,
-                trafficSignDataService, geometryFactoryWgs84, roadSectionMapper, roadSectionCombinator, clockService,
-                trafficSingSnapMapper, queryGraphFactory);
+        accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper,
+                vehicleRestrictionsModelFactory, trafficSignDataService, geometryFactoryWgs84, roadSectionMapper,
+                roadSectionCombinator, clockService, trafficSingSnapMapper, queryGraphFactory);
     }
 
     @Test
@@ -163,10 +164,12 @@ class AccessibilityServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.MIN)
                 .thenReturn(OffsetDateTime.MIN.plusMinutes(1).plusNanos(1000));
+
         VehicleProperties vehicleProperties = VehicleProperties
                 .builder()
                 .motorVehicleAccessForbiddenWt(true)
                 .build();
+
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startLocationLatitude(START_LOCATION_LATITUDE)
                 .startLocationLongitude(START_LOCATION_LONGITUDE)
@@ -176,8 +179,10 @@ class AccessibilityServiceTest {
                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
                 .includeOnlyTimeWindowedSigns(true)
                 .build();
+
         mockTrafficSignData();
-        // Latitude is the Y axis, longitude is the X axis.
+        mockWeighting(vehicleProperties);
+
         when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
         when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
@@ -191,22 +196,6 @@ class AccessibilityServiceTest {
                 .thenReturn(startPoint);
         when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap))
                 .thenReturn(queryGraph);
-        when(networkGraphHopper
-                .getProfile(NetworkConstants.VEHICLE_NAME_CAR))
-                .thenReturn(profile);
-
-        when(modelFactory.getModel(isNull()))
-                .thenReturn(modelNoRestrictions);
-        when(modelFactory.getModel(vehicleProperties))
-                .thenReturn(modelRestrictions);
-
-        when(networkGraphHopper.createWeighting(eq(profile),
-                argThat(new PMapArgumentMatcher(new PMap().putObject(CustomModel.KEY, modelNoRestrictions)))))
-                .thenReturn(weightingNoRestrictions);
-
-        when(networkGraphHopper.createWeighting(eq(profile),
-                argThat(new PMapArgumentMatcher(new PMap().putObject(CustomModel.KEY, modelRestrictions)))))
-                .thenReturn(weightingRestrictions);
 
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
@@ -263,12 +252,32 @@ class AccessibilityServiceTest {
         assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
     }
 
+    private void mockWeighting(VehicleProperties vehicleProperties) {
+
+        when(networkGraphHopper
+                .getProfile(NetworkConstants.VEHICLE_NAME_CAR))
+                .thenReturn(profile);
+
+        when(vehicleRestrictionsModelFactory.getModel(isNull())).thenReturn(modelNoRestrictions);
+        when(vehicleRestrictionsModelFactory.getModel(vehicleProperties)).thenReturn(modelRestrictions);
+
+        when(networkGraphHopper.createWeighting(
+                eq(profile),
+                argThat(new PMapArgumentMatcher(new PMap().putObject(CustomModel.KEY, modelNoRestrictions)))))
+                .thenReturn(weightingNoRestrictions);
+
+        when(networkGraphHopper.createWeighting(
+                eq(profile),
+                argThat(new PMapArgumentMatcher(new PMap().putObject(CustomModel.KEY, modelRestrictions)))))
+                .thenReturn(weightingRestrictions);
+    }
+
     private void mockTrafficSignData() {
+
         when(trafficSignDataService.findAllByType(TrafficSignType.C12))
                 .thenReturn(List.of(trafficSign));
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID);
         when(trafficSignSnap.getTrafficSign()).thenReturn(trafficSign);
-
     }
 
     @Test
@@ -283,17 +292,16 @@ class AccessibilityServiceTest {
         );
     }
 
-
     private record PMapArgumentMatcher(PMap expected) implements ArgumentMatcher<PMap> {
 
         @Override
-        public boolean matches(PMap pMap) {
+        public boolean matches(PMap actual) {
             // Mockito initializes with null value
-            if (pMap == null) {
+            if (actual == null) {
                 return false;
             }
 
-            return expected.toMap().equals(pMap.toMap());
+            return expected.toMap().equals(actual.toMap());
         }
     }
 
@@ -301,13 +309,13 @@ class AccessibilityServiceTest {
             ArgumentMatcher<IsochroneArguments> {
 
         @Override
-        public boolean matches(IsochroneArguments isochroneArguments) {
+        public boolean matches(IsochroneArguments actual) {
             // Mockito initializes with null value
-            if (isochroneArguments == null) {
+            if (actual == null) {
                 return false;
             }
 
-            return expected.equals(isochroneArguments);
+            return expected.equals(actual);
         }
     }
 }
