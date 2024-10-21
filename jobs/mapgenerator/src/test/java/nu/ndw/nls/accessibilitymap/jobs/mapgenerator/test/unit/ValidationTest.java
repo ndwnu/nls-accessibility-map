@@ -10,7 +10,7 @@ import jakarta.validation.ValidatorFactory;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.annotation.Validated;

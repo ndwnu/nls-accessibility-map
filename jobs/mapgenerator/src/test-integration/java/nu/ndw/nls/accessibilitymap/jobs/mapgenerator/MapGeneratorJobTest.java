@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.MapGeneratorJobsIT.TestConfig;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.MapGeneratorJobTest.TestConfig;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubjectType;
 import nu.ndw.nls.events.NlsEventType;
@@ -32,7 +32,7 @@ import org.springframework.util.ResourceUtils;
 @SpringBootTest
 @ContextConfiguration(classes = TestConfig.class)
 @ActiveProfiles(profiles = {"integration-test"})
-class MapGeneratorJobsIT {
+class MapGeneratorJobTest {
 
     private static final String DESTINATION_PATH = "../../map-generation-destination";
 
