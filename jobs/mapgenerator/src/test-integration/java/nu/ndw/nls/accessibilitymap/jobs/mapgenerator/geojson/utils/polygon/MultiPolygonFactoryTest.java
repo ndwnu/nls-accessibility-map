@@ -38,7 +38,7 @@ class MultiPolygonFactoryTest {
         roadSectionFragmentWithAccessibleSegmentsInner.setForwardSegment(
                 buildDirectionSegment(roadSectionFragmentWithAccessibleSegmentsInner, true, 1.25, 1.25, 0.5));
 
-        final var roadSectionFragments = List.of(
+        List<RoadSectionFragment> roadSectionFragments = List.of(
                 roadSectionFragmentWithInaccessibleSegments,
                 roadSectionFragmentWithAccessibleSegmentsInner,
                 roadSectionFragmentWithAccessibleSegmentsOuter);

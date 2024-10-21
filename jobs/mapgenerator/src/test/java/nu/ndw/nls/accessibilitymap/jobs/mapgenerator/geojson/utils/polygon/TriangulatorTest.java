@@ -3,6 +3,8 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.utils.polygon;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+import com.graphhopper.isochrone.algorithm.ReadableQuadEdge;
+import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,9 +32,10 @@ class TriangulatorTest {
                 new Coordinate(2, 2, 0)
         );
 
-        final var result = triangulator.triangulate(coordinates, 0);
+        Collection<ReadableQuadEdge> result = triangulator.triangulate(
+                coordinates, 0);
 
-        final var coordinates2 = result.stream()
+        List<Coordinate> coordinates2 = result.stream()
                 .map(readableQuadEdge -> readableQuadEdge.dest().getCoordinate())
                 .toList();
 
