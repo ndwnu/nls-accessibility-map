@@ -4,7 +4,9 @@ import com.graphhopper.isochrone.algorithm.ReadableQuadEdge;
 import com.graphhopper.isochrone.algorithm.ReadableTriangulation;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.triangulate.ConformingDelaunayTriangulator;
 import org.locationtech.jts.triangulate.ConstraintVertex;
@@ -18,15 +20,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class Triangulator {
 
-    public Collection<ReadableQuadEdge> triangulate(final Collection<Coordinate> sites, final double tolerance) {
+    public Collection<ReadableQuadEdge> triangulate(Collection<Coordinate> sites, double tolerance) {
 
-        final var constraintVertices = sites.stream().map(ConstraintVertex::new).toList();
-        final var conformingDelaunayTriangulator = new ConformingDelaunayTriangulator(constraintVertices, tolerance);
+        List<ConstraintVertex> constraintVertices = sites.stream().map(ConstraintVertex::new).toList();
+
+        ConformingDelaunayTriangulator conformingDelaunayTriangulator =
+                new ConformingDelaunayTriangulator(constraintVertices, tolerance);
         conformingDelaunayTriangulator.setConstraints(new ArrayList<>(), new ArrayList<>());
         conformingDelaunayTriangulator.formInitialDelaunay();
         conformingDelaunayTriangulator.enforceConstraints();
 
-        final var convexHull = conformingDelaunayTriangulator.getConvexHull();
+        Geometry convexHull = conformingDelaunayTriangulator.getConvexHull();
 
         if (!(convexHull instanceof Polygon)) {
             throw new IllegalArgumentException("Too few points found. "
