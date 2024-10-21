@@ -9,6 +9,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.mapper.Ac
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonPolygonWriter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonRoadSectionWriter;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
@@ -22,6 +23,8 @@ public class MapGeneratorService {
     private final AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
 
     private final GeoJsonRoadSectionWriter geoJsonRoadSectionWriter;
+
+    private final GeoJsonPolygonWriter geoJsonPolygonWriter;
 
     private final AccessibilityService accessibilityService;
 
@@ -43,6 +46,7 @@ public class MapGeneratorService {
         log.debug("Found {} with road sections with traffic signs.", roadSectionsWithTrafficSigns);
 
         geoJsonRoadSectionWriter.writeToFile(accessibility, geoGenerationProperties);
+        geoJsonPolygonWriter.writeToFile(accessibility, geoGenerationProperties);
 
         if (geoGenerationProperties.publishEvents()) {
             sendEventGeneratingDone(geoGenerationProperties);

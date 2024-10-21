@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.mockito.Mock;
@@ -64,7 +67,8 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createFeaturesForDirectionalSegment_ok_allRoadSectionsAndTrafficSigns() throws JsonProcessingException {
+    void createLineStringsAndTrafficSignsForDirectionalSegment_ok_allRoadSectionsAndTrafficSigns()
+            throws JsonProcessingException {
 
         prepareDirectionsSegments(true, true, true);
 
@@ -80,7 +84,7 @@ class FeatureBuilderTest {
 
         prepareDependencies(generateConfiguration, true, true, true);
 
-        List<Feature> features = featureBuilder.createFeaturesForDirectionalSegment(
+        List<Feature> features = featureBuilder.createLineStringsAndTrafficSigns(
                 directionalSegmentForward,
                 idSequenceSupplier,
                 generateConfiguration);
@@ -89,7 +93,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createFeaturesForDirectionalSegment_ok_allRoadSectionsAndTrafficSigns_noTrafficSigns()
+    void createLineStringsAndTrafficSignsForDirectionalSegment_ok_allRoadSectionsAndTrafficSigns_noTrafficSigns()
             throws JsonProcessingException {
 
         prepareDirectionsSegments(true, true, false);
@@ -106,7 +110,7 @@ class FeatureBuilderTest {
 
         prepareDependencies(generateConfiguration, true, false, false);
 
-        List<Feature> features = featureBuilder.createFeaturesForDirectionalSegment(
+        List<Feature> features = featureBuilder.createLineStringsAndTrafficSigns(
                 directionalSegmentForward,
                 idSequenceSupplier,
                 generateConfiguration);
@@ -115,7 +119,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createFeaturesForDirectionalSegment_ok_allRoadSectionsAndTrafficSigns_onlyTrafficSignLineString()
+    void createLineStringsAndTrafficSignsForDirectionalSegment_ok_allRoadSectionsAndTrafficSigns_onlyTrafficSignLineString()
             throws JsonProcessingException {
 
         prepareDirectionsSegments(true, true, true);
@@ -132,7 +136,7 @@ class FeatureBuilderTest {
 
         prepareDependencies(generateConfiguration, true, true, false);
 
-        List<Feature> features = featureBuilder.createFeaturesForDirectionalSegment(
+        List<Feature> features = featureBuilder.createLineStringsAndTrafficSigns(
                 directionalSegmentForward,
                 idSequenceSupplier,
                 generateConfiguration);
@@ -141,7 +145,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createFeaturesForDirectionalSegment_ok_allRoadSectionsAndTrafficSigns_onlyTrafficSignPoint()
+    void createLineStringsAndTrafficSignsForDirectionalSegment_ok_allRoadSectionsAndTrafficSigns_onlyTrafficSignPoint()
             throws JsonProcessingException {
 
         prepareDirectionsSegments(true, true, true);
@@ -158,7 +162,7 @@ class FeatureBuilderTest {
 
         prepareDependencies(generateConfiguration, true, false, true);
 
-        List<Feature> features = featureBuilder.createFeaturesForDirectionalSegment(
+        List<Feature> features = featureBuilder.createLineStringsAndTrafficSigns(
                 directionalSegmentForward,
                 idSequenceSupplier,
                 generateConfiguration);
@@ -168,11 +172,11 @@ class FeatureBuilderTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-           true, true, true
-           true, false, false
-           false, false, false
-           """)
-    void createFeaturesForDirectionalSegment_ok_accessibleInAllAvailableDirections(
+            true, true, true
+            true, false, false
+            false, false, false
+            """)
+    void createLineStringsAndTrafficSigns_ok_accessibleInAllAvailableDirections(
             boolean addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections,
             boolean accessible,
             boolean expectRoadSection) throws JsonProcessingException {
@@ -184,14 +188,15 @@ class FeatureBuilderTest {
                 .addTrafficSignsAsLineStrings(true)
                 .addTrafficSignsAsPoints(true)
                 .addAllRoadSectionFragments(false)
-                .addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections)
+                .addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(
+                        addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections)
                 .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(false)
                 .writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(false)
                 .build();
 
         prepareDependencies(generateConfiguration, expectRoadSection, true, true);
 
-        List<Feature> features = featureBuilder.createFeaturesForDirectionalSegment(
+        List<Feature> features = featureBuilder.createLineStringsAndTrafficSigns(
                 directionalSegmentForward,
                 idSequenceSupplier,
                 generateConfiguration);
@@ -201,11 +206,11 @@ class FeatureBuilderTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-           true, true, false
-           true, false, true
-           false, false, false
-           """)
-    void createFeaturesForDirectionalSegment_ok_NotAccessibleInAllAvailableDirections_blockedInAllDirections(
+            true, true, false
+            true, false, true
+            false, false, false
+            """)
+    void createLineStringsAndTrafficSigns_ok_NotAccessibleInAllAvailableDirections_blockedInAllDirections(
             boolean addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections,
             boolean accessible,
             boolean expectRoadSection) throws JsonProcessingException {
@@ -218,13 +223,14 @@ class FeatureBuilderTest {
                 .addTrafficSignsAsPoints(true)
                 .addAllRoadSectionFragments(false)
                 .addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(false)
-                .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections)
+                .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(
+                        addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections)
                 .writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(false)
                 .build();
 
         prepareDependencies(generateConfiguration, expectRoadSection, true, true);
 
-        List<Feature> features = featureBuilder.createFeaturesForDirectionalSegment(
+        List<Feature> features = featureBuilder.createLineStringsAndTrafficSigns(
                 directionalSegmentForward,
                 idSequenceSupplier,
                 generateConfiguration);
@@ -234,12 +240,12 @@ class FeatureBuilderTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-           true, false, true, true, false
-           true, true, false, true, true
-           false, false, true, false, false
-           false, true, false, true, true
-           """)
-    void createFeaturesForDirectionalSegment_ok_partiallyAccessibleSegments(
+            true, false, true, true, false
+            true, true, false, true, true
+            false, false, true, false, false
+            false, true, false, true, true
+            """)
+    void createLineStringsAndTrafficSigns_ok_partiallyAccessibleSegments(
             boolean writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible,
             boolean forwardAccessible,
             boolean backwardAccessible,
@@ -255,18 +261,66 @@ class FeatureBuilderTest {
                 .addAllRoadSectionFragments(false)
                 .addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(false)
                 .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(false)
-                .writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible)
+                .writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible(
+                        writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible)
                 .build();
 
         prepareDependencies(generateConfiguration, true, true, true);
 
-        List<Feature> features = featureBuilder.createFeaturesForDirectionalSegment(
+        List<Feature> features = featureBuilder.createLineStringsAndTrafficSigns(
                 directionalSegmentForward,
                 idSequenceSupplier,
                 generateConfiguration);
 
         validateFeatures(features, roadSectionAccessible, trafficSignAccessible, true, true, true);
     }
+
+    @Test
+    void createPolygon_ok()
+            throws JsonProcessingException {
+
+        Geometry polygonGeometry = mock(Geometry.class);
+        when(polygonGeometry.getCoordinates()).thenReturn(new Coordinate[]{
+                new Coordinate(1, 1, 0),
+                new Coordinate(2, 2, 0),
+        });
+
+        List<TrafficSign> trafficSigns = List.of(TrafficSign.builder()
+                .textSigns(List.of(
+                        TextSign.builder()
+                                .type(TextSignType.EXCLUDING)
+                                .build(),
+                        TextSign.builder()
+                                .type(TextSignType.TIME_PERIOD)
+                                .text("window")
+                                .build()))
+                .build());
+
+        Feature polygonFeature = featureBuilder.createPolygon(
+                polygonGeometry,
+                idSequenceSupplier,
+                trafficSigns);
+
+        assertThatJson(new ObjectMapper().writeValueAsString(polygonFeature))
+                .isEqualTo("""
+                        {
+                           "id":1,
+                           "geometry":{
+                              "coordinates":[[[1.0, 1.0],[2.0, 2.0]]
+                              ],
+                              "type":"Polygon",
+                              "bbox":null
+                           },
+                           "properties":{
+                              "windowTimes":[
+                                 "window"
+                              ]
+                           },
+                           "type":"Feature"
+                        }
+                        """);
+    }
+
 
     private void validateFeatures(
             List<Feature> features,
@@ -449,7 +503,7 @@ class FeatureBuilderTest {
             when(startPoint.getY()).thenReturn(23d);
         }
 
-        if(prepareRoadSection) {
+        if (prepareRoadSection) {
             when(geoJsonLineStringCoordinateMapper.map(directionalSegmentLineString))
                     .thenReturn(List.of(List.of(45d, 56d)));
         }

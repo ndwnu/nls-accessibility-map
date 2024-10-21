@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
