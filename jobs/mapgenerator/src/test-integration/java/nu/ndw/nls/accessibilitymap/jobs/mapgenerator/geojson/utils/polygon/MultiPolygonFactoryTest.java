@@ -100,14 +100,14 @@ class MultiPolygonFactoryTest {
                 .build();
     }
 
-    private Coordinate[] buildRectangle(double squareStartX, double squareStartY, double width, double height) {
+    private Coordinate[] buildRectangle(double startX, double startY, double width, double height) {
 
         return new Coordinate[]{
-                new Coordinate(squareStartX, squareStartY, 0),
-                new Coordinate(squareStartX, squareStartY + height, 0),
-                new Coordinate(squareStartX + width, squareStartY + height, 0),
-                new Coordinate(squareStartX + width, squareStartY, 0),
-                new Coordinate(squareStartX, squareStartY, 0),
+                new Coordinate(startX, startY, 0),
+                new Coordinate(startX, startY + height, 0),
+                new Coordinate(startX + width, startY + height, 0),
+                new Coordinate(startX + width, startY, 0),
+                new Coordinate(startX, startY, 0),
         };
     }
 }
