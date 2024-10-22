@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
@@ -47,13 +48,16 @@ public class FeatureBuilder {
     public Feature createPolygon(
             Geometry polygonGeometry,
             LongSequenceSupplier idSequenceSupplier,
-            List<TrafficSign> relevantTrafficSigns) {
+            List<TrafficSign> relevantTrafficSigns,
+            Set<Long> relevantRoadSectionIds) {
+
         return Feature.builder()
                 .id(idSequenceSupplier.next())
                 .geometry(PolygonGeometry.builder()
                         .coordinates(List.of(convertToListOfCoordinates(polygonGeometry.getCoordinates())))
                         .build())
                 .properties(PolygonProperties.builder()
+                        .inAccessibleRoadSectionIds(relevantRoadSectionIds.stream().sorted().toList())
                         .windowTimes(relevantTrafficSigns.stream()
                                 .map(TrafficSign::findFirstTimeWindowedSign)
                                 .filter(Optional::isPresent)

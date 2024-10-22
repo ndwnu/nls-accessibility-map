@@ -62,7 +62,6 @@ class GeoJsonPolygonWriterTest {
     @Mock
     private Accessibility accessibility;
 
-    @Mock
     private RoadSection roadSection;
 
     @Mock
@@ -99,7 +98,10 @@ class GeoJsonPolygonWriterTest {
             PosixFilePermission.OWNER_READ,
             PosixFilePermission.OWNER_WRITE)
     );
+
     private List<TrafficSign> relevantTrafficSigns;
+
+    private Set<Long> relevantRoadSectionIds;
 
     @BeforeEach
     void setUp() {
@@ -110,6 +112,7 @@ class GeoJsonPolygonWriterTest {
                 .build();
 
         roadSection = RoadSection.builder()
+                .id(1L)
                 .roadSectionFragments(List.of(
                         RoadSectionFragment.builder()
                                 .backwardSegment(DirectionalSegment.builder()
@@ -184,6 +187,12 @@ class GeoJsonPolygonWriterTest {
                 ))
                 .build();
 
+        roadSection.getRoadSectionFragments().forEach(roadSectionFragment -> {
+            roadSectionFragment.setRoadSection(roadSection);
+            roadSectionFragment.getSegments().forEach(directionalSegment -> directionalSegment.setRoadSectionFragment(roadSectionFragment));
+        });
+
+        relevantRoadSectionIds = Set.of(roadSection.getId());
         relevantTrafficSigns = List.of(
                 roadSection.getRoadSectionFragments().getFirst().getForwardSegment().getTrafficSign(),
                 roadSection.getRoadSectionFragments().getFirst().getBackwardSegment().getTrafficSign(),
@@ -232,9 +241,18 @@ class GeoJsonPolygonWriterTest {
             when(geometry2.intersects(lineStringDoesIntersects)).thenReturn(true);
             when(geometry2.intersects(lineStringDoesNotIntersect)).thenReturn(false);
 
-            when(featureBuilder.createPolygon(eq(geometry1), any(LongSequenceSupplier.class), eq(relevantTrafficSigns)))
+            when(featureBuilder.createPolygon(
+                    eq(geometry1),
+                    any(LongSequenceSupplier.class),
+                    eq(relevantTrafficSigns),
+                    eq(relevantRoadSectionIds)))
                     .thenReturn(Feature.builder().id(1).build());
-            when(featureBuilder.createPolygon(eq(geometry2), any(LongSequenceSupplier.class), eq(relevantTrafficSigns)))
+
+            when(featureBuilder.createPolygon(
+                    eq(geometry2),
+                    any(LongSequenceSupplier.class),
+                    eq(relevantTrafficSigns),
+                    eq(relevantRoadSectionIds)))
                     .thenReturn(Feature.builder().id(2).build());
 
             geoJsonPolygonWriter.writeToFile(accessibility, geoGenerationProperties);

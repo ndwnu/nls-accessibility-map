@@ -20,9 +20,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class Triangulator {
 
-    public Collection<ReadableQuadEdge> triangulate(Collection<Coordinate> sites, double tolerance) {
+    public Collection<ReadableQuadEdge> triangulate(Collection<Coordinate> coordinates, double tolerance) {
 
-        List<ConstraintVertex> constraintVertices = sites.stream().map(ConstraintVertex::new).toList();
+        List<ConstraintVertex> constraintVertices = coordinates.stream().map(ConstraintVertex::new).toList();
 
         ConformingDelaunayTriangulator conformingDelaunayTriangulator =
                 new ConformingDelaunayTriangulator(constraintVertices, tolerance);

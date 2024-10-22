@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
@@ -51,7 +52,7 @@ public class GeoJsonConverter {
                             .map(DirectionalSegment::getTrafficSign)
                             .toList();
 
-                    return featureBuilder.createPolygon(geometry, idSequenceSupplier, relevantTrafficSigns);
+                    return featureBuilder.createPolygon(geometry, idSequenceSupplier, relevantTrafficSigns, Set.of());
                 })
                 .toList();
     }

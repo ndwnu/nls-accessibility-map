@@ -33,7 +33,6 @@ public class GeoJsonRoadSectionWriter extends AbstractGeoJsonWriter {
     protected FeatureCollection prepareGeoJsonFeatureCollection(Accessibility accessibility,
             GeoGenerationProperties geoGenerationProperties, LongSequenceSupplier idSequenceSupplier) {
 
-        log.debug("Started building features");
         return FeatureCollection
                 .builder()
                 .features(accessibility.combinedAccessibility().stream()
