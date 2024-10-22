@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.MapGeneratorJobTest.TestConfig;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubjectType;
 import nu.ndw.nls.events.NlsEventType;
@@ -21,6 +23,8 @@ import nu.ndw.nls.springboot.messaging.services.MessageReceiveService.ReceiveKey
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
@@ -75,39 +79,20 @@ class MapGeneratorJobTest {
         verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C22C);
     }
 
-    @Test
-    void geojson_ok_c6Published() throws IOException {
+    @ParameterizedTest
+    @EnumSource(TrafficSignType.class)
+    void geojsonPublished_ok(TrafficSignType trafficSignType) throws IOException {
 
-        verifyGeoJson("c6WindowTimeSegments.geojson");
-    }
-
-    @Test
-    void geojson_ok_c7Published() throws IOException {
-
-        verifyGeoJson("c7WindowTimeSegments.geojson");
-    }
-
-    @Test
-    void geojson_ok_c7bPublished() throws IOException {
-
-        verifyGeoJson("c7bWindowTimeSegments.geojson");
-    }
-
-    @Test
-    void geojson_ok_c12Published() throws IOException {
-
-        verifyGeoJson("c12WindowTimeSegments.geojson");
-    }
-
-    @Test
-    void geojson_ok_c22cPublished() throws IOException {
-
-        verifyGeoJson("c22cWindowTimeSegments.geojson");
+        verifyGeoJson(trafficSignType.name().toLowerCase().concat("WindowTimeSegments.geojson"));
+        verifyGeoJson(trafficSignType.name().toLowerCase().concat("WindowTimeSegments-polygon.geojson"));
     }
 
     private void verifyGeoJson(String geojsonFileName) throws IOException {
         Path geojsonFilePath = formatGeneratedWindowTimesPath(geojsonFileName);
-        assertTrue(Files.exists(geojsonFilePath), "GeoJson file must exist");
+        assertThat(Files.exists(geojsonFilePath))
+                .isTrue()
+                .withFailMessage("GeoJson file does not exist");
+
         assertTrue(Files.size(geojsonFilePath) > 0, "GeoJson file must not be 0 bytes");
 
         String actualJson = Files.readString(geojsonFilePath);
