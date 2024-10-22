@@ -30,7 +30,7 @@ public final class DirectionalSegment {
     private final LineString lineString;
 
     @NotNull
-    private final RoadSectionFragment roadSectionFragment;
+    private RoadSectionFragment roadSectionFragment;
 
     @Valid
     private final TrafficSign trafficSign;

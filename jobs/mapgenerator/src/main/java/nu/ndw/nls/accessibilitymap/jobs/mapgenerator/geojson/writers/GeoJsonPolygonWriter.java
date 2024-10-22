@@ -1,6 +1,8 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
@@ -50,9 +52,9 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .toList();
 
-        MultiPolygon multiPolygon = multiPolygonFactory.createMultiPolygon(roadSectionFragments, MAX_DISTANCE_BETWEEN_POINTS);
+        MultiPolygon multiPolygon = multiPolygonFactory.createMultiPolygon(roadSectionFragments,
+                MAX_DISTANCE_BETWEEN_POINTS);
 
-        log.debug("Started building features");
         return FeatureCollection
                 .builder()
                 .features(createFeatures(multiPolygon, idSequenceSupplier, roadSectionFragments))
@@ -69,14 +71,21 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
                 .mapToObj(i -> {
                     Geometry geometry = multiPolygon.getGeometryN(i);
 
-                    List<TrafficSign> relevantTrafficSigns = roadSectionFragments.stream()
+                    List<DirectionalSegment> relevantDirectionalSegment = roadSectionFragments.stream()
                             .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                             .filter(directionalSegment -> geometry.intersects(directionalSegment.getLineString()))
+                            .toList();
+
+                    Set<Long> relevantRoadSectionIds = relevantDirectionalSegment.stream()
+                            .map(directionalSegment -> directionalSegment.getRoadSectionFragment().getRoadSection().getId())
+                            .collect(Collectors.toSet());
+
+                    List<TrafficSign> relevantTrafficSigns = relevantDirectionalSegment.stream()
                             .filter(DirectionalSegment::hasTrafficSign)
                             .map(DirectionalSegment::getTrafficSign)
                             .toList();
 
-                    return featureBuilder.createPolygon(geometry, idSequenceSupplier, relevantTrafficSigns);
+                    return featureBuilder.createPolygon(geometry, idSequenceSupplier, relevantTrafficSigns, relevantRoadSectionIds);
                 })
                 .toList();
     }

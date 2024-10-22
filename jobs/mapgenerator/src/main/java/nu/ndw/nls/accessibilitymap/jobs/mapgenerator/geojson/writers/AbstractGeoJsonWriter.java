@@ -47,10 +47,12 @@ public abstract class AbstractGeoJsonWriter {
         LongSequenceSupplier idSequenceSupplier = new LongSequenceSupplier();
 
         try {
+            log.debug("Started building features");
+            FeatureCollection geoJson = prepareGeoJsonFeatureCollection(accessibility, geoGenerationProperties,
+                    idSequenceSupplier);
+
             log.debug("Started writing geojson to temp file: %s".formatted(tempFile.toAbsolutePath()));
-            getGeoJsonObjectMapper().writeValue(
-                    tempFile.toFile(),
-                    prepareGeoJsonFeatureCollection(accessibility, geoGenerationProperties, idSequenceSupplier));
+            getGeoJsonObjectMapper().writeValue(tempFile.toFile(), geoJson);
         } catch (IOException exception) {
             throw new IllegalStateException("Failed to serialize geojson to file: %s".formatted(tempFile.toAbsolutePath()), exception);
         }

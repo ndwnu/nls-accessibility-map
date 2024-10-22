@@ -129,6 +129,7 @@ class AbstractGeoJsonWriterTest {
             verify(fileService).moveFileAndOverride(exportTmpFilePath, exportFile);
 
             loggerExtension.containsLog(Level.DEBUG, "Started generating geojson");
+            loggerExtension.containsLog(Level.DEBUG, "Started building features");
             loggerExtension.containsLog(Level.DEBUG, "Started writing geojson to temp file: %s".formatted(exportTmpFilePath));
             loggerExtension.containsLog(Level.DEBUG, "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
 

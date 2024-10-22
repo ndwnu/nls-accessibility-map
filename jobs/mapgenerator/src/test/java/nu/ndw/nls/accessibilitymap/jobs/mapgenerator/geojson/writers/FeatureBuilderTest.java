@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
@@ -295,11 +296,13 @@ class FeatureBuilderTest {
                                 .text("window")
                                 .build()))
                 .build());
+        Set<Long> relevantRoadSectionIds = Set.of(1L, 2L, 3L);
 
         Feature polygonFeature = featureBuilder.createPolygon(
                 polygonGeometry,
                 idSequenceSupplier,
-                trafficSigns);
+                trafficSigns,
+                relevantRoadSectionIds);
 
         assertThatJson(new ObjectMapper().writeValueAsString(polygonFeature))
                 .isEqualTo("""
@@ -312,6 +315,7 @@ class FeatureBuilderTest {
                               "bbox":null
                            },
                            "properties":{
+                              "roadSectionIds":[1,2,3],
                               "windowTimes":[
                                  "window"
                               ]
@@ -320,7 +324,6 @@ class FeatureBuilderTest {
                         }
                         """);
     }
-
 
     private void validateFeatures(
             List<Feature> features,
