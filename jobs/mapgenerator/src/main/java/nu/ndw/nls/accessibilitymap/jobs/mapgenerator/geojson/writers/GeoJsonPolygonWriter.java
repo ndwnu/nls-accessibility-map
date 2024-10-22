@@ -23,11 +23,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
 
+    private static final double MAX_DISTANCE_BETWEEN_POINTS = 0.0005;
+
     private final MultiPolygonFactory multiPolygonFactory;
 
     private final FeatureBuilder featureBuilder;
-
-    private static final double MAX_DISTANCE_BETWEEN_POINTS = 0.0005;
 
     public GeoJsonPolygonWriter(
             FileService fileService,
@@ -77,7 +77,8 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
                             .toList();
 
                     Set<Long> relevantRoadSectionIds = relevantDirectionalSegment.stream()
-                            .map(directionalSegment -> directionalSegment.getRoadSectionFragment().getRoadSection().getId())
+                            .map(directionalSegment ->
+                                    directionalSegment.getRoadSectionFragment().getRoadSection().getId())
                             .collect(Collectors.toSet());
 
                     List<TrafficSign> relevantTrafficSigns = relevantDirectionalSegment.stream()
@@ -85,7 +86,11 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
                             .map(DirectionalSegment::getTrafficSign)
                             .toList();
 
-                    return featureBuilder.createPolygon(geometry, idSequenceSupplier, relevantTrafficSigns, relevantRoadSectionIds);
+                    return featureBuilder.createPolygon(
+                            geometry,
+                            idSequenceSupplier,
+                            relevantTrafficSigns,
+                            relevantRoadSectionIds);
                 })
                 .toList();
     }
