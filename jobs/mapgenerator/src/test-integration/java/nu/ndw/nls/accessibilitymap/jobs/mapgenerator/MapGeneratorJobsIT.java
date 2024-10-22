@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Map;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.MapGeneratorJobTest.TestConfig;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.MapGeneratorJobsIT.TestConfig;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubjectType;
@@ -36,7 +36,7 @@ import org.springframework.util.ResourceUtils;
 @SpringBootTest
 @ContextConfiguration(classes = TestConfig.class)
 @ActiveProfiles(profiles = {"integration-test"})
-class MapGeneratorJobTest {
+class MapGeneratorJobsIT {
 
     private static final String DESTINATION_PATH = "../../map-generation-destination";
 
