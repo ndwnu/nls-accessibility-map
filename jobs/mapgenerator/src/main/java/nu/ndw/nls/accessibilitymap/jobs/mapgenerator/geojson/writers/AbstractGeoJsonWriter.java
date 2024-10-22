@@ -54,7 +54,8 @@ public abstract class AbstractGeoJsonWriter {
             log.debug("Started writing geojson to temp file: %s".formatted(tempFile.toAbsolutePath()));
             getGeoJsonObjectMapper().writeValue(tempFile.toFile(), geoJson);
         } catch (IOException exception) {
-            throw new IllegalStateException("Failed to serialize geojson to file: %s".formatted(tempFile.toAbsolutePath()), exception);
+            throw new IllegalStateException("Failed to serialize geojson to file: %s"
+                    .formatted(tempFile.toAbsolutePath()), exception);
         }
 
         Path exportFile = geoGenerationProperties.generateConfiguration()
