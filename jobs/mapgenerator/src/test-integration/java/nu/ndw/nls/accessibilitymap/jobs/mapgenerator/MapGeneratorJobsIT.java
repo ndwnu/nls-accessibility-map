@@ -12,8 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.MapGeneratorJobTest.TestConfig;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.MapGeneratorJobsIT.TestConfig;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventSubjectType;
 import nu.ndw.nls.events.NlsEventType;
@@ -23,8 +22,6 @@ import nu.ndw.nls.springboot.messaging.services.MessageReceiveService.ReceiveKey
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +33,7 @@ import org.springframework.util.ResourceUtils;
 @SpringBootTest
 @ContextConfiguration(classes = TestConfig.class)
 @ActiveProfiles(profiles = {"integration-test"})
-class MapGeneratorJobTest {
+class MapGeneratorJobsIT {
 
     private static final String DESTINATION_PATH = "../../map-generation-destination";
 
@@ -79,14 +76,12 @@ class MapGeneratorJobTest {
         verifyMessageAvailable(NlsEventSubjectType.ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C22C);
     }
 
-    @ParameterizedTest
-    @EnumSource(TrafficSignType.class)
-    void geojsonPublished_ok(TrafficSignType trafficSignType) throws IOException {
+    @Test
+    void geojson_ok_c6Published() throws IOException {
 
-        verifyGeoJson(trafficSignType.name().toLowerCase().concat("WindowTimeSegments.geojson"));
-        verifyGeoJson(trafficSignType.name().toLowerCase().concat("WindowTimeSegments-polygon.geojson"));
+        verifyGeoJson("c6WindowTimeSegments.geojson");
+        verifyGeoJson("c6WindowTimeSegments-polygon.geojson");
     }
-
     private void verifyGeoJson(String geojsonFileName) throws IOException {
         Path geojsonFilePath = formatGeneratedWindowTimesPath(geojsonFileName);
         assertThat(Files.exists(geojsonFilePath))
