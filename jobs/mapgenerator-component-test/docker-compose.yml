@@ -1,0 +1,56 @@
+services:
+  whoami:
+    image: traefik/whoami
+    container_name: whoami
+    volumes:
+      - ./folder/:/folder
+
+  nls-accessibility-map-generator-jobs:
+    build: docker/nls-accessibility-map-generator-jobs
+    container_name: nls-accessibility-map-generator-jobs
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - COMMAND=generateGeoJson --traffic-sign=C6 --include-only-time-windowed-signs --publish-events
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
+    volumes:
+      - ./output/graphhopper:/application/graphhopper
+      - ./output/map-generation-destination:/application/maps
+    networks:
+      - nls-accessibility-map-network
+
+  nls-postgres:
+    hostname: nls-postgres
+    build:
+      context: docker/nls-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=nls-maps
+      - POSTGRES_USER=nls-maps
+      - POSTGRES_PASSWORD=nls-maps
+    networks:
+      - nls-accessibility-map-network
+
+  nls-rabbitmq:
+    image: ndwnls.azurecr.io/docker.io/library/rabbitmq:3.8.7-management
+    hostname: nls-rabbitmq
+    container_name: nls-rabbitmq
+    user: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./docker/nls-rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./docker/nls-rabbitmq/load-definitions.json:/etc/rabbitmq/load-definitions.json
+    healthcheck:
+      test: rabbitmqctl status || exit 1
+      interval: 1s
+      timeout: 3s
+      retries: 10
+    networks:
+      - nls-accessibility-map-network
+
+networks:
+  nls-accessibility-map-network:
+    name: nls-accessibility-map-network
