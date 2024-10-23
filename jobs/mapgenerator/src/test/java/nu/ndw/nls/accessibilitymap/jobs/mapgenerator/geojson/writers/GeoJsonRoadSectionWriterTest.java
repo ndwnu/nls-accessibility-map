@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +35,12 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.RoadSectionProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.TrafficSignProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
@@ -81,6 +84,9 @@ class GeoJsonRoadSectionWriterTest {
 
     @Mock
     private Path exportFile;
+
+    @RegisterExtension
+    LoggerExtension loggerExtension = new LoggerExtension();
 
     private static final FileAttribute<?> FILE_READ_WRITE_PERMISSIONS = PosixFilePermissions.asFileAttribute(Set.of(
             PosixFilePermission.OWNER_READ,
@@ -135,6 +141,7 @@ class GeoJsonRoadSectionWriterTest {
             when(generateConfiguration.getGenerationDirectoryPath(geoGenerationProperties.startTime()))
                     .thenReturn(exportDirectory);
             when(exportDirectory.resolve(expectedFileName.concat(".geojson"))).thenReturn(exportFile);
+            when(exportFile.toAbsolutePath()).thenReturn(Path.of("/tmp/AbstractGeoJsonWriterTest-exportFile.geojson"));
 
             prepareCreateFeaturesForDirectionalSegment(directionalSegmentForward1, 11, false);
             prepareCreateFeaturesForDirectionalSegment(directionalSegmentBackward1, 12, true);
@@ -195,6 +202,15 @@ class GeoJsonRoadSectionWriterTest {
                             }
                             """);
             verify(fileService).moveFileAndOverride(exportTmpFilePath, exportFile);
+
+            loggerExtension.containsLog(Level.DEBUG, "Started generating geojson");
+            loggerExtension.containsLog(Level.DEBUG, "Started building features");
+            loggerExtension.containsLog(
+                    Level.DEBUG,
+                    "Started writing geojson to temp file: %s".formatted(exportTmpFilePath));
+            loggerExtension.containsLog(
+                    Level.DEBUG,
+                    "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }
@@ -217,17 +233,24 @@ class GeoJsonRoadSectionWriterTest {
                     featureBuilder,
                     generateConfiguration,
                     geoJsonObjectMapperFactory
-                    );
+            );
 
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
 
-            doThrow(new IOException("some exception")).when(goeJsonObjectMapper).writeValue(any(File.class), any(Object.class));
+            doThrow(new IOException("some exception")).when(goeJsonObjectMapper)
+                    .writeValue(any(File.class), any(Object.class));
             prepareCreateFeaturesForDirectionalSegment(directionalSegmentForward1, 11, false);
 
-            assertThat(catchThrowable(() -> geoJsonRoadSectionWriter.writeToFile(accessibility, geoGenerationProperties)))
+            assertThat(
+                    catchThrowable(() -> geoJsonRoadSectionWriter.writeToFile(accessibility, geoGenerationProperties)))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessage("Failed to serialize geojson to file: %s".formatted(exportTmpFilePath));
+
+            loggerExtension.containsLog(Level.DEBUG, "Started generating geojson");
+            loggerExtension.containsLog(
+                    Level.DEBUG,
+                    "Started writing geojson to temp file: %s".formatted(exportTmpFilePath));
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }
@@ -236,7 +259,7 @@ class GeoJsonRoadSectionWriterTest {
     private void prepareCreateFeaturesForDirectionalSegment(DirectionalSegment directionalSegmentForward1, int id,
             boolean simpleFeatures) {
 
-        when(featureBuilder.createFeaturesForDirectionalSegment(
+        when(featureBuilder.createLineStringsAndTrafficSigns(
                 eq(directionalSegmentForward1),
                 any(LongSequenceSupplier.class),
                 eq(generateConfiguration))

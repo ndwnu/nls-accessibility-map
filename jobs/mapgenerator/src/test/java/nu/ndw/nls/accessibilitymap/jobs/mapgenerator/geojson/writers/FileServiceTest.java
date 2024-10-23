@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

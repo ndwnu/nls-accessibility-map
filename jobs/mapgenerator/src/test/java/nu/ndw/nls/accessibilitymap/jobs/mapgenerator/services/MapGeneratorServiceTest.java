@@ -20,9 +20,10 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragmen
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonPolygonWriter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonRoadSectionWriter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.AnnotationUtil;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +42,9 @@ class MapGeneratorServiceTest {
     private AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
 
     @Mock
-    private GeoJsonRoadSectionWriter outputWriter;
+    private GeoJsonPolygonWriter geoJsonPolygonWriter;
+    @Mock
+    private GeoJsonRoadSectionWriter geoJsonRoadSectionWriter;
 
     @Mock
     private AccessibilityService accessibilityService;
@@ -83,7 +86,8 @@ class MapGeneratorServiceTest {
 
         mapGeneratorService = new MapGeneratorService(
                 accessibilityGeoJsonGeneratedEventMapper,
-                outputWriter,
+                geoJsonRoadSectionWriter,
+                geoJsonPolygonWriter,
                 accessibilityService,
                 messageService,
                 accessibilityRequestMapper
@@ -126,7 +130,8 @@ class MapGeneratorServiceTest {
 
         mapGeneratorService.generate(geoGenerationProperties);
 
-        verify(outputWriter).writeToFile(accessibility, geoGenerationProperties);
+        verify(geoJsonRoadSectionWriter).writeToFile(accessibility, geoGenerationProperties);
+        verify(geoJsonPolygonWriter).writeToFile(accessibility, geoGenerationProperties);
         verify(messageService).publish(nlsEvent);
 
         loggerExtension.containsLog(
@@ -148,7 +153,8 @@ class MapGeneratorServiceTest {
 
         mapGeneratorService.generate(geoGenerationProperties);
 
-        verify(outputWriter).writeToFile(accessibility, geoGenerationProperties);
+        verify(geoJsonRoadSectionWriter).writeToFile(accessibility, geoGenerationProperties);
+        verify(geoJsonPolygonWriter).writeToFile(accessibility, geoGenerationProperties);
         verifyNoMoreInteractions(messageService);
 
         loggerExtension.containsLog(

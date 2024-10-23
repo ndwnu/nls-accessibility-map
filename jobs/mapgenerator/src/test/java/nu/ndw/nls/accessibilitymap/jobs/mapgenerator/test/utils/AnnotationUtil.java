@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util;
+package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;

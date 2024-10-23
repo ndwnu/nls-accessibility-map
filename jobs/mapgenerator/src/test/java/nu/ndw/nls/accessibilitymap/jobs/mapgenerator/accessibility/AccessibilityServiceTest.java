@@ -33,8 +33,8 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.Traffi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphFactory;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.AnnotationUtil;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
