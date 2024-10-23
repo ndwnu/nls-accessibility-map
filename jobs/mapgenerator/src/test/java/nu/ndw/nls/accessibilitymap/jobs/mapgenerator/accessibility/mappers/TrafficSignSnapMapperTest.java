@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;

@@ -1,7 +1,10 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
@@ -9,12 +12,16 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.Traffi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.PointGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.PolygonGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.PolygonProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.RoadSectionProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.TrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +32,7 @@ public class FeatureBuilder {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
-    public List<Feature> createFeaturesForDirectionalSegment(
+    public List<Feature> createLineStringsAndTrafficSigns(
             DirectionalSegment directionalSegment,
             LongSequenceSupplier idSequenceSupplier,
             GenerateConfiguration generateConfiguration) {
@@ -36,6 +43,31 @@ public class FeatureBuilder {
         addTrafficSigns(directionalSegment, idSequenceSupplier, generateConfiguration, features);
 
         return features;
+    }
+
+    public Feature createPolygon(
+            Geometry polygonGeometry,
+            LongSequenceSupplier idSequenceSupplier,
+            List<TrafficSign> relevantTrafficSigns,
+            Set<Long> relevantRoadSectionIds) {
+
+        return Feature.builder()
+                .id(idSequenceSupplier.next())
+                .geometry(PolygonGeometry.builder()
+                        .coordinates(List.of(convertToListOfCoordinates(polygonGeometry.getCoordinates())))
+                        .build())
+                .properties(PolygonProperties.builder()
+                        .inAccessibleRoadSectionIds(relevantRoadSectionIds.stream().sorted().toList())
+                        .windowTimes(relevantTrafficSigns.stream()
+                                .map(TrafficSign::findFirstTimeWindowedSign)
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .map(TextSign::getText)
+                                .distinct()
+                                .toList()
+                        )
+                        .build())
+                .build();
     }
 
     private void addTrafficSigns(
@@ -84,6 +116,13 @@ public class FeatureBuilder {
                 }
             }
         }
+    }
+
+    private List<List<Double>> convertToListOfCoordinates(Coordinate[] coordinates) {
+
+        return Arrays.stream(coordinates)
+                .map(coordinate -> List.of(coordinate.x, coordinate.y))
+                .toList();
     }
 
     private Feature buildTrafficSignAsPoint(

@@ -26,7 +26,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.LoggerExtension;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

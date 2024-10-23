@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.util.AnnotationUtil;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.AnnotationUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;

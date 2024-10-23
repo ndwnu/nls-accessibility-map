@@ -26,12 +26,14 @@ public record TrafficSign(
         @NotNull List<TextSign> textSigns) {
 
     public boolean hasTimeWindowedSign() {
+
         return textSigns
                 .stream()
                 .anyMatch(TextSign::hasWindowTime);
     }
 
     public Optional<TextSign> findFirstTimeWindowedSign() {
+
         return textSigns
                 .stream()
                 .filter(TextSign::hasWindowTime)
