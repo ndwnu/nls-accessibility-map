@@ -1,0 +1,10 @@
+nu:
+  ndw:
+    nls:
+      test:
+        component:
+          driver:
+            docker:
+              compose-file: "docker-compose.yml"
+            graph-hopper:
+              locationOnDisk: "output/graphhopper"
