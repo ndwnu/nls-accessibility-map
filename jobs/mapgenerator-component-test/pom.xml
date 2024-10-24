@@ -21,8 +21,24 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>nu.ndw.nls.accessibilitymap</groupId>
+            <artifactId>trafficsignclient</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>nu.ndw.nls</groupId>
             <artifactId>routing-map-matcher-library</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -54,6 +70,12 @@
             </exclusions>
         </dependency>
 
+        <!-- Dependencies for testing -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
