@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ProcessManager implements StateManagement {
@@ -40,6 +42,7 @@ public class ProcessManager implements StateManagement {
         ProcessBuilder builder = new ProcessBuilder();
         builder.command(command);
 
+        log.debug("Starting process: {}", String.join(" ", command));
         try {
             Process process = builder.start();
             startedProcesses.add(process);
@@ -68,10 +71,10 @@ public class ProcessManager implements StateManagement {
         try {
             int exitCode = process.waitFor();
             assertThat(exitCode)
-                    .isZero()
                     .withFailMessage(
-                            "Process not successfully finished. Exit code %s. Command: %s. Check console for errors."
-                                    .formatted(process.exitValue(), command));
+                            "Process not successfully finished. Exit code %s. Command: '%s'. Check console for errors."
+                                    .formatted(process.exitValue(), command))
+                    .isZero();
         } catch (InterruptedException interruptedException) {
             fail(interruptedException);
         }

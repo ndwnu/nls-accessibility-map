@@ -8,11 +8,11 @@ services:
   nls-accessibility-map-generator-jobs:
     build: docker/nls-accessibility-map-generator-jobs
     container_name: nls-accessibility-map-generator-jobs
+    ports:
+      - "5005:5005"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - COMMAND=generateGeoJson --traffic-sign=C6 --include-only-time-windowed-signs --publish-events
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
       - ./output/graphhopper:/application/graphhopper
       - ./output/map-generation-destination:/application/maps
@@ -21,6 +21,7 @@ services:
 
   nls-postgres:
     hostname: nls-postgres
+    container_name: nls-postgres
     build:
       context: docker/nls-postgres
     ports:
@@ -29,6 +30,11 @@ services:
       - POSTGRES_DB=nls-maps
       - POSTGRES_USER=nls-maps
       - POSTGRES_PASSWORD=nls-maps
+    healthcheck:
+      test: pg_isready || exit 1
+      interval: 1s
+      timeout: 3s
+      retries: 10
     networks:
       - nls-accessibility-map-network
 
@@ -48,6 +54,15 @@ services:
       interval: 1s
       timeout: 3s
       retries: 10
+    networks:
+      - nls-accessibility-map-network
+
+  nls-wiremock:
+    hostname: traffic-sign-api-stub
+    image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.0.0-1
+    command: --global-response-templating --verbose
+    ports:
+      - "8888:8080"
     networks:
       - nls-accessibility-map-network
 

@@ -1,3 +1,33 @@
+host: "localhost"
+hostWireMock: ${host}
+#hostDatabase: ${host}
+#
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://${hostDatabase}:8100/hedera_agent
+#    username: postgres
+#    password: postgres
+#  jpa:
+#    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+spring:
+  application:
+    name: nls-accessibility-map-generator-jobs-component-test
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: SELECT 1;
+      idle-timeout: 60000
+      max-lifetime: 120000
+      minimum-idle: 1
+      auto-commit: false
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
 nu:
   ndw:
     nls:
@@ -8,3 +38,6 @@ nu:
               compose-file: "docker-compose.yml"
             graph-hopper:
               locationOnDisk: "output/graphhopper"
+            wiremock:
+              host: ${hostWireMock}
+              port: 8888
