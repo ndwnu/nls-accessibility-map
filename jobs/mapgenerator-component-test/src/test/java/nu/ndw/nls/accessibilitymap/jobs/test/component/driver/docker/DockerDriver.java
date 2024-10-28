@@ -22,14 +22,7 @@ public class DockerDriver implements StateManagement {
 
     private final List<String> startedServices = new ArrayList<>();
 
-
-    @Override
-    public void clearStateAfterEachScenario() {
-
-        startedServices.stream().toList().forEach(this::stopService);
-    }
-
-//    public void waitForServiceToBeHealthy(String serviceName) {
+    //    public void waitForServiceToBeHealthy(String serviceName) {
 //
 //        startedServices.add(serviceName);
 //
@@ -41,7 +34,6 @@ public class DockerDriver implements StateManagement {
 //                        serviceName));
 //    }
 
-
     public void startService(String serviceName) {
 
         startedServices.add(serviceName);
@@ -52,7 +44,6 @@ public class DockerDriver implements StateManagement {
                         "up",
                         "-d",
                         serviceName));
-
     }
 
     public void startServiceAndWaitToBeFinished(String serviceName, Mode mode, List<Environment> environmentVariables) {
@@ -79,7 +70,6 @@ public class DockerDriver implements StateManagement {
 
         commandArguments.add(serviceName);
         processManager.startProcessAndWaitToBeFinished(commandArguments);
-
     }
 
     private void stopService(String serviceName) {
@@ -95,4 +85,9 @@ public class DockerDriver implements StateManagement {
         startedServices.remove(serviceName);
     }
 
+    @Override
+    public void clearStateAfterEachScenario() {
+
+        startedServices.stream().toList().forEach(this::stopService);
+    }
 }

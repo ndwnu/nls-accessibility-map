@@ -33,11 +33,22 @@ nu:
     nls:
       test:
         component:
+          general:
+            timeZone: "Europe/Amsterdam"
+            waitForDebuggerToBeConnected: true
           driver:
+            general:
+              debugFolder: ".debug/"
+            maven:
+              rootPomRelativePath: "../../"
+              moduleUnderTest: "jobs/mapgenerator"
             docker:
-              compose-file: "docker-compose.yml"
+              compose-file: "../../docker-compose.yml"
             graph-hopper:
-              locationOnDisk: "output/graphhopper"
+              locationOnDisk: "../../graphhopper"
+            map-generation-job:
+              locationOnDisk: "../../map-generation-destination"
+
             wiremock:
               host: ${hostWireMock}
               port: 8888

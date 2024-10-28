@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.core.process;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,10 @@ public class ProcessManager implements StateManagement {
         return null;
     }
 
-    public Process startProcessAndLog(List<String> command) {
+    @SuppressWarnings("java:S3658")
+    public Process startProcessAndLog(File workingDirectory, List<String> command) {
         ProcessBuilder builder = new ProcessBuilder();
+        builder.directory(workingDirectory);
         builder.command(command);
 
         log.debug("Starting process: {}", String.join(" ", command));
@@ -58,8 +61,8 @@ public class ProcessManager implements StateManagement {
             executorService.submit(errorStreamConsumer);
 
             return process;
-        } catch (IOException ioException) {
-            fail(ioException);
+        } catch (IOException exception) {
+            fail(exception);
         }
 
         return null;
@@ -67,7 +70,13 @@ public class ProcessManager implements StateManagement {
 
     public void startProcessAndWaitToBeFinished(List<String> command) {
 
-        Process process = startProcessAndLog(command);
+        startProcessAndWaitToBeFinished(new File("."), command);
+    }
+
+    @SuppressWarnings("java:S3658")
+    public void startProcessAndWaitToBeFinished(File workingDirectory, List<String> command) {
+
+        Process process = startProcessAndLog(workingDirectory, command);
         try {
             int exitCode = process.waitFor();
             assertThat(exitCode)
@@ -75,8 +84,8 @@ public class ProcessManager implements StateManagement {
                             "Process not successfully finished. Exit code %s. Command: '%s'. Check console for errors."
                                     .formatted(process.exitValue(), command))
                     .isZero();
-        } catch (InterruptedException interruptedException) {
-            fail(interruptedException);
+        } catch (InterruptedException exception) {
+            fail(exception);
         }
     }
 
