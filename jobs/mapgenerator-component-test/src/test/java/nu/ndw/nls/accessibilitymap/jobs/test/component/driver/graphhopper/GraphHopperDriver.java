@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
@@ -29,6 +30,8 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.LineStringProperties;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointGeometry;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointNodeProperties;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.Version;
@@ -149,21 +152,34 @@ public class GraphHopperDriver implements StateManagement {
 
         LongSequenceSupplier idSupplier = new LongSequenceSupplier();
         FeatureCollection featureCollection = FeatureCollection.builder()
-                .features(networkData.getLinks().stream()
-                        .map(link -> Feature.builder()
-                                .id(idSupplier.next())
-                                .geometry(LineStringGeometry.builder()
-                                        .coordinates(Arrays.stream(link.getWgs84LineString().getCoordinates()).
-                                                map(coordinate -> List.of(coordinate.getX(), coordinate.getY()))
-                                                .toList())
+                .features(Stream.concat(
+                        networkData.getLinks().stream()
+                                .map(link -> Feature.builder()
+                                        .id(idSupplier.next())
+                                        .geometry(LineStringGeometry.builder()
+                                                .coordinates(Arrays.stream(link.getWgs84LineString().getCoordinates()).
+                                                        map(coordinate -> List.of(coordinate.getX(), coordinate.getY()))
+                                                        .toList())
+                                                .build())
+                                        .properties(LineStringProperties.builder()
+                                                .roadSectionId(link.getAccessibilityLink().getId())
+                                                .fromNodeId(link.getAccessibilityLink().getFromNodeId())
+                                                .toNodeId(link.getAccessibilityLink().getToNodeId())
+                                                .build())
+                                        .build()),
+                        networkData.getNodes().values().stream()
+                                .map(node -> Feature.builder()
+                                        .id(idSupplier.next())
+                                        .geometry(PointGeometry.builder()
+                                                .coordinates(List.of(
+                                                        node.getLatLongAsCoordinate().getX(),
+                                                        node.getLatLongAsCoordinate().getY()))
+                                                .build())
+                                        .properties(PointNodeProperties.builder()
+                                                .nodeId(node.getId())
+                                                .build())
                                         .build())
-                                .properties(LineStringProperties.builder()
-                                        .roadSectionId(link.getAccessibilityLink().getId())
-                                        .fromNodeId(link.getAccessibilityLink().getFromNodeId())
-                                        .toNodeId(link.getAccessibilityLink().getToNodeId())
-                                        .build())
-                                .build())
-                        .toList())
+                ).toList())
                 .build();
 
         try {

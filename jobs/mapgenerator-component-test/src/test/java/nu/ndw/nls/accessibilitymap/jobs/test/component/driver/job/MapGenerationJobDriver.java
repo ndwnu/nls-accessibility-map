@@ -11,6 +11,7 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileDataProvide
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.DockerDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.dto.Environment;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.dto.Mode;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Node;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.configuration.MapGenerationJobDriverConfiguration;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,7 @@ public class MapGenerationJobDriver implements StateManagement {
 
     private boolean lastJobExecutionIncludeOnlyWindowSigns;
 
-    public void runMapGenerationJobDebugMode(String trafficSignType) {
+    public void runMapGenerationJobDebugMode(String trafficSignType, Node startNode) {
 
         lastJobExecutionTrafficSignType = trafficSignType;
         lastJobExecutionIncludeOnlyWindowSigns = true;
@@ -41,8 +42,16 @@ public class MapGenerationJobDriver implements StateManagement {
                 List.of(
                         Environment.builder()
                                 .key("COMMAND")
-                                .value("generateGeoJson --traffic-sign=%s --include-only-time-windowed-signs --publish-events".formatted(
-                                        trafficSignType))
+                                .value(("generateGeoJson "
+                                        + "--traffic-sign=%s "
+                                        + "--include-only-time-windowed-signs "
+                                        + "--publish-events "
+                                        + "--start-location-latitude %s "
+                                        + "--start-location-longitude %s").formatted(
+                                        trafficSignType,
+                                        startNode.getLatitude(),
+                                        startNode.getLongitude()
+                                        ))
                                 .build()));
     }
 
@@ -51,15 +60,13 @@ public class MapGenerationJobDriver implements StateManagement {
         return fileDataProvider.readDataFromFile(
                 "%s/map-generation-destination/v1/windowTimes/%s/geojson".formatted(
                         mapGenerationJobDriverConfiguration.getLocationOnDisk().getAbsolutePath(),
-                        DateTimeFormatter.ofPattern("yyyyMMdd")
-                                .format(OffsetDateTime.now())
+                        DateTimeFormatter.ofPattern("yyyyMMdd").format(OffsetDateTime.now())
                 ),
                 "%s%s".formatted(
                         lastJobExecutionTrafficSignType.toLowerCase(Locale.US),
                         lastJobExecutionIncludeOnlyWindowSigns ? "WindowTimeSegments" : "")
                 ,
                 "geojson");
-
     }
 
     @Override

@@ -8,9 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.trafficsign.TrafficSignDriver;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
@@ -45,10 +45,10 @@ public class TrafficSignStepDefinitions {
 
     private TrafficSignGeoJsonDto createTrafficSigns(long nodeId1, long nodeId2, double fraction, String rvvCode) {
 
-        AccessibilityLink link = networkData.findLinkBetweenNodes(nodeId1, nodeId2);
+        Link link = networkData.findLinkBetweenNodes(nodeId1, nodeId2);
 
         LineString fractionLineString = fractionAndDistanceCalculator.getSubLineString(
-                link.getGeometry(),
+                link.getWgs84LineString(),
                 fraction);
 
         if (fractionLineString.getCoordinates().length != 2) {
@@ -64,7 +64,7 @@ public class TrafficSignStepDefinitions {
                         .fraction(fraction)
                         .rvvCode(rvvCode)
                         .drivingDirection(DirectionType.FORTH)
-                        .roadSectionId(link.getId())
+                        .roadSectionId(link.getAccessibilityLink().getId())
                         .textSigns(List.of(
                                 TextSign.builder()
                                         .type(TextSignType.TIME_PERIOD)

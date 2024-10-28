@@ -47,6 +47,16 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             defaultValue = "false")
     private boolean publishEvents;
 
+    @Option(names = {"-sllat", "--start-location-latitude"},
+            description = "Start location",
+            defaultValue = "false")
+    private double startLocationLatitude;
+
+    @Option(names = {"-sllon", "--start-location-longitude"},
+            description = "Start longitude",
+            defaultValue = "false")
+    private double startLocationLongitude;
+
     @Override
     public Integer call() {
 
@@ -54,6 +64,8 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             OffsetDateTime startTime = clockService.now();
             GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
                     .startTime(startTime)
+                    .startLocationLatitude(startLocationLatitude)
+                    .startLocationLongitude(startLocationLongitude)
                     .trafficSignType(trafficSignType)
                     .vehicleProperties(vehiclePropertiesMapper.map(trafficSignType))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)

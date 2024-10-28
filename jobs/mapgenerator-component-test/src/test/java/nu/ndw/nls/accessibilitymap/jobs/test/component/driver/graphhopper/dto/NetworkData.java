@@ -15,6 +15,7 @@ import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
 import nu.ndw.nls.geometry.crs.CrsTransformer;
 import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class NetworkData implements StateManagement {
 
     private final LongSequenceSupplier longSequenceSupplier = new LongSequenceSupplier();
 
+    private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
     private final GeometryFactoryRijksdriehoek geometryFactoryRijksdriehoek = new GeometryFactoryRijksdriehoek();
 
     private final CrsTransformer crsTransformer;
@@ -32,6 +34,7 @@ public class NetworkData implements StateManagement {
     @Getter
     private List<Link> links = new ArrayList<>();
 
+    @Getter
     private Map<Long, Node> nodes = new HashMap<>();
 
     public NetworkData createRoad(long startNodeId, long endNodeId) {
@@ -47,28 +50,33 @@ public class NetworkData implements StateManagement {
         Node startNode = findNodeById(startNodeId);
         Node endNode = findNodeById(endNodeId);
 
-        LineString rijksDriehoekLineString = geometryFactoryRijksdriehoek.createLineString(
+        LineString latLongLineString = geometryFactoryWgs84.createLineString(
                 new Coordinate[]{
-                        startNode.getCoordinate(),
-                        endNode.getCoordinate()
+                        startNode.getLatLongAsCoordinate(),
+                        endNode.getLatLongAsCoordinate()
                 }
         );
-        LineString wgs84LineString = (LineString) crsTransformer.transformFromRdNewToWgs84(rijksDriehoekLineString);
 
-        AccessibilityLinkBuilder linkBuilder = AccessibilityLink.builder()
+        AccessibilityLinkBuilder accessibilityLinkBuilder = AccessibilityLink.builder()
                 .id(longSequenceSupplier.next())
                 .fromNodeId(startNode.getId())
                 .toNodeId(endNode.getId())
-                .geometry(wgs84LineString);
+                .geometry(latLongLineString);
 
-        linkConfigurerconsumer.accept(linkBuilder);
+        linkConfigurerconsumer.accept(accessibilityLinkBuilder);
 
-        AccessibilityLink link = linkBuilder.build();
-        links.add(Link.builder()
-                .accessibilityLink(link)
-                .rijksDiehoekLineString(rijksDriehoekLineString)
-                .wgs84LineString(wgs84LineString)
-                .build());
+        Link link = Link.builder()
+                .accessibilityLink(accessibilityLinkBuilder.build())
+                .rijksDiehoekLineString(geometryFactoryRijksdriehoek.createLineString(
+                        new Coordinate[]{
+                                crsTransformer.transformFromWgs84ToRdNew(latLongLineString).getCoordinates()[0],
+                                crsTransformer.transformFromWgs84ToRdNew(latLongLineString).getCoordinates()[1]
+                        }
+                ))
+                .wgs84LineString(latLongLineString)
+                .build();
+
+        links.add(link);
         startNode.addLink(link);
         endNode.addLink(link);
 
@@ -79,7 +87,8 @@ public class NetworkData implements StateManagement {
 
         nodes.put(id, Node.builder()
                 .id(id)
-                .coordinate(new Coordinate(x, y))
+                .latitude(y)
+                .longitude(x)
                 .build());
 
         return this;
@@ -94,12 +103,12 @@ public class NetworkData implements StateManagement {
         return nodes.get(id);
     }
 
-    public AccessibilityLink findLinkBetweenNodes(long firstNodeId, long secondNodeId) {
+    public Link findLinkBetweenNodes(long firstNodeId, long secondNodeId) {
 
         Node firstNode = findNodeById(firstNodeId);
         Node secondNode = findNodeById(secondNodeId);
 
-        List<AccessibilityLink> commonLinks = firstNode.getCommonLinks(secondNode);
+        List<Link> commonLinks = firstNode.getCommonLinks(secondNode);
         if (commonLinks.size() != 1) {
             fail("There should be only one link between two nodes. We found %s. So that means your network data is not matching your expectations."
                     .formatted(commonLinks.size()));

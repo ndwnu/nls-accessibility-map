@@ -6,26 +6,26 @@ podRestarterVersion: "20240719.4"
 cronJobs:
   generateGeoJsonRvvC6:
     name: nls-accessibility-map-generate-rvv-c6-cron-job
-    command: generateGeoJson --traffic-sign=C6 --include-only-time-windowed-signs --publish-events
+    command: generateGeoJson --traffic-sign=C6 --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
     memory: 16Gi
     schedule: "30 3 * * *"
   generateGeoJsonRvvC7:
     name: nls-accessibility-map-generate-rvv-c7-cron-job
-    command: generateGeoJson --traffic-sign=C7 --include-only-time-windowed-signs --publish-events
+    command: generateGeoJson --traffic-sign=C7 --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
     memory: 16Gi
     schedule: "40 3 * * *"
   generateGeoJsonRvvC7B:
     name: nls-accessibility-map-generate-rvv-c7b-cron-job
-    command: generateGeoJson --traffic-sign=C7B --include-only-time-windowed-signs --publish-events
+    command: generateGeoJson --traffic-sign=C7B --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
     memory: 16Gi
     schedule: "50 3 * * *"
   generateGeoJsonRvvC12:
     name: nls-accessibility-map-generate-rvv-c12-cron-job
-    command: generateGeoJson --traffic-sign=C12 --include-only-time-windowed-signs --publish-events
+    command: generateGeoJson --traffic-sign=C12 --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
     memory: 16Gi
     schedule: "0 4 * * *"
   generateGeoJsonRvvC22C:
     name: nls-accessibility-map-generate-rvv-c22c-cron-job
-    command: generateGeoJson --traffic-sign=C22C --include-only-time-windowed-signs --publish-events
+    command: generateGeoJson --traffic-sign=C22C --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
     memory: 16Gi
     schedule: "10 4 * * *"

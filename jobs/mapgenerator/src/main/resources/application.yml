@@ -40,8 +40,6 @@ nu:
             root-export-directory: "/application/maps"
             relative-export-directory-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/'"
             search-radius-in-meters: 1_000_000
-            start-location-latitude: 52.12096528507054 # From municipality Amersfoort
-            start-location-longitude: 5.334845116067081
             add-traffic-signs-as-points: true
             add-traffic-signs-as-line-strings: true
             add-all-road-section-fragments: false

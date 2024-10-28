@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import org.locationtech.jts.geom.Coordinate;
 
 @Builder
@@ -14,19 +13,25 @@ public final class Node {
 
     private final long id;
 
-    private final Coordinate coordinate;
+    private final double latitude;
+
+    private final double longitude;
+
+    public Coordinate getLatLongAsCoordinate() {
+        return new Coordinate(longitude, latitude);
+    }
 
     @Default
-    private final List<AccessibilityLink> links = new ArrayList<>();
+    private final List<Link> links = new ArrayList<>();
 
-    public void addLink(AccessibilityLink link) {
+    public void addLink(Link link) {
 
         links.add(link);
     }
 
-    public List<AccessibilityLink> getCommonLinks(Node otherNode) {
+    public List<Link> getCommonLinks(Node otherNode) {
 
-        List<AccessibilityLink> linksCopy = new ArrayList<>(otherNode.links);
+        List<Link> linksCopy = new ArrayList<>(otherNode.links);
         linksCopy.retainAll(links);
 
         return linksCopy;

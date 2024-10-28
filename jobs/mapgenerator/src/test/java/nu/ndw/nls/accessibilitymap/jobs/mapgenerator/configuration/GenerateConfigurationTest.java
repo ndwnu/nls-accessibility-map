@@ -29,8 +29,6 @@ class GenerateConfigurationTest extends ValidationTest {
                 .zone(ZoneId.of("Europe/Amsterdam"))
                 .rootExportDirectory(Path.of("tmp/tmp/"))
                 .relativeExportDirectoryPattern("'v1/windowTimes/'yyyyMMdd'/geojson/'")
-                .startLocationLatitude(50)
-                .startLocationLongitude(3)
                 .searchRadiusInMeters(1)
                 .addAllRoadSectionFragments(true)
                 .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(true)
@@ -75,41 +73,6 @@ class GenerateConfigurationTest extends ValidationTest {
         validate(generateConfiguration, List.of("relativeExportDirectoryPattern"), List.of("must not be blank"));
     }
 
-    @ParameterizedTest
-    @CsvSource(nullValues = "null", textBlock = """
-            49, must be greater than or equal to 50,
-            50, null,
-            54, null,
-            55, must be less than or equal to 54
-            """)
-    void validate_startLocationLatitude_edgeCases(double startLocationLatitude, String expectedError) {
-
-        generateConfiguration = generateConfiguration.withStartLocationLatitude(startLocationLatitude);
-
-        if (Objects.nonNull(expectedError)) {
-            validate(generateConfiguration, List.of("startLocationLatitude"), List.of(expectedError));
-        } else {
-            validate(generateConfiguration, List.of(), List.of());
-        }
-    }
-
-    @ParameterizedTest
-    @CsvSource(nullValues = "null", textBlock = """
-            2, must be greater than or equal to 3,
-            3, null,
-            8, null,
-            9, must be less than or equal to 8
-            """)
-    void validate_startLocationLongitude_edgeCases(double startLocationLongitude, String expectedError) {
-
-        generateConfiguration = generateConfiguration.withStartLocationLongitude(startLocationLongitude);
-
-        if (Objects.nonNull(expectedError)) {
-            validate(generateConfiguration, List.of("startLocationLongitude"), List.of(expectedError));
-        } else {
-            validate(generateConfiguration, List.of(), List.of());
-        }
-    }
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
