@@ -2,36 +2,37 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto;
 
 import static org.assertj.core.api.Fail.fail;
 
-import jakarta.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
+import nu.ndw.nls.geometry.crs.CrsTransformer;
 import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
+import org.springframework.stereotype.Component;
 
-public class NetworkData {
+@Component
+@RequiredArgsConstructor
+public class NetworkData implements StateManagement {
 
     private final LongSequenceSupplier longSequenceSupplier = new LongSequenceSupplier();
 
     private final GeometryFactoryRijksdriehoek geometryFactoryRijksdriehoek = new GeometryFactoryRijksdriehoek();
 
+    private final CrsTransformer crsTransformer;
+
     @Getter
-    private List<AccessibilityLink> links = new ArrayList<>();
+    private List<Link> links = new ArrayList<>();
 
     private Map<Long, Node> nodes = new HashMap<>();
-
-    @Setter
-    @Getter
-    @Nonnull
-    private NetworkGraphHopper networkGraphHopper;
 
     public NetworkData createRoad(long startNodeId, long endNodeId) {
 
@@ -46,17 +47,28 @@ public class NetworkData {
         Node startNode = findNodeById(startNodeId);
         Node endNode = findNodeById(endNodeId);
 
+        LineString rijksDriehoekLineString = geometryFactoryRijksdriehoek.createLineString(
+                new Coordinate[]{
+                        startNode.getCoordinate(),
+                        endNode.getCoordinate()
+                }
+        );
+        LineString wgs84LineString = (LineString) crsTransformer.transformFromRdNewToWgs84(rijksDriehoekLineString);
+
         AccessibilityLinkBuilder linkBuilder = AccessibilityLink.builder()
                 .id(longSequenceSupplier.next())
                 .fromNodeId(startNode.getId())
                 .toNodeId(endNode.getId())
-                .geometry(geometryFactoryRijksdriehoek.createLineString(
-                        new Coordinate[]{startNode.getCoordinate(), endNode.getCoordinate()}));
+                .geometry(wgs84LineString);
 
         linkConfigurerconsumer.accept(linkBuilder);
 
         AccessibilityLink link = linkBuilder.build();
-        links.add(link);
+        links.add(Link.builder()
+                .accessibilityLink(link)
+                .rijksDiehoekLineString(rijksDriehoekLineString)
+                .wgs84LineString(wgs84LineString)
+                .build());
         startNode.addLink(link);
         endNode.addLink(link);
 
@@ -96,4 +108,10 @@ public class NetworkData {
         return commonLinks.getFirst();
     }
 
+    @Override
+    public void clearStateAfterEachScenario() {
+
+        nodes.clear();
+        links.clear();
+    }
 }

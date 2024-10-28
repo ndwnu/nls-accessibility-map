@@ -1,0 +1,7 @@
+nu:
+  ndw:
+    nls:
+      test:
+        component:
+          general:
+            waitForDebuggerToBeConnected: false

@@ -11,8 +11,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Import(RoutingMapMatcherConfiguration.class)
 public class Application {
 
-	public static void main(final String[] arguments) {
+    public static void main(final String[] arguments) {
 
-		SpringApplication.run(Application.class, arguments);
-	}
+        SpringApplication.run(Application.class, arguments);
+    }
 }
