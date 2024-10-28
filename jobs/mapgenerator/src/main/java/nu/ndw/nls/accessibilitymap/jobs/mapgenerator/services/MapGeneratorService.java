@@ -43,10 +43,10 @@ public class MapGeneratorService {
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(DirectionalSegment::hasTrafficSign)
                 .count();
-        log.debug("Found {} with road sections with traffic signs.", roadSectionsWithTrafficSigns);
+        log.debug("Found {} with road section fragments with traffic signs.", roadSectionsWithTrafficSigns);
 
         geoJsonRoadSectionWriter.writeToFile(accessibility, geoGenerationProperties);
-        geoJsonPolygonWriter.writeToFile(accessibility, geoGenerationProperties);
+//        geoJsonPolygonWriter.writeToFile(accessibility, geoGenerationProperties);
 
         if (geoGenerationProperties.publishEvents()) {
             sendEventGeneratingDone(geoGenerationProperties);

@@ -126,7 +126,7 @@ public class AccessibilityService {
                                 .weighting(weighting)
                                 .startPoint(startPoint)
                                 .municipalityId(accessibilityRequest.getMunicipalityId())
-                                .searchDistanceInMetres(accessibilityRequest.getSearchDistanceInMetres())
+                                .searchDistanceInMetres(accessibilityRequest.getSearchRadiusInMeters())
                                 .build(),
                         queryGraph,
                         startSegment),

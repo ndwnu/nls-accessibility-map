@@ -55,6 +55,7 @@ public class DockerDriver implements StateManagement {
         commandArguments.add("-f");
         commandArguments.add(dockerDriverConfiguration.getComposeFile().getAbsolutePath());
         commandArguments.add("run");
+        commandArguments.add("--build");
         commandArguments.addAll(environmentVariables.stream()
                 .map(environment -> List.of("-e", "%s=%s".formatted(environment.key(), environment.value())))
                 .flatMap(List::stream)
