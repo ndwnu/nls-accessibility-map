@@ -11,7 +11,7 @@ public class GraphHopperStepDefinitions {
 
     private final GraphHopperDriver graphHopperDriver;
 
-    @Given("Graph Hopper network")
+    @Given("a simple Graph Hopper network")
     public void graphHopperNetwork() {
 
         /*
@@ -37,6 +37,7 @@ public class GraphHopperStepDefinitions {
                 .createNode(9, 7, 2)
                 .createNode(10, 7, 8)
                 .createNode(11, 5, 8)
+
                 //Outer circle
                 .createRoad(1, 2).createRoad(2, 3).createRoad(3, 4)
                 .createRoad(4, 5).createRoad(5, 6).createRoad(6, 1)

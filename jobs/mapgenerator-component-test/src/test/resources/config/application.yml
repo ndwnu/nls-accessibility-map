@@ -35,7 +35,7 @@ nu:
         component:
           general:
             timeZone: "Europe/Amsterdam"
-            waitForDebuggerToBeConnected: true
+            waitForDebuggerToBeConnected: false
           driver:
             general:
               debugFolder: ".debug/"
@@ -48,7 +48,6 @@ nu:
               locationOnDisk: "../../graphhopper"
             map-generation-job:
               locationOnDisk: "../../map-generation-destination"
-
             wiremock:
               host: ${hostWireMock}
               port: 8888

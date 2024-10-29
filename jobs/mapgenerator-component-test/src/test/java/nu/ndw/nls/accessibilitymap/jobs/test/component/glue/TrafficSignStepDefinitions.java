@@ -8,10 +8,10 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.trafficsign.TrafficSignDriver;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -25,32 +25,30 @@ import org.locationtech.jts.geom.LineString;
 @RequiredArgsConstructor
 public class TrafficSignStepDefinitions {
 
-    private final NetworkData networkData;
+    private final NetworkDataService networkDataService;
 
     private final TrafficSignDriver trafficSignDriver;
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
-    @Given("with traffic signs")
-    public void trafficSigns() {
+    @Given("traffic signs")
+    public void trafficSigns(List<TrafficSign> trafficSigns) {
 
         trafficSignDriver.stubTrafficSignRequest(
                 Set.of("C12"),
-                List.of(
-                        createTrafficSigns(5, 11, 0.5, "C12", DirectionType.FORTH),
-                        createTrafficSigns(2, 8, 0.5, "C12", DirectionType.FORTH),
-                        createTrafficSigns(2, 8, 0.5, "C12", DirectionType.BACK)
-                )
+                trafficSigns.stream()
+                        .map(this::createTrafficSignGeoJsonDto)
+                        .toList()
         );
     }
 
-    private TrafficSignGeoJsonDto createTrafficSigns(long nodeId1, long nodeId2, double fraction, String rvvCode, DirectionType directionType) {
+    private TrafficSignGeoJsonDto createTrafficSignGeoJsonDto(TrafficSign trafficSign) {
 
-        Link link = networkData.findLinkBetweenNodes(nodeId1, nodeId2);
+        Link link = networkDataService.findLinkBetweenNodes(trafficSign.startNodeId(), trafficSign.endNodeId());
 
         LineString fractionLineString = fractionAndDistanceCalculator.getSubLineString(
                 link.getWgs84LineString(),
-                fraction);
+                trafficSign.fraction());
 
         if (fractionLineString.getCoordinates().length != 2) {
             fail("There should a start and end coordinate. But there was only %s"
@@ -62,14 +60,14 @@ public class TrafficSignStepDefinitions {
                 .id(UUID.randomUUID())
                 .geometry(new Point(endCoordinate.getX(), endCoordinate.getY()))
                 .properties(TrafficSignPropertiesDto.builder()
-                        .fraction(fraction)
-                        .rvvCode(rvvCode)
-                        .drivingDirection(directionType)
+                        .fraction(trafficSign.fraction())
+                        .rvvCode(trafficSign.rvvCode())
+                        .drivingDirection(trafficSign.directionType())
                         .roadSectionId(link.getAccessibilityLink().getId())
                         .textSigns(List.of(
                                 TextSign.builder()
                                         .type(TextSignType.TIME_PERIOD)
-                                        .text("window")
+                                        .text(trafficSign.windowTime())
                                         .build()))
                         .build())
                 .build();

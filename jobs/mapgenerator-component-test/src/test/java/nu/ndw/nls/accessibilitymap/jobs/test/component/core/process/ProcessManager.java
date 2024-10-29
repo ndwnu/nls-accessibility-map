@@ -23,22 +23,6 @@ public class ProcessManager implements StateManagement {
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-    public Process startProcess(List<String> command) {
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command(command);
-
-        try {
-            Process process = builder.start();
-            startedProcesses.add(process);
-
-            return process;
-        } catch (IOException ioException) {
-            fail(ioException);
-        }
-
-        return null;
-    }
-
     @SuppressWarnings("java:S3658")
     public Process startProcessAndLog(File workingDirectory, List<String> command) {
         ProcessBuilder builder = new ProcessBuilder();

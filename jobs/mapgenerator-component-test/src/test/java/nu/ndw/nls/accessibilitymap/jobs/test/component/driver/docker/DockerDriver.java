@@ -22,18 +22,6 @@ public class DockerDriver implements StateManagement {
 
     private final List<String> startedServices = new ArrayList<>();
 
-    //    public void waitForServiceToBeHealthy(String serviceName) {
-//
-//        startedServices.add(serviceName);
-//
-//        Process inspectProcess = processManager.startProcess(
-//                List.of("docker",
-//                        "inspect",
-//                        "--format",
-//                        "{{json .State.Health.Status }}",
-//                        serviceName));
-//    }
-
     public void startService(String serviceName) {
 
         startedServices.add(serviceName);
@@ -63,7 +51,8 @@ public class DockerDriver implements StateManagement {
 
         if (mode == Mode.DEBUG) {
             commandArguments.add("-e");
-            commandArguments.add("JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005");
+            commandArguments.add(
+                    "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005");
 
             commandArguments.add("-p");
             commandArguments.add("5005:5005");

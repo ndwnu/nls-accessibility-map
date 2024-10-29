@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "nu.ndw.nls.test.component.driver.wiremock")
 public class WireMockConfiguration {
 
-	public String host;
+    public String host;
 
-	public int port;
+    public int port;
 }

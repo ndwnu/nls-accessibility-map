@@ -11,7 +11,7 @@ import org.springframework.util.ResourceUtils;
 
 @Slf4j
 @Component
-public class FileDataProvider {
+public class FileService {
 
     @SuppressWarnings("java:S3658")
     public void writeDataToFile(final File file, final String data) {
