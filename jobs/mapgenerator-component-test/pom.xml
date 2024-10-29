@@ -5,6 +5,7 @@
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
         <version>3.1.2-SNAPSHOT</version>
+        <relativePath/>
     </parent>
     <artifactId>mapgenerator-job-component-test</artifactId>
     <name>NLS Accessibility Map generate GeoJson jobs - Component test</name>
