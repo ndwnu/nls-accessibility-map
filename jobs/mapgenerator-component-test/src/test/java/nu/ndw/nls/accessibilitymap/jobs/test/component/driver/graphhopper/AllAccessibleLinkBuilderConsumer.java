@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto;
+package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper;
 
 import java.util.function.Consumer;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
