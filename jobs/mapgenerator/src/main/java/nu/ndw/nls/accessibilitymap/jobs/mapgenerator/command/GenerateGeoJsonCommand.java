@@ -57,6 +57,11 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             defaultValue = "false")
     private double startLocationLongitude;
 
+    @Option(names = {"-pmdbp", "--polygon-max-distance-between-points"},
+            description = "The max instance between two point when calculating a polygon.",
+            defaultValue = "0.0005")
+    private double polygonMaxDistanceBetweenPoints;
+
     @Override
     public Integer call() {
 
@@ -70,6 +75,7 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
                     .vehicleProperties(vehiclePropertiesMapper.map(trafficSignType))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .exportVersion(Integer.parseInt(startTime.toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)))
+                    .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                     .publishEvents(publishEvents)
                     .generateConfiguration(generateProperties)

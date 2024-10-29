@@ -36,11 +36,13 @@ public class MultiPolygonFactory {
 
     private final DirectionalSegmentAccessibleComparator directionalSegmentAccessibleComparator;
 
-    public MultiPolygon createMultiPolygon(List<RoadSectionFragment> roadSectionFragments,
+    public MultiPolygon createMultiPolygon(
+            List<RoadSectionFragment> roadSectionFragments,
             double maxDistanceBetweenCoordinates) {
 
         log.debug("Calculating coordinates");
-        List<Coordinate> coordinates = createCoordinatesFromLineStrings(roadSectionFragments,
+        List<Coordinate> coordinates = createCoordinatesFromLineStrings(
+                roadSectionFragments,
                 maxDistanceBetweenCoordinates);
 
         log.debug("Started triangulation");

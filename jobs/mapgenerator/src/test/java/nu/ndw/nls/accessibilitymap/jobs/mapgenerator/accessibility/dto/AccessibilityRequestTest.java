@@ -28,10 +28,10 @@ class AccessibilityRequestTest extends ValidationTest {
     }
 
     @Test
-    void validate_searchDistanceInMetres_null() {
+    void validate_searchRadiusInMeters_null() {
 
         accessibilityRequest = accessibilityRequest.withSearchRadiusInMeters(null);
-        validate(accessibilityRequest, List.of("searchDistanceInMetres"), List.of("must not be null"));
+        validate(accessibilityRequest, List.of("searchRadiusInMeters"), List.of("must not be null"));
     }
 
     @Test
