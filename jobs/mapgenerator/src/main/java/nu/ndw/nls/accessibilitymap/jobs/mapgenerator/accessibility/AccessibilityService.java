@@ -75,8 +75,9 @@ public class AccessibilityService {
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
         QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
 
+        Map<Integer, TrafficSign> trafficSignsById = buildTrafficSignById(snappedTrafficSigns);
+
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
-        Map<Integer, TrafficSign> trafficSignById = buildTrafficSignById(snappedTrafficSigns);
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 getRoadSections(
                         accessibilityRequest,
@@ -84,7 +85,7 @@ public class AccessibilityService {
                         startPoint,
                         queryGraph,
                         startSegment,
-                        trafficSignById,
+                        trafficSignsById,
                         buildWeighting(null));
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
@@ -94,7 +95,7 @@ public class AccessibilityService {
                         startPoint,
                         queryGraph,
                         startSegment,
-                        trafficSignById,
+                        trafficSignsById,
                         buildWeighting(accessibilityRequest.getVehicleProperties()));
 
         Accessibility accessibility = Accessibility.builder()
@@ -117,7 +118,7 @@ public class AccessibilityService {
             Point startPoint,
             QueryGraph queryGraph,
             Snap startSegment,
-            Map<Integer, TrafficSign> trafficSignById,
+            Map<Integer, TrafficSign> trafficSignsById,
             Weighting weighting) {
 
         return roadSectionMapper.mapToRoadSections(
@@ -130,7 +131,7 @@ public class AccessibilityService {
                                 .build(),
                         queryGraph,
                         startSegment),
-                trafficSignById);
+                trafficSignsById);
     }
 
     private Map<Integer, TrafficSign> buildTrafficSignById(List<TrafficSignSnap> additionalSnaps) {
