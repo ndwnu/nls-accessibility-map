@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.utils;
+package nu.ndw.nls.accessibilitymap.jobs.test.component.core.util;
 
 public class LongSequenceSupplier {
 

@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileDataProvider;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointGeometry;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointProperties;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointTrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.DriverGeneralConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonFeatureCollectionDto;
 import org.springframework.http.HttpHeaders;
@@ -34,10 +34,11 @@ public class TrafficSignDriver {
 
     private final DriverGeneralConfiguration driverGeneralConfiguration;
 
-    private final FileDataProvider fileDataProvider;
+    private final FileService fileService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @SuppressWarnings("java:S3658")
     public void stubTrafficSignRequest(Set<String> rvvCodes, List<TrafficSignGeoJsonDto> trafficSigns) {
         try {
             writeTrafficSignsGeoJsonToDisk(trafficSigns);
@@ -65,7 +66,6 @@ public class TrafficSignDriver {
         }
     }
 
-
     @SuppressWarnings("java:S3658")
     private void writeTrafficSignsGeoJsonToDisk(List<TrafficSignGeoJsonDto> trafficSigns) {
 
@@ -82,7 +82,7 @@ public class TrafficSignDriver {
                                                         .getLatitude()
                                         ))
                                         .build())
-                                .properties(PointProperties.builder()
+                                .properties(PointTrafficSignProperties.builder()
                                         .trafficSignId(trafficSign.getId())
                                         .roadSectionId(trafficSign.getProperties().getRoadSectionId())
                                         .fraction(trafficSign.getProperties().getFraction())
@@ -96,7 +96,7 @@ public class TrafficSignDriver {
         try {
             final ObjectMapper mapper = JsonMapper.builder().build();
 
-            fileDataProvider.writeDataToFile(
+            fileService.writeDataToFile(
                     driverGeneralConfiguration.getDebugFolder().resolve("trafficSigns.geojson").toFile(),
                     mapper.writeValueAsString(featureCollection));
         } catch (JsonProcessingException exception) {

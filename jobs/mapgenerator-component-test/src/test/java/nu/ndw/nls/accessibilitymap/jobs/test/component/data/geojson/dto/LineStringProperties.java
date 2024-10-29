@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class LineStringProperties implements Properties{
+public class LineStringProperties implements Properties {
 
     private final long roadSectionId;
 

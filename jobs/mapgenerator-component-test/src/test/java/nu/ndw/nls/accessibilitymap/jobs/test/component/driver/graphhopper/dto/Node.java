@@ -17,12 +17,12 @@ public final class Node {
 
     private final double longitude;
 
+    @Default
+    private final List<Link> links = new ArrayList<>();
+
     public Coordinate getLatLongAsCoordinate() {
         return new Coordinate(longitude, latitude);
     }
-
-    @Default
-    private final List<Link> links = new ArrayList<>();
 
     public void addLink(Link link) {
 

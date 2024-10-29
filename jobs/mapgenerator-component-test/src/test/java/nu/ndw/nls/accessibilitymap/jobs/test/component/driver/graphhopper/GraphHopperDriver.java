@@ -25,7 +25,8 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileDataProvider;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.LineStringGeometry;
@@ -40,12 +41,9 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.re
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.repository.VersionRepository;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.AllAccessibleLinkBuilderConsumer;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
-import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import org.springframework.stereotype.Service;
@@ -72,28 +70,26 @@ public class GraphHopperDriver implements StateManagement {
 
     private final VersionRepository versionRepository;
 
-    private final GeometryFactoryRijksdriehoek geometryFactoryRijksdriehoek = new GeometryFactoryRijksdriehoek();
+    private final FileService fileService;
 
-    private final FileDataProvider fileDataProvider;
-
-    private final NetworkData networkData;
+    private final NetworkDataService networkDataService;
 
     public GraphHopperDriver createRoad(long startNodeId, long endNodeId) {
 
-        networkData.createRoad(startNodeId, endNodeId, new AllAccessibleLinkBuilderConsumer());
+        networkDataService.createRoad(startNodeId, endNodeId, new AllAccessibleLinkBuilderConsumer());
         return this;
     }
 
     public GraphHopperDriver createRoad(long startNodeId, long endNodeId,
             Consumer<AccessibilityLinkBuilder> linkConfigurerconsumer) {
 
-        networkData.createRoad(startNodeId, endNodeId, linkConfigurerconsumer);
+        networkDataService.createRoad(startNodeId, endNodeId, linkConfigurerconsumer);
         return this;
     }
 
     public GraphHopperDriver createNode(long id, double x, double y) {
 
-        networkData.createNode(id, x, y);
+        networkDataService.createNode(id, x, y);
         return this;
     }
 
@@ -104,7 +100,7 @@ public class GraphHopperDriver implements StateManagement {
         RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = RoutingNetworkSettings.builder(
                         AccessibilityLink.class)
                 .indexed(true)
-                .linkSupplier(() -> join(List.of(networkData.getLinks().stream()
+                .linkSupplier(() -> join(List.of(networkDataService.getLinks().stream()
                         .map(Link::getAccessibilityLink)
                         .toList())).iterator())
                 .graphhopperRootPath(graphHopperConfiguration.getLocationOnDisk())
@@ -128,7 +124,7 @@ public class GraphHopperDriver implements StateManagement {
                 .revision(OffsetDateTime.now())
                 .build());
 
-        networkData.getLinks().forEach(link -> {
+        networkDataService.getLinks().forEach(link -> {
             roadSectionRepository.save(RoadSection.builder()
                     .primaryKey(new nwbRoadSectionPrimaryKey(1, link.getAccessibilityLink().getId()))
                     .junctionIdFrom(link.getAccessibilityLink().getFromNodeId())
@@ -153,7 +149,7 @@ public class GraphHopperDriver implements StateManagement {
         LongSequenceSupplier idSupplier = new LongSequenceSupplier();
         FeatureCollection featureCollection = FeatureCollection.builder()
                 .features(Stream.concat(
-                        networkData.getLinks().stream()
+                        networkDataService.getLinks().stream()
                                 .map(link -> Feature.builder()
                                         .id(idSupplier.next())
                                         .geometry(LineStringGeometry.builder()
@@ -167,7 +163,7 @@ public class GraphHopperDriver implements StateManagement {
                                                 .toNodeId(link.getAccessibilityLink().getToNodeId())
                                                 .build())
                                         .build()),
-                        networkData.getNodes().values().stream()
+                        networkDataService.getNodes().values().stream()
                                 .map(node -> Feature.builder()
                                         .id(idSupplier.next())
                                         .geometry(PointGeometry.builder()
@@ -185,7 +181,7 @@ public class GraphHopperDriver implements StateManagement {
         try {
             final ObjectMapper mapper = JsonMapper.builder().build();
 
-            fileDataProvider.writeDataToFile(
+            fileService.writeDataToFile(
                     driverGeneralConfiguration.getDebugFolder().resolve("network.geojson").toFile(),
                     mapper.writeValueAsString(featureCollection));
             log.debug(mapper.writeValueAsString(featureCollection));

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto;
+package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper;
 
 import static org.assertj.core.api.Fail.fail;
 
@@ -10,7 +10,10 @@ import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.utils.LongSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.AllAccessibleLinkBuilderConsumer;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Node;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
 import nu.ndw.nls.geometry.crs.CrsTransformer;
@@ -22,11 +25,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class NetworkData implements StateManagement {
+public class NetworkDataService implements StateManagement {
 
     private final LongSequenceSupplier longSequenceSupplier = new LongSequenceSupplier();
 
     private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
+
     private final GeometryFactoryRijksdriehoek geometryFactoryRijksdriehoek = new GeometryFactoryRijksdriehoek();
 
     private final CrsTransformer crsTransformer;
@@ -37,12 +41,12 @@ public class NetworkData implements StateManagement {
     @Getter
     private Map<Long, Node> nodes = new HashMap<>();
 
-    public NetworkData createRoad(long startNodeId, long endNodeId) {
+    public NetworkDataService createRoad(long startNodeId, long endNodeId) {
 
         return createRoad(startNodeId, endNodeId, new AllAccessibleLinkBuilderConsumer());
     }
 
-    public NetworkData createRoad(
+    public NetworkDataService createRoad(
             long startNodeId,
             long endNodeId,
             Consumer<AccessibilityLinkBuilder> linkConfigurerconsumer) {
@@ -83,7 +87,7 @@ public class NetworkData implements StateManagement {
         return this;
     }
 
-    public NetworkData createNode(long id, double x, double y) {
+    public NetworkDataService createNode(long id, double x, double y) {
 
         nodes.put(id, Node.builder()
                 .id(id)

@@ -4,15 +4,7 @@ public interface StateManagement {
 
     void clearStateAfterEachScenario();
 
-    default void clearStateAfterAllScenarios() {
-
-    }
-
     default void prepareBeforeEachScenario() {
-
-    }
-
-    default void prepareBeforeAllScenarios() {
 
     }
 }

@@ -7,7 +7,7 @@ import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.configuration.GeneralConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileDataProvider;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.DockerDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.dto.Environment;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.dto.Mode;
@@ -25,7 +25,7 @@ public class MapGenerationJobDriver implements StateManagement {
 
     private final DockerDriver dockerDriver;
 
-    private final FileDataProvider fileDataProvider;
+    private final FileService fileService;
 
     private String lastJobExecutionTrafficSignType;
 
@@ -46,20 +46,21 @@ public class MapGenerationJobDriver implements StateManagement {
                                         + "--traffic-sign=%s "
                                         + "--include-only-time-windowed-signs "
                                         + "--publish-events "
-                                        + "--start-location-latitude %s "
-                                        + "--start-location-longitude %s").formatted(
+                                        + "--start-location-latitude=%s "
+                                        + "--start-location-longitude=%s "
+                                        + "--polygon-max-distance-between-points=0.5").formatted(
                                         trafficSignType,
                                         startNode.getLatitude(),
                                         startNode.getLongitude()
-                                        ))
+                                ))
                                 .build()));
     }
 
     public String getLastGeneratedGeoJson() {
 
-        return fileDataProvider.readDataFromFile(
-                "%s/map-generation-destination/v1/windowTimes/%s/geojson".formatted(
-                        mapGenerationJobDriverConfiguration.getLocationOnDisk().getAbsolutePath(),
+        return fileService.readDataFromFile(
+                "%s/v1/windowTimes/%s/geojson".formatted(
+                        mapGenerationJobDriverConfiguration.getLocationOnDisk(),
                         DateTimeFormatter.ofPattern("yyyyMMdd").format(OffsetDateTime.now())
                 ),
                 "%s%s".formatted(
@@ -68,6 +69,21 @@ public class MapGenerationJobDriver implements StateManagement {
                 ,
                 "geojson");
     }
+
+    public String getLastGeneratedPolygonGeoJson() {
+
+        return fileService.readDataFromFile(
+                "%s/v1/windowTimes/%s/geojson".formatted(
+                        mapGenerationJobDriverConfiguration.getLocationOnDisk(),
+                        DateTimeFormatter.ofPattern("yyyyMMdd").format(OffsetDateTime.now())
+                ),
+                "%s%s-polygon".formatted(
+                        lastJobExecutionTrafficSignType.toLowerCase(Locale.US),
+                        lastJobExecutionIncludeOnlyWindowSigns ? "WindowTimeSegments" : "")
+                ,
+                "geojson");
+    }
+
 
     @Override
     public void clearStateAfterEachScenario() {
