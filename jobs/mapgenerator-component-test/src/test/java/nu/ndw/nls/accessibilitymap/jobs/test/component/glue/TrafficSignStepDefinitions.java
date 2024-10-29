@@ -37,13 +37,14 @@ public class TrafficSignStepDefinitions {
         trafficSignDriver.stubTrafficSignRequest(
                 Set.of("C12"),
                 List.of(
-                        createTrafficSigns(5, 11, 0.5, "C12"),
-                        createTrafficSigns(2, 8, 0.5, "C12")
+                        createTrafficSigns(5, 11, 0.5, "C12", DirectionType.FORTH),
+                        createTrafficSigns(2, 8, 0.5, "C12", DirectionType.FORTH),
+                        createTrafficSigns(2, 8, 0.5, "C12", DirectionType.BACK)
                 )
         );
     }
 
-    private TrafficSignGeoJsonDto createTrafficSigns(long nodeId1, long nodeId2, double fraction, String rvvCode) {
+    private TrafficSignGeoJsonDto createTrafficSigns(long nodeId1, long nodeId2, double fraction, String rvvCode, DirectionType directionType) {
 
         Link link = networkData.findLinkBetweenNodes(nodeId1, nodeId2);
 
@@ -63,7 +64,7 @@ public class TrafficSignStepDefinitions {
                 .properties(TrafficSignPropertiesDto.builder()
                         .fraction(fraction)
                         .rvvCode(rvvCode)
-                        .drivingDirection(DirectionType.FORTH)
+                        .drivingDirection(directionType)
                         .roadSectionId(link.getAccessibilityLink().getId())
                         .textSigns(List.of(
                                 TextSign.builder()
