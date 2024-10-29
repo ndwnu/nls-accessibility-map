@@ -41,16 +41,15 @@ nu:
             relative-export-directory-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/'"
             search-radius-in-meters: 1_000_000
             add-traffic-signs-as-points: true
-            add-traffic-signs-as-line-strings: false
+            add-traffic-signs-as-line-strings: true
             traffic-sign-line-string-distance-in-meters: 1
-            add-all-road-section-fragments: true
+            add-all-road-section-fragments: false
             add-road-segment-fragments-that-are-blocked-in-all-available-directions: true
             add-road-segment-fragments-that-are-accessible-in-all-available-directions: false
             write-road-segment-fragments-that-are-partially-accessible-as-accessible: true
         trafficsignclient:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
-
 
       springboot:
         messaging:

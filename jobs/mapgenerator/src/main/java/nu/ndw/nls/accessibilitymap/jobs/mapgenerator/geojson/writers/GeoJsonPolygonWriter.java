@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
 
-    private static final double MAX_DISTANCE_BETWEEN_POINTS = 0.0005;
-
     private final MultiPolygonFactory multiPolygonFactory;
 
     private final FeatureBuilder featureBuilder;
@@ -52,8 +50,9 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .toList();
 
-        MultiPolygon multiPolygon = multiPolygonFactory.createMultiPolygon(roadSectionFragments,
-                MAX_DISTANCE_BETWEEN_POINTS);
+        MultiPolygon multiPolygon = multiPolygonFactory.createMultiPolygon(
+                roadSectionFragments,
+                geoGenerationProperties.polygonMaxDistanceBetweenPoints());
 
         return FeatureCollection
                 .builder()

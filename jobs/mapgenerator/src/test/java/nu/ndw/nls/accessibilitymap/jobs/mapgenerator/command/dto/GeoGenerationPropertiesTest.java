@@ -34,8 +34,11 @@ class GeoGenerationPropertiesTest extends ValidationTest {
                 .nwbVersion(2)
                 .publishEvents(true)
                 .startTime(OffsetDateTime.now())
+                .startLocationLatitude(50)
+                .startLocationLongitude(3)
                 .trafficSignType(TrafficSignType.C7)
                 .vehicleProperties(vehicleProperties)
+                .polygonMaxDistanceBetweenPoints(0.000000000000001d)
                 .includeOnlyTimeWindowedSigns(true)
                 .generateConfiguration(generateConfiguration)
                 .build();
@@ -87,12 +90,22 @@ class GeoGenerationPropertiesTest extends ValidationTest {
         validate(geoGenerationProperties, List.of("trafficSignType"), List.of("must not be null"));
     }
 
-    @Test
-    void validate_vehicleProperties_null() {
+    @ParameterizedTest
+    @CsvSource(nullValues = "null", textBlock = """
+            0, must be greater than 0,
+            0.0000000000001, null,
+            """)
+    void validate_polygonMaxDistanceBetweenPoints_mustBePositive(double polygonMaxDistanceBetweenPoints,
+            String expectedError) {
 
-        geoGenerationProperties = geoGenerationProperties.withVehicleProperties(null);
+        geoGenerationProperties = geoGenerationProperties.withPolygonMaxDistanceBetweenPoints(
+                polygonMaxDistanceBetweenPoints);
 
-        validate(geoGenerationProperties, List.of("vehicleProperties"), List.of("must not be null"));
+        if (Objects.nonNull(expectedError)) {
+            validate(geoGenerationProperties, List.of("polygonMaxDistanceBetweenPoints"), List.of(expectedError));
+        } else {
+            validate(geoGenerationProperties, List.of(), List.of());
+        }
     }
 
     @Test
@@ -109,6 +122,14 @@ class GeoGenerationPropertiesTest extends ValidationTest {
         geoGenerationProperties = geoGenerationProperties.withGenerateConfiguration(null);
 
         validate(geoGenerationProperties, List.of("generateConfiguration"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_vehicleProperties_null() {
+
+        geoGenerationProperties = geoGenerationProperties.withVehicleProperties(null);
+
+        validate(geoGenerationProperties, List.of("vehicleProperties"), List.of("must not be null"));
     }
 
     @ParameterizedTest
@@ -146,6 +167,7 @@ class GeoGenerationPropertiesTest extends ValidationTest {
             validate(geoGenerationProperties, List.of(), List.of());
         }
     }
+
     @Override
     protected Class<?> getClassToTest() {
         return geoGenerationProperties.getClass();

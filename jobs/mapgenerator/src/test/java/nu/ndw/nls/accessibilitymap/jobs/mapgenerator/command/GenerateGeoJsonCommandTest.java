@@ -81,7 +81,9 @@ class GenerateGeoJsonCommandTest {
                 .execute(
                         "--traffic-sign=%s".formatted(trafficSignType.name()),
                         "--include-only-time-windowed-signs",
-                        "--publish-events")
+                        "--publish-events",
+                        "--start-location-latitude=1",
+                        "--start-location-longitude=2")
         ).isZero();
 
         ArgumentCaptor<GeoGenerationProperties> geoGenerationPropertiesCaptor = ArgumentCaptor.forClass(
@@ -124,6 +126,8 @@ class GenerateGeoJsonCommandTest {
         if (publishEvents) {
             arguments.add("--publish-events");
         }
+        arguments.add("--start-location-latitude=1");
+        arguments.add("--start-location-longitude=2");
 
         assertThat(new CommandLine(generateGeoJsonCommand).execute(arguments.toArray(String[]::new))
         ).isZero();
@@ -151,7 +155,9 @@ class GenerateGeoJsonCommandTest {
                 .execute(
                         "--traffic-sign=%s".formatted(TrafficSignType.C6.name()),
                         "--include-only-time-windowed-signs",
-                        "--publish-events")
+                        "--publish-events",
+                        "--start-location-latitude=1",
+                        "--start-location-longitude=2")
         ).isOne();
 
         loggerExtension.containsLog(
@@ -175,7 +181,6 @@ class GenerateGeoJsonCommandTest {
         assertThat(geoGenerationProperties.publishEvents()).isEqualTo(publishEvents);
         assertThat(geoGenerationProperties.vehicleProperties()).isEqualTo(vehicleProperties);
         assertThat(geoGenerationProperties.generateConfiguration()).isEqualTo(generateConfiguration);
-
 
         loggerExtension.containsLog(
                 Level.INFO,
