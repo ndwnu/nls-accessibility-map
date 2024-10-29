@@ -14,26 +14,26 @@ import org.springframework.util.ResourceUtils;
 public class FileService {
 
     @SuppressWarnings("java:S3658")
-    public void writeDataToFile(final File file, final String data) {
+    public void writeDataToFile(File file, String data) {
 
         try {
             FileUtils.writeStringToFile(file, data, StandardCharsets.UTF_8.toString());
 
-        } catch (final Exception exception) {
+        } catch (Exception exception) {
             log.error("Failed to write file.", exception);
             fail(exception.getMessage());
         }
     }
 
     @SuppressWarnings("java:S3658")
-    public String readDataFromFile(final String folder, final String file, final String extension) {
+    public String readDataFromFile(String folder, String file, String extension) {
 
         try {
             return FileUtils.readFileToString(
                     new File("./%s/%s.%s".formatted(folder, file, extension)),
                     StandardCharsets.UTF_8.toString());
 
-        } catch (final Exception exception) {
+        } catch (Exception exception) {
             log.error("Failed to load file.", exception);
             fail(exception.getMessage());
             return null;
@@ -41,16 +41,16 @@ public class FileService {
     }
 
     @SuppressWarnings("java:S3658")
-    public String readTestDataFromFile(final String folder, final String file, final String extension) {
+    public String readTestDataFromFile(String folder, String file, String extension) {
 
         try {
             return FileUtils.readFileToString(
                     ResourceUtils.getFile("classpath:data/%s/%s.%s".formatted(folder, file, extension)),
                     StandardCharsets.UTF_8.toString());
 
-        } catch (final Exception e) {
-            log.error("Failed to load file.", e);
-            fail(e.getMessage());
+        } catch (Exception exception) {
+            log.error("Failed to load file.", exception);
+            fail(exception.getMessage());
             return null;
         }
     }

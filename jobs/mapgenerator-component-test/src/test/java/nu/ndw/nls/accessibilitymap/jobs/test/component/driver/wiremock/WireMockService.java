@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WireMockService implements StateManagement {
 
-	public WireMockService(final WireMockConfiguration wireMockConfiguration) {
+	public WireMockService(WireMockConfiguration wireMockConfiguration) {
 
 		final var wireMock = WireMock.create()
 			.host(wireMockConfiguration.getHost())

@@ -10,7 +10,7 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 public class DataTypeRegister {
 
     @DataTableType
-    public @Valid TrafficSign mapTrafficSign(final Map<String, String> entry) {
+    public @Valid TrafficSign mapTrafficSign(Map<String, String> entry) {
 
         return TrafficSign.builder()
                 .startNodeId(Integer.parseInt(entry.get("startNodeId")))
