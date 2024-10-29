@@ -179,7 +179,7 @@ public class GraphHopperDriver implements StateManagement {
                 .build();
 
         try {
-            final ObjectMapper mapper = JsonMapper.builder().build();
+            ObjectMapper mapper = JsonMapper.builder().build();
 
             fileService.writeDataToFile(
                     driverGeneralConfiguration.getDebugFolder().resolve("network.geojson").toFile(),

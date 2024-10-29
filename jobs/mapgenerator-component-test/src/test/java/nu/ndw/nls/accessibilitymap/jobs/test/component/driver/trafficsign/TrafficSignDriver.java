@@ -94,7 +94,7 @@ public class TrafficSignDriver {
                 .build();
 
         try {
-            final ObjectMapper mapper = JsonMapper.builder().build();
+            ObjectMapper mapper = JsonMapper.builder().build();
 
             fileService.writeDataToFile(
                     driverGeneralConfiguration.getDebugFolder().resolve("trafficSigns.geojson").toFile(),
