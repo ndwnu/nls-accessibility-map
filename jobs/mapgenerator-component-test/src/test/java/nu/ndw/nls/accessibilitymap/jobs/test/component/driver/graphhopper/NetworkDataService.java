@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.AllAccessibleLinkBuilderConsumer;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Node;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
