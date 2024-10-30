@@ -92,6 +92,7 @@ public class GraphHopperDriver implements StateManagement {
         return this;
     }
 
+    @SuppressWarnings("java:S3658")
     public void buildNetwork() {
 
         writeNetworkAsGeoJsonToDisk();
