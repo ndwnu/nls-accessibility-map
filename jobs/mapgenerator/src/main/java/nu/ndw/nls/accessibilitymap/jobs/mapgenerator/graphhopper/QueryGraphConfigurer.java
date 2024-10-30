@@ -15,9 +15,7 @@ import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.shapes.GHPoint;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -83,8 +81,6 @@ public class QueryGraphConfigurer {
             }
         }
 
-        printEdges(queryGraph, edgeExplorer);
-
         Set<TrafficSignSnap> original = new HashSet<>(snappedTrafficSigns);
         Set<TrafficSignSnap> notAssigned = Sets.difference(original, assignedTrafficSignSnaps);
         Map<Integer, List<TrafficSignSnap>> notAssignedByRoadSectionId = notAssigned.stream()
@@ -99,42 +95,6 @@ public class QueryGraphConfigurer {
                 .addArgument(notAssignedByRoadSectionId.size())
                 .addArgument(notAssignedByRoadSectionId)
                 .log();
-    }
-
-    private void printEdges(QueryGraph queryGraph, EdgeExplorer edgeExplorer) {
-
-        Map<Integer, List<String>> infoByRoadSectionId = new HashMap<>();
-        for (int startNode = 0; startNode < queryGraph.getNodes(); startNode++) {
-            EdgeIterator edgeIterator = edgeExplorer.setBaseNode(startNode);
-            while (edgeIterator.next()) {
-                int roadSectionId = edgeIterator.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("Edge with id: %s and key: %s".formatted(edgeIterator.getEdge(), edgeIterator.getEdgeKey()));
-                stringBuilder.append("  Properties:");
-                Arrays.stream(WindowTimeEncodedValue.values())
-                        .map(WindowTimeEncodedValue::getEncodedValue).toList()
-                        .forEach(key ->
-                        {
-                            BooleanEncodedValue booleanEncodedValue = encodingManager.getBooleanEncodedValue(key);
-                            edgeIterator.get(booleanEncodedValue);
-                            edgeIterator.getReverse(booleanEncodedValue);
-
-                            stringBuilder.append("  %s=%s (Reversed: %s)".formatted( key, edgeIterator.get(booleanEncodedValue), edgeIterator.getReverse(booleanEncodedValue)));
-                        });
-
-                List<String> info = infoByRoadSectionId.getOrDefault(roadSectionId, new ArrayList<>());
-                info.add(stringBuilder.toString());
-                infoByRoadSectionId.put(roadSectionId, info);
-            }
-        }
-
-        infoByRoadSectionId.forEach((roadSectionId, info) -> {
-            log.debug("---------------------------");
-            log.debug("RoadSectionId: {}", roadSectionId);
-            info.forEach(log::debug);
-            log.debug("---------------------------");
-        });
     }
 
     private void unblockEdge(EdgeIterator edgeIterator) {
