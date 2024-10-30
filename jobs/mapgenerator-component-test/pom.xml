@@ -188,10 +188,9 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>--rm</argument>
-                                        <argument>alpine:latest</argument>
                                         <argument>-v ./../../graphhopper:/graphhopper</argument>
                                         <argument>-u 1000</argument>
-                                        <argument>alipne:latest</argument>
+                                        <argument>alpine:latest</argument>
                                         <argument>chmod 777 -R /graphhopper</argument>
                                     </arguments>
                                 </configuration>
