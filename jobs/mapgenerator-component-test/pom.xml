@@ -230,6 +230,21 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>sudo</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>ls</argument>
+                                        <argument>-la</argument>
+                                        <argument>../../graphhopper</argument>
+                                    </arguments>
+                                    <executable>sudo</executable>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>chmod-777-graphhopper</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
