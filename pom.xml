@@ -25,7 +25,6 @@
         <exec-maven-plugin.version>3.4.1</exec-maven-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <karate.version>1.4.1</karate.version>
@@ -41,7 +40,7 @@
         <nls-events.version>5.0.6</nls-events.version>
         <nls-nwb-data-access.version>7.1.4</nls-nwb-data-access.version>
         <nls-springboot.version>5.0.7</nls-springboot.version>
-        <nls-routing-map-matcher.version>13.0.4</nls-routing-map-matcher.version>
+        <nls-routing-map-matcher.version>13.0.3</nls-routing-map-matcher.version>
         <nls-geometry.version>3.1.0</nls-geometry.version>
         <jackson-geojson.version>1.14</jackson-geojson.version>
         <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
