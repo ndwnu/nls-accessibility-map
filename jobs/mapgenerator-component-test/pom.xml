@@ -204,7 +204,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>test-ls1</id>
+                                <id>test-ls2</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>exec</goal>
