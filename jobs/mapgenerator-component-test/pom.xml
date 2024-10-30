@@ -189,16 +189,6 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>id-test</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>id</executable>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>ls-test</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
