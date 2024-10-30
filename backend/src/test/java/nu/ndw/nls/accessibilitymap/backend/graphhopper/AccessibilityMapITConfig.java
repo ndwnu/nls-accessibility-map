@@ -30,8 +30,12 @@ class AccessibilityMapITConfig {
         EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor = new EdgeIteratorStateReverseExtractor();
         GeodeticCalculatorFactory geodeticCalculatorFactory = new GeodeticCalculatorFactory();
         IsochroneServiceFactory isochroneServiceFactory = new IsochroneServiceFactory(
-                edgeIteratorStateReverseExtractor, new FractionAndDistanceCalculator(geodeticCalculatorFactory,
-                List.of(new GeometryFactoryWgs84()), new BearingCalculator(geodeticCalculatorFactory)));
+                edgeIteratorStateReverseExtractor,
+                new FractionAndDistanceCalculator(
+                        geodeticCalculatorFactory,
+                        List.of(new GeometryFactoryWgs84()),
+                        new BearingCalculator(geodeticCalculatorFactory)),
+                new GeometryFactoryWgs84());
         return new AccessibilityMapFactory(vehicleRestrictionsModelFactory, isochroneServiceFactory);
     }
 

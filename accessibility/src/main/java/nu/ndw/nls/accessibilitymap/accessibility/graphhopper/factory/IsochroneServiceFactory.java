@@ -9,7 +9,7 @@ import com.graphhopper.util.PMap;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
-
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -24,10 +24,12 @@ public class IsochroneServiceFactory {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
+    private final GeometryFactoryWgs84 geometryFactory;
+
     public IsochroneService createService(NetworkGraphHopper network) {
         EncodingManager encodingManager = network.getEncodingManager();
         IsochroneMatchMapper isochroneMatchMapper = new IsochroneMatchMapper(encodingManager,
-                edgeIteratorStateReverseExtractor, new PointListUtil(), fractionAndDistanceCalculator);
+                edgeIteratorStateReverseExtractor, new PointListUtil(geometryFactory), fractionAndDistanceCalculator);
         Weighting weighting = network.createWeighting(PROFILE, new PMap());
         ShortestPathTreeFactory shortestPathTreeFactory = new ShortestPathTreeFactory(weighting,encodingManager);
         return new IsochroneService(encodingManager, isochroneMatchMapper, shortestPathTreeFactory);
