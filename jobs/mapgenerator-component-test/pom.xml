@@ -179,7 +179,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>chmod-777-maps</id>
+                                <id>chmod-777-graphhopper</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>exec</goal>
