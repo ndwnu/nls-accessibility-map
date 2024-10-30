@@ -72,13 +72,12 @@ class ErrorHandlerControllerTest {
 
     @Test
     void handleMethodArgumentTypeMismatchException_ok() {
-        when(methodArgumentTypeMismatchException.getPropertyName()).thenReturn(PROPERTY_NAME);
         when(methodArgumentTypeMismatchException.getMessage()).thenReturn(MESSAGE);
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleMethodArgumentTypeMismatchException(methodArgumentTypeMismatchException);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo("'" + PROPERTY_NAME + "' " + MESSAGE);
+        assertThat(response.getBody().getMessage()).isEqualTo(MESSAGE);
     }
 
     @Test
