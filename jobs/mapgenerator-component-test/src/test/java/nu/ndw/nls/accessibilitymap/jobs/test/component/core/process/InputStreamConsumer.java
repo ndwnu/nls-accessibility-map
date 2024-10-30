@@ -12,6 +12,7 @@ public class InputStreamConsumer implements Runnable {
     private final Consumer<String> consumer;
 
     public InputStreamConsumer(InputStream inputStream, Consumer<String> consumer) {
+
         this.inputStream = inputStream;
         this.consumer = consumer;
     }
