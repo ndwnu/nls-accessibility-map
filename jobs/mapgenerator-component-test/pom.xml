@@ -196,12 +196,11 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-
                                     <arguments>
-                                        <argument>777</argument>
+                                        <argument>-la</argument>
                                         <argument>../../</argument>
                                     </arguments>
-                                    <executable>ls -la</executable>
+                                    <executable>ls</executable>
                                 </configuration>
                             </execution>
                             <execution>
@@ -213,10 +212,10 @@
                                 <configuration>
 
                                     <arguments>
-                                        <argument>777</argument>
+                                        <argument>-la</argument>
                                         <argument>../../graphhopper</argument>
                                     </arguments>
-                                    <executable>ls -la</executable>
+                                    <executable>ls</executable>
                                 </configuration>
                             </execution>
                             <execution>
