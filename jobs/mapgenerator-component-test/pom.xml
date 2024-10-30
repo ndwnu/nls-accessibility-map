@@ -179,6 +179,21 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>chmod-777-maps</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>777</argument>
+                                        <argument>-R</argument>
+                                        <argument>../../graphhopper</argument>
+                                    </arguments>
+                                    <executable>chmod</executable>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>wait-for-database</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
