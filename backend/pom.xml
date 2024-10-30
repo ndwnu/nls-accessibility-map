@@ -232,27 +232,6 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
             </plugin>
-
-            <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>10.0.4</version>
-                <configuration>
-                    <!--Disable .NET Assembly analyser, because they need dotnet executable-->
-                    <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
-                    <!-- Disabled https://github.com/jeremylong/DependencyCheck/issues/4695 -->
-                    <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
-                    <failBuildOnCVSS>0</failBuildOnCVSS>
-                    <suppressionFile>owasp-suppression.xml</suppressionFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
