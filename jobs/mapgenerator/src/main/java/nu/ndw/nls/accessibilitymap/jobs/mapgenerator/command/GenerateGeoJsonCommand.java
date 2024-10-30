@@ -49,12 +49,12 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
 
     @Option(names = {"-sllat", "--start-location-latitude"},
             description = "Start location",
-            defaultValue = "false")
+            required = true)
     private double startLocationLatitude;
 
     @Option(names = {"-sllon", "--start-location-longitude"},
             description = "Start longitude",
-            defaultValue = "false")
+            required = true)
     private double startLocationLongitude;
 
     @Option(names = {"-pmdbp", "--polygon-max-distance-between-points"},
