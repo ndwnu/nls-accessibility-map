@@ -179,6 +179,19 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>cleanup-graphhopper-data-from-other-tests</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>../../graphhopper/accessibility_latest/*</argument>
+                                    </arguments>
+                                    <executable>rm</executable>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>wait-for-database</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
