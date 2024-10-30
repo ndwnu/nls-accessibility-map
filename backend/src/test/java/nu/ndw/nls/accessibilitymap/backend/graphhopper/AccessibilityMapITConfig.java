@@ -27,6 +27,7 @@ class AccessibilityMapITConfig {
         RestrictionMapperProvider restrictionMapperProvider = new RestrictionMapperProvider();
         VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory = new VehicleRestrictionsModelFactory(
                 restrictionMapperProvider);
+
         EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor = new EdgeIteratorStateReverseExtractor();
         GeodeticCalculatorFactory geodeticCalculatorFactory = new GeodeticCalculatorFactory();
         IsochroneServiceFactory isochroneServiceFactory = new IsochroneServiceFactory(
@@ -36,6 +37,7 @@ class AccessibilityMapITConfig {
                         List.of(new GeometryFactoryWgs84()),
                         new BearingCalculator(geodeticCalculatorFactory)),
                 new GeometryFactoryWgs84());
+
         return new AccessibilityMapFactory(vehicleRestrictionsModelFactory, isochroneServiceFactory);
     }
 
