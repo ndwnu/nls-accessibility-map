@@ -186,6 +186,9 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
+                                    <arguments>
+                                        
+                                    </arguments>
                                     <executable>id</executable>
                                 </configuration>
                             </execution>
@@ -230,7 +233,7 @@
                                         <argument>-R</argument>
                                         <argument>../../graphhopper</argument>
                                     </arguments>
-                                    <executable>chmod</executable>
+                                    <executable>sudo chmod</executable>
                                 </configuration>
                             </execution>
                             <execution>
