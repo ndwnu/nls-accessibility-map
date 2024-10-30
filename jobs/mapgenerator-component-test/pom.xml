@@ -178,62 +178,21 @@
                                     <executable>chmod</executable>
                                 </configuration>
                             </execution>
-
                             <execution>
-                                <id>test-id</id>
+                                <id>reset-file-permissions-graphhopper</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>
-                                        
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>--rm</argument>
+                                        <argument>alpine:latest</argument>
+                                        <argument>-v ./../../graphhopper:/graphhopper</argument>
+                                        <argument>alipne:latest</argument>
+                                        <argument>chmod 777 -R /graphhopper</argument>
                                     </arguments>
-                                    <executable>id</executable>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>test-ls1</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>
-                                        <argument>-la</argument>
-                                        <argument>../../</argument>
-                                    </arguments>
-                                    <executable>ls</executable>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>test-ls2</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-
-                                    <arguments>
-                                        <argument>-la</argument>
-                                        <argument>../../graphhopper</argument>
-                                    </arguments>
-                                    <executable>ls</executable>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>chmod-777-graphhopper</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>
-                                        <argument>777</argument>
-                                        <argument>-R</argument>
-                                        <argument>../../graphhopper</argument>
-                                    </arguments>
-                                    <executable>sudo chmod</executable>
                                 </configuration>
                             </execution>
                             <execution>
