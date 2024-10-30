@@ -26,7 +26,8 @@ public class DockerDriver implements StateManagement {
 
         startedServices.add(serviceName);
         processManager.startProcessAndWaitToBeFinished(
-                List.of("docker-compose",
+                List.of("docker",
+                        "compose",
                         "-f",
                         dockerDriverConfiguration.getComposeFile().getAbsolutePath(),
                         "up",
@@ -39,7 +40,8 @@ public class DockerDriver implements StateManagement {
         startedServices.add(serviceName);
         ArrayList<String> commandArguments = new ArrayList<>();
 
-        commandArguments.add("docker-compose");
+        commandArguments.add("docker");
+        commandArguments.add("compose");
         commandArguments.add("-f");
         commandArguments.add(dockerDriverConfiguration.getComposeFile().getAbsolutePath());
         commandArguments.add("run");
@@ -65,7 +67,9 @@ public class DockerDriver implements StateManagement {
     private void stopService(String serviceName) {
 
         processManager.startProcessAndWaitToBeFinished(
-                List.of("docker-compose", "-f",
+                List.of("docker",
+                        "compose",
+                        "-f",
                         dockerDriverConfiguration.getComposeFile().getAbsolutePath(),
                         "rm",
                         "--stop",
