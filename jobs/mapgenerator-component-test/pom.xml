@@ -190,6 +190,7 @@
                                         <argument>--rm</argument>
                                         <argument>alpine:latest</argument>
                                         <argument>-v ./../../graphhopper:/graphhopper</argument>
+                                        <argument>-u 1000</argument>
                                         <argument>alipne:latest</argument>
                                         <argument>chmod 777 -R /graphhopper</argument>
                                     </arguments>
