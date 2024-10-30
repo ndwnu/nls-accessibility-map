@@ -25,6 +25,7 @@ public class ProcessManager implements StateManagement {
 
     @SuppressWarnings("java:S3658")
     public Process startProcessAndLog(File workingDirectory, List<String> command) {
+
         ProcessBuilder builder = new ProcessBuilder();
         builder.directory(workingDirectory);
         builder.command(command);
