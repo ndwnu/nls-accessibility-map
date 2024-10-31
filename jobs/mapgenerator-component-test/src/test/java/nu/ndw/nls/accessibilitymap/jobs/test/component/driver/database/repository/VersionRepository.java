@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.repository;
+package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.repository;
 
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.Version;
 import org.springframework.core.annotation.Order;
