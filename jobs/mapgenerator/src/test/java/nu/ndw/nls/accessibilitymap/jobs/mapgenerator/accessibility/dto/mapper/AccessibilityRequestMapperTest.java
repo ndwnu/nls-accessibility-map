@@ -30,9 +30,9 @@ class AccessibilityRequestMapperTest {
                 .trafficSignType(TrafficSignType.C7)
                 .vehicleProperties(VehicleProperties.builder().build())
                 .includeOnlyTimeWindowedSigns(true)
+                .startLocationLatitude(52.12096528507054)
+                .startLocationLongitude(5.334845116067081)
                 .generateConfiguration(GenerateConfiguration.builder()
-                        .startLocationLatitude(52.12096528507054)
-                        .startLocationLongitude(5.334845116067081)
                         .searchRadiusInMeters(1000000)
                         .build())
                 .build();
@@ -42,10 +42,10 @@ class AccessibilityRequestMapperTest {
         assertThat(accessibilityRequest).isNotNull();
         assertThat(accessibilityRequest.getVehicleProperties()).isEqualTo(geoGenerationProperties.vehicleProperties());
         assertThat(accessibilityRequest.getStartLocationLatitude())
-                .isEqualTo(geoGenerationProperties.generateConfiguration().startLocationLatitude());
+                .isEqualTo(geoGenerationProperties.startLocationLatitude());
         assertThat(accessibilityRequest.getStartLocationLongitude())
-                .isEqualTo(geoGenerationProperties.generateConfiguration().startLocationLongitude());
-        assertThat(accessibilityRequest.getSearchDistanceInMetres())
+                .isEqualTo(geoGenerationProperties.startLocationLongitude());
+        assertThat(accessibilityRequest.getSearchRadiusInMeters())
                 .isEqualTo(geoGenerationProperties.generateConfiguration().searchRadiusInMeters());
         assertThat(accessibilityRequest.getTrafficSignType()).isEqualTo(geoGenerationProperties.trafficSignType());
         assertThat(accessibilityRequest.isIncludeOnlyTimeWindowedSigns())

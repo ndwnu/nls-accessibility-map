@@ -1,0 +1,45 @@
+host: "localhost"
+hostWireMock: ${host}
+hostDatabase: ${host}
+
+spring:
+  application:
+    name: nls-accessibility-map-generator-jobs-component-test
+  datasource:
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: SELECT 1;
+      idle-timeout: 60000
+      max-lifetime: 120000
+      minimum-idle: 1
+      auto-commit: false
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+nu:
+  ndw:
+    nls:
+      test:
+        component:
+          general:
+            timeZone: "Europe/Amsterdam"
+            waitForDebuggerToBeConnected: false
+          driver:
+            general:
+              debugFolder: ".debug/"
+            maven:
+              rootPomRelativePath: "../../"
+              moduleUnderTest: "jobs/mapgenerator"
+            docker:
+              compose-file: "../../docker-compose.yml"
+            graph-hopper:
+              locationOnDisk: "../../graphhopper"
+            map-generation-job:
+              locationOnDisk: "../../map-generation-destination"
+            wiremock:
+              host: ${hostWireMock}
+              port: 8888

@@ -56,7 +56,6 @@ class GeoJsonPolygonWriterTest {
     @Mock
     private GenerateConfiguration generateConfiguration;
 
-    @Mock
     private GeoGenerationProperties geoGenerationProperties;
 
     @Mock
@@ -109,6 +108,7 @@ class GeoJsonPolygonWriterTest {
                 .trafficSignType(TrafficSignType.C7)
                 .generateConfiguration(generateConfiguration)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
+                .polygonMaxDistanceBetweenPoints(0.0005)
                 .build();
 
         roadSection = RoadSection.builder()

@@ -29,7 +29,7 @@ public class RoadSectionMapper {
 
     public @Valid Collection<RoadSection> mapToRoadSections(
             List<IsochroneMatch> isochroneMatches,
-            Map<Integer, TrafficSign> trafficSignById) {
+            Map<Integer, TrafficSign> trafficSignsById) {
 
         IntEncodedValue trafficSignEncodedValueAttribute = networkGraphHopper.getEncodingManager()
                 .getIntEncodedValue(AccessibilityLink.TRAFFIC_SIGN_ID);
@@ -62,7 +62,7 @@ public class RoadSectionMapper {
             addSegmentsToRoadSectionFragment(
                     roadSectionFragment,
                     isochroneMatch,
-                    getTrafficSign(trafficSignById, isochroneMatch, trafficSignEncodedValueAttribute),
+                    getTrafficSign(trafficSignsById, isochroneMatch, trafficSignEncodedValueAttribute),
                     directionalSegmentId,
                     roadSectionFragmentById);
         });

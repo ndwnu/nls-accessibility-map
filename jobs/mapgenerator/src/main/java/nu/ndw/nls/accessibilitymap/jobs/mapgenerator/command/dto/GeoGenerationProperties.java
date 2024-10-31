@@ -1,6 +1,9 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.time.OffsetDateTime;
 import lombok.Builder;
 import lombok.With;
@@ -20,6 +23,9 @@ public record GeoGenerationProperties(
         @NotNull TrafficSignType trafficSignType,
         @NotNull VehicleProperties vehicleProperties,
         @NotNull Boolean includeOnlyTimeWindowedSigns,
-        @NotNull GenerateConfiguration generateConfiguration) {
+        @NotNull GenerateConfiguration generateConfiguration,
+        @Positive double polygonMaxDistanceBetweenPoints,
+        @Min(50) @Max(54) double startLocationLatitude,
+        @Min(3) @Max(8) double startLocationLongitude) {
 
 }

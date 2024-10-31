@@ -176,7 +176,7 @@ class AccessibilityServiceTest {
                 .trafficSignType(TrafficSignType.C12)
                 .municipalityId(MUNICIPALITY_ID)
                 .vehicleProperties(vehicleProperties)
-                .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
+                .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
                 .includeOnlyTimeWindowedSigns(true)
                 .build();
 
