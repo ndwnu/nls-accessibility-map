@@ -1,20 +1,12 @@
 host: "localhost"
 hostWireMock: ${host}
-#hostDatabase: ${host}
-#
-#spring:
-#  datasource:
-#    url: jdbc:postgresql://${hostDatabase}:8100/hedera_agent
-#    username: postgres
-#    password: postgres
-#  jpa:
-#    database: postgresql
-#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+hostDatabase: ${host}
+
 spring:
   application:
     name: nls-accessibility-map-generator-jobs-component-test
   datasource:
-    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps
     password: nls-maps
     driver-class-name: org.postgresql.Driver
