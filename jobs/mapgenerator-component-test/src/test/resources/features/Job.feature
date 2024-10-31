@@ -1,6 +1,6 @@
 Feature: Schedule events
 
-  Scenario: Job generate  event create
+  Scenario: Job generate geojson
     Given a simple Graph Hopper network
     And traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime |

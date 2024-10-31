@@ -37,8 +37,8 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.DriverGeneralConfi
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.Version;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.nwbRoadSectionPrimaryKey;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.repository.RoadSectionRepository;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.repository.VersionRepository;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.repository.RoadSectionRepository;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.repository.VersionRepository;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
