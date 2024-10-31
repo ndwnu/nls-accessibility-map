@@ -139,7 +139,7 @@ class MapGeneratorServiceTest {
                 "Generating with the following properties: %s".formatted(geoGenerationProperties));
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Found 2 with road sections with traffic signs.");
+                "Found 2 with road section fragments with traffic signs.");
     }
 
     @Test
@@ -162,7 +162,7 @@ class MapGeneratorServiceTest {
                 "Generating with the following properties: %s".formatted(geoGenerationProperties));
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Found 2 with road sections with traffic signs.");
+                "Found 2 with road section fragments with traffic signs.");
     }
 
     @Test

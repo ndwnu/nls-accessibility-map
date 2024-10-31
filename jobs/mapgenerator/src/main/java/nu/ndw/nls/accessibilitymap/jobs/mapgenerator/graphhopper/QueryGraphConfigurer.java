@@ -154,5 +154,4 @@ public class QueryGraphConfigurer {
                 .toLineString(INCLUDE_ELEVATION);
         return lineString.getStartPoint().getCoordinate();
     }
-
 }

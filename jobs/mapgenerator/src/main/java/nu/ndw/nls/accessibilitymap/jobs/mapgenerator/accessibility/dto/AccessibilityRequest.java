@@ -18,7 +18,7 @@ public final class AccessibilityRequest {
     private final Integer municipalityId;
 
     @NotNull
-    private final Double searchDistanceInMetres;
+    private final Double searchRadiusInMeters;
 
     @Valid
     private final VehicleProperties vehicleProperties;

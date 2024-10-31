@@ -14,7 +14,7 @@ class AccessibilityRequestTest extends ValidationTest {
     void setUp() {
 
         accessibilityRequest = AccessibilityRequest.builder()
-                .searchDistanceInMetres(1d)
+                .searchRadiusInMeters(1d)
                 .trafficSignType(TrafficSignType.C7)
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
@@ -28,10 +28,10 @@ class AccessibilityRequestTest extends ValidationTest {
     }
 
     @Test
-    void validate_searchDistanceInMetres_null() {
+    void validate_searchRadiusInMeters_null() {
 
-        accessibilityRequest = accessibilityRequest.withSearchDistanceInMetres(null);
-        validate(accessibilityRequest, List.of("searchDistanceInMetres"), List.of("must not be null"));
+        accessibilityRequest = accessibilityRequest.withSearchRadiusInMeters(null);
+        validate(accessibilityRequest, List.of("searchRadiusInMeters"), List.of("must not be null"));
     }
 
     @Test

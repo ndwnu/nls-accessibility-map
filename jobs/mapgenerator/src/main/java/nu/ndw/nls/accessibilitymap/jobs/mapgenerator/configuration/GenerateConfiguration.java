@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration;
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,10 +23,6 @@ public record GenerateConfiguration(
         @NotNull Path rootExportDirectory,
 
         @NotBlank String relativeExportDirectoryPattern,
-
-        @Min(50) @Max(54) double startLocationLatitude,
-
-        @Min(3) @Max(8) double startLocationLongitude,
 
         @Min(1) double searchRadiusInMeters,
 

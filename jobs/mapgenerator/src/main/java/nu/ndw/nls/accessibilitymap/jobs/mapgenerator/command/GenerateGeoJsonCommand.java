@@ -47,6 +47,21 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             defaultValue = "false")
     private boolean publishEvents;
 
+    @Option(names = {"-sllat", "--start-location-latitude"},
+            description = "Start location",
+            required = true)
+    private double startLocationLatitude;
+
+    @Option(names = {"-sllon", "--start-location-longitude"},
+            description = "Start longitude",
+            required = true)
+    private double startLocationLongitude;
+
+    @Option(names = {"-pmdbp", "--polygon-max-distance-between-points"},
+            description = "The max instance between two point when calculating a polygon.",
+            defaultValue = "0.0005")
+    private double polygonMaxDistanceBetweenPoints;
+
     @Override
     public Integer call() {
 
@@ -54,10 +69,13 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
             OffsetDateTime startTime = clockService.now();
             GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
                     .startTime(startTime)
+                    .startLocationLatitude(startLocationLatitude)
+                    .startLocationLongitude(startLocationLongitude)
                     .trafficSignType(trafficSignType)
                     .vehicleProperties(vehiclePropertiesMapper.map(trafficSignType))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .exportVersion(Integer.parseInt(startTime.toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)))
+                    .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                     .publishEvents(publishEvents)
                     .generateConfiguration(generateProperties)
