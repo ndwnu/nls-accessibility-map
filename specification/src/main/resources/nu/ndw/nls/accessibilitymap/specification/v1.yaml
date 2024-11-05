@@ -1,7 +1,9 @@
 openapi: 3.0.0
 info:
   title: Accessibility map V1 API
-  description: Query the accessibility for vehicle characteristics within a municipality.
+  description: >
+    Query the accessibility for vehicle characteristics within a municipality. More information available on 
+    https://docs.ndw.nu
   version: '1'
 servers:
   - url: /api/rest/static-road-data/accessibility-map/v1
@@ -140,6 +142,7 @@ components:
       schema:
         type: number
         format: float
+        example: 5.2
         minimum: 0.0
         maximum: 22.0
     VehicleWidthParam:
@@ -150,6 +153,7 @@ components:
       schema:
         type: number
         format: float
+        example: 2.0
         minimum: 0.0
         maximum: 3.0
     VehicleHeightParam:
@@ -160,6 +164,7 @@ components:
       schema:
         type: number
         format: float
+        example: 3.2
         minimum: 0.0
         maximum: 4.0
     VehicleWeightParam:
@@ -171,6 +176,7 @@ components:
       schema:
         type: number
         format: float
+        example: 20.0
         minimum: 0.0
         maximum: 60.0
     VehicleAxleLoadParam:
@@ -181,6 +187,7 @@ components:
       schema:
         type: number
         format: float
+        example: 4.0
         minimum: 0.0
         maximum: 12.0
     VehicleHasTrailerParam:
@@ -190,6 +197,7 @@ components:
       required: false
       schema:
         type: boolean
+        example: false
         default: false
     AccessibleParam:
       in: query
@@ -200,28 +208,30 @@ components:
       required: false
       schema:
         type: boolean
+        example: false
     LatitudeParam:
       in: query
       name: latitude
       description: Optional latitude of the destination location. When present, the longitude must also be specified
-      example: 52.1326
       required: false
       schema:
         type: number
         format: double
+        example: 52.1326
     LongitudeParam:
       in: query
       name: longitude
       description: Optional longitude of the destination location. When present, the latitude must also be specified
-      example: 5.2913
       required: false
       schema:
         type: number
         format: double
+        example: 5.2913
 
   schemas:
     VehicleType:
       type: string
+      description: Vehicle type
       enum:
         - bus
         - car
@@ -229,26 +239,49 @@ components:
         - motorcycle
         - tractor
         - truck
+      example: truck
 
     AccessibilityMapResponse:
       type: object
+      description: Response object containing (in)accessible road sections
       properties:
         inaccessibleRoadSections:
           type: array
           items:
             $ref: '#/components/schemas/RoadSection'
+          description: List of inaccessible road sections
         matchedRoadSection:
           $ref: '#/components/schemas/RoadSection'
+      example:
+        - roadSectionId: 312865
+          forwardAccessible: false
+          backwardAccessible: false
+        - roadSectionId: 312866
+          forwardAccessible: false
+        - roadSectionId: 581209
+          forwardAccessible: true
+          backwardAccessible: false
     RoadSection:
       type: object
+      description: Road section
       properties:
         roadSectionId:
           type: integer
           format: int32
+          description: Identifier of the road section used by NWB
+          example: 385127
         forwardAccessible:
           type: boolean
+          description: Indicates whether the road section is accessible in forward direction
+          example: false
         backwardAccessible:
           type: boolean
+          description: Indicates whether the road section is accessible in backward direction
+          example: false
+      example:
+        roadSectionId: 581209
+        forwardAccessible: true
+        backwardAccessible: false
 
     FeatureCollection:
       type: object
@@ -263,6 +296,8 @@ components:
           type: string
           enum:
             - FeatureCollection
+          description: Type of the element
+          example: FeatureCollection
         features:
           type: array
           items:
@@ -281,8 +316,11 @@ components:
           type: string
           enum:
             - Feature
+          example: Feature
         id:
           type: object
+          description: Identifier for the feature
+          example: 217934
         geometry:
           $ref: '#/components/schemas/Geometry'
     Geometry:
@@ -300,7 +338,8 @@ components:
           enum:
             - Point
             - LineString
-          description: Geometry type
+          description: Type of the geometry
+          example: LineString
     Point:
       allOf:
         - $ref: '#/components/schemas/Geometry'
@@ -318,7 +357,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/Geometry'
         - type: object
-          description: GeoJSON geometry
+          description: GeoJSON line string geometry
           example: [ [ 5.1, 52.2 ], [ 5.4, 52.3 ] ]
           externalDocs:
             url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.4
@@ -329,6 +368,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Point2D'
+              description: List of points representing the line string geometry
     Point2D:
       type: array
       description: Point in 2D space
@@ -340,6 +380,7 @@ components:
       items:
         type: number
         format: double
+        description: List of coordinates representing the point geometry
 
     RoadSectionFeatureCollection:
       allOf:
@@ -364,19 +405,25 @@ components:
             id:
               type: integer
               format: int32
+              example: 715923
             geometry:
               $ref: '#/components/schemas/LineString'
             properties:
               $ref: '#/components/schemas/RoadSectionProperties'
     RoadSectionProperties:
       type: object
+      description: Road section GeoJSON properties
       required:
         - accessible
       properties:
         accessible:
           type: boolean
+          description: Indicates whether the road section is accessible
+          example: false
         matched:
           type: boolean
+          description: Indicates whether the road section is matched as the destination
+          example: true
 
     MunicipalityFeatureCollection:
       allOf:
@@ -400,12 +447,15 @@ components:
           properties:
             id:
               type: string
+              description: Identifier of the municipality in the municipality registry
+              example: GM0344
             geometry:
               $ref: '#/components/schemas/Point'
             properties:
               $ref: '#/components/schemas/MunicipalityProperties'
     MunicipalityProperties:
       type: object
+      description: Municipality GeoJSON properties
       required:
         - name
         - searchDistance
@@ -416,19 +466,23 @@ components:
         name:
           type: string
           description: Municipality name
+          example: Utrecht
         searchDistance:
           type: integer
           format: int32
           description: Search distance in metres
+          example: 50000
         bounds:
           $ref: '#/components/schemas/BoundingBox'
         requestExemptionUrl:
           type: string
           description: URL to request an exemption
+          example: 'https://loket.digitaal.utrecht.nl/nl/products/ontheffing-voertuig'
         dateLastCheck:
           type: string
           format: date
           description: The last validated date.
+          example: 2024-10-01
 
     BoundingBox:
       type: array
@@ -444,6 +498,9 @@ components:
 
     APIError:
       type: object
+      description: API error response
       properties:
         message:
           type: string
+          description: Error message from the API
+          example: 'Could not find road section by latitude: 52.1326 longitude: 5.2913'
