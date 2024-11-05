@@ -54,6 +54,8 @@ springdoc:
   swagger-ui:
     url: /api-docs/v1.yaml
     path: /api-docs
+    show-extensions: true
+    show-common-extensions: true
 
 openapi:
   accessibilityMapV1:
