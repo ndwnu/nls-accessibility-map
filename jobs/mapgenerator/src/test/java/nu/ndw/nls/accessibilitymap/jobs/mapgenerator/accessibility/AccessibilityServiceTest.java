@@ -173,7 +173,7 @@ class AccessibilityServiceTest {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startLocationLatitude(START_LOCATION_LATITUDE)
                 .startLocationLongitude(START_LOCATION_LONGITUDE)
-                .trafficSignType(TrafficSignType.C12)
+                .trafficSignTypes(List.of(TrafficSignType.C12))
                 .municipalityId(MUNICIPALITY_ID)
                 .vehicleProperties(vehicleProperties)
                 .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
@@ -274,7 +274,7 @@ class AccessibilityServiceTest {
 
     private void mockTrafficSignData() {
 
-        when(trafficSignDataService.findAllByType(TrafficSignType.C12))
+        when(trafficSignDataService.findAllByTypes(List.of(TrafficSignType.C12)))
                 .thenReturn(List.of(trafficSign));
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID);
         when(trafficSignSnap.getTrafficSign()).thenReturn(trafficSign);

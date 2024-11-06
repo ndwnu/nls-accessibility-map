@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
@@ -75,10 +76,10 @@ class GenerateGeoJsonCommandTest {
                 .thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(vehiclePropertiesMapper.map(trafficSignType)).thenReturn(vehicleProperties);
+        when(vehiclePropertiesMapper.map(List.of(trafficSignType), true)).thenReturn(vehicleProperties);
 
         assertThat(new CommandLine(generateGeoJsonCommand)
-                .execute(
+                .execute("--name=%s".formatted(trafficSignType.name()),
                         "--traffic-sign=%s".formatted(trafficSignType.name()),
                         "--include-only-time-windowed-signs",
                         "--publish-events",
@@ -93,7 +94,7 @@ class GenerateGeoJsonCommandTest {
         GeoGenerationProperties geoGenerationProperties = geoGenerationPropertiesCaptor.getValue();
 
         validateGeoGenerationPropertiesValid(
-                trafficSignType,
+                List.of(trafficSignType),
                 geoGenerationProperties,
                 startTime,
                 true,
@@ -116,9 +117,11 @@ class GenerateGeoJsonCommandTest {
                 .thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(vehiclePropertiesMapper.map(trafficSignType)).thenReturn(vehicleProperties);
+        when(vehiclePropertiesMapper.map(List.of(trafficSignType), includeOnlyTimeWindowedSigns))
+                .thenReturn(vehicleProperties);
 
         ArrayList<String> arguments = new ArrayList<>();
+        arguments.add("--name=%s".formatted(trafficSignType.name()));
         arguments.add("--traffic-sign=%s".formatted(trafficSignType.name()));
         if (includeOnlyTimeWindowedSigns) {
             arguments.add("--include-only-time-windowed-signs");
@@ -139,7 +142,7 @@ class GenerateGeoJsonCommandTest {
         GeoGenerationProperties geoGenerationProperties = geoGenerationPropertiesCaptor.getValue();
 
         validateGeoGenerationPropertiesValid(
-                trafficSignType,
+                List.of(trafficSignType),
                 geoGenerationProperties,
                 startTime,
                 includeOnlyTimeWindowedSigns,
@@ -152,7 +155,7 @@ class GenerateGeoJsonCommandTest {
         when(clockService.now()).thenThrow(new RuntimeException("MyException"));
 
         assertThat(new CommandLine(generateGeoJsonCommand)
-                .execute(
+                .execute("--name=%s".formatted(TrafficSignType.C6.name()),
                         "--traffic-sign=%s".formatted(TrafficSignType.C6.name()),
                         "--include-only-time-windowed-signs",
                         "--publish-events",
@@ -167,15 +170,36 @@ class GenerateGeoJsonCommandTest {
         );
     }
 
+
+    @Test
+    void call_exceptionMultipleTrafficSigns() {
+
+        assertThat(new CommandLine(generateGeoJsonCommand)
+                .execute("--name=%s".formatted(TrafficSignType.C6.name()),
+                        "--traffic-sign=%s".formatted(TrafficSignType.C6.name()),
+                        "--traffic-sign=%s".formatted(TrafficSignType.C7.name()),
+                        "--include-only-time-windowed-signs",
+                        "--publish-events",
+                        "--start-location-latitude=1",
+                        "--start-location-longitude=2")
+        ).isOne();
+
+        loggerExtension.containsLog(
+                Level.ERROR,
+                "Could not generate GeoJson because of: ",
+                "Events are disabled for multiple traffic signs"
+        );
+    }
+
     private void validateGeoGenerationPropertiesValid(
-            TrafficSignType trafficSignType,
+            List<TrafficSignType> trafficSignTypes,
             GeoGenerationProperties geoGenerationProperties,
             OffsetDateTime startTime,
             boolean includeOnlyTimeWindowedSigns,
             boolean publishEvents) {
 
         assertThat(geoGenerationProperties.startTime()).isEqualTo(startTime);
-        assertThat(geoGenerationProperties.trafficSignType()).isEqualTo(trafficSignType);
+        assertThat(geoGenerationProperties.trafficSignTypes()).isEqualTo(trafficSignTypes);
         assertThat(geoGenerationProperties.includeOnlyTimeWindowedSigns()).isEqualTo(includeOnlyTimeWindowedSigns);
         assertThat(geoGenerationProperties.exportVersion()).isEqualTo(20220311);
         assertThat(geoGenerationProperties.publishEvents()).isEqualTo(publishEvents);

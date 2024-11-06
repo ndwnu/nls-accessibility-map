@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
@@ -27,7 +28,7 @@ class AccessibilityRequestMapperTest {
     void map() {
 
         GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
-                .trafficSignType(TrafficSignType.C7)
+                .trafficSignTypes(List.of(TrafficSignType.C7))
                 .vehicleProperties(VehicleProperties.builder().build())
                 .includeOnlyTimeWindowedSigns(true)
                 .startLocationLatitude(52.12096528507054)
@@ -47,7 +48,7 @@ class AccessibilityRequestMapperTest {
                 .isEqualTo(geoGenerationProperties.startLocationLongitude());
         assertThat(accessibilityRequest.getSearchRadiusInMeters())
                 .isEqualTo(geoGenerationProperties.generateConfiguration().searchRadiusInMeters());
-        assertThat(accessibilityRequest.getTrafficSignType()).isEqualTo(geoGenerationProperties.trafficSignType());
+        assertThat(accessibilityRequest.getTrafficSignTypes()).isEqualTo(geoGenerationProperties.trafficSignTypes());
         assertThat(accessibilityRequest.isIncludeOnlyTimeWindowedSigns())
                 .isEqualTo(geoGenerationProperties.includeOnlyTimeWindowedSigns());
     }

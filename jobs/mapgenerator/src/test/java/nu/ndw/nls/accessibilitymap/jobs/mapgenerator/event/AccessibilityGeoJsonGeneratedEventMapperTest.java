@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventType;
@@ -32,7 +33,7 @@ class AccessibilityGeoJsonGeneratedEventMapperTest {
         Instant trafficSignTimestamp = Instant.now();
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
-                trafficSignType,
+                List.of(trafficSignType),
                 version,
                 nwbVersionId,
                 trafficSignTimestamp

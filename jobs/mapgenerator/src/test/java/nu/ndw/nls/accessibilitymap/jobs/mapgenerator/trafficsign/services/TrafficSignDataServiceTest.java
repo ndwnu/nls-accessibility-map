@@ -66,7 +66,7 @@ class TrafficSignDataServiceTest {
     }
 
     @Test
-    void findAllByType_ok() {
+    void findAllByTypes_ok() {
 
         when(trafficSignService.getTrafficSigns(Set.of("C7b"))).thenReturn(trafficSignData);
         when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(
@@ -80,7 +80,7 @@ class TrafficSignDataServiceTest {
         mockMapperCalls(trafficSignGeoJsonDto3, trafficSign3);
         mockMapperCalls(trafficSignGeoJsonDto4, null);
 
-        List<TrafficSign> trafficSigns = trafficSignDataService.findAllByType(TrafficSignType.C7B);
+        List<TrafficSign> trafficSigns = trafficSignDataService.findAllByTypes(List.of(TrafficSignType.C7B));
 
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign2, trafficSign3);
     }

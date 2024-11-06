@@ -76,7 +76,8 @@ class AbstractGeoJsonWriterTest {
     void setUp() {
 
         geoGenerationProperties = GeoGenerationProperties.builder()
-                .trafficSignType(TrafficSignType.C7)
+                .name(TrafficSignType.C7.name())
+                .trafficSignTypes(List.of(TrafficSignType.C7))
                 .generateConfiguration(generateConfiguration)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
                 .build();
