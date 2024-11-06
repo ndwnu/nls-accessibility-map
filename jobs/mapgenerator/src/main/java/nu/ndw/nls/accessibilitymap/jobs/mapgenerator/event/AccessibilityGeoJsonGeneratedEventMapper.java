@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
@@ -15,15 +16,16 @@ import org.springframework.stereotype.Component;
 public class AccessibilityGeoJsonGeneratedEventMapper {
 
     public NlsEvent map(
-            TrafficSignType trafficSignType,
+            List<TrafficSignType> trafficSignTypes,
             int version,
             int nwbVersionId,
             Instant trafficSignTimestamp) {
-
+        // todo change event subject type semantics to more generic to incorporate
+        //  datasets based on more than one traffic sign
         return NlsEvent.builder()
                 .type(NlsEventType.MAP_GEOJSON_PUBLISHED_EVENT)
                 .subject(NlsEventSubject.builder()
-                        .type(mapNlsEventSubjectType(trafficSignType))
+                        .type(mapNlsEventSubjectType(trafficSignTypes.getFirst()))
                         .version(String.valueOf(version))
                         .nwbVersion(String.valueOf(nwbVersionId))
                         .timestamp(trafficSignTimestamp.toString())

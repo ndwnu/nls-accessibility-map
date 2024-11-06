@@ -67,7 +67,7 @@ class MapGeneratorServiceTest {
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
-    private OffsetDateTime timestamp = OffsetDateTime.now();
+    private final OffsetDateTime  timestamp = OffsetDateTime.now();
 
     private GeoGenerationProperties geoGenerationProperties;
 
@@ -80,7 +80,7 @@ class MapGeneratorServiceTest {
                 .startTime(timestamp)
                 .exportVersion(1)
                 .nwbVersion(2)
-                .trafficSignType(TrafficSignType.C7)
+                .trafficSignTypes(List.of(TrafficSignType.C7))
                 .publishEvents(true)
                 .build();
 
@@ -122,7 +122,7 @@ class MapGeneratorServiceTest {
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(accessibilityGeoJsonGeneratedEventMapper.map(
-                geoGenerationProperties.trafficSignType(),
+                geoGenerationProperties.trafficSignTypes(),
                 geoGenerationProperties.exportVersion(),
                 geoGenerationProperties.nwbVersion(),
                 timestamp.toInstant()))

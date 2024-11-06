@@ -14,7 +14,7 @@ public final class AccessibilityRequestMapper {
                 .startLocationLatitude(geoGenerationProperties.startLocationLatitude())
                 .startLocationLongitude(geoGenerationProperties.startLocationLongitude())
                 .searchRadiusInMeters(geoGenerationProperties.generateConfiguration().searchRadiusInMeters())
-                .trafficSignType(geoGenerationProperties.trafficSignType())
+                .trafficSignTypes(geoGenerationProperties.trafficSignTypes())
                 .includeOnlyTimeWindowedSigns(geoGenerationProperties.includeOnlyTimeWindowedSigns())
                 .build();
     }

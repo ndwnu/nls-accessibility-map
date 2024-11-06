@@ -57,7 +57,7 @@ public class MapGeneratorService {
             GeoGenerationProperties geoGenerationProperties) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
-                geoGenerationProperties.trafficSignType(),
+                geoGenerationProperties.trafficSignTypes(),
                 geoGenerationProperties.exportVersion(),
                 geoGenerationProperties.nwbVersion(),
                 geoGenerationProperties.startTime().toInstant());

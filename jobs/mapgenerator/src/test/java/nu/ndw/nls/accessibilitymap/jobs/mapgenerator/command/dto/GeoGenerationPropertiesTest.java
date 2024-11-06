@@ -30,13 +30,14 @@ class GeoGenerationPropertiesTest extends ValidationTest {
     void setUp() {
 
         geoGenerationProperties = GeoGenerationProperties.builder()
+                .name(TrafficSignType.C7.name())
                 .exportVersion(1)
                 .nwbVersion(2)
                 .publishEvents(true)
                 .startTime(OffsetDateTime.now())
                 .startLocationLatitude(50)
                 .startLocationLongitude(3)
-                .trafficSignType(TrafficSignType.C7)
+                .trafficSignTypes(List.of(TrafficSignType.C7))
                 .vehicleProperties(vehicleProperties)
                 .polygonMaxDistanceBetweenPoints(0.000000000000001d)
                 .includeOnlyTimeWindowedSigns(true)
@@ -85,9 +86,9 @@ class GeoGenerationPropertiesTest extends ValidationTest {
     @Test
     void validate_trafficSignType_null() {
 
-        geoGenerationProperties = geoGenerationProperties.withTrafficSignType(null);
+        geoGenerationProperties = geoGenerationProperties.withTrafficSignTypes(null);
 
-        validate(geoGenerationProperties, List.of("trafficSignType"), List.of("must not be null"));
+        validate(geoGenerationProperties, List.of("trafficSignTypes"), List.of("must not be null"));
     }
 
     @ParameterizedTest

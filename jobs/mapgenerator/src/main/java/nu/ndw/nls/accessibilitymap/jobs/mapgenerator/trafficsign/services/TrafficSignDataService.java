@@ -2,9 +2,9 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
@@ -21,11 +21,11 @@ public class TrafficSignDataService {
 
     private final TrafficSignService trafficSignService;
 
-    public List<TrafficSign> findAllByType(TrafficSignType trafficSignType) {
+    public List<TrafficSign> findAllByTypes(List<TrafficSignType> trafficSignTypes) {
 
         IntegerSequenceSupplier idSupplier = new IntegerSequenceSupplier();
 
-        return trafficSignService.getTrafficSigns(Set.of(mapTrafficSignTypeToRvvCode(trafficSignType)))
+        return trafficSignService.getTrafficSigns(mapTrafficSignTypesToRvvCode(trafficSignTypes))
                 .trafficSignsByRoadSectionId().values().stream()
                 .flatMap(Collection::stream)
                 .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(
@@ -36,8 +36,9 @@ public class TrafficSignDataService {
                 .toList();
     }
 
-    private String mapTrafficSignTypeToRvvCode(TrafficSignType trafficSignType) {
-        return trafficSignType.name().charAt(0)
-                + trafficSignType.name().substring(1).toLowerCase(Locale.US);
+    private Set<String> mapTrafficSignTypesToRvvCode(List<TrafficSignType> trafficSignTypes) {
+        return trafficSignTypes.stream()
+                .map(TrafficSignType::getRvvCode)
+                .collect(Collectors.toSet());
     }
 }

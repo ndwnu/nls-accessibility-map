@@ -43,12 +43,14 @@ public class MapGenerationJobDriver implements StateManagement {
                         Environment.builder()
                                 .key("COMMAND")
                                 .value(("generateGeoJson "
+                                        + "--name=%s "
                                         + "--traffic-sign=%s "
                                         + "--include-only-time-windowed-signs "
                                         + "--publish-events "
                                         + "--start-location-latitude=%s "
                                         + "--start-location-longitude=%s "
                                         + "--polygon-max-distance-between-points=0.5").formatted(
+                                        trafficSignType,
                                         trafficSignType,
                                         startNode.getLatitude(),
                                         startNode.getLongitude()

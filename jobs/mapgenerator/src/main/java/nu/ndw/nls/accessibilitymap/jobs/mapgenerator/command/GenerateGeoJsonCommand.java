@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services.MapGeneratorService;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -33,9 +35,14 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     private final ClockService clockService;
 
     @Option(names = {"-t", "--traffic-sign"},
-            description = "Traffic sign to generate the map for.",
+            description = "Traffic signs to generate the map for.",
             required = true)
-    private TrafficSignType trafficSignType;
+    private List<TrafficSignType> trafficSignTypes;
+
+    @Option(names = {"-n", "--name"},
+    description = "Name for the generated file",
+    required = true)
+    private String name;
 
     @Option(names = {"-tw", "--include-only-time-windowed-signs"},
             description = "Traffic sign to generate the map for.",
@@ -66,13 +73,17 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     public Integer call() {
 
         try {
+            if (publishEvents && trafficSignTypes.size() > 1) {
+                throw new NotImplementedException("Events are disabled for multiple traffic signs");
+            }
             OffsetDateTime startTime = clockService.now();
             GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
                     .startTime(startTime)
+                    .name(name)
                     .startLocationLatitude(startLocationLatitude)
                     .startLocationLongitude(startLocationLongitude)
-                    .trafficSignType(trafficSignType)
-                    .vehicleProperties(vehiclePropertiesMapper.map(trafficSignType))
+                    .trafficSignTypes(trafficSignTypes)
+                    .vehicleProperties(vehiclePropertiesMapper.map(trafficSignTypes, includeOnlyTimeWindowedSigns))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .exportVersion(Integer.parseInt(startTime.toLocalDate().format(DateTimeFormatter.BASIC_ISO_DATE)))
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
@@ -80,7 +91,6 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
                     .publishEvents(publishEvents)
                     .generateConfiguration(generateProperties)
                     .build();
-
             log.info("Generating GeoJson");
             mapGeneratorService.generate(geoGenerationProperties);
             return 0;

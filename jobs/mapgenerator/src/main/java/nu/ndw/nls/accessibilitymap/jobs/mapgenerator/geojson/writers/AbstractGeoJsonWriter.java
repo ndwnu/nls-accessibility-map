@@ -74,7 +74,7 @@ public abstract class AbstractGeoJsonWriter {
     protected String buildExportFileName(GeoGenerationProperties geoGenerationProperties) {
         StringBuilder exportFileName = new StringBuilder();
 
-        exportFileName.append(geoGenerationProperties.trafficSignType().name().toLowerCase(Locale.US));
+        exportFileName.append(geoGenerationProperties.name().toLowerCase(Locale.US));
         if (geoGenerationProperties.includeOnlyTimeWindowedSigns()) {
             exportFileName.append("WindowTimeSegments");
         }
