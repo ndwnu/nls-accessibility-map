@@ -3,11 +3,11 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>3.2.4</version>
+        <version>3.2.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>jobs</artifactId>
-    <version>3.2.4</version>
+    <version>3.2.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>nls-accessibility-map-jobs</name>
     <modules>
