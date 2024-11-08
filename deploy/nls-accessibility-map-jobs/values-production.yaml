@@ -2,6 +2,5 @@ environment: production
 
 application:
   databaseHost: nls-postgres-production.postgres.database.azure.com
-  loggingLevelNuNdwNlsAccessibilityMap: INFO
 
 trafficSignApiUrl: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
