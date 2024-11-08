@@ -5,7 +5,6 @@ metadata:
 data:
   DD_DATA_STREAMS_ENABLED: "true"
   DD_TRACE_METHODS: picocli.CommandLine[execute]
-  LOGGING_LEVEL_NU_NDW_NLS_ACCESSIBILITYMAP: {{ .Values.application.loggingLevelNuNdwNlsAccessibilityMap }}
   MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
   NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNCLIENT_API_URL: {{ .Values.trafficSignApiUrl }}
   SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
