@@ -39,7 +39,6 @@ class QueryGraphFactoryTest {
     private TrafficSignSnap trafficSignSnap;
     @Mock
     private QueryGraph queryGraph;
-    ;
 
     private static MockedStatic<QueryGraph> queryGraphStaticMock;
 

@@ -5,8 +5,6 @@ import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRAFFIC
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.google.common.collect.Sets;
-import com.graphhopper.routing.ev.BooleanEncodedValue;
-import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
@@ -15,7 +13,6 @@ import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.shapes.GHPoint;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +40,8 @@ public class QueryGraphConfigurer {
 
     private final EncodingManager encodingManager;
 
+    private final EdgeManager edgeManager;
+
     /**
      * This method iterates over all edges in both directions and determines whether the edge has a traffic sign that
      * affects its access forbidden attribute. If that is the case, it will assign the traffic sign to this edge and set
@@ -66,9 +65,7 @@ public class QueryGraphConfigurer {
             EdgeIterator edgeIterator = edgeExplorer.setBaseNode(startNode);
             while (edgeIterator.next()) {
                 unblockEdge(edgeIterator);
-
                 int roadSectionId = edgeIterator.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-
                 trafficSignSnapsByRoadSectionId.getOrDefault(roadSectionId, List.of()).stream()
                         .filter(trafficSignSnap -> isTrafficSignInSameDirectionAsEdge(edgeIterator, trafficSignSnap))
                         .filter(trafficSignSnap -> isTrafficSignInFrontOfEdge(edgeIterator, trafficSignSnap))
@@ -98,36 +95,20 @@ public class QueryGraphConfigurer {
     }
 
     private void unblockEdge(EdgeIterator edgeIterator) {
-        Arrays.stream(WindowTimeEncodedValue.values())
-                .map(WindowTimeEncodedValue::getEncodedValue).toList()
-                .forEach(key ->
-                {
-                    BooleanEncodedValue booleanEncodedValue = encodingManager.getBooleanEncodedValue(key);
-                    edgeIterator.set(booleanEncodedValue, false);
-                    edgeIterator.setReverse(booleanEncodedValue, false);
-                });
+        edgeManager.resetRestrictionsOnEdge(edgeIterator);
     }
 
-    private void assignTrafficSignIdToEdge(
-            EdgeIterator edgeIterator,
-            Integer trafficSignId) {
+    private void assignTrafficSignIdToEdge(EdgeIterator edgeIterator, Integer trafficSignId) {
 
-        IntEncodedValue intEncodedValue = encodingManager.getIntEncodedValue(TRAFFIC_SIGN_ID);
-        if (edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)) {
-            edgeIterator.setReverse(intEncodedValue, trafficSignId);
-        } else {
-            edgeIterator.set(intEncodedValue, trafficSignId);
-        }
+        edgeManager.setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, trafficSignId);
     }
 
-    private void blockEdgeWithTrafficSignRestrictions(
-            EdgeIterator edgeIterator,
-            TrafficSign trafficSign) {
+    private void blockEdgeWithTrafficSignRestrictions(EdgeIterator edgeIterator, TrafficSign trafficSign) {
 
         String trafficSignAttributeKey = WindowTimeEncodedValue.valueOf(trafficSign.trafficSignType().name())
                 .getEncodedValue();
-        BooleanEncodedValue booleanEncodedValue = encodingManager.getBooleanEncodedValue(trafficSignAttributeKey);
-        edgeIterator.set(booleanEncodedValue, true);
+
+        edgeManager.setValueOnEdge(edgeIterator, trafficSignAttributeKey, true);
     }
 
     private boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {
@@ -149,6 +130,7 @@ public class QueryGraphConfigurer {
     }
 
     private static Coordinate getEdgeStartCoordinate(EdgeIteratorState edgeIteratorState) {
+
         LineString lineString = edgeIteratorState
                 .fetchWayGeometry(FetchMode.ALL)
                 .toLineString(INCLUDE_ELEVATION);

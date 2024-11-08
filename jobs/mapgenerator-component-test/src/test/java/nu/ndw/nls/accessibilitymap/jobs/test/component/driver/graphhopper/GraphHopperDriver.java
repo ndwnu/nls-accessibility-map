@@ -55,7 +55,7 @@ public class GraphHopperDriver implements StateManagement {
     private static final FileAttribute<?> FOLDER_PERMISSIONS = PosixFilePermissions.asFileAttribute(
             Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE));
 
-    private static final String VERSION = "accessibility_latest";
+    private static final String VERSION = "accessibility_latest_component_test";
 
     private static final String ACCESSIBILITY_META_DATA_JSON = "accessibility_meta_data.json";
 
@@ -124,15 +124,14 @@ public class GraphHopperDriver implements StateManagement {
                 .revision(OffsetDateTime.now())
                 .build());
 
-        networkDataService.getLinks().forEach(link -> {
-            roadSectionRepository.save(RoadSection.builder()
-                    .primaryKey(new nwbRoadSectionPrimaryKey(1, link.getAccessibilityLink().getId()))
-                    .junctionIdFrom(link.getAccessibilityLink().getFromNodeId())
-                    .junctionIdTo(link.getAccessibilityLink().getToNodeId())
-                    .roadOperatorType("Municipality")
-                    .geometry(link.getRijksDiehoekLineString())
-                    .build());
-        });
+        networkDataService.getLinks()
+                .forEach(link -> roadSectionRepository.save(RoadSection.builder()
+                        .primaryKey(new nwbRoadSectionPrimaryKey(1, link.getAccessibilityLink().getId()))
+                        .junctionIdFrom(link.getAccessibilityLink().getFromNodeId())
+                        .junctionIdTo(link.getAccessibilityLink().getToNodeId())
+                        .roadOperatorType("Municipality")
+                        .geometry(link.getRijksDiehoekLineString())
+                        .build()));
 
         graphHopperNetworkService.storeOnDisk(routingNetworkSettings);
         try {
@@ -196,7 +195,7 @@ public class GraphHopperDriver implements StateManagement {
 
     @Override
     public void clearStateAfterEachScenario() {
-
+        // do nothing
     }
 
 }

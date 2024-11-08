@@ -55,6 +55,10 @@ public class MapGenerationJobDriver implements StateManagement {
                                         startNode.getLatitude(),
                                         startNode.getLongitude()
                                 ))
+                                .build(),
+                        Environment.builder()
+                                .key("GRAPHHOPPER_NETWORKNAME")
+                                .value("accessibility_latest_component_test")
                                 .build()));
     }
 
@@ -85,7 +89,6 @@ public class MapGenerationJobDriver implements StateManagement {
                 ,
                 "geojson");
     }
-
 
     @Override
     public void clearStateAfterEachScenario() {
