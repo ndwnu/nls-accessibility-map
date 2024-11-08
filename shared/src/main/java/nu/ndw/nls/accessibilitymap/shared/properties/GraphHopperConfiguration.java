@@ -20,17 +20,14 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(GraphHopperProperties.class)
 public class GraphHopperConfiguration {
 
-    private static final String NETWORK_NAME = "accessibility_latest";
-    private static final String ACCESSIBILITY_META_DATA_JSON = "accessibility_meta_data.json";
-
     private final GraphHopperProperties graphHopperProperties;
 
     public Path getLatestPath() {
-        return graphHopperProperties.getDir().resolve(NETWORK_NAME);
+        return graphHopperProperties.getLatestPath();
     }
 
     public Path getMetaDataPath() {
-        return getLatestPath().resolve(ACCESSIBILITY_META_DATA_JSON);
+        return graphHopperProperties.getMetaDataPath();
     }
 
     public RoutingNetworkSettings<AccessibilityLink> configureLoadingRoutingNetworkSettings() {
@@ -51,7 +48,7 @@ public class GraphHopperConfiguration {
                 .builder(AccessibilityLink.class)
                 .indexed(true)
                 .graphhopperRootPath(graphHopperProperties.getDir())
-                .networkNameAndVersion(NETWORK_NAME)
+                .networkNameAndVersion(graphHopperProperties.getNetworkName())
                 .profiles(List.of(PROFILE));
     }
 

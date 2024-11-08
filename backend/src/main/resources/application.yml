@@ -4,6 +4,7 @@ server:
     context-path: /api/rest/static-road-data/accessibility-map
 graphhopper:
   dir: /application/graphhopper
+  network-name: accessibility_latest
 
 spring:
   application:

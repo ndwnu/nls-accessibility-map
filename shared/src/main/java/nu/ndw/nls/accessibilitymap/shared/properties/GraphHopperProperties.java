@@ -11,6 +11,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @RequiredArgsConstructor
 public class GraphHopperProperties {
 
+    private static final String ACCESSIBILITY_META_DATA_JSON = "accessibility_meta_data.json";
     Path dir;
+    String networkName;
 
+    public Path getLatestPath() {
+        return getDir().resolve(getNetworkName());
+    }
+
+    public Path getMetaDataPath() {
+        return getLatestPath().resolve(ACCESSIBILITY_META_DATA_JSON);
+    }
 }

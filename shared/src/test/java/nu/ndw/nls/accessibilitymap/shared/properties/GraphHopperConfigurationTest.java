@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.shared.properties;
 
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
@@ -40,41 +40,45 @@ class GraphHopperConfigurationTest {
 
     @Test
     void getLatestPath_ok() {
-        when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
+        when(graphHopperProperties.getLatestPath()).thenReturn(GRAPHHOPPER_FULL_PATH);
         assertEquals(GRAPHHOPPER_FULL_PATH, graphHopperConfiguration.getLatestPath());
     }
 
     @Test
     void getMetaDataPath_ok() {
-        when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
+        when(graphHopperProperties.getMetaDataPath()).thenReturn(EXPECTED_META_DATA_PATH);
         assertEquals(EXPECTED_META_DATA_PATH, graphHopperConfiguration.getMetaDataPath());
     }
 
 
     @Test
     void configureLoadingRoutingNetworkSettings_ok() {
+        when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
+        when(graphHopperProperties.getNetworkName()).thenReturn(NETWORK_NAME);
+
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings =
                 graphHopperConfiguration.configureLoadingRoutingNetworkSettings();
 
         assertEquals(RoutingNetworkSettings
-                        .builder(AccessibilityLink.class)
-                        .indexed(true)
-                        .graphhopperRootPath(graphHopperProperties.getDir())
-                        .networkNameAndVersion(NETWORK_NAME)
-                        .profiles(List.of(PROFILE))
+                .builder(AccessibilityLink.class)
+                .indexed(true)
+                .graphhopperRootPath(GRAPHHOPPER_BASE_PATH)
+                .networkNameAndVersion(NETWORK_NAME)
+                .profiles(List.of(PROFILE))
                 .build(), accessibilityLinkRoutingNetworkSettings);
     }
 
     @Test
     void configurePersistingRoutingNetworkSettings_ok() {
-
+        when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
+        when(graphHopperProperties.getNetworkName()).thenReturn(NETWORK_NAME);
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings =
                 graphHopperConfiguration.configurePersistingRoutingNetworkSettings(accessibilityLinkSupplier,
                         trafficSignData);
 
         assertEquals(RoutingNetworkSettings
                 .builder(AccessibilityLink.class)
-                .graphhopperRootPath(graphHopperProperties.getDir())
+                .graphhopperRootPath(GRAPHHOPPER_BASE_PATH)
                 .networkNameAndVersion(NETWORK_NAME)
                 .profiles(List.of(PROFILE))
                 .indexed(true)
