@@ -63,7 +63,7 @@ class TriangulatorTest {
                 new Coordinate(2, 1, 0)
         );
 
-        assertThat(catchThrowable(() ->triangulator.triangulate(coordinates, 0)))
+        assertThat(catchThrowable(() -> triangulator.triangulate(coordinates, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Too few points found. Please try a different 'point' or a larger 'time_limit'.");
     }

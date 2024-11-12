@@ -28,9 +28,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.mappers.vehiclerestriction.MaximumRestrictionMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.mappers.vehiclerestriction.NoEntryRestrictionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.mappers.vehiclerestriction.RestrictionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.accessibility.mappers.vehiclerestriction.NoEntryRestrictionMapper;
 import org.springframework.stereotype.Component;
 
 @Component

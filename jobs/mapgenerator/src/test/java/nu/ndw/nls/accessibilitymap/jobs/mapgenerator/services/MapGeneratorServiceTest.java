@@ -67,7 +67,7 @@ class MapGeneratorServiceTest {
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
-    private final OffsetDateTime  timestamp = OffsetDateTime.now();
+    private final OffsetDateTime timestamp = OffsetDateTime.now();
 
     private GeoGenerationProperties geoGenerationProperties;
 

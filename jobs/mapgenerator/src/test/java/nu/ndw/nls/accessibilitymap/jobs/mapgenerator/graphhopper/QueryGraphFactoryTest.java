@@ -59,9 +59,9 @@ class QueryGraphFactoryTest {
     void createQueryGraph_ok() {
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(trafficSignSnap.getSnap()).thenReturn(snapForTrafficSign);
-        queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(snapForTrafficSign,startSegment))).thenReturn(queryGraph);
+        queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(snapForTrafficSign, startSegment))).thenReturn(queryGraph);
         QueryGraph result = queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegment);
         assertThat(result).isEqualTo(queryGraph);
-        verify(queryGraphConfigurer).configure(queryGraph,List.of(trafficSignSnap));
+        verify(queryGraphConfigurer).configure(queryGraph, List.of(trafficSignSnap));
     }
 }

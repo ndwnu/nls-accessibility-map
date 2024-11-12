@@ -13,30 +13,30 @@ import org.springframework.stereotype.Service;
 
 class ClockServiceTest {
 
-	private ClockService clockService;
+    private ClockService clockService;
 
-	private Clock clock;
+    private Clock clock;
 
-	@BeforeEach
-	void setUp() {
+    @BeforeEach
+    void setUp() {
 
-		clock = Clock.fixed(Instant.parse("2022-02-03T07:49:11.522059Z"), ZoneId.of("UTC"));
-		clockService = new ClockService(clock);
-	}
+        clock = Clock.fixed(Instant.parse("2022-02-03T07:49:11.522059Z"), ZoneId.of("UTC"));
+        clockService = new ClockService(clock);
+    }
 
-	@Test
-	void now() {
+    @Test
+    void now() {
 
-		assertThat(clockService.now()).isAtSameInstantAs(OffsetDateTime.now(clock));
-	}
+        assertThat(clockService.now()).isAtSameInstantAs(OffsetDateTime.now(clock));
+    }
 
-	@Test
-	void class_serviceAnnotation() {
+    @Test
+    void class_serviceAnnotation() {
 
-		AnnotationUtil.classContainsAnnotation(
-			clockService.getClass(),
-			Service.class,
-			annotation -> assertThat(annotation).isNotNull()
-		);
-	}
+        AnnotationUtil.classContainsAnnotation(
+                clockService.getClass(),
+                Service.class,
+                annotation -> assertThat(annotation).isNotNull()
+        );
+    }
 }

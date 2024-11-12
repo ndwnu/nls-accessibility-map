@@ -31,7 +31,7 @@ public class IsochroneServiceFactory {
         IsochroneMatchMapper isochroneMatchMapper = new IsochroneMatchMapper(encodingManager,
                 edgeIteratorStateReverseExtractor, new PointListUtil(geometryFactory), fractionAndDistanceCalculator);
         Weighting weighting = network.createWeighting(PROFILE, new PMap());
-        ShortestPathTreeFactory shortestPathTreeFactory = new ShortestPathTreeFactory(weighting,encodingManager);
+        ShortestPathTreeFactory shortestPathTreeFactory = new ShortestPathTreeFactory(weighting, encodingManager);
         return new IsochroneService(encodingManager, isochroneMatchMapper, shortestPathTreeFactory);
     }
 

@@ -19,9 +19,10 @@ import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.model.WindowTimeEncodedValue;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.dto.EdgeAttribute;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.mappers.TrafficSignToEdgeAttributeMapper;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.slf4j.event.Level;
@@ -42,10 +43,12 @@ public class QueryGraphConfigurer {
 
     private final EdgeManager edgeManager;
 
+    private final TrafficSignToEdgeAttributeMapper trafficSignToEdgeAttributeMapper;
+
     /**
-     * This method iterates over all edges in both directions and determines whether the edge has a traffic sign that
-     * affects its access forbidden attribute. If that is the case, it will assign the traffic sign to this edge and set
-     * its access forbidden attribute to true.
+     * This method iterates over all edges in both directions and determines whether the edge has a traffic sign that affects its access
+     * forbidden attribute. If that is the case, it will assign the traffic sign to this edge and set its access forbidden attribute to
+     * true.
      *
      * @param queryGraph          the queryGraph to configure
      * @param snappedTrafficSigns the list of snapped traffic signs that need to be assigned to edges.
@@ -95,6 +98,7 @@ public class QueryGraphConfigurer {
     }
 
     private void unblockEdge(EdgeIterator edgeIterator) {
+
         edgeManager.resetRestrictionsOnEdge(edgeIterator);
     }
 
@@ -105,10 +109,8 @@ public class QueryGraphConfigurer {
 
     private void blockEdgeWithTrafficSignRestrictions(EdgeIterator edgeIterator, TrafficSign trafficSign) {
 
-        String trafficSignAttributeKey = WindowTimeEncodedValue.valueOf(trafficSign.trafficSignType().name())
-                .getEncodedValue();
-
-        edgeManager.setValueOnEdge(edgeIterator, trafficSignAttributeKey, true);
+        EdgeAttribute edgeAttribute = trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign);
+        edgeManager.setValueOnEdge(edgeIterator, edgeAttribute.key(), edgeAttribute.value());
     }
 
     private boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {

@@ -5,58 +5,6 @@
     "queryParameters": {
       "status": {
         "equalTo": "PLACED"
-      },
-      "countyCode": {
-        "equalTo": "GM0307"
-      },
-      "rvvCode": {
-        "or": [
-          {
-            "equalTo": "C6"
-          },
-          {
-            "equalTo": "C7"
-          },
-          {
-            "equalTo": "C7a"
-          },
-          {
-            "equalTo": "C7b"
-          },
-          {
-            "equalTo": "C8"
-          },
-          {
-            "equalTo": "C9"
-          },
-          {
-            "equalTo": "C10"
-          },
-          {
-            "equalTo": "C11"
-          },
-          {
-            "equalTo": "C12"
-          },
-          {
-            "equalTo": "C22c"
-          },
-          {
-            "equalTo": "C17"
-          },
-          {
-            "equalTo": "C18"
-          },
-          {
-            "equalTo": "C19"
-          },
-          {
-            "equalTo": "C20"
-          },
-          {
-            "equalTo": "C21"
-          }
-        ]
       }
     }
   },
@@ -65,6 +13,13 @@
     "headers": {
       "Content-Type": "application/geo+json; charset=utf-8;"
     },
-    "bodyFileName": "responses/current-state.json"
+    "transformerParameters": {
+      "queryParams": "rvvCode,countyCode",
+      "fileName": "realdata",
+      "extension": ".json"
+    },
+    "transformers": [
+      "query-param-to-body-file-transformer"
+    ]
   }
 }

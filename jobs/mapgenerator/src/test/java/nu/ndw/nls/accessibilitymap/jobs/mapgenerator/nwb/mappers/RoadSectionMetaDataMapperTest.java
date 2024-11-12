@@ -17,9 +17,9 @@ class RoadSectionMetaDataMapperTest {
 
     @BeforeEach
     void setUp() {
-        
-         nwbRoadSectionDto = NwbRoadSectionDto.builder()
-                .validFrom(LocalDate.of(2023,10,13))
+
+        nwbRoadSectionDto = NwbRoadSectionDto.builder()
+                .validFrom(LocalDate.of(2023, 10, 13))
                 .municipalityName("municipalityName")
                 .roadName("roadName")
                 .roadNameSource("roadNameSource")

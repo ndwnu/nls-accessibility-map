@@ -23,6 +23,7 @@ public record TrafficSign(
         @NotNull Direction direction,
         @NotNull Double fraction,
         URI iconUri,
+        Double blackCode,
         @NotNull List<TextSign> textSigns) {
 
     public boolean hasTimeWindowedSign() {

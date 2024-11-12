@@ -103,10 +103,10 @@ public class TrafficSignSnapMapper {
     }
 
     /**
-     * Tries to match the traffic sign with the edge. They must have the same road section id. If not it should not be
-     * linking up. This seems strange at first, but sometimes it happens that a traffic sign is linked to a cycling
-     * lane. If we one hava a graph that contains only road sections accessible by motorized vehicles it will be linked
-     * to the closest road and thus will be placed incorrectly. That is why we check this.
+     * Tries to match the traffic sign with the edge. They must have the same road section id. If not it should not be linking up. This
+     * seems strange at first, but sometimes it happens that a traffic sign is linked to a cycling lane. If we one hava a graph that
+     * contains only road sections accessible by motorized vehicles it will be linked to the closest road and thus will be placed
+     * incorrectly. That is why we check this.
      *
      * @param trafficSign       - The traffic sign to compare to
      * @param edgeIteratorState - The edge that it should be linked up with.
@@ -118,8 +118,7 @@ public class TrafficSignSnapMapper {
     }
 
     private boolean applyTimeWindowedSignFilter(boolean includeOnlyTimeWindowedSigns, TrafficSign trafficSign) {
-
-        return includeOnlyTimeWindowedSigns && trafficSign.hasTimeWindowedSign();
+        return !includeOnlyTimeWindowedSigns || trafficSign.hasTimeWindowedSign();
     }
 
     private int getLinkId(EdgeIteratorState edge) {

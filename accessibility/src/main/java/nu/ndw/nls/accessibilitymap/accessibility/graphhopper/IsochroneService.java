@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
-
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
@@ -30,10 +29,9 @@ public class IsochroneService {
     private final ShortestPathTreeFactory shortestPathTreeFactory;
 
     /**
-     * Creates Isochrone for an entire municipality based on start point. The start point has to be within the
-     * municipality This can be used to create an accessibility map by first calling this method with a weighting that
-     * has no restriction and consequently calling this method with a weighting that has restrictions based on vehicles
-     * dimensions etc.
+     * Creates Isochrone for an entire municipality based on start point. The start point has to be within the municipality This can be used
+     * to create an accessibility map by first calling this method with a weighting that has no restriction and consequently calling this
+     * method with a weighting that has restrictions based on vehicles dimensions etc.
      *
      * @param isochroneArguments The isochrone arguments
      * @return The list of isochrone matches
@@ -48,7 +46,7 @@ public class IsochroneService {
         IsochroneByTimeDistanceAndWeight accessibilityPathTree = shortestPathTreeFactory
                 .createShortestPathTreeByTimeDistanceAndWeight(isochroneArguments.weighting(), queryGraph,
                         TraversalMode.EDGE_BASED, isochroneArguments.searchDistanceInMetres(), IsochroneUnit.METERS,
-                        false, false,matchedLinkId);
+                        false, false, matchedLinkId);
         List<IsoLabel> isoLabels = new ArrayList<>();
         accessibilityPathTree.search(startSegment.getClosestNode(), isoLabels::add);
 

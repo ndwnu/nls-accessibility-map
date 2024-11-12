@@ -28,7 +28,8 @@ public abstract class ValidationTest {
 		this.validate(objectToValidate, propertyErrors, errorMessages, List.of());
 	}
 
-	protected void validate(Object objectToValidate, List<String> propertyErrors, List<String> errorMessages, List<String> ignoreProperties) {
+	protected void validate(Object objectToValidate, List<String> propertyErrors, List<String> errorMessages,
+			List<String> ignoreProperties) {
 
 		try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
 			Validator validator = factory.getValidator();

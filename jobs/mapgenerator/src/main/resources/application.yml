@@ -58,19 +58,19 @@ nu:
           publish:
             - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c6.geojson.published
               expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
-              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6
+              eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C6
             - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c7.geojson.published
               expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
-              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7
+              eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7
             - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c7b.geojson.published
               expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
-              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7B
+              eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C7B
             - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c12.geojson.published
               expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
-              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C12
-            - routingKey:  ndw.nls.maps.accessibility-window-times-rvv-code-c22c.geojson.published
+              eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C12
+            - routingKey: ndw.nls.maps.accessibility-window-times-rvv-code-c22c.geojson.published
               expectedEventType: MAP_GEOJSON_PUBLISHED_EVENT
-              eventSubjectType:  ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C22C
+              eventSubjectType: ACCESSIBILITY_WINDOWS_TIMES_RVV_CODE_C22C
 
 
 management:
