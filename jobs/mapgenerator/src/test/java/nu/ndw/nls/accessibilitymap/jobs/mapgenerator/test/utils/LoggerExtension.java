@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 
 public class LoggerExtension implements BeforeEachCallback, AfterEachCallback {
 
-    private SynchronizedListAppender<ILoggingEvent> synchronizedListAppender = new SynchronizedListAppender<>();
+    private final SynchronizedListAppender<ILoggingEvent> synchronizedListAppender = new SynchronizedListAppender<>();
 
-    private Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    private final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) {

@@ -7,16 +7,16 @@ import org.mockito.ArgumentMatcher;
 @RequiredArgsConstructor
 public class IsochroneArgumentsMatcher implements ArgumentMatcher<IsochroneArguments> {
 
-	private final IsochroneArguments left;
+    private final IsochroneArguments left;
 
-	@Override
-	public boolean matches(final IsochroneArguments right) {
+    @Override
+    public boolean matches(final IsochroneArguments right) {
 
-		if(right == null) {
-			return false;
-		}
+        if (right == null) {
+            return false;
+        }
 
-		return left.weighting().equals(right.weighting())
-				&& left.startPoint().equals(right.startPoint());
-	}
+        return left.weighting().equals(right.weighting())
+                && left.startPoint().equals(right.startPoint());
+    }
 }

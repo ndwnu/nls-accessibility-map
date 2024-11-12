@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("ALL")
 @ExtendWith(MockitoExtension.class)
 class TrafficSignMapperTest {
 
@@ -54,6 +55,7 @@ class TrafficSignMapperTest {
                         .rvvCode("C6")
                         .drivingDirection(DirectionType.BACK)
                         .fraction(2d)
+                        .blackCode("4.1")
                         .imageUrl("https://example.com/image")
                         .textSigns(textSigns)
                         .build())
@@ -110,6 +112,19 @@ class TrafficSignMapperTest {
         assertThat(trafficSign.get().iconUri()).isNull();
     }
 
+    @ParameterizedTest
+    @NullSource
+    void mapFromTrafficSignGeoJsonDto_blackCode_null(String blackCode) {
+
+        trafficSignGeoJsonDto.getProperties().setBlackCode(blackCode);
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+        assertThat(trafficSign.get().blackCode()).isNull();
+    }
+
     @Test
     void class_configurationAnnotation() {
 
@@ -121,7 +136,7 @@ class TrafficSignMapperTest {
     }
 
     private void validateTrafficSign(TrafficSign trafficSign) {
-        
+
         assertThat(trafficSign.id()).isEqualTo(1);
         assertThat(trafficSign.roadSectionId()).isEqualTo(
                 trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue());
@@ -135,6 +150,8 @@ class TrafficSignMapperTest {
         assertThat(trafficSign.longitude())
                 .isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude());
         assertThat(trafficSign.textSigns()).isEqualTo(trafficSignGeoJsonDto.getProperties().getTextSigns());
+        assertThat(trafficSign.blackCode()).isEqualTo(
+                Double.parseDouble(trafficSignGeoJsonDto.getProperties().getBlackCode()));
         assertThat(trafficSign.iconUri()).isEqualTo(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()));
     }
 

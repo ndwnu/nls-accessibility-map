@@ -10,6 +10,6 @@ public record VehicleProperties(Double length, Double width, Double height, Doub
                                 boolean motorcycleAccessForbidden, boolean motorVehicleAccessForbidden,
                                 boolean lcvAndHgvAccessForbidden, boolean carAccessForbiddenWt,
                                 boolean hgvAccessForbiddenWt, boolean hgvAndBusAccessForbiddenWt,
-                                boolean motorVehicleAccessForbiddenWt, boolean lcvAndHgvAccessForbiddenWt ) {
+                                boolean motorVehicleAccessForbiddenWt, boolean lcvAndHgvAccessForbiddenWt) {
 
 }

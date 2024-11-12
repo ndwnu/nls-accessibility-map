@@ -92,7 +92,9 @@ services:
     volumes:
       - ./docker/traffic-sign-api-stub/mappings:/home/wiremock/mappings
       - ./docker/traffic-sign-api-stub/responses:/home/wiremock/__files/responses
-    command: --global-response-templating --verbose
+      - ./docker/traffic-sign-api-stub/extensions:/var/wiremock/extensions
+
+    command: --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer" --global-response-templating --verbose
     ports:
       - "8888:8080"
     networks:

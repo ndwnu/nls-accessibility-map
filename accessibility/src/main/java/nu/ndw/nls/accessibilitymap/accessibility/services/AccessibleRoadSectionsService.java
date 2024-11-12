@@ -23,8 +23,7 @@ public class AccessibleRoadSectionsService {
     private final AccessibilityGraphhopperMetaData accessibilityGraphhopperMetaData;
 
     /**
-     * The context exists around a single NWB map version, therefor it is acceptable to use a map to cache the
-     * sub-results
+     * The context exists around a single NWB map version, therefor it is acceptable to use a map to cache the sub-results
      */
     private final Map<Integer, List<AccessibilityRoadSection>> municipalityIdToRoadSections = new HashMap<>();
 

@@ -50,6 +50,7 @@ class NdwDataServiceTest {
     private RoadSectionMetaData roadSectionMetaData3;
 
     private Accessibility accessibility;
+
     @BeforeEach
     void setUp() {
 
@@ -80,8 +81,10 @@ class NdwDataServiceTest {
 
         ndwDataService.addNwbDataToAccessibility(accessibility, 1);
 
-        assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions().stream().findFirst().get().getMetaData()).isEqualTo(roadSectionMetaData1);
-        assertThat(accessibility.accessibleRoadSectionsWithAppliedRestrictions().stream().findFirst().get().getMetaData()).isEqualTo(roadSectionMetaData2);
+        assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions().stream().findFirst().get().getMetaData()).isEqualTo(
+                roadSectionMetaData1);
+        assertThat(accessibility.accessibleRoadSectionsWithAppliedRestrictions().stream().findFirst().get().getMetaData()).isEqualTo(
+                roadSectionMetaData2);
         assertThat(accessibility.combinedAccessibility().stream().findFirst().get().getMetaData()).isEqualTo(roadSectionMetaData3);
     }
 
@@ -91,7 +94,7 @@ class NdwDataServiceTest {
         when(nwbRoadSectionCrudService.findById(any())).thenReturn(Optional.empty());
 
         assertThat(catchThrowable(() -> ndwDataService.addNwbDataToAccessibility(accessibility, 1)))
-                .isInstanceOf(IllegalArgumentException. class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Failed to find road section with id '%s' and by version '%s'".formatted(3, 1));
     }
 }

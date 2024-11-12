@@ -134,9 +134,14 @@ class TrafficSignSnapMapperTest {
 
     @Test
     void map_ok() {
+
         setupBaseFixture();
+
+        when(trafficSign.hasTimeWindowedSign()).thenReturn(true);
         when(snap.isValid()).thenReturn(true);
+
         List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), true);
+
         assertThat(trafficSignSnaps).hasSize(1);
         assertThat(trafficSignSnaps.getFirst().getSnap()).isEqualTo(snap);
         assertThat(trafficSignSnaps.getFirst().getTrafficSign()).isEqualTo(trafficSign);
@@ -150,6 +155,8 @@ class TrafficSignSnapMapperTest {
     void map_ok_snap_invalid() {
 
         setupBaseFixture();
+
+        when(trafficSign.hasTimeWindowedSign()).thenReturn(true);
         when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
         when(snap.isValid()).thenReturn(false);
 
@@ -163,11 +170,11 @@ class TrafficSignSnapMapperTest {
 
     @Test
     void map_ok_no_roadSection() {
+
         when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(trafficSign.hasTimeWindowedSign())
                 .thenReturn(true);
-
         when(nwbRoadSectionCrudService.findById(any(Id.class)))
                 .thenReturn(Optional.empty());
         when(networkMetaDataService.loadMetaData())
@@ -181,26 +188,37 @@ class TrafficSignSnapMapperTest {
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID, NWB_VERSION));
     }
 
+
     @ParameterizedTest
     @CsvSource(textBlock = """
-            false, true,
-            true, false
+            false, true, true
+            true, false, false
+            false, false, true
+            true, true, true
             """)
-    void map_ok_no_textSign(boolean isIncludeOnlyTimeWindowedSigns, boolean hasTimeWindowedSign) {
+    void map_ok_no_textSign(boolean isIncludeOnlyTimeWindowedSigns, boolean hasTimeWindowedSign, boolean isWindowsTextSign) {
+
+        if (isWindowsTextSign) {
+            setupBaseFixture();
+            when(snap.isValid()).thenReturn(true);
+        }
 
         if (isIncludeOnlyTimeWindowedSigns) {
-            when(trafficSign.hasTimeWindowedSign())
-                    .thenReturn(hasTimeWindowedSign);
+            when(trafficSign.hasTimeWindowedSign()).thenReturn(hasTimeWindowedSign);
         }
 
         List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign),
                 isIncludeOnlyTimeWindowedSigns);
-        assertThat(trafficSignSnaps).isEmpty();
+
+        if (isWindowsTextSign) {
+            assertThat(trafficSignSnaps).isNotEmpty();
+        } else {
+            assertThat(trafficSignSnaps).isEmpty();
+        }
     }
 
     private void setupBaseFixture() {
 
-        when(trafficSign.hasTimeWindowedSign()).thenReturn(true);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(trafficSign.fraction()).thenReturn(FRACTION);
         when(networkMetaDataService.loadMetaData()).thenReturn(accessibilityGraphhopperMetaData);

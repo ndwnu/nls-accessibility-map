@@ -35,6 +35,7 @@ public class TrafficSignMapper {
                     .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
                     .iconUri(createIconUri(trafficSignGeoJsonDto.getProperties()))
                     .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
+                    .blackCode(mapToBlackCode(trafficSignGeoJsonDto.getProperties()))
                     .build());
         } catch (Exception exception) {
             log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
@@ -59,5 +60,19 @@ public class TrafficSignMapper {
         }
 
         return URI.create(trafficSignPropertiesDto.getImageUrl());
+    }
+
+    private Double mapToBlackCode(TrafficSignPropertiesDto trafficSignPropertiesDto) {
+        if (Objects.isNull(trafficSignPropertiesDto.getBlackCode())) {
+            return null;
+        }
+        try {
+            return Double.parseDouble(trafficSignPropertiesDto.getBlackCode().replace(",", "."));
+        } catch (NumberFormatException ignored) {
+            log.debug("Unprocessable value {} for traffic sign with RVV code {} on road section {}",
+                    trafficSignPropertiesDto.getBlackCode(), trafficSignPropertiesDto.getRvvCode(),
+                    trafficSignPropertiesDto.getRoadSectionId());
+            return null;
+        }
     }
 }

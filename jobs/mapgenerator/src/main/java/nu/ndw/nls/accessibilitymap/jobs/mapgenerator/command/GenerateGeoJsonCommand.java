@@ -40,8 +40,8 @@ public class GenerateGeoJsonCommand implements Callable<Integer> {
     private List<TrafficSignType> trafficSignTypes;
 
     @Option(names = {"-n", "--name"},
-    description = "Name for the generated file",
-    required = true)
+            description = "Name for the generated file",
+            required = true)
     private String name;
 
     @Option(names = {"-tw", "--include-only-time-windowed-signs"},

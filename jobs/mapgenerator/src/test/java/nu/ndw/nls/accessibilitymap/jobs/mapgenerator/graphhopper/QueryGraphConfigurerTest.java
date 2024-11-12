@@ -22,7 +22,8 @@ import java.util.List;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.dto.EdgeAttribute;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.mappers.TrafficSignToEdgeAttributeMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,11 +46,14 @@ class QueryGraphConfigurerTest {
     private static final int TRAFFIC_SIGN_ID_VALUE = 1;
     private static final int NO_MATCH_ROAD_SECTION_ID = 456;
     private static final String MESSAGE_NOT_ASSIGNED = "Query graph configuration summary. "
-                                                       + "Total traffic signs in request 1. "
-                                                       + "Total not assignable road sections with traffic sign 1, notAssigned {123=[trafficSignSnap]}";
+            + "Total traffic signs in request 1. "
+            + "Total not assignable road sections with traffic sign 1, notAssigned {123=[trafficSignSnap]}";
 
     @Mock
     private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
+    @Mock
+    private TrafficSignToEdgeAttributeMapper trafficSignToEdgeAttributeMapper;
 
     @Mock
     private EncodingManager encodingManager;
@@ -90,7 +94,6 @@ class QueryGraphConfigurerTest {
     @Mock
     private Point point;
 
-
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -106,6 +109,10 @@ class QueryGraphConfigurerTest {
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
 
+        when(trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign)).thenReturn(EdgeAttribute.builder()
+                .key(MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED)
+                .value(true)
+                .build());
         when(trafficSignSnap.getSnap()).thenReturn(snap);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID_VALUE);
@@ -127,7 +134,6 @@ class QueryGraphConfigurerTest {
         when(lineString.getStartPoint()).thenReturn(point);
         //Latitude is the Y axis, longitude is the X axis
         when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
-        when(trafficSign.trafficSignType()).thenReturn(TrafficSignType.C12);
 
         queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
 
@@ -138,8 +144,8 @@ class QueryGraphConfigurerTest {
         loggerExtension.containsLog(
                 Level.INFO,
                 "Query graph configuration summary. "
-                + "Total traffic signs in request 1. "
-                + "Total not assignable road sections with traffic sign 0, notAssigned {}");
+                        + "Total traffic signs in request 1. "
+                        + "Total not assignable road sections with traffic sign 0, notAssigned {}");
 
     }
 

@@ -11,38 +11,38 @@ import org.springframework.context.annotation.Configuration;
 
 class ClockBeanConfigurationTest {
 
-	private ClockBeanConfiguration clockBeanConfiguration;
+    private ClockBeanConfiguration clockBeanConfiguration;
 
-	@BeforeEach
-	void setUp() {
+    @BeforeEach
+    void setUp() {
 
-		clockBeanConfiguration = new ClockBeanConfiguration();
-	}
+        clockBeanConfiguration = new ClockBeanConfiguration();
+    }
 
-	@Test
-	void clock() {
+    @Test
+    void clock() {
 
-		assertThat(clockBeanConfiguration.clock()).isEqualTo(Clock.systemUTC());
-	}
+        assertThat(clockBeanConfiguration.clock()).isEqualTo(Clock.systemUTC());
+    }
 
-	@Test
-	void class_configurationAnnotation() {
+    @Test
+    void class_configurationAnnotation() {
 
-		AnnotationUtil.classContainsAnnotation(
-			clockBeanConfiguration.getClass(),
-			Configuration.class,
-			annotation -> assertThat(annotation).isNotNull()
-		);
-	}
+        AnnotationUtil.classContainsAnnotation(
+                clockBeanConfiguration.getClass(),
+                Configuration.class,
+                annotation -> assertThat(annotation).isNotNull()
+        );
+    }
 
-	@Test
-	void clock_beanAnnotation() {
+    @Test
+    void clock_beanAnnotation() {
 
-		AnnotationUtil.methodsContainsAnnotation(
-			clockBeanConfiguration.getClass(),
-			Bean.class,
-			"clock",
-			annotation -> assertThat(annotation).isNotNull()
-		);
-	}
+        AnnotationUtil.methodsContainsAnnotation(
+                clockBeanConfiguration.getClass(),
+                Bean.class,
+                "clock",
+                annotation -> assertThat(annotation).isNotNull()
+        );
+    }
 }

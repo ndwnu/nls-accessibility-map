@@ -82,7 +82,7 @@ class EdgeManagerTest {
         assertThatThrownBy(() ->
                 edgeManager.setValueOnEdge(edgeIterator, KEY, true))
                 .isInstanceOf(IllegalArgumentException.class).hasMessage("No EdgeSetter found for class "
-                                                                         + "java.lang.Boolean");
+                        + "java.lang.Boolean");
     }
 
     @Test
