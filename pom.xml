@@ -256,6 +256,10 @@
                                 <groupId>org.projectlombok</groupId>
                                 <artifactId>lombok</artifactId>
                             </exclude>
+                            <exclude>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct</artifactId>
+                            </exclude>
                         </excludes>
                     </configuration>
                     <executions>
