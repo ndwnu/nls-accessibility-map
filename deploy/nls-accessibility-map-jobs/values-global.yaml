@@ -1,7 +1,7 @@
 datadog:
   agent:
     version: v1.32.0
-podRestarterVersion: "20240719.4"
+podRestarterVersion: "20241113.4"
 
 cronJobs:
   generateGeoJsonRvvC6:
