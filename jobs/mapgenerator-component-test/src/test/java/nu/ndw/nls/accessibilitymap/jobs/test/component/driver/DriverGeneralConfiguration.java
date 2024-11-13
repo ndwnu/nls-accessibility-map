@@ -14,5 +14,5 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class DriverGeneralConfiguration {
 
-    private Path debugFolder ;
+    private Path debugFolder;
 }
