@@ -41,7 +41,6 @@ class PointMatchServiceTest {
     @Mock
     private CandidateMatch candidateMatch;
 
-
     private PointMatchService pointMatchService;
 
     @BeforeEach
