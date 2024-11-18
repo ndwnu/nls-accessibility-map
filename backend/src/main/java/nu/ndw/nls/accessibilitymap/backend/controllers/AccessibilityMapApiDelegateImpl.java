@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
-import java.util.SortedMap;
+import java.util.Map;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.PointMatchingRoadSectionNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
@@ -44,12 +44,14 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude) {
-        CandidateMatch startPointMatch = matchStartPoint(latitude, longitude);
-        Integer requestedRoadSectionId = startPointMatch != null ? startPointMatch.getMatchedLinkId() : null;
+        Integer requestedRoadSectionId = mapStartPoint(latitude, longitude)
+                .flatMap(this::matchStartPoint)
+                .map(CandidateMatch::getMatchedLinkId)
+                .orElse(null);
 
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
-        SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(requestArguments, municipalityId);
+        Map<Integer, RoadSection> idToRoadSection = getAccessibility(requestArguments, municipalityId);
 
         return ResponseEntity.ok(accessibilityResponseMapper.map(idToRoadSection, requestedRoadSectionId));
     }
@@ -59,36 +61,36 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
             Double longitude) {
-        CandidateMatch startPointMatch = matchStartPoint(latitude, longitude);
+        Optional<Point> startPoint = mapStartPoint(latitude, longitude);
+        boolean startPointPresent = startPoint.isPresent();
+        CandidateMatch startPointMatch = startPoint.flatMap(this::matchStartPoint).orElse(null);
 
         VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
-        SortedMap<Integer, RoadSection> idToRoadSection = getAccessibility(requestArguments, municipalityId);
+        Map<Integer, RoadSection> idToRoadSection = getAccessibility(requestArguments, municipalityId);
 
-        return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(idToRoadSection, startPointMatch, accessible));
+        return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(idToRoadSection, startPointPresent, startPointMatch, accessible));
     }
 
-    private CandidateMatch matchStartPoint(Double latitude, Double longitude) {
+    private Optional<Point> mapStartPoint(Double latitude, Double longitude) {
         pointValidator.validateConsistentValues(latitude, longitude);
 
-        return pointMapper.mapCoordinate(latitude, longitude)
-                .map(this::matchStartPoint)
-                .orElse(null);
+        return pointMapper.mapCoordinate(latitude, longitude);
     }
 
-    private CandidateMatch matchStartPoint(Point point) {
-        CandidateMatch candidateMatch = this.pointMatchService.match(point)
-                .orElseThrow(() ->
-                        new PointMatchingRoadSectionNotFoundException(
-                                "Could not find road section by latitude: %.07f longitude: %.07f".formatted(point.getY(), point.getX()))
-                );
+    private Optional<CandidateMatch> matchStartPoint(Point point) {
+        Optional<CandidateMatch> candidateMatch = this.pointMatchService.match(point);
 
-        log.debug("Found road section id: {} by latitude: {}, longitude {}", candidateMatch.getMatchedLinkId(), point.getY(), point.getX());
+        candidateMatch.ifPresent(match -> logStartPointMatch(point, match));
 
         return candidateMatch;
     }
 
-    private SortedMap<Integer, RoadSection> getAccessibility(VehicleArguments requestArguments,
+    private void logStartPointMatch(Point point, CandidateMatch match) {
+        log.debug("Found road section id: {} by latitude: {}, longitude {}", match.getMatchedLinkId(), point.getY(), point.getX());
+    }
+
+    private Map<Integer, RoadSection> getAccessibility(VehicleArguments requestArguments,
             String municipalityId) {
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);

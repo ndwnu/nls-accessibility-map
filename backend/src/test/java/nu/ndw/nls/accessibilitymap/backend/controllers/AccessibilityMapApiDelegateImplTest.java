@@ -112,7 +112,7 @@ class AccessibilityMapApiDelegateImplTest {
     @Test
     void getRoadSections_ok() {
         setUpFixture();
-        when(roadSectionFeatureCollectionMapper.map(idToRoadSectionMap, candidateMatch, true))
+        when(roadSectionFeatureCollectionMapper.map(idToRoadSectionMap, true, candidateMatch, true))
                 .thenReturn(roadSectionFeatureCollectionJson);
 
         ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
