@@ -4,6 +4,7 @@ Feature: Road sections GeoJSON endpoint
     * url baseUrl
     * def okResponse = read('classpath:test-messages/accessibility/geojson/response-ok.json')
     * def okResponseWithMatchedRoadSection = read('classpath:test-messages/accessibility/geojson/response-ok-with-matched-road-section.json')
+    * def okResponseWithNoMatchedRoadSection  = read('classpath:test-messages/accessibility/geojson/response-ok-with-no-matched-road-section.json')
     * def okResponseAccessibleTrue = read('classpath:test-messages/accessibility/geojson/response-ok-accessible-true.json')
     * def okResponseAccessibleFalse = read('classpath:test-messages/accessibility/geojson/response-ok-accessible-false.json')
     * def badRequestMunicipalityId = read('classpath:test-messages/accessibility/response-400-incorrect-municipality-id.json')
@@ -11,7 +12,6 @@ Feature: Road sections GeoJSON endpoint
     * def badRequestHasTrailer = read('classpath:test-messages/accessibility/response-400-incorrect-has-trailer.json')
     * def badRequestLatitudeSetLongitudeMissing = read('classpath:test-messages/accessibility/response-400-longitude-missing.json')
     * def badRequestLongitudeSetLatitudeMissing = read('classpath:test-messages/accessibility/response-400-latitude-missing.json')
-    * def badRequestRoadSectionNotFoundByLatitudeLongitude = read('classpath:test-messages/accessibility/response-404-road-section-not-found-by-latitude-longitude.json')
 
   Scenario: accessibility map without latitude and longitude should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
@@ -40,6 +40,21 @@ Feature: Road sections GeoJSON endpoint
     And method GET
     Then status 200
     And match response == okResponseWithMatchedRoadSection
+
+  Scenario: accessibility map request with latitude and longitude specified but no matching road section should return 200
+    Given path '/v1/municipalities/GM0307/road-sections.geojson'
+    And param vehicleType = 'truck'
+    And param vehicleLength = 5
+    And param vehicleWidth = 3
+    And param vehicleHeight = 2
+    And param vehicleWeight = 4
+    And param vehicleAxleLoad = 3
+    And param vehicleHasTrailer = false
+    And param latitude = 52.158943
+    And param longitude = 5.381970
+    And method GET
+    Then status 200
+    And match response == okResponseWithNoMatchedRoadSection
 
   Scenario: accessibility map request with filter on accessible road sections should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
@@ -88,15 +103,6 @@ Feature: Road sections GeoJSON endpoint
     And method GET
     Then status 400
     And match response == badRequestLatitudeSetLongitudeMissing
-
-  Scenario: accessibility map should return 404 when road section is not found by map matching latitude longitude
-    Given path '/v1/municipalities/GM0307/road-sections.geojson'
-    And param vehicleType = 'car'
-    And param latitude = 1.0
-    And param longitude = 1.0
-    And method GET
-    Then status 404
-    And match response == badRequestRoadSectionNotFoundByLatitudeLongitude
 
   Scenario: accessibility map with invalid municipality id parameter value should return 400
     Given path '/v1/municipalities/GM000/road-sections.geojson'
