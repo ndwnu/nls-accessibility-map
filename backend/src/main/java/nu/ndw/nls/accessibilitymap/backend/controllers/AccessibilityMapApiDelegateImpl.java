@@ -1,10 +1,12 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
-import java.util.Objects;
 import java.util.SortedMap;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
+import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.PointMatchingRoadSectionNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
@@ -15,9 +17,6 @@ import nu.ndw.nls.accessibilitymap.backend.mappers.AccessibilityResponseMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.PointMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.RequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.RoadSectionFeatureCollectionMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
 import nu.ndw.nls.accessibilitymap.backend.services.PointMatchService;
@@ -71,19 +70,22 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private CandidateMatch matchStartPoint(Double latitude, Double longitude) {
         pointValidator.validateConsistentValues(latitude, longitude);
-        Point startPoint = pointMapper.mapCoordinateAllowNulls(latitude, longitude);
 
-        if (Objects.nonNull(startPoint)) {
-            CandidateMatch candidateMatch = pointMatchService.match(startPoint).orElseThrow(() ->
-                    new PointMatchingRoadSectionNotFoundException("Could not find road section by latitude: " +
-                            latitude + " longitude: " + longitude));
+        return pointMapper.mapCoordinate(latitude, longitude)
+                .map(this::matchStartPoint)
+                .orElse(null);
+    }
 
-            log.debug("Found road section id: {} by latitude: {}, longitude {}", candidateMatch.getMatchedLinkId(),
-                    latitude, longitude);
+    private CandidateMatch matchStartPoint(Point point) {
+        CandidateMatch candidateMatch = this.pointMatchService.match(point)
+                .orElseThrow(() ->
+                        new PointMatchingRoadSectionNotFoundException(
+                                "Could not find road section by latitude: %.07f longitude: %.07f".formatted(point.getY(), point.getX()))
+                );
 
-            return candidateMatch;
-        }
-        return null;
+        log.debug("Found road section id: {} by latitude: {}, longitude {}", candidateMatch.getMatchedLinkId(), point.getY(), point.getX());
+
+        return candidateMatch;
     }
 
     private SortedMap<Integer, RoadSection> getAccessibility(VehicleArguments requestArguments,
