@@ -47,8 +47,8 @@ Feature: Inaccessible road sections JSON endpoint
     And param vehicleWeight = 4
     And param vehicleAxleLoad = 3
     And param vehicleHasTrailer = false
-    And param latitude = 52.158943
-    And param longitude = 5.381970
+    And param latitude = 52.1544069
+    And param longitude = 5.3641687
     And method GET
     Then status 200
     And match response == okResponse
