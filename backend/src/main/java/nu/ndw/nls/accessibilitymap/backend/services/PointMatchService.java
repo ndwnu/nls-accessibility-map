@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PointMatchService {
 
+    private static final int CUTOFF_DISTANCE = 150;
+
     private final SinglePointMapMatcher singlePointMapMatcher;
 
     public PointMatchService(
@@ -27,6 +29,7 @@ public class PointMatchService {
     public Optional<CandidateMatch> match(Point point) {
         SinglePointMatch singlePointMatch = this.singlePointMapMatcher.match(SinglePointLocation.builder()
                 .point(point)
+                .cutoffDistance(CUTOFF_DISTANCE)
                 .build());
 
         return singlePointMatch.getCandidateMatches().stream().findFirst();

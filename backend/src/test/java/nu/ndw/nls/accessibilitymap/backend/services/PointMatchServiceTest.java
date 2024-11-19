@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PointMatchServiceTest {
 
+    private static final int CUTOFF_DISTANCE = 150;
     @Mock
     private MapMatcherFactory<SinglePointMapMatcher> singlePointMapMatcherMapMatcherFactory;
 
@@ -54,6 +55,7 @@ class PointMatchServiceTest {
     void match_ok_success() {
         when(this.singlePointMapMatcher.match(SinglePointLocation.builder()
                 .point(point)
+                .cutoffDistance(CUTOFF_DISTANCE)
                 .build())).thenReturn(singlePointMatch);
         when(singlePointMatch.getCandidateMatches()).thenReturn(List.of(candidateMatch));
         assertEquals(Optional.of(candidateMatch), pointMatchService.match(point));
@@ -63,6 +65,7 @@ class PointMatchServiceTest {
     void match_ok_noResult() {
         when(this.singlePointMapMatcher.match(SinglePointLocation.builder()
                 .point(point)
+                .cutoffDistance(CUTOFF_DISTANCE)
                 .build())).thenReturn(singlePointMatch);
         when(singlePointMatch.getCandidateMatches()).thenReturn(Collections.emptyList());
         assertEquals(Optional.empty(), pointMatchService.match(point));
