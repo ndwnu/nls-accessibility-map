@@ -1,12 +1,12 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.SortedMap;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
-import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +15,7 @@ public class AccessibilityResponseMapper {
 
     private final RoadSectionJsonResponseMapper roadSectionJsonResponseMapper;
 
-    public AccessibilityMapResponseJson map(SortedMap<Integer, RoadSection> idToRoadSectionMap,
+    public AccessibilityMapResponseJson map(Map<Integer, RoadSection> idToRoadSectionMap,
             Integer requestedRoadSectionId) {
         List<RoadSectionJson> list = idToRoadSectionMap.values().stream()
                 // Only keep road sections affected by restrictions
