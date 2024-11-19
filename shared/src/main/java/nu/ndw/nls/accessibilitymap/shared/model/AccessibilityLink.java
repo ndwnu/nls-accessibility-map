@@ -80,19 +80,19 @@ public class AccessibilityLink extends Link {
     @EncodedValue(key = LCV_AND_HGV_ACCESS_FORBIDDEN_WINDOWED)
     private final DirectionalDto<Boolean> lcvAndHgvAccessForbiddenWindowed;
 
-    @EncodedValue(key = MAX_LENGTH, bits = 7)
+    @EncodedValue(key = MAX_LENGTH, bits = 10)
     private final DirectionalDto<Double> maxLength;
 
-    @EncodedValue(key = MAX_WIDTH, bits = 7)
+    @EncodedValue(key = MAX_WIDTH, bits = 10)
     private final DirectionalDto<Double> maxWidth;
 
-    @EncodedValue(key = MAX_HEIGHT, bits = 7)
+    @EncodedValue(key = MAX_HEIGHT, bits = 10)
     private final DirectionalDto<Double> maxHeight;
 
-    @EncodedValue(key = MAX_AXLE_LOAD, bits = 7)
+    @EncodedValue(key = MAX_AXLE_LOAD, bits = 10)
     private final DirectionalDto<Double> maxAxleLoad;
 
-    @EncodedValue(key = MAX_WEIGHT, bits = 7)
+    @EncodedValue(key = MAX_WEIGHT, bits = 10)
     private final DirectionalDto<Double> maxWeight;
 
     @EncodedValue(key = MUNICIPALITY_CODE, bits = 17)
