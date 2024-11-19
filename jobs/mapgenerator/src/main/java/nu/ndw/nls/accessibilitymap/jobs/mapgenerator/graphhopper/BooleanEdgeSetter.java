@@ -18,7 +18,7 @@ public class BooleanEdgeSetter extends EdgeSetter<Boolean, BooleanEncodedValue> 
     }
 
     @Override
-    protected Boolean calculateDefaultValue(int ignored) {
+    protected Boolean getDefaultValue(BooleanEncodedValue ignored) {
         return false;
     }
 

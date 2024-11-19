@@ -9,10 +9,10 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.Feature;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.dto.FeatureCollection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.FeatureBuilder;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonObjectMapperFactory;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.FeatureCollection;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.writers.FeatureBuilder;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.writers.GeoJsonObjectMapperFactory;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;

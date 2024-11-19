@@ -12,8 +12,9 @@ public abstract class EdgeSetter<DATA_TYPE,
 
     private final EncodingManager encodingManager;
 
-    public void setDefaultValue(EdgeIterator edge, String key, boolean reverse, int bits) {
-        setValue(edge, key, reverse, calculateDefaultValue(bits));
+    public void setDefaultValue(EdgeIterator edge, String key, boolean reverse) {
+        final ENCODED_VALUE_TYPE ev = getEncodedValueType(key);
+        setValue(edge, key, reverse, getDefaultValue(ev));
     }
 
     public void setValue(EdgeIterator edge, String key, boolean reverse,
@@ -28,7 +29,7 @@ public abstract class EdgeSetter<DATA_TYPE,
 
     public abstract Class<DATA_TYPE> getGetDataTypeClass();
 
-    protected abstract DATA_TYPE calculateDefaultValue(int bits);
+    protected abstract DATA_TYPE getDefaultValue(ENCODED_VALUE_TYPE encodedValue);
 
     protected abstract Class<? extends EncodedValue> getEncoderType();
 
@@ -40,5 +41,4 @@ public abstract class EdgeSetter<DATA_TYPE,
         Class<? extends EncodedValue> encoderType = getEncoderType();
         return (ENCODED_VALUE_TYPE) encodingManager.getEncodedValue(key, encoderType);
     }
-
 }

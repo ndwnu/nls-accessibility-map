@@ -21,3 +21,4 @@ docker/traffic-sign-api-stub/responses/realdata-*
 
 **/application-local*.yml
 secrets-*.yaml
+**/resources/application-localStaging.yaml

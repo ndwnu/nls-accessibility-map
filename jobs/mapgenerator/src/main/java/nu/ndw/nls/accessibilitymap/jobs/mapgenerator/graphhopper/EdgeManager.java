@@ -20,7 +20,9 @@ public class EdgeManager {
             MUNICIPALITY_CODE);
 
     private final EncodedValuesByTypeDto<?> encodedValuesByTypeDto;
+
     private final EdgeSetterRegistry edgeSetterRegistry;
+
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
     public EdgeManager(EncodedValuesMapper encodedValuesMapper, EdgeSetterRegistry edgeSetterRegistry,
@@ -43,7 +45,7 @@ public class EdgeManager {
                 .filter(key -> !EXCLUDED_KEYS.contains(key))
                 .map(key -> encodedValuesByTypeDto.get(getDatatypeClassFromKey(key), key))
                 .forEach(encodedValueDto -> getEdgeSetter(encodedValueDto.valueType())
-                        .setDefaultValue(edgeIterator, encodedValueDto.key(), reverse, encodedValueDto.bits()));
+                        .setDefaultValue(edgeIterator, encodedValueDto.key(), reverse));
 
     }
 
@@ -52,7 +54,6 @@ public class EdgeManager {
                 .orElseThrow(() -> new IllegalArgumentException("No EdgeSetter found for %s"
                         .formatted(datatypeClass)));
     }
-
 
     private Class<?> getDatatypeClassFromKey(String key) {
         return encodedValuesByTypeDto.getValueTypeByKey(key)

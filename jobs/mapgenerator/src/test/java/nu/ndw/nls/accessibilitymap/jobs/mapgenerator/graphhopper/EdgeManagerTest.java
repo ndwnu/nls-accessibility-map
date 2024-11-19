@@ -93,12 +93,11 @@ class EdgeManagerTest {
         when(edgeSetterRegistry.getEdgeSetter(Boolean.class)).thenReturn(Optional.of(edgeSetter));
         when(encodedValuesByTypeDto.get(Boolean.class, KEY)).thenReturn(encodedValueDto);
         when(encodedValueDto.valueType()).thenReturn(Boolean.class);
-        when(encodedValueDto.bits()).thenReturn(BITS);
         when(encodedValueDto.key()).thenReturn(KEY);
 
         edgeManager.resetRestrictionsOnEdge(edgeIterator);
 
-        verify(edgeSetter, times(1)).setDefaultValue(edgeIterator, KEY, false, BITS);
+        verify(edgeSetter, times(1)).setDefaultValue(edgeIterator, KEY, false);
     }
 
 
@@ -110,6 +109,6 @@ class EdgeManagerTest {
         edgeManager.resetRestrictionsOnEdge(edgeIterator);
 
         verify(edgeSetter, times(0))
-                .setDefaultValue(edgeIterator, TRAFFIC_SIGN_ID, false, BITS);
+                .setDefaultValue(edgeIterator, TRAFFIC_SIGN_ID, false);
     }
 }

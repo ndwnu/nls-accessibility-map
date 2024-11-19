@@ -5,6 +5,9 @@
     "queryParameters": {
       "status": {
         "equalTo": "PLACED"
+      },
+      "countyCode": {
+        "equalTo": "GM0307"
       }
     }
   },

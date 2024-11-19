@@ -3,16 +3,18 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.trafficsign;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.or;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
@@ -42,16 +44,15 @@ public class TrafficSignDriver {
     public void stubTrafficSignRequest(Set<String> rvvCodes, List<TrafficSignGeoJsonDto> trafficSigns) {
         try {
             writeTrafficSignsGeoJsonToDisk(trafficSigns);
+            StringValuePattern[] stringValuePatterns = rvvCodes.stream()
+                    .map(WireMock::equalTo).toArray(StringValuePattern[]::new);
+            StringValuePattern stringValuePattern = stringValuePatterns.length == 1 ? stringValuePatterns[0] : or(stringValuePatterns);
             stubFor(
-                    get(urlEqualTo(
-                            "/api/rest/static-road-data/traffic-signs/v4/current-state%s%s%s"
-                                    .formatted(
-                                            "?status=PLACED",
-                                            rvvCodes.stream()
-                                                    .map("&rvvCode=%s"::formatted)
-                                                    .collect(Collectors.joining()),
-                                            "&countyCode=GM0307"
-                                    )))
+                    get(urlPathMatching(
+                            "/api/rest/static-road-data/traffic-signs/v4/current-state"))
+                            .withQueryParam("status", equalTo("PLACED"))
+                            .withQueryParam("rvvCode", stringValuePattern)
+                            .withQueryParam("countyCode", equalTo("TEST"))
                             .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_JSON_VALUE))
                             .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/geo+json"))
                             .willReturn(aResponse()

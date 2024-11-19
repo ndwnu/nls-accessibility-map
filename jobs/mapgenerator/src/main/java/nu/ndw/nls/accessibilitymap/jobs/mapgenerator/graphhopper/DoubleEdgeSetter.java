@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DoubleEdgeSetter extends EdgeSetter<Double, DecimalEncodedValue> {
 
-    private static final int BASE_TWO = 2;
-
     public DoubleEdgeSetter(EncodingManager encodingManager) {
         super(encodingManager);
     }
@@ -21,13 +19,13 @@ public class DoubleEdgeSetter extends EdgeSetter<Double, DecimalEncodedValue> {
     }
 
     @Override
-    protected Double calculateDefaultValue(int bits) {
-        return Math.pow(BASE_TWO, bits);
+    protected Class<? extends EncodedValue> getEncoderType() {
+        return DecimalEncodedValue.class;
     }
 
     @Override
-    protected Class<? extends EncodedValue> getEncoderType() {
-        return DecimalEncodedValue.class;
+    protected Double getDefaultValue(DecimalEncodedValue encodedValue) {
+        return encodedValue.getMaxStorableDecimal();
     }
 
     @Override

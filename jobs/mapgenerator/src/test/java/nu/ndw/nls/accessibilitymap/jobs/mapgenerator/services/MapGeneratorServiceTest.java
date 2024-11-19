@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services;
 
+import static nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType.LINE_STRING_GEO_JSON;
+import static nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType.POLYGON_GEO_JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -9,19 +11,21 @@ import ch.qos.logback.classic.Level;
 import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.mapper.AccessibilityRequestMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonPolygonWriter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonRoadSectionWriter;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.writers.GeoJsonPolygonWriter;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.writers.GeoJsonRoadSectionWriter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.AnnotationUtil;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import nu.ndw.nls.events.NlsEvent;
@@ -36,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MapGeneratorServiceTest {
 
+    private static final Set<ExportType> EXPORT_TYPES = Set.of(POLYGON_GEO_JSON, LINE_STRING_GEO_JSON);
     private MapGeneratorService mapGeneratorService;
 
     @Mock
@@ -69,16 +74,16 @@ class MapGeneratorServiceTest {
 
     private final OffsetDateTime timestamp = OffsetDateTime.now();
 
-    private GeoGenerationProperties geoGenerationProperties;
+    private ExportProperties exportProperties;
 
     private List<RoadSection> roadSections;
 
     @BeforeEach
     void setUp() {
 
-        geoGenerationProperties = GeoGenerationProperties.builder()
+        exportProperties = ExportProperties.builder()
                 .startTime(timestamp)
-                .exportVersion(1)
+                .exportTypes(EXPORT_TYPES)
                 .nwbVersion(2)
                 .trafficSignTypes(List.of(TrafficSignType.C7))
                 .publishEvents(true)
@@ -86,8 +91,7 @@ class MapGeneratorServiceTest {
 
         mapGeneratorService = new MapGeneratorService(
                 accessibilityGeoJsonGeneratedEventMapper,
-                geoJsonRoadSectionWriter,
-                geoJsonPolygonWriter,
+                List.of(geoJsonPolygonWriter, geoJsonRoadSectionWriter),
                 accessibilityService,
                 messageService,
                 accessibilityRequestMapper
@@ -117,26 +121,28 @@ class MapGeneratorServiceTest {
     @Test
     void generate_ok() {
 
-        when(accessibilityRequestMapper.map(geoGenerationProperties)).thenReturn(accessibilityRequest);
+        when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
+        when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
+        when(accessibilityRequestMapper.map(exportProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(accessibilityGeoJsonGeneratedEventMapper.map(
-                geoGenerationProperties.trafficSignTypes(),
-                geoGenerationProperties.exportVersion(),
-                geoGenerationProperties.nwbVersion(),
+                exportProperties.trafficSignTypes(),
+                -1,
+                exportProperties.nwbVersion(),
                 timestamp.toInstant()))
                 .thenReturn(nlsEvent);
 
-        mapGeneratorService.generate(geoGenerationProperties);
+        mapGeneratorService.generate(exportProperties);
 
-        verify(geoJsonRoadSectionWriter).writeToFile(accessibility, geoGenerationProperties);
-        verify(geoJsonPolygonWriter).writeToFile(accessibility, geoGenerationProperties);
+        verify(geoJsonRoadSectionWriter).export(accessibility, exportProperties);
+        verify(geoJsonPolygonWriter).export(accessibility, exportProperties);
         verify(messageService).publish(nlsEvent);
 
         loggerExtension.containsLog(
                 Level.INFO,
-                "Generating with the following properties: %s".formatted(geoGenerationProperties));
+                "Generating with the following properties: %s".formatted(exportProperties));
         loggerExtension.containsLog(
                 Level.DEBUG,
                 "Found 2 with road section fragments with traffic signs.");
@@ -145,21 +151,22 @@ class MapGeneratorServiceTest {
     @Test
     void generate_ok_doNotPublishEvents() {
 
-        geoGenerationProperties = geoGenerationProperties.withPublishEvents(false);
-
-        when(accessibilityRequestMapper.map(geoGenerationProperties)).thenReturn(accessibilityRequest);
+        when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
+        when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
+        exportProperties = exportProperties.withPublishEvents(false);
+        when(accessibilityRequestMapper.map(exportProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
-        mapGeneratorService.generate(geoGenerationProperties);
+        mapGeneratorService.generate(exportProperties);
 
-        verify(geoJsonRoadSectionWriter).writeToFile(accessibility, geoGenerationProperties);
-        verify(geoJsonPolygonWriter).writeToFile(accessibility, geoGenerationProperties);
+        verify(geoJsonRoadSectionWriter).export(accessibility, exportProperties);
+        verify(geoJsonPolygonWriter).export(accessibility, exportProperties);
         verifyNoMoreInteractions(messageService);
 
         loggerExtension.containsLog(
                 Level.INFO,
-                "Generating with the following properties: %s".formatted(geoGenerationProperties));
+                "Generating with the following properties: %s".formatted(exportProperties));
         loggerExtension.containsLog(
                 Level.DEBUG,
                 "Found 2 with road section fragments with traffic signs.");
@@ -172,7 +179,7 @@ class MapGeneratorServiceTest {
                 mapGeneratorService.getClass(),
                 Valid.class,
                 "generate",
-                "geoGenerationProperties",
+                "exportProperties",
                 annotation -> assertThat(annotation).isNotNull());
     }
 }

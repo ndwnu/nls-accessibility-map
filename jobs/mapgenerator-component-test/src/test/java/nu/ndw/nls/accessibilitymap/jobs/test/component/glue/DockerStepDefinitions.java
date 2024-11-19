@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.dto.Environ
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.dto.Mode;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.JobConfiguration;
 
 @RequiredArgsConstructor
 public class DockerStepDefinitions {
@@ -33,9 +34,9 @@ public class DockerStepDefinitions {
                 environmentVariables);
     }
 
-    @When("run MapGenerationJob for traffic sign {word} with start location at node {int}")
-    public void runMapGenerationJob(String trafficSignType, int startNodeId) {
+    @When("run MapGenerationJob with configuration")
+    public void runMapGenerationJob(List<JobConfiguration> jobConfigurations) {
 
-        mapGenerationJobDriver.runMapGenerationJobDebugMode(trafficSignType, networkDataService.findNodeById(startNodeId));
+        jobConfigurations.forEach(jobConfiguration -> mapGenerationJobDriver.runMapGenerationJobDebugMode(jobConfiguration));
     }
 }

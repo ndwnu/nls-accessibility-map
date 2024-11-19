@@ -6,10 +6,18 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum TrafficSignType {
+
     C6("C6"),
     C7("C7"),
+    C7A("C7a"),
     C7B("C7b"),
+    C10("C10"),
     C12("C12"),
-    C22C("C22c");
+    C22C("C22c"),
+    C17("C17"),
+    C18("C18"),
+    C19("C19"),
+    C20("C20"),
+    C21("C21");
     private final String rvvCode;
 }
