@@ -1,16 +1,16 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.mapper.AccessibilityRequestMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonPolygonWriter;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.geojson.writers.GeoJsonRoadSectionWriter;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.Exporter;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,7 @@ public class MapGeneratorService {
 
     private final AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
 
-    private final GeoJsonRoadSectionWriter geoJsonRoadSectionWriter;
-
-    private final GeoJsonPolygonWriter geoJsonPolygonWriter;
+    private final List<Exporter> resultExporters;
 
     private final AccessibilityService accessibilityService;
 
@@ -32,35 +30,37 @@ public class MapGeneratorService {
 
     private final AccessibilityRequestMapper accessibilityRequestMapper;
 
-    public void generate(@Valid GeoGenerationProperties geoGenerationProperties) {
+    public void generate(@Valid ExportProperties exportProperties) {
 
-        log.info("Generating with the following properties: {}", geoGenerationProperties);
+        log.info("Generating with the following properties: {}", exportProperties);
         Accessibility accessibility = accessibilityService.calculateAccessibility(
-                accessibilityRequestMapper.map(geoGenerationProperties));
+                accessibilityRequestMapper.map(exportProperties));
 
         long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(DirectionalSegment::hasTrafficSign)
                 .count();
+
         log.debug("Found {} with road section fragments with traffic signs.", roadSectionsWithTrafficSigns);
+        resultExporters.stream()
+                .filter(abstractGeoJsonWriter -> abstractGeoJsonWriter.isEnabled(exportProperties.exportTypes()))
+                .forEach(abstractGeoJsonWriter -> abstractGeoJsonWriter.export(accessibility,
+                        exportProperties));
 
-        geoJsonRoadSectionWriter.writeToFile(accessibility, geoGenerationProperties);
-        geoJsonPolygonWriter.writeToFile(accessibility, geoGenerationProperties);
-
-        if (geoGenerationProperties.publishEvents()) {
-            sendEventGeneratingDone(geoGenerationProperties);
+        if (exportProperties.publishEvents()) {
+            sendEventGeneratingDone(exportProperties);
         }
     }
 
     private void sendEventGeneratingDone(
-            GeoGenerationProperties geoGenerationProperties) {
+            ExportProperties exportProperties) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
-                geoGenerationProperties.trafficSignTypes(),
-                geoGenerationProperties.exportVersion(),
-                geoGenerationProperties.nwbVersion(),
-                geoGenerationProperties.startTime().toInstant());
+                exportProperties.trafficSignTypes(),
+                -1,
+                exportProperties.nwbVersion(),
+                exportProperties.startTime().toInstant());
 
         messageService.publish(nlsEvent);
     }

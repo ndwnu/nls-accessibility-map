@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class IntegerEdgeSetter extends EdgeSetter<Integer, IntEncodedValue> {
 
-    private static final int BASE_TWO = 2;
-
     public IntegerEdgeSetter(EncodingManager encodingManager) {
         super(encodingManager);
     }
@@ -21,8 +19,8 @@ public class IntegerEdgeSetter extends EdgeSetter<Integer, IntEncodedValue> {
     }
 
     @Override
-    protected Integer calculateDefaultValue(int bits) {
-        return (int) Math.pow(BASE_TWO, bits);
+    protected Integer getDefaultValue(IntEncodedValue encodedValue) {
+        return encodedValue.getMaxStorableInt();
     }
 
     @Override

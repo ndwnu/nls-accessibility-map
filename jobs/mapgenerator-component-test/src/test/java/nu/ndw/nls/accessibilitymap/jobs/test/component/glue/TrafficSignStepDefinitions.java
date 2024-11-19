@@ -3,9 +3,11 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
 import static org.assertj.core.api.Fail.fail;
 
 import io.cucumber.java.en.Given;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
@@ -31,11 +33,12 @@ public class TrafficSignStepDefinitions {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
-    @Given("traffic signs")
-    public void trafficSigns(List<TrafficSign> trafficSigns) {
+    @Given("with traffic signs for requested traffic sign types {string}")
+    public void trafficSigns(String rvvCodes, List<TrafficSign> trafficSigns) {
+        Set<String> rvvCodesSet = Arrays.stream(rvvCodes.split(",")).map(String::trim).collect(Collectors.toSet());
 
         trafficSignDriver.stubTrafficSignRequest(
-                Set.of("C12"),
+                rvvCodesSet,
                 trafficSigns.stream()
                         .map(this::createTrafficSignGeoJsonDto)
                         .toList()
@@ -57,7 +60,7 @@ public class TrafficSignStepDefinitions {
         Coordinate endCoordinate = fractionLineString.getCoordinates()[1];
 
         return TrafficSignGeoJsonDto.builder()
-                .id(UUID.randomUUID())
+                .id(UUID.fromString(trafficSign.id()))
                 .geometry(new Point(endCoordinate.getX(), endCoordinate.getY()))
                 .properties(TrafficSignPropertiesDto.builder()
                         .fraction(trafficSign.fraction())

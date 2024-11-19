@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.GeoGenerationProperties;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ class AccessibilityRequestMapperTest {
     @Test
     void map() {
 
-        GeoGenerationProperties geoGenerationProperties = GeoGenerationProperties.builder()
+        ExportProperties exportProperties = ExportProperties.builder()
                 .trafficSignTypes(List.of(TrafficSignType.C7))
                 .vehicleProperties(VehicleProperties.builder().build())
                 .includeOnlyTimeWindowedSigns(true)
@@ -38,18 +38,18 @@ class AccessibilityRequestMapperTest {
                         .build())
                 .build();
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.map(geoGenerationProperties);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.map(exportProperties);
 
         assertThat(accessibilityRequest).isNotNull();
-        assertThat(accessibilityRequest.getVehicleProperties()).isEqualTo(geoGenerationProperties.vehicleProperties());
+        assertThat(accessibilityRequest.getVehicleProperties()).isEqualTo(exportProperties.vehicleProperties());
         assertThat(accessibilityRequest.getStartLocationLatitude())
-                .isEqualTo(geoGenerationProperties.startLocationLatitude());
+                .isEqualTo(exportProperties.startLocationLatitude());
         assertThat(accessibilityRequest.getStartLocationLongitude())
-                .isEqualTo(geoGenerationProperties.startLocationLongitude());
+                .isEqualTo(exportProperties.startLocationLongitude());
         assertThat(accessibilityRequest.getSearchRadiusInMeters())
-                .isEqualTo(geoGenerationProperties.generateConfiguration().searchRadiusInMeters());
-        assertThat(accessibilityRequest.getTrafficSignTypes()).isEqualTo(geoGenerationProperties.trafficSignTypes());
+                .isEqualTo(exportProperties.generateConfiguration().searchRadiusInMeters());
+        assertThat(accessibilityRequest.getTrafficSignTypes()).isEqualTo(exportProperties.trafficSignTypes());
         assertThat(accessibilityRequest.isIncludeOnlyTimeWindowedSigns())
-                .isEqualTo(geoGenerationProperties.includeOnlyTimeWindowedSigns());
+                .isEqualTo(exportProperties.includeOnlyTimeWindowedSigns());
     }
 }

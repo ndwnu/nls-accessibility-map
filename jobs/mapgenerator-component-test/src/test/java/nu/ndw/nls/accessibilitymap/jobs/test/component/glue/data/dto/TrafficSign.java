@@ -5,6 +5,7 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 
 @Builder
 public record TrafficSign(
+        String id,
         int startNodeId,
         int endNodeId,
         double fraction,

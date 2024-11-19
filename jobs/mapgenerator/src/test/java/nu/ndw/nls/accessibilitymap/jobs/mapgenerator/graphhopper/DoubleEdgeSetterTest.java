@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.ev.DecimalEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
@@ -32,8 +33,9 @@ class DoubleEdgeSetterTest {
     }
 
     @Test
-    void calculateDefaultValue_ok() {
-        assertThat(setter.calculateDefaultValue(7)).isEqualTo(DECIMAL_VALUE);
+    void getDefaultValue_ok() {
+        when(decimalEncodedValue.getMaxStorableDecimal()).thenReturn(DECIMAL_VALUE);
+        assertThat(setter.getDefaultValue(decimalEncodedValue)).isEqualTo(DECIMAL_VALUE);
     }
 
     @Test
@@ -43,6 +45,7 @@ class DoubleEdgeSetterTest {
 
     @Test
     void set_ok() {
+
         setter.set(edgeIterator, decimalEncodedValue, DECIMAL_VALUE);
 
         verify(edgeIterator).set(decimalEncodedValue, DECIMAL_VALUE);
@@ -50,6 +53,7 @@ class DoubleEdgeSetterTest {
 
     @Test
     void setReverse_ok() {
+
         setter.setReverse(edgeIterator, decimalEncodedValue, DECIMAL_VALUE);
 
         verify(edgeIterator).setReverse(decimalEncodedValue, DECIMAL_VALUE);

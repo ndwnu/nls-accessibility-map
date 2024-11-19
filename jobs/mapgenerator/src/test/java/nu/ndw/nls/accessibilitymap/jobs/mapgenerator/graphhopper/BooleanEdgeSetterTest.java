@@ -31,8 +31,8 @@ class BooleanEdgeSetterTest {
     }
 
     @Test
-    void calculateDefaultValue_ok() {
-        assertThat(setter.calculateDefaultValue(0)).isFalse();
+    void getDefaultValue_ok() {
+        assertThat(setter.getDefaultValue(booleanEncodedValue)).isFalse();
     }
 
     @Test
@@ -42,15 +42,15 @@ class BooleanEdgeSetterTest {
 
     @Test
     void set_ok() {
-        setter.set(edgeIterator, booleanEncodedValue, true);
 
+        setter.set(edgeIterator, booleanEncodedValue, true);
         verify(edgeIterator).set(booleanEncodedValue, true);
     }
 
     @Test
     void setReverse_ok() {
-        setter.setReverse(edgeIterator, booleanEncodedValue, true);
 
+        setter.setReverse(edgeIterator, booleanEncodedValue, true);
         verify(edgeIterator).setReverse(booleanEncodedValue, true);
     }
 }

@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
@@ -32,8 +33,10 @@ class IntegerEdgeSetterTest {
     }
 
     @Test
-    void calculateDefaultValue_ok() {
-        assertThat(setter.calculateDefaultValue(7)).isEqualTo(INT_VALUE);
+    void getDefaultValue_ok() {
+
+        when(intEncodedValue.getMaxStorableInt()).thenReturn(INT_VALUE);
+        assertThat(setter.getDefaultValue(intEncodedValue)).isEqualTo(INT_VALUE);
     }
 
     @Test
@@ -43,6 +46,7 @@ class IntegerEdgeSetterTest {
 
     @Test
     void set_ok() {
+
         setter.set(edgeIterator, intEncodedValue, INT_VALUE);
 
         verify(edgeIterator).set(intEncodedValue, INT_VALUE);

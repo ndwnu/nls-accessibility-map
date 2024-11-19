@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class NetworkDataService implements StateManagement {
 
-    private final LongSequenceSupplier longSequenceSupplier = new LongSequenceSupplier();
+    private LongSequenceSupplier longSequenceSupplier = new LongSequenceSupplier();
 
     private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
 
@@ -122,7 +122,7 @@ public class NetworkDataService implements StateManagement {
 
     @Override
     public void clearStateAfterEachScenario() {
-
+        longSequenceSupplier = new LongSequenceSupplier();
         nodes.clear();
         links.clear();
     }

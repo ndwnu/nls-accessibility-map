@@ -25,7 +25,7 @@ class AccessibilityGeoJsonGeneratedEventMapperTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TrafficSignType.class)
+    @EnumSource(value = TrafficSignType.class, names = {"C6", "C7", "C7B", "C12", "C22C"})
     void map(TrafficSignType trafficSignType) {
 
         int version = 1;

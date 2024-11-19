@@ -8,7 +8,7 @@ import picocli.CommandLine.Command;
  * That's why there's this empty container class.
  */
 @Component
-@Command(name = "jobs", subcommands = {GenerateGeoJsonCommand.class})
+@Command(name = "jobs", subcommands = {GenerateCommand.class})
 public class BaseLoaderCommand {
 
 }

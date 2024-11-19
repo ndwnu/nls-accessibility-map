@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRAFFIC_SIGN_ID;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
@@ -55,8 +57,8 @@ public class QueryGraphConfigurer {
      */
     public void configure(QueryGraph queryGraph, List<TrafficSignSnap> snappedTrafficSigns) {
 
+        Stopwatch timer = Stopwatch.createStarted();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
-
         Set<TrafficSignSnap> assignedTrafficSignSnaps = new HashSet<>();
         Map<Integer, List<TrafficSignSnap>> trafficSignSnapsByRoadSectionId = snappedTrafficSigns
                 .stream()
@@ -85,6 +87,11 @@ public class QueryGraphConfigurer {
         Set<TrafficSignSnap> notAssigned = Sets.difference(original, assignedTrafficSignSnaps);
         Map<Integer, List<TrafficSignSnap>> notAssignedByRoadSectionId = notAssigned.stream()
                 .collect(groupingBy(s -> s.getTrafficSign().roadSectionId()));
+
+        log.atLevel(Level.INFO)
+                .setMessage("Configuring query graph took {} ms")
+                .addArgument(timer.elapsed(TimeUnit.MICROSECONDS))
+                .log();
 
         log.atLevel(notAssignedByRoadSectionId.isEmpty() ? Level.INFO : Level.WARN)
                 .setMessage(

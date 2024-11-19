@@ -6,26 +6,26 @@ podRestarterVersion: "20241113.4"
 cronJobs:
   generateGeoJsonRvvC6:
     name: nls-accessibility-map-generate-rvv-c6-cron-job
-    command: generateGeoJson --name=C6 --traffic-sign=C6 --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
+    command: generate --export-name=C6 --traffic-sign=C6 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
     memory: 16Gi
     schedule: "30 3 * * *"
   generateGeoJsonRvvC7:
     name: nls-accessibility-map-generate-rvv-c7-cron-job
-    command: generateGeoJson --name=C7 --traffic-sign=C7 --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
+    command: generate --export-name=C7 --traffic-sign=C7 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
     memory: 16Gi
     schedule: "40 3 * * *"
   generateGeoJsonRvvC7B:
     name: nls-accessibility-map-generate-rvv-c7b-cron-job
-    command: generateGeoJson --name==C7B --traffic-sign=C7B --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
+    command: generate --export-name==C7B --traffic-sign=C7B --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
     memory: 16Gi
     schedule: "50 3 * * *"
   generateGeoJsonRvvC12:
     name: nls-accessibility-map-generate-rvv-c12-cron-job
-    command: generateGeoJson --name==C12 --traffic-sign=C12 --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
+    command: generate --export-name==C12 --traffic-sign=C12 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
     memory: 16Gi
     schedule: "0 4 * * *"
   generateGeoJsonRvvC22C:
     name: nls-accessibility-map-generate-rvv-c22c-cron-job
-    command: generateGeoJson --name==C22C --traffic-sign=C22C --include-only-time-windowed-signs --publish-events --start-location-latitude 52.12096528507054 --start-location-longitude 5.334845116067081
+    command: generate --export-name==C22C --traffic-sign=C22C --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
     memory: 16Gi
     schedule: "10 4 * * *"

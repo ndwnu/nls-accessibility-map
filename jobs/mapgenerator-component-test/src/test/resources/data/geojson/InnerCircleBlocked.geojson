@@ -339,6 +339,7 @@
       },
       "properties": {
         "nwbRoadSectionId": 12,
+        "trafficSignId": "00000000-0000-4000-0000-000000000002",
         "accessible": false,
         "direction": "BACKWARD",
         "trafficSignType": "C12",
@@ -358,6 +359,7 @@
       },
       "properties": {
         "nwbRoadSectionId": 12,
+        "trafficSignId": "00000000-0000-4000-0000-000000000002",
         "accessible": false,
         "direction": "BACKWARD",
         "trafficSignType": "C12",
@@ -452,6 +454,7 @@
       },
       "properties": {
         "nwbRoadSectionId": 13,
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "accessible": false,
         "direction": "FORWARD",
         "trafficSignType": "C12",
@@ -471,6 +474,7 @@
       },
       "properties": {
         "nwbRoadSectionId": 13,
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "accessible": false,
         "direction": "FORWARD",
         "trafficSignType": "C12",

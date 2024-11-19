@@ -17,6 +17,9 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.jobs.generate")
 @Validated
 public record GenerateConfiguration(
+        @NotNull Double startLocationLatitude,
+
+        @NotNull Double startLocationLongitude,
 
         @NotNull ZoneId zone,
 

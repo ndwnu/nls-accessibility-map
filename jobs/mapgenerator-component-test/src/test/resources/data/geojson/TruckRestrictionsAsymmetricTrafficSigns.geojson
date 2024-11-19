@@ -1,0 +1,97 @@
+{
+  "features": [
+    {
+      "id": 1,
+      "geometry": {
+        "coordinates": [
+          [
+            5.0,
+            1.5000012336437643
+          ],
+          [
+            5.0,
+            1.4999921900112214
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 12,
+        "trafficSignId": "00000000-0000-4000-0000-000000000002",
+        "accessible": false,
+        "direction": "FORWARD",
+        "trafficSignType": "C12",
+        "windowTimes": "window 2",
+        "trafficSign": true
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 2,
+      "geometry": {
+        "coordinates": [
+          5.0,
+          1.5000012336437643
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "nwbRoadSectionId": 12,
+        "trafficSignId": "00000000-0000-4000-0000-000000000002",
+        "accessible": false,
+        "direction": "FORWARD",
+        "trafficSignType": "C12",
+        "windowTimes": "window 2",
+        "trafficSign": true
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 3,
+      "geometry": {
+        "coordinates": [
+          [
+            5.0,
+            9.000027127389366
+          ],
+          [
+            5.0,
+            9.000018085916865
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
+        "accessible": false,
+        "direction": "FORWARD",
+        "trafficSignType": "C12",
+        "windowTimes": "window 1",
+        "trafficSign": true
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 4,
+      "geometry": {
+        "coordinates": [
+          5.0,
+          9.000027127389366
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
+        "accessible": false,
+        "direction": "FORWARD",
+        "trafficSignType": "C12",
+        "windowTimes": "window 1",
+        "trafficSign": true
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

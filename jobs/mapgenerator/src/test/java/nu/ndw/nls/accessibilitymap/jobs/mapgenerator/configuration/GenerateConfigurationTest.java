@@ -29,6 +29,8 @@ class GenerateConfigurationTest extends ValidationTest {
                 .zone(ZoneId.of("Europe/Amsterdam"))
                 .rootExportDirectory(Path.of("tmp/tmp/"))
                 .relativeExportDirectoryPattern("'v1/windowTimes/'yyyyMMdd'/geojson/'")
+                .startLocationLatitude(30D)
+                .startLocationLongitude(10D)
                 .searchRadiusInMeters(1)
                 .addAllRoadSectionFragments(true)
                 .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(true)
@@ -96,6 +98,22 @@ class GenerateConfigurationTest extends ValidationTest {
         generateConfiguration = generateConfiguration.withAddAllRoadSectionFragments(null);
 
         validate(generateConfiguration, List.of("addAllRoadSectionFragments"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_startLocationLatitude_null() {
+
+        generateConfiguration = generateConfiguration.withStartLocationLatitude(null);
+
+        validate(generateConfiguration, List.of("startLocationLatitude"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_startLocationLongitude_null() {
+
+        generateConfiguration = generateConfiguration.withStartLocationLongitude(null);
+
+        validate(generateConfiguration, List.of("startLocationLongitude"), List.of("must not be null"));
     }
 
     @Test

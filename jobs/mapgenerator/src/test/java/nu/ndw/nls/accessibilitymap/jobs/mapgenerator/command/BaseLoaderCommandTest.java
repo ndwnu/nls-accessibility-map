@@ -27,7 +27,7 @@ class BaseLoaderCommandTest {
                 Command.class,
                 annotation -> {
                     assertThat(annotation.name()).isEqualTo("jobs");
-                    assertThat(annotation.subcommands()).containsExactlyInAnyOrder(GenerateGeoJsonCommand.class);
+                    assertThat(annotation.subcommands()).containsExactlyInAnyOrder(GenerateCommand.class);
                 }
         );
     }

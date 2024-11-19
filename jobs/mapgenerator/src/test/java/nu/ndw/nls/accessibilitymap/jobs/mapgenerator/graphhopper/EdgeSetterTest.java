@@ -21,7 +21,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 class EdgeSetterTest {
 
     private static final String KEY = "key";
-    private static final int BITS = 0;
     @Mock
     private EdgeIterator edgeIterator;
     @Mock
@@ -48,7 +47,7 @@ class EdgeSetterTest {
     void setDefaultValue_ok(boolean reversed, boolean storeInTwoDirections) {
         doCallRealMethod()
                 .when(edgeSetter)
-                .setDefaultValue(edgeIterator, KEY, reversed, BITS);
+                .setDefaultValue(edgeIterator, KEY, reversed);
         doCallRealMethod()
                 .when(edgeSetter)
                 .setValue(edgeIterator, KEY, reversed, true);
@@ -58,9 +57,9 @@ class EdgeSetterTest {
             when(booleanEncodedValue.isStoreTwoDirections()).thenReturn(storeInTwoDirections);
         }
         when(encodingManager.getEncodedValue(KEY, BooleanEncodedValue.class)).thenReturn(booleanEncodedValue);
-        when(edgeSetter.calculateDefaultValue(BITS)).thenReturn(true);
+        when(edgeSetter.getDefaultValue(booleanEncodedValue)).thenReturn(true);
 
-        edgeSetter.setDefaultValue(edgeIterator, KEY, reversed, BITS);
+        edgeSetter.setDefaultValue(edgeIterator, KEY, reversed);
 
         if (reversed && !booleanEncodedValue.isStoreTwoDirections()) {
             verify(edgeSetter).setReverse(edgeIterator, booleanEncodedValue, true);
