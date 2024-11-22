@@ -4,3 +4,10 @@ application:
   databaseHost: nls-postgres-production.postgres.database.azure.com
 
 trafficSignApiUrl: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+
+feign:
+  client:
+    baseUrl: https://nls.ndw.nu/api
+
+keycloak:
+  clientId: sa-nls-accessibility-map-api-production

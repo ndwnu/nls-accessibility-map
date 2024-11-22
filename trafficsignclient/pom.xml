@@ -105,7 +105,7 @@
                                         <argument>up</argument>
                                         <argument>--build</argument>
                                         <argument>-d</argument>
-                                        <argument>traffic-sign-api-stub</argument>
+                                        <argument>accessibility-wiremock-stub</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

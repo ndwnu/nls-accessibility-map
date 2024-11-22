@@ -7,7 +7,7 @@ nu:
       accessibilitymap:
         trafficsignclient:
           api:
-            url: http://traffic-sign-api-stub:8080/api/rest/static-road-data/traffic-signs/v4
+            url: http://accessibility-wiremock-stub:8080/api/rest/static-road-data/traffic-signs/v4
             town-codes: GM0307
 logging:
   level:

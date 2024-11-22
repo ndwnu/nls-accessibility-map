@@ -1,0 +1,9 @@
+nls:
+  keycloak:
+    url: http://nls-keycloak:8000/auth
+
+management:
+  datadog:
+    metrics:
+      export:
+        enabled: false
