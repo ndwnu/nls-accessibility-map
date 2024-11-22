@@ -6,10 +6,10 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>3.2.16-SNAPSHOT</version>
+        <version>3.2.16</version>
     </parent>
 
     <artifactId>specification</artifactId>
-    <version>3.2.16-SNAPSHOT</version>
+    <version>3.2.16</version>
     <name>NLS Accessibility Map Open API specification</name>
 </project>
