@@ -10,6 +10,10 @@
     <name>NLS Accessibility Map generate GeoJson jobs</name>
     <dependencies>
         <dependency>
+            <groupId>nu.ndw.nls.locationdataissuesapi</groupId>
+            <artifactId>client-feign</artifactId>
+        </dependency>
+        <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
             <version>${project.parent.version}</version>
             <artifactId>shared</artifactId>

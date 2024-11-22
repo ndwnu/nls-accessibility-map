@@ -3,7 +3,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
     username: nls-maps
     password: nls-maps
-
+nls:
+  keycloak:
+    url: http://nls-keycloak:8000/auth
 management:
   datadog:
     metrics:

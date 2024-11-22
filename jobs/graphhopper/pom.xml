@@ -167,7 +167,7 @@
                                         <argument>-d</argument>
                                         <argument>nls-postgres</argument>
                                         <argument>nls-rabbitmq</argument>
-                                        <argument>traffic-sign-api-stub</argument>
+                                        <argument>accessibility-wiremock-stub</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

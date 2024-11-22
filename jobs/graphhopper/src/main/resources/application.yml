@@ -42,7 +42,6 @@ nu:
             current-state-path: /current-state
       springboot:
         messaging:
-          broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
           publish:
             - routingKey: ndw.nls.accessibility.routing.network.updated
               expectedEventType: ACCESSIBILITY_ROUTING_NETWORK_UPDATED

@@ -33,8 +33,6 @@ spring:
     sql-dialect: Postgres
 
 nls:
-  keycloak:
-    url: http://nls-keycloak:8000/auth
   oauth2:
     jwtResourceProperty: ${spring.application.name}
 

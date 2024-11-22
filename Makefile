@@ -13,11 +13,11 @@ stop:                                ## Stops the docker environment
 
 start-infra:
     ## Starts specific containers needed for local environment --adapt when needed
-	$(dc) up -d nls-keycloak nls-postgres traffic-sign-api-stub nls-rabbitmq
+	$(dc) up -d nls-keycloak nls-postgres accessibility-wiremock-stub nls-rabbitmq
 
 update-data-traffic-signs:
-	curl "https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?rvvCode=C6&countyCode=GM0307&status=PLACED" > docker/traffic-sign-api-stub/responses/realdata-C6_GM0307.json
-	curl "https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?rvvCode=C12&countyCode=GM0307&status=PLACED" > docker/traffic-sign-api-stub/responses/realdata-C12_GM0307.json
+	curl "https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?rvvCode=C6&countyCode=GM0307&status=PLACED" > docker/accessibility-wiremock-stub/responses/realdata-C6_GM0307.json
+	curl "https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?rvvCode=C12&countyCode=GM0307&status=PLACED" > docker/accessibility-wiremock-stub/responses/realdata-C12_GM0307.json
 
 integration-test:                     ## Build and run it tests via maven
 	mvn clean verify -Pregression-test
