@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import io.cucumber.spring.CucumberContextConfiguration;
+import nu.ndw.nls.springboot.test.component.driver.docker.EnableDockerDriver;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 )
 @CucumberContextConfiguration
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@EnableDockerDriver
 public class RunCucumberIT {
 
 }

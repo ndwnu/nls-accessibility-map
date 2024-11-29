@@ -23,6 +23,12 @@ spring:
 nu:
   ndw:
     nls:
+      springboot:
+        test:
+          component:
+            driver:
+              docker:
+                compose-file: "../../docker-compose.yml"
       test:
         component:
           general:
@@ -34,8 +40,6 @@ nu:
             maven:
               rootPomRelativePath: "../../"
               moduleUnderTest: "jobs/mapgenerator"
-            docker:
-              compose-file: "../../docker-compose.yml"
             graph-hopper:
               locationOnDisk: "../../graphhopper"
             map-generation-job:
