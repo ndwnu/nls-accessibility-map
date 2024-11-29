@@ -61,15 +61,15 @@ services:
       - nls-accessibility-map-network
 
   nls-postgres:
-    hostname: nls-postgres
-    build:
-      context: docker/nls-postgres
+    image: ndwnls.azurecr.io/nls-postgres-it-container:20241128.6
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_DB=nls-maps
       - POSTGRES_USER=nls-maps
       - POSTGRES_PASSWORD=nls-maps
+    volumes:
+      - ./docker/nls-postgres/sql/:/docker-entrypoint-initdb.d/sql/
     networks:
       - nls-accessibility-map-network
 
