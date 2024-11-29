@@ -12,6 +12,11 @@
     <packaging>pom</packaging>
     <name>nls-accessibility-map</name>
     <description>REST API to determine accessible road sections for a given vehicle type</description>
+    <url>https://github.com/ndwnu/nls-accessibility-map</url>
+    <scm>
+        <url>https://github.com/ndwnu/nls-accessibility-map</url>
+    </scm>
+
     <modules>
         <module>specification</module>
         <module>shared</module>
