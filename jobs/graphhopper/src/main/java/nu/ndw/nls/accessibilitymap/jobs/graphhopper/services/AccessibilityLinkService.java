@@ -1,14 +1,17 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper.services;
 
+import static java.util.Collections.emptyList;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.nwb.mappers.NwbRoadSectionToLinkMapper;
-import nu.ndw.nls.accessibilitymap.shared.nwb.services.NwbRoadSectionService;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignMapperRegistry;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.shared.nwb.services.NwbRoadSectionService;
+import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperProperties;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
@@ -25,6 +28,7 @@ public class AccessibilityLinkService {
     private final NwbRoadSectionService nwbRoadSectionService;
     private final NwbRoadSectionToLinkMapper nwbRoadSectionToLinkMapper;
     private final TrafficSignMapperRegistry trafficSignMapperRegistry;
+    private final GraphHopperProperties graphHopperProperties;
 
     @Transactional(readOnly = true)
     public AccessibilityLinkData getLinks() {
@@ -39,7 +43,8 @@ public class AccessibilityLinkService {
         try (Stream<NwbRoadSectionDto> roadSections = nwbRoadSectionService.findLazyCar(nwbVersionId)) {
             List<AccessibilityLink> links = roadSections
                     .map(roadSection -> nwbRoadSectionToLinkMapper.map(roadSection,
-                            trafficSignData.getTrafficSignsByRoadSectionId(roadSection.getRoadSectionId())))
+                            graphHopperProperties.isWithTrafficSigns() ? trafficSignData.getTrafficSignsByRoadSectionId(
+                                    roadSection.getRoadSectionId()) : emptyList()))
                     .toList();
             return new AccessibilityLinkData(links, nwbVersionId, trafficSignData.maxEventTimestamp());
         }

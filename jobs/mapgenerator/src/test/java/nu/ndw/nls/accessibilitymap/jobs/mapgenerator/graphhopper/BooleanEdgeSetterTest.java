@@ -5,7 +5,7 @@ import static org.mockito.Mockito.verify;
 
 import com.graphhopper.routing.ev.BooleanEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +18,7 @@ class BooleanEdgeSetterTest {
     @Mock
     private EncodingManager encodingManager;
     @Mock
-    private EdgeIterator edgeIterator;
+    private EdgeIteratorState edgeIteratorState;
     @Mock
     private BooleanEncodedValue booleanEncodedValue;
 
@@ -43,14 +43,14 @@ class BooleanEdgeSetterTest {
     @Test
     void set_ok() {
 
-        setter.set(edgeIterator, booleanEncodedValue, true);
-        verify(edgeIterator).set(booleanEncodedValue, true);
+        setter.set(edgeIteratorState, booleanEncodedValue, true);
+        verify(edgeIteratorState).set(booleanEncodedValue, true);
     }
 
     @Test
     void setReverse_ok() {
 
-        setter.setReverse(edgeIterator, booleanEncodedValue, true);
-        verify(edgeIterator).setReverse(booleanEncodedValue, true);
+        setter.setReverse(edgeIteratorState, booleanEncodedValue, true);
+        verify(edgeIteratorState).setReverse(booleanEncodedValue, true);
     }
 }

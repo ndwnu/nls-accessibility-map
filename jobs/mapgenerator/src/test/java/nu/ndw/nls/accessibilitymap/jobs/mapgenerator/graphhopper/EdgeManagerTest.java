@@ -26,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class EdgeManagerTest {
 
     private static final String KEY = "key";
-    private static final int BITS = 0;
+
     @Mock
     private EncodedValuesMapper encodedValuesMapper;
     @Mock

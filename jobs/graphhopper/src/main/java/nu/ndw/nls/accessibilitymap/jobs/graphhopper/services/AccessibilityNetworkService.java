@@ -40,21 +40,21 @@ public class AccessibilityNetworkService {
 
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings =
                 graphHopperConfiguration.configurePersistingRoutingNetworkSettings(
-                () -> linkData.links().iterator(),
-                linkData.trafficSignTimestamp());
+                        () -> linkData.links().iterator(),
+                        linkData.trafficSignTimestamp());
 
         log.debug("Creating GraphHopper network and writing to disk");
         graphHopperNetworkService.storeOnDisk(accessibilityLinkRoutingNetworkSettings);
 
         int nwbVersionId = linkData.nwbVersionId();
-
         networkMetaDataService.saveMetaData(new AccessibilityGraphhopperMetaData(nwbVersionId));
 
-        NlsEvent nlsEvent = accessibilityRoutingNetworkEventMapper.map(nwbVersionId, linkData.trafficSignTimestamp());
-
-        log.debug("Sending {} event for NWB version {} and traffic sign timestamp {}",
-                nlsEvent.getType().getLabel(), linkData.nwbVersionId(), linkData.trafficSignTimestamp());
-        messageService.publish(nlsEvent);
+        if (graphHopperConfiguration.publishEvents()) {
+            NlsEvent nlsEvent = accessibilityRoutingNetworkEventMapper.map(nwbVersionId, linkData.trafficSignTimestamp());
+            log.debug("Sending {} event for NWB version {} and traffic sign timestamp {}",
+                    nlsEvent.getType().getLabel(), linkData.nwbVersionId(), linkData.trafficSignTimestamp());
+            messageService.publish(nlsEvent);
+        }
     }
 
 }

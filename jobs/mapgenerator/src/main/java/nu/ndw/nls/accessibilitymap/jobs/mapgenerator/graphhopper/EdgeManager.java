@@ -7,6 +7,7 @@ import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.network.annotations.mappers.EncodedValuesMapper;
@@ -32,7 +33,7 @@ public class EdgeManager {
         this.edgeIteratorStateReverseExtractor = edgeIteratorStateReverseExtractor;
     }
 
-    void setValueOnEdge(EdgeIterator edgeIterator, String key, Object value) {
+    void setValueOnEdge(EdgeIteratorState edgeIterator, String key, Object value) {
         boolean reverse = edgeIteratorStateReverseExtractor.hasReversed(edgeIterator);
         Class<?> datatypeClass = getDatatypeClassFromKey(key);
         EdgeSetter<?, ?> edgeSetter = getEdgeSetter(datatypeClass);

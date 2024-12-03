@@ -14,6 +14,7 @@ import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.shapes.GHPoint;
+import io.micrometer.core.annotation.Timed;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Timed
 public class QueryGraphConfigurer {
 
     private static final double TOLERANCE_METRE_PRECISION = 0.00001;
@@ -41,11 +43,11 @@ public class QueryGraphConfigurer {
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
-    private final EncodingManager encodingManager;
-
     private final EdgeManager edgeManager;
 
     private final TrafficSignToEdgeAttributeMapper trafficSignToEdgeAttributeMapper;
+
+    private final EncodingManager encodingManager;
 
     /**
      * This method iterates over all edges in both directions and determines whether the edge has a traffic sign that affects its access
@@ -57,41 +59,34 @@ public class QueryGraphConfigurer {
      */
     public void configure(QueryGraph queryGraph, List<TrafficSignSnap> snappedTrafficSigns) {
 
-        Stopwatch timer = Stopwatch.createStarted();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         Set<TrafficSignSnap> assignedTrafficSignSnaps = new HashSet<>();
-        Map<Integer, List<TrafficSignSnap>> trafficSignSnapsByRoadSectionId = snappedTrafficSigns
-                .stream()
-                .collect(groupingBy(additionalSnap -> additionalSnap.getTrafficSign().roadSectionId()));
-
         log.debug("Configuring query graph total nodes {} total edges {}", queryGraph.getNodes(),
                 queryGraph.getEdges());
-        for (int startNode = 0; startNode < queryGraph.getNodes(); startNode++) {
-            EdgeIterator edgeIterator = edgeExplorer.setBaseNode(startNode);
+        snappedTrafficSigns.forEach(trafficSignSnap -> {
+            // By creating a query graph with a snap, the closestNode of the snap is updated to a virtual node if applicable.
+            // See QueryOverlayBuilder.buildVirtualEdges
+            EdgeIterator edgeIterator = edgeExplorer.setBaseNode(trafficSignSnap.getSnap().getClosestNode());
             while (edgeIterator.next()) {
-                unblockEdge(edgeIterator);
-                int roadSectionId = edgeIterator.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-                trafficSignSnapsByRoadSectionId.getOrDefault(roadSectionId, List.of()).stream()
-                        .filter(trafficSignSnap -> isTrafficSignInSameDirectionAsEdge(edgeIterator, trafficSignSnap))
-                        .filter(trafficSignSnap -> isTrafficSignInFrontOfEdge(edgeIterator, trafficSignSnap))
-                        .forEach(trafficSignSnap -> {
-                            assignTrafficSignIdToEdge(edgeIterator, trafficSignSnap.getTrafficSign().id());
-                            blockEdgeWithTrafficSignRestrictions(edgeIterator, trafficSignSnap.getTrafficSign());
-
-                            assignedTrafficSignSnaps.add(trafficSignSnap);
-                        });
+                if (isTrafficSignInSameDirectionAsEdge(edgeIterator, trafficSignSnap) && isTrafficSignInFrontOfEdge(edgeIterator,
+                        trafficSignSnap)) {
+                    if (!trafficSignMatchesEdge(trafficSignSnap.getTrafficSign(), edgeIterator)) {
+                        log.warn("Traffic sign {} and road section id {} does not match linked edge with road section id {}",
+                                trafficSignSnap,
+                                trafficSignSnap.getTrafficSign().roadSectionId(), getLinkId(edgeIterator));
+                    } else {
+                        assignTrafficSignIdToEdge(edgeIterator, trafficSignSnap.getTrafficSign().id());
+                        applyTrafficSingRestrictionsToEdge(edgeIterator, trafficSignSnap.getTrafficSign());
+                        assignedTrafficSignSnaps.add(trafficSignSnap);
+                    }
+                }
             }
-        }
+        });
 
         Set<TrafficSignSnap> original = new HashSet<>(snappedTrafficSigns);
         Set<TrafficSignSnap> notAssigned = Sets.difference(original, assignedTrafficSignSnaps);
         Map<Integer, List<TrafficSignSnap>> notAssignedByRoadSectionId = notAssigned.stream()
                 .collect(groupingBy(s -> s.getTrafficSign().roadSectionId()));
-
-        log.atLevel(Level.INFO)
-                .setMessage("Configuring query graph took {} ms")
-                .addArgument(timer.elapsed(TimeUnit.MICROSECONDS))
-                .log();
 
         log.atLevel(notAssignedByRoadSectionId.isEmpty() ? Level.INFO : Level.WARN)
                 .setMessage(
@@ -104,17 +99,12 @@ public class QueryGraphConfigurer {
                 .log();
     }
 
-    private void unblockEdge(EdgeIterator edgeIterator) {
-
-        edgeManager.resetRestrictionsOnEdge(edgeIterator);
-    }
-
     private void assignTrafficSignIdToEdge(EdgeIterator edgeIterator, Integer trafficSignId) {
 
         edgeManager.setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, trafficSignId);
     }
 
-    private void blockEdgeWithTrafficSignRestrictions(EdgeIterator edgeIterator, TrafficSign trafficSign) {
+    private void applyTrafficSingRestrictionsToEdge(EdgeIterator edgeIterator, TrafficSign trafficSign) {
 
         EdgeAttribute edgeAttribute = trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign);
         edgeManager.setValueOnEdge(edgeIterator, edgeAttribute.key(), edgeAttribute.value());
@@ -144,5 +134,15 @@ public class QueryGraphConfigurer {
                 .fetchWayGeometry(FetchMode.ALL)
                 .toLineString(INCLUDE_ELEVATION);
         return lineString.getStartPoint().getCoordinate();
+    }
+
+    private boolean trafficSignMatchesEdge(TrafficSign trafficSign, EdgeIteratorState edgeIteratorState) {
+
+        return getLinkId(edgeIteratorState) == trafficSign.roadSectionId();
+    }
+
+    private int getLinkId(EdgeIteratorState edge) {
+
+        return edge.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
     }
 }

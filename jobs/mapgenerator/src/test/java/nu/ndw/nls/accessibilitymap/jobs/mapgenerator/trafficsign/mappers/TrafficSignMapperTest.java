@@ -68,7 +68,7 @@ class TrafficSignMapperTest {
     @EnumSource(value = TrafficSignType.class)
     void mapFromTrafficSignGeoJsonDto_ok(TrafficSignType trafficSignType) {
 
-        trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.name());
+        trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
                 trafficSignGeoJsonDto,
@@ -141,7 +141,7 @@ class TrafficSignMapperTest {
         assertThat(trafficSign.roadSectionId()).isEqualTo(
                 trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue());
         assertThat(trafficSign.trafficSignType()).
-                isEqualTo(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()));
+                isEqualTo(TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode()));
         assertThat(trafficSign.direction())
                 .isEqualTo(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()));
         assertThat(trafficSign.fraction()).isEqualTo(trafficSignGeoJsonDto.getProperties().getFraction());
