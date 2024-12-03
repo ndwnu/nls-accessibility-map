@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ class IntegerEdgeSetterTest {
     @Mock
     private EncodingManager encodingManager;
     @Mock
-    private EdgeIterator edgeIterator;
+    private EdgeIteratorState edgeIteratorState;
     @Mock
     private IntEncodedValue intEncodedValue;
 
@@ -47,15 +47,15 @@ class IntegerEdgeSetterTest {
     @Test
     void set_ok() {
 
-        setter.set(edgeIterator, intEncodedValue, INT_VALUE);
+        setter.set(edgeIteratorState, intEncodedValue, INT_VALUE);
 
-        verify(edgeIterator).set(intEncodedValue, INT_VALUE);
+        verify(edgeIteratorState).set(intEncodedValue, INT_VALUE);
     }
 
     @Test
     void setReverse_ok() {
-        setter.setReverse(edgeIterator, intEncodedValue, INT_VALUE);
+        setter.setReverse(edgeIteratorState, intEncodedValue, INT_VALUE);
 
-        verify(edgeIterator).setReverse(intEncodedValue, INT_VALUE);
+        verify(edgeIteratorState).setReverse(intEncodedValue, INT_VALUE);
     }
 }

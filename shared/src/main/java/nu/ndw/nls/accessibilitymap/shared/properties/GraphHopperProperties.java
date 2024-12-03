@@ -14,6 +14,8 @@ public class GraphHopperProperties {
     private static final String ACCESSIBILITY_META_DATA_JSON = "accessibility_meta_data.json";
     Path dir;
     String networkName;
+    boolean withTrafficSigns;
+    boolean publishEvents;
 
     public Path getLatestPath() {
         return getDir().resolve(getNetworkName());

@@ -15,20 +15,17 @@ import com.graphhopper.routing.ev.DecimalEncodedValue;
 import com.graphhopper.util.EdgeIteratorState;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
 import java.util.List;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
 import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperProperties;
 import nu.ndw.nls.events.NlsEvent;
-import nu.ndw.nls.events.NlsEventSubject;
 import nu.ndw.nls.events.NlsEventSubjectType;
 import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
-import nu.ndw.nls.springboot.messaging.MessagingConfig;
 import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
 import nu.ndw.nls.springboot.messaging.services.MessageReceiveService.ReceiveKey;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
@@ -36,8 +33,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -48,6 +43,7 @@ class NlsAccessibilityMapJobsIT {
 
     private static final String NETWORK_NAME = "accessibility_latest";
     private static final String PROPERTIES = "properties";
+    private static final String NETWORK_NAME_NO_TRAFFIC_SIGNS = "accessibility_latest_no_traffic_signs";
 
     // Mocking this bean to prevent stderr output about missing PicoCLI commands when running IT
     @MockBean
@@ -121,6 +117,50 @@ class NlsAccessibilityMapJobsIT {
         // Black code - driving direction null
         assertEdgeValue(networkGraphHopper, 600137823, MAX_WIDTH, 3.5, 3.5);
     }
+
+
+    @SneakyThrows
+    @Test
+    void createOrUpdateNetwork_ok_noTrafficSigns() {
+        Path accessibilityLatest = graphHopperConfiguration.getLatestPath();
+        assertTrue(Files.exists(accessibilityLatest));
+        // Check whether network is fully built.
+        assertTrue(Files.exists(accessibilityLatest.resolve(PROPERTIES)));
+
+        var networkSettings = RoutingNetworkSettings.builder(AccessibilityLink.class)
+                .networkNameAndVersion(NETWORK_NAME_NO_TRAFFIC_SIGNS)
+                .profiles(List.of(PROFILE))
+                .graphhopperRootPath(graphHopperProperties.getDir())
+                .indexed(true)
+                .build();
+
+        NetworkGraphHopper networkGraphHopper = networkService.loadFromDisk(networkSettings);
+        assertThat(networkGraphHopper).isNotNull();
+        assertThat(networkGraphHopper.getImportDate()).isNotNull();
+        assertThat(networkGraphHopper.getDataDate()).isNotNull();
+        assertTrue(networkGraphHopper.getImportDate().isAfter(networkGraphHopper.getDataDate()));
+
+        assertEdgeValue(networkGraphHopper, 307324006, HGV_ACCESS_FORBIDDEN_WINDOWED, false, false);
+        // Text sign type TIJD
+        assertEdgeValue(networkGraphHopper, 319325003, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
+        // Text sign type UIT
+        assertEdgeValue(networkGraphHopper, 600793741, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
+        // Text sign type VOOR
+        assertEdgeValue(networkGraphHopper, 309327059, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
+        // Text sign type VRIJ
+        assertEdgeValue(networkGraphHopper, 601008374, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
+
+        // Driving direction H
+        assertEdgeValue(networkGraphHopper, 310325117, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
+        // Driving direction T
+        assertEdgeValue(networkGraphHopper, 310326129, MOTOR_VEHICLE_ACCESS_FORBIDDEN, false, false);
+
+        // Black code - driving direction H
+        assertEdgeValue(networkGraphHopper, 316335071, MAX_HEIGHT, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+        // Black code - driving direction null
+        assertEdgeValue(networkGraphHopper, 600137823, MAX_WIDTH, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
+    }
+
 
     private void assertEdgeValue(NetworkGraphHopper networkGraphHopper, long roadSectionId,
             String key, boolean expectedForwardValue, boolean expectedBackwardValue) {

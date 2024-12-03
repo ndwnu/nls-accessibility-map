@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.nio.file.Files;
@@ -36,7 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityNetworkServiceTest {
-    private static final String GRAPHHOPPER_DIR = "/tmp/graphhopper";
+
     private static final int NWB_VERSION_ID = 20231001;
     private static final String TRAFFIC_SIGN_TIMESTAMP_STRING = "2023-11-07T15:37:23Z";
     private static final Instant TRAFFIC_SIGN_TIMESTAMP = Instant.parse(TRAFFIC_SIGN_TIMESTAMP_STRING);
@@ -82,10 +83,10 @@ class AccessibilityNetworkServiceTest {
     @SneakyThrows
     @Test
     void storeLatestNetworkOnDisk_ok() {
+        when(graphHopperConfiguration.publishEvents()).thenReturn(true);
         when(accessibilityLinkService.getLinks()).thenReturn(
                 new AccessibilityLinkData(links, NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP));
         when(links.iterator()).thenReturn(linkIterator);
-
 
         when(accessibilityRoutingNetworkEventMapper.map(NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP))
                 .thenReturn(publishEvent);
@@ -107,6 +108,31 @@ class AccessibilityNetworkServiceTest {
         assertTrue(Files.exists(tmpLatestPathFolder));
 
         verify(messageService).publish(publishEvent);
+    }
+
+    @SneakyThrows
+    @Test
+    void storeLatestNetworkOnDisk_ok_noEvents() {
+        when(accessibilityLinkService.getLinks()).thenReturn(
+                new AccessibilityLinkData(links, NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP));
+        when(links.iterator()).thenReturn(linkIterator);
+        when(graphHopperConfiguration.publishEvents()).thenReturn(false);
+        when(graphHopperConfiguration.configurePersistingRoutingNetworkSettings(any(), eq(TRAFFIC_SIGN_TIMESTAMP)))
+                .thenReturn(routingNetworkSettings);
+
+        accessibilityNetworkService.storeLatestNetworkOnDisk();
+
+        verify(networkMetaDataService).saveMetaData(new AccessibilityGraphhopperMetaData(NWB_VERSION_ID));
+
+        verify(graphHopperConfiguration).configurePersistingRoutingNetworkSettings(supplierArgumentCaptor.capture(),
+                eq(TRAFFIC_SIGN_TIMESTAMP));
+
+        assertEquals(linkIterator, supplierArgumentCaptor.getValue().get());
+
+        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkSettings);
+        assertTrue(Files.exists(tmpLatestPathFolder));
+
+        verifyNoInteractions(messageService);
     }
 
 }

@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper;
 
 import com.graphhopper.routing.ev.BooleanEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,12 +28,12 @@ public class BooleanEdgeSetter extends EdgeSetter<Boolean, BooleanEncodedValue> 
     }
 
     @Override
-    protected void set(EdgeIterator edge, BooleanEncodedValue encodedValue, Boolean value) {
+    protected void set(EdgeIteratorState edge, BooleanEncodedValue encodedValue, Boolean value) {
         edge.set(encodedValue, value);
     }
 
     @Override
-    protected void setReverse(EdgeIterator edge, BooleanEncodedValue encodedValue, Boolean value) {
+    protected void setReverse(EdgeIteratorState edge, BooleanEncodedValue encodedValue, Boolean value) {
         edge.setReverse(encodedValue, value);
     }
 
