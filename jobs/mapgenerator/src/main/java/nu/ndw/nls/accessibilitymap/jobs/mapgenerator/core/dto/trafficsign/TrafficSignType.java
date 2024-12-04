@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign;
 
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,4 +21,11 @@ public enum TrafficSignType {
     C20("C20"),
     C21("C21");
     private final String rvvCode;
+
+    public static TrafficSignType fromRvvCode(String rvvCode) {
+        return Arrays.stream(TrafficSignType.values())
+                .filter(t -> t.rvvCode.equals(rvvCode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid TrafficSignType: " + rvvCode));
+    }
 }

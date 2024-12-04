@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.ev.BooleanEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +22,7 @@ class EdgeSetterTest {
 
     private static final String KEY = "key";
     @Mock
-    private EdgeIterator edgeIterator;
+    private EdgeIteratorState edgeIteratorState;
     @Mock
     private EncodingManager encodingManager;
     @Mock
@@ -47,10 +47,10 @@ class EdgeSetterTest {
     void setDefaultValue_ok(boolean reversed, boolean storeInTwoDirections) {
         doCallRealMethod()
                 .when(edgeSetter)
-                .setDefaultValue(edgeIterator, KEY, reversed);
+                .setDefaultValue(edgeIteratorState, KEY, reversed);
         doCallRealMethod()
                 .when(edgeSetter)
-                .setValue(edgeIterator, KEY, reversed, true);
+                .setValue(edgeIteratorState, KEY, reversed, true);
         when(edgeSetter.getEncoderType())
                 .thenReturn(BooleanEncodedValue.class);
         if (reversed) {
@@ -59,12 +59,12 @@ class EdgeSetterTest {
         when(encodingManager.getEncodedValue(KEY, BooleanEncodedValue.class)).thenReturn(booleanEncodedValue);
         when(edgeSetter.getDefaultValue(booleanEncodedValue)).thenReturn(true);
 
-        edgeSetter.setDefaultValue(edgeIterator, KEY, reversed);
+        edgeSetter.setDefaultValue(edgeIteratorState, KEY, reversed);
 
         if (reversed && !booleanEncodedValue.isStoreTwoDirections()) {
-            verify(edgeSetter).setReverse(edgeIterator, booleanEncodedValue, true);
+            verify(edgeSetter).setReverse(edgeIteratorState, booleanEncodedValue, true);
         } else {
-            verify(edgeSetter).set(edgeIterator, booleanEncodedValue, true);
+            verify(edgeSetter).set(edgeIteratorState, booleanEncodedValue, true);
         }
 
     }
@@ -77,7 +77,7 @@ class EdgeSetterTest {
             false, false
             """)
     void setValue_ok(boolean reversed, boolean storeInTwoDirections) {
-        doCallRealMethod().when(edgeSetter).setValue(edgeIterator, KEY, reversed, true);
+        doCallRealMethod().when(edgeSetter).setValue(edgeIteratorState, KEY, reversed, true);
 
         if (reversed) {
             when(booleanEncodedValue.isStoreTwoDirections()).thenReturn(storeInTwoDirections);
@@ -86,12 +86,12 @@ class EdgeSetterTest {
         when(edgeSetter.getEncoderType()).thenReturn(BooleanEncodedValue.class);
         when(encodingManager.getEncodedValue(KEY, BooleanEncodedValue.class)).thenReturn(booleanEncodedValue);
 
-        edgeSetter.setValue(edgeIterator, KEY, reversed, true);
+        edgeSetter.setValue(edgeIteratorState, KEY, reversed, true);
 
         if (reversed && !booleanEncodedValue.isStoreTwoDirections()) {
-            verify(edgeSetter).setReverse(edgeIterator, booleanEncodedValue, true);
+            verify(edgeSetter).setReverse(edgeIteratorState, booleanEncodedValue, true);
         } else {
-            verify(edgeSetter).set(edgeIterator, booleanEncodedValue, true);
+            verify(edgeSetter).set(edgeIteratorState, booleanEncodedValue, true);
         }
     }
 }

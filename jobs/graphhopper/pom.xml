@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>3.2.19-SNAPSHOT</version>
+        <version>3.2.21-SNAPSHOT</version>
     </parent>
     <artifactId>graphhopper-job</artifactId>
     <name>NLS Accessibility Map generate Graphhopper job</name>
@@ -246,6 +246,27 @@
                                         <argument>run</argument>
                                         <argument>-e</argument>
                                         <argument>COMMAND=createOrUpdateNetwork</argument>
+                                        <argument>nls-accessibility-map-graphhopper-job</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-create-or-update-network-no-traffic-signs</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>-e</argument>
+                                        <argument>COMMAND=createOrUpdateNetwork</argument>
+                                        <argument>-e</argument>
+                                        <argument>GRAPHHOPPER_PUBLISHEVENTS=false</argument>
+                                        <argument>-e</argument>
+                                        <argument>GRAPHHOPPER_WITHTRAFFICSIGNS=false</argument>
+                                        <argument>-e</argument>
+                                        <argument>GRAPHHOPPER_NETWORKNAME=accessibility_latest_no_traffic_signs</argument>
                                         <argument>nls-accessibility-map-graphhopper-job</argument>
                                     </arguments>
                                 </configuration>

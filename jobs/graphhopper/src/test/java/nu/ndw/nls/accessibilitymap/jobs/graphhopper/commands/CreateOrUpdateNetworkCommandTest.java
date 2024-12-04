@@ -25,8 +25,9 @@ class CreateOrUpdateNetworkCommandTest {
     @Test
     void call_ok() {
         int result = createOrUpdateNetworkCommand.call();
+
         verify(networkImportService).storeLatestNetworkOnDisk();
-        assertThat(result).isEqualTo(0);
+        assertThat(result).isZero();
     }
 
     @SneakyThrows

@@ -52,4 +52,8 @@ public class GraphHopperConfiguration {
                 .profiles(List.of(PROFILE));
     }
 
+    public boolean publishEvents() {
+        return graphHopperProperties.isPublishEvents();
+    }
+
 }
