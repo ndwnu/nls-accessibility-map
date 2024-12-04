@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>3.2.20</version>
+        <version>3.2.21-SNAPSHOT</version>
     </parent>
     <artifactId>mapgenerator-job-component-test</artifactId>
     <name>NLS Accessibility Map generate GeoJson jobs - Component test</name>
