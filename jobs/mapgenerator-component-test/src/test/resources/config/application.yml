@@ -29,6 +29,9 @@ nu:
             driver:
               docker:
                 compose-file: "../../docker-compose.yml"
+              wiremock:
+                host: ${hostWireMock}
+                port: 8888
       test:
         component:
           general:
@@ -44,6 +47,3 @@ nu:
               locationOnDisk: "../../graphhopper"
             map-generation-job:
               locationOnDisk: "../../map-generation-destination"
-            wiremock:
-              host: ${hostWireMock}
-              port: 8888
