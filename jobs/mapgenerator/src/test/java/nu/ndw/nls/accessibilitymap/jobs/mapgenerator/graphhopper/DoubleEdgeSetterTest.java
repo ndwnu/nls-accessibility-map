@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.ev.DecimalEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +20,7 @@ class DoubleEdgeSetterTest {
     @Mock
     private EncodingManager encodingManager;
     @Mock
-    private EdgeIterator edgeIterator;
+    private EdgeIteratorState edgeIteratorState;
     @Mock
     private DecimalEncodedValue decimalEncodedValue;
 
@@ -46,16 +46,16 @@ class DoubleEdgeSetterTest {
     @Test
     void set_ok() {
 
-        setter.set(edgeIterator, decimalEncodedValue, DECIMAL_VALUE);
+        setter.set(edgeIteratorState, decimalEncodedValue, DECIMAL_VALUE);
 
-        verify(edgeIterator).set(decimalEncodedValue, DECIMAL_VALUE);
+        verify(edgeIteratorState).set(decimalEncodedValue, DECIMAL_VALUE);
     }
 
     @Test
     void setReverse_ok() {
 
-        setter.setReverse(edgeIterator, decimalEncodedValue, DECIMAL_VALUE);
+        setter.setReverse(edgeIteratorState, decimalEncodedValue, DECIMAL_VALUE);
 
-        verify(edgeIterator).setReverse(decimalEncodedValue, DECIMAL_VALUE);
+        verify(edgeIteratorState).setReverse(decimalEncodedValue, DECIMAL_VALUE);
     }
 }

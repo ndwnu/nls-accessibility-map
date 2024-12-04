@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper;
 import com.graphhopper.routing.ev.DecimalEncodedValue;
 import com.graphhopper.routing.ev.EncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,12 +29,12 @@ public class DoubleEdgeSetter extends EdgeSetter<Double, DecimalEncodedValue> {
     }
 
     @Override
-    protected void set(EdgeIterator edge, DecimalEncodedValue encodedValue, Double value) {
+    protected void set(EdgeIteratorState edge, DecimalEncodedValue encodedValue, Double value) {
         edge.set(encodedValue, value);
     }
 
     @Override
-    protected void setReverse(EdgeIterator edge, DecimalEncodedValue encodedValue, Double value) {
+    protected void setReverse(EdgeIteratorState edge, DecimalEncodedValue encodedValue, Double value) {
         edge.setReverse(encodedValue, value);
     }
 }

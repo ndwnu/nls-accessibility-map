@@ -28,7 +28,7 @@ public class TrafficSignMapper {
                     .id(integerSequenceSupplier.next())
                     .externalId(trafficSignGeoJsonDto.getId().toString())
                     .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
-                    .trafficSignType(TrafficSignType.valueOf(trafficSignGeoJsonDto.getProperties().getRvvCode()))
+                    .trafficSignType(TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode()))
                     .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
                     .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
                     .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
