@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.configuration.GeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.configuration.MapGenerationJobDriverConfiguration;
@@ -17,6 +16,7 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.JobConfigur
 import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
 import nu.ndw.nls.springboot.test.component.driver.docker.dto.Environment;
 import nu.ndw.nls.springboot.test.component.driver.docker.dto.Mode;
+import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -112,7 +112,7 @@ public class MapGenerationJobDriver implements StateManagement {
     }
 
     @Override
-    public void clearStateAfterEachScenario() {
+    public void clearState() {
 
         lastJobExecution = null;
     }

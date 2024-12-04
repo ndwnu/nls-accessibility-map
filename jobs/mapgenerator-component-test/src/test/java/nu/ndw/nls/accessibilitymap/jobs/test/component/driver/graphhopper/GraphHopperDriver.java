@@ -24,7 +24,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
@@ -50,7 +49,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class GraphHopperDriver implements StateManagement {
+public class GraphHopperDriver {
 
     private static final FileAttribute<?> FOLDER_PERMISSIONS = PosixFilePermissions.asFileAttribute(
             Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE));
@@ -192,10 +191,4 @@ public class GraphHopperDriver implements StateManagement {
     private <T> List<T> join(List<List<T>> lists) {
         return lists.stream().flatMap(List::stream).toList();
     }
-
-    @Override
-    public void clearStateAfterEachScenario() {
-        // do nothing
-    }
-
 }

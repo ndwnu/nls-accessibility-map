@@ -20,6 +20,7 @@ public class IssueDriver {
     ObjectMapper objectMapper = new ObjectMapper();
 
     public void stubIssueApiRequest() {
+
         Map<String, Map<String, String>> jwtMatcherParameters = Map.of(
                 "header", Map.of("alg", "RS256", "typ", "JWT"),
                 "payload", Map.of("clientId", "nls-accessibility-map-api-service-account")
@@ -32,11 +33,11 @@ public class IssueDriver {
                                 .withHeader("Content-Type", "application/json")
                                 .withStatus(HttpStatus.ACCEPTED.value())
                                 .withBody("{{request.body}}")));
-
     }
 
     @SneakyThrows
     public int getNumberOfIssuesCreated() {
+
         Unirest.setTimeouts(0, 0);
         HttpResponse<String> response = Unirest.post("http://localhost:8888/__admin/requests/count")
                 .header("Content-Type", "application/json")
