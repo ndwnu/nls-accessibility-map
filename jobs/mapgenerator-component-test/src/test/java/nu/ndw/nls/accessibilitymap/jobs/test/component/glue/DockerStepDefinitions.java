@@ -5,12 +5,12 @@ import io.cucumber.java.en.When;
 import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.DockerDriver;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.dto.Environment;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.docker.dto.Mode;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.JobConfiguration;
+import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
+import nu.ndw.nls.springboot.test.component.driver.docker.dto.Environment;
+import nu.ndw.nls.springboot.test.component.driver.docker.dto.Mode;
 
 @RequiredArgsConstructor
 public class DockerStepDefinitions {

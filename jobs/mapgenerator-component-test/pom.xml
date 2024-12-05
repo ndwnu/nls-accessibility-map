@@ -16,7 +16,6 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
             <artifactId>shared</artifactId>
@@ -79,48 +78,14 @@
             </exclusions>
         </dependency>
 
-        <!-- Dependencies for testing -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-contract-wiremock</artifactId>
+            <groupId>nu.ndw.nls.springboot</groupId>
+            <artifactId>component-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit-assertj</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Dependencies for BDD testing -->
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-spring</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-java</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- DO NOT REMOVE! Without these two dependencies tests will not run.  -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

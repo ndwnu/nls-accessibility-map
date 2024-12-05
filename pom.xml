@@ -44,7 +44,7 @@
         <swagger-annotations.version>2.2.25</swagger-annotations.version>
         <nls-events.version>5.0.6</nls-events.version>
         <nls-nwb-data-access.version>7.1.7</nls-nwb-data-access.version>
-        <nls-springboot.version>7.0.0</nls-springboot.version>
+        <nls-springboot.version>7.2.0</nls-springboot.version>
         <nls-routing-map-matcher.version>13.0.7</nls-routing-map-matcher.version>
         <nls-geometry.version>3.2.0</nls-geometry.version>
         <jackson-geojson.version>1.14</jackson-geojson.version>
@@ -204,6 +204,12 @@
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>test</artifactId>
+                <version>${nls-springboot.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>nu.ndw.nls.springboot</groupId>
+                <artifactId>component-test</artifactId>
                 <version>${nls-springboot.version}</version>
                 <scope>test</scope>
             </dependency>
