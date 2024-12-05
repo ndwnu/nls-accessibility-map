@@ -65,6 +65,10 @@
             <groupId>com.conductor</groupId>
             <artifactId>stream-utils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.geojson.geometry</groupId>
+            <artifactId>geometry-jts</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

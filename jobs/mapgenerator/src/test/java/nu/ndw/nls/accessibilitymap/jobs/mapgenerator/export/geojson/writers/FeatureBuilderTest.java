@@ -21,8 +21,9 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
+import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
+import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
-import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,13 +43,15 @@ class FeatureBuilderTest {
     private FeatureBuilder featureBuilder;
 
     @Mock
-    private GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
+    private JtsLineStringJsonMapper jtsLineStringJsonMapper;
 
     @Mock
     private FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Mock
     private LineString directionalSegmentLineString;
+    @Mock
+    private LineString trafficSignPointLineString;
 
     @Mock
     private LineString trafficSignLineString;
@@ -65,7 +68,7 @@ class FeatureBuilderTest {
 
         idSequenceSupplier = new LongSequenceSupplier();
 
-        featureBuilder = new FeatureBuilder(geoJsonLineStringCoordinateMapper, fractionAndDistanceCalculator);
+        featureBuilder = new FeatureBuilder(jtsLineStringJsonMapper, fractionAndDistanceCalculator);
     }
 
     @Test
@@ -339,7 +342,7 @@ class FeatureBuilderTest {
                 {
                    "id":%s,
                    "geometry":{
-                      "coordinates":[[45.0, 56.0]],
+                      "coordinates":[[12.0, 23.0]],
                       "type":"LineString"
                    },
                    "properties":{
@@ -499,19 +502,13 @@ class FeatureBuilderTest {
                     directionalSegmentLineString,
                     generateConfiguration.trafficSignLineStringDistanceInMeters())
             ).thenReturn(trafficSignLineString);
-            when(geoJsonLineStringCoordinateMapper.map(trafficSignLineString))
-                    .thenReturn(List.of(List.of(78d, 89d)));
+            when(jtsLineStringJsonMapper.map(trafficSignLineString))
+                    .thenReturn(new LineStringJson(List.of(List.of(78d, 89d))));
         }
 
-        if (prepareTrafficSignPoint) {
-            when(directionalSegmentLineString.getStartPoint()).thenReturn(startPoint);
-            when(startPoint.getX()).thenReturn(12d);
-            when(startPoint.getY()).thenReturn(23d);
-        }
-
-        if (prepareRoadSection) {
-            when(geoJsonLineStringCoordinateMapper.map(directionalSegmentLineString))
-                    .thenReturn(List.of(List.of(45d, 56d)));
+        if (prepareTrafficSignPoint || prepareRoadSection) {
+            when(jtsLineStringJsonMapper.map(directionalSegmentLineString))
+                    .thenReturn(new LineStringJson(List.of(List.of(12d, 23d))));
         }
     }
 }

@@ -12,4 +12,39 @@
     <artifactId>specification</artifactId>
     <version>3.2.22-SNAPSHOT</version>
     <name>NLS Accessibility Map Open API specification</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-open-api-geojson-geometry-config</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>nu.ndw.nls.geojson.geometry</groupId>
+                                    <artifactId>specification</artifactId>
+                                    <version>${nls-geojson-geometry.version}</version>
+                                    <outputDirectory>${project.basedir}/src/main/resources/nu/ndw/nls/accessibilitymap/specification/</outputDirectory>
+                                    <includes>
+                                        **/geojson-geometry.yaml
+                                    </includes>
+                                    <fileMappers>
+                                        <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper"/>
+                                    </fileMappers>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
