@@ -7,13 +7,12 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,7 +90,7 @@ class MunicipalityFeatureMapperTest {
         String municipalityId = MUNICIPALITY.getMunicipalityId();
         Point startPoint = MUNICIPALITY.getStartPoint();
         MunicipalityBoundingBox bounds = MUNICIPALITY.getBounds();
-        var pointJson = new PointJson(List.of(startPoint.getX(), startPoint.getY()), GeometryJson.TypeEnum.POINT);
+        var pointJson = new PointJson(List.of(startPoint.getX(), startPoint.getY()));
         List<Double> boundsStart = List.of(bounds.longitudeFrom(), bounds.latitudeFrom());
         List<Double> boundsEnd = List.of(bounds.longitudeTo(), bounds.latitudeTo());
         var propertiesJson = new MunicipalityPropertiesJson(

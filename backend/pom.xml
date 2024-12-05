@@ -90,6 +90,10 @@
             <artifactId>mapstruct</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.geojson.geometry</groupId>
+            <artifactId>geometry-jts</artifactId>
+        </dependency>
 
         <!--Test dependencies-->
         <dependency>
