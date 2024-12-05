@@ -23,6 +23,15 @@ spring:
 nu:
   ndw:
     nls:
+      springboot:
+        test:
+          component:
+            driver:
+              docker:
+                compose-file: "../../docker-compose.yml"
+              wiremock:
+                host: ${hostWireMock}
+                port: 8888
       test:
         component:
           general:
@@ -34,12 +43,7 @@ nu:
             maven:
               rootPomRelativePath: "../../"
               moduleUnderTest: "jobs/mapgenerator"
-            docker:
-              compose-file: "../../docker-compose.yml"
             graph-hopper:
               locationOnDisk: "../../graphhopper"
             map-generation-job:
               locationOnDisk: "../../map-generation-destination"
-            wiremock:
-              host: ${hostWireMock}
-              port: 8888

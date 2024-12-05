@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Node;
@@ -18,6 +17,7 @@ import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityL
 import nu.ndw.nls.geometry.crs.CrsTransformer;
 import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
+import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -121,7 +121,8 @@ public class NetworkDataService implements StateManagement {
     }
 
     @Override
-    public void clearStateAfterEachScenario() {
+    public void clearState() {
+
         longSequenceSupplier = new LongSequenceSupplier();
         nodes.clear();
         links.clear();

@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.StateManagement;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.process.ProcessManager;
+import nu.ndw.nls.springboot.processrunner.runner.services.ProcessRunnerService;
+import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -15,34 +15,34 @@ public class MavenDriver implements StateManagement {
 
     private final MavenConfiguration mavenConfiguration;
 
-    private final ProcessManager processManager;
-
+    private final ProcessRunnerService processRunnerService;
 
     @Override
-    public void prepareBeforeEachScenario() {
+    public void prepareState() {
 
         buildRelatedProjectToComponentTest();
     }
 
     private void buildRelatedProjectToComponentTest() {
 
-        processManager.startProcessAndWaitToBeFinished(
-                new File(mavenConfiguration.getRootPomRelativePath()),
-                List.of("pwd"));
+        processRunnerService.run(
+                new File(mavenConfiguration.getRootPomRelativePath()).toPath(),
+                List.of("pwd"),
+                false);
 
-        processManager.startProcessAndWaitToBeFinished(
-                new File(mavenConfiguration.getRootPomRelativePath()),
+        processRunnerService.run(
+                new File(mavenConfiguration.getRootPomRelativePath()).toPath(),
                 List.of("mvn",
                         "package",
                         "-DskipTests",
                         "-pl",
                         mavenConfiguration.getModuleUnderTest(),
-                        "-am"));
-
+                        "-am"),
+                false);
     }
 
     @Override
-    public void clearStateAfterEachScenario() {
+    public void clearState() {
 
     }
 }
