@@ -18,8 +18,9 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.RoadSect
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.TrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
+import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
+import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
-import nu.ndw.nls.geometry.geojson.mappers.GeoJsonLineStringCoordinateMapper;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FeatureBuilder {
 
-    private final GeoJsonLineStringCoordinateMapper geoJsonLineStringCoordinateMapper;
+    private final JtsLineStringJsonMapper jtsLineStringJsonMapper;
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
@@ -139,13 +140,14 @@ public class FeatureBuilder {
             TrafficSign trafficSign,
             DirectionalSegment directionalSegment) {
 
+        LineStringJson directionSegmentLineStringJson = jtsLineStringJsonMapper.map(
+                directionalSegment.getLineString());
+
         return Feature.builder()
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(PointGeometry
                         .builder()
-                        .coordinates(List.of(
-                                directionalSegment.getLineString().getStartPoint().getX(),
-                                directionalSegment.getLineString().getStartPoint().getY()))
+                        .coordinates(directionSegmentLineStringJson.getCoordinates().getFirst())
                         .build())
                 .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
                 .build();
@@ -161,10 +163,10 @@ public class FeatureBuilder {
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(LineStringGeometry
                         .builder()
-                        .coordinates(geoJsonLineStringCoordinateMapper.map(
+                        .coordinates(jtsLineStringJsonMapper.map(
                                 fractionAndDistanceCalculator.getSubLineStringByLengthInMeters(
                                         directionalSegment.getLineString(),
-                                        trafficSignLineStringDistanceInMeters)))
+                                        trafficSignLineStringDistanceInMeters)).getCoordinates())
                         .build())
                 .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
                 .build();
@@ -197,7 +199,7 @@ public class FeatureBuilder {
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(LineStringGeometry
                         .builder()
-                        .coordinates(geoJsonLineStringCoordinateMapper.map(directionalSegment.getLineString()))
+                        .coordinates(jtsLineStringJsonMapper.map(directionalSegment.getLineString()).getCoordinates())
                         .build())
                 .properties(RoadSectionProperties
                         .builder()

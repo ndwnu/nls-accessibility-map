@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>3.2.22-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>graphhopper-job</artifactId>
     <name>NLS Accessibility Map generate Graphhopper job</name>
@@ -55,6 +55,10 @@
         <dependency>
             <groupId>com.conductor</groupId>
             <artifactId>stream-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
         </dependency>
 
         <dependency>
@@ -287,8 +291,6 @@
                         <configuration>
                             <arguments>
                                 <argument>compose</argument>
-                                <argument>--env-file</argument>
-                                <argument>../../.env</argument>
                             </arguments>
                             <executable>docker</executable>
                         </configuration>

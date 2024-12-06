@@ -322,66 +322,7 @@ components:
           description: Identifier for the feature
           example: 217934
         geometry:
-          $ref: '#/components/schemas/Geometry'
-    Geometry:
-      type: object
-      description: GeoJSON geometry
-      discriminator:
-        propertyName: type
-      required:
-        - type
-      externalDocs:
-        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1
-      properties:
-        type:
-          type: string
-          enum:
-            - Point
-            - LineString
-          description: Type of the geometry
-          example: LineString
-    Point:
-      allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - type: object
-          description: GeoJSON geometry
-          example: [ 5.1, 52.2 ]
-          externalDocs:
-            url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
-          required:
-            - coordinates
-          properties:
-            coordinates:
-              $ref: '#/components/schemas/Point2D'
-    LineString:
-      allOf:
-        - $ref: '#/components/schemas/Geometry'
-        - type: object
-          description: GeoJSON line string geometry
-          example: [ [ 5.1, 52.2 ], [ 5.4, 52.3 ] ]
-          externalDocs:
-            url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.4
-          required:
-            - coordinates
-          properties:
-            coordinates:
-              type: array
-              items:
-                $ref: '#/components/schemas/Point2D'
-              description: List of points representing the line string geometry
-    Point2D:
-      type: array
-      description: Point in 2D space
-      externalDocs:
-        url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
-      minItems: 2
-      maxItems: 2
-      example: [ 5.1, 52.2 ]
-      items:
-        type: number
-        format: double
-        description: List of coordinates representing the point geometry
-
+          $ref: './geojson-geometry.yaml#/components/schemas/Geometry'
     RoadSectionFeatureCollection:
       allOf:
         - $ref: '#/components/schemas/FeatureCollection'
@@ -407,7 +348,7 @@ components:
               format: int32
               example: 715923
             geometry:
-              $ref: '#/components/schemas/LineString'
+              $ref: './geojson-geometry.yaml#/components/schemas/LineString'
             properties:
               $ref: '#/components/schemas/RoadSectionProperties'
     RoadSectionProperties:
@@ -450,7 +391,7 @@ components:
               description: Identifier of the municipality in the municipality registry
               example: GM0344
             geometry:
-              $ref: '#/components/schemas/Point'
+              $ref: './geojson-geometry.yaml#/components/schemas/Point'
             properties:
               $ref: '#/components/schemas/MunicipalityProperties'
     MunicipalityProperties:

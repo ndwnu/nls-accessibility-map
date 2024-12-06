@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>3.2.22-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>mapgenerator-job</artifactId>
     <name>NLS Accessibility Map generate GeoJson jobs</name>
@@ -64,6 +64,10 @@
         <dependency>
             <groupId>com.conductor</groupId>
             <artifactId>stream-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.geojson.geometry</groupId>
+            <artifactId>geometry-jts</artifactId>
         </dependency>
 
         <dependency>
