@@ -22,3 +22,6 @@ docker/accessibility-wiremock-stub/responses/realdata-*
 **/application-local*.yml
 secrets-*.yaml
 **/resources/application-localStaging.yaml
+
+/specification/**/geojson-geometry.yaml
+/open-api-config.yaml

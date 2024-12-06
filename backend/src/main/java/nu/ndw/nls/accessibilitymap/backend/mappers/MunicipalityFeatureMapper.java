@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.GeometryJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.rounding.dto.RoundDoubleConfiguration;
 import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
 import org.springframework.stereotype.Component;
@@ -54,7 +53,7 @@ public class MunicipalityFeatureMapper {
     }
 
     private static PointJson mapPointJson(double x, double y) {
-        return new PointJson(List.of(x, y), GeometryJson.TypeEnum.POINT);
+        return new PointJson(List.of(x, y));
     }
 
     private List<List<Double>> mapMunicipalityBounds(MunicipalityBoundingBox boundingBox) {

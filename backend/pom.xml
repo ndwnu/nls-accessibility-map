@@ -6,12 +6,12 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>3.2.22-SNAPSHOT</version>
+        <version>4.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>backend</artifactId>
 
-    <version>3.2.22-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <name>NLS Accessibility Map Backend</name>
 
     <description>Accessibility Map REST API</description>
@@ -89,6 +89,10 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.geojson.geometry</groupId>
+            <artifactId>geometry-jts</artifactId>
         </dependency>
 
         <!--Test dependencies-->
@@ -315,8 +319,6 @@
                         <configuration>
                             <arguments>
                                 <argument>compose</argument>
-                                <argument>--env-file</argument>
-                                <argument>../.env</argument>
                             </arguments>
                             <executable>docker</executable>
                         </configuration>
