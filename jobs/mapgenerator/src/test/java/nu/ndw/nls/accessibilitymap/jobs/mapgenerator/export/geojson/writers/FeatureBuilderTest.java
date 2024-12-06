@@ -32,7 +32,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.Point;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -40,6 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class FeatureBuilderTest {
 
     private static final String EXTERNAL_ID = "externalId";
+
     private FeatureBuilder featureBuilder;
 
     @Mock
@@ -50,14 +50,9 @@ class FeatureBuilderTest {
 
     @Mock
     private LineString directionalSegmentLineString;
-    @Mock
-    private LineString trafficSignPointLineString;
 
     @Mock
     private LineString trafficSignLineString;
-
-    @Mock
-    private Point startPoint;
 
     private DirectionalSegment directionalSegmentForward;
 
