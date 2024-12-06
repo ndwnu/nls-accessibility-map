@@ -319,8 +319,6 @@
                         <configuration>
                             <arguments>
                                 <argument>compose</argument>
-                                <argument>--env-file</argument>
-                                <argument>../.env</argument>
                             </arguments>
                             <executable>docker</executable>
                         </configuration>
