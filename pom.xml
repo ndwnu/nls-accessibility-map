@@ -44,7 +44,7 @@
         <swagger-annotations.version>2.2.27</swagger-annotations.version>
         <nls-events.version>5.0.9</nls-events.version>
         <nls-nwb-data-access.version>7.1.17</nls-nwb-data-access.version>
-        <nls-springboot.version>7.3.2</nls-springboot.version>
+        <nls-springboot.version>8.0.2</nls-springboot.version>
         <nls-routing-map-matcher.version>13.3.2</nls-routing-map-matcher.version>
         <nls-geometry.version>4.0.0</nls-geometry.version>
         <nls-geojson-geometry.version>1.3.9</nls-geojson-geometry.version>
