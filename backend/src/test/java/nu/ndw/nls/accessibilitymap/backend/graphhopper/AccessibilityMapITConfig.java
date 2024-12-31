@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.backend.graphhopper;
 import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.VEHICLE_NAME_CAR;
 
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
-import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AccessibilityMapFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.services.RestrictionMapperProvider;
@@ -34,7 +33,7 @@ class AccessibilityMapITConfig {
                 edgeIteratorStateReverseExtractor,
                 new FractionAndDistanceCalculator(
                         geodeticCalculatorFactory,
-                        List.of(new GeometryFactoryWgs84()),
+                        new GeometryFactoryWgs84(),
                         new BearingCalculator(geodeticCalculatorFactory)),
                 new GeometryFactoryWgs84());
 
