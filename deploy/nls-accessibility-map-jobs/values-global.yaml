@@ -1,6 +1,6 @@
 datadog:
   agent:
-    version: v1.32.0
+    version: v1.45.1
 podRestarterVersion: "20250113.1"
 
 cronJobs:
