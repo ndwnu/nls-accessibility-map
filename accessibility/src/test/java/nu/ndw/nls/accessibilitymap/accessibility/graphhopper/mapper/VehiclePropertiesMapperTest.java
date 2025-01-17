@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

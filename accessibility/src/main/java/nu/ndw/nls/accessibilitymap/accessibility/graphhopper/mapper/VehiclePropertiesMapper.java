@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C10;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C12;
@@ -25,10 +25,15 @@ import org.springframework.stereotype.Component;
 public class VehiclePropertiesMapper {
 
     private static final double MAX_LENGTH = 22D;
+
     private static final double MAX_HEIGHT = 4D;
+
     private static final double MAX_AXLE_LOAD = 12D;
+
     private static final double MAX_WEIGHT = 60D;
+
     private static final double MAX_WIDTH = 3D;
+
     private static final Map<TrafficSignType, BiFunction<VehiclePropertiesBuilder, Boolean, VehiclePropertiesBuilder>> MAPPINGS = Map.ofEntries(
             Map.entry(C6, setCarAccessForbidden()),
             Map.entry(C7, setHgvAccessForBidden()),
@@ -63,7 +68,6 @@ public class VehiclePropertiesMapper {
             return builder;
         };
     }
-
 
     private static BiFunction<VehiclePropertiesBuilder, Boolean, VehiclePropertiesBuilder> setWidth() {
         return (builder, includeOnlyWindowTimes) -> {
