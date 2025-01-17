@@ -14,5 +14,6 @@
         <module>mapgenerator</module>
         <module>mapgenerator-component-test</module>
         <module>graphhopper</module>
+        <module>trafficsignanalyser</module>
     </modules>
 </project>

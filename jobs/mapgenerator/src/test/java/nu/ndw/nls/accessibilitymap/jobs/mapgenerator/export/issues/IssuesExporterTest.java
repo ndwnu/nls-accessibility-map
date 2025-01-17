@@ -12,7 +12,7 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.issues.mappers.IssueMapper;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
