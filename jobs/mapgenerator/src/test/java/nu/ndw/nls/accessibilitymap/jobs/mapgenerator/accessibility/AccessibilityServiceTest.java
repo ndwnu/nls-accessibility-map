@@ -18,6 +18,9 @@ import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
@@ -28,18 +31,15 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibi
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.mappers.TrafficSignSnapMapper;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.graphhopper.QueryGraphFactory;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.AnnotationUtil;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.LoggerExtension;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -283,7 +283,7 @@ class AccessibilityServiceTest {
     @Test
     void annotation_calculateAccessibility() {
 
-        AnnotationUtil.methodsContainsAnnotation(
+        AnnotationUtil.methodContainsAnnotation(
                 accessibilityService.getClass(),
                 Timed.class,
                 "calculateAccessibility",

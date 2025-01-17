@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 
 import java.util.Arrays;
 import lombok.AllArgsConstructor;

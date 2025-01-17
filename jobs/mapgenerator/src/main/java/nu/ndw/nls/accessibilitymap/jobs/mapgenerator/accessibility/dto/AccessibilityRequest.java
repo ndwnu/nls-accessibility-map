@@ -6,8 +6,8 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.With;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
 import org.springframework.validation.annotation.Validated;
 
 @Builder

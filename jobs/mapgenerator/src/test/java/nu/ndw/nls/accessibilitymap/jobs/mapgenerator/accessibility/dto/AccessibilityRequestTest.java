@@ -1,8 +1,8 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.unit.ValidationTest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

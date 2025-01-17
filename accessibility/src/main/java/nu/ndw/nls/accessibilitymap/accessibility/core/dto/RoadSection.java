@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.time;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Clock;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.utils.AnnotationUtil;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +38,7 @@ class ClockBeanConfigurationTest {
     @Test
     void clock_beanAnnotation() {
 
-        AnnotationUtil.methodsContainsAnnotation(
+        AnnotationUtil.methodContainsAnnotation(
                 clockBeanConfiguration.getClass(),
                 Bean.class,
                 "clock",

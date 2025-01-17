@@ -9,11 +9,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.issues.mappers.IssueMapper;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.IssueJson;
