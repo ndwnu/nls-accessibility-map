@@ -77,6 +77,18 @@ class TrafficSignMapperTest {
         validateTrafficSign(trafficSign.get());
     }
 
+    @Test
+    void mapFromTrafficSignGeoJsonDto_invalidBlackCode() {
+
+        trafficSignGeoJsonDto.getProperties().setBlackCode("invalid");
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+        validateTrafficSign(trafficSign.get());
+    }
+
     @ParameterizedTest
     @EnumSource(value = DirectionType.class)
     void mapFromTrafficSignGeoJsonDto_allDirections(DirectionType directionType) {
@@ -138,21 +150,21 @@ class TrafficSignMapperTest {
     private void validateTrafficSign(TrafficSign trafficSign) {
 
         assertThat(trafficSign.id()).isEqualTo(1);
-        assertThat(trafficSign.roadSectionId()).isEqualTo(
-                trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue());
-        assertThat(trafficSign.trafficSignType()).
-                isEqualTo(TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode()));
-        assertThat(trafficSign.direction())
-                .isEqualTo(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()));
+        assertThat(trafficSign.roadSectionId()).isEqualTo(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue());
+        assertThat(trafficSign.trafficSignType())
+                .isEqualTo(TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode()));
+        assertThat(trafficSign.direction()).isEqualTo(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()));
         assertThat(trafficSign.fraction()).isEqualTo(trafficSignGeoJsonDto.getProperties().getFraction());
-        assertThat(trafficSign.latitude())
-                .isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude());
-        assertThat(trafficSign.longitude())
-                .isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude());
+        assertThat(trafficSign.latitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude());
+        assertThat(trafficSign.longitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude());
         assertThat(trafficSign.textSigns()).isEqualTo(trafficSignGeoJsonDto.getProperties().getTextSigns());
-        assertThat(trafficSign.blackCode()).isEqualTo(
-                Double.parseDouble(trafficSignGeoJsonDto.getProperties().getBlackCode()));
         assertThat(trafficSign.iconUri()).isEqualTo(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()));
+
+        if (trafficSignGeoJsonDto.getProperties().getBlackCode().equals("invalid")) {
+            assertThat(trafficSign.blackCode()).isNull();
+        } else {
+            assertThat(trafficSign.blackCode()).isEqualTo(Double.parseDouble(trafficSignGeoJsonDto.getProperties().getBlackCode()));
+        }
     }
 
     private Direction createDirection(DirectionType drivingDirection) {
