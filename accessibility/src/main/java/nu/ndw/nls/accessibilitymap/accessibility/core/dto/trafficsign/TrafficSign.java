@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.trafficsign;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.With;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import org.springframework.validation.annotation.Validated;
 

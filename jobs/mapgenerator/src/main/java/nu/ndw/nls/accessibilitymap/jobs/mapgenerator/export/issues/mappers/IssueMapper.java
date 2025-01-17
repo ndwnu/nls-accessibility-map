@@ -5,7 +5,7 @@ import static java.util.Collections.emptyList;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.DataLinkJson;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.DataLinkRecordJson;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.DataLinkSourceJson;

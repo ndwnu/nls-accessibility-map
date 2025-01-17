@@ -2,10 +2,10 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.issues;
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.Exporter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.issues.mappers.IssueMapper;
