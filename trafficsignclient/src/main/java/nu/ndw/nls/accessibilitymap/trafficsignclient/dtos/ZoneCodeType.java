@@ -1,16 +1,20 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum ZoneCodeType {
     @JsonProperty("ZB")
-    BEGIN,
+    BEGIN("ZB"),
     @JsonProperty("ZE")
-    END,
+    END("ZE"),
     @JsonProperty("ZH")
-    REPEAT,
+    REPEAT("ZH"),
     @JsonProperty("ZO")
-    UNKNOWN
+    UNKNOWN("ZO");
+
+    private final String value;
 }
