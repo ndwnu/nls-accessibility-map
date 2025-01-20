@@ -10,6 +10,6 @@ public class NotZoneEndsFilterPredicate implements TrafficSignIncludedFilterPred
 
     @Override
     public boolean test(TrafficSignGeoJsonDto trafficSignJsonDto) {
-        return !ZoneCodeType.END.toString().equals(trafficSignJsonDto.getProperties().getZoneCode());
+        return !ZoneCodeType.END.getValue().equals(trafficSignJsonDto.getProperties().getZoneCode());
     }
 }
