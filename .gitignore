@@ -14,9 +14,7 @@ target
 
 *.versionsBackup
 # API and jobs copy application JARs to Docker directory after compiling, for Docker to have it in context for building.
-docker/nls-accessibility-map-api/application.jar
-docker/nls-accessibility-map-graphhopper-job/application.jar
-docker/nls-accessibility-map-generator-jobs/application.jar
+docker/**/application.jar
 docker/accessibility-wiremock-stub/responses/realdata-*
 
 **/application-local*.yml

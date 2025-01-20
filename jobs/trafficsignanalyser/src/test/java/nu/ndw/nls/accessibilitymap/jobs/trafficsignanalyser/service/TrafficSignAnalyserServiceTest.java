@@ -1,0 +1,185 @@
+package nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import ch.qos.logback.classic.Level;
+import feign.FeignException;
+import feign.FeignException.FeignClientException;
+import feign.FeignException.FeignServerException;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.issue.mapper.IssueMapper;
+import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
+import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
+import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.IssueJson;
+import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+
+@ExtendWith(MockitoExtension.class)
+class TrafficSignAnalyserServiceTest {
+
+    private TrafficSignAnalyserService trafficSignAnalyserService;
+
+    @Mock
+    private AccessibilityService accessibilityService;
+
+    @Mock
+    private AccessibilityRequestMapper accessibilityRequestMapper;
+
+    @Mock
+    private IssueApiClient issueApiClient;
+
+    @Mock
+    private IssueMapper issueMapper;
+
+    @Mock
+    private AccessibilityRequest accessibilityRequest;
+
+    @Mock
+    private Accessibility accessibility;
+
+    @Mock
+    private AnalyseProperties analyseProperties;
+
+    @Mock
+    private RoadSection roadSection;
+
+    @Mock
+    private RoadSectionFragment roadSectionFragment;
+
+    @Mock
+    private DirectionalSegment directionalSegment;
+
+    @Mock
+    private CreateIssueJson createIssueJson;
+
+    @Mock
+    private ResponseEntity<IssueJson> createIssueResponse;
+
+    @Mock
+    private FeignException.FeignClientException feignClientException;
+
+    @Mock
+    private FeignException.FeignServerException feignServerException;
+
+    @RegisterExtension
+    LoggerExtension loggerExtension = new LoggerExtension();
+
+    @BeforeEach
+    void setUp() {
+
+        trafficSignAnalyserService = new TrafficSignAnalyserService(accessibilityService, accessibilityRequestMapper, issueApiClient,
+                issueMapper);
+    }
+
+    @Test
+    void analyse_ok() {
+
+        when(analyseProperties.nwbVersion()).thenReturn(1234);
+        when(analyseProperties.reportIssues()).thenReturn(true);
+
+        when(accessibilityRequestMapper.map(analyseProperties)).thenReturn(accessibilityRequest);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+
+        when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
+        when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
+        when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
+        when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
+        when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
+        when(directionalSegment.hasTrafficSign()).thenReturn(true);
+        when(issueMapper.mapToIssue(eq(directionalSegment), argThat(reportId -> {
+            Pattern pattern = Pattern.compile("^Nwb1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(reportId);
+            return matcher.find();
+        }))).thenReturn(createIssueJson);
+
+        when(issueApiClient.createIssue(createIssueJson)).thenReturn(createIssueResponse);
+
+        trafficSignAnalyserService.analyse(analyseProperties);
+
+        verify(issueApiClient).createIssue(createIssueJson);
+
+        loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseProperties");
+        loggerExtension.containsLog(Level.INFO, "Detected traffic sign issue: createIssueJson");
+        loggerExtension.containsLog(Level.INFO, "Reported traffic sign issue: createIssueJson");
+    }
+
+    @Test
+    void analyse_locationDataIssuesApi_serverError() {
+
+        when(analyseProperties.nwbVersion()).thenReturn(1234);
+        when(analyseProperties.reportIssues()).thenReturn(true);
+
+        when(accessibilityRequestMapper.map(analyseProperties)).thenReturn(accessibilityRequest);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+
+        when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
+        when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
+        when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
+        when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
+        when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
+        when(directionalSegment.hasTrafficSign()).thenReturn(true);
+        when(issueMapper.mapToIssue(eq(directionalSegment), argThat(reportId -> {
+            Pattern pattern = Pattern.compile("^Nwb1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(reportId);
+            return matcher.find();
+        }))).thenReturn(createIssueJson);
+
+        when(issueApiClient.createIssue(createIssueJson)).thenThrow(feignServerException);
+
+        assertThat(catchThrowable(() ->trafficSignAnalyserService.analyse(analyseProperties)))
+                .isInstanceOf(FeignServerException.class);
+
+        loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseProperties");
+        loggerExtension.containsLog(Level.INFO, "Detected traffic sign issue: createIssueJson");
+    }
+
+    @Test
+    void analyse_locationDataIssuesApi_clientError() {
+
+        when(analyseProperties.nwbVersion()).thenReturn(1234);
+        when(analyseProperties.reportIssues()).thenReturn(true);
+
+        when(accessibilityRequestMapper.map(analyseProperties)).thenReturn(accessibilityRequest);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+
+        when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
+        when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
+        when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
+        when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
+        when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
+        when(directionalSegment.hasTrafficSign()).thenReturn(true);
+        when(issueMapper.mapToIssue(eq(directionalSegment), argThat(reportId -> {
+            Pattern pattern = Pattern.compile("^Nwb1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(reportId);
+            return matcher.find();
+        }))).thenReturn(createIssueJson);
+
+        when(issueApiClient.createIssue(createIssueJson)).thenThrow(feignClientException);
+
+        assertThat(catchThrowable(() ->trafficSignAnalyserService.analyse(analyseProperties)))
+                .isInstanceOf(FeignClientException.class);
+
+        loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseProperties");
+        loggerExtension.containsLog(Level.INFO, "Detected traffic sign issue: createIssueJson");
+    }
+}
