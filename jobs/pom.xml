@@ -12,8 +12,8 @@
     <name>nls-accessibility-map-jobs</name>
     <modules>
         <module>mapgenerator</module>
-        <module>mapgenerator-component-test</module>
         <module>graphhopper</module>
         <module>trafficsignanalyser</module>
+        <module>jobs-component-test</module>
     </modules>
 </project>

@@ -1,0 +1,28 @@
+{
+  "title": "Asymmetric traffic sign placement",
+  "description": "Asymmetric traffic sign placement",
+  "type": "Missing",
+  "priority": "Medium",
+  "status": "Open",
+  "reporterReportId": "${json-unit.ignore}",
+  "reporterReportGroupId": "AsymmetricTrafficSignPlacement",
+  "violations": [],
+  "dataLinks": [
+    {
+      "source": "TrafficSignApi",
+      "versions": [
+        "1"
+      ],
+      "records": [
+        {
+          "id": "00000000-0000-4000-0000-000000000001",
+          "type": "TrafficSign"
+        },
+        {
+          "id": "13",
+          "type": "RoadSection"
+        }
+      ]
+    }
+  ]
+}

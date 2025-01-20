@@ -75,7 +75,6 @@ class GenerateConfigurationTest extends ValidationTest {
         validate(generateConfiguration, List.of("relativeExportDirectoryPattern"), List.of("must not be blank"));
     }
 
-
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
             0, must be greater than or equal to 1,
