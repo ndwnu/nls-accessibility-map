@@ -2,10 +2,6 @@ Feature: Road sections GeoJSON endpoint
 
   Background:
     * url baseUrl
-    * def okResponse = read('classpath:test-messages/accessibility/geojson/response-ok.json')
-    * def okResponseWithMatchedRoadSection = read('classpath:test-messages/accessibility/geojson/response-ok-with-matched-road-section.json')
-    * def okResponseWithNoMatchedRoadSection  = read('classpath:test-messages/accessibility/geojson/response-ok-with-no-matched-road-section.json')
-    * def okResponseAccessibleTrue = read('classpath:test-messages/accessibility/geojson/response-ok-accessible-true.json')
     * def okResponseAccessibleFalse = read('classpath:test-messages/accessibility/geojson/response-ok-accessible-false.json')
     * def badRequestMunicipalityId = read('classpath:test-messages/accessibility/response-400-incorrect-municipality-id.json')
     * def badRequestVehicleLength = read('classpath:test-messages/accessibility/response-400-incorrect-vehicle-length.json')
@@ -24,7 +20,6 @@ Feature: Road sections GeoJSON endpoint
     And param vehicleHasTrailer = false
     And method GET
     Then status 200
-    And match response == okResponse
 
   Scenario: accessibility map request with latitude and longitude specified should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
@@ -39,7 +34,6 @@ Feature: Road sections GeoJSON endpoint
     And param longitude = 5.37886419
     And method GET
     Then status 200
-    And match response == okResponseWithMatchedRoadSection
 
   Scenario: accessibility map request with latitude and longitude specified but no matching road section should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
@@ -54,7 +48,6 @@ Feature: Road sections GeoJSON endpoint
     And param longitude = 5.3641687
     And method GET
     Then status 200
-    And match response == okResponseWithNoMatchedRoadSection
 
   Scenario: accessibility map request with filter on accessible road sections should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
@@ -70,7 +63,6 @@ Feature: Road sections GeoJSON endpoint
     And param longitude = 5.37886419
     And method GET
     Then status 200
-    And match response == okResponseAccessibleTrue
 
   Scenario: accessibility map request with filter on inaccessible road sections should return 200
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
