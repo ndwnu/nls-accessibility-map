@@ -13,7 +13,6 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Tra
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7A;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7B;
 
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
@@ -148,7 +147,7 @@ public class VehiclePropertiesMapper {
         };
     }
 
-    public VehicleProperties map(List<TrafficSignType> trafficSignTypes, boolean includeOnlyWindowTimes) {
+    public VehicleProperties map(Iterable<TrafficSignType> trafficSignTypes, boolean includeOnlyWindowTimes) {
 
         VehiclePropertiesBuilder vehiclePropertiesBuilder = VehicleProperties.builder();
         trafficSignTypes.forEach(trafficSignType -> {
