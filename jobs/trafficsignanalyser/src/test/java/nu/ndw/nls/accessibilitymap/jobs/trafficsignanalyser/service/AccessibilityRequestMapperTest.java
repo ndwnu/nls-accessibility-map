@@ -24,7 +24,7 @@ class AccessibilityRequestMapperTest {
     }
 
     @Test
-    void map() {
+    void map_ok() {
 
         AnalyseProperties analyseProperties = AnalyseProperties.builder()
                 .trafficSignType(TrafficSignType.C7)

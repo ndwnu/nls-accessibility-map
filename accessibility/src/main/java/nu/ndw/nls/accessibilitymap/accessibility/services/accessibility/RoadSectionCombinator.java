@@ -65,7 +65,7 @@ public class RoadSectionCombinator {
         return roadSectionsById.values();
     }
 
-    private void addNewDirectionSegmentToRoadSection(
+    private static void addNewDirectionSegmentToRoadSection(
             RoadSectionFragment newRoadSectionFraction,
             DirectionalSegment directionalSegmentToCopyFrom,
             DirectionalSegment accessibleDirectionSegment) {

@@ -4,6 +4,7 @@ import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class TrafficSignSnapMapper {
 
     private final NetworkGraphHopper networkGraphHopper;
 
-    public List<TrafficSignSnap> map(List<TrafficSign> trafficSigns, boolean includeOnlyTimeWindowedSigns) {
+    public List<TrafficSignSnap> map(Collection<TrafficSign> trafficSigns, boolean includeOnlyTimeWindowedSigns) {
 
         return trafficSigns.stream()
                 .filter(trafficSign -> applyTimeWindowedSignFilter(includeOnlyTimeWindowedSigns, trafficSign))
@@ -117,7 +118,7 @@ public class TrafficSignSnapMapper {
         return getLinkId(edgeIteratorState) == trafficSign.roadSectionId();
     }
 
-    private boolean applyTimeWindowedSignFilter(boolean includeOnlyTimeWindowedSigns, TrafficSign trafficSign) {
+    private static boolean applyTimeWindowedSignFilter(boolean includeOnlyTimeWindowedSigns, TrafficSign trafficSign) {
         return !includeOnlyTimeWindowedSigns || trafficSign.hasTimeWindowedSign();
     }
 

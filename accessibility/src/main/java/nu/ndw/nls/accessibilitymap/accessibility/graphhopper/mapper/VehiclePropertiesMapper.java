@@ -34,19 +34,20 @@ public class VehiclePropertiesMapper {
 
     private static final double MAX_WIDTH = 3D;
 
-    private static final Map<TrafficSignType, BiFunction<VehiclePropertiesBuilder, Boolean, VehiclePropertiesBuilder>> MAPPINGS = Map.ofEntries(
-            Map.entry(C6, setCarAccessForbidden()),
-            Map.entry(C7, setHgvAccessForBidden()),
-            Map.entry(C7A, setBusAccessForbidden()),
-            Map.entry(C7B, setHgvAndBusAccessForbidden()),
-            Map.entry(C10, setTrailerAccessForbidden()),
-            Map.entry(C12, setMotorVehicleAccessForbidden()),
-            Map.entry(C22C, setLcvAndHgvAccessForbidden()),
-            Map.entry(C17, setLength()),
-            Map.entry(C18, setWidth()),
-            Map.entry(C19, setHeight()),
-            Map.entry(C20, setAxleLoad()),
-            Map.entry(C21, setWeight()));
+    private static final Map<TrafficSignType, BiFunction<VehiclePropertiesBuilder, Boolean, VehiclePropertiesBuilder>> MAPPINGS =
+            Map.ofEntries(
+                    Map.entry(C6, setCarAccessForbidden()),
+                    Map.entry(C7, setHgvAccessForBidden()),
+                    Map.entry(C7A, setBusAccessForbidden()),
+                    Map.entry(C7B, setHgvAndBusAccessForbidden()),
+                    Map.entry(C10, setTrailerAccessForbidden()),
+                    Map.entry(C12, setMotorVehicleAccessForbidden()),
+                    Map.entry(C22C, setLcvAndHgvAccessForbidden()),
+                    Map.entry(C17, setLength()),
+                    Map.entry(C18, setWidth()),
+                    Map.entry(C19, setHeight()),
+                    Map.entry(C20, setAxleLoad()),
+                    Map.entry(C21, setWeight()));
 
     private static BiFunction<VehiclePropertiesBuilder, Boolean, VehiclePropertiesBuilder> setWeight() {
         return (builder, includeOnlyWindowTimes) -> {

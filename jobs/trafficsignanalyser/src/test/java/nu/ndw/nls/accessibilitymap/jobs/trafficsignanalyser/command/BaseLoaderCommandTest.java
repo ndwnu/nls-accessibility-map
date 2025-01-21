@@ -20,7 +20,7 @@ class BaseLoaderCommandTest {
     }
 
     @Test
-    void annotation_class_Command() {
+    void annotation_class_command() {
 
         AnnotationUtil.classContainsAnnotation(
                 BaseLoaderCommand.class,

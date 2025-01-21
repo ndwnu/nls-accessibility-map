@@ -137,7 +137,7 @@ public class AccessibilityService {
                 trafficSignsById);
     }
 
-    private Map<Integer, TrafficSign> buildTrafficSignById(List<TrafficSignSnap> additionalSnaps) {
+    private static Map<Integer, TrafficSign> buildTrafficSignById(List<TrafficSignSnap> additionalSnaps) {
 
         return additionalSnaps.stream()
                 .collect(Collectors.toMap(
