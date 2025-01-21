@@ -11,8 +11,8 @@
     <packaging>pom</packaging>
     <name>nls-accessibility-map-jobs</name>
     <modules>
-        <module>mapgenerator</module>
         <module>graphhopper</module>
+        <module>mapgenerator</module>
         <module>trafficsignanalyser</module>
         <module>jobs-component-test</module>
     </modules>
