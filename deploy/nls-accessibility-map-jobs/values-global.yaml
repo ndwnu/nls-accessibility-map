@@ -30,3 +30,9 @@ mapGenerator:
       command: generate --export-name==C22C --traffic-sign=C22C --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
       memory: 16Gi
       schedule: "10 4 * * *"
+
+trafficSignAnalyser:
+  name: nls-accessibility-map-trafficsignanalyser-job
+  command: analyse --traffic-sign=C6 --traffic-sign=C7 --traffic-sign=C7B --traffic-sign=C12 --traffic-sign=C22C
+  memory: 4Gi
+  queueName: nls_accessibility_map_api_routing_network_updated
