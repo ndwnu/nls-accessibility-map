@@ -59,7 +59,6 @@ nu:
           analyse:
             start-location-latitude: 52.12096528507054
             start-location-longitude: 5.334845116067081
-            zone: "Europe/Amsterdam"
             search-radius-in-meters: 1_000_000
         trafficsignclient:
           api:

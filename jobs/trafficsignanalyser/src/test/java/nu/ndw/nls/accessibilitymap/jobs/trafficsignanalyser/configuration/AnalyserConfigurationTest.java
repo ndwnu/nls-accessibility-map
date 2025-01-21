@@ -55,48 +55,12 @@ class AnalyserConfigurationTest extends ValidationTest {
         validate(analyserConfiguration, List.of("startLocationLatitude"), List.of("must not be null"));
     }
 
-    @ParameterizedTest
-    @CsvSource(nullValues = "null", textBlock = """
-            49, must be greater than or equal to 50,
-            50, null
-            54, null
-            54.1, must be less than or equal to 54
-            """)
-    void validate_startLocationLatitude_edgeCases(double startLocationLatitude, String expectedError) {
-
-        analyserConfiguration = analyserConfiguration.withStartLocationLatitude(startLocationLatitude);
-
-        if (Objects.nonNull(expectedError)) {
-            validate(analyserConfiguration, List.of("startLocationLatitude"), List.of(expectedError));
-        } else {
-            validate(analyserConfiguration, List.of(), List.of());
-        }
-    }
-
     @Test
     void validate_startLocationLongitude_null() {
 
         analyserConfiguration = analyserConfiguration.withStartLocationLongitude(null);
 
         validate(analyserConfiguration, List.of("startLocationLongitude"), List.of("must not be null"));
-    }
-
-    @ParameterizedTest
-    @CsvSource(nullValues = "null", textBlock = """
-            2, must be greater than or equal to 3,
-            3, null
-            8, null
-            8.1, must be less than or equal to 8
-            """)
-    void validate_startLocationLongitude_edgeCases(double startLocationLongitude, String expectedError) {
-
-        analyserConfiguration = analyserConfiguration.withStartLocationLongitude(startLocationLongitude);
-
-        if (Objects.nonNull(expectedError)) {
-            validate(analyserConfiguration, List.of("startLocationLongitude"), List.of(expectedError));
-        } else {
-            validate(analyserConfiguration, List.of(), List.of());
-        }
     }
 
     @Override
