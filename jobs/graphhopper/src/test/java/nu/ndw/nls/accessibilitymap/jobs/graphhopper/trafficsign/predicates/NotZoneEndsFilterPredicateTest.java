@@ -25,7 +25,7 @@ class NotZoneEndsFilterPredicateTest {
 
     @Test
     void test_ok_includingZoneBegins() {
-        when(trafficSignPropertiesDto.getZoneCode()).thenReturn(ZoneCodeType.BEGIN.toString());
+        when(trafficSignPropertiesDto.getZoneCode()).thenReturn(ZoneCodeType.BEGIN.getValue());
         when(trafficSignJsonDto.getProperties()).thenReturn(trafficSignPropertiesDto);
         assertTrue(notZoneEndsFilterPredicate.test(trafficSignJsonDto));
     }
@@ -39,7 +39,7 @@ class NotZoneEndsFilterPredicateTest {
 
     @Test
     void test_ok_excludingZoneEnds() {
-        when(trafficSignPropertiesDto.getZoneCode()).thenReturn(ZoneCodeType.END.toString());
+        when(trafficSignPropertiesDto.getZoneCode()).thenReturn("ZE");
         when(trafficSignJsonDto.getProperties()).thenReturn(trafficSignPropertiesDto);
         assertFalse(notZoneEndsFilterPredicate.test(trafficSignJsonDto));
     }
