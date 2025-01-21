@@ -11,10 +11,12 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.mappers.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@ConditionalOnBean(TrafficSignService.class)
 public class TrafficSignDataService {
 
     private final TrafficSignMapper trafficSignMapper;
