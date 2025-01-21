@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers
 import com.graphhopper.routing.ev.IntEncodedValue;
 import jakarta.validation.Valid;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -27,8 +26,9 @@ public class RoadSectionMapper {
 
     private final NetworkGraphHopper networkGraphHopper;
 
+    @SuppressWarnings("java:S5612")
     public @Valid Collection<RoadSection> mapToRoadSections(
-            List<IsochroneMatch> isochroneMatches,
+            Iterable<IsochroneMatch> isochroneMatches,
             Map<Integer, TrafficSign> trafficSignsById) {
 
         IntEncodedValue trafficSignEncodedValueAttribute = networkGraphHopper.getEncodingManager()
@@ -82,7 +82,7 @@ public class RoadSectionMapper {
         return trafficSignById.get(isochroneMatch.getEdge().get(trafficSignEncodedValueAttribute));
     }
 
-    private void addSegmentsToRoadSectionFragment(
+    private static void addSegmentsToRoadSectionFragment(
             RoadSectionFragment roadSectionFragment,
             IsochroneMatch isochroneMatch,
             TrafficSign trafficSign,
@@ -108,7 +108,7 @@ public class RoadSectionMapper {
         }
     }
 
-    private DirectionalSegment buildDirectionalSegment(
+    private static DirectionalSegment buildDirectionalSegment(
             Integer id,
             Direction direction,
             LineString geometry,

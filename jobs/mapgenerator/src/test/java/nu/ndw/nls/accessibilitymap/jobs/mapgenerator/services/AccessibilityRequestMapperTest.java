@@ -25,7 +25,7 @@ class AccessibilityRequestMapperTest {
     }
 
     @Test
-    void map() {
+    void map_ok() {
 
         ExportProperties exportProperties = ExportProperties.builder()
                 .trafficSignTypes(List.of(TrafficSignType.C7))

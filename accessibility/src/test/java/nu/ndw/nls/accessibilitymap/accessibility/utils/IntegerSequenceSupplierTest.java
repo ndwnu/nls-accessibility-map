@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class IntegerSequenceSupplierTest {
 
     @Test
-    void next() {
+    void next_ok() {
         IntegerSequenceSupplier integerSequenceSupplier = new IntegerSequenceSupplier();
 
         assertThat(integerSequenceSupplier.next()).isOne();

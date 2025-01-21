@@ -44,7 +44,7 @@ public class TrafficSignMapper {
         }
     }
 
-    private Direction createDirection(DirectionType drivingDirection) {
+    private static Direction createDirection(DirectionType drivingDirection) {
 
         return switch (drivingDirection) {
             case FORTH -> Direction.FORWARD;
@@ -54,7 +54,7 @@ public class TrafficSignMapper {
         };
     }
 
-    private URI createIconUri(TrafficSignPropertiesDto trafficSignPropertiesDto) {
+    private static URI createIconUri(TrafficSignPropertiesDto trafficSignPropertiesDto) {
         if (Objects.isNull(trafficSignPropertiesDto.getImageUrl())) {
             return null;
         }

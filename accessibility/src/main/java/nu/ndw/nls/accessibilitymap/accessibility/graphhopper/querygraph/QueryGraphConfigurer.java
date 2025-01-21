@@ -108,7 +108,7 @@ public class QueryGraphConfigurer {
         edgeManager.setValueOnEdge(edgeIterator, edgeAttribute.key(), edgeAttribute.value());
     }
 
-    private boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {
+    private static boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {
 
         GHPoint point = trafficSignSnap.getSnap().getSnappedPoint();
         Coordinate snapCoordinate = new Coordinate(point.getLon(), point.getLat());
