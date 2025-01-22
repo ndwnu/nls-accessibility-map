@@ -18,11 +18,9 @@ public class IssueMapper {
 
     private static final String TITLE = "Asymmetric traffic sign placement";
 
-    private static final String REPORT_GROUP_ID = "AsymmetricTrafficSignPlacement";
-
     private static final String VERSION = "1";
 
-    public CreateIssueJson mapToIssue(DirectionalSegment directionalSegment, String reportId) {
+    public CreateIssueJson mapToIssue(DirectionalSegment directionalSegment, String reportId, String reportGroupId) {
 
         List<DataLinkRecordJson> dataLinkJsonList = List.of(
                 DataLinkRecordJson.builder()
@@ -42,14 +40,14 @@ public class IssueMapper {
 
         return CreateIssueJson.builder()
                 .type(IssueTypeJson.MISSING)
+                .title(TITLE)
                 .description(TITLE)
                 .violations(emptyList())
                 .status(IssueStatusJson.OPEN)
                 .dataLinks(List.of(dataLinkJsonTrafficSign))
                 .priority(IssuePriorityJson.MEDIUM)
-                .title(TITLE)
                 .reporterReportId(reportId)
-                .reporterReportGroupId(REPORT_GROUP_ID)
+                .reporterReportGroupId(reportGroupId)
                 .build();
     }
 }

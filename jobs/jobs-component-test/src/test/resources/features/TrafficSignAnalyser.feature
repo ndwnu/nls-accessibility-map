@@ -17,5 +17,6 @@ Feature: TrafficSignAnalyser
       | startNodeId | trafficSignTypes | reportIssues |
       | 2           | C6,C7,C12        | true         |
     Then we expect the following issues to be reported
-      | TrafficSign1-RoadSection12 |
-      | TrafficSign2-RoadSection13 |
+      | TrafficSign1-RoadSection13 |
+      | TrafficSign2-RoadSection12 |
+    Then we expect the report to be marked as completed for trafficSignTypes "C6,C7,C12"

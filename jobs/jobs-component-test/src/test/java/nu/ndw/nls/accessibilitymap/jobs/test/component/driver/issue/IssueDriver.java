@@ -37,6 +37,13 @@ public class IssueDriver {
                         .withHeader("Content-Type", "application/json")
                         .withStatus(HttpStatus.ACCEPTED.value())
                         .withBody("{{request.body}}")));
+
+        stubFor(post(urlPathMatching(
+                "/api/rest/static-road-data/location-data-issues/v1/report/complete"))
+                .andMatching("jwt-matcher", Parameters.of(jwtMatcherParameters))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(HttpStatus.ACCEPTED.value())));
     }
 
     public void verifyIssueCreated(String issueFile) {
@@ -52,5 +59,17 @@ public class IssueDriver {
 
         verify(numberOfIssues, postRequestedFor(urlEqualTo("/api/rest/static-road-data/location-data-issues/v1/issues"))
                 .withHeader("Content-Type", equalTo("application/json")));
+    }
+
+    public void verifyReportComplete(String trafficSignType) {
+
+        verify(postRequestedFor(urlEqualTo("/api/rest/static-road-data/location-data-issues/v1/report/complete"))
+                .withHeader("Content-Type", equalTo("application/json"))
+                .withRequestBody(equalToJson("""
+                        {
+                          "reporterReportId": "${json-unit.ignore}",
+                          "reporterReportGroupId": "AsymmetricTrafficSignPlacement-%s"
+                        }
+                        """.formatted(trafficSignType))));
     }
 }

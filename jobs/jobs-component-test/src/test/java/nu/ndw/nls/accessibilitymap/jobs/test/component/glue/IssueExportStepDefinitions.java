@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.issue.IssueDriver;
+import nu.ndw.nls.springboot.test.component.cucumber.StepArgumentParser;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,5 +25,13 @@ public class IssueExportStepDefinitions {
         issueFiles.forEach(issueDriver::verifyIssueCreated);
 
         issueDriver.verifyNumberOfCreatedIssues(issueFiles.size());
+    }
+
+    @Then("we expect the report to be marked as completed for trafficSignTypes {string}")
+    public void reportComplete(String trafficSignTypes) {
+
+        StepArgumentParser.parseStringAsSet(trafficSignTypes).forEach(trafficSignType -> {
+            issueDriver.verifyReportComplete(trafficSignType);
+        });
     }
 }

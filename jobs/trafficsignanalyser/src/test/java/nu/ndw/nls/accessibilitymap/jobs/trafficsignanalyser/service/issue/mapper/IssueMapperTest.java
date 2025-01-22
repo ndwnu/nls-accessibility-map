@@ -44,7 +44,7 @@ class IssueMapperTest {
         when(trafficSign.externalId()).thenReturn("id");
         when(trafficSign.roadSectionId()).thenReturn(1);
 
-        CreateIssueJson createIssueJson = mapper.mapToIssue(directionalSegment, "reportId");
+        CreateIssueJson createIssueJson = mapper.mapToIssue(directionalSegment, "reportId", "reportGroupId");
 
         assertThat(createIssueJson).usingRecursiveComparison()
                 .isEqualTo(CreateIssueJson
@@ -56,7 +56,7 @@ class IssueMapperTest {
                         .violations(Collections.emptyList())
                         .priority(IssuePriorityJson.MEDIUM)
                         .reporterReportId("reportId")
-                        .reporterReportGroupId("AsymmetricTrafficSignPlacement")
+                        .reporterReportGroupId("reportGroupId")
                         .dataLinks(List.of(DataLinkJson
                                 .builder()
                                 .versions(List.of("1"))
