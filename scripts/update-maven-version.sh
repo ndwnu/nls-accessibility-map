@@ -13,3 +13,6 @@ select selected in "${options[@]}"; do
   *) echo "invalid option $REPLY" ;;
   esac
 done
+
+
+mvn build-helper:parse-version versions:set -DnewVersion=4.1.1-SNAPSHOT -DgenerateBackupPoms=false
