@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.test.unit.ValidationTest;
+import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,7 +74,6 @@ class GenerateConfigurationTest extends ValidationTest {
 
         validate(generateConfiguration, List.of("relativeExportDirectoryPattern"), List.of("must not be blank"));
     }
-
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
