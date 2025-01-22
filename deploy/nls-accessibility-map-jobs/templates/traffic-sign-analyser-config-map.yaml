@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nls-accessibility-map-traffic-sign-analyser-config
+data:
+  DD_DATA_STREAMS_ENABLED: "true"
+  DD_TRACE_METHODS: picocli.CommandLine[execute]
+  MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
+  DEPLOYMENT_DEPLOYMENTNAME: 'nls-accessibility-map-api-deployment'
+  DEPLOYMENT_NAMESPACE: 'nls'
+  RABBITMQ_EVENTTYPE: 'accessibility-routing-network-updated'
+  RABBITMQ_EXCHANGENAME: 'eventbus'
+  RABBITMQ_QUEUE: 'nls_accessibility_map_api_routing_network_updated'
+  RABBITMQ_ROUTINGKEYS_0_: 'ndw.nls.accessibility.routing.network.updated'
+  NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNCLIENT_API_URL: {{ .Values.trafficSignApiUrl }}
+  SPRING_APPLICATION_NAME: {{ .Chart.Name }}-{{ .Values.environment }}
+  SPRING_DATASOURCE_URL: jdbc:postgresql://{{ .Values.application.databaseHost }}/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
+  SPRING_DATASOURCE_USERNAME: nls
+  SPRING_MAIN_BANNER_MODE: 'OFF'
+  FEIGN_CLIENT_BASE_URL: {{ .Values.feign.client.baseUrl }}
+  SPRING_PROFILES_ACTIVE: {{ .Values.environment }}
