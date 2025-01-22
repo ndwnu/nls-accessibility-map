@@ -82,4 +82,3 @@ spec:
         value: '1' # Tells Keda how many queue messages a single instance processes (default 20)
       authenticationRef:
         name: {{ .Values.trafficSignAnalyser.name }}-trigger-auth
----
