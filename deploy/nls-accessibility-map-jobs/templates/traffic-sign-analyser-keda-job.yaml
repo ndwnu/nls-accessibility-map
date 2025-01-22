@@ -37,7 +37,7 @@ spec:
             imagePullPolicy: Always
             envFrom:
               - configMapRef:
-                  name: nls-accessibility-map-traffic-sign-analyser-config
+                  name: nls-accessibility-map-jobs-config
             env:
               - name: COMMAND
                 value: {{ .Values.trafficSignAnalyser.command }}
