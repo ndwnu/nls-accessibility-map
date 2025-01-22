@@ -50,6 +50,8 @@ nu:
       locationdataissuesapi:
         issue:
           url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
+        report:
+          url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
         client:
           feign:
             oauth2:
