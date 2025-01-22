@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.utils.polyg
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import org.springframework.stereotype.Component;
 
 @Component

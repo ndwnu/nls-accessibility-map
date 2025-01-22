@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.nwb.mappers;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionMetaData;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

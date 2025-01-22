@@ -4,8 +4,8 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.utils.polygon.DirectionalSegmentAccessibleComparator;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.utils.polygon.MultiPolygonFactory;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.utils.polygon.Triangulator;

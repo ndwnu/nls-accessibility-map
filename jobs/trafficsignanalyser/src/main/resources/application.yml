@@ -1,0 +1,73 @@
+graphhopper:
+  dir: /application/graphhopper
+  network-name: accessibility_latest_no_traffic_signs
+
+jooq:
+  schema-validation:
+    schema-severity:
+      nwb: ERROR
+    packages-to-scan:
+      - nu.ndw.nls.db.nwb.jooq.generated
+org:
+  jooq:
+    no-logo: true
+spring:
+  application:
+    name: nls-accessibility-traffic-sign-analyser-jobs
+  # Disables netty webserver startup
+  main:
+    web-application-type: none
+  config:
+    import: "optional:configtree:/application/config/configtree/"
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: SELECT 1;
+      idle-timeout: 60000
+      max-lifetime: 120000
+      minimum-idle: 1
+      auto-commit: false
+  security:
+    oauth2:
+      client:
+        registration:
+          sa-nls-location-data-issues-api:
+            authorization-grant-type: client_credentials
+            client-id: ${keycloak.client-id}
+            client-secret: ${keycloak.client-secret}
+            provider: ndw-keycloak
+        provider:
+          ndw-keycloak:
+            token-uri: ${keycloak.server-url}/realms/ndw/protocol/openid-connect/token
+  jmx:
+    enabled: false
+  jooq:
+    sql-dialect: Postgres
+
+nu:
+  ndw:
+    nls:
+      locationdataissuesapi:
+        issue:
+          url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
+        report:
+          url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
+        client:
+          feign:
+            oauth2:
+              registration-id: sa-nls-location-data-issues-api
+      accessibilitymap:
+        jobs:
+          analyse:
+            start-location-latitude: 52.12096528507054
+            start-location-longitude: 5.334845116067081
+            search-radius-in-meters: 1_000_000
+        trafficsignclient:
+          api:
+            url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+
+
+management:
+  observations:
+    annotations:
+      enabled: true
