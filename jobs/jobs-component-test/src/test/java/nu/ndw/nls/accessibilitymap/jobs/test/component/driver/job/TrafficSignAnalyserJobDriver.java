@@ -20,7 +20,9 @@ public class TrafficSignAnalyserJobDriver implements StateManagement {
 
     private final DockerDriver dockerDriver;
 
-    public void runMapGenerationJobDebugMode(TrafficSignAnalyserJobConfiguration jobConfiguration) {
+    public void runTrafficSignAnalysisJob(TrafficSignAnalyserJobConfiguration jobConfiguration) {
+
+        runConfigureRabbitMqJob();
 
         dockerDriver.startServiceAndWaitToBeFinished(
                 "nls-accessibility-traffic-sign-analyser-job",
@@ -28,7 +30,7 @@ public class TrafficSignAnalyserJobDriver implements StateManagement {
                 List.of(
                         Environment.builder()
                                 .key("COMMAND")
-                                .value(buildCommandArguments(jobConfiguration))
+                                .value(buildAnalyseCommand(jobConfiguration))
                                 .build(),
                         Environment.builder()
                                 .key("GRAPHHOPPER_NETWORKNAME")
@@ -48,18 +50,29 @@ public class TrafficSignAnalyserJobDriver implements StateManagement {
                                 .build()));
     }
 
-    public String buildCommandArguments(TrafficSignAnalyserJobConfiguration jobConfiguration) {
+    private void runConfigureRabbitMqJob() {
+
+        dockerDriver.startServiceAndWaitToBeFinished(
+                "nls-accessibility-traffic-sign-analyser-job",
+                Mode.NORMAL,
+                List.of(
+                        Environment.builder()
+                                .key("COMMAND")
+                                .value("configureRabbitMQ")
+                                .build()));
+    }
+
+    public String buildAnalyseCommand(TrafficSignAnalyserJobConfiguration jobConfiguration) {
         return "analyse "
-                + createRepeatableArguments(jobConfiguration.trafficSignTypes())
+                + createRepeatableArguments(jobConfiguration.trafficSignGroups())
                 + (jobConfiguration.reportIssues() ? " --report-issues" : "");
     }
 
-    private static String createRepeatableArguments(Set<String> trafficSigns) {
+    private static String createRepeatableArguments(List<Set<String>> trafficSignGroups) {
 
-        return
-                trafficSigns.stream()
-                        .map("--traffic-sign=%s"::formatted)
-                        .collect(Collectors.joining(" "));
+        return trafficSignGroups.stream()
+                .map(trafficSignGroup -> "--traffic-signs=%s".formatted(String.join(",", trafficSignGroup)))
+                .collect(Collectors.joining(" "));
     }
 
     @Override
