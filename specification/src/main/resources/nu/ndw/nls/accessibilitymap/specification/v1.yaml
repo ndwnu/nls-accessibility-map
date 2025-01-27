@@ -116,6 +116,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/APIError'
 
+  /road-operators:
+    get:
+      tags:
+        - roadOperators
+      summary: Returns all currently configured road operators
+      operationId: getRoadOperators
+      responses:
+        '200':
+          description: OK
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/RoadOperators'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+
 components:
   parameters:
     MunicipalityIdPathParam:
@@ -229,6 +249,52 @@ components:
         example: 5.2913
 
   schemas:
+    RoadOperators:
+      type: "array"
+      description: A collection of road operators
+      minItems: 0
+      items:
+        $ref: "#/components/schemas/RoadOperator"
+      readOnly: true
+    RoadOperator:
+      type: object
+      description: A road operator is someone who is responsible for the maintenance of road sections.
+      required:
+        - roadOperatorName
+        - roadOperatorType
+        - roadOperatorCode
+      properties:
+        roadOperatorName:
+          type: string
+          example: Beverwijk
+          description: The name of the road operator.
+          readOnly: true
+        roadOperatorCode:
+          type: string
+          example: 375
+          description: The code of the road operator.
+          readOnly: true
+        roadOperatorType:
+          type: string
+          example: WaterAuthority
+          description: The road operator type.
+          enum:
+            - WaterAuthority
+            - Municipality
+            - Province
+            - State
+            - Other
+          readOnly: true
+        municipalityId:
+          type: string
+          example: GM375
+          description: The municipality id of the road operator. This is only applicable of road operators of type Municipality.
+          readOnly: true
+        requestExemptionUrl:
+          type: string
+          description: URL to request an exemption.
+          example: "https://loket.digitaal.utrecht.nl/nl/products/ontheffing-voertuig"
+          readOnly: true
     VehicleType:
       type: string
       description: Vehicle type

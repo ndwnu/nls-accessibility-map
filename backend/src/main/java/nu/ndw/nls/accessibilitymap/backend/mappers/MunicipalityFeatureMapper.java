@@ -36,9 +36,11 @@ public class MunicipalityFeatureMapper {
                 .map(URL::toString)
                 .orElse(EMPTY_STRING);
 
-        return new MunicipalityFeatureJson(MunicipalityFeatureJson.TypeEnum.FEATURE, m.getMunicipalityId(),
-                mapStartPoint(m))
-                .properties(new MunicipalityPropertiesJson(
+        return new MunicipalityFeatureJson(
+                MunicipalityFeatureJson.TypeEnum.FEATURE,
+                m.getMunicipalityId(),
+                mapStartPoint(m),
+                new MunicipalityPropertiesJson(
                         m.getName(),
                         (int) m.getSearchDistanceInMetres(),
                         bounds,
