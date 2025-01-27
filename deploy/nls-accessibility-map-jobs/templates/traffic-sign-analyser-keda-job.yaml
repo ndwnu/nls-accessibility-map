@@ -15,7 +15,7 @@ spec:
     template:
       metadata:
         annotations:
-          ad.datadoghq.com/{{ .Values.trafficSignAnalyser.name }}.logs: '[{"source": "java", "service": "{{ .Values.trafficSignAnalyser.name }}"}]'
+          ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .Values.trafficSignAnalyser.name }}"}]'
           admission.datadoghq.com/java-lib.version: "{{ $.Values.datadog.agent.version }}"
         labels:
           app: {{ .Values.trafficSignAnalyser.name }}
