@@ -13,7 +13,7 @@ org:
     no-logo: true
 spring:
   application:
-    name: nls-accessibility-traffic-sign-analyser-jobs
+    name: nls-accessibility-map-traffic-sign-analyser-job
   # Disables netty webserver startup
   main:
     web-application-type: none
