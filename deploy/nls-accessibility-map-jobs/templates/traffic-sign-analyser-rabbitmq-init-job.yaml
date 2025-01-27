@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       annotations:
-        ad.datadoghq.com/{{ .Values.trafficSignAnalyser.name }}-rabbitmq-init.logs: '[{"source": "java", "service": "{{ .Values.trafficSignAnalyser.name }}-rabbitmq-init"}]'
+        ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .Values.trafficSignAnalyser.name }}-rabbitmq-init"}]'
         admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
       labels:
         app: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
