@@ -103,7 +103,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(true);
-        when(analyseProperties.trafficSignType()).thenReturn(TrafficSignType.C22C);
+        when(analyseProperties.trafficSignTypes()).thenReturn(List.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(accessibilityRequestMapper.map(analyseProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
@@ -122,7 +122,7 @@ class TrafficSignAnalyserServiceTest {
                     Matcher matcher = pattern.matcher(reportId);
                     return matcher.find();
                 }),
-                eq("AsymmetricTrafficSignPlacement-%s".formatted(TrafficSignType.C22C.getRvvCode()))
+                eq("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(), TrafficSignType.C22C.getRvvCode()))
         )).thenReturn(createIssueJson);
 
         when(issueApiClient.createIssue(createIssueJson)).thenReturn(createIssueResponse);
@@ -136,7 +136,7 @@ class TrafficSignAnalyserServiceTest {
             Matcher matcher = pattern.matcher(completeReportJson.getReporterReportId());
             return matcher.find()
                     && completeReportJson.getReporterReportGroupId()
-                    .equals("AsymmetricTrafficSignPlacement-%s".formatted(TrafficSignType.C22C.getRvvCode()));
+                    .equals("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(), TrafficSignType.C22C.getRvvCode()));
         }));
 
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseProperties");
@@ -149,7 +149,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(false);
-        when(analyseProperties.trafficSignType()).thenReturn(TrafficSignType.C22C);
+        when(analyseProperties.trafficSignTypes()).thenReturn(List.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(accessibilityRequestMapper.map(analyseProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
@@ -168,7 +168,7 @@ class TrafficSignAnalyserServiceTest {
                     Matcher matcher = pattern.matcher(reportId);
                     return matcher.find();
                 }),
-                eq("AsymmetricTrafficSignPlacement-%s".formatted(TrafficSignType.C22C.getRvvCode()))
+                eq("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(), TrafficSignType.C22C.getRvvCode()))
         )).thenReturn(createIssueJson);
 
         trafficSignAnalyserService.analyse(analyseProperties);
@@ -185,7 +185,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(true);
-        when(analyseProperties.trafficSignType()).thenReturn(TrafficSignType.C22C);
+        when(analyseProperties.trafficSignTypes()).thenReturn(List.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(accessibilityRequestMapper.map(analyseProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
@@ -204,7 +204,7 @@ class TrafficSignAnalyserServiceTest {
                     Matcher matcher = pattern.matcher(reportId);
                     return matcher.find();
                 }),
-                eq("AsymmetricTrafficSignPlacement-%s".formatted(TrafficSignType.C22C.getRvvCode())))).thenReturn(createIssueJson);
+                eq("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(), TrafficSignType.C22C.getRvvCode())))).thenReturn(createIssueJson);
 
         when(issueApiClient.createIssue(createIssueJson)).thenThrow(feignServerException);
 
@@ -220,7 +220,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(true);
-        when(analyseProperties.trafficSignType()).thenReturn(TrafficSignType.C22C);
+        when(analyseProperties.trafficSignTypes()).thenReturn(List.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(accessibilityRequestMapper.map(analyseProperties)).thenReturn(accessibilityRequest);
         when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
@@ -239,7 +239,7 @@ class TrafficSignAnalyserServiceTest {
                     Matcher matcher = pattern.matcher(reportId);
                     return matcher.find();
                 }),
-                eq("AsymmetricTrafficSignPlacement-%s".formatted(TrafficSignType.C22C.getRvvCode())))).thenReturn(createIssueJson);
+                eq("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(), TrafficSignType.C22C.getRvvCode())))).thenReturn(createIssueJson);
 
         when(issueApiClient.createIssue(createIssueJson)).thenThrow(feignClientException);
 

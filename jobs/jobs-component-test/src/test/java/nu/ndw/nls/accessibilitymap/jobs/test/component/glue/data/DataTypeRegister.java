@@ -38,8 +38,14 @@ public class DataTypeRegister {
 
         return TrafficSignAnalyserJobConfiguration.builder()
                 .startNode(networkDataService.findNodeById(Long.parseLong(entry.get("startNodeId"))))
-                .trafficSignTypes(Arrays.stream(entry.get("trafficSignTypes").split(",")).collect(Collectors.toSet()))
-                .reportIssues(Strings.isNotEmpty(entry.get("reportIssues")) && Boolean.parseBoolean(entry.get("reportIssues")))
+                .trafficSignGroups(
+                        Arrays.stream(entry.get("trafficSignGroups").split(":"))
+                                .map(trafficSigns -> Arrays.stream(trafficSigns.split(","))
+                                        .map(String::trim)
+                                        .collect(Collectors.toSet()))
+                                .toList())
+                .reportIssues(
+                        Strings.isNotEmpty(entry.get("reportIssues")) && Boolean.parseBoolean(entry.get("reportIssues")))
                 .build();
     }
 

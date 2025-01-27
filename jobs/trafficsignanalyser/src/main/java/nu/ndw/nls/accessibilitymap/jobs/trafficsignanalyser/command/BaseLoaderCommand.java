@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command;
 
+import nu.ndw.nls.springboot.messaging.commands.ConfigureRabbitMQCommand;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 
@@ -8,7 +9,7 @@ import picocli.CommandLine.Command;
  * That's why there's this empty container class.
  */
 @Component
-@Command(name = "jobs", subcommands = {AnalyseCommand.class})
+@Command(name = "jobs", subcommands = {AnalyseCommand.class, ConfigureRabbitMQCommand.class})
 public class BaseLoaderCommand {
 
 }

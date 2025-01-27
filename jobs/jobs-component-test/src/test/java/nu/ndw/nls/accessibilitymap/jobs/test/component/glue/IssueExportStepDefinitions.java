@@ -30,8 +30,6 @@ public class IssueExportStepDefinitions {
     @Then("we expect the report to be marked as completed for trafficSignTypes {string}")
     public void reportComplete(String trafficSignTypes) {
 
-        StepArgumentParser.parseStringAsSet(trafficSignTypes).forEach(trafficSignType -> {
-            issueDriver.verifyReportComplete(trafficSignType);
-        });
+        issueDriver.verifyReportComplete(StepArgumentParser.parseStringAsSet(trafficSignTypes));
     }
 }

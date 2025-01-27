@@ -1,0 +1,84 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: {{ .Values.trafficSignAnalyser.name }}
+  labels:
+    tags.datadoghq.com/service: {{ .Values.trafficSignAnalyser.name }}
+    tags.datadoghq.com/env: {{ $.Values.environment }}
+    tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
+spec:
+  jobTargetRef:
+    # Clean up job after 1 week
+    ttlSecondsAfterFinished: 604800
+    activeDeadlineSeconds: 86400 # Maximum execution time before terminating, includes retries
+    backoffLimit: 0 # Number of retries before marking job failed; default 6
+    template:
+      metadata:
+        annotations:
+          ad.datadoghq.com/{{ .Values.trafficSignAnalyser.name }}.logs: '[{"source": "java", "service": "{{ .Values.trafficSignAnalyser.name }}"}]'
+          admission.datadoghq.com/java-lib.version: "{{ $.Values.datadog.agent.version }}"
+        labels:
+          app: {{ .Values.trafficSignAnalyser.name }}
+          environment: {{ $.Values.environment }}
+          admission.datadoghq.com/enabled: "true"
+          tags.datadoghq.com/service: {{ .Values.trafficSignAnalyser.name }}
+          tags.datadoghq.com/env: {{ $.Values.environment }}
+          tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
+      spec:
+        containers:
+          - name: {{ .Values.trafficSignAnalyser.name }}
+            resources:
+              limits:
+                memory: {{ .Values.trafficSignAnalyser.memory }}
+              requests:
+                memory: {{ .Values.trafficSignAnalyser.memory }}
+            image:
+              ndwnls.azurecr.io/nls-accessibility-map-traffic-sign-analyser-job:{{ $.Chart.AppVersion }}
+            imagePullPolicy: Always
+            envFrom:
+              - configMapRef:
+                  name: nls-accessibility-map-jobs-config
+            env:
+              - name: COMMAND
+                value: {{ .Values.trafficSignAnalyser.command }}
+              {{- /*
+              Added as env variable so the dd init container appends the settings instead of an overwrite
+              */}}
+              - name: JAVA_TOOL_OPTIONS
+                value: -XX:MaxRAMPercentage=70 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
+            volumeMounts:
+              - mountPath: /application/config
+                name: nls-accessibility-map-jobs-secrets
+                readOnly: true
+              - mountPath: /application/heapdumps
+                name: nls-accessibility-map-jobs-heapdump-volume
+                subPath: {{ .Values.trafficSignAnalyser.name }}
+              - mountPath: /application/graphhopper
+                name: nls-accessibility-map-traffic-sign-analyser-job-volume
+        volumes:
+          - name: nls-accessibility-map-jobs-secrets
+            csi:
+              driver: secrets-store.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: nls-accessibility-map-jobs-spc
+          - name: nls-accessibility-map-jobs-heapdump-volume
+            persistentVolumeClaim:
+              claimName: heapdump-pvc-claim
+          - name: nls-accessibility-map-traffic-sign-analyser-job-volume
+            persistentVolumeClaim:
+              claimName: nls-accessibility-map-api-pvc
+        restartPolicy: Never
+  # Polling interval should be longer than job startup time (including pulling Docker image), because Keda creates a new
+  # job at every interval as long as there's a message on the queue, even if it's the same message.
+  pollingInterval: 300 # Default 30 seconds
+  successfulJobsHistoryLimit: 2 # Default 100
+  maxReplicaCount: 1 # Default 100
+  triggers:
+    - type: rabbitmq
+      metadata:
+        queueName: {{ .Values.trafficSignAnalyser.queueName }}
+        mode: QueueLength
+        value: '1' # Tells Keda how many queue messages a single instance processes (default 20)
+      authenticationRef:
+        name: nls-accessibility-map-api-traffic-sign-analyser-trigger-auth

@@ -14,9 +14,10 @@ Feature: TrafficSignAnalyser
       | 2           | 8         | 0.5      | C12     | FORTH         | window 2   | 00000000-0000-4000-0000-000000000002 |
     And with issues sent to issue api
     When run TrafficSignAnalyser with configuration
-      | startNodeId | trafficSignTypes | reportIssues |
-      | 2           | C6,C7,C12        | true         |
+      | startNodeId | trafficSignGroups | reportIssues |
+      | 2           | C6,C7:C12         | true         |
     Then we expect the following issues to be reported
       | TrafficSign1-RoadSection13 |
       | TrafficSign2-RoadSection12 |
-    Then we expect the report to be marked as completed for trafficSignTypes "C6,C7,C12"
+    Then we expect the report to be marked as completed for trafficSignTypes "C6,C7"
+    And we expect the report to be marked as completed for trafficSignTypes "C12"
