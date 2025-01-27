@@ -47,6 +47,13 @@ spring:
 nu:
   ndw:
     nls:
+      springboot:
+        messaging:
+          receive:
+            - queue: nls_accessibility_map_api_routing_network_updated_traffic_sign_analyser
+              routingKey: ndw.nls.accessibility.routing.network.updated
+              expectedEventTypes:
+                - ACCESSIBILITY_ROUTING_NETWORK_UPDATED
       locationdataissuesapi:
         issue:
           url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
