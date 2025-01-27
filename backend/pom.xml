@@ -207,6 +207,7 @@
 
                             <configOptions>
                                 <useSpringBoot3>true</useSpringBoot3>
+                                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
 
                                 <!-- Whether to generate the server files using the delegate pattern -->
                                 <delegatePattern>true</delegatePattern>
@@ -228,6 +229,12 @@
                                   https://github.com/OpenAPITools/jackson-databind-nullable
                                  -->
                                 <openApiNullable>false</openApiNullable>
+
+                                <additionalModelTypeAnnotations>
+                                    @lombok.experimental.SuperBuilder
+                                    @lombok.NoArgsConstructor
+                                    @lombok.AllArgsConstructor
+                                </additionalModelTypeAnnotations>
                             </configOptions>
                         </configuration>
                     </execution>
