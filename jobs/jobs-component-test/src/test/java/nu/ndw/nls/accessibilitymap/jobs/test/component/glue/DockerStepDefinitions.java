@@ -56,6 +56,8 @@ public class DockerStepDefinitions {
     @When("run TrafficSignAnalyser with configuration")
     public void runTrafficSignAnalyser(List<TrafficSignAnalyserJobConfiguration> jobConfigurations) {
 
+        trafficSignAnalyserJobDriver.runConfigureRabbitMqJob();
+
         messageService.publish(NlsEvent.builder()
                 .type(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED)
                 .subject(NlsEventSubject.builder()
