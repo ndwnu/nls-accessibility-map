@@ -141,7 +141,7 @@
                                     <version>${project.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>../../docker/nls-accessibility-traffic-sign-analyser-job</outputDirectory>
+                                    <outputDirectory>../../docker/nls-accessibility-map-traffic-sign-analyser-job</outputDirectory>
                                     <destFileName>application.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>

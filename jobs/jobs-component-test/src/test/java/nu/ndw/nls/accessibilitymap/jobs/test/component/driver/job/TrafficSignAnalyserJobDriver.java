@@ -23,7 +23,7 @@ public class TrafficSignAnalyserJobDriver implements StateManagement {
     public void runTrafficSignAnalysisJob(TrafficSignAnalyserJobConfiguration jobConfiguration) {
 
         dockerDriver.startServiceAndWaitToBeFinished(
-                "nls-accessibility-traffic-sign-analyser-job",
+                "nls-accessibility-map-traffic-sign-analyser-job",
                 generalConfiguration.isWaitForDebuggerToBeConnected() ? Mode.DEBUG : Mode.NORMAL,
                 List.of(
                         Environment.builder()
@@ -51,7 +51,7 @@ public class TrafficSignAnalyserJobDriver implements StateManagement {
     public void runConfigureRabbitMqJob() {
 
         dockerDriver.startServiceAndWaitToBeFinished(
-                "nls-accessibility-traffic-sign-analyser-job",
+                "nls-accessibility-map-traffic-sign-analyser-job",
                 Mode.NORMAL,
                 List.of(
                         Environment.builder()
