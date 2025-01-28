@@ -95,7 +95,7 @@ class TrafficSignMapperTest {
                 Level.WARN,
                 "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
                         .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
-                "Traffic sign with id '%s' is not containing a black code but that is required for type 'C17'".formatted(
+                "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'".formatted(
                         trafficSignGeoJsonDto.getId(), trafficSignType));
 
     }
