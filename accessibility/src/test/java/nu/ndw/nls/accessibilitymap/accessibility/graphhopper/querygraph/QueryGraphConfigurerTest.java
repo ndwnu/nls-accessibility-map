@@ -169,7 +169,7 @@ class QueryGraphConfigurerTest {
     }
 
     @Test
-    void configure_ok_edgeSetValueError() {
+    void configure_edgeSetValueError() {
 
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
