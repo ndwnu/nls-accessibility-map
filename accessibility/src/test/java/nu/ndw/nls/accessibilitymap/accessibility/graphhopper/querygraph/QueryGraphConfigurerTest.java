@@ -50,6 +50,8 @@ class QueryGraphConfigurerTest {
 
     private static final int TRAFFIC_SIGN_ID_VALUE = 1;
 
+    private static final String TRAFFIC_SIGN_EXTERNAL_ID_VALUE = "2";
+
     private static final String MESSAGE_NOT_ASSIGNED = "Query graph configuration summary. "
             + "Total traffic signs in request 1. "
             + "Total not assignable road sections with traffic sign 1, notAssigned {%s=[trafficSignSnap]}";
@@ -178,6 +180,7 @@ class QueryGraphConfigurerTest {
         when(trafficSignSnap.getSnap()).thenReturn(snap);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID_VALUE);
+        when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_EXTERNAL_ID_VALUE);
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(true);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
         when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
