@@ -4,12 +4,22 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>4.1.3-SNAPSHOT</version>
+        <version>4.1.5-SNAPSHOT</version>
     </parent>
     <artifactId>jobs-component-test</artifactId>
     <name>NLS Accessibility Map Jobs- Component test</name>
 
     <dependencies>
+        <dependency>
+            <groupId>nu.ndw</groupId>
+            <artifactId>nls-events</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.springboot</groupId>
+            <artifactId>messaging</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -71,6 +81,11 @@
         <dependency>
             <groupId>nu.ndw.nls.springboot</groupId>
             <artifactId>component-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

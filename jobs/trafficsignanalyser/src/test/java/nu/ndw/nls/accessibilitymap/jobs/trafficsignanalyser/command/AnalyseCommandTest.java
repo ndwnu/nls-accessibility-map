@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +20,11 @@ import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseP
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.TrafficSignAnalyserService;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
+import nu.ndw.nls.events.NlsEvent;
+import nu.ndw.nls.events.NlsEventType;
+import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
+import nu.ndw.nls.springboot.messaging.functions.NlsEventConsumeFunction;
+import nu.ndw.nls.springboot.messaging.services.MessageService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,6 +63,9 @@ class AnalyseCommandTest {
     @Mock
     private VehicleProperties vehicleProperties;
 
+    @Mock
+    private MessageService messageService;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -64,7 +73,7 @@ class AnalyseCommandTest {
     void setUp() {
 
         analyseCommand = new AnalyseCommand(accessibilityConfiguration, analyserConfiguration, vehiclePropertiesMapper,
-                clockService, trafficSignAnalyserService);
+                clockService, trafficSignAnalyserService, messageService);
     }
 
     @ParameterizedTest
@@ -82,8 +91,15 @@ class AnalyseCommandTest {
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
         when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
 
+        when(messageService.receive(eq(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED), any())).thenAnswer(answer -> {
+            NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
+            return MessageConsumeResult.builder()
+                    .result(function.apply(NlsEvent.builder().build()))
+                    .build();
+        });
+
         assertThat(new CommandLine(analyseCommand)
-                .execute("--traffic-sign=%s".formatted(trafficSignType.name()),
+                .execute("--traffic-signs=%s".formatted(trafficSignType.name()),
                         "--report-issues")
         ).isZero();
 
@@ -96,13 +112,13 @@ class AnalyseCommandTest {
         assertThat(analyseProperties.startTime()).isEqualTo(startTime);
         assertThat(analyseProperties.startLocationLatitude()).isEqualTo(2d);
         assertThat(analyseProperties.startLocationLongitude()).isEqualTo(3d);
-        assertThat(analyseProperties.trafficSignType()).isEqualTo(trafficSignType);
+        assertThat(analyseProperties.trafficSignTypes()).isEqualTo(List.of(trafficSignType));
         assertThat(analyseProperties.vehicleProperties()).isEqualTo(vehicleProperties);
         assertThat(analyseProperties.nwbVersion()).isEqualTo(123);
         assertThat(analyseProperties.searchRadiusInMeters()).isEqualTo(4d);
         assertThat(analyseProperties.reportIssues()).isTrue();
 
-        loggerExtension.containsLog(Level.INFO, "Analysing traffic sign: %s".formatted(trafficSignType.name()));
+        loggerExtension.containsLog(Level.INFO, "Analysing traffic signs: [%s]".formatted(trafficSignType.name()));
     }
 
     @Test
@@ -113,34 +129,51 @@ class AnalyseCommandTest {
         when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(vehiclePropertiesMapper.map(List.of(TrafficSignType.C6), false)).thenReturn(vehicleProperties);
+        when(vehiclePropertiesMapper.map(List.of(TrafficSignType.C6, TrafficSignType.C7), false)).thenReturn(vehicleProperties);
         when(vehiclePropertiesMapper.map(List.of(TrafficSignType.C18), false)).thenReturn(vehicleProperties);
 
         when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
         when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
 
+        when(messageService.receive(eq(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED), any())).thenAnswer(answer -> {
+            NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
+            return MessageConsumeResult.builder()
+                    .result(function.apply(NlsEvent.builder().build()))
+                    .build();
+        });
+
         assertThat(new CommandLine(analyseCommand)
-                .execute("--traffic-sign=%s".formatted(TrafficSignType.C6.name()),
-                        "--traffic-sign=%s".formatted(TrafficSignType.C18.name()),
+                .execute("--traffic-signs=%s,%s".formatted(TrafficSignType.C6.name(), TrafficSignType.C7.name()),
+                        "--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
                         "--report-issues")
         ).isZero();
 
         verify(trafficSignAnalyserService).analyse(argThat(
-                analyseProperties -> analyseProperties.trafficSignType() == TrafficSignType.C6));
+                analyseProperties -> analyseProperties.trafficSignTypes().containsAll(List.of(TrafficSignType.C6, TrafficSignType.C7))));
         verify(trafficSignAnalyserService).analyse(argThat(
-                analyseProperties -> analyseProperties.trafficSignType() == TrafficSignType.C18));
+                analyseProperties -> analyseProperties.trafficSignTypes().contains(TrafficSignType.C18)));
 
-        loggerExtension.containsLog(Level.INFO, "Analysing traffic sign: %s".formatted(TrafficSignType.C6.name()));
-        loggerExtension.containsLog(Level.INFO, "Analysing traffic sign: %s".formatted(TrafficSignType.C18.name()));
+        loggerExtension.containsLog
+                (Level.INFO,
+                "Analysing traffic signs: [%s, %s]".formatted(TrafficSignType.C6.name(), TrafficSignType.C7.name()));
+        loggerExtension.containsLog(Level.INFO, "Analysing traffic signs: [%s]".formatted(TrafficSignType.C18.name()));
     }
 
     @Test
     void call_error() {
 
+        when(messageService.receive(eq(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED), any())).thenAnswer(answer -> {
+            NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
+            return MessageConsumeResult.builder()
+                    .result(function.apply(NlsEvent.builder().build()))
+                    .build();
+        });
+
         when(clockService.now()).thenThrow(new RuntimeException("test exception"));
+
         assertThat(new CommandLine(analyseCommand)
-                .execute("--traffic-sign=%s".formatted(TrafficSignType.C18.name()),
+                .execute("--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
                         "--report-issues")
         ).isOne();
 

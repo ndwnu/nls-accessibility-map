@@ -12,6 +12,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import java.util.Map;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 import org.springframework.http.HttpStatus;
@@ -61,7 +62,7 @@ public class IssueDriver {
                 .withHeader("Content-Type", equalTo("application/json")));
     }
 
-    public void verifyReportComplete(String trafficSignType) {
+    public void verifyReportComplete(Set<String> trafficSigns) {
 
         verify(postRequestedFor(urlEqualTo("/api/rest/static-road-data/location-data-issues/v1/report/complete"))
                 .withHeader("Content-Type", equalTo("application/json"))
@@ -70,6 +71,6 @@ public class IssueDriver {
                           "reporterReportId": "${json-unit.ignore}",
                           "reporterReportGroupId": "AsymmetricTrafficSignPlacement-%s"
                         }
-                        """.formatted(trafficSignType))));
+                        """.formatted(String.join("-", trafficSigns)))));
     }
 }

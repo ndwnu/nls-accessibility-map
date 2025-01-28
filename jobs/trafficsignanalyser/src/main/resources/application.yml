@@ -13,7 +13,7 @@ org:
     no-logo: true
 spring:
   application:
-    name: nls-accessibility-traffic-sign-analyser-jobs
+    name: nls-accessibility-map-traffic-sign-analyser-job
   # Disables netty webserver startup
   main:
     web-application-type: none
@@ -47,6 +47,13 @@ spring:
 nu:
   ndw:
     nls:
+      springboot:
+        messaging:
+          receive:
+            - queue: nls_accessibility_map_api_routing_network_updated_traffic_sign_analyser
+              routingKey: ndw.nls.accessibility.routing.network.updated
+              expectedEventTypes:
+                - ACCESSIBILITY_ROUTING_NETWORK_UPDATED
       locationdataissuesapi:
         issue:
           url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
