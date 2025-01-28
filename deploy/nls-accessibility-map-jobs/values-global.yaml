@@ -34,5 +34,5 @@ mapGenerator:
 trafficSignAnalyser:
   name: nls-accessibility-map-traffic-sign-analyser-job
   command: analyse --traffic-signs=C6 --traffic-signs=C17 --traffic-signs=C18 --traffic-signs=C19 --traffic-signs=C20 --traffic-signs=C21
-  memory: 8Gi
+  memory: 12Gi
   queueName: nls_accessibility_map_api_routing_network_updated_traffic_sign_analyser
