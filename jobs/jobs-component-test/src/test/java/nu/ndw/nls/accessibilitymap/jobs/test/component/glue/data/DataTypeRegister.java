@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
@@ -28,6 +29,7 @@ public class DataTypeRegister {
                 .endNodeId(Integer.parseInt(entry.get("endNodeId")))
                 .fraction(Double.parseDouble(entry.get("fraction")))
                 .rvvCode(entry.get("rvvCode").toUpperCase(Locale.US))
+                .blackCode(Objects.isNull(entry.get("blackCode")) ? null : entry.get("blackCode").toUpperCase(Locale.US))
                 .directionType(DirectionType.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(entry.get("windowTime"))
                 .build();
