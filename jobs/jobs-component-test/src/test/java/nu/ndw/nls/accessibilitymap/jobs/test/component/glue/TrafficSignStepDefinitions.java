@@ -63,6 +63,7 @@ public class TrafficSignStepDefinitions {
                 .geometry(new Point(endCoordinate.getX(), endCoordinate.getY()))
                 .properties(TrafficSignPropertiesDto.builder()
                         .fraction(trafficSign.fraction())
+                        .blackCode(trafficSign.blackCode())
                         .rvvCode(trafficSign.rvvCode())
                         .drivingDirection(trafficSign.directionType())
                         .roadSectionId(link.getAccessibilityLink().getId())

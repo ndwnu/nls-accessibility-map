@@ -24,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -75,6 +76,28 @@ class TrafficSignMapperTest {
                 integerSequenceSupplier);
 
         validateTrafficSign(trafficSign.get());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TrafficSignType.class, mode = Mode.INCLUDE, names = {"C17", "C18", "C19", "C20", "C21"})
+    void mapFromTrafficSignGeoJsonDto_blackCode_required(TrafficSignType trafficSignType) {
+
+        trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
+        trafficSignGeoJsonDto.getProperties().setBlackCode(null);
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+        assertThat(trafficSign).isEmpty();
+
+        loggerExtension.containsLog(
+                Level.WARN,
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
+                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
+                "Traffic sign with id '%s' is not containing a black code but that is required for type 'C17'".formatted(
+                        trafficSignGeoJsonDto.getId(), trafficSignType));
+
     }
 
     @Test

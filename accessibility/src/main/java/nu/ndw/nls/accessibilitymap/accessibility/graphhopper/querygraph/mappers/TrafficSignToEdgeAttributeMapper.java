@@ -92,7 +92,6 @@ public class TrafficSignToEdgeAttributeMapper {
             Map.entry(C19, getAttributeKey()),
             Map.entry(C20, getAttributeKey()),
             Map.entry(C21, getAttributeKey())
-
     );
 
     private static Function<TrafficSign, Object> restrictionValueBlackCode() {
