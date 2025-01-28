@@ -27,7 +27,7 @@ class AccessibilityRequestMapperTest {
     void map_ok() {
 
         AnalyseProperties analyseProperties = AnalyseProperties.builder()
-                .trafficSignType(TrafficSignType.C7)
+                .trafficSignTypes(List.of(TrafficSignType.C7, TrafficSignType.C6))
                 .vehicleProperties(VehicleProperties.builder().build())
                 .startLocationLatitude(52.12096528507054)
                 .startLocationLongitude(5.334845116067081)
@@ -41,7 +41,7 @@ class AccessibilityRequestMapperTest {
         assertThat(accessibilityRequest.getStartLocationLatitude()).isEqualTo(analyseProperties.startLocationLatitude());
         assertThat(accessibilityRequest.getStartLocationLongitude()).isEqualTo(analyseProperties.startLocationLongitude());
         assertThat(accessibilityRequest.getSearchRadiusInMeters()).isEqualTo(analyseProperties.searchRadiusInMeters());
-        assertThat(accessibilityRequest.getTrafficSignTypes()).isEqualTo(List.of(analyseProperties.trafficSignType()));
+        assertThat(accessibilityRequest.getTrafficSignTypes()).isEqualTo(analyseProperties.trafficSignTypes());
         assertThat(accessibilityRequest.isIncludeOnlyTimeWindowedSigns()).isFalse();
     }
 }

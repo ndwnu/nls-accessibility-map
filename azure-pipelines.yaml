@@ -34,7 +34,7 @@ extends:
       - nls-accessibility-map-api
       - nls-accessibility-map-graphhopper-job
       - nls-accessibility-map-generator-jobs
-      - nls-accessibility-traffic-sign-analyser-job
+      - nls-accessibility-map-traffic-sign-analyser-job
     helmCharts:
       - {
         "name": "nls-accessibility-map-api"

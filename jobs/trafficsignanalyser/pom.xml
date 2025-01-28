@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>4.1.3-SNAPSHOT</version>
+        <version>4.1.5-SNAPSHOT</version>
     </parent>
     <artifactId>trafficsignanalyser-job</artifactId>
     <name>NLS Accessibility Map Traffic Sign Analyser Job</name>
@@ -141,7 +141,7 @@
                                     <version>${project.version}</version>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>../../docker/nls-accessibility-traffic-sign-analyser-job</outputDirectory>
+                                    <outputDirectory>../../docker/nls-accessibility-map-traffic-sign-analyser-job</outputDirectory>
                                     <destFileName>application.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>

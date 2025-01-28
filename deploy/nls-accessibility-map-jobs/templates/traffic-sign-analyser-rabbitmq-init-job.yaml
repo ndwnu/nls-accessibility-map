@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+  labels:
+    tags.datadoghq.com/service: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+    tags.datadoghq.com/env: {{ $.Values.environment }}
+    tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+spec:
+  ttlSecondsAfterFinished: 604800
+  backoffLimit: 3
+  template:
+    metadata:
+      annotations:
+        ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .Values.trafficSignAnalyser.name }}-rabbitmq-init"}]'
+        admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
+      labels:
+        app: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+        environment: {{ $.Values.environment }}
+        admission.datadoghq.com/enabled: "true"
+        tags.datadoghq.com/service: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+        tags.datadoghq.com/env: {{ $.Values.environment }}
+        tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+    spec:
+      containers:
+        - name: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+          resources:
+            limits:
+              memory: 256Mi
+            requests:
+              memory: 256Mi
+          image: ndwnls.azurecr.io/nls-accessibility-map-traffic-sign-analyser-job:{{ $.Chart.AppVersion }}
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nls-accessibility-map-jobs-config
+          env:
+            - name: COMMAND
+              value: configureRabbitMQ
+            {{- /*
+            Added as env variable so the dd init container appends the settings instead of an overwrite
+            */}}
+            - name: JAVA_TOOL_OPTIONS
+              value: -XX:MaxRAMPercentage=70 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
+          volumeMounts:
+            - mountPath: /application/config
+              name: nls-accessibility-map-api-secrets
+              readOnly: true
+            - mountPath: /application/heapdumps
+              name: nls-accessibility-map-jobs-heapdump-volume
+              subPath: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+      restartPolicy: Never
+      volumes:
+        - name: nls-accessibility-map-api-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: nls-accessibility-map-jobs-spc
+        - name: nls-accessibility-map-jobs-heapdump-volume
+          persistentVolumeClaim:
+            claimName: heapdump-pvc-claim

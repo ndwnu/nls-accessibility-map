@@ -3,10 +3,12 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
@@ -44,7 +46,10 @@ public class TrafficSignAnalyserService {
     private void analyseTrafficSigns(Accessibility accessibility, AnalyseProperties analyseProperties) {
 
         String issueReportId = "Nwb-%s-%s".formatted(analyseProperties.nwbVersion(), UUID.randomUUID());
-        String issueReportGroupId = "AsymmetricTrafficSignPlacement-%s".formatted(analyseProperties.trafficSignType().getRvvCode());
+        String issueReportGroupId = "AsymmetricTrafficSignPlacement-%s".formatted(
+                analyseProperties.trafficSignTypes().stream()
+                        .map(TrafficSignType::getRvvCode)
+                        .collect(Collectors.joining("-")));
 
         List<CreateIssueJson> issues = accessibility.combinedAccessibility()
                 .stream()

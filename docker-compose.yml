@@ -60,8 +60,8 @@ services:
     networks:
       - nls-accessibility-map-network
 
-  nls-accessibility-traffic-sign-analyser-job:
-    build: docker/nls-accessibility-traffic-sign-analyser-job
+  nls-accessibility-map-traffic-sign-analyser-job:
+    build: docker/nls-accessibility-map-traffic-sign-analyser-job
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - COMMAND=analyse
