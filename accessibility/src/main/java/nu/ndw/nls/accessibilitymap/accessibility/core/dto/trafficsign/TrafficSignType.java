@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 public enum TrafficSignType {
 
-    C1("C1"),
     C6("C6"),
     C7("C7"),
     C7A("C7a"),

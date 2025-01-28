@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 public class TrafficSignToEdgeAttributeMapper {
 
     private static final Map<TrafficSignType, Function<TrafficSign, Object>> VALUE_MAPPING = Map.ofEntries(
-            Map.entry(TrafficSignType.C6, restrictionBooleanTrue()),
+            Map.entry(C6, restrictionBooleanTrue()),
             Map.entry(C7, restrictionBooleanTrue()),
             Map.entry(C7A, restrictionBooleanTrue()),
             Map.entry(C7B, restrictionBooleanTrue()),
@@ -56,7 +56,7 @@ public class TrafficSignToEdgeAttributeMapper {
     );
 
     private static final Map<TrafficSignType, String> TRAFFIC_SIGN_KEY_MAPPING = Map.ofEntries(
-            Map.entry(TrafficSignType.C6, CAR_ACCESS_FORBIDDEN),
+            Map.entry(C6, CAR_ACCESS_FORBIDDEN),
             Map.entry(C7, HGV_ACCESS_FORBIDDEN),
             Map.entry(C7A, BUS_ACCESS_FORBIDDEN),
             Map.entry(C7B, HGV_AND_BUS_ACCESS_FORBIDDEN),
