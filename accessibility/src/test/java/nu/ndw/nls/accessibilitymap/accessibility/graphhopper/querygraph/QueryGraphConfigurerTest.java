@@ -3,6 +3,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRAFFIC_SIGN_ID;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -164,6 +166,35 @@ class QueryGraphConfigurerTest {
 
         verifyNoAssignment();
         loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(ROAD_SECTION_ID));
+    }
+
+    @Test
+    void configure_ok_edgeSetValueError() {
+
+        setupFixtureForQueryGraph();
+        setupFixtureForTrafficSignSnap();
+
+        when(trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign)).thenThrow(new RuntimeException("error"));
+        when(trafficSignSnap.getSnap()).thenReturn(snap);
+        when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
+        when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID_VALUE);
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(true);
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
+        when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
+
+        when(trafficSign.direction()).thenReturn(Direction.BACKWARD);
+
+        when(snap.getSnappedPoint()).thenReturn(ghPoint);
+        when(ghPoint.getLon()).thenReturn(LON);
+        when(ghPoint.getLat()).thenReturn(LAT);
+        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
+        when(pointList.toLineString(false)).thenReturn(lineString);
+        when(lineString.getStartPoint()).thenReturn(point);
+        //Latitude is the Y axis, longitude is the X axis
+        when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
+        assertThat(catchThrowable(() -> queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .withFailMessage("Could not set value on edge for traffic sign with id '%s'".formatted(TRAFFIC_SIGN_ID_VALUE));
     }
 
     @Test
