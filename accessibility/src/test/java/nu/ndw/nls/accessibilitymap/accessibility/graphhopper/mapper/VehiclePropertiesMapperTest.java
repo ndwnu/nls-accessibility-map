@@ -29,8 +29,8 @@ class VehiclePropertiesMapperTest {
     @ParameterizedTest
     @MethodSource("provideTestData")
     void map_ok(List<TrafficSignType> trafficSignTypes, boolean includeOnlyWindowTimes, VehicleProperties expected) {
-        assertThat(vehiclePropertiesMapper.map(trafficSignTypes, includeOnlyWindowTimes))
-                .isEqualTo(expected);
+
+        assertThat(vehiclePropertiesMapper.map(trafficSignTypes, includeOnlyWindowTimes)).isEqualTo(expected);
     }
 
     @Test
@@ -40,9 +40,12 @@ class VehiclePropertiesMapperTest {
                 .map(List.class::cast)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
-        Set<TrafficSignType> missingTrafficSignTypes = Sets.difference(Arrays.stream(TrafficSignType.values())
+
+        Set<TrafficSignType> missingTrafficSignTypes = Sets.difference(
+                Arrays.stream(TrafficSignType.values())
                         .collect(Collectors.toSet()),
                 types);
+
         assertThat(missingTrafficSignTypes)
                 .withFailMessage("Missing traffic sign mapping in vehiclePropertiesMapper or in testcase {}", missingTrafficSignTypes)
                 .isEmpty();
@@ -50,6 +53,33 @@ class VehiclePropertiesMapperTest {
 
     private static Stream<Arguments> provideTestData() {
         return Stream.of(
+                Arguments.of(List.of(TrafficSignType.C1), true, VehicleProperties.builder()
+                        .carAccessForbiddenWt(true)
+                        .hgvAccessForbiddenWt(true)
+                        .hgvAndBusAccessForbiddenWt(true)
+                        .lcvAndHgvAccessForbiddenWt(true)
+                        .motorVehicleAccessForbiddenWt(true)
+                        .motorcycleAccessForbidden(true)
+                        .busAccessForbidden(true)
+                        .trailerAccessForbidden(true)
+                        .tractorAccessForbidden(true)
+                        .build()),
+                Arguments.of(List.of(TrafficSignType.C1), false, VehicleProperties.builder()
+                        .carAccessForbidden(true)
+                        .hgvAccessForbidden(true)
+                        .busAccessForbidden(true)
+                        .hgvAndBusAccessForbidden(true)
+                        .tractorAccessForbidden(true)
+                        .trailerAccessForbidden(true)
+                        .motorcycleAccessForbidden(true)
+                        .motorVehicleAccessForbidden(true)
+                        .lcvAndHgvAccessForbidden(true)
+                        .carAccessForbiddenWt(true)
+                        .hgvAccessForbiddenWt(true)
+                        .hgvAndBusAccessForbiddenWt(true)
+                        .lcvAndHgvAccessForbiddenWt(true)
+                        .motorVehicleAccessForbiddenWt(true)
+                        .build()),
                 Arguments.of(List.of(TrafficSignType.C6), true, VehicleProperties.builder()
                         .carAccessForbiddenWt(true)
                         .build()),
