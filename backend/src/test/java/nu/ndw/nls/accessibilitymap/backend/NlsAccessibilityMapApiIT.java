@@ -39,6 +39,6 @@ public class NlsAccessibilityMapApiIT {
 
     @Karate.Test
     Karate openApi() {
-        return Karate.run("classpath:feature/openApi.feature");
+        return Karate.run("classpath:feature/open-api.feature");
     }
 }
