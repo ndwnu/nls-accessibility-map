@@ -49,6 +49,8 @@ spec:
             - mountPath: /application/heapdumps
               name: nls-accessibility-map-jobs-heapdump-volume
               subPath: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+            - mountPath: /application/graphhopper
+              name: nls-accessibility-map-traffic-sign-analyser-job-volume
       restartPolicy: Never
       volumes:
         - name: nls-accessibility-map-api-secrets
@@ -60,3 +62,6 @@ spec:
         - name: nls-accessibility-map-jobs-heapdump-volume
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
+        - name: nls-accessibility-map-traffic-sign-analyser-job-volume
+          persistentVolumeClaim:
+            claimName: nls-accessibility-map-api-pvc
