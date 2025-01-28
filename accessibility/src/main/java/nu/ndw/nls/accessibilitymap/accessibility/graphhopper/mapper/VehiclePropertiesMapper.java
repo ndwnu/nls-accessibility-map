@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C1;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C10;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C12;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C17;
@@ -36,7 +35,6 @@ public class VehiclePropertiesMapper {
 
     private static final Map<TrafficSignType, BiFunction<VehiclePropertiesBuilder, Boolean, VehiclePropertiesBuilder>> MAPPINGS =
             Map.ofEntries(
-                    Map.entry(C1, setC1Forbidden()),
                     Map.entry(C6, setCarAccessForbidden()),
                     Map.entry(C7, setHgvAccessForBidden()),
                     Map.entry(C7A, setBusAccessForbidden()),
@@ -108,22 +106,6 @@ public class VehiclePropertiesMapper {
     private static BiFunction<VehiclePropertiesBuilder, Boolean, VehiclePropertiesBuilder> setTrailerAccessForbidden() {
         return (builder, includeOnlyWindowTimes) -> {
             builder.trailerAccessForbidden(true);
-            return builder;
-        };
-    }
-
-    private static BiFunction<VehiclePropertiesBuilder, Boolean, VehiclePropertiesBuilder> setC1Forbidden() {
-        return (builder, includeOnlyWindowTimes) -> {
-            setCarAccessForbidden().apply(builder, includeOnlyWindowTimes);
-            setHgvAccessForBidden().apply(builder, includeOnlyWindowTimes);
-            setBusAccessForbidden().apply(builder, includeOnlyWindowTimes);
-            setHgvAndBusAccessForbidden().apply(builder, includeOnlyWindowTimes);
-            setTrailerAccessForbidden().apply(builder, includeOnlyWindowTimes);
-            setMotorVehicleAccessForbidden().apply(builder, includeOnlyWindowTimes);
-            setLcvAndHgvAccessForbidden().apply(builder, includeOnlyWindowTimes);
-            setLcvAndHgvAccessForbidden().apply(builder, includeOnlyWindowTimes);
-            builder.tractorAccessForbidden(true);
-            builder.motorcycleAccessForbidden(true);
             return builder;
         };
     }
