@@ -13,14 +13,18 @@ public class RoadOperatorMapper {
     public List<RoadOperatorJson> map(Collection<RoadOperator> roadOperators) {
 
         return roadOperators.stream()
-                .map(roadOperator -> (RoadOperatorJson) RoadOperatorJson.builder()
-                        .roadOperatorType(roadOperator.roadOperatorType())
-                        .roadOperatorName(roadOperator.roadOperatorName())
-                        .roadOperatorCode(roadOperator.roadOperatorCode())
-                        .municipalityId(roadOperator.municipalityId())
-                        .requestExemptionUrl(
-                                Objects.nonNull(roadOperator.requestExemptionUrl()) ? roadOperator.requestExemptionUrl().toString() : null)
-                        .build())
+                .map(this::mapRoadOperator)
                 .toList();
+    }
+
+    private RoadOperatorJson mapRoadOperator(RoadOperator roadOperator) {
+
+        return RoadOperatorJson.builder()
+                .roadOperatorType(roadOperator.roadOperatorType())
+                .roadOperatorName(roadOperator.roadOperatorName())
+                .roadOperatorCode(roadOperator.roadOperatorCode())
+                .municipalityId(roadOperator.municipalityId())
+                .requestExemptionUrl(Objects.toString(roadOperator.requestExemptionUrl(), null))
+                .build();
     }
 }

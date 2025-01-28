@@ -34,7 +34,7 @@ public class NlsAccessibilityMapApiIT {
 
     @Karate.Test
     Karate getRoadOperators() {
-        return Karate.run("classpath:feature/roadOperators.feature");
+        return Karate.run("classpath:feature/road-operators.feature");
     }
 
     @Karate.Test
