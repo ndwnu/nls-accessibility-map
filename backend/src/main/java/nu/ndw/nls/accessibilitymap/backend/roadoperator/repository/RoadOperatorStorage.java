@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.roadoperator.repository;
 
 import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer.NotNull;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @SuppressWarnings("ConfigurationProperties")
 @Configuration
 @ConfigurationProperties
-@PropertySource(value = "classpath:roadOperators.yml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value = "classpath:road-operators.yml", factory = YamlPropertySourceFactory.class)
 @Validated
 @RequiredArgsConstructor
 @Getter
@@ -24,6 +23,5 @@ public class RoadOperatorStorage {
 
     @NotNull
     @Valid
-    @JsonProperty("RoadOperators")
     private final List<RoadOperator> roadOperators;
 }
