@@ -105,12 +105,7 @@ public class QueryGraphConfigurer {
     private void applyTrafficSingRestrictionsToEdge(EdgeIterator edgeIterator, TrafficSign trafficSign) {
 
         EdgeAttribute edgeAttribute = trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign);
-        try {
-            edgeManager.setValueOnEdge(edgeIterator, edgeAttribute.key(), edgeAttribute.value());
-        } catch (RuntimeException exception) {
-            throw new IllegalArgumentException("Could not set value '%s' on edge with key '%s' for traffic sign '%s'"
-                    .formatted(edgeAttribute.value(), edgeAttribute.key(), trafficSign), exception);
-        }
+        edgeManager.setValueOnEdge(edgeIterator, edgeAttribute.key(), edgeAttribute.value());
     }
 
     private static boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {
