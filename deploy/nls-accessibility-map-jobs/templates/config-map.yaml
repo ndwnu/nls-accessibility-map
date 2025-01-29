@@ -11,5 +11,5 @@ data:
   SPRING_DATASOURCE_URL: jdbc:postgresql://{{ .Values.application.databaseHost }}/nls-maps?ApplicationName=nls-accessibility-map-jobs&stringtype=unspecified
   SPRING_DATASOURCE_USERNAME: nls
   SPRING_MAIN_BANNER_MODE: 'off'
-  FEIGN_CLIENT_BASE_URL: {{ .Values.feign.client.baseUrl }}
+  FEIGN_CLIENT_BASEURL: {{ .Values.feign.client.baseUrl }}
   SPRING_PROFILES_ACTIVE: {{ .Values.environment }}
