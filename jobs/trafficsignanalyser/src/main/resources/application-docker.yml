@@ -25,7 +25,6 @@ spring:
 keycloak:
   server-url: http://nls-keycloak:8000/auth
   client-id: nls-accessibility-map-api-service-account
-  realm: ndw
   client-secret: cfe4793c-ddf7-405a-940f-51b43800aed4
 
 feign:

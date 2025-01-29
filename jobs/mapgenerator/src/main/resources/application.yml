@@ -27,18 +27,6 @@ spring:
       max-lifetime: 120000
       minimum-idle: 1
       auto-commit: false
-  security:
-    oauth2:
-      client:
-        registration:
-          sa-nls-location-data-issues-api:
-            authorization-grant-type: client_credentials
-            client-id: ${keycloak.client-id}
-            client-secret: ${keycloak.client-secret}
-            provider: ndw-keycloak
-        provider:
-          ndw-keycloak:
-            token-uri: ${keycloak.server-url}/realms/ndw/protocol/openid-connect/token
   jmx:
     enabled: false
   jooq:
