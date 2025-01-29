@@ -5,6 +5,8 @@ import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRAFFIC
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -176,11 +178,14 @@ class QueryGraphConfigurerTest {
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
 
-        when(trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign)).thenThrow(new RuntimeException("error"));
+        when(trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign)).thenReturn(EdgeAttribute.builder()
+                .key(MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED)
+                .value(true)
+                .build());
         when(trafficSignSnap.getSnap()).thenReturn(snap);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID_VALUE);
-        when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_EXTERNAL_ID_VALUE);
+//        when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_EXTERNAL_ID_VALUE);
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(true);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
         when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
@@ -195,9 +200,13 @@ class QueryGraphConfigurerTest {
         when(lineString.getStartPoint()).thenReturn(point);
         //Latitude is the Y axis, longitude is the X axis
         when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
+
+        doNothing().when(edgeManager).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
+        doThrow(new RuntimeException("error")).when(edgeManager).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
+
         assertThat(catchThrowable(() -> queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap))))
-                .isInstanceOf(IllegalArgumentException.class)
-                .withFailMessage("Could not set value on edge for traffic sign with id '%s'".formatted(TRAFFIC_SIGN_ID_VALUE));
+                .isInstanceOf(IllegalArgumentException.class);
+//                .withFailMessage("Could not set value on edge for traffic sign with id '%s'".formatted(TRAFFIC_SIGN_ID_VALUE));
     }
 
     @Test

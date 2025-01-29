@@ -104,12 +104,12 @@ public class QueryGraphConfigurer {
 
     private void applyTrafficSingRestrictionsToEdge(EdgeIterator edgeIterator, TrafficSign trafficSign) {
 
+        EdgeAttribute edgeAttribute = trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign);
         try {
-            EdgeAttribute edgeAttribute = trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign);
             edgeManager.setValueOnEdge(edgeIterator, edgeAttribute.key(), edgeAttribute.value());
         } catch (RuntimeException exception) {
-            throw new IllegalArgumentException("Could not set value on edge for traffic sign with id '%s'"
-                    .formatted(trafficSign.externalId()), exception);
+            throw new IllegalArgumentException("Could not set value '%s' on edge with key '%s' for traffic sign '%s'"
+                    .formatted(edgeAttribute.value(), edgeAttribute.key(), trafficSign), exception);
         }
     }
 
