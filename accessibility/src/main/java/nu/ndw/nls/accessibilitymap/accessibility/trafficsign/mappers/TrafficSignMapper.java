@@ -74,24 +74,26 @@ public class TrafficSignMapper {
     private Double mapToBlackCode(TrafficSignGeoJsonDto trafficSignGeoJsonDto, TrafficSignType type) {
 
         String blackCode = trafficSignGeoJsonDto.getProperties().getBlackCode();
-        if (List.of(C17, C18, C19, C20, C21).contains(type) && Strings.isEmpty(blackCode)) {
-            throw new IllegalStateException(
-                    "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'".formatted(
-                            trafficSignGeoJsonDto.getId(), type));
-        }
-
-        if (Strings.isEmpty(blackCode)) {
-            return null;
-        }
         try {
             return Double.parseDouble(blackCode.replace(",", "."));
-        } catch (NumberFormatException ignored) {
-            log.warn("Unprocessable value {} for traffic sign with id {} and RVV code {} on road section {}",
-                    blackCode,
-                    trafficSignGeoJsonDto.getId(),
-                    trafficSignGeoJsonDto.getProperties().getRvvCode(),
-                    trafficSignGeoJsonDto.getProperties().getRoadSectionId());
+        } catch (RuntimeException exception) {
+            if (!Strings.isEmpty(blackCode)) {
+                log.warn("Unprocessable value {} for traffic sign with id {} and RVV code {} on road section {}",
+                        blackCode,
+                        trafficSignGeoJsonDto.getId(),
+                        trafficSignGeoJsonDto.getProperties().getRvvCode(),
+                        trafficSignGeoJsonDto.getProperties().getRoadSectionId(),
+                        exception);
+            }
+
+            if (List.of(C17, C18, C19, C20, C21).contains(type)) {
+                throw new IllegalStateException(
+                        "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'"
+                                .formatted(trafficSignGeoJsonDto.getId(), type),
+                        exception);
+            }
             return null;
         }
     }
+
 }

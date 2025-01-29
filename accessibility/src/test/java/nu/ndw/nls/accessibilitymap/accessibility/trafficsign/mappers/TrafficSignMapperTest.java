@@ -80,7 +80,7 @@ class TrafficSignMapperTest {
 
     @ParameterizedTest
     @EnumSource(value = TrafficSignType.class, mode = Mode.INCLUDE, names = {"C17", "C18", "C19", "C20", "C21"})
-    void mapFromTrafficSignGeoJsonDto_blackCode_required(TrafficSignType trafficSignType) {
+    void mapFromTrafficSignGeoJsonDto_blackCode_required_null(TrafficSignType trafficSignType) {
 
         trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
         trafficSignGeoJsonDto.getProperties().setBlackCode(null);
@@ -98,6 +98,27 @@ class TrafficSignMapperTest {
                 "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'".formatted(
                         trafficSignGeoJsonDto.getId(), trafficSignType));
 
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TrafficSignType.class, mode = Mode.INCLUDE, names = {"C17", "C18", "C19", "C20", "C21"})
+    void mapFromTrafficSignGeoJsonDto_blackCode_required_invalid(TrafficSignType trafficSignType) {
+
+        trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
+        trafficSignGeoJsonDto.getProperties().setBlackCode("invalid");
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+        assertThat(trafficSign).isEmpty();
+
+        loggerExtension.containsLog(
+                Level.WARN,
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
+                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
+                "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'".formatted(
+                        trafficSignGeoJsonDto.getId(), trafficSignType));
     }
 
     @Test
