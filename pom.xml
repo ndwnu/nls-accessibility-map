@@ -28,6 +28,9 @@
     <properties>
         <java.version>21</java.version>
         <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
+        <nls-springboot.component-test.version>8.4.2</nls-springboot.component-test.version>
+        <nls-springboot.monitoring.version>8.4.2</nls-springboot.monitoring.version>
+        <nls-springboot.test.version>8.4.2</nls-springboot.test.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
@@ -207,8 +210,13 @@
             </dependency>
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
-                <artifactId>monitoring</artifactId>
+                <artifactId>logging</artifactId>
                 <version>${nls-springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>nu.ndw.nls.springboot</groupId>
+                <artifactId>monitoring</artifactId>
+                <version>${nls-springboot.monitoring.version}</version>
             </dependency>
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
@@ -223,13 +231,13 @@
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>test</artifactId>
-                <version>${nls-springboot.version}</version>
+                <version>${nls-springboot.test.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>nu.ndw.nls.springboot</groupId>
                 <artifactId>component-test</artifactId>
-                <version>${nls-springboot.version}</version>
+                <version>${nls-springboot.component-test.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
