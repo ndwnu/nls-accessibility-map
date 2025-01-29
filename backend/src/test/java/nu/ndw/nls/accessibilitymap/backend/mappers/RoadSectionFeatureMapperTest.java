@@ -51,8 +51,10 @@ class RoadSectionFeatureMapperTest {
 
         RoadSectionFeatureJson actual = roadSectionFeatureMapper.map(roadSection, false, null, true);
 
-        RoadSectionFeatureJson expected = new RoadSectionFeatureJson(RoadSectionFeatureJson.TypeEnum.FEATURE, 1, geometryJson)
-                .properties(new RoadSectionPropertiesJson(true).matched(null));
+        RoadSectionFeatureJson expected = new RoadSectionFeatureJson(
+                RoadSectionFeatureJson.TypeEnum.FEATURE,
+                1, geometryJson,
+                new RoadSectionPropertiesJson(true, null));
         assertEquals(expected, actual);
     }
 
@@ -66,8 +68,11 @@ class RoadSectionFeatureMapperTest {
 
         RoadSectionFeatureJson actual = roadSectionFeatureMapper.map(roadSection, false, null, false);
 
-        RoadSectionFeatureJson expected = new RoadSectionFeatureJson(RoadSectionFeatureJson.TypeEnum.FEATURE, -1, geometryJson)
-                .properties(new RoadSectionPropertiesJson(true).matched(null));
+        RoadSectionFeatureJson expected = new RoadSectionFeatureJson(
+                RoadSectionFeatureJson.TypeEnum.FEATURE,
+                -1,
+                geometryJson,
+                new RoadSectionPropertiesJson(true,null));
         assertEquals(expected, actual);
     }
 
