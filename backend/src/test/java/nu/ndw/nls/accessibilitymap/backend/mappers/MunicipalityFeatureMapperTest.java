@@ -23,7 +23,9 @@ import org.locationtech.jts.geom.Point;
 class MunicipalityFeatureMapperTest {
 
     private static final String MUNICIPALITY_ID = "GM0307";
+
     private static final Municipality MUNICIPALITY;
+
     private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
     static {
@@ -99,9 +101,11 @@ class MunicipalityFeatureMapperTest {
                 List.of(boundsStart, boundsEnd),
                 MUNICIPALITY.getRequestExemptionUrl().toString(),
                 dateLastCheck);
-        var featureJson = new MunicipalityFeatureJson(MunicipalityFeatureJson.TypeEnum.FEATURE, municipalityId,
-                pointJson);
-        featureJson.properties(propertiesJson);
+        var featureJson = new MunicipalityFeatureJson(
+                MunicipalityFeatureJson.TypeEnum.FEATURE,
+                municipalityId,
+                pointJson,
+                propertiesJson);
         return new MunicipalityFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION, List.of(featureJson));
     }
 }

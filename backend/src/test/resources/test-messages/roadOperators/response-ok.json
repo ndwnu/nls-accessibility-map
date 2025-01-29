@@ -1,0 +1,2347 @@
+[
+  {
+    "roadOperatorName": "Waterschap De Hollandse Delta",
+    "roadOperatorCode": "WS14",
+    "roadOperatorType": "WaterAuthority",
+    "requestExemptionUrl": "https://www.wshd.nl/verkeersontheffingen"
+  },
+  {
+    "roadOperatorName": "Waterschap Scheldestromen",
+    "roadOperatorCode": "WS15",
+    "roadOperatorType": "WaterAuthority",
+    "requestExemptionUrl": "https://scheldestromen.nl/sites/scheldestromen.nl/files/documenten/Aanvraag%2520ontheffing%2520wegen.docx"
+  },
+  {
+    "roadOperatorName": "Waterschap Noorderzijlvest",
+    "roadOperatorCode": "WS17",
+    "roadOperatorType": "WaterAuthority"
+  },
+  {
+    "roadOperatorName": "HHS Hollands Noorderkwartier",
+    "roadOperatorCode": "WS21",
+    "roadOperatorType": "WaterAuthority",
+    "requestExemptionUrl": "https://www.hhnk.nl/verkeersontheffing"
+  },
+  {
+    "roadOperatorName": "Waterschap Rivierenland",
+    "roadOperatorCode": "WS24",
+    "roadOperatorType": "WaterAuthority",
+    "requestExemptionUrl": "https://www.waterschaprivierenland.nl/rvv-ontheffing-wegen-in-beheer-waterschap"
+  },
+  {
+    "roadOperatorName": "Waterschap Vallei en Veluwe",
+    "roadOperatorCode": "WS26",
+    "roadOperatorType": "WaterAuthority"
+  },
+  {
+    "roadOperatorName": "HHS Schieland en de Krimpenerwaard",
+    "roadOperatorCode": "WS28",
+    "roadOperatorType": "WaterAuthority"
+  },
+  {
+    "roadOperatorName": "Havenbedrijf Rotterdam",
+    "roadOperatorCode": "HR",
+    "roadOperatorType": "Other"
+  },
+  {
+    "roadOperatorName": "Meer instanties",
+    "roadOperatorCode": "MI",
+    "roadOperatorType": "Other"
+  },
+  {
+    "roadOperatorName": "Spoorwegen",
+    "roadOperatorCode": "NS",
+    "roadOperatorType": "Other"
+  },
+  {
+    "roadOperatorName": "North Sea Port",
+    "roadOperatorCode": "NSP",
+    "roadOperatorType": "Other"
+  },
+  {
+    "roadOperatorName": "Overige instanties",
+    "roadOperatorCode": "OI",
+    "roadOperatorType": "Other"
+  },
+  {
+    "roadOperatorName": "PWN Waterleidingbedr Noord-Holland",
+    "roadOperatorCode": "PWN",
+    "roadOperatorType": "Other"
+  },
+  {
+    "roadOperatorName": "Staatsbosbeheer",
+    "roadOperatorCode": "SBB",
+    "roadOperatorType": "Other"
+  },
+  {
+    "roadOperatorName": "NV Westerscheldetunnel",
+    "roadOperatorCode": "WST",
+    "roadOperatorType": "Other"
+  },
+  {
+    "roadOperatorName": "Het Rijk",
+    "roadOperatorCode": "Rijk",
+    "roadOperatorType": "State"
+  },
+  {
+    "roadOperatorName": "Drenthe",
+    "roadOperatorCode": "DR",
+    "roadOperatorType": "Province",
+    "requestExemptionUrl": "https://www.noord-holland.nl/Loket/Producten_en_Diensten/Producten_op_alfabet/O/Ontheffing_van_verkeersregels_op_een_provinciale_weg_aanvragen_Vrijstelling_RVV_1990"
+  },
+  {
+    "roadOperatorName": "Flevoland",
+    "roadOperatorCode": "FL",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Friesland",
+    "roadOperatorCode": "FR",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Gelderland",
+    "roadOperatorCode": "GL",
+    "roadOperatorType": "Province",
+    "requestExemptionUrl": "https://www.gelderland.nl/vergunningen/afwijken-verkeersregels-verkeerstekens"
+  },
+  {
+    "roadOperatorName": "Groningen",
+    "roadOperatorCode": "GR",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Limburg",
+    "roadOperatorCode": "LB",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Noord-Brabant",
+    "roadOperatorCode": "NB",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Noord-Holland",
+    "roadOperatorCode": "NH",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Overijssel",
+    "roadOperatorCode": "OV",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Utrecht",
+    "roadOperatorCode": "UT",
+    "roadOperatorType": "Province",
+    "requestExemptionUrl": "https://www.provincie-utrecht.nl/loket/vergunningen-en-meldingen"
+  },
+  {
+    "roadOperatorName": "Zuid-Holland",
+    "roadOperatorCode": "ZH",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Zeeland",
+    "roadOperatorCode": "ZL",
+    "roadOperatorType": "Province"
+  },
+  {
+    "roadOperatorName": "Eemsdelta",
+    "roadOperatorCode": "1979",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1979"
+  },
+  {
+    "roadOperatorName": "Groningen",
+    "roadOperatorCode": "14",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM14"
+  },
+  {
+    "roadOperatorName": "Het Hogeland",
+    "roadOperatorCode": "1966",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1966"
+  },
+  {
+    "roadOperatorName": "Midden-Groningen",
+    "roadOperatorCode": "1952",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1952"
+  },
+  {
+    "roadOperatorName": "Oldambt",
+    "roadOperatorCode": "1895",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1895"
+  },
+  {
+    "roadOperatorName": "Pekela",
+    "roadOperatorCode": "765",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM765"
+  },
+  {
+    "roadOperatorName": "Stadskanaal",
+    "roadOperatorCode": "37",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM37"
+  },
+  {
+    "roadOperatorName": "Veendam",
+    "roadOperatorCode": "47",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM47"
+  },
+  {
+    "roadOperatorName": "Westerkwartier",
+    "roadOperatorCode": "1969",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1969"
+  },
+  {
+    "roadOperatorName": "Westerwolde",
+    "roadOperatorCode": "1950",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1950"
+  },
+  {
+    "roadOperatorName": "Achtkarspelen",
+    "roadOperatorCode": "59",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM59"
+  },
+  {
+    "roadOperatorName": "Ameland",
+    "roadOperatorCode": "60",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM60"
+  },
+  {
+    "roadOperatorName": "Dantumadiel",
+    "roadOperatorCode": "1891",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1891"
+  },
+  {
+    "roadOperatorName": "De Fryske Marren",
+    "roadOperatorCode": "1940",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1940"
+  },
+  {
+    "roadOperatorName": "Harlingen",
+    "roadOperatorCode": "72",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM72"
+  },
+  {
+    "roadOperatorName": "Heerenveen",
+    "roadOperatorCode": "74",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM74"
+  },
+  {
+    "roadOperatorName": "Leeuwarden",
+    "roadOperatorCode": "80",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM80"
+  },
+  {
+    "roadOperatorName": "Noardeast-Fryslân",
+    "roadOperatorCode": "1970",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1970"
+  },
+  {
+    "roadOperatorName": "Ooststellingwerf",
+    "roadOperatorCode": "85",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM85"
+  },
+  {
+    "roadOperatorName": "Opsterland",
+    "roadOperatorCode": "86",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM86"
+  },
+  {
+    "roadOperatorName": "Schiermonnikoog",
+    "roadOperatorCode": "88",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM88"
+  },
+  {
+    "roadOperatorName": "Smallingerland",
+    "roadOperatorCode": "90",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM90"
+  },
+  {
+    "roadOperatorName": "Súdwest-Fryslân",
+    "roadOperatorCode": "1900",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1900"
+  },
+  {
+    "roadOperatorName": "Terschelling",
+    "roadOperatorCode": "93",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM93"
+  },
+  {
+    "roadOperatorName": "Tytsjerksteradiel",
+    "roadOperatorCode": "737",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM737"
+  },
+  {
+    "roadOperatorName": "Vlieland",
+    "roadOperatorCode": "96",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM96"
+  },
+  {
+    "roadOperatorName": "Waadhoeke",
+    "roadOperatorCode": "1949",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1949"
+  },
+  {
+    "roadOperatorName": "Weststellingwerf",
+    "roadOperatorCode": "98",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM98"
+  },
+  {
+    "roadOperatorName": "Aa en Hunze",
+    "roadOperatorCode": "1680",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1680"
+  },
+  {
+    "roadOperatorName": "Assen",
+    "roadOperatorCode": "106",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM106"
+  },
+  {
+    "roadOperatorName": "Borger-Odoorn",
+    "roadOperatorCode": "1681",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1681"
+  },
+  {
+    "roadOperatorName": "Coevorden",
+    "roadOperatorCode": "109",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM109"
+  },
+  {
+    "roadOperatorName": "De Wolden",
+    "roadOperatorCode": "1690",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1690"
+  },
+  {
+    "roadOperatorName": "Emmen",
+    "roadOperatorCode": "114",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM114"
+  },
+  {
+    "roadOperatorName": "Hoogeveen",
+    "roadOperatorCode": "118",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM118"
+  },
+  {
+    "roadOperatorName": "Meppel",
+    "roadOperatorCode": "119",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM119"
+  },
+  {
+    "roadOperatorName": "Midden-Drenthe",
+    "roadOperatorCode": "1731",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1731"
+  },
+  {
+    "roadOperatorName": "Noordenveld",
+    "roadOperatorCode": "1699",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1699"
+  },
+  {
+    "roadOperatorName": "Tynaarlo",
+    "roadOperatorCode": "1730",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1730"
+  },
+  {
+    "roadOperatorName": "Westerveld",
+    "roadOperatorCode": "1701",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1701"
+  },
+  {
+    "roadOperatorName": "Almere",
+    "roadOperatorCode": "34",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM34"
+  },
+  {
+    "roadOperatorName": "Dronten",
+    "roadOperatorCode": "303",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM303"
+  },
+  {
+    "roadOperatorName": "Lelystad",
+    "roadOperatorCode": "995",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM995"
+  },
+  {
+    "roadOperatorName": "Noordoostpolder",
+    "roadOperatorCode": "171",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM171"
+  },
+  {
+    "roadOperatorName": "Urk",
+    "roadOperatorCode": "184",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM184"
+  },
+  {
+    "roadOperatorName": "Zeewolde",
+    "roadOperatorCode": "50",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM50"
+  },
+  {
+    "roadOperatorName": "Leusden",
+    "roadOperatorCode": "327",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM327",
+    "requestExemptionUrl": "https://www.leusden.nl/vergunningen-en-belastingen"
+  },
+  {
+    "roadOperatorName": "Houten",
+    "roadOperatorCode": "321",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM321",
+    "requestExemptionUrl": "https://www.houten.nl/verkeer-en-parkeren"
+  },
+  {
+    "roadOperatorName": "Eemnes",
+    "roadOperatorCode": "317",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM317",
+    "requestExemptionUrl": "https://www.eemnes.nl/Ondernemers/Vergunningen/APV/Ontheffing_verkeer_aanvragen"
+  },
+  {
+    "roadOperatorName": "De Bilt",
+    "roadOperatorCode": "310",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM310",
+    "requestExemptionUrl": "https://www.debilt.nl/vergunningen-en-belastingen/andere-vergunningen/overige-vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Utrecht",
+    "roadOperatorCode": "344",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM344",
+    "requestExemptionUrl": "https://loket.digitaal.utrecht.nl/nl/products/ontheffing-voertuig"
+  },
+  {
+    "roadOperatorName": "Oostzaan",
+    "roadOperatorCode": "431",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM431",
+    "requestExemptionUrl": "https://oostzaan.nl/ontheffingen-aanvragen"
+  },
+  {
+    "roadOperatorName": "De Ronde Venen",
+    "roadOperatorCode": "736",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM736",
+    "requestExemptionUrl": "https://gemeente.derondevenen.nl/Wonen_en_leven/Parkeren_verkeer_en_vervoer/Parkeren/Verkeersontheffing"
+  },
+  {
+    "roadOperatorName": "Amersfoort",
+    "roadOperatorCode": "307",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM307",
+    "requestExemptionUrl": "https://amersfoort.parkeerservice.nl/vergunningen/vergunning-aanvragen/"
+  },
+  {
+    "roadOperatorName": "Baarn",
+    "roadOperatorCode": "308",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM308",
+    "requestExemptionUrl": "https://www.baarn.nl/parkeren-verkeer-en-vervoer"
+  },
+  {
+    "roadOperatorName": "Bunnik",
+    "roadOperatorCode": "312",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM312",
+    "requestExemptionUrl": "https://www.bunnik.nl/vergunningen/verkeer"
+  },
+  {
+    "roadOperatorName": "Bunschoten",
+    "roadOperatorCode": "313",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM313",
+    "requestExemptionUrl": "https://www.bunschoten.nl/"
+  },
+  {
+    "roadOperatorName": "IJsselstein",
+    "roadOperatorCode": "353",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM353",
+    "requestExemptionUrl": "https://www.ijsselstein.nl/Inwoners/Parkeren_verkeer_en_vervoer/Parkeren"
+  },
+  {
+    "roadOperatorName": "Lopik",
+    "roadOperatorCode": "331",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM331",
+    "requestExemptionUrl": "https://www.lopik.nl/advies-en-contact"
+  },
+  {
+    "roadOperatorName": "Montfoort",
+    "roadOperatorCode": "335",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM335",
+    "requestExemptionUrl": "https://www.montfoort.nl/Alle_onderwerpen/Vergunningen_en_ontheffingen"
+  },
+  {
+    "roadOperatorName": "Nieuwegein",
+    "roadOperatorCode": "356",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM356",
+    "requestExemptionUrl": "https://www.nieuwegein.nl/parkeren-en-vervoer/vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Oudewater",
+    "roadOperatorCode": "589",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM589",
+    "requestExemptionUrl": "https://www.oudewater.nl/Parkeren"
+  },
+  {
+    "roadOperatorName": "Renswoude",
+    "roadOperatorCode": "339",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM339",
+    "requestExemptionUrl": "https://www.renswoude.nl/"
+  },
+  {
+    "roadOperatorName": "Rhenen",
+    "roadOperatorCode": "340",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM340",
+    "requestExemptionUrl": "https://www.rhenen.nl/belasting-en-vergunningen"
+  },
+  {
+    "roadOperatorName": "Soest",
+    "roadOperatorCode": "342",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM342",
+    "requestExemptionUrl": "https://www.soest.nl/"
+  },
+  {
+    "roadOperatorName": "Stichtse Vecht",
+    "roadOperatorCode": "1904",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1904",
+    "requestExemptionUrl": "https://stichtsevecht.nl/onderwerp/1967/ontheffing-voetgangerszone-kaatsbaan-maarssen/"
+  },
+  {
+    "roadOperatorName": "Utrechtse Heuvelrug",
+    "roadOperatorCode": "1581",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1581",
+    "requestExemptionUrl": "https://www.heuvelrug.nl/inrijverbod-haarweg-en-de-groep-ontheffing"
+  },
+  {
+    "roadOperatorName": "Veenendaal",
+    "roadOperatorCode": "345",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM345",
+    "requestExemptionUrl": "https://www.veenendaal.nl/parkeren-en-vervoer/ontheffingen-vervoer"
+  },
+  {
+    "roadOperatorName": "Vijfheerenlanden",
+    "roadOperatorCode": "1961",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1961",
+    "requestExemptionUrl": "https://www.vijfheerenlanden.nl/parkeervergunning-of-inrijontheffing"
+  },
+  {
+    "roadOperatorName": "Wijk bij Duurstede",
+    "roadOperatorCode": "352",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM352",
+    "requestExemptionUrl": "https://www.wijkbijduurstede.nl/parkeren-in-de-gemeente/ontheffing-artikel-87-rvv-1990-aanvragen-parkeerontheffing"
+  },
+  {
+    "roadOperatorName": "Woerden",
+    "roadOperatorCode": "632",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM632",
+    "requestExemptionUrl": "https://www.woerden.nl/Parkeren/Verkeersontheffing"
+  },
+  {
+    "roadOperatorName": "Woudenberg",
+    "roadOperatorCode": "351",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM351",
+    "requestExemptionUrl": "https://www.woudenberg.nl/over-de-gemeente/parkeren-in-woudenberg#:~:text=Ontheffing%2520blauwe%2520zone%2520Dorpsstraat%252C%2520Voorstraat,principe%2520%25C3%25A9%25C3%25A9n%2520ontheffing%2520per%2520adres."
+  },
+  {
+    "roadOperatorName": "Zeist",
+    "roadOperatorCode": "355",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM355",
+    "requestExemptionUrl": "https://www.zeist.nl/parkeren/parkeervergunning-en-parkeerplek-aanvragen/ontheffing-inrijverbod-centrum"
+  },
+  {
+    "roadOperatorName": "Amsterdam",
+    "roadOperatorCode": "363",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM363",
+    "requestExemptionUrl": "https://www.amsterdam.nl/ondernemen/vergunningen/wevos/"
+  },
+  {
+    "roadOperatorName": "Aalsmeer",
+    "roadOperatorCode": "358",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM358",
+    "requestExemptionUrl": "https://www.aalsmeer.nl/regelen-aanvragen/publicatie/vergunningen"
+  },
+  {
+    "roadOperatorName": "Alkmaar",
+    "roadOperatorCode": "361",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM361",
+    "requestExemptionUrl": "https://faq.alkmaar.parkeer.nl/hc/nl/categories/4411182332690-Afgesloten-gebieden"
+  },
+  {
+    "roadOperatorName": "Amstelveen",
+    "roadOperatorCode": "362",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM362",
+    "requestExemptionUrl": "https://www.amstelveen.nl/regelen-aanvragen/publicatie/vergunningen"
+  },
+  {
+    "roadOperatorName": "Bergen (NH)",
+    "roadOperatorCode": "373",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM373",
+    "requestExemptionUrl": "https://www.bergen.nl/verkeer-en-vervoer-inwoners"
+  },
+  {
+    "roadOperatorName": "Beverwijk",
+    "roadOperatorCode": "375",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM375",
+    "requestExemptionUrl": "https://www.beverwijk.nl/vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Blaricum",
+    "roadOperatorCode": "376",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM376",
+    "requestExemptionUrl": "https://www.blaricum.nl/Contact_en_openingstijden"
+  },
+  {
+    "roadOperatorName": "Bloemendaal",
+    "roadOperatorCode": "377",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM377",
+    "requestExemptionUrl": "https://www.bloemendaal.nl/vergunningen/ontheffingen-voertuigen-gemeente-bloemendaal"
+  },
+  {
+    "roadOperatorName": "Castricum",
+    "roadOperatorCode": "383",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM383",
+    "requestExemptionUrl": "https://www.castricum.nl/aanvragen-en-regelen/parkeerontheffing"
+  },
+  {
+    "roadOperatorName": "Den Helder",
+    "roadOperatorCode": "400",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM400",
+    "requestExemptionUrl": "https://www.denhelder.nl/Onderwerpen/verkeer"
+  },
+  {
+    "roadOperatorName": "Diemen",
+    "roadOperatorCode": "384",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM384",
+    "requestExemptionUrl": "https://www.diemen.nl/Onderwerpen/Parkeren/Parkeerontheffing_of_vergunning_aanvragen"
+  },
+  {
+    "roadOperatorName": "Dijk en Waard",
+    "roadOperatorCode": "1980",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1980",
+    "requestExemptionUrl": "https://www.dijkenwaard.nl/parkeren-en-verkeer/parkeervergunning/parkeervergunning-bedrijf"
+  },
+  {
+    "roadOperatorName": "Drechterland",
+    "roadOperatorCode": "498",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM498",
+    "requestExemptionUrl": "https://www.drechterland.nl/direct-regelen/wonen-verkeer-en-veiligheid/verkeer-en-vervoer/aanvragen-ontheffing-vrachtautoverbod/"
+  },
+  {
+    "roadOperatorName": "Edam-Volendam",
+    "roadOperatorCode": "385",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM385",
+    "requestExemptionUrl": "https://www.edam-volendam.nl/voorwaarden-afwegingskader-ontheffingverlening"
+  },
+  {
+    "roadOperatorName": "Enkhuizen",
+    "roadOperatorCode": "388",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM388",
+    "requestExemptionUrl": "https://www.enkhuizen.nl/direct-regelen/wonen-verkeer-en-veiligheid/verkeer-en-vervoer/wegenverkeerswet-ontheffing/406/"
+  },
+  {
+    "roadOperatorName": "Gooise Meren",
+    "roadOperatorCode": "1942",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1942",
+    "requestExemptionUrl": "https://gooisemeren.nl/vergunningen/ontheffing-inrijverbod-naarden-vesting/"
+  },
+  {
+    "roadOperatorName": "Haarlem",
+    "roadOperatorCode": "392",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM392",
+    "requestExemptionUrl": "https://haarlem.nl/parkeren-en-verkeer"
+  },
+  {
+    "roadOperatorName": "Haarlemmermeer",
+    "roadOperatorCode": "394",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM394",
+    "requestExemptionUrl": "https://haarlemmermeergemeente.nl/ontheffing-verkeersregels-en-parkeerverbod"
+  },
+  {
+    "roadOperatorName": "Heemskerk",
+    "roadOperatorCode": "396",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM396",
+    "requestExemptionUrl": "https://www.heemskerk.nl/belastingen-en-vergunningen"
+  },
+  {
+    "roadOperatorName": "Heemstede",
+    "roadOperatorCode": "397",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM397",
+    "requestExemptionUrl": "https://www.heemstede.nl/vergunningen"
+  },
+  {
+    "roadOperatorName": "Heiloo",
+    "roadOperatorCode": "399",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM399",
+    "requestExemptionUrl": "https://www.heiloo.nl/aanvragen-en-regelen/parkeerontheffing"
+  },
+  {
+    "roadOperatorName": "Hilversum",
+    "roadOperatorCode": "402",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM402",
+    "requestExemptionUrl": "https://hilversum.nl/parkeren/parkeervergunningen/laden-lossen-winkelgebied"
+  },
+  {
+    "roadOperatorName": "Hollands Kroon",
+    "roadOperatorCode": "1911",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1911",
+    "requestExemptionUrl": "https://www.hollandskroon.nl/direct-regelen/ondernemen/agrarisch/ontheffing-landbouwvoertuigen-hoger-dan-4-meter/"
+  },
+  {
+    "roadOperatorName": "Hoorn",
+    "roadOperatorCode": "405",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM405",
+    "requestExemptionUrl": "https://www.hoorn.nl/verkeersontheffing#:~:text=Online%2520ontheffing%2520aanvragen&text=U%2520kunt%2520ontheffing%2520aanvragen%2520voor%2520een%2520korte%2520tijd%2520of%2520onbepaalde%2520tijd.&text=De%2520kosten%2520voor%2520een%2520verkeersontheffing%2520zijn%2520%25E2%2582%25AC%252013%252C60.&text=U%2520kunt%2520ook%2520ontheffing%2520aanvragen,kentekenbewijs%2520mee%2520naar%2520de%2520afspraak."
+  },
+  {
+    "roadOperatorName": "Huizen",
+    "roadOperatorCode": "406",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM406",
+    "requestExemptionUrl": "https://www.huizen.nl/ontheffing-aanvragen-of-wijzigen"
+  },
+  {
+    "roadOperatorName": "Koggenland",
+    "roadOperatorCode": "1598",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1598",
+    "requestExemptionUrl": "https://www.koggenland.nl/openingstijden-en-contact"
+  },
+  {
+    "roadOperatorName": "Landsmeer",
+    "roadOperatorCode": "415",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM415",
+    "requestExemptionUrl": "https://publieksbalie.landsmeer.nl/producten/inrijverbod_ontheffing"
+  },
+  {
+    "roadOperatorName": "Laren",
+    "roadOperatorCode": "417",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM417",
+    "requestExemptionUrl": "https://www.laren.nl/Parkeren_en_verkeer/Parkeren/Ontheffing_blauwe_zone"
+  },
+  {
+    "roadOperatorName": "Medemblik",
+    "roadOperatorCode": "420",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM420",
+    "requestExemptionUrl": "https://www.medemblik.nl/"
+  },
+  {
+    "roadOperatorName": "Opmeer",
+    "roadOperatorCode": "432",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM432",
+    "requestExemptionUrl": "https://www.opmeer.nl/verkeer-en-vervoer"
+  },
+  {
+    "roadOperatorName": "Ouder-Amstel",
+    "roadOperatorCode": "437",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM437",
+    "requestExemptionUrl": "https://www.ouder-amstel.nl/Home/Vergunningen_aanvragen/Verkeersontheffing_aanvragen"
+  },
+  {
+    "roadOperatorName": "Purmerend",
+    "roadOperatorCode": "439",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM439",
+    "requestExemptionUrl": "https://purmerend.nl/vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Schagen",
+    "roadOperatorCode": "441",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM441",
+    "requestExemptionUrl": "https://www.schagen.nl/parkeren-en-vervoer"
+  },
+  {
+    "roadOperatorName": "Stede Broec",
+    "roadOperatorCode": "532",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM532",
+    "requestExemptionUrl": "https://www.stedebroec.nl/direct-regelen/wonen-verkeer-en-veiligheid/verkeer-en-vervoer/wegenverkeerswet-ontheffing/406/"
+  },
+  {
+    "roadOperatorName": "Texel",
+    "roadOperatorCode": "448",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM448",
+    "requestExemptionUrl": "https://www.texel.nl/direct-regelen/parkeren-vergunningen/parkeren-voor-bedrijven/ontheffing-inrijverbod-bedrijven/"
+  },
+  {
+    "roadOperatorName": "Uitgeest",
+    "roadOperatorCode": "450",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM450",
+    "requestExemptionUrl": "https://www.uitgeest.nl/aanvragen-en-regelen"
+  },
+  {
+    "roadOperatorName": "Uithoorn",
+    "roadOperatorCode": "451",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM451",
+    "requestExemptionUrl": "https://www.uithoorn.nl/Home/Parkeren_Verkeer_en_vervoer/Verkeersontheffing_aanvragen"
+  },
+  {
+    "roadOperatorName": "Velsen",
+    "roadOperatorCode": "453",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM453",
+    "requestExemptionUrl": "https://www.velsen.nl/ontheffing-parkeerverbod-aanvraag"
+  },
+  {
+    "roadOperatorName": "Waterland",
+    "roadOperatorCode": "852",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM852",
+    "requestExemptionUrl": "https://www.waterland.nl/verkeer-parkeren-en-bereikbaarheid"
+  },
+  {
+    "roadOperatorName": "Wijdemeren",
+    "roadOperatorCode": "1696",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1696",
+    "requestExemptionUrl": "https://www.wijdemeren.nl/4/wonenwerken/Verkeer-en-parkeren.html"
+  },
+  {
+    "roadOperatorName": "Wormerland",
+    "roadOperatorCode": "880",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM880",
+    "requestExemptionUrl": "https://wormerland.nl/ontheffingen-aanvragen"
+  },
+  {
+    "roadOperatorName": "Zaanstad",
+    "roadOperatorCode": "479",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM479",
+    "requestExemptionUrl": "https://www.zaanstad.nl/mozard/!suite86.scherm0325?mVrg=6471"
+  },
+  {
+    "roadOperatorName": "Zandvoort",
+    "roadOperatorCode": "473",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM473",
+    "requestExemptionUrl": "https://zandvoort.nl/ontheffing-voertuig-op-het-strand-en-boulevard"
+  },
+  {
+    "roadOperatorName": "Alblasserdam",
+    "roadOperatorCode": "482",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM482"
+  },
+  {
+    "roadOperatorName": "Albrandswaard",
+    "roadOperatorCode": "613",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM613"
+  },
+  {
+    "roadOperatorName": "Alphen aan den Rijn",
+    "roadOperatorCode": "484",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM484"
+  },
+  {
+    "roadOperatorName": "Barendrecht",
+    "roadOperatorCode": "489",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM489"
+  },
+  {
+    "roadOperatorName": "Bodegraven-Reeuwijk",
+    "roadOperatorCode": "1901",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1901"
+  },
+  {
+    "roadOperatorName": "Capelle aan den IJssel",
+    "roadOperatorCode": "502",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM502"
+  },
+  {
+    "roadOperatorName": "Delft",
+    "roadOperatorCode": "503",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM503"
+  },
+  {
+    "roadOperatorName": "Dordrecht",
+    "roadOperatorCode": "505",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM505"
+  },
+  {
+    "roadOperatorName": "Goeree-Overflakkee",
+    "roadOperatorCode": "1924",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1924"
+  },
+  {
+    "roadOperatorName": "Gorinchem",
+    "roadOperatorCode": "512",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM512"
+  },
+  {
+    "roadOperatorName": "Gouda",
+    "roadOperatorCode": "513",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM513"
+  },
+  {
+    "roadOperatorName": "Hardinxveld-Giessendam",
+    "roadOperatorCode": "523",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM523"
+  },
+  {
+    "roadOperatorName": "Hendrik-Ido-Ambacht",
+    "roadOperatorCode": "531",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM531"
+  },
+  {
+    "roadOperatorName": "Hillegom",
+    "roadOperatorCode": "534",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM534"
+  },
+  {
+    "roadOperatorName": "Hoeksche Waard",
+    "roadOperatorCode": "1963",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1963"
+  },
+  {
+    "roadOperatorName": "Kaag en Braassem",
+    "roadOperatorCode": "1884",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1884"
+  },
+  {
+    "roadOperatorName": "Katwijk",
+    "roadOperatorCode": "537",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM537"
+  },
+  {
+    "roadOperatorName": "Krimpen aan den IJssel",
+    "roadOperatorCode": "542",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM542"
+  },
+  {
+    "roadOperatorName": "Krimpenerwaard",
+    "roadOperatorCode": "1931",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1931"
+  },
+  {
+    "roadOperatorName": "Lansingerland",
+    "roadOperatorCode": "1621",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1621"
+  },
+  {
+    "roadOperatorName": "Leiden",
+    "roadOperatorCode": "546",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM546"
+  },
+  {
+    "roadOperatorName": "Leiderdorp",
+    "roadOperatorCode": "547",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM547"
+  },
+  {
+    "roadOperatorName": "Leidschendam-Voorburg",
+    "roadOperatorCode": "1916",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1916"
+  },
+  {
+    "roadOperatorName": "Lisse",
+    "roadOperatorCode": "553",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM553"
+  },
+  {
+    "roadOperatorName": "Maassluis",
+    "roadOperatorCode": "556",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM556"
+  },
+  {
+    "roadOperatorName": "Midden-Delfland",
+    "roadOperatorCode": "1842",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1842"
+  },
+  {
+    "roadOperatorName": "Molenlanden",
+    "roadOperatorCode": "1978",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1978"
+  },
+  {
+    "roadOperatorName": "Nieuwkoop",
+    "roadOperatorCode": "569",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM569"
+  },
+  {
+    "roadOperatorName": "Nissewaard",
+    "roadOperatorCode": "1930",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1930"
+  },
+  {
+    "roadOperatorName": "Noordwijk",
+    "roadOperatorCode": "575",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM575"
+  },
+  {
+    "roadOperatorName": "Oegstgeest",
+    "roadOperatorCode": "579",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM579"
+  },
+  {
+    "roadOperatorName": "Papendrecht",
+    "roadOperatorCode": "590",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM590"
+  },
+  {
+    "roadOperatorName": "Pijnacker-Nootdorp",
+    "roadOperatorCode": "1926",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1926"
+  },
+  {
+    "roadOperatorName": "Ridderkerk",
+    "roadOperatorCode": "597",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM597"
+  },
+  {
+    "roadOperatorName": "Rijswijk",
+    "roadOperatorCode": "603",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM603"
+  },
+  {
+    "roadOperatorName": "Rotterdam",
+    "roadOperatorCode": "599",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM599"
+  },
+  {
+    "roadOperatorName": "Schiedam",
+    "roadOperatorCode": "606",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM606"
+  },
+  {
+    "roadOperatorName": "'s-Gravenhage",
+    "roadOperatorCode": "518",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM518"
+  },
+  {
+    "roadOperatorName": "Sliedrecht",
+    "roadOperatorCode": "610",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM610"
+  },
+  {
+    "roadOperatorName": "Teylingen",
+    "roadOperatorCode": "1525",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1525"
+  },
+  {
+    "roadOperatorName": "Vlaardingen",
+    "roadOperatorCode": "622",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM622"
+  },
+  {
+    "roadOperatorName": "Voorne aan Zee",
+    "roadOperatorCode": "1992",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1992"
+  },
+  {
+    "roadOperatorName": "Voorschoten",
+    "roadOperatorCode": "626",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM626"
+  },
+  {
+    "roadOperatorName": "Waddinxveen",
+    "roadOperatorCode": "627",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM627"
+  },
+  {
+    "roadOperatorName": "Wassenaar",
+    "roadOperatorCode": "629",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM629"
+  },
+  {
+    "roadOperatorName": "Westland",
+    "roadOperatorCode": "1783",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1783"
+  },
+  {
+    "roadOperatorName": "Zoetermeer",
+    "roadOperatorCode": "637",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM637"
+  },
+  {
+    "roadOperatorName": "Zoeterwoude",
+    "roadOperatorCode": "638",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM638"
+  },
+  {
+    "roadOperatorName": "Zuidplas",
+    "roadOperatorCode": "1892",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1892"
+  },
+  {
+    "roadOperatorName": "Zwijndrecht",
+    "roadOperatorCode": "642",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM642"
+  },
+  {
+    "roadOperatorName": "Borsele",
+    "roadOperatorCode": "654",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM654"
+  },
+  {
+    "roadOperatorName": "Goes",
+    "roadOperatorCode": "664",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM664"
+  },
+  {
+    "roadOperatorName": "Hulst",
+    "roadOperatorCode": "677",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM677"
+  },
+  {
+    "roadOperatorName": "Kapelle",
+    "roadOperatorCode": "678",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM678"
+  },
+  {
+    "roadOperatorName": "Middelburg",
+    "roadOperatorCode": "687",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM687"
+  },
+  {
+    "roadOperatorName": "Noord-Beveland",
+    "roadOperatorCode": "1695",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1695"
+  },
+  {
+    "roadOperatorName": "Reimerswaal",
+    "roadOperatorCode": "703",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM703"
+  },
+  {
+    "roadOperatorName": "Schouwen-Duiveland",
+    "roadOperatorCode": "1676",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1676"
+  },
+  {
+    "roadOperatorName": "Sluis",
+    "roadOperatorCode": "1714",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1714"
+  },
+  {
+    "roadOperatorName": "Terneuzen",
+    "roadOperatorCode": "715",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM715"
+  },
+  {
+    "roadOperatorName": "Tholen",
+    "roadOperatorCode": "716",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM716"
+  },
+  {
+    "roadOperatorName": "Veere",
+    "roadOperatorCode": "717",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM717"
+  },
+  {
+    "roadOperatorName": "Vlissingen",
+    "roadOperatorCode": "718",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM718"
+  },
+  {
+    "roadOperatorName": "Alphen-Chaam",
+    "roadOperatorCode": "1723",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1723"
+  },
+  {
+    "roadOperatorName": "Altena",
+    "roadOperatorCode": "1959",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1959"
+  },
+  {
+    "roadOperatorName": "Asten",
+    "roadOperatorCode": "743",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM743"
+  },
+  {
+    "roadOperatorName": "Baarle-Nassau",
+    "roadOperatorCode": "744",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM744"
+  },
+  {
+    "roadOperatorName": "Bergeijk",
+    "roadOperatorCode": "1724",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1724"
+  },
+  {
+    "roadOperatorName": "Bergen op Zoom",
+    "roadOperatorCode": "748",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM748"
+  },
+  {
+    "roadOperatorName": "Bernheze",
+    "roadOperatorCode": "1721",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1721"
+  },
+  {
+    "roadOperatorName": "Best",
+    "roadOperatorCode": "753",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM753"
+  },
+  {
+    "roadOperatorName": "Bladel",
+    "roadOperatorCode": "1728",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1728"
+  },
+  {
+    "roadOperatorName": "Boekel",
+    "roadOperatorCode": "755",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM755"
+  },
+  {
+    "roadOperatorName": "Boxtel",
+    "roadOperatorCode": "757",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM757"
+  },
+  {
+    "roadOperatorName": "Breda",
+    "roadOperatorCode": "758",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM758"
+  },
+  {
+    "roadOperatorName": "Cranendonck",
+    "roadOperatorCode": "1706",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1706"
+  },
+  {
+    "roadOperatorName": "Deurne",
+    "roadOperatorCode": "762",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM762"
+  },
+  {
+    "roadOperatorName": "Dongen",
+    "roadOperatorCode": "766",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM766"
+  },
+  {
+    "roadOperatorName": "Drimmelen",
+    "roadOperatorCode": "1719",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1719"
+  },
+  {
+    "roadOperatorName": "Eersel",
+    "roadOperatorCode": "770",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM770"
+  },
+  {
+    "roadOperatorName": "Eindhoven",
+    "roadOperatorCode": "772",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM772"
+  },
+  {
+    "roadOperatorName": "Etten-Leur",
+    "roadOperatorCode": "777",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM777"
+  },
+  {
+    "roadOperatorName": "Geertruidenberg",
+    "roadOperatorCode": "779",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM779"
+  },
+  {
+    "roadOperatorName": "Geldrop-Mierlo",
+    "roadOperatorCode": "1771",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1771"
+  },
+  {
+    "roadOperatorName": "Gemert-Bakel",
+    "roadOperatorCode": "1652",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1652"
+  },
+  {
+    "roadOperatorName": "Gilze en Rijen",
+    "roadOperatorCode": "784",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM784"
+  },
+  {
+    "roadOperatorName": "Goirle",
+    "roadOperatorCode": "785",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM785"
+  },
+  {
+    "roadOperatorName": "Halderberge",
+    "roadOperatorCode": "1655",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1655"
+  },
+  {
+    "roadOperatorName": "Heeze-Leende",
+    "roadOperatorCode": "1658",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1658"
+  },
+  {
+    "roadOperatorName": "Helmond",
+    "roadOperatorCode": "794",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM794"
+  },
+  {
+    "roadOperatorName": "Heusden",
+    "roadOperatorCode": "797",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM797"
+  },
+  {
+    "roadOperatorName": "Hilvarenbeek",
+    "roadOperatorCode": "798",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM798"
+  },
+  {
+    "roadOperatorName": "Laarbeek",
+    "roadOperatorCode": "1659",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1659"
+  },
+  {
+    "roadOperatorName": "Land van Cuijk",
+    "roadOperatorCode": "1982",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1982"
+  },
+  {
+    "roadOperatorName": "Loon op Zand",
+    "roadOperatorCode": "809",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM809"
+  },
+  {
+    "roadOperatorName": "Maashorst",
+    "roadOperatorCode": "1991",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1991"
+  },
+  {
+    "roadOperatorName": "Meierijstad",
+    "roadOperatorCode": "1948",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1948"
+  },
+  {
+    "roadOperatorName": "Moerdijk",
+    "roadOperatorCode": "1709",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1709"
+  },
+  {
+    "roadOperatorName": "Nuenen, Gerwen en Nederwetten",
+    "roadOperatorCode": "820",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM820"
+  },
+  {
+    "roadOperatorName": "Oirschot",
+    "roadOperatorCode": "823",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM823"
+  },
+  {
+    "roadOperatorName": "Oisterwijk",
+    "roadOperatorCode": "824",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM824"
+  },
+  {
+    "roadOperatorName": "Oosterhout",
+    "roadOperatorCode": "826",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM826"
+  },
+  {
+    "roadOperatorName": "Oss",
+    "roadOperatorCode": "828",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM828"
+  },
+  {
+    "roadOperatorName": "Reusel-De Mierden",
+    "roadOperatorCode": "1667",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1667"
+  },
+  {
+    "roadOperatorName": "Roosendaal",
+    "roadOperatorCode": "1674",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1674"
+  },
+  {
+    "roadOperatorName": "Rucphen",
+    "roadOperatorCode": "840",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM840"
+  },
+  {
+    "roadOperatorName": "'s-Hertogenbosch",
+    "roadOperatorCode": "796",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM796"
+  },
+  {
+    "roadOperatorName": "Sint-Michielsgestel",
+    "roadOperatorCode": "845",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM845"
+  },
+  {
+    "roadOperatorName": "Someren",
+    "roadOperatorCode": "847",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM847"
+  },
+  {
+    "roadOperatorName": "Son en Breugel",
+    "roadOperatorCode": "848",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM848"
+  },
+  {
+    "roadOperatorName": "Steenbergen",
+    "roadOperatorCode": "851",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM851"
+  },
+  {
+    "roadOperatorName": "Tilburg",
+    "roadOperatorCode": "855",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM855"
+  },
+  {
+    "roadOperatorName": "Valkenswaard",
+    "roadOperatorCode": "858",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM858"
+  },
+  {
+    "roadOperatorName": "Veldhoven",
+    "roadOperatorCode": "861",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM861"
+  },
+  {
+    "roadOperatorName": "Vught",
+    "roadOperatorCode": "865",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM865"
+  },
+  {
+    "roadOperatorName": "Waalre",
+    "roadOperatorCode": "866",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM866"
+  },
+  {
+    "roadOperatorName": "Waalwijk",
+    "roadOperatorCode": "867",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM867"
+  },
+  {
+    "roadOperatorName": "Woensdrecht",
+    "roadOperatorCode": "873",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM873"
+  },
+  {
+    "roadOperatorName": "Zundert",
+    "roadOperatorCode": "879",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM879"
+  },
+  {
+    "roadOperatorName": "Beek",
+    "roadOperatorCode": "888",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM888"
+  },
+  {
+    "roadOperatorName": "Beekdaelen",
+    "roadOperatorCode": "1954",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1954"
+  },
+  {
+    "roadOperatorName": "Beesel",
+    "roadOperatorCode": "889",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM889"
+  },
+  {
+    "roadOperatorName": "Bergen (L)",
+    "roadOperatorCode": "893",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM893"
+  },
+  {
+    "roadOperatorName": "Brunssum",
+    "roadOperatorCode": "899",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM899"
+  },
+  {
+    "roadOperatorName": "Echt-Susteren",
+    "roadOperatorCode": "1711",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1711"
+  },
+  {
+    "roadOperatorName": "Eijsden-Margraten",
+    "roadOperatorCode": "1903",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1903"
+  },
+  {
+    "roadOperatorName": "Gennep",
+    "roadOperatorCode": "907",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM907"
+  },
+  {
+    "roadOperatorName": "Gulpen-Wittem",
+    "roadOperatorCode": "1729",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1729"
+  },
+  {
+    "roadOperatorName": "Heerlen",
+    "roadOperatorCode": "917",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM917"
+  },
+  {
+    "roadOperatorName": "Horst aan de Maas",
+    "roadOperatorCode": "1507",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1507"
+  },
+  {
+    "roadOperatorName": "Kerkrade",
+    "roadOperatorCode": "928",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM928"
+  },
+  {
+    "roadOperatorName": "Landgraaf",
+    "roadOperatorCode": "882",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM882"
+  },
+  {
+    "roadOperatorName": "Leudal",
+    "roadOperatorCode": "1640",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1640"
+  },
+  {
+    "roadOperatorName": "Maasgouw",
+    "roadOperatorCode": "1641",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1641"
+  },
+  {
+    "roadOperatorName": "Maastricht",
+    "roadOperatorCode": "935",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM935"
+  },
+  {
+    "roadOperatorName": "Meerssen",
+    "roadOperatorCode": "938",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM938"
+  },
+  {
+    "roadOperatorName": "Mook en Middelaar",
+    "roadOperatorCode": "944",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM944"
+  },
+  {
+    "roadOperatorName": "Nederweert",
+    "roadOperatorCode": "946",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM946"
+  },
+  {
+    "roadOperatorName": "Peel en Maas",
+    "roadOperatorCode": "1894",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1894"
+  },
+  {
+    "roadOperatorName": "Roerdalen",
+    "roadOperatorCode": "1669",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1669"
+  },
+  {
+    "roadOperatorName": "Roermond",
+    "roadOperatorCode": "957",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM957"
+  },
+  {
+    "roadOperatorName": "Simpelveld",
+    "roadOperatorCode": "965",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM965"
+  },
+  {
+    "roadOperatorName": "Sittard-Geleen",
+    "roadOperatorCode": "1883",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1883"
+  },
+  {
+    "roadOperatorName": "Stein",
+    "roadOperatorCode": "971",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM971"
+  },
+  {
+    "roadOperatorName": "Vaals",
+    "roadOperatorCode": "981",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM981"
+  },
+  {
+    "roadOperatorName": "Valkenburg aan de Geul",
+    "roadOperatorCode": "994",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM994"
+  },
+  {
+    "roadOperatorName": "Venlo",
+    "roadOperatorCode": "983",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM983"
+  },
+  {
+    "roadOperatorName": "Venray",
+    "roadOperatorCode": "984",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM984"
+  },
+  {
+    "roadOperatorName": "Voerendaal",
+    "roadOperatorCode": "986",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM986"
+  },
+  {
+    "roadOperatorName": "Weert",
+    "roadOperatorCode": "988",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM988"
+  },
+  {
+    "roadOperatorName": "Aalten",
+    "roadOperatorCode": "197",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM197",
+    "requestExemptionUrl": "https://www.aalten.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Apeldoorn",
+    "roadOperatorCode": "200",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM200",
+    "requestExemptionUrl": "https://www.apeldoorn.nl/wonen-en-leven/verkeer-en-vervoer/parkeren-en-ontheffingen/rvv-ontheffing"
+  },
+  {
+    "roadOperatorName": "Arnhem",
+    "roadOperatorCode": "202",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM202",
+    "requestExemptionUrl": "https://www.arnhem.nl/Ondernemers/parkeren_en_verkeer/ontheffing_verkeersregels_wegenverkeerswet"
+  },
+  {
+    "roadOperatorName": "Barneveld",
+    "roadOperatorCode": "203",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM203",
+    "requestExemptionUrl": "https://www.barneveld.nl/vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Berg en Dal",
+    "roadOperatorCode": "1945",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1945",
+    "requestExemptionUrl": "https://www.bergendal.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Berkelland",
+    "roadOperatorCode": "1859",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1859",
+    "requestExemptionUrl": "https://www.gemeenteberkelland.nl/direct-regelen/bouwen-verbouwen-ruimtelijke-plannen/vergunningen-en-ontheffingen/"
+  },
+  {
+    "roadOperatorName": "Beuningen",
+    "roadOperatorCode": "209",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM209",
+    "requestExemptionUrl": "https://www.beuningen.nl/Omgeving/Verkeer_en_vervoer/Parkeerontheffing"
+  },
+  {
+    "roadOperatorName": "Bronckhorst",
+    "roadOperatorCode": "1876",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1876",
+    "requestExemptionUrl": "https://www.bronckhorst.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Brummen",
+    "roadOperatorCode": "213",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM213",
+    "requestExemptionUrl": "https://www.brummen.nl/inwoner-en-ondernemer/vergunning-of-melding"
+  },
+  {
+    "roadOperatorName": "Buren",
+    "roadOperatorCode": "214",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM214",
+    "requestExemptionUrl": "https://www.buren.nl/onderwerp/verkeersontheffing/"
+  },
+  {
+    "roadOperatorName": "Culemborg",
+    "roadOperatorCode": "216",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM216",
+    "requestExemptionUrl": "https://www.culemborg.nl/parkeervergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Doesburg",
+    "roadOperatorCode": "221",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM221",
+    "requestExemptionUrl": "https://www.doesburg.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Doetinchem",
+    "roadOperatorCode": "222",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM222",
+    "requestExemptionUrl": "https://www.buha.nl/parkeerontheffingen"
+  },
+  {
+    "roadOperatorName": "Druten",
+    "roadOperatorCode": "225",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM225",
+    "requestExemptionUrl": "https://www.druten.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Duiven",
+    "roadOperatorCode": "226",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM226",
+    "requestExemptionUrl": "https://www.duiven.nl/parkeerontheffing-blauwe-zone"
+  },
+  {
+    "roadOperatorName": "Ede",
+    "roadOperatorCode": "228",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM228",
+    "requestExemptionUrl": "https://www.ede.nl/aanvragen-en-regelen/parkeervergunning-of-ontheffing/"
+  },
+  {
+    "roadOperatorName": "Elburg",
+    "roadOperatorCode": "230",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM230",
+    "requestExemptionUrl": "https://www.elburg.nl/Verkeer_en_vervoer/Parkeren/Parkeerontheffing_binnenstad_voor_bewoners"
+  },
+  {
+    "roadOperatorName": "Epe",
+    "roadOperatorCode": "232",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM232",
+    "requestExemptionUrl": "https://www.epe.nl/vergunningen-en-toestemming"
+  },
+  {
+    "roadOperatorName": "Ermelo",
+    "roadOperatorCode": "233",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM233",
+    "requestExemptionUrl": "https://www.ermelo.nl/parkeren-en-verkeer/parkeren-in-de-blauwe-zone"
+  },
+  {
+    "roadOperatorName": "Harderwijk",
+    "roadOperatorCode": "243",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM243",
+    "requestExemptionUrl": "https://www.harderwijk.nl/parkeren-verkeer-en-vervoer/ontheffing-parkeren-blauwe-zone"
+  },
+  {
+    "roadOperatorName": "Hattem",
+    "roadOperatorCode": "244",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM244",
+    "requestExemptionUrl": "https://www.hattem.nl/Inwoners/Vergunningen"
+  },
+  {
+    "roadOperatorName": "Heerde",
+    "roadOperatorCode": "246",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM246",
+    "requestExemptionUrl": "https://www.heerde.nl/Inwoners/Meldingen_vergunningen_ontheffingen"
+  },
+  {
+    "roadOperatorName": "Heumen",
+    "roadOperatorCode": "252",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM252",
+    "requestExemptionUrl": "https://www.heumen.nl/ontheffing-sluitingstijden"
+  },
+  {
+    "roadOperatorName": "Lingewaard",
+    "roadOperatorCode": "1705",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1705",
+    "requestExemptionUrl": "https://www.lingewaard.nl/vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Lochem",
+    "roadOperatorCode": "262",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM262",
+    "requestExemptionUrl": "https://www.lochem.nl/vergunningen-meldingen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Maasdriel",
+    "roadOperatorCode": "263",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM263",
+    "requestExemptionUrl": "https://www.maasdriel.nl/inwoner-en-ondernemer/openbare-ruimte-en-verkeer/"
+  },
+  {
+    "roadOperatorName": "Montferland",
+    "roadOperatorCode": "1955",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1955",
+    "requestExemptionUrl": "https://www.montferland.info/parkeren-voor-autobedrijven"
+  },
+  {
+    "roadOperatorName": "Neder-Betuwe",
+    "roadOperatorCode": "1740",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1740",
+    "requestExemptionUrl": "https://www.nederbetuwe.nl/ondernemen/wetten-regels-en-vergunningen"
+  },
+  {
+    "roadOperatorName": "Nijkerk",
+    "roadOperatorCode": "267",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM267",
+    "requestExemptionUrl": "https://www.nijkerk.eu/ontheffing-verkeersmaatregel"
+  },
+  {
+    "roadOperatorName": "Nijmegen",
+    "roadOperatorCode": "268",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM268",
+    "requestExemptionUrl": "https://www.nijmegen.nl/diensten/parkeren-verkeer-en-vervoer/toestemming-laden-lossen-of-parkeren/"
+  },
+  {
+    "roadOperatorName": "Nunspeet",
+    "roadOperatorCode": "302",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM302",
+    "requestExemptionUrl": "https://www.nunspeet.nl/parkeren-verkeer-en-vervoer/parkeerontheffing-blauwe-zone-aanvragen"
+  },
+  {
+    "roadOperatorName": "Oldebroek",
+    "roadOperatorCode": "269",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM269",
+    "requestExemptionUrl": "https://www.oldebroek.nl/Inwoners/Vergunningen"
+  },
+  {
+    "roadOperatorName": "Oost Gelre",
+    "roadOperatorCode": "1586",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1586",
+    "requestExemptionUrl": "https://www.oostgelre.nl/ontheffing-parkeren-blauwe-zone"
+  },
+  {
+    "roadOperatorName": "Oude IJsselstreek",
+    "roadOperatorCode": "1509",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1509",
+    "requestExemptionUrl": "https://www.oude-ijsselstreek.nl/vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Overbetuwe",
+    "roadOperatorCode": "1734",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1734",
+    "requestExemptionUrl": "https://www.overbetuwe.nl/ontheffing-verkeersregels-en-verkeerstekens"
+  },
+  {
+    "roadOperatorName": "Putten",
+    "roadOperatorCode": "273",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM273",
+    "requestExemptionUrl": "https://www.putten.nl/Inwoners/Parkeren_verkeer_vervoer/Parkeren_in_Putten/Verkeersontheffing"
+  },
+  {
+    "roadOperatorName": "Renkum",
+    "roadOperatorCode": "274",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM274",
+    "requestExemptionUrl": "https://www.renkum.nl/Inwoners/Verkeer_en_parkeren/Verkeersontheffing"
+  },
+  {
+    "roadOperatorName": "Rheden",
+    "roadOperatorCode": "275",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM275",
+    "requestExemptionUrl": "https://www.rheden.nl/Inwoners/Wonen_leefomgeving/Parkeren_en_parkeervergunning"
+  },
+  {
+    "roadOperatorName": "Rozendaal",
+    "roadOperatorCode": "277",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM277",
+    "requestExemptionUrl": "https://www.roosendaal.nl/ontheffing"
+  },
+  {
+    "roadOperatorName": "Scherpenzeel",
+    "roadOperatorCode": "279",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM279",
+    "requestExemptionUrl": "https://www.scherpenzeel.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Tiel",
+    "roadOperatorCode": "281",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM281",
+    "requestExemptionUrl": "https://www.tiel.nl/parkeerontheffing"
+  },
+  {
+    "roadOperatorName": "Voorst",
+    "roadOperatorCode": "285",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM285",
+    "requestExemptionUrl": "https://www.voorst.nl/groen-water-wegen/wegen-en-verkeer/ontheffing-aanvragen-voor-exceptioneel-transport"
+  },
+  {
+    "roadOperatorName": "Wageningen",
+    "roadOperatorCode": "289",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM289",
+    "requestExemptionUrl": "https://www.wageningen.nl/direct-regelen/parkeren-en-vervoer/vervoer/ontheffing-verkeersregels/"
+  },
+  {
+    "roadOperatorName": "West Betuwe",
+    "roadOperatorCode": "1960",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1960",
+    "requestExemptionUrl": "https://www.westbetuwe.nl/parkeerontheffing"
+  },
+  {
+    "roadOperatorName": "Westervoort",
+    "roadOperatorCode": "293",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM293",
+    "requestExemptionUrl": "https://www.westervoort.nl/vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "West Maas en Waal",
+    "roadOperatorCode": "668",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM668",
+    "requestExemptionUrl": "https://www.westmaasenwaal.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Wijchen",
+    "roadOperatorCode": "296",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM296",
+    "requestExemptionUrl": "https://www.wijchen.nl/verkeersontheffing"
+  },
+  {
+    "roadOperatorName": "Winterswijk",
+    "roadOperatorCode": "294",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM294",
+    "requestExemptionUrl": "https://www.winterswijk.nl/blauwe-zone-ontheffing"
+  },
+  {
+    "roadOperatorName": "Zaltbommel",
+    "roadOperatorCode": "297",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM297",
+    "requestExemptionUrl": "https://www.zaltbommel.nl/inwoner-en-ondernemer/openbare-ruimte-en-verkeer/"
+  },
+  {
+    "roadOperatorName": "Zevenaar",
+    "roadOperatorCode": "299",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM299",
+    "requestExemptionUrl": "https://www.zevenaar.nl/parkeerontheffingen"
+  },
+  {
+    "roadOperatorName": "Zutphen",
+    "roadOperatorCode": "301",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM301",
+    "requestExemptionUrl": "https://zutphen.nl/vergunningen-en-ontheffingen"
+  },
+  {
+    "roadOperatorName": "Almelo",
+    "roadOperatorCode": "141",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM141",
+    "requestExemptionUrl": "https://www.almelo.nl/parkeren-en-verkeer/rvv-ontheffing"
+  },
+  {
+    "roadOperatorName": "Borne",
+    "roadOperatorCode": "147",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM147",
+    "requestExemptionUrl": "https://www.borne.nl/parkeerontheffing-bewoners"
+  },
+  {
+    "roadOperatorName": "Dalfsen",
+    "roadOperatorCode": "148",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM148",
+    "requestExemptionUrl": "https://www.dalfsen.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Deventer",
+    "roadOperatorCode": "150",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM150",
+    "requestExemptionUrl": "https://www.deventer.nl/loketten/digitaal-loket/wegenverkeerswet-ontheffing"
+  },
+  {
+    "roadOperatorName": "Dinkelland",
+    "roadOperatorCode": "1774",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1774",
+    "requestExemptionUrl": "https://www.dinkelland.nl/inrij-en-parkeerontheffing"
+  },
+  {
+    "roadOperatorName": "Enschede",
+    "roadOperatorCode": "153",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM153",
+    "requestExemptionUrl": "https://www.enschede.nl/ontheffing-verkeersmaatregelen"
+  },
+  {
+    "roadOperatorName": "Haaksbergen",
+    "roadOperatorCode": "158",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM158",
+    "requestExemptionUrl": "https://www.haaksbergen.nl/woneninhaaksbergen/Meldingen/Gebruik-openbare-ruimte.html"
+  },
+  {
+    "roadOperatorName": "Hardenberg",
+    "roadOperatorCode": "160",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM160",
+    "requestExemptionUrl": "https://www.hardenberg.nl/vergunning-of-ontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Hellendoorn",
+    "roadOperatorCode": "163",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM163",
+    "requestExemptionUrl": "https://www.hellendoorn.nl/direct-regelen/verkeer-vervoer-en-parkeren/verkeer-en-vervoer/verkeersontheffing-aanvragen/"
+  },
+  {
+    "roadOperatorName": "Hengelo (O)",
+    "roadOperatorCode": "164",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM164",
+    "requestExemptionUrl": "https://www.hengelo.nl/Inwoners/Vergunningen-en-ontheffingen.html"
+  },
+  {
+    "roadOperatorName": "Hof van Twente",
+    "roadOperatorCode": "1735",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1735",
+    "requestExemptionUrl": "https://www.hofvantwente.nl/verkeer-en-vervoer"
+  },
+  {
+    "roadOperatorName": "Kampen",
+    "roadOperatorCode": "166",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM166",
+    "requestExemptionUrl": "https://parkeervergunning.kampen.nl/"
+  },
+  {
+    "roadOperatorName": "Losser",
+    "roadOperatorCode": "168",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM168",
+    "requestExemptionUrl": "https://www.losser.nl/Vergunningen/Parkeren_en_verkeer/Ontheffing_verkeersregels_en_verkeerstekens"
+  },
+  {
+    "roadOperatorName": "Oldenzaal",
+    "roadOperatorCode": "173",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM173",
+    "requestExemptionUrl": "https://www.oldenzaal.nl/parkeren-verkeer-en-vervoer"
+  },
+  {
+    "roadOperatorName": "Olst-Wijhe",
+    "roadOperatorCode": "1773",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1773",
+    "requestExemptionUrl": "https://www.olst-wijhe.nl/voertuigparkeren"
+  },
+  {
+    "roadOperatorName": "Ommen",
+    "roadOperatorCode": "175",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM175",
+    "requestExemptionUrl": "https://www.ommen.nl/direct-regelen/verkeer-vervoer-parkeren/"
+  },
+  {
+    "roadOperatorName": "Raalte",
+    "roadOperatorCode": "177",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM177",
+    "requestExemptionUrl": "https://www.raalte.nl/parkeerontheffing"
+  },
+  {
+    "roadOperatorName": "Rijssen-Holten",
+    "roadOperatorCode": "1742",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1742",
+    "requestExemptionUrl": "https://www.werkenvoorrijssen-holten.nl/direct-regelen/verkeer-vervoer-parkeren/verkeer/ontheffing-wegenverkeerswet/"
+  },
+  {
+    "roadOperatorName": "Staphorst",
+    "roadOperatorCode": "180",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM180",
+    "requestExemptionUrl": "https://www.staphorst.nl/verkeersontheffing-aanvragen"
+  },
+  {
+    "roadOperatorName": "Steenwijkerland",
+    "roadOperatorCode": "1708",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1708",
+    "requestExemptionUrl": "https://www.steenwijkerland.nl/Inwoners/Leefomgeving/Verkeer_en_vervoer/Parkeerontheffing_aanvragen"
+  },
+  {
+    "roadOperatorName": "Tubbergen",
+    "roadOperatorCode": "183",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM183",
+    "requestExemptionUrl": "https://www.tubbergen.nl/ontheffing-parkeerschijfzone"
+  },
+  {
+    "roadOperatorName": "Twenterand",
+    "roadOperatorCode": "1700",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1700",
+    "requestExemptionUrl": "https://www.twenterand.nl/parkeren-voor-autobedrijven"
+  },
+  {
+    "roadOperatorName": "Wierden",
+    "roadOperatorCode": "189",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM189",
+    "requestExemptionUrl": "https://www.wierden.nl/parkeren-van-grote-voertuigen"
+  },
+  {
+    "roadOperatorName": "Zwartewaterland",
+    "roadOperatorCode": "1896",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM1896",
+    "requestExemptionUrl": "https://www.zwartewaterland.nl/vergunningen"
+  },
+  {
+    "roadOperatorName": "Zwolle",
+    "roadOperatorCode": "193",
+    "roadOperatorType": "Municipality",
+    "municipalityId": "GM193",
+    "requestExemptionUrl": "https://www.zwolle.nl/parkeervergunningen-voor-bewoners"
+  }
+]

@@ -27,9 +27,11 @@ public class RoadSectionFeatureMapper {
         Boolean accessible = forward ? roadSection.getForwardAccessible() : roadSection.getBackwardAccessible();
         Boolean matched = mapMatched(roadSection, startPointRequested, startPointMatch, forward);
 
-        return new RoadSectionFeatureJson(RoadSectionFeatureJson.TypeEnum.FEATURE, id,
-                jtsLineStringJsonMapper.map(geometry))
-                .properties(new RoadSectionPropertiesJson(accessible).matched(matched));
+        return new RoadSectionFeatureJson(
+                RoadSectionFeatureJson.TypeEnum.FEATURE,
+                id,
+                jtsLineStringJsonMapper.map(geometry),
+                new RoadSectionPropertiesJson(accessible, matched));
     }
 
     private static @Nullable Boolean mapMatched(

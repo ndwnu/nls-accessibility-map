@@ -33,7 +33,12 @@ public class NlsAccessibilityMapApiIT {
     }
 
     @Karate.Test
+    Karate getRoadOperators() {
+        return Karate.run("classpath:feature/road-operators.feature");
+    }
+
+    @Karate.Test
     Karate openApi() {
-        return Karate.run("classpath:feature/openApi.feature");
+        return Karate.run("classpath:feature/open-api.feature");
     }
 }
