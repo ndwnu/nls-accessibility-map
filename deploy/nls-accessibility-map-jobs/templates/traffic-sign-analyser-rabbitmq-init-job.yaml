@@ -26,9 +26,9 @@ spec:
         - name: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
           resources:
             limits:
-              memory: 256Mi
+              memory: 1024Mi
             requests:
-              memory: 256Mi
+              memory: 1024Mi
           image: ndwnls.azurecr.io/nls-accessibility-map-traffic-sign-analyser-job:{{ $.Chart.AppVersion }}
           imagePullPolicy: Always
           envFrom:
