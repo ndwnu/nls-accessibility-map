@@ -110,6 +110,7 @@ class TrafficSignMapperTest {
                 integerSequenceSupplier);
 
         validateTrafficSign(trafficSign.get());
+        loggerExtension.containsLog(Level.WARN, "Unprocessable value invalid for traffic sign with id %s and RVV code C6 on road section 1".formatted(trafficSignGeoJsonDto.getId()));
     }
 
     @ParameterizedTest
