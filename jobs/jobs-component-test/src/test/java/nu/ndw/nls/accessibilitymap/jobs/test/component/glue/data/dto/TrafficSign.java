@@ -10,6 +10,7 @@ public record TrafficSign(
         int endNodeId,
         double fraction,
         String rvvCode,
+        String blackCode,
         DirectionType directionType,
         String windowTime) {
 
