@@ -55,6 +55,10 @@
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls.springboot</groupId>
+            <artifactId>logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.springboot</groupId>
             <artifactId>monitoring</artifactId>
         </dependency>
         <dependency>
