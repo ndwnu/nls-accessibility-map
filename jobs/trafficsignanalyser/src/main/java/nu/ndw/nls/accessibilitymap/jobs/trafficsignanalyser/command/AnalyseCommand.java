@@ -13,10 +13,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.VehiclePrope
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.TrafficSignAnalyserService;
-import nu.ndw.nls.events.NlsEvent;
-import nu.ndw.nls.events.NlsEventType;
-import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
-import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -37,8 +33,6 @@ public class AnalyseCommand implements Callable<Integer> {
 
     private final TrafficSignAnalyserService trafficSignAnalyserService;
 
-    private final MessageService messageService;
-
     @Option(names = {"-t", "--traffic-signs"},
             description = "Traffic signs to generate the map for.",
             required = true)
@@ -51,14 +45,6 @@ public class AnalyseCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-
-        MessageConsumeResult<Integer> result = messageService.receive(
-                NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED, this::processMessage);
-
-        return result.getResult();
-    }
-
-    private Integer processMessage(NlsEvent nlsEvent) {
 
         try {
             OffsetDateTime startTime = clockService.now();
