@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,12 +19,8 @@ import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseP
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.TrafficSignAnalyserService;
 import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
-import nu.ndw.nls.events.NlsEvent;
-import nu.ndw.nls.events.NlsEventType;
-import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
-import nu.ndw.nls.springboot.messaging.functions.NlsEventConsumeFunction;
-import nu.ndw.nls.springboot.messaging.services.MessageService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +31,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 @ExtendWith(MockitoExtension.class)
 class AnalyseCommandTest {
@@ -63,9 +59,6 @@ class AnalyseCommandTest {
     @Mock
     private VehicleProperties vehicleProperties;
 
-    @Mock
-    private MessageService messageService;
-
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -73,7 +66,7 @@ class AnalyseCommandTest {
     void setUp() {
 
         analyseCommand = new AnalyseCommand(accessibilityConfiguration, analyserConfiguration, vehiclePropertiesMapper,
-                clockService, trafficSignAnalyserService, messageService);
+                clockService, trafficSignAnalyserService);
     }
 
     @ParameterizedTest
@@ -90,13 +83,6 @@ class AnalyseCommandTest {
         when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
         when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
-
-        when(messageService.receive(eq(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED), any())).thenAnswer(answer -> {
-            NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
-            return MessageConsumeResult.builder()
-                    .result(function.apply(NlsEvent.builder().build()))
-                    .build();
-        });
 
         assertThat(new CommandLine(analyseCommand)
                 .execute("--traffic-signs=%s".formatted(trafficSignType.name()),
@@ -136,13 +122,6 @@ class AnalyseCommandTest {
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
         when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
 
-        when(messageService.receive(eq(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED), any())).thenAnswer(answer -> {
-            NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
-            return MessageConsumeResult.builder()
-                    .result(function.apply(NlsEvent.builder().build()))
-                    .build();
-        });
-
         assertThat(new CommandLine(analyseCommand)
                 .execute("--traffic-signs=%s,%s".formatted(TrafficSignType.C6.name(), TrafficSignType.C7.name()),
                         "--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
@@ -156,19 +135,12 @@ class AnalyseCommandTest {
 
         loggerExtension.containsLog
                 (Level.INFO,
-                "Analysing traffic signs: [%s, %s]".formatted(TrafficSignType.C6.name(), TrafficSignType.C7.name()));
+                        "Analysing traffic signs: [%s, %s]".formatted(TrafficSignType.C6.name(), TrafficSignType.C7.name()));
         loggerExtension.containsLog(Level.INFO, "Analysing traffic signs: [%s]".formatted(TrafficSignType.C18.name()));
     }
 
     @Test
     void call_error() {
-
-        when(messageService.receive(eq(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED), any())).thenAnswer(answer -> {
-            NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
-            return MessageConsumeResult.builder()
-                    .result(function.apply(NlsEvent.builder().build()))
-                    .build();
-        });
 
         when(clockService.now()).thenThrow(new RuntimeException("test exception"));
 
@@ -179,5 +151,15 @@ class AnalyseCommandTest {
 
         verify(trafficSignAnalyserService, never()).analyse(any());
         loggerExtension.containsLog(Level.ERROR, "Could not analyse traffic signs because of:", "test exception");
+    }
+
+    @Test
+    void annotation_class_command() {
+
+        AnnotationUtil.classContainsAnnotation(
+                analyseCommand.getClass(),
+                Command.class,
+                annotation -> assertThat(annotation.name()).isEqualTo("analyse")
+        );
     }
 }
