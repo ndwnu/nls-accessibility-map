@@ -263,6 +263,32 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>docker-compose-run-create-or-update-network-rabbitmq-init</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>-e</argument>
+                                        <argument>COMMAND=configureRabbitMQ</argument>
+                                        <argument>nls-accessibility-map-graphhopper-job</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-or-update-network-no-traffic-signs-publish-event</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>scripts/publish-events.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>docker-compose-run-create-or-update-network-no-traffic-signs</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
