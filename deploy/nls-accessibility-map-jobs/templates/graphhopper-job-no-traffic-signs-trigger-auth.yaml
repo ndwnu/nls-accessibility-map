@@ -1,7 +1,7 @@
 apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
 metadata:
-  name: nls-accessibility-map-api-traffic-sign-analyser-trigger-auth
+  name: {{ .Values.graphhopperNoTrafficSign.name}}-trigger-auth
 spec:
   secretTargetRef:
     - parameter: host
