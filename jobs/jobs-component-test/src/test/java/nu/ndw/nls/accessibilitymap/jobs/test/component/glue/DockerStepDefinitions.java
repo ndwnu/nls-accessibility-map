@@ -2,21 +2,13 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.TrafficSignAnalyserJobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
-import nu.ndw.nls.events.NlsEvent;
-import nu.ndw.nls.events.NlsEventSubject;
-import nu.ndw.nls.events.NlsEventSubjectType;
-import nu.ndw.nls.events.NlsEventType;
-import nu.ndw.nls.springboot.messaging.services.MessageService;
 import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
 import nu.ndw.nls.springboot.test.component.driver.docker.dto.Environment;
 import nu.ndw.nls.springboot.test.component.driver.docker.dto.Mode;
@@ -26,13 +18,9 @@ public class DockerStepDefinitions {
 
     private final DockerDriver dockerDriver;
 
-    private final NetworkDataService networkDataService;
-
     private final MapGenerationJobDriver mapGenerationJobDriver;
 
     private final TrafficSignAnalyserJobDriver trafficSignAnalyserJobDriver;
-
-    private final MessageService messageService;
 
     @Given("run container in background {word}")
     public void runContainerInBackground(String serviceName) {
@@ -55,17 +43,6 @@ public class DockerStepDefinitions {
 
     @When("run TrafficSignAnalyser with configuration")
     public void runTrafficSignAnalyser(List<TrafficSignAnalyserJobConfiguration> jobConfigurations) {
-
-        trafficSignAnalyserJobDriver.runConfigureRabbitMqJob();
-
-        messageService.publish(NlsEvent.builder()
-                .type(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED)
-                .subject(NlsEventSubject.builder()
-                        .type(NlsEventSubjectType.ACCESSIBILITY_ROUTING_NETWORK)
-                        .nwbVersion("1")
-                        .timestamp(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(OffsetDateTime.now()))
-                        .build())
-                .build());
 
         jobConfigurations.forEach(jobConfiguration -> trafficSignAnalyserJobDriver.runTrafficSignAnalysisJob(jobConfiguration));
     }

@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+  name: nls-accessibility-map-graphhopper-job-rabbitmq-init
   labels:
-    tags.datadoghq.com/service: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+    tags.datadoghq.com/service: nls-accessibility-map-graphhopper-job-rabbitmq-init
     tags.datadoghq.com/env: {{ $.Values.environment }}
     tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
 spec:
@@ -12,24 +12,24 @@ spec:
   template:
     metadata:
       annotations:
-        ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .Values.trafficSignAnalyser.name }}-rabbitmq-init"}]'
+        ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "nls-accessibility-map-graphhopper-job-rabbitmq-init"}]'
         admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
       labels:
-        app: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+        app: nls-accessibility-map-graphhopper-job-rabbitmq-init
         environment: {{ $.Values.environment }}
         admission.datadoghq.com/enabled: "true"
-        tags.datadoghq.com/service: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+        tags.datadoghq.com/service: nls-accessibility-map-graphhopper-job-rabbitmq-init
         tags.datadoghq.com/env: {{ $.Values.environment }}
         tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
     spec:
       containers:
-        - name: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+        - name: nls-accessibility-map-graphhopper-job-rabbitmq-init
           resources:
             limits:
               memory: 1024Mi
             requests:
               memory: 1024Mi
-          image: ndwnls.azurecr.io/nls-accessibility-map-traffic-sign-analyser-job:{{ $.Chart.AppVersion }}
+          image: ndwnls.azurecr.io/nls-accessibility-map-graphhopper-job:{{ $.Chart.AppVersion }}
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
@@ -48,9 +48,9 @@ spec:
               readOnly: true
             - mountPath: /application/heapdumps
               name: nls-accessibility-map-jobs-heapdump-volume
-              subPath: {{ .Values.trafficSignAnalyser.name }}-rabbitmq-init
+              subPath: nls-accessibility-map-graphhopper-job-rabbitmq-init
             - mountPath: /application/graphhopper
-              name: nls-accessibility-map-traffic-sign-analyser-job-volume
+              name: nls-accessibility-map-graphhopper-job-rabbitmq-init-volume
       restartPolicy: Never
       volumes:
         - name: nls-accessibility-map-api-secrets
@@ -62,6 +62,6 @@ spec:
         - name: nls-accessibility-map-jobs-heapdump-volume
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
-        - name: nls-accessibility-map-traffic-sign-analyser-job-volume
+        - name: nls-accessibility-map-graphhopper-job-rabbitmq-init-volume
           persistentVolumeClaim:
             claimName: nls-accessibility-map-api-pvc

@@ -48,18 +48,6 @@ public class TrafficSignAnalyserJobDriver implements StateManagement {
                                 .build()));
     }
 
-    public void runConfigureRabbitMqJob() {
-
-        dockerDriver.startServiceAndWaitToBeFinished(
-                "nls-accessibility-map-traffic-sign-analyser-job",
-                Mode.NORMAL,
-                List.of(
-                        Environment.builder()
-                                .key("COMMAND")
-                                .value("configureRabbitMQ")
-                                .build()));
-    }
-
     public String buildAnalyseCommand(TrafficSignAnalyserJobConfiguration jobConfiguration) {
         return "analyse "
                 + createRepeatableArguments(jobConfiguration.trafficSignGroups())
