@@ -48,6 +48,11 @@ nu:
           publish:
             - routingKey: ndw.nls.accessibility.routing.network.updated
               expectedEventType: ACCESSIBILITY_ROUTING_NETWORK_UPDATED
+          receive:
+            - queue: nls_accessibility_map_graphhopper_job_no_traffic_sign_nwb_imported
+              routingKey: ndw.nls.nwb.imported
+              expectedEventTypes:
+                - NWB_IMPORTED_EVENT
 management:
   observations:
     annotations:
