@@ -56,7 +56,7 @@
         <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
         <json-unit.version>4.1.0</json-unit.version>
         <cucumber.version>7.21.1</cucumber.version>
-        <location-data-issues.version>2.0.13</location-data-issues.version>
+        <location-data-issues.version>2.0.14</location-data-issues.version>
         <unirest-java.version>1.4.9</unirest-java.version>
         <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
         <!-- Overrides for transitive dependencies to fix vulnerabilities -->
