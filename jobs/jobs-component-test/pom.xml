@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>4.2.20</version>
+        <version>4.2.21-SNAPSHOT</version>
     </parent>
     <artifactId>jobs-component-test</artifactId>
     <name>NLS Accessibility Map Jobs- Component test</name>
