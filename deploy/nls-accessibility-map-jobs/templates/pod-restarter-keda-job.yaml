@@ -46,7 +46,7 @@ spec:
               which is too close to the pod limit and probably causes a Kubernetes OOM-kill of which the stats never reach Datadog
               */}}
               - name: JAVA_TOOL_OPTIONS
-                value: -XX:Xmx=128m -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
+                value: -Xmx=128m -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
             volumeMounts:
               - mountPath: /application/config
                 name: nls-accessibility-map-api-secrets
