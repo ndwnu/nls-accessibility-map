@@ -41,9 +41,12 @@ spec:
                 value: restartPod
               {{- /*
               Added as env variable so the dd init container appends the settings instead of an overwrite
+              Application uses about 64 Heap memory and up to 105MB non-heap. Using Xmx instead of MaxRAMPercentage=70, because
+              MaxRAMPercentage causes the Heap to initialize at 256MB, adding non-heap usage of 105MB this is 361MB total memory usage,
+              which is too close to the pod limit and probably causes a Kubernetes OOM-kill of which the stats never reach Datadog
               */}}
               - name: JAVA_TOOL_OPTIONS
-                value: -XX:MaxRAMPercentage=70 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
+                value: -XX:Xmx=128 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
             volumeMounts:
               - mountPath: /application/config
                 name: nls-accessibility-map-api-secrets
