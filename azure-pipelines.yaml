@@ -37,10 +37,12 @@ extends:
       - nls-accessibility-map-traffic-sign-analyser-job
     helmCharts:
       - {
-        "name": "nls-accessibility-map-api"
+        "name": "nls-accessibility-map-api",
+        "autoDeployment": true
       }
       - {
         "name": "nls-accessibility-map-jobs",
         "forceDelete": "true",
-        "optionalArgs": "--wait-for-jobs --timeout 60s"
+        "optionalArgs": "--wait-for-jobs --timeout 60s",
+        "autoDeployment": true
       }
