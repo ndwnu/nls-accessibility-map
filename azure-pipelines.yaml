@@ -48,6 +48,7 @@ extends:
     jdkVersion: 1.21
     sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**'
     sonarOptionalExclusions: '**/generated/**,**/StreamingJsonBodyExtractor.*'
+    mavenAdditionalBuildOptions: '-Pregression-test'
     dockerImages:
       - imageName: nls-accessibility-map-api
         imageTag: $(Build.BuildNumber)
