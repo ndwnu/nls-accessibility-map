@@ -84,7 +84,7 @@ extends:
               path: "deploy/nls-accessibility-map-api"
             - name: "nls-accessibility-map-jobs"
               path: "deploy/nls-accessibility-map-jobs"
-              forceDelete: "true"
+              forceDelete: true
               arguments: >-
                 --wait-for-jobs --timeout 60s
         - name: "production"
@@ -97,6 +97,6 @@ extends:
               path: "deploy/nls-accessibility-map-api"
             - name: "nls-accessibility-map-jobs"
               path: "deploy/nls-accessibility-map-jobs"
-              forceDelete: "true"
+              forceDelete: true
               arguments: >-
                 --wait-for-jobs --timeout 60s
