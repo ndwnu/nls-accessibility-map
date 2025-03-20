@@ -36,9 +36,9 @@ class NoEntryRestrictionMapperTest {
         Optional<Statement> result = noEntryRestrictionMapper.getStatement(vehicleProperties);
         assertThat(result).isPresent()
                 .hasValueSatisfying(statement -> {
-                    assertEquals("car_access_forbidden == true", statement.getCondition());
-                    assertEquals("0", statement.getValue());
-                    assertEquals(Op.MULTIPLY, statement.getOperation());
+                    assertEquals("car_access_forbidden == true", statement.condition());
+                    assertEquals("0", statement.value());
+                    assertEquals(Op.MULTIPLY, statement.operation());
                 });
     }
 
@@ -49,5 +49,4 @@ class NoEntryRestrictionMapperTest {
         Optional<Statement> result = noEntryRestrictionMapper.getStatement(vehicleProperties);
         assertThat(result).isEmpty();
     }
-
 }
