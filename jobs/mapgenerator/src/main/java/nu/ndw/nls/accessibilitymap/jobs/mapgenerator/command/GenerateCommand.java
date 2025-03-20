@@ -88,7 +88,7 @@ public class GenerateCommand implements Callable<Integer> {
                     .generateConfiguration(generateProperties)
                     .build();
             log.info("Generating export");
-            mapGeneratorService.generate(exportProperties);
+            mapGeneratorService.generateV2(exportProperties);
             return 0;
         } catch (RuntimeException exception) {
             log.error("Could not generate export because of: ", exception);

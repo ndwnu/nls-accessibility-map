@@ -41,7 +41,7 @@ nu:
         component:
           general:
             timeZone: "Europe/Amsterdam"
-            waitForDebuggerToBeConnected: false
+            waitForDebuggerToBeConnected: true
           driver:
             general:
               debugFolder: ".debug/"
