@@ -49,6 +49,7 @@ extends:
     sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**'
     sonarOptionalExclusions: '**/generated/**,**/StreamingJsonBodyExtractor.*'
     mavenAdditionalBuildOptions: '-Pregression-test'
+    pushToGitHub: true
     dockerImages:
       - imageName: nls-accessibility-map-api
         imageTag: $(Build.BuildNumber)
