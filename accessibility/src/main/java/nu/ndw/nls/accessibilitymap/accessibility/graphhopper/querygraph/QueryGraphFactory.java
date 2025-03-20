@@ -37,4 +37,21 @@ public class QueryGraphFactory {
         queryGraphConfigurer.configure(queryGraph, trafficSignSnaps);
         return queryGraph;
     }
+
+    public QueryGraph createQueryGraphWithoutConfig(List<TrafficSignSnap> trafficSignSnaps, Snap startPoint) {
+
+        List<Snap> snaps = trafficSignSnaps.stream()
+                .map(TrafficSignSnap::getSnap)
+                .collect(toCollection(ArrayList::new));
+        snaps.add(startPoint);
+
+        // The list of snaps will create virtual edges based on the snapped points, thereby cutting the affected edges
+        // into 2-line strings. In this way, we create a graph that has an edge partitioning based on the fractional
+        // positions of the traffic signs.
+        // @see https://github.com/graphhopper/graphhopper/blob/master/docs/core/low-level-api.md#what-are-virtual-edges-and-nodes
+        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
+
+        return queryGraph;
+    }
+
 }

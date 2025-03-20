@@ -13,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -68,6 +69,64 @@ public class RoadSectionMapper {
         });
 
         return roadSectionsById.values();
+    }
+
+
+    @SuppressWarnings("java:S5612")
+    public @Valid Collection<RoadSection> mapToRoadSections(
+            Iterable<IsochroneMatch> isochroneMatches,
+            Map<Integer, TrafficSign> trafficSignsById, TrafficSignEdgeRestrictions trafficSignEdgeRestrictions) {
+
+        IntEncodedValue trafficSignEncodedValueAttribute = networkGraphHopper.getEncodingManager()
+                .getIntEncodedValue(AccessibilityLink.TRAFFIC_SIGN_ID);
+        SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
+        SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
+
+        isochroneMatches.forEach(isochroneMatch -> {
+            int roadSectionId = isochroneMatch.getMatchedLinkId();
+            int roadSectionFragmentId = isochroneMatch.getEdge().getEdge();
+            int directionalSegmentId = isochroneMatch.getEdge().getEdgeKey();
+
+            RoadSection roadSection = roadSectionsById.computeIfAbsent(
+                    roadSectionId,
+                    id -> RoadSection.builder()
+                            .id(Long.valueOf(id))
+                            .build());
+
+            RoadSectionFragment roadSectionFragment = roadSectionFragmentById.computeIfAbsent(
+                    roadSectionFragmentId,
+                    id -> {
+                        RoadSectionFragment roadSectionFragmentNew = RoadSectionFragment.builder()
+                                .id(id)
+                                .roadSection(roadSection)
+                                .build();
+
+                        roadSection.getRoadSectionFragments().add(roadSectionFragmentNew);
+                        return roadSectionFragmentNew;
+                    });
+
+            addSegmentsToRoadSectionFragment(
+                    roadSectionFragment,
+                    isochroneMatch,
+                    getTrafficSign(directionalSegmentId, trafficSignsById, trafficSignEdgeRestrictions),
+                    directionalSegmentId,
+                    roadSectionFragmentById);
+        });
+
+        return roadSectionsById.values();
+    }
+
+
+    private static TrafficSign getTrafficSign(
+            Integer directionalSegmentId,
+            Map<Integer, TrafficSign> trafficSignById,
+            TrafficSignEdgeRestrictions trafficSignEdgeRestrictions
+    ) {
+        if (trafficSignEdgeRestrictions.hasEdgeRestriction(directionalSegmentId)) {
+            return trafficSignById.get(trafficSignEdgeRestrictions.getEdgeRestriction(directionalSegmentId)
+                    .getTrafficSignId());
+        }
+        return null;
     }
 
     private static TrafficSign getTrafficSign(

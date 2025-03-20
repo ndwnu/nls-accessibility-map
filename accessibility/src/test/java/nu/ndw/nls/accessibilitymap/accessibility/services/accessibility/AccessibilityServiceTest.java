@@ -24,6 +24,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
@@ -95,6 +96,9 @@ class AccessibilityServiceTest {
     private QueryGraphFactory queryGraphFactory;
 
     @Mock
+    QueryGraphConfigurer queryGraphConfigurer;
+
+    @Mock
     private TrafficSign trafficSign;
 
     @Mock
@@ -155,7 +159,7 @@ class AccessibilityServiceTest {
 
         accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper,
                 vehicleRestrictionsModelFactory, trafficSignDataService, geometryFactoryWgs84, roadSectionMapper,
-                roadSectionCombinator, clockService, trafficSingSnapMapper, queryGraphFactory);
+                roadSectionCombinator, clockService, trafficSingSnapMapper, queryGraphFactory,queryGraphConfigurer);
     }
 
     @Test

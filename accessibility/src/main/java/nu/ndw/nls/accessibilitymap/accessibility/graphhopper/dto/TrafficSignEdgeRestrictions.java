@@ -34,4 +34,8 @@ public class TrafficSignEdgeRestrictions {
         return restrictions.get(edgeKey);
     }
 
+    public static TrafficSignEdgeRestrictions emptyRestrictions() {
+        return new TrafficSignEdgeRestrictions(List.of());
+    }
+
 }
