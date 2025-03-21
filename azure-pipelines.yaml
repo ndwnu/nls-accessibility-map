@@ -4,7 +4,7 @@ trigger:
       - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: Kubernetes
 
 resources:
   repositories:
@@ -14,35 +14,90 @@ resources:
       ref: main
 
 parameters:
-  - name: overrideAllowHelmDeploy
+  - name: skipSonar
     type: boolean
     default: false
+  - name: skipDocker
+    type: boolean
+    default: false
+  - name: skipSecurityScanning
+    type: boolean
+    default: false
+  - name: forceDeployment
+    type: boolean
+    default: false
+  - name: skipDeployment
+    type: boolean
+    default: false
+  - name: cleanupNamespaces
+    type: boolean
+    default: true
 
 extends:
-  template: azure-pipelines-java.yml@nls-pipeline-templates
+  template: v2/pipelines/java.yml@nls-pipeline-templates
   parameters:
-    overrideAllowHelmDeploy: ${{ parameters.overrideAllowHelmDeploy }}
-    isVersionedProject: true
-    jdkVersion: 1.21
-    mavenReleaseGoal: deploy
+    skipSonar: ${{ parameters.skipSonar }}
+    skipSecurityScanning: ${{ parameters.skipSecurityScanning }}
+    skipComponentTesting: true
+    skipPerformanceTesting: true
+    skipDocker: ${{ parameters.skipDocker }}
+    skipDeployment: ${{ parameters.skipDeployment }}
+    forceDeployment: ${{ parameters.forceDeployment }}
+    cleanupNamespaces: ${{ parameters.cleanupNamespaces }}
     mavenDeployToNdwShared: true
+    jdkVersion: 1.21
     sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**'
     sonarOptionalExclusions: '**/generated/**,**/StreamingJsonBodyExtractor.*'
-    mavenOptionalBuildOptions: '-Pregression-test'
+    mavenAdditionalBuildOptions: '-Pregression-test'
     pushToGitHub: true
     dockerImages:
-      - nls-accessibility-map-api
-      - nls-accessibility-map-graphhopper-job
-      - nls-accessibility-map-generator-jobs
-      - nls-accessibility-map-traffic-sign-analyser-job
-    helmCharts:
-      - {
-        "name": "nls-accessibility-map-api",
-        "autoDeployment": true
-      }
-      - {
-        "name": "nls-accessibility-map-jobs",
-        "forceDelete": "true",
-        "optionalArgs": "--wait-for-jobs --timeout 60s",
-        "autoDeployment": true
-      }
+      - imageName: nls-accessibility-map-api
+        imageTag: $(Build.BuildNumber)
+        dockerFile: docker/nls-accessibility-map-api/Dockerfile
+        buildContext: docker/nls-accessibility-map-api
+        repository: nls-accessibility-map-api
+        push: true
+      - imageName: nls-accessibility-map-graphhopper-job
+        imageTag: $(Build.BuildNumber)
+        dockerFile: docker/nls-accessibility-map-graphhopper-job/Dockerfile
+        buildContext: docker/nls-accessibility-map-graphhopper-job
+        repository: nls-accessibility-map-graphhopper-job
+        push: true
+      - imageName: nls-accessibility-map-generator-jobs
+        imageTag: $(Build.BuildNumber)
+        dockerFile: docker/nls-accessibility-map-generator-jobs/Dockerfile
+        buildContext: docker/nls-accessibility-map-generator-jobs
+        repository: nls-accessibility-map-generator-jobs
+        push: true
+      - imageName: nls-accessibility-map-traffic-sign-analyser-job
+        imageTag: $(Build.BuildNumber)
+        dockerFile: docker/nls-accessibility-map-traffic-sign-analyser-job/Dockerfile
+        buildContext: docker/nls-accessibility-map-traffic-sign-analyser-job
+        repository: nls-accessibility-map-traffic-sign-analyser-job
+        push: true
+    deployment:
+      environments:
+        - name: "staging"
+          kubernetesNameSpace: "nls"
+          autoDeployment: true
+          helmCharts:
+            - name: "nls-accessibility-map-api"
+              path: "deploy/nls-accessibility-map-api"
+            - name: "nls-accessibility-map-jobs"
+              path: "deploy/nls-accessibility-map-jobs"
+              forceDelete: true
+              arguments: >-
+                --wait-for-jobs --timeout 60s
+        - name: "production"
+          deployAfter:
+            - "staging"
+          kubernetesNameSpace: "nls"
+          autoDeployment: true
+          helmCharts:
+            - name: "nls-accessibility-map-api"
+              path: "deploy/nls-accessibility-map-api"
+            - name: "nls-accessibility-map-jobs"
+              path: "deploy/nls-accessibility-map-jobs"
+              forceDelete: true
+              arguments: >-
+                --wait-for-jobs --timeout 60s

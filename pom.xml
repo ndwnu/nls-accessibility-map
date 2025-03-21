@@ -8,7 +8,7 @@
     </parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>4.2.24-SNAPSHOT</version>
+    <version>4.2.27-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>nls-accessibility-map</name>
     <description>REST API to determine accessible road sections for a given vehicle type</description>
@@ -49,7 +49,7 @@
         <nls-events.version>5.1.2</nls-events.version>
         <nls-nwb-data-access.version>8.0.4</nls-nwb-data-access.version>
         <nls-springboot.version>9.1.8</nls-springboot.version>
-        <nls-routing-map-matcher.version>15.0.2</nls-routing-map-matcher.version>
+        <nls-routing-map-matcher.version>16.0.0</nls-routing-map-matcher.version>
         <nls-geometry.version>4.4.1</nls-geometry.version>
         <nls-geojson-geometry.version>1.4.0</nls-geojson-geometry.version>
         <jackson-geojson.version>1.14</jackson-geojson.version>
