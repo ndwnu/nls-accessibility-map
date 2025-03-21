@@ -37,9 +37,9 @@ class MaximumRestrictionMapperTest {
         Optional<Statement> result = maximumRestrictionMapper.getStatement(vehicleProperties);
         assertThat(result).isPresent()
                 .hasValueSatisfying(statement -> {
-                    assertEquals("max_length < 5.400000", statement.getCondition());
-                    assertEquals("0", statement.getValue());
-                    assertEquals(Op.MULTIPLY, statement.getOperation());
+                    assertEquals("max_length < 5.400000", statement.condition());
+                    assertEquals("0", statement.value());
+                    assertEquals(Op.MULTIPLY, statement.operation());
                 });
     }
 
@@ -50,5 +50,4 @@ class MaximumRestrictionMapperTest {
         Optional<Statement> result = maximumRestrictionMapper.getStatement(vehicleProperties);
         assertThat(result).isEmpty();
     }
-
 }
