@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.writers;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.LINE_STRING;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -366,7 +367,7 @@ class FeatureBuilderTest {
                       "trafficSignId": "externalId",
                       "direction":"FORWARD",
                       "trafficSignType":"C7",
-                      "iconUrl":"https://exmaple.com/image.png",
+                      "iconUrl":"https://example.com/image.png",
                       "trafficSign":true,
                       "windowTimes":"window1"
                    },
@@ -390,7 +391,7 @@ class FeatureBuilderTest {
                       "trafficSignId": "externalId",
                       "direction":"FORWARD",
                       "trafficSignType":"C7",
-                      "iconUrl":"https://exmaple.com/image.png",
+                      "iconUrl":"https://example.com/image.png",
                       "trafficSign":true,
                       "windowTimes":"window1"
                    },
@@ -450,7 +451,7 @@ class FeatureBuilderTest {
                                         .longitude(2.3)
                                         .latitude(4.5)
                                         .direction(Direction.FORWARD)
-                                        .iconUri(URI.create("https://exmaple.com/image.png"))
+                                        .iconUri(URI.create("https://example.com/image.png"))
                                         .build()
                 )
                 .roadSectionFragment(roadSectionFragment)
@@ -479,7 +480,7 @@ class FeatureBuilderTest {
                                         .longitude(3.3)
                                         .latitude(5.5)
                                         .direction(Direction.BACKWARD)
-                                        .iconUri(URI.create("https://exmaple.com/image.png"))
+                                        .iconUri(URI.create("https://example.com/image.png"))
                                         .build())
                 .roadSectionFragment(roadSectionFragment)
                 .build();
@@ -498,12 +499,12 @@ class FeatureBuilderTest {
                     generateConfiguration.trafficSignLineStringDistanceInMeters())
             ).thenReturn(trafficSignLineString);
             when(jtsLineStringJsonMapper.map(trafficSignLineString))
-                    .thenReturn(new LineStringJson(List.of(List.of(78d, 89d))));
+                    .thenReturn(new LineStringJson(List.of(List.of(78d, 89d)), LINE_STRING));
         }
 
         if (prepareTrafficSignPoint || prepareRoadSection) {
             when(jtsLineStringJsonMapper.map(directionalSegmentLineString))
-                    .thenReturn(new LineStringJson(List.of(List.of(12d, 23d))));
+                    .thenReturn(new LineStringJson(List.of(List.of(12d, 23d)), LINE_STRING));
         }
     }
 }
