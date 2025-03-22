@@ -24,7 +24,9 @@ public record TrafficSign(
         @NotNull Double fraction,
         URI iconUri,
         Double blackCode,
-        @NotNull List<TextSign> textSigns) {
+        @NotNull List<TextSign> textSigns,
+        URI trafficSignOrderUrl,
+        Restrictions restrictions) {
 
     public boolean hasTimeWindowedSign() {
 
