@@ -13,12 +13,12 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
@@ -42,9 +42,11 @@ public class TrafficSignMapper {
                     .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
                     .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
                     .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
-                    .iconUri(createIconUri(trafficSignGeoJsonDto.getProperties()))
+                    .iconUri(createUri(trafficSignGeoJsonDto.getProperties().getImageUrl()))
                     .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
+                    .trafficSignOrderUrl(createUri(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl()))
                     .blackCode(mapToBlackCode(trafficSignGeoJsonDto, type))
+                    .restrictions(Restrictions.builder().build())
                     .build());
         } catch (RuntimeException exception) {
             log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
@@ -63,12 +65,12 @@ public class TrafficSignMapper {
         };
     }
 
-    private static URI createIconUri(TrafficSignPropertiesDto trafficSignPropertiesDto) {
-        if (Objects.isNull(trafficSignPropertiesDto.getImageUrl())) {
+    private static URI createUri(String value) {
+        if (Objects.isNull(value)) {
             return null;
         }
 
-        return URI.create(trafficSignPropertiesDto.getImageUrl());
+        return URI.create(value);
     }
 
     private Double mapToBlackCode(TrafficSignGeoJsonDto trafficSignGeoJsonDto, TrafficSignType type) {
