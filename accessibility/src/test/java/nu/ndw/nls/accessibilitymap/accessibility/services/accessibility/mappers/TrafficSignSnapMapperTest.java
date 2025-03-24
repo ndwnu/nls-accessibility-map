@@ -133,7 +133,7 @@ class TrafficSignSnapMapperTest {
     }
 
     @Test
-    void map_ok() {
+    void map() {
 
         setupBaseFixture();
 
@@ -152,7 +152,7 @@ class TrafficSignSnapMapperTest {
     }
 
     @Test
-    void map_ok_snap_invalid() {
+    void map_snap_invalid() {
 
         setupBaseFixture();
 
@@ -169,7 +169,7 @@ class TrafficSignSnapMapperTest {
     }
 
     @Test
-    void map_ok_no_roadSection() {
+    void map_no_roadSection() {
 
         when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
@@ -196,7 +196,7 @@ class TrafficSignSnapMapperTest {
             false, false, true
             true, true, true
             """)
-    void map_ok_no_textSign(boolean isIncludeOnlyTimeWindowedSigns, boolean hasTimeWindowedSign, boolean isWindowsTextSign) {
+    void map_no_textSign(boolean isIncludeOnlyTimeWindowedSigns, boolean hasTimeWindowedSign, boolean isWindowsTextSign) {
 
         if (isWindowsTextSign) {
             setupBaseFixture();

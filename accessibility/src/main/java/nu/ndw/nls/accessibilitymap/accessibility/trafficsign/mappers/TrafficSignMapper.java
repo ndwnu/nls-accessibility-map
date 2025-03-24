@@ -13,7 +13,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class TrafficSignMapper {
+    private final TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
 
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
             TrafficSignGeoJsonDto trafficSignGeoJsonDto,
@@ -33,7 +33,7 @@ public class TrafficSignMapper {
 
         try {
             TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode());
-            return Optional.of(TrafficSign.builder()
+            TrafficSign trafficSign = TrafficSign.builder()
                     .id(integerSequenceSupplier.next())
                     .externalId(trafficSignGeoJsonDto.getId().toString())
                     .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
@@ -46,8 +46,11 @@ public class TrafficSignMapper {
                     .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
                     .trafficSignOrderUrl(createUri(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl()))
                     .blackCode(mapToBlackCode(trafficSignGeoJsonDto, type))
-                    .restrictions(Restrictions.builder().build())
-                    .build());
+                    .build();
+
+            trafficSign = trafficSign.withRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign));
+
+            return Optional.of(trafficSign);
         } catch (RuntimeException exception) {
             log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
                     trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto, exception);

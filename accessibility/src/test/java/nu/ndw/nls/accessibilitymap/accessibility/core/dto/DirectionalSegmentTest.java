@@ -17,7 +17,7 @@ class DirectionalSegmentTest {
     private TrafficSign trafficSign;
 
     @Test
-    void hasTrafficSign_ok() {
+    void hasTrafficSign() {
 
         directionalSegment = DirectionalSegment.builder()
                 .trafficSign(trafficSign)
@@ -27,7 +27,7 @@ class DirectionalSegmentTest {
     }
 
     @Test
-    void hasTrafficSign_ok_noTrafficSign() {
+    void hasTrafficSign_noTrafficSign() {
 
         directionalSegment = DirectionalSegment.builder()
                 .build();

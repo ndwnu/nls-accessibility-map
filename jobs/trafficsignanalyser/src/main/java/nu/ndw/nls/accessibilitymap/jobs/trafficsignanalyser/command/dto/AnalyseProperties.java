@@ -8,8 +8,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.With;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import org.springframework.validation.annotation.Validated;
 
 @Builder
@@ -20,7 +20,7 @@ public record AnalyseProperties(
         @NotNull Integer nwbVersion,
         @NotNull Boolean reportIssues,
         @NotNull OffsetDateTime startTime,
-        @NotNull VehicleProperties vehicleProperties,
+        @NotNull AccessibilityRequest accessibilityRequest,
         @NotNull @NotEmpty List<TrafficSignType> trafficSignTypes,
         @Min(50) @Max(54) double startLocationLatitude,
         @Min(3) @Max(8) double startLocationLongitude,

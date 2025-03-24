@@ -5,30 +5,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.value.Range;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.value.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TrafficSignRestrictionsMapper {
+public class TrafficSignRestrictionsBuilder {
 
     private final Map<TrafficSignType, Restrictions> nonDynamicTrafficSigns;
 
     private final Map<TrafficSignType, Function<TrafficSign, Restrictions>> dynamicTrafficSigns;
 
-    public TrafficSignRestrictionsMapper() {
+    public TrafficSignRestrictionsBuilder() {
 
         nonDynamicTrafficSigns = new EnumMap<>(TrafficSignType.class);
         nonDynamicTrafficSigns.put(TrafficSignType.C1, buildC1Restrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C6, buildC6Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7, buildC7Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7A, buildC7aRestrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7B, buildC7bRestrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7C, buildC7cRestrictions());
-        nonDynamicTrafficSigns.put(TrafficSignType.C7B, buildC7bRestrictions());
-        nonDynamicTrafficSigns.put(TrafficSignType.C22, buildC7cRestrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C10, buildC10Restrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C12, buildC12Restrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C22, buildC22Restrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C22C, buildC22cRestrictions());
 
         dynamicTrafficSigns = new EnumMap<>(TrafficSignType.class);
         dynamicTrafficSigns.put(TrafficSignType.C17, buildC17Restrictions());
@@ -38,23 +41,35 @@ public class TrafficSignRestrictionsMapper {
         dynamicTrafficSigns.put(TrafficSignType.C21, buildC21Restrictions());
     }
 
-    public Restrictions map(TrafficSignType trafficSignType, TrafficSign trafficSign) {
+    public Restrictions buildFor(TrafficSign trafficSign) {
 
-        if (!nonDynamicTrafficSigns.containsKey(trafficSignType)) {
-            if (!dynamicTrafficSigns.containsKey(trafficSignType)) {
-
-                throw new IllegalArgumentException("Traffic sign type " + trafficSignType + " is not supported");
+        if (!nonDynamicTrafficSigns.containsKey(trafficSign.trafficSignType())) {
+            if (!dynamicTrafficSigns.containsKey(trafficSign.trafficSignType())) {
+                throw new IllegalArgumentException("Traffic sign type " + trafficSign.trafficSignType() + " is not supported");
             }
 
-            return dynamicTrafficSigns.get(trafficSignType).apply(trafficSign);
+            return dynamicTrafficSigns.get(trafficSign.trafficSignType()).apply(trafficSign);
         }
 
-        return nonDynamicTrafficSigns.get(trafficSignType);
+        return nonDynamicTrafficSigns.get(trafficSign.trafficSignType());
     }
 
     private static Restrictions buildC1Restrictions() {
         return Restrictions.builder()
-                .isBlocked(true)
+                .transportTypes(TransportType.allExcept(TransportType.PEDESTRIAN))
+                .build();
+    }
+
+    private static Restrictions buildC6Restrictions() {
+        return Restrictions.builder()
+                .transportTypes(List.of(
+                        TransportType.BUS,
+                        TransportType.CAR,
+                        TransportType.DELIVERY_VAN,
+                        TransportType.TAXI,
+                        TransportType.TRACTOR,
+                        TransportType.TRUCK
+                ))
                 .build();
     }
 
@@ -72,13 +87,33 @@ public class TrafficSignRestrictionsMapper {
 
     private static Restrictions buildC7bRestrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.TRUCK, TransportType.BUS))
+                .transportTypes(List.of(TransportType.BUS, TransportType.TRUCK))
                 .build();
     }
 
     private static Restrictions buildC7cRestrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.TRUCK, TransportType.DELIVERY_VAN))
+                .transportTypes(List.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+                .build();
+    }
+
+    private static Restrictions buildC10Restrictions() {
+        return Restrictions.builder()
+                .transportTypes(List.of(TransportType.VEHICLE_WITH_TRAILER))
+                .build();
+    }
+
+    private static Restrictions buildC12Restrictions() {
+        return Restrictions.builder()
+                .transportTypes(List.of(
+                        TransportType.BUS,
+                        TransportType.CAR,
+                        TransportType.DELIVERY_VAN,
+                        TransportType.MOPED,
+                        TransportType.TAXI,
+                        TransportType.TRACTOR,
+                        TransportType.TRUCK
+                ))
                 .build();
     }
 
@@ -88,8 +123,8 @@ public class TrafficSignRestrictionsMapper {
                 return Restrictions.builder().build();
             }
             return Restrictions.builder()
-                    .vehicleLength(Range.builder()
-                            .min(trafficSign.blackCode())
+                    .vehicleLengthInCm(Maximum.builder()
+                            .value(trafficSign.blackCode())
                             .build())
                     .build();
         };
@@ -101,8 +136,8 @@ public class TrafficSignRestrictionsMapper {
                 return Restrictions.builder().build();
             }
             return Restrictions.builder()
-                    .vehicleWidth(Range.builder()
-                            .min(trafficSign.blackCode())
+                    .vehicleWidthInCm(Maximum.builder()
+                            .value(trafficSign.blackCode())
                             .build())
                     .build();
         };
@@ -114,8 +149,8 @@ public class TrafficSignRestrictionsMapper {
                 return Restrictions.builder().build();
             }
             return Restrictions.builder()
-                    .vehicleHeight(Range.builder()
-                            .min(trafficSign.blackCode())
+                    .vehicleHeightInCm(Maximum.builder()
+                            .value(trafficSign.blackCode())
                             .build())
                     .build();
         };
@@ -128,8 +163,8 @@ public class TrafficSignRestrictionsMapper {
                 return Restrictions.builder().build();
             }
             return Restrictions.builder()
-                    .vehicleWeight(Range.builder()
-                            .min(trafficSign.blackCode())
+                    .vehicleAxleLoadInKg(Maximum.builder()
+                            .value(trafficSign.blackCode())
                             .build())
                     .build();
         };
@@ -142,10 +177,23 @@ public class TrafficSignRestrictionsMapper {
                 return Restrictions.builder().build();
             }
             return Restrictions.builder()
-                    .vehicleAxleLoad(Range.builder()
-                            .min(trafficSign.blackCode())
+                    .vehicleWeightInKg(Maximum.builder()
+                            .value(trafficSign.blackCode())
                             .build())
                     .build();
         };
+    }
+
+    private static Restrictions buildC22Restrictions() {
+
+        return Restrictions.builder()
+                .transportTypes(List.of(TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES))
+                .build();
+    }
+    private static Restrictions buildC22cRestrictions() {
+
+        return Restrictions.builder()
+                .transportTypes(List.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+                .build();
     }
 }

@@ -21,7 +21,7 @@ class RoadSectionFragmentTest {
     private DirectionalSegment backwardSegment;
 
     @Test
-    void setForwardSegment_ok() {
+    void setForwardSegment() {
 
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
         roadSectionFragment.setForwardSegment(forwardSegment);
@@ -34,7 +34,7 @@ class RoadSectionFragmentTest {
     }
 
     @Test
-    void setBackwardSegment_ok() {
+    void setBackwardSegment() {
 
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
         roadSectionFragment.setBackwardSegment(backwardSegment);
@@ -47,7 +47,7 @@ class RoadSectionFragmentTest {
     }
 
     @Test
-    void getSegments_ok() {
+    void getSegments() {
 
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
                 .forwardSegment(forwardSegment)
@@ -74,7 +74,7 @@ class RoadSectionFragmentTest {
             false, true, false
             false, false, false
             """)
-    void isAccessibleFromAllSegments_ok(boolean forwardAccessible, boolean backwardAccessible, boolean result) {
+    void isAccessibleFromAllSegments(boolean forwardAccessible, boolean backwardAccessible, boolean result) {
 
         when(forwardSegment.isAccessible()).thenReturn(forwardAccessible);
         if (forwardAccessible) {
@@ -96,7 +96,7 @@ class RoadSectionFragmentTest {
             false, true, false
             false, false, true
             """)
-    void isNotAccessibleFromAllSegments_ok(boolean forwardAccessible, boolean backwardAccessible, boolean result) {
+    void isNotAccessibleFromAllSegments(boolean forwardAccessible, boolean backwardAccessible, boolean result) {
 
         when(forwardSegment.isAccessible()).thenReturn(forwardAccessible);
         if (!forwardAccessible) {
@@ -118,7 +118,7 @@ class RoadSectionFragmentTest {
             false, true, true
             false, false, false
             """)
-    void isPartiallyAccessible_ok(boolean forwardAccessible, boolean backwardAccessible, boolean result) {
+    void isPartiallyAccessible(boolean forwardAccessible, boolean backwardAccessible, boolean result) {
 
         when(forwardSegment.isAccessible()).thenReturn(forwardAccessible);
         when(backwardSegment.isAccessible()).thenReturn(backwardAccessible);

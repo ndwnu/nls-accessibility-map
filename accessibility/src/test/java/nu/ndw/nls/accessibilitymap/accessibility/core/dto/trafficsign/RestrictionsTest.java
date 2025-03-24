@@ -2,12 +2,12 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.request.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.value.Range;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.value.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -27,19 +27,35 @@ class RestrictionsTest {
         accessibilityRequest = AccessibilityRequest.builder().build();
     }
 
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            true, true,
-            false, false
-            , false
-            """)
-    void isRestrictive_isBlocked(Boolean isRestrictive, boolean expectedResult) {
+    @Test
+    void isRestrictive_combinationTest() {
 
         restrictions = Restrictions.builder()
-                .isBlocked(isRestrictive)
+                .transportTypes(List.of(TransportType.TRUCK))
+                .vehicleLengthInCm(Maximum.builder().value(10d).build())
+                .vehicleWidthInCm(Maximum.builder().value(20d).build())
+                .vehicleHeightInCm(Maximum.builder().value(30d).build())
+                .vehicleWeightInKg(Maximum.builder().value(40d).build())
+                .vehicleAxleLoadInKg(Maximum.builder().value(50d).build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isEqualTo(expectedResult);
+        assertThat(restrictions.isRestrictive(accessibilityRequest
+                .withTransportTypes(List.of(TransportType.TRUCK))
+                .withVehicleLengthInCm(restrictions.vehicleLengthInCm().value() + 1d)
+                .withVehicleWidthInCm(restrictions.vehicleWidthInCm().value() + 1d)
+                .withVehicleHeightInCm(restrictions.vehicleHeightInCm().value() + 1d)
+                .withVehicleWeightInKg(restrictions.vehicleWeightInKg().value() + 1d)
+                .withVehicleAxleLoadInKg(restrictions.vehicleAxleLoadInKg().value() + 1d)
+        )).isTrue();
+
+        assertThat(restrictions.isRestrictive(accessibilityRequest
+                .withTransportTypes(List.of(TransportType.BUS))
+                .withVehicleLengthInCm(restrictions.vehicleLengthInCm().value() - 1d)
+                .withVehicleWidthInCm(restrictions.vehicleWidthInCm().value() - 1d)
+                .withVehicleHeightInCm(restrictions.vehicleHeightInCm().value() - 1d)
+                .withVehicleWeightInKg(restrictions.vehicleWeightInKg().value() -1d)
+                .withVehicleAxleLoadInKg(restrictions.vehicleAxleLoadInKg().value() - 1d)
+        )).isFalse();
     }
 
     @ParameterizedTest
@@ -50,7 +66,7 @@ class RestrictionsTest {
                 .transportTypes(List.of(transportType))
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportType(transportType))).isTrue();
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportTypes(List.of(transportType)))).isTrue();
     }
 
     @ParameterizedTest
@@ -58,153 +74,118 @@ class RestrictionsTest {
     void isRestrictive_transportType_notRestrictive(TransportType transportType) {
 
         restrictions = Restrictions.builder()
-                .transportTypes(
-                        Arrays.stream(TransportType.values())
-                                .filter(t -> !t.equals(transportType))
-                                .toList())
+                .transportTypes(TransportType.allExcept(transportType))
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportType(transportType))).isFalse();
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportTypes(List.of(transportType)))).isFalse();
     }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            10, 20, 19.9, false
-            10, 20, 10.1, false
-            10, 20, 9.9, true
-            10, 20, 20.1, true
-            10, , 10.1, false
-            10, , 9.9, true
-            , 10, 10.1, true
-            , 10, 9.9, false
-            , , 9.9, false
+            20, 20, false
+            20, 20.1, true
+            20, , false
+            , 20.1, false
+            , , false
             """)
     void isRestrictive_vehicleLength(
-            Double vehicleLengthMin,
-            Double vehicleLengthMax,
+            Double vehicleLength,
             Double vehicleLengthToTestFor,
             boolean expectedResult) {
 
         restrictions = Restrictions.builder()
-                .vehicleLength(Range.builder()
-                        .min(vehicleLengthMin)
-                        .max(vehicleLengthMax)
-                        .build())
+                .vehicleLengthInCm(Maximum.builder().value(vehicleLength).build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleLength(vehicleLengthToTestFor))).isEqualTo(expectedResult);
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleLengthInCm(vehicleLengthToTestFor))).isEqualTo(expectedResult);
     }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            10, 20, 19.9, false
-            10, 20, 10.1, false
-            10, 20, 9.9, true
-            10, 20, 20.1, true
-            10, , 10.1, false
-            10, , 9.9, true
-            , 10, 10.1, true
-            , 10, 9.9, false
-            , , 9.9, false
+            20, 20, false
+            20, 20.1, true
+            20, , false
+            , 20.1, false
+            , , false
             """)
     void isRestrictive_vehicleHeight(
-            Double vehicleHeightMin,
-            Double vehicleHeightMax,
+            Double vehicleHeight,
             Double vehicleHeightToTestFor,
             boolean expectedResult) {
 
         restrictions = Restrictions.builder()
-                .vehicleHeight(Range.builder()
-                        .min(vehicleHeightMin)
-                        .max(vehicleHeightMax)
+                .vehicleHeightInCm(Maximum.builder()
+                        .value(vehicleHeight)
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleHeight(vehicleHeightToTestFor))).isEqualTo(expectedResult);
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleHeightInCm(vehicleHeightToTestFor))).isEqualTo(expectedResult);
     }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            10, 20, 19.9, false
-            10, 20, 10.1, false
-            10, 20, 9.9, true
-            10, 20, 20.1, true
-            10, , 10.1, false
-            10, , 9.9, true
-            , 10, 10.1, true
-            , 10, 9.9, false
-            , , 9.9, false
-            """)
-    void isRestrictive_vehicleWeight(
-            Double vehicleWeightMin,
-            Double vehicleWeightMax,
-            Double vehicleWeightToTestFor,
-            boolean expectedResult) {
-
-        restrictions = Restrictions.builder()
-                .vehicleWeight(Range.builder()
-                        .min(vehicleWeightMin)
-                        .max(vehicleWeightMax)
-                        .build())
-                .build();
-
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleWeight(vehicleWeightToTestFor))).isEqualTo(expectedResult);
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            10, 20, 19.9, false
-            10, 20, 10.1, false
-            10, 20, 9.9, true
-            10, 20, 20.1, true
-            10, , 10.1, false
-            10, , 9.9, true
-            , 10, 10.1, true
-            , 10, 9.9, false
-            , , 9.9, false
+            20, 20, false
+            20, 20.1, true
+            20, , false
+            , 20.1, false
+            , , false
             """)
     void isRestrictive_vehicleWidth(
-            Double vehicleWidthMin,
-            Double vehicleWidthMax,
+            Double vehicleWidth,
             Double vehicleWidthToTestFor,
             boolean expectedResult) {
 
         restrictions = Restrictions.builder()
-                .vehicleWidth(Range.builder()
-                        .min(vehicleWidthMin)
-                        .max(vehicleWidthMax)
+                .vehicleWidthInCm(Maximum.builder()
+                        .value(vehicleWidth)
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleWidth(vehicleWidthToTestFor))).isEqualTo(expectedResult);
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleWidthInCm(vehicleWidthToTestFor))).isEqualTo(expectedResult);
     }
-
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            10, 20, 19.9, false
-            10, 20, 10.1, false
-            10, 20, 9.9, true
-            10, 20, 20.1, true
-            10, , 10.1, false
-            10, , 9.9, true
-            , 10, 10.1, true
-            , 10, 9.9, false
-            , , 9.9, false
+            20, 20, false
+            20, 20.1, true
+            20, , false
+            , 20.1, false
+            , , false
+            """)
+    void isRestrictive_vehicleWeight(
+            Double vehicleWeight,
+            Double vehicleWeightToTestFor,
+            boolean expectedResult) {
+
+        restrictions = Restrictions.builder()
+                .vehicleWeightInKg(Maximum.builder()
+                        .value(vehicleWeight)
+                        .build())
+                .build();
+
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleWeightInKg(vehicleWeightToTestFor))).isEqualTo(expectedResult);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            20, 20, false
+            20, 20.1, true
+            20, , false
+            , 20.1, false
+            , , false
             """)
     void isRestrictive_vehicleAxleLoad(
-            Double vehicleAxleLoadMin,
-            Double vehicleAxleLoadMax,
+            Double vehicleAxleLoad,
             Double vehicleAxleLoadToTestFor,
             boolean expectedResult) {
 
         restrictions = Restrictions.builder()
-                .vehicleAxleLoad(Range.builder()
-                        .min(vehicleAxleLoadMin)
-                        .max(vehicleAxleLoadMax)
+                .vehicleAxleLoadInKg(Maximum.builder()
+                        .value(vehicleAxleLoad)
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleAxleLoad(vehicleAxleLoadToTestFor))).isEqualTo(expectedResult);
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleAxleLoadInKg(vehicleAxleLoadToTestFor))).isEqualTo(
+                expectedResult);
     }
 }

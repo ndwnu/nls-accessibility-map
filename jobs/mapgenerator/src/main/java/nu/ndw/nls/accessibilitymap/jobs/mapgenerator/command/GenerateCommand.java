@@ -7,9 +7,9 @@ import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequestFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.VehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -31,7 +31,7 @@ public class GenerateCommand implements Callable<Integer> {
 
     private final GenerateConfiguration generateProperties;
 
-    private final VehiclePropertiesMapper vehiclePropertiesMapper;
+    private final AccessibilityRequestFactory accessibilityRequestFactory;
 
     private final ClockService clockService;
 
@@ -80,7 +80,10 @@ public class GenerateCommand implements Callable<Integer> {
                     .startLocationLatitude(generateProperties.startLocationLatitude())
                     .startLocationLongitude(generateProperties.startLocationLongitude())
                     .trafficSignTypes(trafficSignTypes)
-                    .vehicleProperties(vehiclePropertiesMapper.map(trafficSignTypes, includeOnlyTimeWindowedSigns))
+                    .accessibilityRequest(accessibilityRequestFactory.create(trafficSignTypes,
+                            generateProperties.startLocationLatitude(),
+                            generateProperties.startLocationLongitude(),
+                            generateProperties.searchRadiusInMeters()))
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
@@ -88,7 +91,7 @@ public class GenerateCommand implements Callable<Integer> {
                     .generateConfiguration(generateProperties)
                     .build();
             log.info("Generating export");
-            mapGeneratorService.generateV2(exportProperties);
+            mapGeneratorService.generate(exportProperties);
             return 0;
         } catch (RuntimeException exception) {
             log.error("Could not generate export because of: ", exception);

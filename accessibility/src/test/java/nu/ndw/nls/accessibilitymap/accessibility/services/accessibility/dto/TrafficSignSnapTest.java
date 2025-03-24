@@ -26,7 +26,7 @@ class TrafficSignSnapTest extends ValidationTest {
     }
 
     @Test
-    void validate_ok() {
+    void validate() {
 
         validate(additionalSnap, List.of(), List.of());
     }

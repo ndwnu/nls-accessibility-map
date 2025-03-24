@@ -20,7 +20,7 @@ class ClockBeanConfigurationTest {
     }
 
     @Test
-    void clock_ok() {
+    void clock() {
 
         assertThat(clockBeanConfiguration.clock()).isEqualTo(Clock.systemUTC());
     }

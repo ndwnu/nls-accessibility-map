@@ -23,7 +23,7 @@ class IsochroneServiceFactoryTest {
     private IsochroneServiceFactory isochroneServiceFactory;
 
     @Test
-    void createService_ok() {
+    void createService() {
         isochroneServiceFactory.createService(network);
 
         verify(network).createWeighting(eq(PROFILE), any(PMap.class));

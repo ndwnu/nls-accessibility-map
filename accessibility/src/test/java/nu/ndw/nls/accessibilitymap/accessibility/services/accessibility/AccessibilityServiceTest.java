@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.config.Profile;
@@ -12,25 +11,22 @@ import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsModelFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers.TrafficSignSnapMapper;
@@ -57,9 +53,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityServiceTest {
 
     private static final double START_LOCATION_LATITUDE = 1d;
+
     private static final double START_LOCATION_LONGITUDE = 2d;
+
     private static final int MUNICIPALITY_ID = 11;
+
     private static final int TRAFFIC_SIGN_ID = 345;
+
     private static final double SEARCH_DISTANCE_IN_METRES = 200D;
 
     @RegisterExtension
@@ -70,9 +70,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
-    private VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory;
 
     @Mock
     private TrafficSignDataService trafficSignDataService;
@@ -123,12 +120,6 @@ class AccessibilityServiceTest {
     private Profile profile;
 
     @Mock
-    private CustomModel modelNoRestrictions;
-
-    @Mock
-    private CustomModel modelRestrictions;
-
-    @Mock
     private Weighting weightingNoRestrictions;
 
     @Mock
@@ -158,34 +149,27 @@ class AccessibilityServiceTest {
     void setUp() {
 
         accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper,
-                vehicleRestrictionsModelFactory, trafficSignDataService, geometryFactoryWgs84, roadSectionMapper,
-                roadSectionCombinator, clockService, trafficSingSnapMapper, queryGraphFactory,queryGraphConfigurer);
+                trafficSignDataService, geometryFactoryWgs84, roadSectionMapper, roadSectionCombinator,
+                clockService, trafficSingSnapMapper, queryGraphFactory, queryGraphConfigurer);
     }
 
     @Test
-    void calculateAccessibility_ok() {
+    void calculateAccessibility() {
 
         when(clockService.now())
                 .thenReturn(OffsetDateTime.MIN)
                 .thenReturn(OffsetDateTime.MIN.plusMinutes(1).plusNanos(1000));
 
-        VehicleProperties vehicleProperties = VehicleProperties
-                .builder()
-                .motorVehicleAccessForbiddenWt(true)
-                .build();
-
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startLocationLatitude(START_LOCATION_LATITUDE)
                 .startLocationLongitude(START_LOCATION_LONGITUDE)
-                .trafficSignTypes(List.of(TrafficSignType.C12))
                 .municipalityId(MUNICIPALITY_ID)
-                .vehicleProperties(vehicleProperties)
                 .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
-                .includeOnlyTimeWindowedSigns(true)
+                .transportTypes(List.of(TransportType.CAR))
                 .build();
 
-        mockTrafficSignData();
-        mockWeighting(vehicleProperties);
+        mockTrafficSignData(accessibilityRequest);
+        mockWeighting();
 
         when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
@@ -241,7 +225,7 @@ class AccessibilityServiceTest {
                         List.of(roadSectionRestriction)))
                 .thenReturn(List.of(roadSectionCombined));
 
-        Accessibility result = accessibilityService.calculateAccessibility(accessibilityRequest);
+        Accessibility result = accessibilityService.calculateAccessibility(accessibilityRequest, true);
 
         Accessibility expected = Accessibility
                 .builder()
@@ -256,30 +240,19 @@ class AccessibilityServiceTest {
         assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
     }
 
-    private void mockWeighting(VehicleProperties vehicleProperties) {
+    private void mockWeighting() {
 
         when(networkGraphHopper
                 .getProfile(NetworkConstants.VEHICLE_NAME_CAR))
                 .thenReturn(profile);
 
-        when(vehicleRestrictionsModelFactory.getModel(isNull())).thenReturn(modelNoRestrictions);
-        when(vehicleRestrictionsModelFactory.getModel(vehicleProperties)).thenReturn(modelRestrictions);
-
-        when(networkGraphHopper.createWeighting(
-                eq(profile),
-                argThat(new PMapArgumentMatcher(new PMap().putObject(CustomModel.KEY, modelNoRestrictions)))))
-                .thenReturn(weightingNoRestrictions);
-
-        when(networkGraphHopper.createWeighting(
-                eq(profile),
-                argThat(new PMapArgumentMatcher(new PMap().putObject(CustomModel.KEY, modelRestrictions)))))
-                .thenReturn(weightingRestrictions);
+        when(networkGraphHopper.createWeighting(eq(profile), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
+                weightingNoRestrictions);
     }
 
-    private void mockTrafficSignData() {
+    private void mockTrafficSignData(AccessibilityRequest accessibilityRequest) {
 
-        when(trafficSignDataService.findAllByTypes(List.of(TrafficSignType.C12)))
-                .thenReturn(List.of(trafficSign));
+        when(trafficSignDataService.findAllBy(accessibilityRequest)).thenReturn(List.of(trafficSign));
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID);
         when(trafficSignSnap.getTrafficSign()).thenReturn(trafficSign);
     }

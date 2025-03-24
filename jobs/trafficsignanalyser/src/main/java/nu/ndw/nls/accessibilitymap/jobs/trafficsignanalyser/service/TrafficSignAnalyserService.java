@@ -26,8 +26,6 @@ public class TrafficSignAnalyserService {
 
     private final AccessibilityService accessibilityService;
 
-    private final AccessibilityRequestMapper accessibilityRequestMapper;
-
     private final IssueApiClient issueApiClient;
 
     private final ReportApiClient reportApiClient;
@@ -38,7 +36,7 @@ public class TrafficSignAnalyserService {
 
         log.info("Analysing with the following properties: {}", analyseProperties);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequestMapper.map(analyseProperties));
+        Accessibility accessibility = accessibilityService.calculateAccessibility(analyseProperties.accessibilityRequest(), false);
 
         analyseTrafficSigns(accessibility, analyseProperties);
     }

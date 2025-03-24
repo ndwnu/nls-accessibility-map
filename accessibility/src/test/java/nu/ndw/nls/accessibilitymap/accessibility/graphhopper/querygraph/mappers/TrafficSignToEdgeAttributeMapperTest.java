@@ -58,7 +58,7 @@ class TrafficSignToEdgeAttributeMapperTest {
 
     @ParameterizedTest
     @MethodSource("provideTestData")
-    void mapToEdgeAttribute_ok(TrafficSignType trafficSignType, String key, boolean hasTimeWindowedSign, Object value) {
+    void mapToEdgeAttribute(TrafficSignType trafficSignType, String key, boolean hasTimeWindowedSign, Object value) {
 
         when(trafficSign.trafficSignType()).thenReturn(trafficSignType);
         if (hasTimeWindowedSign) {
@@ -76,7 +76,7 @@ class TrafficSignToEdgeAttributeMapperTest {
     }
 
     @Test
-    void mapToEdgeAttribute_ok_allTrafficSignsInTestCase() {
+    void mapToEdgeAttribute_allTrafficSignsInTestCase() {
 
         Set<TrafficSignType> trafficSignTypeSet = provideTestData().map(a -> a.get()[0])
                 .map(TrafficSignType.class::cast)

@@ -11,10 +11,10 @@ import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequestFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.VehiclePropertiesMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.TrafficSignAnalyserService;
@@ -45,7 +45,7 @@ class AnalyseCommandTest {
     private AnalyserConfiguration analyserConfiguration;
 
     @Mock
-    private VehiclePropertiesMapper vehiclePropertiesMapper;
+    private AccessibilityRequestFactory accessibilityRequestFactory;
 
     @Mock
     private ClockService clockService;
@@ -57,7 +57,7 @@ class AnalyseCommandTest {
     private AccessibilityGraphhopperMetaData accessibilityGraphhopperMetaData;
 
     @Mock
-    private VehicleProperties vehicleProperties;
+    private AccessibilityRequest accessibilityRequest;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -65,7 +65,7 @@ class AnalyseCommandTest {
     @BeforeEach
     void setUp() {
 
-        analyseCommand = new AnalyseCommand(accessibilityConfiguration, analyserConfiguration, vehiclePropertiesMapper,
+        analyseCommand = new AnalyseCommand(accessibilityConfiguration, analyserConfiguration, accessibilityRequestFactory,
                 clockService, trafficSignAnalyserService);
     }
 
@@ -78,7 +78,8 @@ class AnalyseCommandTest {
         when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(vehiclePropertiesMapper.map(List.of(trafficSignType), false)).thenReturn(vehicleProperties);
+        when(accessibilityRequestFactory.create(List.of(trafficSignType), analyserConfiguration.startLocationLatitude(),
+                analyserConfiguration.startLocationLatitude(), analyserConfiguration.searchRadiusInMeters())).thenReturn(accessibilityRequest);
 
         when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
@@ -99,7 +100,7 @@ class AnalyseCommandTest {
         assertThat(analyseProperties.startLocationLatitude()).isEqualTo(2d);
         assertThat(analyseProperties.startLocationLongitude()).isEqualTo(3d);
         assertThat(analyseProperties.trafficSignTypes()).isEqualTo(List.of(trafficSignType));
-        assertThat(analyseProperties.vehicleProperties()).isEqualTo(vehicleProperties);
+        assertThat(analyseProperties.accessibilityRequest()).isEqualTo(accessibilityRequest);
         assertThat(analyseProperties.nwbVersion()).isEqualTo(123);
         assertThat(analyseProperties.searchRadiusInMeters()).isEqualTo(4d);
         assertThat(analyseProperties.reportIssues()).isTrue();
@@ -115,8 +116,11 @@ class AnalyseCommandTest {
         when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(vehiclePropertiesMapper.map(List.of(TrafficSignType.C6, TrafficSignType.C7), false)).thenReturn(vehicleProperties);
-        when(vehiclePropertiesMapper.map(List.of(TrafficSignType.C18), false)).thenReturn(vehicleProperties);
+        when(accessibilityRequestFactory.create(List.of(TrafficSignType.C6, TrafficSignType.C7),
+                analyserConfiguration.startLocationLatitude(), analyserConfiguration.startLocationLatitude(),
+                analyserConfiguration.searchRadiusInMeters())).thenReturn(accessibilityRequest);
+        when(accessibilityRequestFactory.create(List.of(TrafficSignType.C18), analyserConfiguration.startLocationLatitude(),
+                analyserConfiguration.startLocationLatitude(), analyserConfiguration.searchRadiusInMeters())).thenReturn(accessibilityRequest);
 
         when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);

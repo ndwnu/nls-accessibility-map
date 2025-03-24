@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Set;
 import lombok.Builder;
 import lombok.With;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import org.springframework.validation.annotation.Validated;
@@ -26,7 +26,7 @@ public record ExportProperties(
         @NotNull Boolean publishEvents,
         @NotNull OffsetDateTime startTime,
         @NotNull List<TrafficSignType> trafficSignTypes,
-        @NotNull VehicleProperties vehicleProperties,
+        @NotNull AccessibilityRequest accessibilityRequest,
         @NotNull Boolean includeOnlyTimeWindowedSigns,
         @NotNull GenerateConfiguration generateConfiguration,
         @Positive double polygonMaxDistanceBetweenPoints,

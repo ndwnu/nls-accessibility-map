@@ -6,13 +6,12 @@ import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequestFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.VehiclePropertiesMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -48,10 +46,10 @@ class GenerateCommandTest {
     private GenerateConfiguration generateConfiguration;
 
     @Mock
-    private VehicleProperties vehicleProperties;
+    private AccessibilityRequest accessibilityRequest;
 
     @Mock
-    private VehiclePropertiesMapper vehiclePropertiesMapper;
+    private AccessibilityRequestFactory accessibilityRequestFactory;
 
     @Mock
     private ClockService clockService;
@@ -66,12 +64,12 @@ class GenerateCommandTest {
     void setUp() {
 
         generateCommand = new GenerateCommand(mapGeneratorService, accessibilityConfiguration,
-                generateConfiguration, vehiclePropertiesMapper, clockService);
+                generateConfiguration, accessibilityRequestFactory, clockService);
     }
 
     @ParameterizedTest
     @EnumSource(value = TrafficSignType.class)
-    void call_ok(TrafficSignType trafficSignType) {
+    void call(TrafficSignType trafficSignType) {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
@@ -79,7 +77,8 @@ class GenerateCommandTest {
                 .thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(vehiclePropertiesMapper.map(List.of(trafficSignType), true)).thenReturn(vehicleProperties);
+        when(accessibilityRequestFactory.create(List.of(trafficSignType), analyserConfiguration.startLocationLatitude(),
+                analyserConfiguration.startLocationLatitude(), analyserConfiguration.searchRadiusInMeters())).thenReturn(accessibilityRequest);
 
         assertThat(new CommandLine(generateCommand)
                 .execute("--export-name=%s".formatted(trafficSignType.name()),
@@ -101,53 +100,6 @@ class GenerateCommandTest {
                 startTime,
                 true,
                 true);
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            true, true,
-            true, false,
-            false, true,
-            false, false
-            """)
-    void call_ok_booleanArguments(boolean includeOnlyTimeWindowedSigns, boolean publishEvents) {
-
-        TrafficSignType trafficSignType = TrafficSignType.C6;
-        OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
-
-        when(accessibilityConfiguration.accessibilityGraphhopperMetaData())
-                .thenReturn(accessibilityGraphhopperMetaData);
-        when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
-        when(clockService.now()).thenReturn(startTime);
-        when(vehiclePropertiesMapper.map(List.of(trafficSignType), includeOnlyTimeWindowedSigns))
-                .thenReturn(vehicleProperties);
-
-        ArrayList<String> arguments = new ArrayList<>();
-        arguments.add("--export-name=%s".formatted(trafficSignType.name()));
-        arguments.add("--traffic-sign=%s".formatted(trafficSignType.name()));
-        arguments.add("--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()));
-        if (includeOnlyTimeWindowedSigns) {
-            arguments.add("--include-only-time-windowed-signs");
-        }
-        if (publishEvents) {
-            arguments.add("--publish-events");
-        }
-
-        assertThat(new CommandLine(generateCommand).execute(arguments.toArray(String[]::new))
-        ).isZero();
-
-        ArgumentCaptor<ExportProperties> exportPropertiesCaptor = ArgumentCaptor.forClass(
-                ExportProperties.class);
-        verify(mapGeneratorService).generate(exportPropertiesCaptor.capture());
-
-        ExportProperties exportProperties = exportPropertiesCaptor.getValue();
-
-        validateexportPropertiesValid(
-                List.of(trafficSignType),
-                exportProperties,
-                startTime,
-                includeOnlyTimeWindowedSigns,
-                publishEvents);
     }
 
     @Test
@@ -202,7 +154,7 @@ class GenerateCommandTest {
         assertThat(exportProperties.trafficSignTypes()).isEqualTo(trafficSignTypes);
         assertThat(exportProperties.includeOnlyTimeWindowedSigns()).isEqualTo(includeOnlyTimeWindowedSigns);
         assertThat(exportProperties.publishEvents()).isEqualTo(publishEvents);
-        assertThat(exportProperties.vehicleProperties()).isEqualTo(vehicleProperties);
+        assertThat(exportProperties.accessibilityRequest()).isEqualTo(accessibilityRequest);
         assertThat(exportProperties.generateConfiguration()).isEqualTo(generateConfiguration);
 
         loggerExtension.containsLog(

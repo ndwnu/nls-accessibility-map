@@ -28,7 +28,7 @@ class EdgeSetterRegistryTest {
     }
 
     @Test
-    void getEdgeSetter_ok() {
+    void getEdgeSetter() {
         assertThat(registry.getEdgeSetter(Boolean.class))
                 .isNotEmpty()
                 .contains(edgeSetter);

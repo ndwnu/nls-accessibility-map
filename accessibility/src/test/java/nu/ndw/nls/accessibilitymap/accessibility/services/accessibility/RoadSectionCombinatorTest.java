@@ -30,7 +30,7 @@ class RoadSectionCombinatorTest {
     }
 
     @Test
-    void combineNoRestrictionsWithAccessibilityRestrictions_ok() {
+    void combineNoRestrictionsWithAccessibilityRestrictions() {
 
         List<RoadSection> roadSectionsWithoutRestrictions = List.of(
                 buildRoadSection(id -> true)

@@ -25,7 +25,7 @@ class ClockServiceTest {
     }
 
     @Test
-    void now_ok() {
+    void now() {
 
         assertThat(clockService.now()).isAtSameInstantAs(OffsetDateTime.now(clock));
     }

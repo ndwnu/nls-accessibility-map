@@ -33,7 +33,7 @@ class AccessibilityRoadSectionMapperTest {
 
 
     @Test
-    void map_ok_forwardOnly() {
+    void map_forwardOnly() {
         when(nwbRoadSectionDto.getRoadSectionId()).thenReturn(ID);
 
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(ROAD_SECTION_DRIVING_DIRECTION_FORWARD);
@@ -44,7 +44,7 @@ class AccessibilityRoadSectionMapperTest {
     }
 
     @Test
-    void map_ok_reverseOnly() {
+    void map_reverseOnly() {
         when(nwbRoadSectionDto.getRoadSectionId()).thenReturn(ID);
 
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(ROAD_SECTION_DRIVING_DIRECTION_BACKWARD);
@@ -55,7 +55,7 @@ class AccessibilityRoadSectionMapperTest {
     }
 
     @Test
-    void map_ok_drivingDirectionBeideResultsInBothDirections() {
+    void map_drivingDirectionBeideResultsInBothDirections() {
         when(nwbRoadSectionDto.getRoadSectionId()).thenReturn(ID);
 
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(ROAD_SECTION_DRIVING_DIRECTION_BEIDE);
@@ -66,7 +66,7 @@ class AccessibilityRoadSectionMapperTest {
     }
 
     @Test
-    void map_ok_drivingDirectionOnbekendResultsInBothDirections() {
+    void map_drivingDirectionOnbekendResultsInBothDirections() {
         when(nwbRoadSectionDto.getRoadSectionId()).thenReturn(ID);
 
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(ROAD_SECTION_DRIVING_DIRECTION_ONBEKEND);
