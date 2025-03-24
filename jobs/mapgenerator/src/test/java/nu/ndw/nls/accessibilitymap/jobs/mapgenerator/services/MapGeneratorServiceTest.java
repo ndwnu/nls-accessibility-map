@@ -17,7 +17,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
@@ -82,7 +81,6 @@ class MapGeneratorServiceTest {
                 .exportTypes(EXPORT_TYPES)
                 .nwbVersion(2)
                 .accessibilityRequest(accessibilityRequest)
-                .trafficSignTypes(List.of(TrafficSignType.C7))
                 .publishEvents(true)
                 .includeOnlyTimeWindowedSigns(true)
                 .build();
@@ -125,7 +123,7 @@ class MapGeneratorServiceTest {
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(accessibilityGeoJsonGeneratedEventMapper.map(
-                exportProperties.trafficSignTypes(),
+                exportProperties.accessibilityRequest().trafficSignTypes().stream().toList(),
                 -1,
                 exportProperties.nwbVersion(),
                 timestamp.toInstant()))

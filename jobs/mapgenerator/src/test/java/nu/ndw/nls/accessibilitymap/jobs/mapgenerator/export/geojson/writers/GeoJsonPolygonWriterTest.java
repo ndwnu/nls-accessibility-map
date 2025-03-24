@@ -20,6 +20,7 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
@@ -109,7 +110,7 @@ class GeoJsonPolygonWriterTest {
     void setUp() {
         exportProperties = ExportProperties.builder()
                 .name(TrafficSignType.C7.name())
-                .trafficSignTypes(List.of(TrafficSignType.C7))
+                .accessibilityRequest(AccessibilityRequest.builder().trafficSignTypes(Set.of(TrafficSignType.C7)).build())
                 .generateConfiguration(generateConfiguration)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
                 .polygonMaxDistanceBetweenPoints(0.0005)

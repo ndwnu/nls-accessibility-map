@@ -104,7 +104,8 @@ public class AccessibilityService {
                         queryGraph,
                         startSegment,
                         trafficSignsById,
-                        buildWeightingWithRestrictions(trafficSignEdgeRestrictions),trafficSignEdgeRestrictions);
+                        buildWeightingWithRestrictions(trafficSignEdgeRestrictions),
+                        trafficSignEdgeRestrictions);
 
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)

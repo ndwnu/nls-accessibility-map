@@ -21,7 +21,12 @@ public record Restrictions(
 
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
 
-        return getActiveRestrictions(accessibilityRequest).stream()
+        List<Predicate<AccessibilityRequest>> activeRestrictions = getActiveRestrictions(accessibilityRequest);
+        if(activeRestrictions.isEmpty()) {
+            return false;
+        }
+
+        return activeRestrictions.stream()
                 .allMatch(restriction -> restriction.test(accessibilityRequest));
     }
 

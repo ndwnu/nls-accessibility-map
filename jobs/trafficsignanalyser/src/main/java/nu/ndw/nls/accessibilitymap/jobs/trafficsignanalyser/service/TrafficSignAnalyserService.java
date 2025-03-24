@@ -47,6 +47,7 @@ public class TrafficSignAnalyserService {
         String issueReportGroupId = "AsymmetricTrafficSignPlacement-%s".formatted(
                 analyseProperties.accessibilityRequest().trafficSignTypes().stream()
                         .map(TrafficSignType::getRvvCode)
+                        .sorted()
                         .collect(Collectors.joining("-")));
 
         List<CreateIssueJson> issues = accessibility.combinedAccessibility()
