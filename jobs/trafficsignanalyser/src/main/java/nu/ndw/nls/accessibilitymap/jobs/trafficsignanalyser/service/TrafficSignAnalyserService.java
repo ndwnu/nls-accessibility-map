@@ -45,7 +45,7 @@ public class TrafficSignAnalyserService {
 
         String issueReportId = "Nwb-%s-%s".formatted(analyseProperties.nwbVersion(), UUID.randomUUID());
         String issueReportGroupId = "AsymmetricTrafficSignPlacement-%s".formatted(
-                analyseProperties.trafficSignTypes().stream()
+                analyseProperties.accessibilityRequest().trafficSignTypes().stream()
                         .map(TrafficSignType::getRvvCode)
                         .collect(Collectors.joining("-")));
 

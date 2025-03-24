@@ -1,9 +1,9 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.mappers;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
@@ -62,7 +62,7 @@ public class TrafficSignRestrictionsBuilder {
 
     private static Restrictions buildC6Restrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(
+                .transportTypes(Set.of(
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
@@ -75,37 +75,37 @@ public class TrafficSignRestrictionsBuilder {
 
     private static Restrictions buildC7Restrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.TRUCK))
                 .build();
     }
 
     private static Restrictions buildC7aRestrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.BUS))
+                .transportTypes(Set.of(TransportType.BUS))
                 .build();
     }
 
     private static Restrictions buildC7bRestrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.BUS, TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.BUS, TransportType.TRUCK))
                 .build();
     }
 
     private static Restrictions buildC7cRestrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
                 .build();
     }
 
     private static Restrictions buildC10Restrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.VEHICLE_WITH_TRAILER))
+                .transportTypes(Set.of(TransportType.VEHICLE_WITH_TRAILER))
                 .build();
     }
 
     private static Restrictions buildC12Restrictions() {
         return Restrictions.builder()
-                .transportTypes(List.of(
+                .transportTypes(Set.of(
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
@@ -187,13 +187,13 @@ public class TrafficSignRestrictionsBuilder {
     private static Restrictions buildC22Restrictions() {
 
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES))
+                .transportTypes(Set.of(TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES))
                 .build();
     }
     private static Restrictions buildC22cRestrictions() {
 
         return Restrictions.builder()
-                .transportTypes(List.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
                 .build();
     }
 }

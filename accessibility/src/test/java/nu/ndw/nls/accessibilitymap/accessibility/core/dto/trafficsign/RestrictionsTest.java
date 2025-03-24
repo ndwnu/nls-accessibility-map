@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
@@ -31,7 +31,7 @@ class RestrictionsTest {
     void isRestrictive_combinationTest() {
 
         restrictions = Restrictions.builder()
-                .transportTypes(List.of(TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.TRUCK))
                 .vehicleLengthInCm(Maximum.builder().value(10d).build())
                 .vehicleWidthInCm(Maximum.builder().value(20d).build())
                 .vehicleHeightInCm(Maximum.builder().value(30d).build())
@@ -40,7 +40,7 @@ class RestrictionsTest {
                 .build();
 
         assertThat(restrictions.isRestrictive(accessibilityRequest
-                .withTransportTypes(List.of(TransportType.TRUCK))
+                .withTransportTypes(Set.of(TransportType.TRUCK))
                 .withVehicleLengthInCm(restrictions.vehicleLengthInCm().value() + 1d)
                 .withVehicleWidthInCm(restrictions.vehicleWidthInCm().value() + 1d)
                 .withVehicleHeightInCm(restrictions.vehicleHeightInCm().value() + 1d)
@@ -49,7 +49,7 @@ class RestrictionsTest {
         )).isTrue();
 
         assertThat(restrictions.isRestrictive(accessibilityRequest
-                .withTransportTypes(List.of(TransportType.BUS))
+                .withTransportTypes(Set.of(TransportType.BUS))
                 .withVehicleLengthInCm(restrictions.vehicleLengthInCm().value() - 1d)
                 .withVehicleWidthInCm(restrictions.vehicleWidthInCm().value() - 1d)
                 .withVehicleHeightInCm(restrictions.vehicleHeightInCm().value() - 1d)
@@ -63,10 +63,10 @@ class RestrictionsTest {
     void isRestrictive_transportType_isRestrictive(TransportType transportType) {
 
         restrictions = Restrictions.builder()
-                .transportTypes(List.of(transportType))
+                .transportTypes(Set.of(transportType))
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportTypes(List.of(transportType)))).isTrue();
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportTypes(Set.of(transportType)))).isTrue();
     }
 
     @ParameterizedTest
@@ -77,7 +77,7 @@ class RestrictionsTest {
                 .transportTypes(TransportType.allExcept(transportType))
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportTypes(List.of(transportType)))).isFalse();
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportTypes(Set.of(transportType)))).isFalse();
     }
 
     @ParameterizedTest

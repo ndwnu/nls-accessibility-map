@@ -16,6 +16,7 @@ import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
@@ -165,7 +166,7 @@ class AccessibilityServiceTest {
                 .startLocationLongitude(START_LOCATION_LONGITUDE)
                 .municipalityId(MUNICIPALITY_ID)
                 .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
-                .transportTypes(List.of(TransportType.CAR))
+                .transportTypes(Set.of(TransportType.CAR))
                 .build();
 
         mockTrafficSignData(accessibilityRequest);

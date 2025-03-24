@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
@@ -11,7 +12,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 
 @Builder
 public record Restrictions(
-        List<TransportType> transportTypes,
+        Set<TransportType> transportTypes,
         Maximum vehicleLengthInCm,
         Maximum vehicleHeightInCm,
         Maximum vehicleWidthInCm,
@@ -20,34 +21,34 @@ public record Restrictions(
 
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
 
-        return getActiveRestrictions().stream()
+        return getActiveRestrictions(accessibilityRequest).stream()
                 .allMatch(restriction -> restriction.test(accessibilityRequest));
     }
 
-    private List<Predicate<AccessibilityRequest>> getActiveRestrictions() {
+    private List<Predicate<AccessibilityRequest>> getActiveRestrictions(AccessibilityRequest accessibilityRequest) {
         List<Predicate<AccessibilityRequest>> activeRestrictions = new ArrayList<>();
 
-        if (Objects.nonNull(transportTypes)) {
+        if (Objects.nonNull(transportTypes) && Objects.nonNull(accessibilityRequest.transportTypes())) {
             activeRestrictions.add(containsTransportType());
         }
 
-        if (Objects.nonNull(vehicleLengthInCm)) {
+        if (Objects.nonNull(vehicleLengthInCm) && Objects.nonNull(accessibilityRequest.vehicleLengthInCm())) {
             activeRestrictions.add(isExceedingVehicleLength());
         }
 
-        if (Objects.nonNull(vehicleWidthInCm)) {
+        if (Objects.nonNull(vehicleWidthInCm) && Objects.nonNull(accessibilityRequest.vehicleWidthInCm())) {
             activeRestrictions.add(isExceedingVehicleWidth());
         }
 
-        if (Objects.nonNull(vehicleHeightInCm)) {
+        if (Objects.nonNull(vehicleHeightInCm) && Objects.nonNull(accessibilityRequest.vehicleHeightInCm())) {
             activeRestrictions.add(isExceedingVehicleHeight());
         }
 
-        if (Objects.nonNull(vehicleWeightInKg)) {
+        if (Objects.nonNull(vehicleWeightInKg) && Objects.nonNull(accessibilityRequest.vehicleWeightInKg())) {
             activeRestrictions.add(isExceedingVehicleWeight());
         }
 
-        if (Objects.nonNull(vehicleAxleLoadInKg)) {
+        if (Objects.nonNull(vehicleAxleLoadInKg) && Objects.nonNull(accessibilityRequest.vehicleAxleLoadInKg())) {
             activeRestrictions.add(isExceedingVehicleAxleLoad());
         }
 
@@ -75,8 +76,6 @@ public record Restrictions(
     }
 
     private Predicate<AccessibilityRequest> containsTransportType() {
-        return accessibilityRequest ->
-                !Objects.isNull(transportTypes)
-                        && transportTypes.stream().anyMatch(accessibilityRequest.transportTypes()::contains);
+        return accessibilityRequest -> transportTypes.stream().anyMatch(accessibilityRequest.transportTypes()::contains);
     }
 }
