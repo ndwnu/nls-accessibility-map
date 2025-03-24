@@ -67,7 +67,7 @@ class RoadSectionTest extends ValidationTest {
     }
 
     @Test
-    void validate_ok() {
+    void validate() {
 
         validate(roadSection, List.of(), List.of());
     }

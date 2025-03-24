@@ -27,37 +27,12 @@ public class MapGeneratorService {
 
     private final MessageService messageService;
 
-    private final AccessibilityRequestMapper accessibilityRequestMapper;
-
     public void generate(@Valid ExportProperties exportProperties) {
 
         log.info("Generating with the following properties: {}", exportProperties);
         Accessibility accessibility = accessibilityService.calculateAccessibility(
-                accessibilityRequestMapper.map(exportProperties));
-
-        long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
-                .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
-                .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                .filter(DirectionalSegment::hasTrafficSign)
-                .count();
-
-        log.debug("Found {} with road section fragments with traffic signs.", roadSectionsWithTrafficSigns);
-        resultExporters.stream()
-                .filter(abstractGeoJsonWriter -> abstractGeoJsonWriter.isEnabled(exportProperties.exportTypes()))
-                .forEach(abstractGeoJsonWriter -> abstractGeoJsonWriter.export(accessibility,
-                        exportProperties));
-
-        if (exportProperties.publishEvents()) {
-            sendEventGeneratingDone(exportProperties);
-        }
-    }
-
-
-    public void generateV2(@Valid ExportProperties exportProperties) {
-
-        log.info("Generating with the following properties: {}", exportProperties);
-        Accessibility accessibility = accessibilityService.calculateAccessibilityV2(
-                accessibilityRequestMapper.map(exportProperties));
+                exportProperties.accessibilityRequest(),
+                exportProperties.includeOnlyTimeWindowedSigns());
 
         long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())

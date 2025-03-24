@@ -31,23 +31,23 @@ class DoubleEdgeSetterTest {
     private DoubleEdgeSetter setter;
 
     @Test
-    void getGetDataTypeClass_ok() {
+    void getGetDataTypeClass() {
         assertThat(setter.getGetDataTypeClass()).isEqualTo(Double.class);
     }
 
     @Test
-    void getDefaultValue_ok() {
+    void getDefaultValue() {
         when(decimalEncodedValue.getMaxStorableDecimal()).thenReturn(DECIMAL_VALUE);
         assertThat(setter.getDefaultValue(decimalEncodedValue)).isEqualTo(DECIMAL_VALUE);
     }
 
     @Test
-    void getEncoderType_ok() {
+    void getEncoderType() {
         assertThat(setter.getEncoderType()).isEqualTo(DecimalEncodedValue.class);
     }
 
     @Test
-    void set_ok() {
+    void set() {
 
         setter.set(edgeIteratorState, decimalEncodedValue, DECIMAL_VALUE);
 
@@ -55,7 +55,7 @@ class DoubleEdgeSetterTest {
     }
 
     @Test
-    void setReverse_ok() {
+    void setReverse() {
 
         setter.setReverse(edgeIteratorState, decimalEncodedValue, DECIMAL_VALUE);
 

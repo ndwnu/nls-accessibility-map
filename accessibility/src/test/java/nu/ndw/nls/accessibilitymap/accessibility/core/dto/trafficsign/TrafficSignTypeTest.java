@@ -11,7 +11,7 @@ class TrafficSignTypeTest {
 
     @ParameterizedTest
     @EnumSource(value = TrafficSignType.class)
-    void fromRvvCode_ok(TrafficSignType trafficSignType) {
+    void fromRvvCode(TrafficSignType trafficSignType) {
         assertThat(TrafficSignType
                 .fromRvvCode(trafficSignType.getRvvCode())).isEqualTo(trafficSignType);
     }

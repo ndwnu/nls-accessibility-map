@@ -7,9 +7,9 @@ import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequestFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.VehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.TrafficSignAnalyserService;
@@ -27,7 +27,7 @@ public class AnalyseCommand implements Callable<Integer> {
 
     private final AnalyserConfiguration analyserConfiguration;
 
-    private final VehiclePropertiesMapper vehiclePropertiesMapper;
+    private final AccessibilityRequestFactory accessibilityRequestFactory;
 
     private final ClockService clockService;
 
@@ -60,7 +60,11 @@ public class AnalyseCommand implements Callable<Integer> {
                         .startLocationLatitude(analyserConfiguration.startLocationLatitude())
                         .startLocationLongitude(analyserConfiguration.startLocationLongitude())
                         .trafficSignTypes(trafficSignTypes)
-                        .vehicleProperties(vehiclePropertiesMapper.map(trafficSignTypes, false))
+                        .accessibilityRequest(accessibilityRequestFactory.create(
+                                trafficSignTypes,
+                                analyserConfiguration.startLocationLatitude(),
+                                analyserConfiguration.startLocationLongitude(),
+                                analyserConfiguration.searchRadiusInMeters()))
                         .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                         .searchRadiusInMeters(analyserConfiguration.searchRadiusInMeters())
                         .reportIssues(reportIssues)

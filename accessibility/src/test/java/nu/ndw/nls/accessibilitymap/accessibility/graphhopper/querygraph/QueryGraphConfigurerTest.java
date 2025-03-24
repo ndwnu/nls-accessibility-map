@@ -186,7 +186,7 @@ class QueryGraphConfigurerTest {
             false
             true
             """)
-    void configure_ok_assigned(boolean reversed) {
+    void configure_assigned(boolean reversed) {
 
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
@@ -233,7 +233,7 @@ class QueryGraphConfigurerTest {
     }
 
     @Test
-    void configure_ok_notAssigned_noTrafficSign_inDirection() {
+    void configure_notAssigned_noTrafficSign_inDirection() {
 
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
@@ -250,7 +250,7 @@ class QueryGraphConfigurerTest {
     }
 
     @Test
-    void configure_ok_notAssigned_edgeNotBehind() {
+    void configure_notAssigned_edgeNotBehind() {
 
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
@@ -277,7 +277,7 @@ class QueryGraphConfigurerTest {
     }
 
     @Test
-    void configure_ok_notAssigned_roadSectionIdNotEqual() {
+    void configure_notAssigned_roadSectionIdNotEqual() {
 
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();

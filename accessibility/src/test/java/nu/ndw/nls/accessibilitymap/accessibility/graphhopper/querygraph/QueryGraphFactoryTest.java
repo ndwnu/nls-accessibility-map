@@ -60,7 +60,7 @@ class QueryGraphFactoryTest {
     }
 
     @Test
-    void createQueryGraph_ok() {
+    void createQueryGraph() {
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(trafficSignSnap.getSnap()).thenReturn(snapForTrafficSign);
         queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(snapForTrafficSign, startSegment))).thenReturn(queryGraph);

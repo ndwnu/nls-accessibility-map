@@ -1,68 +1,82 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import lombok.Builder;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.request.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.value.Range;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.value.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 
 @Builder
 public record Restrictions(
-        Boolean isBlocked,
         List<TransportType> transportTypes,
-        Range vehicleLength,
-        Range vehicleHeight,
-        Range vehicleWidth,
-        Range vehicleWeight,
-        Range vehicleAxleLoad
-) {
+        Maximum vehicleLengthInCm,
+        Maximum vehicleHeightInCm,
+        Maximum vehicleWidthInCm,
+        Maximum vehicleWeightInKg,
+        Maximum vehicleAxleLoadInKg) {
 
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
 
-        return isRestricted()
-                .or(isNotWithinVehicleLength())
-                .or(isNotWithinVehicleHeight())
-                .or(isNotWithinVehicleWidth())
-                .or(isNotWithinVehicleWeight())
-                .or(isNotWithinVehicleAxleLoad())
-                .or(containsTransportType())
-                .test(accessibilityRequest);
+        return getActiveRestrictions().stream()
+                .allMatch(restriction -> restriction.test(accessibilityRequest));
     }
 
-    private Predicate<AccessibilityRequest> isRestricted() {
-        return accessibilityRequest -> !Objects.isNull(isBlocked) && isBlocked;
+    private List<Predicate<AccessibilityRequest>> getActiveRestrictions() {
+        List<Predicate<AccessibilityRequest>> activeRestrictions = new ArrayList<>();
+
+        if (Objects.nonNull(transportTypes)) {
+            activeRestrictions.add(containsTransportType());
+        }
+
+        if (Objects.nonNull(vehicleLengthInCm)) {
+            activeRestrictions.add(isExceedingVehicleLength());
+        }
+
+        if (Objects.nonNull(vehicleWidthInCm)) {
+            activeRestrictions.add(isExceedingVehicleWidth());
+        }
+
+        if (Objects.nonNull(vehicleHeightInCm)) {
+            activeRestrictions.add(isExceedingVehicleHeight());
+        }
+
+        if (Objects.nonNull(vehicleWeightInKg)) {
+            activeRestrictions.add(isExceedingVehicleWeight());
+        }
+
+        if (Objects.nonNull(vehicleAxleLoadInKg)) {
+            activeRestrictions.add(isExceedingVehicleAxleLoad());
+        }
+
+        return activeRestrictions;
     }
 
-    private Predicate<AccessibilityRequest> isNotWithinVehicleLength() {
-        return accessibilityRequest -> !Objects.isNull(vehicleLength)
-                && vehicleLength.isNotWithin(accessibilityRequest.vehicleLength(), true);
+    private Predicate<AccessibilityRequest> isExceedingVehicleLength() {
+        return accessibilityRequest -> vehicleLengthInCm.isExceeding(accessibilityRequest.vehicleLengthInCm(), false);
     }
 
-    private Predicate<AccessibilityRequest> isNotWithinVehicleHeight() {
-        return accessibilityRequest -> !Objects.isNull(vehicleHeight)
-                && vehicleHeight.isNotWithin(accessibilityRequest.vehicleHeight(), true);
+    private Predicate<AccessibilityRequest> isExceedingVehicleHeight() {
+        return accessibilityRequest -> vehicleHeightInCm.isExceeding(accessibilityRequest.vehicleHeightInCm(), false);
     }
 
-    private Predicate<AccessibilityRequest> isNotWithinVehicleWidth() {
-        return accessibilityRequest -> !Objects.isNull(vehicleWidth)
-                && vehicleWidth.isNotWithin(accessibilityRequest.vehicleWidth(), true);
+    private Predicate<AccessibilityRequest> isExceedingVehicleWidth() {
+        return accessibilityRequest -> vehicleWidthInCm.isExceeding(accessibilityRequest.vehicleWidthInCm(), false);
     }
 
-    private Predicate<AccessibilityRequest> isNotWithinVehicleWeight() {
-        return accessibilityRequest -> !Objects.isNull(vehicleWeight)
-                && vehicleWeight.isNotWithin(accessibilityRequest.vehicleWeight(), true);
+    private Predicate<AccessibilityRequest> isExceedingVehicleWeight() {
+        return accessibilityRequest -> vehicleWeightInKg.isExceeding(accessibilityRequest.vehicleWeightInKg(), false);
     }
 
-    private Predicate<AccessibilityRequest> isNotWithinVehicleAxleLoad() {
-        return accessibilityRequest -> !Objects.isNull(vehicleAxleLoad)
-                && vehicleAxleLoad.isNotWithin(accessibilityRequest.vehicleAxleLoad(), true);
+    private Predicate<AccessibilityRequest> isExceedingVehicleAxleLoad() {
+        return accessibilityRequest -> vehicleAxleLoadInKg.isExceeding(accessibilityRequest.vehicleAxleLoadInKg(), false);
     }
 
     private Predicate<AccessibilityRequest> containsTransportType() {
         return accessibilityRequest ->
                 !Objects.isNull(transportTypes)
-                        && transportTypes.contains(accessibilityRequest.transportType());
+                        && transportTypes.stream().anyMatch(accessibilityRequest.transportTypes()::contains);
     }
 }

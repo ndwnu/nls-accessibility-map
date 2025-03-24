@@ -64,7 +64,7 @@ class RoadSectionMapperTest {
             true,
             false
             """)
-    void mapToRoadSections_ok(boolean isReversed) {
+    void mapToRoadSections(boolean isReversed) {
 
         List<IsochroneMatch> isochroneMatches = List.of(isochroneMatch);
         Map<Integer, TrafficSign> trafficSignById = Map.of(

@@ -1,21 +1,34 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class TrafficSignTest {
 
     private TrafficSign trafficSign;
 
+    @Mock
+    private Restrictions restrictions;
+
+    @Mock
+    private AccessibilityRequest accessibilityRequest;
+
     @Test
-    void hasTimeWindowedSign_ok() {
+    void hasTimeWindowedSign() {
 
         trafficSign = TrafficSign.builder()
                 .textSigns(List.of(
@@ -33,7 +46,7 @@ class TrafficSignTest {
 
     @ParameterizedTest
     @EnumSource(value = TextSignType.class, mode = Mode.EXCLUDE, names = "TIME_PERIOD")
-    void hasTimeWindowedSign_ok_hasNoTimedWindowSign(TextSignType textSignType) {
+    void hasTimeWindowedSign_hasNoTimedWindowSign(TextSignType textSignType) {
 
         trafficSign = TrafficSign.builder()
                 .textSigns(List.of(
@@ -47,7 +60,7 @@ class TrafficSignTest {
     }
 
     @Test
-    void findFirstTimeWindowedSign_ok() {
+    void findFirstTimeWindowedSign() {
 
         trafficSign = TrafficSign.builder()
                 .textSigns(List.of(
@@ -66,7 +79,7 @@ class TrafficSignTest {
     }
 
     @Test
-    void findFirstTimeWindowedSign_ok_nothingFound() {
+    void findFirstTimeWindowedSign_nothingFound() {
 
         trafficSign = TrafficSign.builder()
                 .textSigns(List.of(
@@ -78,5 +91,19 @@ class TrafficSignTest {
                 .build();
 
         assertThat(trafficSign.findFirstTimeWindowedSign()).isEmpty();
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            true,
+            false""")
+    void isRelevant(boolean isRestrictive) {
+
+        when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(isRestrictive);
+        trafficSign = TrafficSign.builder()
+                .restrictions(restrictions)
+                .build();
+
+        assertThat(trafficSign.isRelevant(accessibilityRequest)).isEqualTo(isRestrictive);
     }
 }

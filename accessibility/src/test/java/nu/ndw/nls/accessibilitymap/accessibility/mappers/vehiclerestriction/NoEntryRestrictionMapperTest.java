@@ -30,7 +30,7 @@ class NoEntryRestrictionMapperTest {
     }
 
     @Test
-    void getStatement_ok_isRestricted() {
+    void getStatement_isRestricted() {
         when(vehicleProperties.carAccessForbidden()).thenReturn(true);
 
         Optional<Statement> result = noEntryRestrictionMapper.getStatement(vehicleProperties);
@@ -43,7 +43,7 @@ class NoEntryRestrictionMapperTest {
     }
 
     @Test
-    void getStatement_ok_isNotRestricted() {
+    void getStatement_isNotRestricted() {
         when(vehicleProperties.carAccessForbidden()).thenReturn(false);
 
         Optional<Statement> result = noEntryRestrictionMapper.getStatement(vehicleProperties);

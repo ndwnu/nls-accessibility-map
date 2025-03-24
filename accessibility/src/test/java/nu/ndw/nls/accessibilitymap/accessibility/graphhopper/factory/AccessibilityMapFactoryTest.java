@@ -22,7 +22,7 @@ class AccessibilityMapFactoryTest {
     private AccessibilityMapFactory accessibilityMapFactory;
 
     @Test
-    void createMapMatcher_ok() {
+    void createMapMatcher() {
         accessibilityMapFactory.createMapMatcher(network);
         verify(isochroneServiceFactory).createService(network);
     }

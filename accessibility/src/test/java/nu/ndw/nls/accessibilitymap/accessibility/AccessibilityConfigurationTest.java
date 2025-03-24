@@ -44,7 +44,7 @@ class AccessibilityConfigurationTest {
 
     @Test
     @SneakyThrows
-    void networkGraphHopper_ok() {
+    void networkGraphHopper() {
         when(graphHopperConfiguration.configureLoadingRoutingNetworkSettings()).thenReturn(routingNetworkSettings);
         when(graphHopperNetworkService.loadFromDisk(routingNetworkSettings)).thenReturn(networkGraphHopper);
         assertEquals(networkGraphHopper, accessibilityConfiguration.networkGraphHopper());
@@ -52,14 +52,14 @@ class AccessibilityConfigurationTest {
 
     @Test
     @SneakyThrows
-    void accessibilityGraphhopperMetaData_ok() {
+    void accessibilityGraphhopperMetaData() {
         when(networkMetaDataService.loadMetaData()).thenReturn(accessibilityGraphhopperMetaData);
         assertEquals(accessibilityGraphhopperMetaData,
                 accessibilityConfiguration.accessibilityGraphhopperMetaData());
     }
 
     @Test
-    void edgeIteratorStateReverseExtractor_ok() {
+    void edgeIteratorStateReverseExtractor() {
         assertNotNull(accessibilityConfiguration.edgeIteratorStateReverseExtractor());
 
     }

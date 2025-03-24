@@ -10,13 +10,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class DirectionTest {
 
     @Test
-    void isForward_ok() {
+    void isForward() {
         assertThat(Direction.FORWARD.isForward()).isTrue();
         assertThat(Direction.BACKWARD.isForward()).isFalse();
     }
 
     @Test
-    void isBackward_ok() {
+    void isBackward() {
         assertThat(Direction.FORWARD.isBackward()).isFalse();
         assertThat(Direction.BACKWARD.isBackward()).isTrue();
     }

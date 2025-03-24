@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class LongSequenceSupplierTest {
 
     @Test
-    void next_ok() {
+    void next() {
         LongSequenceSupplier longSequenceSupplier = new LongSequenceSupplier();
 
         assertThat(longSequenceSupplier.next()).isOne();

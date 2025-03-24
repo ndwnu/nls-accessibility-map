@@ -98,7 +98,7 @@ class AccessibilityMapTest {
     }
 
     @Test
-    void getAccessibleRoadSections_ok() {
+    void getAccessibleRoadSections() {
         when(accessibilityRequest.vehicleProperties()).thenReturn(vehicleProperties);
         when(modelFactory.getModel(vehicleProperties)).thenReturn(model);
 
