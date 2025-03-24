@@ -12,7 +12,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequestFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
@@ -45,9 +44,6 @@ class AnalyseCommandTest {
     private AnalyserConfiguration analyserConfiguration;
 
     @Mock
-    private AccessibilityRequestFactory accessibilityRequestFactory;
-
-    @Mock
     private ClockService clockService;
 
     @Mock
@@ -65,8 +61,7 @@ class AnalyseCommandTest {
     @BeforeEach
     void setUp() {
 
-        analyseCommand = new AnalyseCommand(accessibilityConfiguration, analyserConfiguration, accessibilityRequestFactory,
-                clockService, trafficSignAnalyserService);
+        analyseCommand = new AnalyseCommand(accessibilityConfiguration, analyserConfiguration, clockService, trafficSignAnalyserService);
     }
 
     @ParameterizedTest
@@ -78,8 +73,6 @@ class AnalyseCommandTest {
         when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(accessibilityRequestFactory.create(List.of(trafficSignType), analyserConfiguration.startLocationLatitude(),
-                analyserConfiguration.startLocationLatitude(), analyserConfiguration.searchRadiusInMeters())).thenReturn(accessibilityRequest);
 
         when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
@@ -97,12 +90,11 @@ class AnalyseCommandTest {
 
         AnalyseProperties analyseProperties = analysePropertiesCaptor.getValue();
         assertThat(analyseProperties.startTime()).isEqualTo(startTime);
-        assertThat(analyseProperties.startLocationLatitude()).isEqualTo(2d);
-        assertThat(analyseProperties.startLocationLongitude()).isEqualTo(3d);
-        assertThat(analyseProperties.trafficSignTypes()).isEqualTo(List.of(trafficSignType));
-        assertThat(analyseProperties.accessibilityRequest()).isEqualTo(accessibilityRequest);
+        assertThat(analyseProperties.accessibilityRequest().startLocationLatitude()).isEqualTo(2d);
+        assertThat(analyseProperties.accessibilityRequest().startLocationLongitude()).isEqualTo(3d);
+        assertThat(analyseProperties.accessibilityRequest().trafficSignTypes()).isEqualTo(List.of(trafficSignType));
+        assertThat(analyseProperties.accessibilityRequest().searchRadiusInMeters()).isEqualTo(4d);
         assertThat(analyseProperties.nwbVersion()).isEqualTo(123);
-        assertThat(analyseProperties.searchRadiusInMeters()).isEqualTo(4d);
         assertThat(analyseProperties.reportIssues()).isTrue();
 
         loggerExtension.containsLog(Level.INFO, "Analysing traffic signs: [%s]".formatted(trafficSignType.name()));
@@ -116,11 +108,6 @@ class AnalyseCommandTest {
         when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(accessibilityRequestFactory.create(List.of(TrafficSignType.C6, TrafficSignType.C7),
-                analyserConfiguration.startLocationLatitude(), analyserConfiguration.startLocationLatitude(),
-                analyserConfiguration.searchRadiusInMeters())).thenReturn(accessibilityRequest);
-        when(accessibilityRequestFactory.create(List.of(TrafficSignType.C18), analyserConfiguration.startLocationLatitude(),
-                analyserConfiguration.startLocationLatitude(), analyserConfiguration.searchRadiusInMeters())).thenReturn(accessibilityRequest);
 
         when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
@@ -133,9 +120,9 @@ class AnalyseCommandTest {
         ).isZero();
 
         verify(trafficSignAnalyserService).analyse(argThat(
-                analyseProperties -> analyseProperties.trafficSignTypes().containsAll(List.of(TrafficSignType.C6, TrafficSignType.C7))));
+                analyseProperties -> analyseProperties.accessibilityRequest().trafficSignTypes().containsAll(List.of(TrafficSignType.C6, TrafficSignType.C7))));
         verify(trafficSignAnalyserService).analyse(argThat(
-                analyseProperties -> analyseProperties.trafficSignTypes().contains(TrafficSignType.C18)));
+                analyseProperties -> analyseProperties.accessibilityRequest().trafficSignTypes().contains(TrafficSignType.C18)));
 
         loggerExtension.containsLog
                 (Level.INFO,

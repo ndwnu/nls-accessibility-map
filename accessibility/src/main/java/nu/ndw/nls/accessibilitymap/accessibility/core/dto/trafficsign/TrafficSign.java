@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.With;
@@ -46,6 +47,7 @@ public record TrafficSign(
 
     public boolean isRelevant(AccessibilityRequest accessibilityRequest) {
 
-        return restrictions.isRestrictive(accessibilityRequest);
+        return (Objects.nonNull(trafficSignType) && accessibilityRequest.trafficSignTypes().contains(trafficSignType))
+                && restrictions.isRestrictive(accessibilityRequest);
     }
 }

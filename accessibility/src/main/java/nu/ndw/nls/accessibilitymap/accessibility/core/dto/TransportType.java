@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,15 +28,15 @@ public enum TransportType {
     private final String type;
 
     @SuppressWarnings("java:S923")
-    public static List<TransportType> allExcept(TransportType... excludingTypes) {
+    public static Set<TransportType> allExcept(TransportType... excludingTypes) {
 
-        return allExcept(List.of(excludingTypes));
+        return allExcept(Set.of(excludingTypes));
     }
 
-    public static List<TransportType> allExcept(List<TransportType> excludingTypes) {
+    public static Set<TransportType> allExcept(Set<TransportType> excludingTypes) {
 
         return Stream.of(TransportType.values())
                 .filter(t -> !excludingTypes.contains(t))
-                .toList();
+                .collect(Collectors.toSet());
     }
 }

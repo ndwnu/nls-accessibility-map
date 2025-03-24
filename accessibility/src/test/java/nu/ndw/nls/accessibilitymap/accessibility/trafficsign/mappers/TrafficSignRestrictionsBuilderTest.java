@@ -3,7 +3,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.mappers;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
@@ -48,7 +49,7 @@ class TrafficSignRestrictionsBuilderTest {
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
                 .transportTypes(Arrays.stream(TransportType.values())
                         .filter(transportType -> transportType != TransportType.PEDESTRIAN)
-                        .toList())
+                        .collect(Collectors.toSet()))
                 .build());
     }
 
@@ -60,7 +61,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(
+                .transportTypes(Set.of(
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
@@ -79,7 +80,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.TRUCK))
                 .build());
     }
 
@@ -91,7 +92,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(TransportType.BUS))
+                .transportTypes(Set.of(TransportType.BUS))
                 .build());
     }
 
@@ -103,7 +104,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(TransportType.BUS, TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.BUS, TransportType.TRUCK))
                 .build());
     }
 
@@ -115,7 +116,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
                 .build());
     }
 
@@ -127,7 +128,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(
+                .transportTypes(Set.of(
                         TransportType.VEHICLE_WITH_TRAILER
                 ))
                 .build());
@@ -140,7 +141,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(
+                .transportTypes(Set.of(
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
@@ -225,7 +226,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES))
+                .transportTypes(Set.of(TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES))
                 .build());
     }
 
@@ -237,7 +238,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(List.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
                 .build());
     }
 }

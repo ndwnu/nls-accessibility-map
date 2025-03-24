@@ -14,6 +14,7 @@ import feign.FeignException;
 import feign.FeignException.FeignClientException;
 import feign.FeignException.FeignServerException;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
@@ -99,7 +100,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(true);
-        when(analyseProperties.trafficSignTypes()).thenReturn(List.of(TrafficSignType.C21, TrafficSignType.C22C));
+        when(analyseProperties.accessibilityRequest().trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
 
         when(accessibilityService.calculateAccessibility(accessibilityRequest, false)).thenReturn(accessibility);
@@ -146,7 +147,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(false);
-        when(analyseProperties.trafficSignTypes()).thenReturn(List.of(TrafficSignType.C21, TrafficSignType.C22C));
+        when(analyseProperties.accessibilityRequest().trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
 
         when(accessibilityService.calculateAccessibility(accessibilityRequest,false)).thenReturn(accessibility);
@@ -182,7 +183,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(true);
-        when(analyseProperties.trafficSignTypes()).thenReturn(List.of(TrafficSignType.C21, TrafficSignType.C22C));
+        when(analyseProperties.accessibilityRequest().trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
 
         when(accessibilityService.calculateAccessibility(accessibilityRequest, false)).thenReturn(accessibility);
@@ -218,7 +219,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(true);
-        when(analyseProperties.trafficSignTypes()).thenReturn(List.of(TrafficSignType.C21, TrafficSignType.C22C));
+        when(analyseProperties.accessibilityRequest().trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
 
         when(accessibilityService.calculateAccessibility(accessibilityRequest, false)).thenReturn(accessibility);

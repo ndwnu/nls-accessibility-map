@@ -1,10 +1,11 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 import lombok.Builder;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import org.springframework.validation.annotation.Validated;
 
 @Builder
@@ -20,6 +21,7 @@ public record AccessibilityRequest(
         Double vehicleWidthInCm,
         Double vehicleWeightInKg,
         Double vehicleAxleLoadInKg,
-        List<TransportType> transportTypes) {
+        Set<TransportType> transportTypes,
+        Set<TrafficSignType> trafficSignTypes) {
 
 }

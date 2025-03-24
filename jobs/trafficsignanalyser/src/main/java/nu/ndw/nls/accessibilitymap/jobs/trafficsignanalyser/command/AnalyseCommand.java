@@ -3,11 +3,13 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequestFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
@@ -26,8 +28,6 @@ public class AnalyseCommand implements Callable<Integer> {
     private final AccessibilityConfiguration accessibilityConfiguration;
 
     private final AnalyserConfiguration analyserConfiguration;
-
-    private final AccessibilityRequestFactory accessibilityRequestFactory;
 
     private final ClockService clockService;
 
@@ -50,23 +50,20 @@ public class AnalyseCommand implements Callable<Integer> {
             OffsetDateTime startTime = clockService.now();
 
             for (String trafficSignRvvCodes : trafficSigns) {
-                List<TrafficSignType> trafficSignTypes = Arrays.stream(trafficSignRvvCodes.split(","))
+                Set<TrafficSignType> trafficSignTypes = Arrays.stream(trafficSignRvvCodes.split(","))
                         .map(String::trim)
                         .map(TrafficSignType::valueOf)
-                        .toList();
+                        .collect(Collectors.toSet());
 
                 AnalyseProperties analyseProperties = AnalyseProperties.builder()
                         .startTime(startTime)
-                        .startLocationLatitude(analyserConfiguration.startLocationLatitude())
-                        .startLocationLongitude(analyserConfiguration.startLocationLongitude())
-                        .trafficSignTypes(trafficSignTypes)
-                        .accessibilityRequest(accessibilityRequestFactory.create(
-                                trafficSignTypes,
-                                analyserConfiguration.startLocationLatitude(),
-                                analyserConfiguration.startLocationLongitude(),
-                                analyserConfiguration.searchRadiusInMeters()))
+                        .accessibilityRequest(AccessibilityRequest.builder()
+                                .trafficSignTypes(trafficSignTypes)
+                                .startLocationLatitude(analyserConfiguration.startLocationLatitude())
+                                .startLocationLongitude(analyserConfiguration.startLocationLongitude())
+                                .searchRadiusInMeters(analyserConfiguration.searchRadiusInMeters())
+                                .build())
                         .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
-                        .searchRadiusInMeters(analyserConfiguration.searchRadiusInMeters())
                         .reportIssues(reportIssues)
                         .build();
 
