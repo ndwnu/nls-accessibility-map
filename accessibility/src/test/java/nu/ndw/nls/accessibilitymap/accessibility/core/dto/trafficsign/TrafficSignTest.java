@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
@@ -23,9 +24,6 @@ class TrafficSignTest {
 
     @Mock
     private Restrictions restrictions;
-
-    @Mock
-    private AccessibilityRequest accessibilityRequest;
 
     @Test
     void hasTimeWindowedSign() {
@@ -95,15 +93,20 @@ class TrafficSignTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            true,
-            false""")
-    void isRelevant(boolean isRestrictive) {
+            C6, true, true,
+            C6, false, false
+            , true, true
+            , false, false""")
+    void isRelevant(String trafficSignType, boolean isRestrictive, boolean expectedResult) {
+
+        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder().build();
 
         when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(isRestrictive);
         trafficSign = TrafficSign.builder()
+                .trafficSignType(Objects.nonNull(trafficSignType) ? TrafficSignType.fromRvvCode(trafficSignType) : null)
                 .restrictions(restrictions)
                 .build();
 
-        assertThat(trafficSign.isRelevant(accessibilityRequest)).isEqualTo(isRestrictive);
+        assertThat(trafficSign.isRelevant(accessibilityRequest)).isEqualTo(expectedResult);
     }
 }

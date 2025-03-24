@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
@@ -64,8 +63,9 @@ class QueryGraphFactoryTest {
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(trafficSignSnap.getSnap()).thenReturn(snapForTrafficSign);
         queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(snapForTrafficSign, startSegment))).thenReturn(queryGraph);
-        QueryGraph result = queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegment);
+
+        QueryGraph result = queryGraphFactory.createQueryGraphWithoutConfig(List.of(trafficSignSnap), startSegment);
+
         assertThat(result).isEqualTo(queryGraph);
-        verify(queryGraphConfigurer).configure(queryGraph, List.of(trafficSignSnap));
     }
 }

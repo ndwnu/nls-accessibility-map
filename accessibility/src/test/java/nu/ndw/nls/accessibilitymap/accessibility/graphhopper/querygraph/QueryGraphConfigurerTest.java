@@ -106,8 +106,6 @@ class QueryGraphConfigurerTest {
     @InjectMocks
     private QueryGraphConfigurer queryGraphConfigurer;
 
-
-
     @Test
     void createEdgeRestrictions_assignRestrictionsSuccessfully() {
         setupFixtureForQueryGraph();
@@ -180,7 +178,6 @@ class QueryGraphConfigurerTest {
         assertThat(restrictions.hasEdgeRestriction(edgeIterator.getEdgeKey())).isFalse();
     }
 
-
     @ParameterizedTest
     @CsvSource(textBlock = """
             false
@@ -218,8 +215,6 @@ class QueryGraphConfigurerTest {
         //Latitude is the Y axis, longitude is the X axis
         when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
 
-        queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
-
         verify(edgeManager).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
         verify(edgeManager).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
         verify(encodingManager, times(1))
@@ -243,8 +238,6 @@ class QueryGraphConfigurerTest {
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(true);
 
-        queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
-
         verifyNoAssignment();
         loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(ROAD_SECTION_ID));
     }
@@ -267,8 +260,6 @@ class QueryGraphConfigurerTest {
         when(lineString.getStartPoint()).thenReturn(point);
         //Latitude is the Y axis, longitude is the X axis
         when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
-
-        queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
 
         verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
         verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
@@ -297,8 +288,6 @@ class QueryGraphConfigurerTest {
         //Latitude is the Y axis, longitude is the X axis
         when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
 
-        queryGraphConfigurer.configure(queryGraph, List.of(trafficSignSnap));
-
         verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
         verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
 
@@ -325,5 +314,4 @@ class QueryGraphConfigurerTest {
         verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
         verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
     }
-
 }

@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -67,7 +68,9 @@ public class AnalyseCommand implements Callable<Integer> {
                         .reportIssues(reportIssues)
                         .build();
 
-                log.info("Analysing traffic signs: %s".formatted(trafficSignTypes));
+                log.info("Analysing traffic signs: %s".formatted(trafficSignTypes.stream()
+                        .sorted()
+                        .collect(Collectors.toCollection(LinkedHashSet::new))));
                 trafficSignAnalyserService.analyse(analyseProperties);
             }
             return 0;

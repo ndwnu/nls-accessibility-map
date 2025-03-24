@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
@@ -92,7 +93,7 @@ class AnalyseCommandTest {
         assertThat(analyseProperties.startTime()).isEqualTo(startTime);
         assertThat(analyseProperties.accessibilityRequest().startLocationLatitude()).isEqualTo(2d);
         assertThat(analyseProperties.accessibilityRequest().startLocationLongitude()).isEqualTo(3d);
-        assertThat(analyseProperties.accessibilityRequest().trafficSignTypes()).isEqualTo(List.of(trafficSignType));
+        assertThat(analyseProperties.accessibilityRequest().trafficSignTypes()).isEqualTo(Set.of(trafficSignType));
         assertThat(analyseProperties.accessibilityRequest().searchRadiusInMeters()).isEqualTo(4d);
         assertThat(analyseProperties.nwbVersion()).isEqualTo(123);
         assertThat(analyseProperties.reportIssues()).isTrue();

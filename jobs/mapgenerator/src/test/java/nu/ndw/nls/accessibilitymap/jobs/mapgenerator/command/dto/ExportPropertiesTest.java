@@ -37,9 +37,6 @@ class ExportPropertiesTest extends ValidationTest {
                 .nwbVersion(2)
                 .publishEvents(true)
                 .startTime(OffsetDateTime.now())
-                .startLocationLatitude(50)
-                .startLocationLongitude(3)
-                .trafficSignTypes(List.of(TrafficSignType.C7))
                 .accessibilityRequest(accessibilityRequest)
                 .polygonMaxDistanceBetweenPoints(0.000000000000001d)
                 .includeOnlyTimeWindowedSigns(true)
@@ -92,14 +89,6 @@ class ExportPropertiesTest extends ValidationTest {
         validate(exportProperties, List.of("startTime"), List.of("must not be null"));
     }
 
-    @Test
-    void validate_trafficSignType_null() {
-
-        exportProperties = exportProperties.withTrafficSignTypes(null);
-
-        validate(exportProperties, List.of("trafficSignTypes"), List.of("must not be null"));
-    }
-
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
             0, must be greater than 0,
@@ -135,48 +124,13 @@ class ExportPropertiesTest extends ValidationTest {
     }
 
     @Test
-    void validate_vehicleProperties_null() {
+    void validate_accessibilityRequest_null() {
 
         exportProperties = exportProperties.withAccessibilityRequest(null);
 
         validate(exportProperties, List.of("accessibilityRequest"), List.of("must not be null"));
     }
 
-    @ParameterizedTest
-    @CsvSource(nullValues = "null", textBlock = """
-            49, must be greater than or equal to 50,
-            50, null,
-            54, null,
-            55, must be less than or equal to 54
-            """)
-    void validate_startLocationLatitude_edgeCases(double startLocationLatitude, String expectedError) {
-
-        exportProperties = exportProperties.withStartLocationLatitude(startLocationLatitude);
-
-        if (Objects.nonNull(expectedError)) {
-            validate(exportProperties, List.of("startLocationLatitude"), List.of(expectedError));
-        } else {
-            validate(exportProperties, List.of(), List.of());
-        }
-    }
-
-    @ParameterizedTest
-    @CsvSource(nullValues = "null", textBlock = """
-            2, must be greater than or equal to 3,
-            3, null,
-            8, null,
-            9, must be less than or equal to 8
-            """)
-    void validate_startLocationLongitude_edgeCases(double startLocationLongitude, String expectedError) {
-
-        exportProperties = exportProperties.withStartLocationLongitude(startLocationLongitude);
-
-        if (Objects.nonNull(expectedError)) {
-            validate(exportProperties, List.of("startLocationLongitude"), List.of(expectedError));
-        } else {
-            validate(exportProperties, List.of(), List.of());
-        }
-    }
 
     @Override
     protected Class<?> getClassToTest() {

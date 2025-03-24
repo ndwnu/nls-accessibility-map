@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.mappers;
 
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C1;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C10;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C12;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C17;
@@ -12,6 +13,7 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Tra
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7A;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7B;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7C;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.BUS_ACCESS_FORBIDDEN;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.CAR_ACCESS_FORBIDDEN;
 import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.CAR_ACCESS_FORBIDDEN_WINDOWED;
@@ -41,10 +43,12 @@ import org.springframework.stereotype.Component;
 public class TrafficSignToEdgeAttributeMapper {
 
     private static final Map<TrafficSignType, Function<TrafficSign, Object>> VALUE_MAPPING = Map.ofEntries(
+            Map.entry(C1, restrictionBooleanTrue()),
             Map.entry(C6, restrictionBooleanTrue()),
             Map.entry(C7, restrictionBooleanTrue()),
             Map.entry(C7A, restrictionBooleanTrue()),
             Map.entry(C7B, restrictionBooleanTrue()),
+            Map.entry(C7C, restrictionBooleanTrue()),
             Map.entry(C10, restrictionBooleanTrue()),
             Map.entry(C12, restrictionBooleanTrue()),
             Map.entry(C22C, restrictionBooleanTrue()),

@@ -183,7 +183,7 @@ class AccessibilityServiceTest {
                 .thenReturn(List.of(trafficSignSnap));
         when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture()))
                 .thenReturn(startPoint);
-        when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap))
+        when(queryGraphFactory.createQueryGraphWithoutConfig(List.of(trafficSignSnap), startSegmentSnap))
                 .thenReturn(queryGraph);
 
         when(isochroneService

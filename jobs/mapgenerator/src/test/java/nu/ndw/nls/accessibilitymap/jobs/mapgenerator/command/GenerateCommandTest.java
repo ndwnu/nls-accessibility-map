@@ -6,10 +6,9 @@ import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequestFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
@@ -49,9 +48,6 @@ class GenerateCommandTest {
     private AccessibilityRequest accessibilityRequest;
 
     @Mock
-    private AccessibilityRequestFactory accessibilityRequestFactory;
-
-    @Mock
     private ClockService clockService;
 
     @Mock
@@ -63,8 +59,7 @@ class GenerateCommandTest {
     @BeforeEach
     void setUp() {
 
-        generateCommand = new GenerateCommand(mapGeneratorService, accessibilityConfiguration,
-                generateConfiguration, accessibilityRequestFactory, clockService);
+        generateCommand = new GenerateCommand(mapGeneratorService, accessibilityConfiguration, generateConfiguration, clockService);
     }
 
     @ParameterizedTest
@@ -73,12 +68,13 @@ class GenerateCommandTest {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
-        when(accessibilityConfiguration.accessibilityGraphhopperMetaData())
-                .thenReturn(accessibilityGraphhopperMetaData);
+        when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
+        when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(accessibilityRequestFactory.create(List.of(trafficSignType), analyserConfiguration.startLocationLatitude(),
-                analyserConfiguration.startLocationLatitude(), analyserConfiguration.searchRadiusInMeters())).thenReturn(accessibilityRequest);
+        when(generateConfiguration.startLocationLatitude()).thenReturn(1d);
+        when(generateConfiguration.startLocationLongitude()).thenReturn(2d);
+        when(generateConfiguration.searchRadiusInMeters()).thenReturn(3d);
 
         assertThat(new CommandLine(generateCommand)
                 .execute("--export-name=%s".formatted(trafficSignType.name()),
@@ -95,7 +91,7 @@ class GenerateCommandTest {
         ExportProperties exportProperties = exportPropertiesCaptor.getValue();
 
         validateexportPropertiesValid(
-                List.of(trafficSignType),
+                Set.of(trafficSignType),
                 exportProperties,
                 startTime,
                 true,
@@ -122,7 +118,6 @@ class GenerateCommandTest {
         );
     }
 
-
     @Test
     void call_exceptionMultipleTrafficSigns() {
 
@@ -144,17 +139,22 @@ class GenerateCommandTest {
     }
 
     private void validateexportPropertiesValid(
-            List<TrafficSignType> trafficSignTypes,
+            Set<TrafficSignType> trafficSignTypes,
             ExportProperties exportProperties,
             OffsetDateTime startTime,
             boolean includeOnlyTimeWindowedSigns,
             boolean publishEvents) {
 
         assertThat(exportProperties.startTime()).isEqualTo(startTime);
-        assertThat(exportProperties.trafficSignTypes()).isEqualTo(trafficSignTypes);
         assertThat(exportProperties.includeOnlyTimeWindowedSigns()).isEqualTo(includeOnlyTimeWindowedSigns);
         assertThat(exportProperties.publishEvents()).isEqualTo(publishEvents);
-        assertThat(exportProperties.accessibilityRequest()).isEqualTo(accessibilityRequest);
+        assertThat(exportProperties.accessibilityRequest()).isEqualTo(
+                AccessibilityRequest.builder()
+                        .trafficSignTypes(trafficSignTypes)
+                        .startLocationLatitude(1d)
+                        .startLocationLongitude(2d)
+                        .searchRadiusInMeters(3d)
+                        .build());
         assertThat(exportProperties.generateConfiguration()).isEqualTo(generateConfiguration);
 
         loggerExtension.containsLog(

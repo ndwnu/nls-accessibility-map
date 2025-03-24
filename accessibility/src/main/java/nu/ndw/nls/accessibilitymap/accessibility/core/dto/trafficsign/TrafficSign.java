@@ -47,7 +47,15 @@ public record TrafficSign(
 
     public boolean isRelevant(AccessibilityRequest accessibilityRequest) {
 
-        return (Objects.nonNull(trafficSignType) && accessibilityRequest.trafficSignTypes().contains(trafficSignType))
+        return containsRelevantTrafficSign(accessibilityRequest)
                 && restrictions.isRestrictive(accessibilityRequest);
+    }
+
+    private boolean containsRelevantTrafficSign(AccessibilityRequest accessibilityRequest) {
+        if (Objects.isNull(trafficSignType) || Objects.isNull(accessibilityRequest.transportTypes())) {
+            return true;
+        }
+
+        return accessibilityRequest.trafficSignTypes().contains(trafficSignType);
     }
 }
