@@ -41,7 +41,7 @@ public class RestrictionWeightingAdapter implements Weighting {
      */
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversed) {
-        if (edgeRestrictions.hasEdgeRestriction(edgeIteratorState.getEdgeKey())) {
+        if (edgeRestrictions.hasEdgeRestrictions(edgeIteratorState.getEdgeKey())) {
             return Double.POSITIVE_INFINITY;
         }
         return sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed);
