@@ -1,5 +1,9 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
+import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
+
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -7,7 +11,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
@@ -25,7 +28,7 @@ public class MunicipalityFeatureMapper {
     private static final String EMPTY_STRING = "";
 
     public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
-        return new MunicipalityFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION,
+        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION,
                 municipalities.stream().map(this::mapMunicipality).toList());
     }
 
@@ -37,7 +40,7 @@ public class MunicipalityFeatureMapper {
                 .orElse(EMPTY_STRING);
 
         return new MunicipalityFeatureJson(
-                MunicipalityFeatureJson.TypeEnum.FEATURE,
+                FEATURE,
                 m.getMunicipalityId(),
                 mapStartPoint(m),
                 new MunicipalityPropertiesJson(
@@ -55,7 +58,7 @@ public class MunicipalityFeatureMapper {
     }
 
     private static PointJson mapPointJson(double x, double y) {
-        return new PointJson(List.of(x, y));
+        return new PointJson(List.of(x, y), POINT);
     }
 
     private List<List<Double>> mapMunicipalityBounds(MunicipalityBoundingBox boundingBox) {
