@@ -76,7 +76,7 @@ public class AccessibilityService {
                 accessibilityRequest.startLocationLongitude());
         Snap startSegment = networkGraphHopper.getLocationIndex()
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
-        QueryGraph queryGraph = queryGraphFactory.createQueryGraphWithoutConfig(snappedTrafficSigns, startSegment);
+        QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
 
         TrafficSignEdgeRestrictions trafficSignEdgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph,
                 snappedTrafficSigns);
