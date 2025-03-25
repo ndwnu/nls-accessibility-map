@@ -28,6 +28,24 @@ class RestrictionsTest {
     }
 
     @Test
+    void hasActiveRestrictions() {
+
+        restrictions = Restrictions.builder()
+                .transportTypes(TransportType.allExcept())
+                .build();
+
+        assertThat(restrictions.hasActiveRestrictions(accessibilityRequest.withTransportTypes(TransportType.allExcept()))).isTrue();
+    }
+
+    @Test
+    void hasActiveRestrictions_noRestrictions() {
+
+        restrictions = Restrictions.builder().build();
+
+        assertThat(restrictions.hasActiveRestrictions(accessibilityRequest)).isFalse();
+    }
+
+    @Test
     void isRestrictive_combinationTest() {
 
         restrictions = Restrictions.builder()
@@ -53,7 +71,7 @@ class RestrictionsTest {
                 .withVehicleLengthInCm(restrictions.vehicleLengthInCm().value() - 1d)
                 .withVehicleWidthInCm(restrictions.vehicleWidthInCm().value() - 1d)
                 .withVehicleHeightInCm(restrictions.vehicleHeightInCm().value() - 1d)
-                .withVehicleWeightInKg(restrictions.vehicleWeightInKg().value() -1d)
+                .withVehicleWeightInKg(restrictions.vehicleWeightInKg().value() - 1d)
                 .withVehicleAxleLoadInKg(restrictions.vehicleAxleLoadInKg().value() - 1d)
         )).isFalse();
     }
@@ -82,6 +100,27 @@ class RestrictionsTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
+            true, true, true,
+            true, false, false,
+            false, true, false,
+            false, false, false,
+            """)
+    void isRestrictive_transportType_null(
+            boolean restrictionHasTransportTypes,
+            boolean accessibilityRequestHasTransportTypes,
+            boolean expectedResult) {
+
+        restrictions = Restrictions.builder()
+                .transportTypes(restrictionHasTransportTypes ? TransportType.allExcept() : null)
+                .build();
+
+        assertThat(restrictions.isRestrictive(
+                accessibilityRequest.withTransportTypes(accessibilityRequestHasTransportTypes ? TransportType.allExcept() : null))
+        ).isEqualTo(expectedResult);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
             20, 20, false
             20, 20.1, true
             20, , false
@@ -97,7 +136,8 @@ class RestrictionsTest {
                 .vehicleLengthInCm(Maximum.builder().value(vehicleLength).build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleLengthInCm(vehicleLengthToTestFor))).isEqualTo(expectedResult);
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleLengthInCm(vehicleLengthToTestFor))).isEqualTo(
+                expectedResult);
     }
 
     @ParameterizedTest
@@ -119,7 +159,8 @@ class RestrictionsTest {
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleHeightInCm(vehicleHeightToTestFor))).isEqualTo(expectedResult);
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleHeightInCm(vehicleHeightToTestFor))).isEqualTo(
+                expectedResult);
     }
 
     @ParameterizedTest
@@ -163,7 +204,8 @@ class RestrictionsTest {
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleWeightInKg(vehicleWeightToTestFor))).isEqualTo(expectedResult);
+        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleWeightInKg(vehicleWeightToTestFor))).isEqualTo(
+                expectedResult);
     }
 
     @ParameterizedTest

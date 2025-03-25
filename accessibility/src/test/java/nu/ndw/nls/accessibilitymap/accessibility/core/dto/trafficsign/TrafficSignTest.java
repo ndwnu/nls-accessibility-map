@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
@@ -93,25 +94,54 @@ class TrafficSignTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            C6, true, true, true,
-            C6, true, false, false,
-            C6, false, true, true,
-            C6, false, false, true,
-            , true, true, true,
-            , true, false, false,
-            , false, true, true,
-            , false, false, true""")
-    void isRelevant(String trafficSignType, boolean hasRestrictions, boolean isRestrictive, boolean expectedResult) {
+            C6, C6, true,
+            C6, C7, false,
+            C7, C6, false,
+            C6,   , false,
+            ,   C6, false,
+            ,     , true
+            """)
+    void isRelevant_trafficSigns(String trafficSignTypeRestriction, String trafficSignRequest, boolean expectedResult) {
+
+        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
+                .trafficSignTypes(Objects.nonNull(trafficSignRequest) ? Set.of(TrafficSignType.fromRvvCode(trafficSignRequest)) : null)
+                .build();
+
+        if (expectedResult && (
+                Objects.nonNull(trafficSignTypeRestriction) && Objects.nonNull(trafficSignRequest)
+                || Objects.isNull(trafficSignTypeRestriction) && Objects.isNull(trafficSignRequest)
+        )) {
+            when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(true);
+            when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(true);
+        } else if(Objects.isNull(trafficSignTypeRestriction) || Objects.isNull(trafficSignRequest)) {
+            when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(true);
+            when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(false);
+        }
+        trafficSign = TrafficSign.builder()
+                .trafficSignType(
+                        Objects.nonNull(trafficSignTypeRestriction) ? TrafficSignType.fromRvvCode(trafficSignTypeRestriction) : null)
+                .restrictions(restrictions)
+                .build();
+
+        assertThat(trafficSign.isRelevant(accessibilityRequest)).isEqualTo(expectedResult);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            true, true, true,
+            true, false, false,
+            false, true, true,
+            false, false, true""")
+    void isRelevant_restrictions(boolean hasRestrictions, boolean isRestrictive, boolean expectedResult) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder().build();
 
         when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(hasRestrictions);
-        if(hasRestrictions) {
+        if (hasRestrictions) {
             when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(isRestrictive);
         }
 
         trafficSign = TrafficSign.builder()
-                .trafficSignType(Objects.nonNull(trafficSignType) ? TrafficSignType.fromRvvCode(trafficSignType) : null)
                 .restrictions(restrictions)
                 .build();
 
