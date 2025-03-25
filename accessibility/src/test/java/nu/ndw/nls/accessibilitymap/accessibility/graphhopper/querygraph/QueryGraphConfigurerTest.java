@@ -132,7 +132,7 @@ class QueryGraphConfigurerTest {
 
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
-        assertThat(restrictions.hasEdgeRestriction(edgeIterator.getEdgeKey())).isTrue();
+        assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isTrue();
         TrafficSignEdgeRestriction restriction = restrictions.getEdgeRestriction(edgeIterator.getEdgeKey());
         assertThat(restriction.getTrafficSignId()).isEqualTo(TRAFFIC_SIGN_ID_VALUE);
     }
@@ -150,7 +150,7 @@ class QueryGraphConfigurerTest {
 
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
-        assertThat(restrictions.hasEdgeRestriction(edgeIterator.getEdgeKey())).isFalse();
+        assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isFalse();
     }
 
     @Test
@@ -177,7 +177,7 @@ class QueryGraphConfigurerTest {
 
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
-        assertThat(restrictions.hasEdgeRestriction(edgeIterator.getEdgeKey())).isFalse();
+        assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isFalse();
     }
 
 

@@ -122,7 +122,7 @@ public class RoadSectionMapper {
             Map<Integer, TrafficSign> trafficSignById,
             TrafficSignEdgeRestrictions trafficSignEdgeRestrictions
     ) {
-        if (trafficSignEdgeRestrictions.hasEdgeRestriction(directionalSegmentId)) {
+        if (trafficSignEdgeRestrictions.hasEdgeRestrictions(directionalSegmentId)) {
             return trafficSignById.get(trafficSignEdgeRestrictions.getEdgeRestriction(directionalSegmentId)
                     .getTrafficSignId());
         }
