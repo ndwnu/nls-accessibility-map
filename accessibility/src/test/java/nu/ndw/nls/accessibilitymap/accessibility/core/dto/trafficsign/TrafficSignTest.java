@@ -93,15 +93,23 @@ class TrafficSignTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            C6, true, true,
-            C6, false, false
-            , true, true
-            , false, false""")
-    void isRelevant(String trafficSignType, boolean isRestrictive, boolean expectedResult) {
+            C6, true, true, true,
+            C6, true, false, false,
+            C6, false, true, true,
+            C6, false, false, true,
+            , true, true, true,
+            , true, false, false,
+            , false, true, true,
+            , false, false, true""")
+    void isRelevant(String trafficSignType, boolean hasRestrictions, boolean isRestrictive, boolean expectedResult) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder().build();
 
-        when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(isRestrictive);
+        when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(hasRestrictions);
+        if(hasRestrictions) {
+            when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(isRestrictive);
+        }
+
         trafficSign = TrafficSign.builder()
                 .trafficSignType(Objects.nonNull(trafficSignType) ? TrafficSignType.fromRvvCode(trafficSignType) : null)
                 .restrictions(restrictions)

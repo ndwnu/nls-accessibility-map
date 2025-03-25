@@ -34,6 +34,12 @@
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
+            <artifactId>accessibility</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.accessibilitymap</groupId>
             <artifactId>trafficsignclient</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>

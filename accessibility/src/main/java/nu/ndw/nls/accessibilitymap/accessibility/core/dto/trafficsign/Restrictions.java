@@ -19,6 +19,10 @@ public record Restrictions(
         Maximum vehicleWeightInKg,
         Maximum vehicleAxleLoadInKg) {
 
+    public boolean hasActiveRestrictions(AccessibilityRequest accessibilityRequest) {
+        return !getActiveRestrictions(accessibilityRequest).isEmpty();
+    }
+
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
 
         List<Predicate<AccessibilityRequest>> activeRestrictions = getActiveRestrictions(accessibilityRequest);
