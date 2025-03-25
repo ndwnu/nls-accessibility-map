@@ -1,8 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers;
 
-import com.graphhopper.routing.ev.IntEncodedValue;
 import jakarta.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -14,9 +14,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
@@ -25,60 +23,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RoadSectionMapper {
 
-    private final NetworkGraphHopper networkGraphHopper;
-
-    @SuppressWarnings("java:S5612")
-    public @Valid Collection<RoadSection> mapToRoadSections(
-            Iterable<IsochroneMatch> isochroneMatches,
-            Map<Integer, TrafficSign> trafficSignsById) {
-
-        IntEncodedValue trafficSignEncodedValueAttribute = networkGraphHopper.getEncodingManager()
-                .getIntEncodedValue(AccessibilityLink.TRAFFIC_SIGN_ID);
-        SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
-        SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
-
-        isochroneMatches.forEach(isochroneMatch -> {
-            int roadSectionId = isochroneMatch.getMatchedLinkId();
-            int roadSectionFragmentId = isochroneMatch.getEdge().getEdge();
-            int directionalSegmentId = isochroneMatch.getEdge().getEdgeKey();
-
-            RoadSection roadSection = roadSectionsById.computeIfAbsent(
-                    roadSectionId,
-                    id -> RoadSection.builder()
-                            .id(Long.valueOf(id))
-                            .build());
-
-            RoadSectionFragment roadSectionFragment = roadSectionFragmentById.computeIfAbsent(
-                    roadSectionFragmentId,
-                    id -> {
-                        RoadSectionFragment roadSectionFragmentNew = RoadSectionFragment.builder()
-                                .id(id)
-                                .roadSection(roadSection)
-                                .build();
-
-                        roadSection.getRoadSectionFragments().add(roadSectionFragmentNew);
-                        return roadSectionFragmentNew;
-                    });
-
-            addSegmentsToRoadSectionFragment(
-                    roadSectionFragment,
-                    isochroneMatch,
-                    getTrafficSign(trafficSignsById, isochroneMatch, trafficSignEncodedValueAttribute),
-                    directionalSegmentId,
-                    roadSectionFragmentById);
-        });
-
-        return roadSectionsById.values();
-    }
-
 
     @SuppressWarnings("java:S5612")
     public @Valid Collection<RoadSection> mapToRoadSections(
             Iterable<IsochroneMatch> isochroneMatches,
             Map<Integer, TrafficSign> trafficSignsById, TrafficSignEdgeRestrictions trafficSignEdgeRestrictions) {
 
-        IntEncodedValue trafficSignEncodedValueAttribute = networkGraphHopper.getEncodingManager()
-                .getIntEncodedValue(AccessibilityLink.TRAFFIC_SIGN_ID);
         SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
 
@@ -108,7 +58,7 @@ public class RoadSectionMapper {
             addSegmentsToRoadSectionFragment(
                     roadSectionFragment,
                     isochroneMatch,
-                    getTrafficSign(directionalSegmentId, trafficSignsById, trafficSignEdgeRestrictions),
+                    getTrafficSigns(directionalSegmentId, trafficSignsById, trafficSignEdgeRestrictions),
                     directionalSegmentId,
                     roadSectionFragmentById);
         });
@@ -117,34 +67,25 @@ public class RoadSectionMapper {
     }
 
 
-    private static TrafficSign getTrafficSign(
+    private static List<TrafficSign> getTrafficSigns(
             Integer directionalSegmentId,
             Map<Integer, TrafficSign> trafficSignById,
             TrafficSignEdgeRestrictions trafficSignEdgeRestrictions
     ) {
         if (trafficSignEdgeRestrictions.hasEdgeRestrictions(directionalSegmentId)) {
-            return trafficSignById.get(trafficSignEdgeRestrictions.getEdgeRestriction(directionalSegmentId)
-                    .getTrafficSignId());
+
+            return trafficSignEdgeRestrictions.getEdgeRestrictions(directionalSegmentId).stream()
+                    .map(r -> trafficSignById.get(r.getTrafficSignId()))
+                    .toList();
+
         }
         return null;
-    }
-
-    private static TrafficSign getTrafficSign(
-            Map<Integer, TrafficSign> trafficSignById,
-            IsochroneMatch isochroneMatch,
-            IntEncodedValue trafficSignEncodedValueAttribute) {
-
-        if (isochroneMatch.isReversed()) {
-            return trafficSignById.get(isochroneMatch.getEdge().getReverse(trafficSignEncodedValueAttribute));
-        }
-
-        return trafficSignById.get(isochroneMatch.getEdge().get(trafficSignEncodedValueAttribute));
     }
 
     private static void addSegmentsToRoadSectionFragment(
             RoadSectionFragment roadSectionFragment,
             IsochroneMatch isochroneMatch,
-            TrafficSign trafficSign,
+            List<TrafficSign> trafficSigns,
             int directionalSegmentId,
             SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById) {
 
@@ -155,7 +96,7 @@ public class RoadSectionMapper {
                             Direction.BACKWARD,
                             isochroneMatch.getGeometry(),
                             roadSectionFragmentById.get(roadSectionFragment.getId()),
-                            trafficSign));
+                            trafficSigns));
         } else {
             roadSectionFragment.setForwardSegment(
                     buildDirectionalSegment(
@@ -163,7 +104,7 @@ public class RoadSectionMapper {
                             Direction.FORWARD,
                             isochroneMatch.getGeometry(),
                             roadSectionFragmentById.get(roadSectionFragment.getId()),
-                            trafficSign));
+                            trafficSigns));
         }
     }
 
@@ -172,7 +113,7 @@ public class RoadSectionMapper {
             Direction direction,
             LineString geometry,
             RoadSectionFragment roadSectionFragment,
-            TrafficSign trafficSign) {
+            List<TrafficSign> trafficSign) {
 
         return DirectionalSegment.builder()
                 .id(id)
@@ -180,7 +121,7 @@ public class RoadSectionMapper {
                 .accessible(true)
                 .lineString(geometry)
                 .roadSectionFragment(roadSectionFragment)
-                .trafficSign(trafficSign)
+                .trafficSigns(trafficSign)
                 .build();
     }
 }

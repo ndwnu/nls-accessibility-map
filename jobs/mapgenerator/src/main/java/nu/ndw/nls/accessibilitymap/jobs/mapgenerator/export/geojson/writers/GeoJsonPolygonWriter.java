@@ -87,8 +87,8 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
                             .collect(Collectors.toSet());
 
                     List<TrafficSign> relevantTrafficSigns = relevantDirectionalSegment.stream()
-                            .filter(DirectionalSegment::hasTrafficSign)
-                            .map(DirectionalSegment::getTrafficSign)
+                            .filter(DirectionalSegment::hasTrafficSigns)
+                            .flatMap(directionalSegment -> directionalSegment.getTrafficSigns().stream())
                             .toList();
 
                     return featureBuilder.createPolygon(

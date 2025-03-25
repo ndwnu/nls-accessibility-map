@@ -86,18 +86,18 @@ public class FeatureBuilder {
             GenerateConfiguration generateConfiguration,
             List<Feature> features) {
 
-        if (directionalSegment.hasTrafficSign()) {
+        if (directionalSegment.hasTrafficSigns()) {
             if (generateConfiguration.addTrafficSignsAsLineStrings()) {
-                features.add(buildTrafficSignAsLineString(
+                features.addAll(buildTrafficSignsAsLineString(
                         idSequenceSupplier,
-                        directionalSegment.getTrafficSign(),
+                        directionalSegment.getTrafficSigns(),
                         directionalSegment,
                         generateConfiguration.trafficSignLineStringDistanceInMeters()));
             }
             if (generateConfiguration.addTrafficSignsAsPoints()) {
-                features.add(buildTrafficSignAsPoint(
+                features.addAll(buildTrafficSignsAsPoint(
                         idSequenceSupplier,
-                        directionalSegment.getTrafficSign(),
+                        directionalSegment.getTrafficSigns(),
                         directionalSegment));
             }
         }
@@ -135,41 +135,42 @@ public class FeatureBuilder {
                 .toList();
     }
 
-    private Feature buildTrafficSignAsPoint(
+    private List<Feature> buildTrafficSignsAsPoint(
             LongSequenceSupplier geoJsonIdSequenceSupplier,
-            TrafficSign trafficSign,
+            List<TrafficSign> trafficSigns,
             DirectionalSegment directionalSegment) {
 
         LineStringJson directionSegmentLineStringJson = jtsLineStringJsonMapper.map(
                 directionalSegment.getLineString());
-
-        return Feature.builder()
+        return trafficSigns.stream().map(trafficSign -> Feature.builder()
                 .id(geoJsonIdSequenceSupplier.next())
                 .geometry(PointGeometry
                         .builder()
                         .coordinates(directionSegmentLineStringJson.getCoordinates().getFirst())
                         .build())
                 .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
-                .build();
+                .build()).toList();
     }
 
-    private Feature buildTrafficSignAsLineString(
+    private List<Feature> buildTrafficSignsAsLineString(
             LongSequenceSupplier geoJsonIdSequenceSupplier,
-            TrafficSign trafficSign,
+            List<TrafficSign> trafficSigns,
             DirectionalSegment directionalSegment,
             int trafficSignLineStringDistanceInMeters) {
-
-        return Feature.builder()
-                .id(geoJsonIdSequenceSupplier.next())
-                .geometry(LineStringGeometry
-                        .builder()
-                        .coordinates(jtsLineStringJsonMapper.map(
-                                fractionAndDistanceCalculator.getSubLineStringByLengthInMeters(
-                                        directionalSegment.getLineString(),
-                                        trafficSignLineStringDistanceInMeters)).getCoordinates())
+        return trafficSigns.stream()
+                .map(trafficSign -> Feature.builder()
+                        .id(geoJsonIdSequenceSupplier.next())
+                        .geometry(LineStringGeometry
+                                .builder()
+                                .coordinates(jtsLineStringJsonMapper.map(
+                                        fractionAndDistanceCalculator.getSubLineStringByLengthInMeters(
+                                                directionalSegment.getLineString(),
+                                                trafficSignLineStringDistanceInMeters)).getCoordinates())
+                                .build())
+                        .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
                         .build())
-                .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
-                .build();
+                .toList();
+
     }
 
     private TrafficSignProperties buildTrafficSignProperties(
