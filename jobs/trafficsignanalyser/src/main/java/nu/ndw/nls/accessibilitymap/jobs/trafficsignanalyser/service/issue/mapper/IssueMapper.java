@@ -24,12 +24,12 @@ public class IssueMapper {
     private static final String VERSION = "1";
 
     public CreateIssueJson mapToIssue(DirectionalSegment directionalSegment, String reportId, String reportGroupId) {
-        List<DataLinkRecordJson> dataLinkJsonList = directionalSegment.getTrafficSigns()
+        List<DataLinkRecordJson> recordsList = directionalSegment.getTrafficSigns()
                 .stream()
-                .map(IssueMapper::maptoIssueJson
-                ).collect(Collectors.toCollection(ArrayList::new));
+                .map(IssueMapper::mapTrafficSign)
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        dataLinkJsonList.add(DataLinkRecordJson.builder()
+        recordsList.add(DataLinkRecordJson.builder()
                 .type("RoadSection")
                 .id(String.valueOf(directionalSegment.getRoadSectionId()))
                 .build());
@@ -37,7 +37,7 @@ public class IssueMapper {
         DataLinkJson dataLinkJsonTrafficSign = DataLinkJson.builder()
                 .source(DataLinkSourceJson.TRAFFIC_SIGN_API)
                 .versions(List.of(VERSION))
-                .records(dataLinkJsonList)
+                .records(recordsList)
                 .build();
 
         return CreateIssueJson.builder()
@@ -53,7 +53,7 @@ public class IssueMapper {
                 .build();
     }
 
-    private static DataLinkRecordJson maptoIssueJson(TrafficSign trafficSign) {
+    private static DataLinkRecordJson mapTrafficSign(TrafficSign trafficSign) {
         return DataLinkRecordJson.builder()
                 .type("TrafficSign")
                 .id(trafficSign.externalId())
