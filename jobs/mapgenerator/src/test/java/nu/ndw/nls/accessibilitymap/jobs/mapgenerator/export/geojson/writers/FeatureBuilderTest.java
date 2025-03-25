@@ -431,10 +431,10 @@ class FeatureBuilderTest {
                 .direction(Direction.FORWARD)
                 .lineString(directionalSegmentLineString)
                 .accessible(forwardAccessible)
-                .trafficSign(
+                .trafficSigns(
                         !addTrafficSign
                                 ? null
-                                : TrafficSign.builder()
+                                : List.of(TrafficSign.builder()
                                         .externalId(EXTERNAL_ID)
                                         .trafficSignType(TrafficSignType.C7)
                                         .textSigns(List.of(
@@ -452,7 +452,7 @@ class FeatureBuilderTest {
                                         .direction(Direction.FORWARD)
                                         .iconUri(URI.create("https://exmaple.com/image.png"))
                                         .build()
-                )
+                                ))
                 .roadSectionFragment(roadSectionFragment)
                 .build();
         roadSectionFragment.setForwardSegment(directionalSegmentForward);
@@ -461,10 +461,10 @@ class FeatureBuilderTest {
                 .direction(Direction.BACKWARD)
                 .lineString(directionalSegmentLineString)
                 .accessible(backwardAccessible)
-                .trafficSign(
+                .trafficSigns(
                         !addTrafficSign
                                 ? null
-                                : TrafficSign.builder()
+                                : List.of(TrafficSign.builder()
                                         .trafficSignType(TrafficSignType.C7)
                                         .textSigns(List.of(
                                                 TextSign.builder()
@@ -480,7 +480,7 @@ class FeatureBuilderTest {
                                         .latitude(5.5)
                                         .direction(Direction.BACKWARD)
                                         .iconUri(URI.create("https://exmaple.com/image.png"))
-                                        .build())
+                                        .build()))
                 .roadSectionFragment(roadSectionFragment)
                 .build();
         roadSectionFragment.setBackwardSegment(directionalSegmentBackward);

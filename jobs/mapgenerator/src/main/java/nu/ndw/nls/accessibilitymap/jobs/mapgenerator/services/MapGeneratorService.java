@@ -37,7 +37,7 @@ public class MapGeneratorService {
         long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                .filter(DirectionalSegment::hasTrafficSign)
+                .filter(DirectionalSegment::hasTrafficSigns)
                 .count();
 
         log.debug("Found {} with road section fragments with traffic signs.", roadSectionsWithTrafficSigns);

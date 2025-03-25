@@ -55,7 +55,7 @@ public class TrafficSignAnalyserService {
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .filter(RoadSectionFragment::isPartiallyAccessible)
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                .filter(DirectionalSegment::hasTrafficSign)
+                .filter(DirectionalSegment::hasTrafficSigns)
                 .map(directionalSegment -> issueMapper.mapToIssue(directionalSegment, issueReportId, issueReportGroupId))
                 .toList();
 

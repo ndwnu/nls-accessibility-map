@@ -26,8 +26,8 @@ public class TrafficSignEdgeRestrictions {
         return restrictions.containsKey(edgeKey);
     }
 
-    public TrafficSignEdgeRestriction getEdgeRestriction(int edgeKey) {
-        return restrictions.get(edgeKey).stream().toList().getLast();
+    public List<TrafficSignEdgeRestriction> getEdgeRestrictions(int edgeKey) {
+        return restrictions.get(edgeKey);
     }
 
     public static TrafficSignEdgeRestrictions emptyRestrictions() {

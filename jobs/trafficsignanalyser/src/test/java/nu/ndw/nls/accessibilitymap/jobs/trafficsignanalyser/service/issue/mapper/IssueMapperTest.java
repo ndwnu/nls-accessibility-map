@@ -40,7 +40,7 @@ class IssueMapperTest {
     @SneakyThrows
     @Test
     void mapToIssue_ok() {
-        when(directionalSegment.getTrafficSign()).thenReturn(trafficSign);
+        when(directionalSegment.getTrafficSigns()).thenReturn(List.of(trafficSign));
         when(trafficSign.externalId()).thenReturn("id");
         when(trafficSign.roadSectionId()).thenReturn(1);
 

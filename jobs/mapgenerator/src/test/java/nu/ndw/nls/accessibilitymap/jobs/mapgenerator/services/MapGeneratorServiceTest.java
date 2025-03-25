@@ -98,12 +98,12 @@ class MapGeneratorServiceTest {
                                 RoadSectionFragment.builder()
                                         .backwardSegment(
                                                 DirectionalSegment.builder()
-                                                        .trafficSign(TrafficSign.builder().build())
+                                                        .trafficSigns(List.of(TrafficSign.builder().build()))
                                                         .build()
                                         )
                                         .forwardSegment(
                                                 DirectionalSegment.builder()
-                                                        .trafficSign(TrafficSign.builder().build())
+                                                        .trafficSigns(List.of(TrafficSign.builder().build()))
                                                         .build()
                                         )
                                         .build()

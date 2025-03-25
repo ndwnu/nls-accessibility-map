@@ -122,7 +122,7 @@ class GeoJsonPolygonWriterTest {
                         RoadSectionFragment.builder()
                                 .backwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .trafficSign(TrafficSign.builder()
+                                        .trafficSigns(List.of(TrafficSign.builder()
                                                 .id(1)
                                                 .textSigns(List.of(
                                                         TextSign.builder()
@@ -133,11 +133,11 @@ class GeoJsonPolygonWriterTest {
                                                                 .type(TextSignType.TIME_PERIOD)
                                                                 .text("window2")
                                                                 .build()))
-                                                .build())
+                                                .build()))
                                         .build())
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .trafficSign(TrafficSign.builder()
+                                        .trafficSigns(List.of(TrafficSign.builder()
                                                 .id(2)
                                                 .textSigns(List.of(
                                                         TextSign.builder()
@@ -148,17 +148,17 @@ class GeoJsonPolygonWriterTest {
                                                                 .type(TextSignType.TIME_PERIOD)
                                                                 .text("window4")
                                                                 .build()))
-                                                .build())
+                                                .build()))
                                         .build())
                                 .build(),
                         RoadSectionFragment.builder()
                                 .backwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesNotIntersect)
-                                        .trafficSign(null)
+                                        .trafficSigns(null)
                                         .build())
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .trafficSign(TrafficSign.builder()
+                                        .trafficSigns(List.of(TrafficSign.builder()
                                                 .id(3)
                                                 .textSigns(List.of(
                                                         TextSign.builder()
@@ -169,13 +169,13 @@ class GeoJsonPolygonWriterTest {
                                                                 .type(TextSignType.TIME_PERIOD)
                                                                 .text("window6")
                                                                 .build()))
-                                                .build())
+                                                .build()))
                                         .build())
                                 .build(),
                         RoadSectionFragment.builder()
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesNotIntersect)
-                                        .trafficSign(TrafficSign.builder()
+                                        .trafficSigns(List.of(TrafficSign.builder()
                                                 .id(4)
                                                 .textSigns(List.of(
                                                         TextSign.builder()
@@ -186,7 +186,7 @@ class GeoJsonPolygonWriterTest {
                                                                 .type(TextSignType.TIME_PERIOD)
                                                                 .text("window6")
                                                                 .build()))
-                                                .build())
+                                                .build()))
                                         .build())
                                 .build()
                 ))
@@ -199,9 +199,9 @@ class GeoJsonPolygonWriterTest {
 
         relevantRoadSectionIds = Set.of(roadSection.getId());
         relevantTrafficSigns = List.of(
-                roadSection.getRoadSectionFragments().getFirst().getForwardSegment().getTrafficSign(),
-                roadSection.getRoadSectionFragments().getFirst().getBackwardSegment().getTrafficSign(),
-                roadSection.getRoadSectionFragments().get(1).getForwardSegment().getTrafficSign()
+                roadSection.getRoadSectionFragments().getFirst().getForwardSegment().getTrafficSigns().getFirst(),
+                roadSection.getRoadSectionFragments().getFirst().getBackwardSegment().getTrafficSigns().getFirst(),
+                roadSection.getRoadSectionFragments().get(1).getForwardSegment().getTrafficSigns().getFirst()
         );
 
     }

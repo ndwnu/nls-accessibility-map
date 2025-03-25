@@ -110,7 +110,7 @@ class TrafficSignAnalyserServiceTest {
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
         when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
-        when(directionalSegment.hasTrafficSign()).thenReturn(true);
+        when(directionalSegment.hasTrafficSigns()).thenReturn(true);
         when(issueMapper.mapToIssue(
                 eq(directionalSegment),
                 argThat(reportId -> {
@@ -157,7 +157,7 @@ class TrafficSignAnalyserServiceTest {
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
         when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
-        when(directionalSegment.hasTrafficSign()).thenReturn(true);
+        when(directionalSegment.hasTrafficSigns()).thenReturn(true);
         when(issueMapper.mapToIssue(
                 eq(directionalSegment),
                 argThat(reportId -> {
@@ -193,7 +193,7 @@ class TrafficSignAnalyserServiceTest {
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
         when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
-        when(directionalSegment.hasTrafficSign()).thenReturn(true);
+        when(directionalSegment.hasTrafficSigns()).thenReturn(true);
         when(issueMapper.mapToIssue(
                 eq(directionalSegment),
                 argThat(reportId -> {
@@ -229,7 +229,7 @@ class TrafficSignAnalyserServiceTest {
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
         when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
-        when(directionalSegment.hasTrafficSign()).thenReturn(true);
+        when(directionalSegment.hasTrafficSigns()).thenReturn(true);
         when(issueMapper.mapToIssue(
                 eq(directionalSegment),
                 argThat(reportId -> {

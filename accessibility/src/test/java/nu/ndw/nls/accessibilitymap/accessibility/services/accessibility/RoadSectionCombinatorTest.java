@@ -114,7 +114,7 @@ class RoadSectionCombinatorTest {
                 .id(Integer.MAX_VALUE)
                 .direction(Direction.FORWARD)
                 .lineString(mock(LineString.class))
-                .trafficSign(mock(TrafficSign.class))
+                .trafficSigns(List.of(mock(TrafficSign.class)))
                 .roadSectionFragment(roadSectionFragment)
                 .accessible(true)
                 .build();
@@ -135,7 +135,7 @@ class RoadSectionCombinatorTest {
 
         assertThat(directionalSegment.getId()).isEqualTo(expectedDirection.getId());
         assertThat(directionalSegment.getLineString()).isEqualTo(expectedDirection.getLineString());
-        assertThat(directionalSegment.getTrafficSign()).isEqualTo(expectedDirection.getTrafficSign());
+        assertThat(directionalSegment.getTrafficSigns()).isEqualTo(expectedDirection.getTrafficSigns());
         assertThat(directionalSegment.getRoadSectionFragment()).isEqualTo(roadSectionFragment);
 
         verifyDirectionIsNotInCollection(directionalSegment, roadSectionsWithoutRestrictions);
@@ -197,7 +197,7 @@ class RoadSectionCombinatorTest {
                                     .id(roadSectionFragmentId + 10)
                                     .direction(Direction.FORWARD)
                                     .lineString(mock(LineString.class))
-                                    .trafficSign(mock(TrafficSign.class))
+                                    .trafficSigns(List.of(mock(TrafficSign.class)))
                                     .roadSectionFragment(roadSectionFragment)
                                     .accessible(accessibleSupplier.apply(roadSectionFragmentId))
                                     .build());
@@ -207,7 +207,7 @@ class RoadSectionCombinatorTest {
                                     .id(roadSectionFragmentId + 20)
                                     .direction(Direction.BACKWARD)
                                     .lineString(mock(LineString.class))
-                                    .trafficSign(mock(TrafficSign.class))
+                                    .trafficSigns(List.of(mock(TrafficSign.class)))
                                     .roadSectionFragment(roadSectionFragment)
                                     .accessible(accessibleSupplier.apply(roadSectionFragmentId))
                                     .build());

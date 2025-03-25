@@ -1,11 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 
-import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED;
-import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRAFFIC_SIGN_ID;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
@@ -60,9 +56,6 @@ class QueryGraphConfigurerTest {
     private EncodingManager encodingManager;
 
     @Mock
-    private EdgeManager edgeManager;
-
-    @Mock
     private QueryGraph queryGraph;
 
     @Mock
@@ -101,16 +94,24 @@ class QueryGraphConfigurerTest {
     @InjectMocks
     private QueryGraphConfigurer queryGraphConfigurer;
 
-    @Test
-    void createEdgeRestrictions_assignRestrictionsSuccessfully() {
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            false
+            true
+            """)
+    void createEdgeRestrictions_assignRestrictionsSuccessfully(boolean reversed) {
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
 
         when(trafficSignSnap.getSnap()).thenReturn(snap);
         when(snap.getClosestNode()).thenReturn(0);
 
-        when(trafficSign.direction()).thenReturn(Direction.FORWARD);
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
+        if (reversed) {
+            when(trafficSign.direction()).thenReturn(Direction.BACKWARD);
+        } else {
+            when(trafficSign.direction()).thenReturn(Direction.FORWARD);
+        }
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(reversed);
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID_VALUE);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
@@ -126,8 +127,13 @@ class QueryGraphConfigurerTest {
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
         assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isTrue();
-        TrafficSignEdgeRestriction restriction = restrictions.getEdgeRestriction(edgeIterator.getEdgeKey());
-        assertThat(restriction.getTrafficSignId()).isEqualTo(TRAFFIC_SIGN_ID_VALUE);
+        List<TrafficSignEdgeRestriction> trafficSignEdgeRestrictions = restrictions.getEdgeRestrictions(edgeIterator.getEdgeKey());
+        assertThat(trafficSignEdgeRestrictions.getFirst().getTrafficSignId()).isEqualTo(TRAFFIC_SIGN_ID_VALUE);
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Query graph configuration summary. "
+                        + "Total traffic signs in request 1. "
+                        + "Total not assignable road sections with traffic sign 0, notAssigned {}");
     }
 
     @Test
@@ -144,6 +150,9 @@ class QueryGraphConfigurerTest {
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
         assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isFalse();
+        loggerExtension.containsLog(
+                Level.WARN,
+                MESSAGE_NOT_ASSIGNED.formatted(0));
     }
 
     @Test
@@ -171,119 +180,17 @@ class QueryGraphConfigurerTest {
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
         assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isFalse();
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            false
-            true
-            """)
-    void configure_assigned(boolean reversed) {
-
-        setupFixtureForQueryGraph();
-        setupFixtureForTrafficSignSnap();
-
-        when(trafficSignSnap.getSnap()).thenReturn(snap);
-        when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
-        when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID_VALUE);
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(reversed);
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
-        when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
-
-        if (reversed) {
-            when(trafficSign.direction()).thenReturn(Direction.BACKWARD);
-        } else {
-            when(trafficSign.direction()).thenReturn(Direction.FORWARD);
-        }
-
-        when(snap.getSnappedPoint()).thenReturn(ghPoint);
-        when(ghPoint.getLon()).thenReturn(LON);
-        when(ghPoint.getLat()).thenReturn(LAT);
-        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
-        when(pointList.toLineString(false)).thenReturn(lineString);
-        when(lineString.getStartPoint()).thenReturn(point);
-        //Latitude is the Y axis, longitude is the X axis
-        when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
-
-        verify(edgeManager).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
-        verify(edgeManager).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
-        verify(encodingManager, times(1))
-                .getIntEncodedValue(WAY_ID_KEY);
+        loggerExtension.containsLog(
+                Level.WARN,
+                MESSAGE_NOT_ASSIGNED.formatted(124));
 
         loggerExtension.containsLog(
-                Level.INFO,
-                "Query graph configuration summary. "
-                        + "Total traffic signs in request 1. "
-                        + "Total not assignable road sections with traffic sign 0, notAssigned {}");
+                Level.WARN,
+                "Traffic sign trafficSignSnap and road section id 124 does not match linked edge with road section id 123");
+
+
     }
 
-    @Test
-    void configure_notAssigned_noTrafficSign_inDirection() {
-
-        setupFixtureForQueryGraph();
-        setupFixtureForTrafficSignSnap();
-
-        when(trafficSignSnap.getSnap()).thenReturn(snap);
-        when(trafficSign.direction()).thenReturn(Direction.FORWARD);
-        when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(true);
-
-        verifyNoAssignment();
-        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(ROAD_SECTION_ID));
-    }
-
-    @Test
-    void configure_notAssigned_edgeNotBehind() {
-
-        setupFixtureForQueryGraph();
-        setupFixtureForTrafficSignSnap();
-
-        when(trafficSignSnap.getSnap()).thenReturn(snap);
-        when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
-        when(trafficSign.direction()).thenReturn(Direction.FORWARD);
-        when(snap.getSnappedPoint()).thenReturn(ghPoint);
-        when(ghPoint.getLon()).thenReturn(2.0);
-        when(ghPoint.getLat()).thenReturn(3.0);
-        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
-        when(pointList.toLineString(false)).thenReturn(lineString);
-        when(lineString.getStartPoint()).thenReturn(point);
-        //Latitude is the Y axis, longitude is the X axis
-        when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
-
-        verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
-        verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
-
-        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(ROAD_SECTION_ID));
-    }
-
-    @Test
-    void configure_notAssigned_roadSectionIdNotEqual() {
-
-        setupFixtureForQueryGraph();
-        setupFixtureForTrafficSignSnap();
-
-        when(trafficSignSnap.getSnap()).thenReturn(snap);
-        when(trafficSign.roadSectionId()).thenReturn(12);
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
-        when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
-        when(trafficSign.direction()).thenReturn(Direction.FORWARD);
-        when(snap.getSnappedPoint()).thenReturn(ghPoint);
-        when(ghPoint.getLon()).thenReturn(LON);
-        when(ghPoint.getLat()).thenReturn(LAT);
-        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
-        when(pointList.toLineString(false)).thenReturn(lineString);
-        when(lineString.getStartPoint()).thenReturn(point);
-        //Latitude is the Y axis, longitude is the X axis
-        when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
-
-        verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
-        verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
-
-        loggerExtension.containsLog(Level.WARN,
-                "Traffic sign trafficSignSnap and road section id 12 does not match linked edge with road section id 123");
-    }
 
     private void setupFixtureForTrafficSignSnap() {
 
@@ -299,9 +206,4 @@ class QueryGraphConfigurerTest {
         when(edgeIterator.next()).thenReturn(true, false);
     }
 
-    private void verifyNoAssignment() {
-
-        verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, TRAFFIC_SIGN_ID, TRAFFIC_SIGN_ID_VALUE);
-        verify(edgeManager, times(0)).setValueOnEdge(edgeIterator, MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED, true);
-    }
 }

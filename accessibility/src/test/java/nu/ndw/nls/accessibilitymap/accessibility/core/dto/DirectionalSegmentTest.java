@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,21 +18,21 @@ class DirectionalSegmentTest {
     private TrafficSign trafficSign;
 
     @Test
-    void hasTrafficSign() {
+    void hasTrafficSigns() {
 
         directionalSegment = DirectionalSegment.builder()
-                .trafficSign(trafficSign)
+                .trafficSigns(List.of(trafficSign))
                 .build();
 
-        assertThat(directionalSegment.hasTrafficSign()).isTrue();
+        assertThat(directionalSegment.hasTrafficSigns()).isTrue();
     }
 
     @Test
-    void hasTrafficSign_noTrafficSign() {
+    void hasTrafficSign_noTrafficSigns() {
 
         directionalSegment = DirectionalSegment.builder()
                 .build();
 
-        assertThat(directionalSegment.hasTrafficSign()).isFalse();
+        assertThat(directionalSegment.hasTrafficSigns()).isFalse();
     }
 }
