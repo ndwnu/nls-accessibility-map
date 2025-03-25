@@ -2,7 +2,7 @@ Feature: Map Generator
 
   Scenario: Job generate geojson for window times
     Given a simple Graph Hopper network
-    And with traffic signs for requested traffic sign types "C12"
+    And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime | id                                   |
       | 5           | 11        | 0.5      | C12     | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
       | 2           | 8         | 0.5      | C12     | BACK          | window 2   | 00000000-0000-4000-0000-000000000002 |
@@ -14,7 +14,7 @@ Feature: Map Generator
 
   Scenario: Job generate geojson for asymmetric traffic-sign detection should output only asymmetrically placed traffic signs
     Given a simple Graph Hopper network
-    And with traffic signs for requested traffic sign types "C6,C7,C7B,C12,C22C"
+    And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime | id                                   |
       | 5           | 11        | 0.5      | C12     | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
       | 2           | 8         | 0.5      | C12     | FORTH         | window 2   | 00000000-0000-4000-0000-000000000002 |

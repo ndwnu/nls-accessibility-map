@@ -47,13 +47,21 @@ public record TrafficSign(
 
     public boolean isRelevant(AccessibilityRequest accessibilityRequest) {
 
-        return containsRelevantTrafficSign(accessibilityRequest)
-                && restrictions.isRestrictive(accessibilityRequest);
+        return hasRelevantTrafficSignOrContinue(accessibilityRequest)
+                && hasRelevantRestrictionsOrContinue(accessibilityRequest);
     }
 
-    private boolean containsRelevantTrafficSign(AccessibilityRequest accessibilityRequest) {
-        if (Objects.isNull(trafficSignType) || Objects.isNull(accessibilityRequest.transportTypes())) {
-            return true;
+    private boolean hasRelevantRestrictionsOrContinue(AccessibilityRequest accessibilityRequest) {
+        if (!restrictions.hasActiveRestrictions(accessibilityRequest)) {
+            return true; // continue
+        }
+
+        return restrictions.isRestrictive(accessibilityRequest);
+    }
+
+    private boolean hasRelevantTrafficSignOrContinue(AccessibilityRequest accessibilityRequest) {
+        if (Objects.isNull(trafficSignType) || Objects.isNull(accessibilityRequest.trafficSignTypes())) {
+            return true; // continue
         }
 
         return accessibilityRequest.trafficSignTypes().contains(trafficSignType);

@@ -24,8 +24,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.dto.EdgeAttribute;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.mappers.TrafficSignToEdgeAttributeMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.Test;
@@ -57,9 +55,6 @@ class QueryGraphConfigurerTest {
 
     @Mock
     private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
-
-    @Mock
-    private TrafficSignToEdgeAttributeMapper trafficSignToEdgeAttributeMapper;
 
     @Mock
     private EncodingManager encodingManager;
@@ -188,11 +183,6 @@ class QueryGraphConfigurerTest {
         setupFixtureForQueryGraph();
         setupFixtureForTrafficSignSnap();
 
-        when(trafficSignToEdgeAttributeMapper.mapToEdgeAttribute(trafficSign)).thenReturn(
-                EdgeAttribute.builder()
-                        .key(MOTOR_VEHICLE_ACCESS_FORBIDDEN_WINDOWED)
-                        .value(true)
-                        .build());
         when(trafficSignSnap.getSnap()).thenReturn(snap);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID_VALUE);
