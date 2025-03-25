@@ -60,6 +60,7 @@ class TrafficSignClientIT {
                                         "?status=PLACED",
                                         rvvCodes.stream()
                                                 .map("&rvvCode=%s"::formatted)
+                                                .sorted()
                                                 .collect(Collectors.joining()),
                                         "&countyCode=GM0307"
                                 )))
