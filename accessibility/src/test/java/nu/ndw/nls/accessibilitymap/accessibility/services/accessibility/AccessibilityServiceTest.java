@@ -127,7 +127,6 @@ class AccessibilityServiceTest {
     @Mock
     private Weighting weightingNoRestrictions;
 
-
     @Mock
     private RoadSection roadSectionNoRestriction;
 
@@ -145,7 +144,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private TrafficSignEdgeRestrictions trafficSignEdgeRestrictions;
-
 
     @Captor
     private ArgumentCaptor<Coordinate> coordinateArgumentCaptor;
@@ -212,8 +210,8 @@ class AccessibilityServiceTest {
                 .getIsochroneMatchesByMunicipalityId(
                         argThat(new IsochroneArgumentMatcher(IsochroneArguments
                                         .builder()
-                                .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions,
-                                        TrafficSignEdgeRestrictions.emptyRestrictions()))
+                                        .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions,
+                                                TrafficSignEdgeRestrictions.emptyRestrictions()))
                                         .startPoint(startPoint)
                                         .municipalityId(MUNICIPALITY_ID)
                                         .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
@@ -310,7 +308,8 @@ class AccessibilityServiceTest {
         private boolean weightingEquals(Weighting expectedWeighting, Weighting actualWeighting) {
             if (expected.weighting() instanceof RestrictionWeightingAdapter expectedWeightingAdapter
                     && actualWeighting instanceof RestrictionWeightingAdapter actualWeightingAdapter) {
-                return Objects.equals(expectedWeightingAdapter.getEdgeRestrictions().getRestrictions(),
+                return Objects.equals(
+                        expectedWeightingAdapter.getEdgeRestrictions().getRestrictions(),
                         actualWeightingAdapter.getEdgeRestrictions().getRestrictions());
             } else {
                 return Objects.equals(expectedWeighting, actualWeighting);
