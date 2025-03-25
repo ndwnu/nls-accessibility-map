@@ -16,6 +16,7 @@ import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
@@ -24,6 +25,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.RestrictionWeightingAdapter;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
@@ -41,7 +43,6 @@ import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -126,8 +127,6 @@ class AccessibilityServiceTest {
     @Mock
     private Weighting weightingNoRestrictions;
 
-    @Mock
-    private Weighting weightingRestrictions;
 
     @Mock
     private RoadSection roadSectionNoRestriction;
@@ -162,7 +161,6 @@ class AccessibilityServiceTest {
     }
 
     @Test
-    @Disabled
     void calculateAccessibility() {
 
         when(clockService.now())
@@ -191,9 +189,12 @@ class AccessibilityServiceTest {
                 .thenReturn(List.of(trafficSignSnap));
         when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture()))
                 .thenReturn(startPoint);
-        when(queryGraphFactory.createQueryGraphWithoutConfig(List.of(trafficSignSnap), startSegmentSnap))
+        when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap))
                 .thenReturn(queryGraph);
         when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap))).thenReturn(trafficSignEdgeRestrictions);
+        when(trafficSignEdgeRestrictions.getRestrictions()).thenReturn(Map.of(1, List.of(TrafficSignEdgeRestriction
+                .builder()
+                .build())));
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
                         argThat(new IsochroneArgumentMatcher(IsochroneArguments
@@ -205,7 +206,7 @@ class AccessibilityServiceTest {
                                 .build())),
                         eq(queryGraph),
                         eq(startSegmentSnap)))
-                .thenReturn(List.of(isochroneMatchNoRestriction));
+                .thenReturn(List.of(isochroneMatchRestriction));
 
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
@@ -221,7 +222,7 @@ class AccessibilityServiceTest {
                         ),
                         eq(queryGraph),
                         eq(startSegmentSnap)))
-                .thenReturn(List.of(isochroneMatchRestriction));
+                .thenReturn(List.of(isochroneMatchNoRestriction));
 
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchNoRestriction),
                 Map.of(TRAFFIC_SIGN_ID, trafficSign), trafficSignEdgeRestrictions))
@@ -301,8 +302,19 @@ class AccessibilityServiceTest {
             if (actual == null) {
                 return false;
             }
+            return Objects.equals(expected.municipalityId(), actual.municipalityId()) &&
+                    expected.searchDistanceInMetres() == actual.searchDistanceInMetres() &&
+                    weightingEquals(expected.weighting(), actual.weighting());
+        }
 
-            return expected.equals(actual);
+        private boolean weightingEquals(Weighting expectedWeighting, Weighting actualWeighting) {
+            if (expected.weighting() instanceof RestrictionWeightingAdapter expectedWeightingAdapter
+                    && actualWeighting instanceof RestrictionWeightingAdapter actualWeightingAdapter) {
+                return Objects.equals(expectedWeightingAdapter.getEdgeRestrictions().getRestrictions(),
+                        actualWeightingAdapter.getEdgeRestrictions().getRestrictions());
+            } else {
+                return Objects.equals(expectedWeighting, actualWeighting);
+            }
         }
     }
 }

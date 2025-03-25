@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 
@@ -21,6 +22,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdge
 public class RestrictionWeightingAdapter implements Weighting {
 
     private final Weighting sourceWeighting;
+    @Getter
     private final TrafficSignEdgeRestrictions edgeRestrictions;
 
     @Override
