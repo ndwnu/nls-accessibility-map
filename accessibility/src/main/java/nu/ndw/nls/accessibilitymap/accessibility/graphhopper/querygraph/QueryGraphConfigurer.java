@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 import static java.util.stream.Collectors.groupingBy;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
@@ -56,6 +57,7 @@ public class QueryGraphConfigurer {
         List<TrafficSignEdgeRestriction> edgeRestrictions = new ArrayList<>();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         Set<TrafficSignSnap> assignedTrafficSignSnaps = new HashSet<>();
+        Stopwatch stopwatch = Stopwatch.createStarted();
         log.debug("Configuring query graph total nodes {} total edges {}", queryGraph.getNodes(),
                 queryGraph.getEdges());
         snappedTrafficSigns.forEach(trafficSignSnap -> {
@@ -94,7 +96,7 @@ public class QueryGraphConfigurer {
                 .addArgument(notAssignedByRoadSectionId.size())
                 .addArgument(notAssignedByRoadSectionId)
                 .log();
-
+        log.debug("Configured query graph in {} ms", stopwatch.elapsed().toMillis());
         return new TrafficSignEdgeRestrictions(edgeRestrictions);
     }
 

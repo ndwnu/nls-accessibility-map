@@ -22,12 +22,12 @@ public class TrafficSignEdgeRestrictions {
         this.restrictions = restrictions.stream().collect(groupingBy(TrafficSignEdgeRestriction::getEdgeKey));
     }
 
-    public boolean hasEdgeRestriction(int edgeKey) {
+    public boolean hasEdgeRestrictions(int edgeKey) {
         return restrictions.containsKey(edgeKey);
     }
 
     public TrafficSignEdgeRestriction getEdgeRestriction(int edgeKey) {
-        return restrictions.get(edgeKey).stream().findFirst().orElse(null);
+        return restrictions.get(edgeKey).stream().toList().getLast();
     }
 
     public static TrafficSignEdgeRestrictions emptyRestrictions() {
