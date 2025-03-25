@@ -302,7 +302,7 @@ class AccessibilityServiceTest {
             if (actual == null) {
                 return false;
             }
-            return expected.municipalityId() == actual.municipalityId() &&
+            return Objects.equals(expected.municipalityId(), actual.municipalityId()) &&
                     expected.searchDistanceInMetres() == actual.searchDistanceInMetres() &&
                     weightingEquals(expected.weighting(), actual.weighting());
         }
