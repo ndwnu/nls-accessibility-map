@@ -1,5 +1,8 @@
 package nu.ndw.nls.accessibilitymap.backend.mappers;
 
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
+import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.MalformedURLException;
@@ -8,7 +11,6 @@ import java.time.LocalDate;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
@@ -92,7 +94,7 @@ class MunicipalityFeatureMapperTest {
         String municipalityId = MUNICIPALITY.getMunicipalityId();
         Point startPoint = MUNICIPALITY.getStartPoint();
         MunicipalityBoundingBox bounds = MUNICIPALITY.getBounds();
-        var pointJson = new PointJson(List.of(startPoint.getX(), startPoint.getY()));
+        var pointJson = new PointJson(List.of(startPoint.getX(), startPoint.getY()), POINT);
         List<Double> boundsStart = List.of(bounds.longitudeFrom(), bounds.latitudeFrom());
         List<Double> boundsEnd = List.of(bounds.longitudeTo(), bounds.latitudeTo());
         var propertiesJson = new MunicipalityPropertiesJson(
@@ -102,10 +104,10 @@ class MunicipalityFeatureMapperTest {
                 MUNICIPALITY.getRequestExemptionUrl().toString(),
                 dateLastCheck);
         var featureJson = new MunicipalityFeatureJson(
-                MunicipalityFeatureJson.TypeEnum.FEATURE,
+                FEATURE,
                 municipalityId,
                 pointJson,
                 propertiesJson);
-        return new MunicipalityFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION, List.of(featureJson));
+        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION, List.of(featureJson));
     }
 }
