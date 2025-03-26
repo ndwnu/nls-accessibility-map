@@ -1,37 +1,41 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 
 /**
- * The TrafficSignEdgeRestrictions class maintains a mapping between edge keys and their associated traffic sign restrictions. This class is
- * used to query and retrieve traffic sign-related restrictions for specific edges in a transportation network.
+ * Represents a mapping of traffic signs and edge restrictions in a transportation network.
+ * The TrafficSignEdgeRestrictions class organizes traffic signs by edge keys and tracks
+ * edges that are restricted or blocked.
  * <p>
- * The restrictions are provided as a list of TrafficSignEdgeRestriction objects, which are converted into an internal map using the edge
- * key as the key and the corresponding TrafficSignEdgeRestriction as the value.
+ * This class is intended to process a list of {@code TrafficSignEdgeRestriction} objects,
+ * automatically organizing the data into two primary structures:
+ * - A map that associates edge keys with their corresponding traffic signs.
+ * - A set of edge keys that represent blocked or restricted edges.
+ * <p>
+ * The organization is achieved during initialization through the constructor using Java 8
+ * stream operations to efficiently process the input list.
  */
 @Getter
 public class TrafficSignEdgeRestrictions {
 
-    private final Map<Integer, List<TrafficSignEdgeRestriction>> restrictions;
+    private final Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey;
+    private final Set<Integer> blockedEdges;
 
-    public TrafficSignEdgeRestrictions(List<TrafficSignEdgeRestriction> restrictions) {
-        this.restrictions = restrictions.stream().collect(groupingBy(TrafficSignEdgeRestriction::getEdgeKey));
+    public TrafficSignEdgeRestrictions(List<TrafficSignEdgeRestriction> edgeRestrictions) {
+        this.blockedEdges = edgeRestrictions.stream()
+                .map(TrafficSignEdgeRestriction::getEdgeKey)
+                .collect(Collectors.toSet());
+        this.trafficSignsByEdgeKey = edgeRestrictions.stream()
+                .collect(groupingBy(TrafficSignEdgeRestriction::getEdgeKey,
+                        mapping(TrafficSignEdgeRestriction::getTrafficSign, toList())));
     }
-
-    public boolean hasEdgeRestrictions(int edgeKey) {
-        return restrictions.containsKey(edgeKey);
-    }
-
-    public List<TrafficSignEdgeRestriction> getEdgeRestrictions(int edgeKey) {
-        return restrictions.get(edgeKey);
-    }
-
-    public static TrafficSignEdgeRestrictions emptyRestrictions() {
-        return new TrafficSignEdgeRestrictions(List.of());
-    }
-
 }

@@ -12,8 +12,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +24,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class RoadSectionMapperTest {
 
-    private static final int TRAFFIC_SIGN_ID_FORWARD = 10;
-    private static final int TRAFFIC_SIGN_ID_BACKWARD = 20;
     private static final int ROAD_SECTION_ID = 1;
     private static final int EDGE_ID = 2;
     private static final int EDGE_KEY = 3;
@@ -46,17 +42,13 @@ class RoadSectionMapperTest {
     private TrafficSign trafficSignBackward;
 
     @Mock
-    private TrafficSignEdgeRestrictions trafficSignEdgeRestrictions;
-
-    @Mock
-    private TrafficSignEdgeRestriction trafficSignEdgeRestriction;
+    private Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey;
 
     @Mock
     private LineString geometry;
 
     @BeforeEach
     void setUp() {
-
         roadSectionMapper = new RoadSectionMapper();
     }
 
@@ -68,10 +60,6 @@ class RoadSectionMapperTest {
     void mapToRoadSections(boolean isReversed) {
 
         List<IsochroneMatch> isochroneMatches = List.of(isochroneMatch);
-        Map<Integer, TrafficSign> trafficSignById = Map.of(
-                TRAFFIC_SIGN_ID_FORWARD, trafficSignForward,
-                TRAFFIC_SIGN_ID_BACKWARD, trafficSignBackward
-        );
 
         when(isochroneMatch.getMatchedLinkId()).thenReturn(ROAD_SECTION_ID);
         when(isochroneMatch.getEdge()).thenReturn(edgeIteratorState);
@@ -80,15 +68,14 @@ class RoadSectionMapperTest {
 
         when(isochroneMatch.isReversed()).thenReturn(isReversed);
         when(isochroneMatch.getGeometry()).thenReturn(geometry);
-        when(trafficSignEdgeRestrictions.hasEdgeRestrictions(EDGE_KEY)).thenReturn(true);
-        when(trafficSignEdgeRestrictions.getEdgeRestrictions(EDGE_KEY)).thenReturn(List.of(trafficSignEdgeRestriction));
+        when(trafficSignsByEdgeKey.containsKey(EDGE_KEY)).thenReturn(true);
+
         if (isReversed) {
-            when(trafficSignEdgeRestriction.getTrafficSignId()).thenReturn(TRAFFIC_SIGN_ID_BACKWARD);
+            when(trafficSignsByEdgeKey.get(EDGE_KEY)).thenReturn(List.of(trafficSignBackward));
         } else {
-            when(trafficSignEdgeRestriction.getTrafficSignId()).thenReturn(TRAFFIC_SIGN_ID_FORWARD);
+            when(trafficSignsByEdgeKey.get(EDGE_KEY)).thenReturn(List.of(trafficSignForward));
         }
-        Collection<RoadSection> roadSections = roadSectionMapper.mapToRoadSections(isochroneMatches, trafficSignById,
-                trafficSignEdgeRestrictions);
+        Collection<RoadSection> roadSections = roadSectionMapper.mapToRoadSections(isochroneMatches, trafficSignsByEdgeKey);
 
         assertThat(roadSections)
                 .isNotEmpty()

@@ -3,27 +3,22 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
+import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 
 /**
- * The RestrictionWeightingAdapter is a wrapper class that adapts a {@link Weighting} implementation
- * to account for edge restrictions provided by {@link TrafficSignEdgeRestrictions}. This adapter modifies
- * the behavior of edge weighting calculations by checking if an edge is restricted based on the
- * provided restrictions. If an edge is restricted, it assigns a weight of {@code Double.POSITIVE_INFINITY}
- * to that edge, effectively making it inaccessible during routing computations.
- * <p>
- * This class delegates all other weighting calculations (e.g., turn costs, edge millis) to the
- * underlying {@link Weighting} instance. It ensures compatibility with existing weight-based
- * routing algorithms while incorporating custom edge restrictions.
+ * Adapter class that wraps a {@link Weighting} instance and provides additional functionality
+ * for blocking specific edges during routing. The {@code blockedEdges} set contains edge keys
+ * that are considered restricted, and such edges will be assigned an infinite weight to make
+ * them unavailable for routing.
  */
 @RequiredArgsConstructor
 public class RestrictionWeightingAdapter implements Weighting {
 
     private final Weighting sourceWeighting;
     @Getter
-    private final TrafficSignEdgeRestrictions edgeRestrictions;
+    private final Set<Integer> blockedEdges;
 
     @Override
     public double calcMinWeightPerDistance() {
@@ -31,19 +26,19 @@ public class RestrictionWeightingAdapter implements Weighting {
     }
 
     /**
-     * Calculates the weight of the specified edge, possibly considering a restriction that
-     * renders the edge inaccessible. If the edge is restricted, the weight is assigned
-     * as {@code Double.POSITIVE_INFINITY}; otherwise, the calculation is delegated to
-     * the underlying weighting implementation.
+     * Calculates the weight of a given edge, taking into account any restrictions
+     * imposed by the {@code blockedEdges} set. If the edge is restricted, the method
+     * returns {@code Double.POSITIVE_INFINITY}, rendering the edge unusable for routing purposes.
+     * Otherwise, delegates the weight calculation to the underlying {@code sourceWeighting}.
      *
-     * @param edgeIteratorState the state of the edge for which the weight is being calculated
-     * @param reversed a boolean indicating whether the edge direction should be reversed
-     * @return the calculated weight of the edge; {@code Double.POSITIVE_INFINITY} if the edge
-     *         is restricted, otherwise the weight calculated by the underlying weighting
+     * @param edgeIteratorState the edge for which the weight is being calculated
+     * @param reversed indicates whether the edge direction should be reversed during the calculation
+     * @return the calculated weight of the edge, or {@code Double.POSITIVE_INFINITY} if the edge is restricted
      */
+
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversed) {
-        if (edgeRestrictions.hasEdgeRestrictions(edgeIteratorState.getEdgeKey())) {
+        if (blockedEdges.contains(edgeIteratorState.getEdgeKey())) {
             return Double.POSITIVE_INFINITY;
         }
         return sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed);
