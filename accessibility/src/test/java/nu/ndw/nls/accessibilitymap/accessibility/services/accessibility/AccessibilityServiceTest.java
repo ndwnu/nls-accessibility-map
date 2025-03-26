@@ -25,7 +25,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.RestrictionWeightingAdapter;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
@@ -62,8 +61,6 @@ class AccessibilityServiceTest {
     private static final double START_LOCATION_LONGITUDE = 2d;
 
     private static final int MUNICIPALITY_ID = 11;
-
-    private static final int TRAFFIC_SIGN_ID = 345;
 
     private static final double SEARCH_DISTANCE_IN_METRES = 200D;
 
@@ -190,14 +187,16 @@ class AccessibilityServiceTest {
         when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap))
                 .thenReturn(queryGraph);
         when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap))).thenReturn(trafficSignEdgeRestrictions);
-        when(trafficSignEdgeRestrictions.getRestrictions()).thenReturn(Map.of(1, List.of(TrafficSignEdgeRestriction
+        when(trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey()).thenReturn(Map.of(1, List.of(TrafficSign
                 .builder()
                 .build())));
+        when(trafficSignEdgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
                         argThat(new IsochroneArgumentMatcher(IsochroneArguments
                                 .builder()
-                                .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, trafficSignEdgeRestrictions))
+                                .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions,
+                                        trafficSignEdgeRestrictions.getBlockedEdges()))
                                 .startPoint(startPoint)
                                 .municipalityId(MUNICIPALITY_ID)
                                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
@@ -211,7 +210,7 @@ class AccessibilityServiceTest {
                         argThat(new IsochroneArgumentMatcher(IsochroneArguments
                                         .builder()
                                         .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions,
-                                                TrafficSignEdgeRestrictions.emptyRestrictions()))
+                                                Set.of()))
                                         .startPoint(startPoint)
                                         .municipalityId(MUNICIPALITY_ID)
                                         .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
@@ -223,10 +222,10 @@ class AccessibilityServiceTest {
                 .thenReturn(List.of(isochroneMatchNoRestriction));
 
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchNoRestriction),
-                Map.of(TRAFFIC_SIGN_ID, trafficSign), trafficSignEdgeRestrictions))
+                trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey()))
                 .thenReturn(List.of(roadSectionNoRestriction));
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction),
-                Map.of(TRAFFIC_SIGN_ID, trafficSign), trafficSignEdgeRestrictions))
+                trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey()))
                 .thenReturn(List.of(roadSectionRestriction));
         when(roadSectionCombinator
                 .combineNoRestrictionsWithAccessibilityRestrictions(
@@ -260,10 +259,7 @@ class AccessibilityServiceTest {
     }
 
     private void mockTrafficSignData(AccessibilityRequest accessibilityRequest) {
-
         when(trafficSignDataService.findAllBy(accessibilityRequest)).thenReturn(List.of(trafficSign));
-        when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID);
-        when(trafficSignSnap.getTrafficSign()).thenReturn(trafficSign);
     }
 
     @Test
@@ -309,8 +305,8 @@ class AccessibilityServiceTest {
             if (expected.weighting() instanceof RestrictionWeightingAdapter expectedWeightingAdapter
                     && actualWeighting instanceof RestrictionWeightingAdapter actualWeightingAdapter) {
                 return Objects.equals(
-                        expectedWeightingAdapter.getEdgeRestrictions().getRestrictions(),
-                        actualWeightingAdapter.getEdgeRestrictions().getRestrictions());
+                        expectedWeightingAdapter.getBlockedEdges(),
+                        actualWeightingAdapter.getBlockedEdges());
             } else {
                 return Objects.equals(expectedWeighting, actualWeighting);
             }
