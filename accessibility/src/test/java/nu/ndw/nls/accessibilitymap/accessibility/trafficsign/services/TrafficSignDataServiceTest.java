@@ -98,7 +98,6 @@ class TrafficSignDataServiceTest {
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign3);
     }
 
-
     @Test
     void findAllByTypes() {
 
