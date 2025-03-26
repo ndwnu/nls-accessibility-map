@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
@@ -57,6 +58,7 @@ class RoadSectionTest extends ValidationTest {
                         .latitude(4d)
                         .textSigns(List.of())
                         .trafficSignType(TrafficSignType.C7)
+                        .restrictions(Restrictions.builder().build())
                         .build()))
                 .build();
 

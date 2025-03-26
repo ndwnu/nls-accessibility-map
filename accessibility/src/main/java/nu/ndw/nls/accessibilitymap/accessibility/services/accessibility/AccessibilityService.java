@@ -21,7 +21,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.RestrictionWeightingAdapter;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
@@ -78,9 +77,7 @@ public class AccessibilityService {
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
         QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
 
-        TrafficSignEdgeRestrictions trafficSignEdgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph,
-                snappedTrafficSigns);
-
+        var trafficSignEdgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
@@ -139,8 +136,6 @@ public class AccessibilityService {
                         startSegment),
                 trafficSignsByEdgeKey);
     }
-
-
 
     private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest, boolean includeOnlyTimeWindowedSigns) {
 
