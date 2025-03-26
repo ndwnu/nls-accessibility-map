@@ -22,8 +22,8 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
@@ -53,8 +53,8 @@ public class QueryGraphConfigurer {
      * @param snappedTrafficSigns a list of traffic signs with their corresponding snapped locations
      * @return an instance of TrafficSignEdgeRestrictions containing the mapped edge restrictions
      */
-    public TrafficSignEdgeRestrictions createEdgeRestrictions(QueryGraph queryGraph, List<TrafficSignSnap> snappedTrafficSigns) {
-        List<TrafficSignEdgeRestriction> edgeRestrictions = new ArrayList<>();
+    public EdgeRestrictions createEdgeRestrictions(QueryGraph queryGraph, List<TrafficSignSnap> snappedTrafficSigns) {
+        List<EdgeRestriction> edgeRestrictions = new ArrayList<>();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         Set<TrafficSignSnap> assignedTrafficSignSnaps = new HashSet<>();
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -73,7 +73,7 @@ public class QueryGraphConfigurer {
                                 trafficSignSnap.getTrafficSign().roadSectionId(), getLinkId(edgeIterator));
                     } else {
 
-                        edgeRestrictions.add(TrafficSignEdgeRestriction.builder()
+                        edgeRestrictions.add(EdgeRestriction.builder()
                                 .edgeKey(edgeIterator.getEdgeKey())
                                 .trafficSign(trafficSignSnap.getTrafficSign())
                                 .build());
@@ -97,7 +97,7 @@ public class QueryGraphConfigurer {
                 .addArgument(notAssignedByRoadSectionId)
                 .log();
         log.debug("Configured query graph in {} ms", stopwatch.elapsed().toMillis());
-        return new TrafficSignEdgeRestrictions(edgeRestrictions);
+        return new EdgeRestrictions(edgeRestrictions);
     }
 
     private static boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {

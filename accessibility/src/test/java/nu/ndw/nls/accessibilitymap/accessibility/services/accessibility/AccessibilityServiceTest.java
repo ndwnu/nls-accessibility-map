@@ -25,7 +25,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.RestrictionWeightingAdapter;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
@@ -140,7 +140,7 @@ class AccessibilityServiceTest {
     private IsochroneMatch isochroneMatchRestriction;
 
     @Mock
-    private TrafficSignEdgeRestrictions trafficSignEdgeRestrictions;
+    private EdgeRestrictions edgeRestrictions;
 
     @Captor
     private ArgumentCaptor<Coordinate> coordinateArgumentCaptor;
@@ -186,17 +186,16 @@ class AccessibilityServiceTest {
                 .thenReturn(startPoint);
         when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap))
                 .thenReturn(queryGraph);
-        when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap))).thenReturn(trafficSignEdgeRestrictions);
-        when(trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey()).thenReturn(Map.of(1, List.of(TrafficSign
+        when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap))).thenReturn(edgeRestrictions);
+        when(edgeRestrictions.getTrafficSignsByEdgeKey()).thenReturn(Map.of(1, List.of(TrafficSign
                 .builder()
                 .build())));
-        when(trafficSignEdgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
+        when(edgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
                         argThat(new IsochroneArgumentMatcher(IsochroneArguments
                                 .builder()
-                                .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions,
-                                        trafficSignEdgeRestrictions.getBlockedEdges()))
+                                .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, edgeRestrictions.getBlockedEdges()))
                                 .startPoint(startPoint)
                                 .municipalityId(MUNICIPALITY_ID)
                                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
@@ -221,11 +220,9 @@ class AccessibilityServiceTest {
                         eq(startSegmentSnap)))
                 .thenReturn(List.of(isochroneMatchNoRestriction));
 
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchNoRestriction),
-                trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey()))
+        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchNoRestriction), edgeRestrictions.getTrafficSignsByEdgeKey()))
                 .thenReturn(List.of(roadSectionNoRestriction));
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction),
-                trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey()))
+        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction), edgeRestrictions.getTrafficSignsByEdgeKey()))
                 .thenReturn(List.of(roadSectionRestriction));
         when(roadSectionCombinator
                 .combineNoRestrictionsWithAccessibilityRestrictions(

@@ -77,7 +77,7 @@ public class AccessibilityService {
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
         QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
 
-        var trafficSignEdgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
+        var edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
@@ -89,7 +89,7 @@ public class AccessibilityService {
                         queryGraph,
                         startSegment,
                         buildWeightingWithRestrictions(Set.of()),
-                        trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey());
+                        edgeRestrictions.getTrafficSignsByEdgeKey());
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(
@@ -98,8 +98,8 @@ public class AccessibilityService {
                         startPoint,
                         queryGraph,
                         startSegment,
-                        buildWeightingWithRestrictions(trafficSignEdgeRestrictions.getBlockedEdges()),
-                        trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey());
+                        buildWeightingWithRestrictions(edgeRestrictions.getBlockedEdges()),
+                        edgeRestrictions.getTrafficSignsByEdgeKey());
 
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
