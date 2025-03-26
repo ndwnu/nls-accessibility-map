@@ -18,7 +18,6 @@ import com.graphhopper.util.shapes.GHPoint3D;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -43,7 +42,6 @@ class QueryGraphConfigurerTest {
 
     private static final double LAT = 1.0;
 
-    private static final int TRAFFIC_SIGN_ID_VALUE = 1;
 
     private static final String MESSAGE_NOT_ASSIGNED = "Query graph configuration summary. "
             + "Total traffic signs in request 1. "
@@ -112,7 +110,6 @@ class QueryGraphConfigurerTest {
             when(trafficSign.direction()).thenReturn(Direction.FORWARD);
         }
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(reversed);
-        when(trafficSign.id()).thenReturn(TRAFFIC_SIGN_ID_VALUE);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
         when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
@@ -126,9 +123,9 @@ class QueryGraphConfigurerTest {
 
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
-        assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isTrue();
-        List<TrafficSignEdgeRestriction> trafficSignEdgeRestrictions = restrictions.getEdgeRestrictions(edgeIterator.getEdgeKey());
-        assertThat(trafficSignEdgeRestrictions.getFirst().getTrafficSignId()).isEqualTo(TRAFFIC_SIGN_ID_VALUE);
+        assertThat(restrictions.getBlockedEdges().contains(edgeIterator.getEdgeKey())).isTrue();
+        List<TrafficSign> trafficSigns = restrictions.getTrafficSignsByEdgeKey().get(edgeIterator.getEdgeKey());
+        assertThat(trafficSigns.getFirst()).isEqualTo(trafficSign);
         loggerExtension.containsLog(
                 Level.INFO,
                 "Query graph configuration summary. "
@@ -149,7 +146,7 @@ class QueryGraphConfigurerTest {
 
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
-        assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isFalse();
+        assertThat(restrictions.getBlockedEdges().contains(edgeIterator.getEdgeKey())).isFalse();
         loggerExtension.containsLog(
                 Level.WARN,
                 MESSAGE_NOT_ASSIGNED.formatted(0));
@@ -179,7 +176,7 @@ class QueryGraphConfigurerTest {
 
         TrafficSignEdgeRestrictions restrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
-        assertThat(restrictions.hasEdgeRestrictions(edgeIterator.getEdgeKey())).isFalse();
+        assertThat(restrictions.getBlockedEdges().contains(edgeIterator.getEdgeKey())).isFalse();
         loggerExtension.containsLog(
                 Level.WARN,
                 MESSAGE_NOT_ASSIGNED.formatted(124));

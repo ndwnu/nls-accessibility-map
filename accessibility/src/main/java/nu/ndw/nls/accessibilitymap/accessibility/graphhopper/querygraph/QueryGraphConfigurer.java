@@ -45,13 +45,13 @@ public class QueryGraphConfigurer {
     private final EncodingManager encodingManager;
 
     /**
-     * Creates a mapping of edge restrictions based on traffic signs and their snapped locations in a query graph. This method associates
-     * traffic signs with appropriate edges in the graph considering the traffic sign's direction, placement, and compatibility with the
-     * edge properties. It logs the configuration process and identifies any traffic signs that could not be assigned to an edge.
+     * Creates edge restrictions for traffic signs by mapping the snapped traffic signs
+     * to road edges in the query graph, based on the characteristics of the traffic signs and edges.
+     * Ensures compatible matches between traffic signs and edges, and logs any unassignable traffic signs.
      *
-     * @param queryGraph          the query graph containing the graph structure and edges to be examined.
-     * @param snappedTrafficSigns a list of snapped traffic signs with location data used to determine their closest edges.
-     * @return a TrafficSignEdgeRestrictions object containing a list of restrictions associating traffic signs with edges.
+     * @param queryGraph the query graph containing the nodes and edges used for mapping traffic signs
+     * @param snappedTrafficSigns a list of traffic signs with their corresponding snapped locations
+     * @return an instance of TrafficSignEdgeRestrictions containing the mapped edge restrictions
      */
     public TrafficSignEdgeRestrictions createEdgeRestrictions(QueryGraph queryGraph, List<TrafficSignSnap> snappedTrafficSigns) {
         List<TrafficSignEdgeRestriction> edgeRestrictions = new ArrayList<>();
@@ -75,7 +75,7 @@ public class QueryGraphConfigurer {
 
                         edgeRestrictions.add(TrafficSignEdgeRestriction.builder()
                                 .edgeKey(edgeIterator.getEdgeKey())
-                                .trafficSignId(trafficSignSnap.getTrafficSign().id())
+                                .trafficSign(trafficSignSnap.getTrafficSign())
                                 .build());
                         assignedTrafficSignSnaps.add(trafficSignSnap);
                     }
