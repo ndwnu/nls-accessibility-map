@@ -97,9 +97,7 @@ class TrafficSignTest {
             C6, C6, true,
             C6, C7, false,
             C7, C6, false,
-            C6,   , false,
-            ,   C6, false,
-            ,     , true
+            C6,   , true
             """)
     void isRelevant_trafficSigns(String trafficSignTypeRestriction, String trafficSignRequest, boolean expectedResult) {
 
@@ -107,16 +105,11 @@ class TrafficSignTest {
                 .trafficSignTypes(Objects.nonNull(trafficSignRequest) ? Set.of(TrafficSignType.fromRvvCode(trafficSignRequest)) : null)
                 .build();
 
-        if (expectedResult && (
-                Objects.nonNull(trafficSignTypeRestriction) && Objects.nonNull(trafficSignRequest)
-                || Objects.isNull(trafficSignTypeRestriction) && Objects.isNull(trafficSignRequest)
-        )) {
+        if (expectedResult) {
             when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(true);
             when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(true);
-        } else if(Objects.isNull(trafficSignTypeRestriction) || Objects.isNull(trafficSignRequest)) {
-            when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(true);
-            when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(false);
         }
+
         trafficSign = TrafficSign.builder()
                 .trafficSignType(
                         Objects.nonNull(trafficSignTypeRestriction) ? TrafficSignType.fromRvvCode(trafficSignTypeRestriction) : null)

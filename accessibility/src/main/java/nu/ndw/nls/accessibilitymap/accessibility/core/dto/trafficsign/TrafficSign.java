@@ -28,7 +28,7 @@ public record TrafficSign(
         Double blackCode,
         @NotNull List<TextSign> textSigns,
         URI trafficSignOrderUrl,
-        Restrictions restrictions) {
+        @NotNull Restrictions restrictions) {
 
     public boolean hasTimeWindowedSign() {
 
@@ -60,7 +60,7 @@ public record TrafficSign(
     }
 
     private boolean hasRelevantTrafficSignOrContinue(AccessibilityRequest accessibilityRequest) {
-        if (Objects.isNull(trafficSignType) || Objects.isNull(accessibilityRequest.trafficSignTypes())) {
+        if (Objects.isNull(accessibilityRequest.trafficSignTypes())) {
             return true; // continue
         }
 

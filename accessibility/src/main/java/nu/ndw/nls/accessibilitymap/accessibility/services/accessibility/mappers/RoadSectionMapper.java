@@ -23,8 +23,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RoadSectionMapper {
 
-
-    @SuppressWarnings("java:S5612")
+    @SuppressWarnings({"java:S5612", "java:S1941"})
     public @Valid Collection<RoadSection> mapToRoadSections(
             Iterable<IsochroneMatch> isochroneMatches,
             Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
@@ -65,7 +64,6 @@ public class RoadSectionMapper {
 
         return roadSectionsById.values();
     }
-
 
     private static List<TrafficSign> getTrafficSigns(
             Integer directionalSegmentId,
