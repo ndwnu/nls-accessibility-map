@@ -23,6 +23,9 @@ parameters:
   - name: skipSecurityScanning
     type: boolean
     default: false
+  - name: skipComponentTesting
+    type: boolean
+    default: false
   - name: forceDeployment
     type: boolean
     default: false
@@ -38,7 +41,7 @@ extends:
   parameters:
     skipSonar: ${{ parameters.skipSonar }}
     skipSecurityScanning: ${{ parameters.skipSecurityScanning }}
-    skipComponentTesting: true
+    skipComponentTesting: ${{ parameters.skipComponentTesting }}
     skipPerformanceTesting: true
     skipDocker: ${{ parameters.skipDocker }}
     skipDeployment: ${{ parameters.skipDeployment }}
