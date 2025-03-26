@@ -11,7 +11,7 @@ resources:
     - repository: nls-pipeline-templates
       type: git
       name: NLS/nls-pipeline-templates
-      ref: main
+      ref: feature/90881/fix-job-local-component-test
 
 parameters:
   - name: skipSonar
@@ -75,6 +75,10 @@ extends:
         buildContext: docker/nls-accessibility-map-traffic-sign-analyser-job
         repository: nls-accessibility-map-traffic-sign-analyser-job
         push: true
+    componentTests:
+      - name: "jobs"
+        module: "jobs/jobs-component-test"
+        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/trafficsignanalyser"
     deployment:
       environments:
         - name: "staging"
