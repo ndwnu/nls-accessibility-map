@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers
 
 import jakarta.validation.Valid;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -13,7 +14,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ public class RoadSectionMapper {
     @SuppressWarnings("java:S5612")
     public @Valid Collection<RoadSection> mapToRoadSections(
             Iterable<IsochroneMatch> isochroneMatches,
-            Map<Integer, TrafficSign> trafficSignsById, TrafficSignEdgeRestrictions trafficSignEdgeRestrictions) {
+            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
 
         SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
@@ -58,7 +58,7 @@ public class RoadSectionMapper {
             addSegmentsToRoadSectionFragment(
                     roadSectionFragment,
                     isochroneMatch,
-                    getTrafficSigns(directionalSegmentId, trafficSignsById, trafficSignEdgeRestrictions),
+                    getTrafficSigns(directionalSegmentId, trafficSignsByEdgeKey),
                     directionalSegmentId,
                     roadSectionFragmentById);
         });
@@ -69,17 +69,12 @@ public class RoadSectionMapper {
 
     private static List<TrafficSign> getTrafficSigns(
             Integer directionalSegmentId,
-            Map<Integer, TrafficSign> trafficSignById,
-            TrafficSignEdgeRestrictions trafficSignEdgeRestrictions
+            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey
     ) {
-        if (trafficSignEdgeRestrictions.hasEdgeRestrictions(directionalSegmentId)) {
-
-            return trafficSignEdgeRestrictions.getEdgeRestrictions(directionalSegmentId).stream()
-                    .map(r -> trafficSignById.get(r.getTrafficSignId()))
-                    .toList();
-
+        if (trafficSignsByEdgeKey.containsKey(directionalSegmentId)) {
+            return trafficSignsByEdgeKey.get(directionalSegmentId);
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private static void addSegmentsToRoadSectionFragment(

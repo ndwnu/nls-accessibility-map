@@ -1,59 +1,74 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.TrafficSignEdgeRestrictions;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 class RestrictionWeightingAdapterTest {
 
-    private static final int EDGE_KEY = 1;
-
     /**
-     * Unit tests for the `calcEdgeWeight` method in the `RestrictionWeightingAdapter` class. The `calcEdgeWeight` method calculates the
-     * weight of an edge while taking into consideration restrictions defined in `TrafficSignEdgeRestrictions`. If the edge has
-     * restrictions, the method returns `Double.POSITIVE_INFINITY`, otherwise it delegates to the source `Weighting` implementation.
+     * Test class for RestrictionWeightingAdapter, specifically focused on testing the calcEdgeWeight method which calculates the weight of
+     * an edge, considering its restrictions.
      */
 
     @Test
-    void testCalcEdgeWeight_WithEdgeRestrictions() {
-        TrafficSignEdgeRestrictions restrictions = Mockito.mock(TrafficSignEdgeRestrictions.class);
-        Weighting sourceWeighting = Mockito.mock(Weighting.class);
-        EdgeIteratorState edgeIteratorState = Mockito.mock(EdgeIteratorState.class);
+    void testCalcEdgeWeightWithBlockedEdge() {
+        // Given
+        Weighting mockSourceWeighting = mock(Weighting.class);
+        Set<Integer> blockedEdges = Set.of(1, 2, 3);
+        RestrictionWeightingAdapter adapter = new RestrictionWeightingAdapter(mockSourceWeighting, blockedEdges);
 
-        when(edgeIteratorState.getEdgeKey()).thenReturn(EDGE_KEY);
-        when(restrictions.hasEdgeRestrictions(EDGE_KEY)).thenReturn(true);
+        EdgeIteratorState edgeIteratorState = mock(EdgeIteratorState.class);
+        when(edgeIteratorState.getEdgeKey()).thenReturn(2); // Blocked edge
 
-        RestrictionWeightingAdapter adapter = new RestrictionWeightingAdapter(sourceWeighting, restrictions);
+        // When
         double result = adapter.calcEdgeWeight(edgeIteratorState, false);
 
-        assertEquals(Double.POSITIVE_INFINITY, result);
-        verify(restrictions, times(1)).hasEdgeRestrictions(EDGE_KEY);
-        verifyNoInteractions(sourceWeighting);
+        // Then
+        assertEquals(Double.POSITIVE_INFINITY, result,
+                "calcEdgeWeight should return Double.POSITIVE_INFINITY for blocked edges");
     }
 
     @Test
-    void testCalcEdgeWeight_WithoutEdgeRestrictions() {
-        TrafficSignEdgeRestrictions restrictions = Mockito.mock(TrafficSignEdgeRestrictions.class);
-        Weighting sourceWeighting = Mockito.mock(Weighting.class);
-        EdgeIteratorState edgeIteratorState = Mockito.mock(EdgeIteratorState.class);
+    void testCalcEdgeWeightWithUnblockedEdge() {
+        // Given
+        Weighting mockSourceWeighting = mock(Weighting.class);
+        Set<Integer> blockedEdges = Set.of(1, 2, 3);
+        RestrictionWeightingAdapter adapter = new RestrictionWeightingAdapter(mockSourceWeighting, blockedEdges);
 
-        when(edgeIteratorState.getEdgeKey()).thenReturn(EDGE_KEY);
-        when(restrictions.hasEdgeRestrictions(EDGE_KEY)).thenReturn(false);
-        when(sourceWeighting.calcEdgeWeight(edgeIteratorState, false)).thenReturn(10.0);
+        EdgeIteratorState edgeIteratorState = mock(EdgeIteratorState.class);
+        when(edgeIteratorState.getEdgeKey()).thenReturn(4); // Unblocked edge
+        when(mockSourceWeighting.calcEdgeWeight(edgeIteratorState, false)).thenReturn(10.0);
 
-        RestrictionWeightingAdapter adapter = new RestrictionWeightingAdapter(sourceWeighting, restrictions);
+        // When
         double result = adapter.calcEdgeWeight(edgeIteratorState, false);
 
-        assertEquals(10.0, result);
-        verify(restrictions, times(1)).hasEdgeRestrictions(EDGE_KEY);
-        verify(sourceWeighting, times(1)).calcEdgeWeight(edgeIteratorState, false);
+        // Then
+        assertEquals(10.0, result,
+                "calcEdgeWeight should return the calculated weight from sourceWeighting for unblocked edges");
+    }
+
+    @Test
+    void testCalcEdgeWeightWithReversed() {
+        // Given
+        Weighting mockSourceWeighting = mock(Weighting.class);
+        Set<Integer> blockedEdges = Set.of(1, 2, 3);
+        RestrictionWeightingAdapter adapter = new RestrictionWeightingAdapter(mockSourceWeighting, blockedEdges);
+
+        EdgeIteratorState edgeIteratorState = mock(EdgeIteratorState.class);
+        when(edgeIteratorState.getEdgeKey()).thenReturn(5); // Unblocked edge
+        when(mockSourceWeighting.calcEdgeWeight(edgeIteratorState, true)).thenReturn(15.0);
+
+        // When
+        double result = adapter.calcEdgeWeight(edgeIteratorState, true);
+
+        // Then
+        assertEquals(15.0, result,
+                "calcEdgeWeight should return the calculated weight from sourceWeighting, respecting the reversed flag for unblocked edges");
     }
 }

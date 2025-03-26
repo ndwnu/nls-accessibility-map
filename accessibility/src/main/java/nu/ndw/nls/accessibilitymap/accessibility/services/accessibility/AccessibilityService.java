@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -81,7 +81,6 @@ public class AccessibilityService {
         TrafficSignEdgeRestrictions trafficSignEdgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph,
                 snappedTrafficSigns);
 
-        Map<Integer, TrafficSign> trafficSignsById = buildTrafficSignById(snappedTrafficSigns);
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
@@ -92,9 +91,8 @@ public class AccessibilityService {
                         startPoint,
                         queryGraph,
                         startSegment,
-                        trafficSignsById,
-                        buildWeightingWithRestrictions(TrafficSignEdgeRestrictions.emptyRestrictions()),
-                        trafficSignEdgeRestrictions);
+                        buildWeightingWithRestrictions(Set.of()),
+                        trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey());
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(
@@ -103,9 +101,8 @@ public class AccessibilityService {
                         startPoint,
                         queryGraph,
                         startSegment,
-                        trafficSignsById,
-                        buildWeightingWithRestrictions(trafficSignEdgeRestrictions),
-                        trafficSignEdgeRestrictions);
+                        buildWeightingWithRestrictions(trafficSignEdgeRestrictions.getBlockedEdges()),
+                        trafficSignEdgeRestrictions.getTrafficSignsByEdgeKey());
 
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
@@ -127,9 +124,8 @@ public class AccessibilityService {
             Point startPoint,
             QueryGraph queryGraph,
             Snap startSegment,
-            Map<Integer, TrafficSign> trafficSignsById,
             Weighting weighting,
-            TrafficSignEdgeRestrictions trafficSignEdgeRestrictions) {
+            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
 
         return roadSectionMapper.mapToRoadSections(
                 isochroneService.getIsochroneMatchesByMunicipalityId(
@@ -141,17 +137,10 @@ public class AccessibilityService {
                                 .build(),
                         queryGraph,
                         startSegment),
-                trafficSignsById,
-                trafficSignEdgeRestrictions);
+                trafficSignsByEdgeKey);
     }
 
-    private static Map<Integer, TrafficSign> buildTrafficSignById(List<TrafficSignSnap> additionalSnaps) {
 
-        return additionalSnaps.stream()
-                .collect(Collectors.toMap(
-                        additionalSnap -> additionalSnap.getTrafficSign().id(),
-                        TrafficSignSnap::getTrafficSign));
-    }
 
     private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest, boolean includeOnlyTimeWindowedSigns) {
 
@@ -159,9 +148,9 @@ public class AccessibilityService {
         return trafficSingSnapMapper.map(trafficSigns, includeOnlyTimeWindowedSigns);
     }
 
-    private Weighting buildWeightingWithRestrictions(TrafficSignEdgeRestrictions trafficSignEdgeRestrictions) {
+    private Weighting buildWeightingWithRestrictions(Set<Integer> blockedEdges) {
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-        return new RestrictionWeightingAdapter(networkGraphHopper.createWeighting(profile, new PMap()), trafficSignEdgeRestrictions);
+        return new RestrictionWeightingAdapter(networkGraphHopper.createWeighting(profile, new PMap()), blockedEdges);
     }
 
     private Point createPoint(double latitude, double longitude) {
