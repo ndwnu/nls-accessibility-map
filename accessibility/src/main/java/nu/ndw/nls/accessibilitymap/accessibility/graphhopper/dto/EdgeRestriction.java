@@ -8,7 +8,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 @Builder
 @Getter
 @EqualsAndHashCode
-public class TrafficSignEdgeRestriction {
+public class EdgeRestriction {
 
     Integer edgeKey;
     TrafficSign trafficSign;
