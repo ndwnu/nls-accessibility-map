@@ -8,10 +8,12 @@ import lombok.Getter;
 @Getter
 public enum TrafficSignType {
 
+    C1("C1"),
     C6("C6"),
     C7("C7"),
     C7A("C7a"),
     C7B("C7b"),
+    C7C("C7c"),
     C10("C10"),
     C12("C12"),
     C22C("C22c"),
@@ -19,7 +21,8 @@ public enum TrafficSignType {
     C18("C18"),
     C19("C19"),
     C20("C20"),
-    C21("C21");
+    C21("C21"),
+    C22("C22");
     private final String rvvCode;
 
     public static TrafficSignType fromRvvCode(String rvvCode) {

@@ -1,15 +1,14 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.VehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -29,16 +28,14 @@ public class GenerateCommand implements Callable<Integer> {
 
     private final AccessibilityConfiguration accessibilityConfiguration;
 
-    private final GenerateConfiguration generateProperties;
-
-    private final VehiclePropertiesMapper vehiclePropertiesMapper;
+    private final GenerateConfiguration generateConfiguration;
 
     private final ClockService clockService;
 
     @Option(names = {"-t", "--traffic-sign"},
             description = "Traffic signs to generate the map for.",
             required = true)
-    private List<TrafficSignType> trafficSignTypes;
+    private Set<TrafficSignType> trafficSignTypes;
 
     @Option(names = {"-e", "--export-type"},
             description = "Export types",
@@ -77,15 +74,17 @@ public class GenerateCommand implements Callable<Integer> {
                     .startTime(startTime)
                     .name(exportName)
                     .exportTypes(exportTypes)
-                    .startLocationLatitude(generateProperties.startLocationLatitude())
-                    .startLocationLongitude(generateProperties.startLocationLongitude())
-                    .trafficSignTypes(trafficSignTypes)
-                    .vehicleProperties(vehiclePropertiesMapper.map(trafficSignTypes, includeOnlyTimeWindowedSigns))
+                    .accessibilityRequest(AccessibilityRequest.builder()
+                            .trafficSignTypes(trafficSignTypes)
+                            .startLocationLatitude(generateConfiguration.startLocationLatitude())
+                            .startLocationLongitude(generateConfiguration.startLocationLongitude())
+                            .searchRadiusInMeters(generateConfiguration.searchRadiusInMeters())
+                            .build())
                     .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                     .publishEvents(publishEvents)
-                    .generateConfiguration(generateProperties)
+                    .generateConfiguration(generateConfiguration)
                     .build();
             log.info("Generating export");
             mapGeneratorService.generate(exportProperties);

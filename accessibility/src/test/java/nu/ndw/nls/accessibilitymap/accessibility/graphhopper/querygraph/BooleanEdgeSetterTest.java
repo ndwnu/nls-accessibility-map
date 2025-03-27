@@ -28,29 +28,29 @@ class BooleanEdgeSetterTest {
     private BooleanEdgeSetter setter;
 
     @Test
-    void getGetDataTypeClass_ok() {
+    void getGetDataTypeClass() {
         assertThat(setter.getGetDataTypeClass()).isEqualTo(Boolean.class);
     }
 
     @Test
-    void getDefaultValue_ok() {
+    void getDefaultValue() {
         assertThat(setter.getDefaultValue(booleanEncodedValue)).isFalse();
     }
 
     @Test
-    void getEncoderType_ok() {
+    void getEncoderType() {
         assertThat(setter.getEncoderType()).isEqualTo(BooleanEncodedValue.class);
     }
 
     @Test
-    void set_ok() {
+    void set() {
 
         setter.set(edgeIteratorState, booleanEncodedValue, true);
         verify(edgeIteratorState).set(booleanEncodedValue, true);
     }
 
     @Test
-    void setReverse_ok() {
+    void setReverse() {
 
         setter.setReverse(edgeIteratorState, booleanEncodedValue, true);
         verify(edgeIteratorState).setReverse(booleanEncodedValue, true);

@@ -9,6 +9,10 @@
     <artifactId>jobs-component-test</artifactId>
     <name>NLS Accessibility Map Jobs- Component test</name>
 
+    <properties>
+        <maven.test.skip>true</maven.test.skip>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>nu.ndw</groupId>
@@ -29,6 +33,12 @@
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
             <artifactId>shared</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.accessibilitymap</groupId>
+            <artifactId>accessibility</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
@@ -96,13 +106,21 @@
     </dependencies>
 
     <profiles>
+
         <profile>
-            <id>regression-test</id>
+            <id>component-test</id>
             <properties>
                 <maven.test.skip>false</maven.test.skip>
             </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <configuration>
+                            <skipTests>false</skipTests>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>

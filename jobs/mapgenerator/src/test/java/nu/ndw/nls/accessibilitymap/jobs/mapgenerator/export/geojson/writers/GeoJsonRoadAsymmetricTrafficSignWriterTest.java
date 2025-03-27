@@ -22,6 +22,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
@@ -91,7 +92,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
 
         exportProperties = ExportProperties.builder()
                 .name(TrafficSignType.C7.name())
-                .trafficSignTypes(List.of(TrafficSignType.C7))
+                .accessibilityRequest(AccessibilityRequest.builder().trafficSignTypes(Set.of(TrafficSignType.C7)).build())
                 .generateConfiguration(generateConfiguration)
                 .includeOnlyTimeWindowedSigns(false)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
@@ -124,7 +125,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                     generateConfiguration,
                     new GeoJsonObjectMapperFactory());
             String expectedFileName = "c7";
-            when(directionalSegmentForward1.hasTrafficSign()).thenReturn(true);
+            when(directionalSegmentForward1.hasTrafficSigns()).thenReturn(true);
             when(directionalSegmentBackward1.isAccessible()).thenReturn(true);
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));

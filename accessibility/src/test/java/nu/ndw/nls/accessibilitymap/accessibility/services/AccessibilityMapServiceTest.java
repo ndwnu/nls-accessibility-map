@@ -85,7 +85,7 @@ class AccessibilityMapServiceTest {
             .build();
 
     @Test
-    void determineAccessibilityByRoadSection_ok_byMunicipalityDifferenceOfAddedRestrictions() {
+    void determineAccessibilityByRoadSection_byMunicipalityDifferenceOfAddedRestrictions() {
         // Backward is processed before forward, but result should still contain forward geometry.
         List<IsochroneMatch> allIsochroneMatches = List.of(ACCESSIBLE_MATCH, INACCESSIBLE_MATCH_REVERSED,
                 INACCESSIBLE_MATCH);
@@ -109,7 +109,7 @@ class AccessibilityMapServiceTest {
     }
 
     @Test
-    void determineAccessibilityByRoadSection_ok_byStartPointAndDistanceDifferenceOfAddedRestrictions() {
+    void determineAccessibilityByRoadSection_byStartPointAndDistanceDifferenceOfAddedRestrictions() {
         // Backward is processed before forward, but result should still contain forward geometry.
         List<IsochroneMatch> allIsochroneMatches = List.of(ACCESSIBLE_MATCH, INACCESSIBLE_MATCH_REVERSED,
                 INACCESSIBLE_MATCH);
@@ -132,7 +132,7 @@ class AccessibilityMapServiceTest {
 
 
     @Test
-    void determineAccessibilityByRoadSection_ok_byStartPointAndDistanceEffectiveAccessibilityAllAccessibleIsochroneEffectivelyAccessible() {
+    void determineAccessibilityByRoadSection_byStartPointAndDistanceEffectiveAccessibilityAllAccessibleIsochroneEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
 
         when(accessibleRoadSectionsService.getRoadSections())
@@ -171,7 +171,7 @@ class AccessibilityMapServiceTest {
     }
 
     @Test
-    void determineAccessibilityByRoadSection_ok_noAccessibleIsochroneSectionsEffectivelyAccessible() {
+    void determineAccessibilityByRoadSection_noAccessibleIsochroneSectionsEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
 
         when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID_INTEGER))
@@ -191,7 +191,7 @@ class AccessibilityMapServiceTest {
     }
 
     @Test
-    void determineAccessibilityByRoadSection_ok_allAccessibleIsochroneEffectivelyAccessible() {
+    void determineAccessibilityByRoadSection_allAccessibleIsochroneEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
 
         when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID_INTEGER))
@@ -231,7 +231,7 @@ class AccessibilityMapServiceTest {
     }
 
     @Test
-    void determineAccessibilityByRoadSection_ok_isolatingAForwardAccessibleEffectivelyAccessible() {
+    void determineAccessibilityByRoadSection_isolatingAForwardAccessibleEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
 
         when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID_INTEGER))
@@ -256,7 +256,7 @@ class AccessibilityMapServiceTest {
     }
 
     @Test
-    void determineAccessibilityByRoadSection_ok_isolatingAReverseAccessibleEffectivelyAccessible() {
+    void determineAccessibilityByRoadSection_isolatingAReverseAccessibleEffectivelyAccessible() {
         when(accessibilityMapFactory.createMapMatcher(networkGraphHopper)).thenReturn(accessibilityMap);
 
         when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(MUNICIPALITY_ID_INTEGER))

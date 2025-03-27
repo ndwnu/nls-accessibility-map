@@ -56,20 +56,20 @@ class NetworkServiceTest {
     }
 
     @Test
-    void hasWindowTimeByRoadSectionId_ok_forwardTrue() {
+    void hasWindowTimeByRoadSectionId_forwardTrue() {
         when(edgeIteratorState.get(booleanEncodedValue)).thenReturn(true);
         assertThat(networkService.hasWindowTimeByRoadSectionId(ROAD_SECTION_ID, WindowTimeEncodedValue.C7B)).isTrue();
     }
 
     @Test
-    void hasWindowTimeByRoadSectionId_ok_backwardTrue() {
+    void hasWindowTimeByRoadSectionId_backwardTrue() {
         when(edgeIteratorState.get(booleanEncodedValue)).thenReturn(false);
         when(edgeIteratorState.getReverse(booleanEncodedValue)).thenReturn(true);
         assertThat(networkService.hasWindowTimeByRoadSectionId(ROAD_SECTION_ID, WindowTimeEncodedValue.C7B)).isTrue();
     }
 
     @Test
-    void hasWindowTimeByRoadSectionId_ok_backwardFalse() {
+    void hasWindowTimeByRoadSectionId_backwardFalse() {
         when(edgeIteratorState.get(booleanEncodedValue)).thenReturn(false);
         when(edgeIteratorState.getReverse(booleanEncodedValue)).thenReturn(false);
         assertThat(networkService.hasWindowTimeByRoadSectionId(ROAD_SECTION_ID, WindowTimeEncodedValue.C7B)).isFalse();

@@ -46,7 +46,7 @@ class EdgeSetterTest {
             false, true
             false, false
             """)
-    void setDefaultValue_ok(boolean reversed, boolean storeInTwoDirections) {
+    void setDefaultValue(boolean reversed, boolean storeInTwoDirections) {
         doCallRealMethod()
                 .when(edgeSetter)
                 .setDefaultValue(edgeIteratorState, KEY, reversed);
@@ -78,7 +78,7 @@ class EdgeSetterTest {
             false, true
             false, false
             """)
-    void setValue_ok(boolean reversed, boolean storeInTwoDirections) {
+    void setValue(boolean reversed, boolean storeInTwoDirections) {
         doCallRealMethod().when(edgeSetter).setValue(edgeIteratorState, KEY, reversed, true);
 
         if (reversed) {

@@ -2,14 +2,17 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.VehiclePropertiesMapper;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.TrafficSignAnalyserService;
@@ -26,8 +29,6 @@ public class AnalyseCommand implements Callable<Integer> {
     private final AccessibilityConfiguration accessibilityConfiguration;
 
     private final AnalyserConfiguration analyserConfiguration;
-
-    private final VehiclePropertiesMapper vehiclePropertiesMapper;
 
     private final ClockService clockService;
 
@@ -50,23 +51,26 @@ public class AnalyseCommand implements Callable<Integer> {
             OffsetDateTime startTime = clockService.now();
 
             for (String trafficSignRvvCodes : trafficSigns) {
-                List<TrafficSignType> trafficSignTypes = Arrays.stream(trafficSignRvvCodes.split(","))
+                Set<TrafficSignType> trafficSignTypes = Arrays.stream(trafficSignRvvCodes.split(","))
                         .map(String::trim)
                         .map(TrafficSignType::valueOf)
-                        .toList();
+                        .collect(Collectors.toSet());
 
                 AnalyseProperties analyseProperties = AnalyseProperties.builder()
                         .startTime(startTime)
-                        .startLocationLatitude(analyserConfiguration.startLocationLatitude())
-                        .startLocationLongitude(analyserConfiguration.startLocationLongitude())
-                        .trafficSignTypes(trafficSignTypes)
-                        .vehicleProperties(vehiclePropertiesMapper.map(trafficSignTypes, false))
+                        .accessibilityRequest(AccessibilityRequest.builder()
+                                .trafficSignTypes(trafficSignTypes)
+                                .startLocationLatitude(analyserConfiguration.startLocationLatitude())
+                                .startLocationLongitude(analyserConfiguration.startLocationLongitude())
+                                .searchRadiusInMeters(analyserConfiguration.searchRadiusInMeters())
+                                .build())
                         .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
-                        .searchRadiusInMeters(analyserConfiguration.searchRadiusInMeters())
                         .reportIssues(reportIssues)
                         .build();
 
-                log.info("Analysing traffic signs: %s".formatted(trafficSignTypes));
+                log.info("Analysing traffic signs: %s".formatted(trafficSignTypes.stream()
+                        .sorted()
+                        .collect(Collectors.toCollection(LinkedHashSet::new))));
                 trafficSignAnalyserService.analyse(analyseProperties);
             }
             return 0;

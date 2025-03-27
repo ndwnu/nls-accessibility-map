@@ -1,11 +1,13 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.request;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class AccessibilityRequestTest extends ValidationTest {
 
     private AccessibilityRequest accessibilityRequest;
@@ -15,14 +17,13 @@ class AccessibilityRequestTest extends ValidationTest {
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .searchRadiusInMeters(1d)
-                .trafficSignTypes(List.of(TrafficSignType.C7))
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
                 .build();
     }
 
     @Test
-    void validate_ok() {
+    void validate() {
 
         validate(accessibilityRequest, List.of(), List.of());
     }
@@ -46,13 +47,6 @@ class AccessibilityRequestTest extends ValidationTest {
 
         accessibilityRequest = accessibilityRequest.withStartLocationLongitude(null);
         validate(accessibilityRequest, List.of("startLocationLongitude"), List.of("must not be null"));
-    }
-
-    @Test
-    void validate_trafficSignType_null() {
-
-        accessibilityRequest = accessibilityRequest.withTrafficSignTypes(null);
-        validate(accessibilityRequest, List.of("trafficSignTypes"), List.of("must not be null"));
     }
 
     @Override

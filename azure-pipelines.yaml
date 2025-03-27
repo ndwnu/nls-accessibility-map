@@ -23,6 +23,9 @@ parameters:
   - name: skipSecurityScanning
     type: boolean
     default: false
+  - name: skipComponentTesting
+    type: boolean
+    default: false
   - name: forceDeployment
     type: boolean
     default: false
@@ -38,7 +41,7 @@ extends:
   parameters:
     skipSonar: ${{ parameters.skipSonar }}
     skipSecurityScanning: ${{ parameters.skipSecurityScanning }}
-    skipComponentTesting: true
+    skipComponentTesting: ${{ parameters.skipComponentTesting }}
     skipPerformanceTesting: true
     skipDocker: ${{ parameters.skipDocker }}
     skipDeployment: ${{ parameters.skipDeployment }}
@@ -75,6 +78,10 @@ extends:
         buildContext: docker/nls-accessibility-map-traffic-sign-analyser-job
         repository: nls-accessibility-map-traffic-sign-analyser-job
         push: true
+    componentTests:
+      - name: "jobs"
+        module: "jobs/jobs-component-test"
+        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/trafficsignanalyser"
     deployment:
       environments:
         - name: "staging"

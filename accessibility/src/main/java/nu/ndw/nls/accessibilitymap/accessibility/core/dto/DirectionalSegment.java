@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,12 +34,16 @@ public final class DirectionalSegment {
     private RoadSectionFragment roadSectionFragment;
 
     @Valid
-    private final TrafficSign trafficSign;
+    private final List<TrafficSign> trafficSigns;
 
     private final boolean accessible;
 
-    public boolean hasTrafficSign() {
+    public long getRoadSectionId() {
+        return roadSectionFragment.getRoadSection().getId();
+    }
 
-        return Objects.nonNull(trafficSign);
+    public boolean hasTrafficSigns() {
+
+        return Objects.nonNull(trafficSigns) && !trafficSigns.isEmpty();
     }
 }

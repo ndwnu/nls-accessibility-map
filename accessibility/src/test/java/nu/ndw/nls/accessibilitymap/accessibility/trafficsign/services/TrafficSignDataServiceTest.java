@@ -5,10 +5,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.mappers.TrafficSignMapper;
@@ -59,6 +62,9 @@ class TrafficSignDataServiceTest {
     @Mock
     private TrafficSign trafficSign3;
 
+    @Mock
+    private AccessibilityRequest accessibilityRequest;
+
     @BeforeEach
     void setUp() {
 
@@ -66,7 +72,34 @@ class TrafficSignDataServiceTest {
     }
 
     @Test
-    void findAllByTypes_ok() {
+    void findAllBy() {
+
+        when(trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
+                .map(TrafficSignType::getRvvCode)
+                .collect(Collectors.toSet()))).thenReturn(trafficSignData);
+
+        when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(
+                1L, List.of(trafficSignGeoJsonDto1, trafficSignGeoJsonDto2),
+                2L, List.of(trafficSignGeoJsonDto3),
+                3L, List.of(trafficSignGeoJsonDto4)
+        ));
+
+        mockMapperCalls(trafficSignGeoJsonDto1, trafficSign1);
+        mockMapperCalls(trafficSignGeoJsonDto2, trafficSign2);
+        mockMapperCalls(trafficSignGeoJsonDto3, trafficSign3);
+        mockMapperCalls(trafficSignGeoJsonDto4, null);
+
+        when(trafficSign1.isRelevant(accessibilityRequest)).thenReturn(true);
+        when(trafficSign2.isRelevant(accessibilityRequest)).thenReturn(false);
+        when(trafficSign3.isRelevant(accessibilityRequest)).thenReturn(true);
+
+        List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
+
+        assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign3);
+    }
+
+    @Test
+    void findAllByTypes() {
 
         when(trafficSignService.getTrafficSigns(Set.of("C7b"))).thenReturn(trafficSignData);
         when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(

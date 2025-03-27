@@ -44,7 +44,7 @@ class AccessibilityRoadSectionsServiceTest {
     private AccessibilityRoadSection accessibilityRoadSectionB;
 
     @Test
-    void getRoadSectionIdToRoadSection_ok() {
+    void getRoadSectionIdToRoadSection() {
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(VERSION);
         when(nwbRoadSectionService.findLazyCar(VERSION, Collections.singleton(MUNICIPALITY_ID)))
                 .thenReturn(Stream.of(nwbRoadSectionDtoA, nwbRoadSectionDtoB));
@@ -63,7 +63,7 @@ class AccessibilityRoadSectionsServiceTest {
     }
 
     @Test
-    void getRoadSections_ok() {
+    void getRoadSections() {
         when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(VERSION);
         when(nwbRoadSectionService.findLazyCar(VERSION, null))
                 .thenReturn(Stream.of(nwbRoadSectionDtoA, nwbRoadSectionDtoB));

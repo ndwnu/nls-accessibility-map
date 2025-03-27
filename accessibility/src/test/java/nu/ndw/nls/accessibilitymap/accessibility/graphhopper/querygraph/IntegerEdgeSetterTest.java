@@ -31,24 +31,24 @@ class IntegerEdgeSetterTest {
     private IntegerEdgeSetter setter;
 
     @Test
-    void getGetDataTypeClass_ok() {
+    void getGetDataTypeClass() {
         assertThat(setter.getGetDataTypeClass()).isEqualTo(Integer.class);
     }
 
     @Test
-    void getDefaultValue_ok() {
+    void getDefaultValue() {
 
         when(intEncodedValue.getMaxStorableInt()).thenReturn(INT_VALUE);
         assertThat(setter.getDefaultValue(intEncodedValue)).isEqualTo(INT_VALUE);
     }
 
     @Test
-    void getEncoderType_ok() {
+    void getEncoderType() {
         assertThat(setter.getEncoderType()).isEqualTo(IntEncodedValue.class);
     }
 
     @Test
-    void set_ok() {
+    void set() {
 
         setter.set(edgeIteratorState, intEncodedValue, INT_VALUE);
 
@@ -56,7 +56,7 @@ class IntegerEdgeSetterTest {
     }
 
     @Test
-    void setReverse_ok() {
+    void setReverse() {
         setter.setReverse(edgeIteratorState, intEncodedValue, INT_VALUE);
 
         verify(edgeIteratorState).setReverse(intEncodedValue, INT_VALUE);

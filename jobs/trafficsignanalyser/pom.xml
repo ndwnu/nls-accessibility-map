@@ -20,8 +20,8 @@
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <artifactId>accessibility</artifactId>
             <version>${project.parent.version}</version>
+            <artifactId>accessibility</artifactId>
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>

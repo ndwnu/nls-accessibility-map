@@ -5,7 +5,6 @@ import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.CustomModel;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
@@ -13,20 +12,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.IsochroneService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.accessibility.services.VehicleRestrictionsModelFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers.TrafficSignSnapMapper;
@@ -50,8 +49,6 @@ public class AccessibilityService {
 
     private final NetworkGraphHopper networkGraphHopper;
 
-    private final VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory;
-
     private final TrafficSignDataService trafficSignDataService;
 
     private final GeometryFactoryWgs84 geometryFactoryWgs84;
@@ -66,21 +63,24 @@ public class AccessibilityService {
 
     private final QueryGraphFactory queryGraphFactory;
 
+    private final QueryGraphConfigurer queryGraphConfigurer;
+
     @Timed(description = "Time spent calculating accessibility")
-    public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
+    public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest, boolean includeOnlyTimeWindowedSigns) {
 
         OffsetDateTime startTime = clockService.now();
-        List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
+        List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest, includeOnlyTimeWindowedSigns);
         Point startPoint = createPoint(
-                accessibilityRequest.getStartLocationLatitude(),
-                accessibilityRequest.getStartLocationLongitude());
+                accessibilityRequest.startLocationLatitude(),
+                accessibilityRequest.startLocationLongitude());
         Snap startSegment = networkGraphHopper.getLocationIndex()
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
         QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
 
-        Map<Integer, TrafficSign> trafficSignsById = buildTrafficSignById(snappedTrafficSigns);
+        var edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
+
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 getRoadSections(
                         accessibilityRequest,
@@ -88,8 +88,8 @@ public class AccessibilityService {
                         startPoint,
                         queryGraph,
                         startSegment,
-                        trafficSignsById,
-                        buildWeighting(null));
+                        buildWeightingWithRestrictions(Set.of()),
+                        edgeRestrictions.getTrafficSignsByEdgeKey());
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(
@@ -98,8 +98,8 @@ public class AccessibilityService {
                         startPoint,
                         queryGraph,
                         startSegment,
-                        trafficSignsById,
-                        buildWeighting(accessibilityRequest.getVehicleProperties()));
+                        buildWeightingWithRestrictions(edgeRestrictions.getBlockedEdges()),
+                        edgeRestrictions.getTrafficSignsByEdgeKey());
 
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
@@ -121,43 +121,31 @@ public class AccessibilityService {
             Point startPoint,
             QueryGraph queryGraph,
             Snap startSegment,
-            Map<Integer, TrafficSign> trafficSignsById,
-            Weighting weighting) {
+            Weighting weighting,
+            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
 
         return roadSectionMapper.mapToRoadSections(
                 isochroneService.getIsochroneMatchesByMunicipalityId(
                         IsochroneArguments.builder()
                                 .weighting(weighting)
                                 .startPoint(startPoint)
-                                .municipalityId(accessibilityRequest.getMunicipalityId())
-                                .searchDistanceInMetres(accessibilityRequest.getSearchRadiusInMeters())
+                                .municipalityId(accessibilityRequest.municipalityId())
+                                .searchDistanceInMetres(accessibilityRequest.searchRadiusInMeters())
                                 .build(),
                         queryGraph,
                         startSegment),
-                trafficSignsById);
+                trafficSignsByEdgeKey);
     }
 
-    private static Map<Integer, TrafficSign> buildTrafficSignById(List<TrafficSignSnap> additionalSnaps) {
+    private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest, boolean includeOnlyTimeWindowedSigns) {
 
-        return additionalSnaps.stream()
-                .collect(Collectors.toMap(
-                        additionalSnap -> additionalSnap.getTrafficSign().id(),
-                        TrafficSignSnap::getTrafficSign));
+        List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
+        return trafficSingSnapMapper.map(trafficSigns, includeOnlyTimeWindowedSigns);
     }
 
-    private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
-
-        List<TrafficSign> trafficSigns = trafficSignDataService.findAllByTypes(accessibilityRequest.getTrafficSignTypes());
-        return trafficSingSnapMapper.map(trafficSigns, accessibilityRequest.isIncludeOnlyTimeWindowedSigns());
-    }
-
-    private Weighting buildWeighting(VehicleProperties vehicleProperties) {
-
+    private Weighting buildWeightingWithRestrictions(Set<Integer> blockedEdges) {
         Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-        CustomModel model = vehicleRestrictionsModelFactory.getModel(vehicleProperties);
-        PMap hints = new PMap().putObject(CustomModel.KEY, model);
-
-        return networkGraphHopper.createWeighting(profile, hints);
+        return new RestrictionWeightingAdapter(networkGraphHopper.createWeighting(profile, new PMap()), blockedEdges);
     }
 
     private Point createPoint(double latitude, double longitude) {

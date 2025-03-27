@@ -58,7 +58,7 @@ class EdgeManagerTest {
     }
 
     @Test
-    void setValueOnEdge_ok() {
+    void setValueOnEdge() {
         when(reverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
         when(encodedValuesByTypeDto.getValueTypeByKey(KEY)).thenReturn(Optional.of(Boolean.class));
         when(edgeSetterRegistry.getEdgeSetter(Boolean.class)).thenReturn(Optional.of(edgeSetter));
@@ -91,7 +91,7 @@ class EdgeManagerTest {
     }
 
     @Test
-    void resetRestrictionsOnEdge_ok() {
+    void resetRestrictionsOnEdge() {
         when(reverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
         when(encodedValuesByTypeDto.getNetworkEncodedValueNameKeySet()).thenReturn(Set.of(KEY));
         when(encodedValuesByTypeDto.getValueTypeByKey(KEY)).thenReturn(Optional.of(Boolean.class));
@@ -106,7 +106,7 @@ class EdgeManagerTest {
     }
 
     @Test
-    void resetRestrictionsOnEdge_ok_noResults() {
+    void resetRestrictionsOnEdge_noResults() {
         when(reverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
         when(encodedValuesByTypeDto.getNetworkEncodedValueNameKeySet()).thenReturn(Set.of(TRAFFIC_SIGN_ID, WAY_ID_KEY, REVERSED_LINK_ID));
 

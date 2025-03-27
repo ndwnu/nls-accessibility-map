@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
@@ -47,7 +48,7 @@ class RoadSectionTest extends ValidationTest {
                 .direction(Direction.FORWARD)
                 .roadSectionFragment(roadSectionFragment)
                 .lineString(lineString)
-                .trafficSign(TrafficSign.builder()
+                .trafficSigns(List.of(TrafficSign.builder()
                         .id(4)
                         .roadSectionId(1)
                         .externalId("externalId")
@@ -57,7 +58,8 @@ class RoadSectionTest extends ValidationTest {
                         .latitude(4d)
                         .textSigns(List.of())
                         .trafficSignType(TrafficSignType.C7)
-                        .build())
+                        .restrictions(Restrictions.builder().build())
+                        .build()))
                 .build();
 
         directionalSegmentBackward = directionalSegmentForward.withDirection(Direction.BACKWARD);
@@ -67,7 +69,7 @@ class RoadSectionTest extends ValidationTest {
     }
 
     @Test
-    void validate_ok() {
+    void validate() {
 
         validate(roadSection, List.of(), List.of());
     }
@@ -188,8 +190,9 @@ class RoadSectionTest extends ValidationTest {
     @Test
     void validate_roadSectionFragments_segment_trafficSign_id() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withId(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(
+                List.of(directionalSegmentForward.getTrafficSigns().getFirst()
+                        .withId(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -197,15 +200,16 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.id"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].id"),
                 List.of("must not be null"));
     }
 
     @Test
     void validate_roadSectionFragments_segment_trafficSign_externalId() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withExternalId(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(
+                List.of(directionalSegmentForward.getTrafficSigns().getFirst()
+                        .withExternalId(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -213,15 +217,15 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.externalId"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].externalId"),
                 List.of("must not be null"));
     }
 
     @Test
     void validate_roadSectionFragments_segment_trafficSign_roadSectionId() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withRoadSectionId(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
+                directionalSegmentForward.getTrafficSigns().getFirst().withRoadSectionId(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -229,15 +233,15 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.roadSectionId"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].roadSectionId"),
                 List.of("must not be null"));
     }
 
     @Test
     void validate_roadSectionFragments_segment_trafficSign_trafficSignType() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withTrafficSignType(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
+                directionalSegmentForward.getTrafficSigns().getFirst().withTrafficSignType(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -245,15 +249,15 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.trafficSignType"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].trafficSignType"),
                 List.of("must not be null"));
     }
 
     @Test
     void validate_roadSectionFragments_segment_trafficSign_latitude() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withLatitude(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
+                directionalSegmentForward.getTrafficSigns().getFirst().withLatitude(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -261,15 +265,15 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.latitude"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].latitude"),
                 List.of("must not be null"));
     }
 
     @Test
     void validate_roadSectionFragments_segment_trafficSign_longitude() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withLongitude(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
+                directionalSegmentForward.getTrafficSigns().getFirst().withLongitude(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -277,15 +281,15 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.longitude"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].longitude"),
                 List.of("must not be null"));
     }
 
     @Test
     void validate_roadSectionFragments_segment_trafficSign_direction() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withDirection(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
+                directionalSegmentForward.getTrafficSigns().getFirst().withDirection(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -293,15 +297,15 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.direction"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].direction"),
                 List.of("must not be null"));
     }
 
     @Test
     void validate_roadSectionFragments_segment_trafficSign_fraction() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withFraction(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
+                directionalSegmentForward.getTrafficSigns().getFirst().withFraction(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -309,15 +313,15 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.fraction"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].fraction"),
                 List.of("must not be null"));
     }
 
     @Test
     void validate_roadSectionFragments_segment_trafficSign_textSigns() {
 
-        directionalSegmentForward = directionalSegmentForward.withTrafficSign(
-                directionalSegmentForward.getTrafficSign().withTextSigns(null)
+        directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
+                directionalSegmentForward.getTrafficSigns().getFirst().withTextSigns(null))
         );
         roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
@@ -325,7 +329,7 @@ class RoadSectionTest extends ValidationTest {
 
         validate(
                 roadSection,
-                List.of("roadSectionFragments[0].forwardSegment.trafficSign.textSigns"),
+                List.of("roadSectionFragments[0].forwardSegment.trafficSigns[0].textSigns"),
                 List.of("must not be null"));
     }
 

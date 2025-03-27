@@ -106,7 +106,7 @@ class IsochroneServiceTest {
     }
 
     @Test
-    void getIsochroneMatchesByMunicipalityId_ok() {
+    void getIsochroneMatchesByMunicipalityId() {
         IsoLabel isoLabel = createIsoLabel();
 
         when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(

@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.trafficsignclient.services;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +35,8 @@ public class TrafficSignService {
 
         Map<Long, List<TrafficSignGeoJsonDto>> trafficSigns;
         Instant fetchTimestamp = Instant.now();
-        try (Stream<TrafficSignGeoJsonDto> stream = findTrafficSignByRvvCodesAndRoadSectionIds(rvvCodes,
+        try (Stream<TrafficSignGeoJsonDto> stream = findTrafficSignByRvvCodesAndRoadSectionIds(
+                rvvCodes.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new)),
                 roadSectionIds)) {
             trafficSigns = stream
                     .filter(this::hasRoadSectionId)
