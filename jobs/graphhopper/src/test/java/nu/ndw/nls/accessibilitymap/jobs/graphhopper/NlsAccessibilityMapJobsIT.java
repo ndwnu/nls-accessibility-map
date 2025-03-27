@@ -32,9 +32,9 @@ import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 @ContextConfiguration(classes = TestConfig.class)
@@ -46,7 +46,7 @@ class NlsAccessibilityMapJobsIT {
     private static final String NETWORK_NAME_NO_TRAFFIC_SIGNS = "accessibility_latest_no_traffic_signs";
 
     // Mocking this bean to prevent stderr output about missing PicoCLI commands when running IT
-    @MockBean
+    @MockitoBean
     private AccessibilityMapGraphhoperJobCommandLineRunner accessibilityMapGraphhoperJobCommandLineRunner;
 
     @Autowired
