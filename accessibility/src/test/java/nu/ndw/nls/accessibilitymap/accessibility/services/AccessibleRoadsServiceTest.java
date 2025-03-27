@@ -34,7 +34,7 @@ class AccessibleRoadsServiceTest {
 
 
     @Test
-    void getBaseAccessibleRoads_ok() {
+    void getBaseAccessibleRoads() {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(startPoint)
                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METERS)
@@ -49,7 +49,7 @@ class AccessibleRoadsServiceTest {
 
 
     @Test
-    void getBaseAccessibleRoadsByMunicipality_ok() {
+    void getBaseAccessibleRoadsByMunicipality() {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(startPoint)
                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METERS)
@@ -65,7 +65,7 @@ class AccessibleRoadsServiceTest {
 
 
     @Test
-    void getVehicleAccessibleRoadsByMunicipality_ok() {
+    void getVehicleAccessibleRoadsByMunicipality() {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(startPoint)
                 .vehicleProperties(vehicleProperties)
@@ -81,7 +81,7 @@ class AccessibleRoadsServiceTest {
     }
 
     @Test
-    void getVehicleAccessibleRoads_ok() {
+    void getVehicleAccessibleRoads() {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startPoint(startPoint)
                 .vehicleProperties(vehicleProperties)

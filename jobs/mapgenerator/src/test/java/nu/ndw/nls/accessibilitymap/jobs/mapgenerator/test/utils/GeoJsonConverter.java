@@ -48,8 +48,8 @@ public class GeoJsonConverter {
                     List<TrafficSign> relevantTrafficSigns = allRelevantRoadSectionFragments.stream()
                             .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                             .filter(directionalSegment -> geometry.intersects(directionalSegment.getLineString()))
-                            .filter(DirectionalSegment::hasTrafficSign)
-                            .map(DirectionalSegment::getTrafficSign)
+                            .filter(DirectionalSegment::hasTrafficSigns)
+                            .flatMap(directionalSegment -> directionalSegment.getTrafficSigns().stream())
                             .toList();
 
                     return featureBuilder.createPolygon(geometry, idSequenceSupplier, relevantTrafficSigns, Set.of());

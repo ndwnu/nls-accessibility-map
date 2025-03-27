@@ -13,9 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
@@ -41,10 +44,13 @@ public class TrafficSignDriver {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @SuppressWarnings("java:S3658")
-    public void stubTrafficSignRequest(Set<String> rvvCodes, List<TrafficSignGeoJsonDto> trafficSigns) {
+    public void stubTrafficSignRequest(List<TrafficSignGeoJsonDto> trafficSigns) {
         try {
             writeTrafficSignsGeoJsonToDisk(trafficSigns);
-            StringValuePattern[] stringValuePatterns = rvvCodes.stream()
+            StringValuePattern[] stringValuePatterns = Arrays.stream(TrafficSignType.values())
+                    .map(TrafficSignType::getRvvCode)
+                    .sorted()
+                    .collect(Collectors.toCollection(LinkedHashSet::new)).stream()
                     .map(WireMock::equalTo).toArray(StringValuePattern[]::new);
             StringValuePattern stringValuePattern = stringValuePatterns.length == 1 ? stringValuePatterns[0] : or(stringValuePatterns);
             stubFor(

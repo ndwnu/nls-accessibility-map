@@ -41,7 +41,7 @@ class VehicleRestrictionsModelFactoryTest {
     VehicleRestrictionsModelFactory vehicleRestrictionsModelFactory;
 
     @Test
-    void getModel_ok_nonNull() {
+    void getModel_nonNull() {
         when(restrictionMapperProvider.getMappers()).thenReturn(List.of(mapperA, mapperB, mapperC));
         when(mapperA.getStatement(vehicleProperties)).thenReturn(Optional.of(statementA));
         when(mapperB.getStatement(vehicleProperties)).thenReturn(Optional.of(statementB));
@@ -52,7 +52,7 @@ class VehicleRestrictionsModelFactoryTest {
     }
 
     @Test
-    void getModel_ok_null() {
+    void getModel_null() {
         CustomModel result = vehicleRestrictionsModelFactory.getModel(null);
         assertThat(result.getPriority()).isEmpty();
         verify(restrictionMapperProvider, never()).getMappers();

@@ -1,6 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import java.net.URI;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
@@ -43,6 +46,12 @@ class TrafficSignMapperTest {
     @Mock
     private List<TextSign> textSigns;
 
+    @Mock
+    private TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
+
+    @Mock
+    private Restrictions restrictions;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -62,12 +71,15 @@ class TrafficSignMapperTest {
                         .build())
                 .geometry(new Point(3d, 4d))
                 .build();
-        trafficSignMapper = new TrafficSignMapper();
+        trafficSignMapper = new TrafficSignMapper(trafficSignRestrictionsBuilder);
     }
 
     @ParameterizedTest
     @EnumSource(value = TrafficSignType.class)
-    void mapFromTrafficSignGeoJsonDto_ok(TrafficSignType trafficSignType) {
+    void mapFromTrafficSignGeoJsonDto(TrafficSignType trafficSignType) {
+
+        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign -> trafficSign.trafficSignType() == trafficSignType)))
+                .thenReturn(restrictions);
 
         trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
 
@@ -124,6 +136,10 @@ class TrafficSignMapperTest {
     @Test
     void mapFromTrafficSignGeoJsonDto_invalidBlackCode() {
 
+        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
+                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+        ).thenReturn(restrictions);
+
         trafficSignGeoJsonDto.getProperties().setBlackCode("invalid");
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
@@ -131,12 +147,20 @@ class TrafficSignMapperTest {
                 integerSequenceSupplier);
 
         validateTrafficSign(trafficSign.get());
-        loggerExtension.containsLog(Level.WARN, "Unprocessable value invalid for traffic sign with id %s and RVV code C6 on road section 1".formatted(trafficSignGeoJsonDto.getId()));
+        loggerExtension.containsLog(Level.WARN,
+                "Unprocessable value invalid for traffic sign with id %s and RVV code C6 on road section 1".formatted(
+                        trafficSignGeoJsonDto.getId()));
     }
 
     @ParameterizedTest
     @EnumSource(value = DirectionType.class)
     void mapFromTrafficSignGeoJsonDto_allDirections(DirectionType directionType) {
+
+        if (directionType != DirectionType.BOTH) {
+            when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
+                    trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+            ).thenReturn(restrictions);
+        }
 
         trafficSignGeoJsonDto.getProperties().setDrivingDirection(directionType);
 
@@ -160,6 +184,10 @@ class TrafficSignMapperTest {
     @NullSource
     void mapFromTrafficSignGeoJsonDto_imageUrl_null(String imageUrl) {
 
+        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
+                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+        ).thenReturn(restrictions);
+
         trafficSignGeoJsonDto.getProperties().setImageUrl(imageUrl);
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
@@ -172,6 +200,10 @@ class TrafficSignMapperTest {
     @ParameterizedTest
     @NullSource
     void mapFromTrafficSignGeoJsonDto_blackCode_null(String blackCode) {
+
+        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
+                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+        ).thenReturn(restrictions);
 
         trafficSignGeoJsonDto.getProperties().setBlackCode(blackCode);
 
@@ -204,6 +236,7 @@ class TrafficSignMapperTest {
         assertThat(trafficSign.longitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude());
         assertThat(trafficSign.textSigns()).isEqualTo(trafficSignGeoJsonDto.getProperties().getTextSigns());
         assertThat(trafficSign.iconUri()).isEqualTo(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()));
+        assertThat(trafficSign.restrictions()).isEqualTo(restrictions);
 
         if (trafficSignGeoJsonDto.getProperties().getBlackCode().equals("invalid")) {
             assertThat(trafficSign.blackCode()).isNull();

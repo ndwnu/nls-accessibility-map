@@ -15,10 +15,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class QueryGraphFactory {
 
-    private final QueryGraphConfigurer queryGraphConfigurer;
-
     private final NetworkGraphHopper networkGraphHopper;
 
+    /**
+     * Creates a QueryGraph based on a list of TrafficSignSnap objects and a starting point Snap. The QueryGraph is constructed by adding
+     * virtual edges derived from the snaps, partitioning the underlying graph according to the fractional positions of the traffic signs.
+     *
+     * @param trafficSignSnaps the list of TrafficSignSnap objects representing the snaps of traffic signs
+     * @param startPoint       the starting Snap point to be included in the graph
+     * @return a QueryGraph instance with edges adjusted based on the given snaps
+     */
     public QueryGraph createQueryGraph(List<TrafficSignSnap> trafficSignSnaps, Snap startPoint) {
 
         List<Snap> snaps = trafficSignSnaps.stream()
@@ -30,11 +36,7 @@ public class QueryGraphFactory {
         // into 2-line strings. In this way, we create a graph that has an edge partitioning based on the fractional
         // positions of the traffic signs.
         // @see https://github.com/graphhopper/graphhopper/blob/master/docs/core/low-level-api.md#what-are-virtual-edges-and-nodes
-        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
-
-        // Here the snapped traffic signs are assigned to the correct edges by determining if the edge is
-        // behind a traffic sign.
-        queryGraphConfigurer.configure(queryGraph, trafficSignSnaps);
-        return queryGraph;
+        return QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
     }
+
 }

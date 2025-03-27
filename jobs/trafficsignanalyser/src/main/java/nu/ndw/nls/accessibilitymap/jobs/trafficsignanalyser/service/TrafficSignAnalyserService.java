@@ -26,8 +26,6 @@ public class TrafficSignAnalyserService {
 
     private final AccessibilityService accessibilityService;
 
-    private final AccessibilityRequestMapper accessibilityRequestMapper;
-
     private final IssueApiClient issueApiClient;
 
     private final ReportApiClient reportApiClient;
@@ -38,7 +36,7 @@ public class TrafficSignAnalyserService {
 
         log.info("Analysing with the following properties: {}", analyseProperties);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequestMapper.map(analyseProperties));
+        Accessibility accessibility = accessibilityService.calculateAccessibility(analyseProperties.accessibilityRequest(), false);
 
         analyseTrafficSigns(accessibility, analyseProperties);
     }
@@ -47,8 +45,9 @@ public class TrafficSignAnalyserService {
 
         String issueReportId = "Nwb-%s-%s".formatted(analyseProperties.nwbVersion(), UUID.randomUUID());
         String issueReportGroupId = "AsymmetricTrafficSignPlacement-%s".formatted(
-                analyseProperties.trafficSignTypes().stream()
+                analyseProperties.accessibilityRequest().trafficSignTypes().stream()
                         .map(TrafficSignType::getRvvCode)
+                        .sorted()
                         .collect(Collectors.joining("-")));
 
         List<CreateIssueJson> issues = accessibility.combinedAccessibility()
@@ -56,7 +55,7 @@ public class TrafficSignAnalyserService {
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .filter(RoadSectionFragment::isPartiallyAccessible)
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                .filter(DirectionalSegment::hasTrafficSign)
+                .filter(DirectionalSegment::hasTrafficSigns)
                 .map(directionalSegment -> issueMapper.mapToIssue(directionalSegment, issueReportId, issueReportGroupId))
                 .toList();
 

@@ -27,18 +27,17 @@ public class MapGeneratorService {
 
     private final MessageService messageService;
 
-    private final AccessibilityRequestMapper accessibilityRequestMapper;
-
     public void generate(@Valid ExportProperties exportProperties) {
 
         log.info("Generating with the following properties: {}", exportProperties);
         Accessibility accessibility = accessibilityService.calculateAccessibility(
-                accessibilityRequestMapper.map(exportProperties));
+                exportProperties.accessibilityRequest(),
+                exportProperties.includeOnlyTimeWindowedSigns());
 
         long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                .filter(DirectionalSegment::hasTrafficSign)
+                .filter(DirectionalSegment::hasTrafficSigns)
                 .count();
 
         log.debug("Found {} with road section fragments with traffic signs.", roadSectionsWithTrafficSigns);
@@ -56,7 +55,7 @@ public class MapGeneratorService {
             ExportProperties exportProperties) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
-                exportProperties.trafficSignTypes(),
+                exportProperties.accessibilityRequest().trafficSignTypes().stream().toList(),
                 -1,
                 exportProperties.nwbVersion(),
                 exportProperties.startTime().toInstant());

@@ -40,9 +40,9 @@ class IssueMapperTest {
     @SneakyThrows
     @Test
     void mapToIssue_ok() {
-        when(directionalSegment.getTrafficSign()).thenReturn(trafficSign);
+        when(directionalSegment.getTrafficSigns()).thenReturn(List.of(trafficSign));
         when(trafficSign.externalId()).thenReturn("id");
-        when(trafficSign.roadSectionId()).thenReturn(1);
+        when(directionalSegment.getRoadSectionId()).thenReturn(1L);
 
         CreateIssueJson createIssueJson = mapper.mapToIssue(directionalSegment, "reportId", "reportGroupId");
 

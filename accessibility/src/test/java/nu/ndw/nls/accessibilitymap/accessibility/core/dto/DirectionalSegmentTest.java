@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,27 +12,42 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class DirectionalSegmentTest {
 
-    private DirectionalSegment directionalSegment;
-
     @Mock
     private TrafficSign trafficSign;
 
     @Test
-    void hasTrafficSign_ok() {
+    void getRoadSectionId() {
 
-        directionalSegment = DirectionalSegment.builder()
-                .trafficSign(trafficSign)
+        RoadSection roadSection = RoadSection.builder()
+                .id(123L)
                 .build();
 
-        assertThat(directionalSegment.hasTrafficSign()).isTrue();
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .roadSection(roadSection)
+                .build();
+
+        DirectionalSegment directionalSegment = DirectionalSegment.builder()
+                .roadSectionFragment(roadSectionFragment)
+                .build();
+
+        assertThat(directionalSegment.getRoadSectionId()).isEqualTo(roadSection.getId());
     }
 
     @Test
-    void hasTrafficSign_ok_noTrafficSign() {
+    void hasTrafficSigns() {
 
-        directionalSegment = DirectionalSegment.builder()
+        DirectionalSegment directionalSegment = DirectionalSegment.builder()
+                .trafficSigns(List.of(trafficSign))
                 .build();
 
-        assertThat(directionalSegment.hasTrafficSign()).isFalse();
+        assertThat(directionalSegment.hasTrafficSigns()).isTrue();
+    }
+
+    @Test
+    void hasTrafficSign_noTrafficSigns() {
+
+        DirectionalSegment directionalSegment = DirectionalSegment.builder().build();
+
+        assertThat(directionalSegment.hasTrafficSigns()).isFalse();
     }
 }

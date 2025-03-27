@@ -31,7 +31,7 @@ class MaximumRestrictionMapperTest {
     }
 
     @Test
-    void getStatement_ok_isRestricted() {
+    void getStatement_isRestricted() {
         when(vehicleProperties.length()).thenReturn(LENGTH);
 
         Optional<Statement> result = maximumRestrictionMapper.getStatement(vehicleProperties);
@@ -44,7 +44,7 @@ class MaximumRestrictionMapperTest {
     }
 
     @Test
-    void getStatement_ok_isNotRestricted() {
+    void getStatement_isNotRestricted() {
         when(vehicleProperties.length()).thenReturn(null);
 
         Optional<Statement> result = maximumRestrictionMapper.getStatement(vehicleProperties);

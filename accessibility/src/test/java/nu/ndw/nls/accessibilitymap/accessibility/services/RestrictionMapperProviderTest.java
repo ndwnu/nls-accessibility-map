@@ -13,7 +13,7 @@ class RestrictionMapperProviderTest {
     RestrictionMapperProvider restrictionMapperProvider = new RestrictionMapperProvider();
 
     @Test
-    void getMappers_ok_allFieldsCovered() {
+    void getMappers_allFieldsCovered() {
         List<RestrictionMapper> mappers = restrictionMapperProvider.getMappers();
         RecordComponent[] vehiclePropertiesComponents = VehicleProperties.class.getRecordComponents();
         assertEquals(vehiclePropertiesComponents.length, mappers.size());
