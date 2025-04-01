@@ -13,7 +13,7 @@
     <modules>
         <module>graphhopper</module>
         <module>mapgenerator</module>
-        <module>trafficsignanalyser</module>
+        <module>traffic-sign</module>
         <module>jobs-component-test</module>
     </modules>
 </project>

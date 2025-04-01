@@ -169,7 +169,7 @@ class TrafficSignClientIT {
                 """;
     }
 
-    @Import({TrafficSignConfiguration.class})
+    @Import({TrafficSignClientConfiguration.class})
     public static class ConfigureFeignTests {
 
     }

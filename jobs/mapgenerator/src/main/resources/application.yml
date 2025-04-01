@@ -61,6 +61,10 @@ nu:
         trafficsignclient:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+        trafficsigns:
+          cache:
+            folder: "trafficsigns"
+            file-name-active-version: "active"
 
       springboot:
         messaging:

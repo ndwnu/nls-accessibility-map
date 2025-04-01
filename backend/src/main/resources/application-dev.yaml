@@ -13,7 +13,7 @@ management:
         enabled: false
 
 graphhopper:
-  dir: graphhopper
+  dir: ".tmp/graphhopper/"
 logging:
   level:
     root: INFO
