@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.TrafficSignProperties;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.TrafficSignClientProperties;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.CurrentStateStatus;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -32,13 +32,13 @@ class TrafficSignServiceTest {
     private TrafficSignRepository trafficSignRepository;
 
     @Mock
-    private TrafficSignProperties trafficSignProperties;
+    private TrafficSignClientProperties trafficSignProperties;
 
     @InjectMocks
     private TrafficSignService trafficSignService;
 
     @Mock
-    private TrafficSignProperties.TrafficSignApiProperties api;
+    private TrafficSignClientProperties.TrafficSignApiProperties api;
 
     @Test
     void getTrafficSigns_ok_filteredAndGrouped() {

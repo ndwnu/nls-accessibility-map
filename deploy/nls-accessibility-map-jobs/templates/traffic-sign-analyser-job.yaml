@@ -54,6 +54,8 @@ spec:
                   subPath: {{ .Values.trafficSignAnalyser.name }}
                 - mountPath: /application/graphhopper
                   name: nls-accessibility-map-traffic-sign-analyser-job-volume
+                - mountPath: /application/trafficsigns
+                  name: nls-accessibility-map-traffic-sign-cache
           volumes:
             - name: nls-accessibility-map-jobs-secrets
               csi:
@@ -67,4 +69,7 @@ spec:
             - name: nls-accessibility-map-traffic-sign-analyser-job-volume
               persistentVolumeClaim:
                 claimName: nls-accessibility-map-api-pvc
+            - name: nls-accessibility-map-traffic-sign-cache
+              persistentVolumeClaim:
+                claimName: nls-accessibility-map-traffic-sign-cache
           restartPolicy: Never

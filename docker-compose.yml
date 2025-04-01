@@ -55,20 +55,34 @@ services:
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
-      - ./graphhopper:/application/graphhopper
-      - ./map-generation-destination:/application/maps
+      - ./.tmp/graphhopper:/application/graphhopper
+      - ./.tmp/trafficsigns:/application/trafficsigns
+      - ./.tmp/map-generation-destination:/application/maps
     networks:
       - nls-accessibility-map-network
 
   nls-accessibility-map-traffic-sign-analyser-job:
-    build: docker/nls-accessibility-map-traffic-sign-analyser-job
+    build: docker/nls-accessibility-map-traffic-sign-job
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - COMMAND=analyse
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
-      - ./graphhopper:/application/graphhopper
+      - ./.tmp/graphhopper:/application/graphhopper
+      - ./.tmp/trafficsigns:/application/trafficsigns
+    networks:
+      - nls-accessibility-map-network
+
+  nls-accessibility-map-traffic-sign-update-cache-job:
+    build: docker/nls-accessibility-map-traffic-sign-job
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - COMMAND=update-cache
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+    volumes:
+      - ./.tmp/graphhopper:/application/graphhopper
+      - ./.tmp/trafficsigns:/application/trafficsigns
     networks:
       - nls-accessibility-map-network
 
