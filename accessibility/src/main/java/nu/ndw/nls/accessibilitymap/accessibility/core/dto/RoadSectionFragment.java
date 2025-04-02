@@ -76,4 +76,18 @@ public class RoadSectionFragment {
         return getSegments().stream().anyMatch(DirectionalSegment::isAccessible)
                 && getSegments().stream().anyMatch(directionalSegment -> !directionalSegment.isAccessible());
     }
+
+    public Boolean isForwardAccessible() {
+        return forwardSegment.isAccessible();
+    }
+
+    public Boolean isBackwardAccessible() {
+
+        if (backwardSegment == null) {
+            return null;
+        } else {
+            return backwardSegment.isAccessible();
+        }
+
+    }
 }
