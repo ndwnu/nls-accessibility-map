@@ -11,6 +11,14 @@ nls:
           duration: PT1M
           description: accessibility-map-api
 
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficsigns:
+          cache:
+            fail-on-no-data-on-startup: false
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
