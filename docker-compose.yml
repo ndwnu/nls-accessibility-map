@@ -26,6 +26,7 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - NLS_KEYCLOAK_URL=http://nls-keycloak:8000/auth
+      - NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP=false
     ports:
       - "8080:8080"
     depends_on:
