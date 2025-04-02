@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +67,6 @@ class TrafficSignCacheReadWriterTest {
 
     private static final OffsetDateTime NOW = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
-
     @BeforeEach
     void setUp() throws IOException {
 
@@ -97,13 +97,13 @@ class TrafficSignCacheReadWriterTest {
                 .build();
         trafficSign2 = trafficSign1.withId(2).withExternalId("externalId2");
 
-
         testDir = Files.createTempDirectory("testDir");
         cacheDir = testDir.resolve("cache");
 
         trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
                 .folder(cacheDir)
                 .fileNameActiveVersion("active")
+                .failOnNoDataOnStartup(false)
                 .build();
 
         trafficSignCacheReadWriter = new TrafficSignCacheReadWriter(trafficSignCacheConfiguration, new ObjectMapper(), clockService);
@@ -146,6 +146,25 @@ class TrafficSignCacheReadWriterTest {
 
         Optional<TrafficSigns> cachedTrafficSigns = trafficSignCacheReadWriter.read();
         assertThat(cachedTrafficSigns).isEmpty();
+        loggerExtension.containsLog(Level.ERROR, "Failed to read traffic signs from file", "some error");
+    }
+
+    @Test
+    void read_failed_stopOnStartup() throws IOException {
+
+        trafficSignCacheConfiguration.setFailOnNoDataOnStartup(true);
+        when(clockService.now()).thenReturn(NOW);
+
+        TrafficSigns trafficSigns = new TrafficSigns(List.of(trafficSign1, trafficSign2));
+
+        ObjectMapper objectMapper = mock(ObjectMapper.class);
+        when(objectMapper.readValue(trafficSignCacheConfiguration.getActiveVersion(), TrafficSigns.class))
+                .thenThrow(new IOException("some error"));
+        trafficSignCacheReadWriter = new TrafficSignCacheReadWriter(trafficSignCacheConfiguration, objectMapper, clockService);
+        trafficSignCacheReadWriter.write(trafficSigns);
+
+        assertThat(catchThrowable(() -> trafficSignCacheReadWriter.read()))
+                .isInstanceOf(IllegalStateException.class);
         loggerExtension.containsLog(Level.ERROR, "Failed to read traffic signs from file", "some error");
     }
 

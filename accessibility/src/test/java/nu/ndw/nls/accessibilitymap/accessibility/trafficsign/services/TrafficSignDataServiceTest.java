@@ -1,10 +1,11 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -39,9 +40,18 @@ class TrafficSignDataServiceTest {
     private TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() {
 
         trafficSignDataService = new TrafficSignDataService(trafficSignCacheReadWriter);
+    }
+
+    @Test
+    void init() {
+
+        when(trafficSignCacheReadWriter.read()).thenThrow(new RuntimeException("test exception"));
+        assertThat(catchThrowable(() -> trafficSignDataService.init()))
+                .withFailMessage("test exception")
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -51,6 +61,9 @@ class TrafficSignDataServiceTest {
         when(trafficSign1.isRelevant(accessibilityRequest)).thenReturn(true);
         when(trafficSign2.isRelevant(accessibilityRequest)).thenReturn(false);
 
+        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
+
+        trafficSignDataService.init();
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
         assertThat(trafficSigns).containsExactly(trafficSign1);
     }
@@ -60,6 +73,9 @@ class TrafficSignDataServiceTest {
 
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
 
+        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
+
+        trafficSignDataService.init();
         List<TrafficSign> trafficSigns = trafficSignDataService.getTrafficSigns();
 
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign2);
@@ -80,6 +96,8 @@ class TrafficSignDataServiceTest {
             return Optional.of(new TrafficSigns(trafficSign1, trafficSign2));
         });
 
+        trafficSignDataService.init();
+
         try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
             executorService.execute(() -> trafficSignDataService.getTrafficSigns());
             executorService.execute(() -> trafficSignDataService.getTrafficSigns());
@@ -97,6 +115,17 @@ class TrafficSignDataServiceTest {
         AnnotationUtil.classContainsAnnotation(
                 trafficSignDataService.getClass(),
                 Service.class,
+                annotation -> assertThat(annotation).isNotNull()
+        );
+    }
+
+    @Test
+    void init_annotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                trafficSignDataService.getClass(),
+                PostConstruct.class,
+                "init",
                 annotation -> assertThat(annotation).isNotNull()
         );
     }

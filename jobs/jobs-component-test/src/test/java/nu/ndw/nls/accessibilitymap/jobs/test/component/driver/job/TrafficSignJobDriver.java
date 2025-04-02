@@ -41,11 +41,8 @@ public class TrafficSignJobDriver implements StateManagement {
                         Environment.builder()
                                 .key("NU_NDW_NLS_ACCESSIBILITYMAP_JOBS_ANALYSE_STARTLOCATIONLONGITUDE")
                                 .value(String.valueOf(jobConfiguration.startNode().getLongitude()))
-                                .build(),
-                        Environment.builder()
-                                .key("NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNCLIENT_API_TOWNCODES")
-                                .value("TEST")
-                                .build()));
+                                .build()
+                ));
     }
 
     public void runTrafficSignUpdateCacheJob() {
@@ -57,8 +54,14 @@ public class TrafficSignJobDriver implements StateManagement {
                         Environment.builder()
                                 .key("COMMAND")
                                 .value("update-cache")
-                                .build()));
+                                .build(),
+                        Environment.builder()
+                                .key("NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP")
+                                .value("false")
+                                .build()
+                ));
     }
+
     public String buildAnalyseCommand(TrafficSignAnalyserJobConfiguration jobConfiguration) {
         return "analyse "
                 + createRepeatableArguments(jobConfiguration.trafficSignGroups())
