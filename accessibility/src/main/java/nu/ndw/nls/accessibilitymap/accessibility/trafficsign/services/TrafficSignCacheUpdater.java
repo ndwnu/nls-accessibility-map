@@ -37,9 +37,6 @@ public class TrafficSignCacheUpdater {
     public void watchFileChanges() throws IOException {
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
 
-        // Update on application startup
-        trafficSignDataService.updateTrafficSignData();
-
         watchService = FileSystems.getDefault().newWatchService();
         trafficSignCacheConfiguration.getFolder().register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 
@@ -53,8 +50,12 @@ public class TrafficSignCacheUpdater {
                         if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE && event.context().toString()
                                 .equals(trafficSignCacheConfiguration.getFileNameActiveVersion())) {
 
-                            trafficSignDataService.updateTrafficSignData();
-                            log.info("Triggerd update");
+                            try {
+                                trafficSignDataService.updateTrafficSignData();
+                                log.info("Triggerd update");
+                            } catch (Exception exception) {
+                                log.error("Failed to update traffic signs data", exception);
+                            }
                         }
                     }
 
