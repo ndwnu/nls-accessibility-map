@@ -29,7 +29,7 @@
         <java.version>21</java.version>
         <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
         <nls-springboot.logging.version>8.4.5</nls-springboot.logging.version>
-        <nls-springboot.component-test.version>8.4.3</nls-springboot.component-test.version>
+        <nls-springboot.component-test.version>8.4.4</nls-springboot.component-test.version>
         <nls-springboot.monitoring.version>8.4.5</nls-springboot.monitoring.version>
         <nls-springboot.test.version>8.4.5</nls-springboot.test.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
