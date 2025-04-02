@@ -42,7 +42,6 @@ class QueryGraphConfigurerTest {
 
     private static final double LAT = 1.0;
 
-
     private static final String MESSAGE_NOT_ASSIGNED = "Query graph configuration summary. "
             + "Total traffic signs in request 1. "
             + "Total not assignable road sections with traffic sign 1, notAssigned {%s=[trafficSignSnap]}";
@@ -146,10 +145,8 @@ class QueryGraphConfigurerTest {
 
         EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
-        assertThat(edgeRestrictions.getBlockedEdges()).doesNotContain(edgeIterator.getEdgeKey());
-        loggerExtension.containsLog(
-                Level.WARN,
-                MESSAGE_NOT_ASSIGNED.formatted(0));
+        assertThat(edgeRestrictions.getBlockedEdges()).isEmpty();
+        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(0));
     }
 
     @Test
@@ -176,18 +173,14 @@ class QueryGraphConfigurerTest {
 
         EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
 
-        assertThat(edgeRestrictions.getBlockedEdges()).doesNotContain(edgeIterator.getEdgeKey());
-        loggerExtension.containsLog(
-                Level.WARN,
-                MESSAGE_NOT_ASSIGNED.formatted(124));
+        assertThat(edgeRestrictions.getBlockedEdges()).isEmpty();
 
-        loggerExtension.containsLog(
-                Level.WARN,
+        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(124));
+
+        loggerExtension.containsLog(Level.WARN,
                 "Traffic sign trafficSignSnap and road section id 124 does not match linked edge with road section id 123");
 
-
     }
-
 
     private void setupFixtureForTrafficSignSnap() {
 
