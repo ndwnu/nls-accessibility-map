@@ -89,9 +89,8 @@ class TrafficSignCacheUpdaterTest {
         trafficSignCacheUpdater.watchFileChanges();
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
 
-        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-            loggerExtension.containsLog(Level.ERROR, "Failed to update traffic signs data", "some error");
-        });
+        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
+                loggerExtension.containsLog(Level.ERROR, "Failed to update traffic signs data", "some error"));
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread.isInterrupted()).isFalse();
     }
