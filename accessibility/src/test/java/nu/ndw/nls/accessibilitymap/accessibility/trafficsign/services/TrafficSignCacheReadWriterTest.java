@@ -187,8 +187,8 @@ class TrafficSignCacheReadWriterTest {
         Path expectedTrafficSignFile = cacheDir.resolve(
                 "trafficSigns-%s.json".formatted(NOW.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
         assertThat(expectedTrafficSignFile).exists();
-        assertThat(activeFile.toPath().toRealPath())
-                .isEqualTo(expectedTrafficSignFile.toAbsolutePath());
+        assertThat(activeFile.toPath().toRealPath().toAbsolutePath())
+                .isEqualTo(expectedTrafficSignFile.toRealPath().toAbsolutePath());
 
         assertThatJson(FileUtils.readFileToString(activeFile, StandardCharsets.UTF_8))
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
