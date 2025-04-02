@@ -33,7 +33,7 @@ services:
     networks:
       - nls-accessibility-map-network
     volumes:
-      - ./graphhopper:/application/graphhopper
+      - ./.tmp/graphhopper:/application/graphhopper
 
   nls-accessibility-map-graphhopper-job:
     build: docker/nls-accessibility-map-graphhopper-job
@@ -43,7 +43,7 @@ services:
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
-      - ./graphhopper:/application/graphhopper
+      - ./.tmp/graphhopper:/application/graphhopper
     networks:
       - nls-accessibility-map-network
 
