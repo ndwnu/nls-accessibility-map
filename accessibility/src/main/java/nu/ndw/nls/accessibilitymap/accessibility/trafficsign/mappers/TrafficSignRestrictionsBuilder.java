@@ -28,6 +28,8 @@ public class TrafficSignRestrictionsBuilder {
         nonDynamicTrafficSigns.put(TrafficSignType.C7A, buildC7aRestrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7B, buildC7bRestrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7C, buildC7cRestrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C8, buildC8Restrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C9, buildC9Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C10, buildC10Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C12, buildC12Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C22, buildC22Restrictions());
@@ -57,6 +59,23 @@ public class TrafficSignRestrictionsBuilder {
     private static Restrictions buildC1Restrictions() {
         return Restrictions.builder()
                 .transportTypes(TransportType.allExcept(TransportType.PEDESTRIAN))
+                .build();
+    }
+
+    private static Restrictions buildC9Restrictions() {
+        return Restrictions.builder()
+                .transportTypes(Set.of(
+                        TransportType.TRACTOR,
+                        TransportType.MOTORCYCLE,
+                        TransportType.BICYCLE,
+                        TransportType.RIDERS
+                ))
+                .build();
+    }
+
+    private static Restrictions buildC8Restrictions() {
+        return Restrictions.builder()
+                .transportTypes(Set.of(TransportType.TRACTOR))
                 .build();
     }
 
@@ -106,6 +125,7 @@ public class TrafficSignRestrictionsBuilder {
     private static Restrictions buildC12Restrictions() {
         return Restrictions.builder()
                 .transportTypes(Set.of(
+                        TransportType.MOTORCYCLE,
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
@@ -190,6 +210,7 @@ public class TrafficSignRestrictionsBuilder {
                 .transportTypes(Set.of(TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES))
                 .build();
     }
+
     private static Restrictions buildC22cRestrictions() {
 
         return Restrictions.builder()

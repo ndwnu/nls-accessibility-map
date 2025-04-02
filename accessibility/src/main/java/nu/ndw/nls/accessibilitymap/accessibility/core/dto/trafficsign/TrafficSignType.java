@@ -14,6 +14,8 @@ public enum TrafficSignType {
     C7A("C7a"),
     C7B("C7b"),
     C7C("C7c"),
+    C8("C8"),
+    C9("C9"),
     C10("C10"),
     C12("C12"),
     C22C("C22c"),

@@ -423,6 +423,29 @@
                                 <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                             </configuration>
                         </execution>
+                        <execution>
+                            <id>generate-open-api-v2</id>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                            <configuration>
+                                <templateResourcePath>nu/ndw/nls/springboot/openapi</templateResourcePath>
+                                <configurationFile>open-api-config.yaml</configurationFile>
+                                <additionalProperties>removeEnumValuePrefix=true</additionalProperties>
+                                <!-- Location of our openapi specification file -->
+                                <inputSpec>/nu/ndw/nls/accessibilitymap/specification/v2.yaml</inputSpec>
+                                <!-- Type of code to generate -->
+                                <generatorName>spring</generatorName>
+                                <!-- Add model prefix to distinguish between jooq- and json-models -->
+                                <modelNameSuffix>Json</modelNameSuffix>
+                                <!--
+                                  Prevent generating too much by only specifying one file.
+                                  The ApiUtil is fairly harmless and is actually used in the delegate pattern.
+                                  Reason to not want all the default generated files: we'd need more dependencies.
+                                -->
+                                <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                            </configuration>
+                        </execution>
                     </executions>
                 </plugin>
                 <plugin>

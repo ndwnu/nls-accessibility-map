@@ -18,6 +18,15 @@ public class RoadSectionFeatureCollectionMapper {
 
     private final RoadSectionFeatureMapper roadSectionFeatureMapper;
 
+    /**
+     * Maps a collection of RoadSection objects to a RoadSectionFeatureCollectionJson instance.
+     *
+     * @param idToRoadSectionMap a map containing road section IDs as keys and their corresponding RoadSection objects as values
+     * @param startPointRequested a boolean indicating if the start point is requested
+     * @param startPointMatch an optional CandidateMatch object representing the start point match, or null if not applicable
+     * @param accessible an optional Boolean indicating accessibility criteria; can be null to include all accessibility statuses
+     * @return a RoadSectionFeatureCollectionJson containing the mapped features and the type as FEATURE_COLLECTION
+     */
     public RoadSectionFeatureCollectionJson map(
             Map<Integer, RoadSection> idToRoadSectionMap,
             boolean startPointRequested,

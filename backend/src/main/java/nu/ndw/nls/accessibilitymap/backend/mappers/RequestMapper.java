@@ -2,11 +2,10 @@ package nu.ndw.nls.accessibilitymap.backend.mappers;
 
 import java.util.EnumMap;
 import java.util.function.Consumer;
-import nu.ndw.nls.accessibilitymap.backend.controllers.AccessibilityMapApiDelegateImpl.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties.VehiclePropertiesBuilder;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -50,7 +49,7 @@ public class RequestMapper {
                 .lcvAndHgvAccessForbidden(true));
     }
 
-    public VehicleProperties mapToVehicleProperties(VehicleArguments requestArguments) {
+    public VehicleProperties mapToVehicleProperties(nu.ndw.nls.accessibilitymap.backend.controllers.dto.VehicleArguments requestArguments) {
         if (!VEHICLE_TYPE_CONFIGURATION.containsKey(requestArguments.vehicleType())) {
             throw new VehicleTypeNotSupportedException(MESSAGE_TEMPLATE.formatted(requestArguments.vehicleType()));
         }
