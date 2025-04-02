@@ -34,6 +34,7 @@ services:
       - nls-accessibility-map-network
     volumes:
       - ./.tmp/graphhopper:/application/graphhopper
+      - ./.tmp/trafficsigns:/application/trafficsigns
 
   nls-accessibility-map-graphhopper-job:
     build: docker/nls-accessibility-map-graphhopper-job
