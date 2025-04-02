@@ -72,16 +72,16 @@ extends:
         buildContext: docker/nls-accessibility-map-generator-jobs
         repository: nls-accessibility-map-generator-jobs
         push: true
-      - imageName: nls-accessibility-map-traffic-sign-analyser-job
+      - imageName: nls-accessibility-map-traffic-sign-job
         imageTag: $(Build.BuildNumber)
-        dockerFile: docker/nls-accessibility-map-traffic-sign-analyser-job/Dockerfile
-        buildContext: docker/nls-accessibility-map-traffic-sign-analyser-job
-        repository: nls-accessibility-map-traffic-sign-analyser-job
+        dockerFile: docker/nls-accessibility-map-traffic-sign-job/Dockerfile
+        buildContext: docker/nls-accessibility-map-traffic-sign-job
+        repository: nls-accessibility-map-traffic-sign-job
         push: true
     componentTests:
       - name: "jobs"
         module: "jobs/jobs-component-test"
-        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/trafficsignanalyser"
+        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/trafficsign"
     deployment:
       environments:
         - name: "staging"

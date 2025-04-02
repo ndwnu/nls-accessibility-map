@@ -36,6 +36,11 @@ trafficSignAnalyser:
   command: analyse --report-issues=true --traffic-signs=C6,C12 --traffic-signs=C17 --traffic-signs=C18 --traffic-signs=C19 --traffic-signs=C20 --traffic-signs=C21
   memory: 12Gi
 
+trafficSignCacheUpdater:
+  name: nls-accessibility-map-traffic-sign-cache-updater-job
+  command: update-cache
+  memory: 1Gi
+
 graphhopperNoTrafficSign:
   name: nls-accessibility-map-gh-job-no-traffic-signs
   memory: 8Gi
