@@ -2,13 +2,11 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import ch.qos.logback.classic.Level;
 import jakarta.annotation.PreDestroy;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchService;
@@ -39,11 +37,7 @@ class TrafficSignCacheUpdaterTest {
     private TrafficSignDataService trafficSignDataService;
 
     @Mock
-    private FileSystem fileSystem;
-
-    @Mock
     private WatchService watchService;
-
 
     private Path testDir;
 
@@ -73,14 +67,14 @@ class TrafficSignCacheUpdaterTest {
     }
 
     @Test
-    void watchFileChanges_fileChanges() throws InterruptedException, IOException {
+    void watchFileChanges_fileChanges() throws IOException {
 
         trafficSignCacheUpdater.watchFileChanges();
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
             loggerExtension.containsLog(Level.INFO, "Watching file changes in %s".formatted(workingDir));
-            verify(trafficSignDataService, times(2)).updateTrafficSignData();
+            verify(trafficSignDataService).updateTrafficSignData();
             loggerExtension.containsLog(Level.INFO, "Triggerd update");
         });
 
@@ -88,10 +82,16 @@ class TrafficSignCacheUpdaterTest {
     }
 
     @Test
-    void watchFileChanges_loadOnApplicationStart() throws InterruptedException, IOException {
+    void watchFileChanges_failedToUpdateData() throws IOException {
+
+        doThrow(new RuntimeException("some error")).when(trafficSignDataService).updateTrafficSignData();
 
         trafficSignCacheUpdater.watchFileChanges();
-        verify(trafficSignDataService).updateTrafficSignData();
+        Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
+
+        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            loggerExtension.containsLog(Level.ERROR, "Failed to update traffic signs data", "some error");
+        });
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread.isInterrupted()).isFalse();
     }
