@@ -207,7 +207,7 @@
                                 <configuration>
                                     <arguments>
                                         <argument>777</argument>
-                                        <argument>../../graphhopper</argument>
+                                        <argument>../../.tmp/graphhopper</argument>
                                     </arguments>
                                     <executable>chmod</executable>
                                 </configuration>
