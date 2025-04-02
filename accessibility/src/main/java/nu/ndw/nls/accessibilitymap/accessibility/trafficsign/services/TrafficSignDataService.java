@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
+import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -23,6 +24,12 @@ public class TrafficSignDataService {
 
     private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
+    @PostConstruct
+    public void init() {
+
+        updateTrafficSignData();
+    }
+
     public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
 
         return this.getTrafficSigns().stream()
@@ -33,9 +40,6 @@ public class TrafficSignDataService {
     public List<TrafficSign> getTrafficSigns() {
         dataLock.lock();
         try {
-            if (trafficSigns.isEmpty()) {
-                updateTrafficSignData();
-            }
             return new ArrayList<>(trafficSigns);
         } finally {
             dataLock.unlock();

@@ -13,11 +13,6 @@ nu:
         trafficsignclient:
           api:
             url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
-#            town-codes: GM0307
-        jobs:
-          generate:
-            root-export-directory: .tmp/map-generation-destination
-            prettyPrintJson: true
         trafficsigns:
           cache:
             folder: "./.tmp/trafficsigns/"

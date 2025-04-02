@@ -23,6 +23,8 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 public class TrafficSignCacheConfiguration {
 
+    private boolean failOnNoDataOnStartup = true;
+
     @NotNull
     private Path folder;
 
