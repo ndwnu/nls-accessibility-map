@@ -115,7 +115,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
 
     @SneakyThrows
     @Test
-    void writeToFile_ok() {
+    void writeToFile() {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
         try {
@@ -187,7 +187,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
     }
 
     @Test
-    void isEnabled_ok() {
+    void isEnabled() {
         GeoJsonRoadAsymmetricTrafficSignWriter geoJsonRoadAsymmetricTrafficSignWriter = new GeoJsonRoadAsymmetricTrafficSignWriter(
                 fileService,
                 featureBuilder,

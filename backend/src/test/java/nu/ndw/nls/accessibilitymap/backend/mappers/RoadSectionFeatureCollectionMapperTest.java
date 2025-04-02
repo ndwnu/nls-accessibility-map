@@ -41,7 +41,7 @@ class RoadSectionFeatureCollectionMapperTest {
     private RoadSectionPropertiesJson roadSectionPropertiesJson2;
 
     @Test
-    void map_ok_noFilter() {
+    void map_noFilter() {
         when(roadSectionFeatureMapper.map(roadSection, true, candidateMatch, true)).thenReturn(roadSectionFeatureJson1);
         when(roadSectionFeatureMapper.map(roadSection, true, candidateMatch, false)).thenReturn(roadSectionFeatureJson2);
         when(roadSectionFeatureJson1.getProperties()).thenReturn(roadSectionPropertiesJson1);
@@ -58,7 +58,7 @@ class RoadSectionFeatureCollectionMapperTest {
     }
 
     @Test
-    void map_ok_filterNotMatched() {
+    void map_filterNotMatched() {
         when(roadSectionFeatureMapper.map(roadSection, true, candidateMatch, true)).thenReturn(roadSectionFeatureJson1);
         when(roadSectionFeatureMapper.map(roadSection, true, candidateMatch, false)).thenReturn(roadSectionFeatureJson2);
         when(roadSectionFeatureJson1.getProperties()).thenReturn(roadSectionPropertiesJson1);
@@ -75,7 +75,7 @@ class RoadSectionFeatureCollectionMapperTest {
     }
 
     @Test
-    void map_ok_filterMatched() {
+    void map_filterMatched() {
         when(roadSectionFeatureMapper.map(roadSection, true, candidateMatch, true)).thenReturn(roadSectionFeatureJson1);
         when(roadSectionFeatureMapper.map(roadSection, true, candidateMatch, false)).thenReturn(roadSectionFeatureJson2);
         when(roadSectionFeatureJson1.getProperties()).thenReturn(roadSectionPropertiesJson1);

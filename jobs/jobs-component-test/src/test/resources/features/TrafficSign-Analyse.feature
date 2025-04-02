@@ -1,4 +1,4 @@
-Feature: TrafficSignAnalyser
+Feature: TrafficSign-Analyse
 
   Scenario: Job generate issue export for asymmetric traffic-sign detection should send only asymmetrically placed traffic signs
     Given a simple Graph Hopper network
@@ -9,7 +9,8 @@ Feature: TrafficSignAnalyser
       | 1           | 6         | 0.0      | C17     | invalid   | FORTH         | window 3   | 00000000-0000-4000-0000-000000000003 |
       | 6           | 1         | 1.0      | C17     | 1.9 m     | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
     And with issues sent to issue api
-    When run TrafficSignAnalyser with configuration
+    When run TrafficSignUpdateCache
+    And run TrafficSignAnalyser with configuration
       | startNodeId | trafficSignGroups | reportIssues |
       | 2           | C6,C17:C12        | true         |
     Then we expect the following issues to be reported

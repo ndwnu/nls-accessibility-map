@@ -1,10 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -14,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +17,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TrafficSignDataService {
 
-    private static final BigDecimal BINARY_KILO = BigDecimal.valueOf(1024);
-
-    private static final int SIZE_ROUNDING = 2;
-
     private final TrafficSigns trafficSigns = new TrafficSigns();
 
     private final ReentrantLock dataLock = new ReentrantLock();
 
-    private final ObjectMapper objectMapper;
-
-    private final TrafficSignCacheConfiguration trafficSignCacheConfiguration;
+    private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
     public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
 
@@ -46,7 +34,7 @@ public class TrafficSignDataService {
         dataLock.lock();
         try {
             if (trafficSigns.isEmpty()) {
-                updateTrafficSignsFromFile();
+                updateTrafficSignData();
             }
             return new ArrayList<>(trafficSigns);
         } finally {
@@ -54,19 +42,9 @@ public class TrafficSignDataService {
         }
     }
 
-    protected void updateTrafficSignsFromFile() {
-        try {
-            log.info("Reading traffic signs from {}", trafficSignCacheConfiguration.getActiveVersion().toPath().toAbsolutePath());
-
+    protected void updateTrafficSignData() {
+        trafficSignCacheReadWriter.read().ifPresent(newTrafficSignsData -> {
             OffsetDateTime start = OffsetDateTime.now();
-            TrafficSigns newTrafficSignsData = objectMapper.readValue(trafficSignCacheConfiguration.getActiveVersion(), TrafficSigns.class);
-            log.info("Read traffic signs data from `{}` with size {}MB in {} ms",
-                    trafficSignCacheConfiguration.getActiveVersion().toPath().toAbsolutePath(),
-                    BigDecimal.valueOf(Files.size(trafficSignCacheConfiguration.getActiveVersion().toPath()))
-                            .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
-                    Duration.between(start, OffsetDateTime.now()).toMillis());
-
-            start = OffsetDateTime.now();
             dataLock.lock();
             try {
                 trafficSigns.clear();
@@ -76,8 +54,6 @@ public class TrafficSignDataService {
                 log.info("Switched internal traffic signs data structure and was locked for {} ms",
                         Duration.between(start, OffsetDateTime.now()).toMillis());
             }
-        } catch (IOException exception) {
-            log.warn("Failed to read traffic signs from file", exception);
-        }
+        });
     }
 }

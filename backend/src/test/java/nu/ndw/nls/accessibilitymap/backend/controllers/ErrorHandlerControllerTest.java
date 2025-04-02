@@ -46,7 +46,7 @@ class ErrorHandlerControllerTest {
     private MethodArgumentTypeMismatchException methodArgumentTypeMismatchException;
 
     @Test
-    void handleInternalServerErrorException_ok() {
+    void handleInternalServerErrorException() {
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleInternalServerErrorException(new Exception(MESSAGE));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -56,7 +56,7 @@ class ErrorHandlerControllerTest {
     }
 
     @Test
-    void handleBadRequestException_ok() {
+    void handleBadRequestException() {
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleBadRequestException(new RuntimeException(MESSAGE));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -65,13 +65,13 @@ class ErrorHandlerControllerTest {
     }
 
     @Test
-    void handleAccessDenied_ok() {
+    void handleAccessDenied() {
         ResponseEntity<Void> response = errorHandlerController.handleAccessDenied(new AccessDeniedException(MESSAGE));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     @Test
-    void handleMethodArgumentTypeMismatchException_ok() {
+    void handleMethodArgumentTypeMismatchException() {
         when(methodArgumentTypeMismatchException.getMessage()).thenReturn(MESSAGE);
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleMethodArgumentTypeMismatchException(methodArgumentTypeMismatchException);
@@ -81,7 +81,7 @@ class ErrorHandlerControllerTest {
     }
 
     @Test
-    void handleNotFoundException_ok() {
+    void handleNotFoundException() {
         ResponseEntity<APIErrorJson> response = errorHandlerController
                 .handleNotFoundException(new MunicipalityNotFoundException(MESSAGE));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -90,30 +90,30 @@ class ErrorHandlerControllerTest {
     }
 
     @Test
-    void handleConstraintViolationException_ok_pathNull() {
+    void handleConstraintViolationException_pathNull() {
         when(constraintViolation.getPropertyPath()).thenReturn(null);
 
-        handleConstraintViolationException_ok("");
+        handleConstraintViolationException("");
     }
 
     @Test
-    void handleConstraintViolationException_ok_pathImplLeafNodeAsString() {
+    void handleConstraintViolationException_pathImplLeafNodeAsString() {
         when(constraintViolation.getPropertyPath()).thenReturn(pathImpl);
         when(pathImpl.getLeafNode()).thenReturn(nodeImpl);
         when(nodeImpl.asString()).thenReturn(PATH);
 
-        handleConstraintViolationException_ok(PATH);
+        handleConstraintViolationException(PATH);
     }
 
     @Test
-    void handleConstraintViolationException_ok_pathToString() {
+    void handleConstraintViolationException_pathToString() {
         when(constraintViolation.getPropertyPath()).thenReturn(path);
         when(path.toString()).thenReturn(PATH);
 
-        handleConstraintViolationException_ok(PATH);
+        handleConstraintViolationException(PATH);
     }
 
-    private void handleConstraintViolationException_ok(String path) {
+    private void handleConstraintViolationException(String path) {
         when(constraintViolationException.getConstraintViolations()).thenReturn(Set.of(constraintViolation));
         when(constraintViolation.getMessage()).thenReturn(MESSAGE);
 

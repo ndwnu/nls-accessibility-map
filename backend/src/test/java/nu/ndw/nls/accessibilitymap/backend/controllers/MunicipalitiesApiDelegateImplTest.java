@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.mappers.MunicipalityFeatureMapper;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityConfiguration;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,7 +41,7 @@ class MunicipalitiesApiDelegateImplTest {
     private MunicipalitiesApiDelegateImpl municipalitiesApiDelegate;
 
     @Test
-    void getMunicipalities_ok() {
+    void getMunicipalities() {
         when(municipalityConfiguration.getMunicipalities())
                 .thenReturn(Map.of(MUNICIPALITY_ID_STRING, municipality1, MUNICIPALITY_ID_2_STRING, municipality2));
         when(municipality1.getMunicipalityId()).thenReturn(MUNICIPALITY_ID);

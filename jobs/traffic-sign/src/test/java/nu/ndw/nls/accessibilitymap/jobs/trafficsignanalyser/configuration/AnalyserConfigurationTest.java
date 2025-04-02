@@ -26,7 +26,7 @@ class AnalyserConfigurationTest extends ValidationTest {
     }
 
     @Test
-    void validate_ok() {
+    void validate() {
 
         validate(analyserConfiguration, List.of(), List.of());
     }

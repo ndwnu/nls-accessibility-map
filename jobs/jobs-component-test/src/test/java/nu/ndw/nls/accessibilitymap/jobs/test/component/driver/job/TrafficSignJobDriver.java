@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class TrafficSignAnalyserJobDriver implements StateManagement {
+public class TrafficSignJobDriver implements StateManagement {
 
     private final GeneralConfiguration generalConfiguration;
 
@@ -48,6 +48,17 @@ public class TrafficSignAnalyserJobDriver implements StateManagement {
                                 .build()));
     }
 
+    public void runTrafficSignUpdateCacheJob() {
+
+        dockerDriver.startServiceAndWaitToBeFinished(
+                "nls-accessibility-map-traffic-sign-update-cache-job",
+                generalConfiguration.isWaitForDebuggerToBeConnected() ? Mode.DEBUG : Mode.NORMAL,
+                List.of(
+                        Environment.builder()
+                                .key("COMMAND")
+                                .value("update-cache")
+                                .build()));
+    }
     public String buildAnalyseCommand(TrafficSignAnalyserJobConfiguration jobConfiguration) {
         return "analyse "
                 + createRepeatableArguments(jobConfiguration.trafficSignGroups())

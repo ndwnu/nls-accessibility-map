@@ -82,7 +82,7 @@ class AccessibilityNetworkServiceTest {
 
     @SneakyThrows
     @Test
-    void storeLatestNetworkOnDisk_ok() {
+    void storeLatestNetworkOnDisk() {
         when(graphHopperConfiguration.publishEvents()).thenReturn(true);
         when(accessibilityLinkService.getLinks()).thenReturn(
                 new AccessibilityLinkData(links, NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP));
@@ -112,7 +112,7 @@ class AccessibilityNetworkServiceTest {
 
     @SneakyThrows
     @Test
-    void storeLatestNetworkOnDisk_ok_noEvents() {
+    void storeLatestNetworkOnDisk_noEvents() {
         when(accessibilityLinkService.getLinks()).thenReturn(
                 new AccessibilityLinkData(links, NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP));
         when(links.iterator()).thenReturn(linkIterator);

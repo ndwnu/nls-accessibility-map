@@ -43,7 +43,7 @@ class GenerateConfigurationTest extends ValidationTest {
     }
 
     @Test
-    void validate_ok() {
+    void validate() {
 
         validate(generateConfiguration, List.of(), List.of());
     }

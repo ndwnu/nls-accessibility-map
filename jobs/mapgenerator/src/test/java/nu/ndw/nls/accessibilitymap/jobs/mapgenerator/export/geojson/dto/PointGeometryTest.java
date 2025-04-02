@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class PointGeometryTest {
 
     @Test
-    void getType_ok() {
+    void getType() {
 
         assertThat(PointGeometry.builder().build().getType()).isEqualTo("Point");
     }

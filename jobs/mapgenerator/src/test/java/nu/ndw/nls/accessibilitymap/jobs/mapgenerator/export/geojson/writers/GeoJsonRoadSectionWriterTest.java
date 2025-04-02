@@ -124,7 +124,7 @@ class GeoJsonRoadSectionWriterTest {
             true,
             false
             """)
-    void writeToFile_ok(boolean includeOnlyTimeWindowedSigns) throws IOException {
+    void writeToFile(boolean includeOnlyTimeWindowedSigns) throws IOException {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
@@ -219,7 +219,7 @@ class GeoJsonRoadSectionWriterTest {
     }
 
     @Test
-    void writeToFile_ok_writeException() throws IOException {
+    void writeToFile_writeException() throws IOException {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
@@ -300,7 +300,7 @@ class GeoJsonRoadSectionWriterTest {
     }
 
     @Test
-    void isEnabled_ok() {
+    void isEnabled() {
         GeoJsonObjectMapperFactory geoJsonObjectMapperFactory = mock(GeoJsonObjectMapperFactory.class);
         GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
                 fileService,

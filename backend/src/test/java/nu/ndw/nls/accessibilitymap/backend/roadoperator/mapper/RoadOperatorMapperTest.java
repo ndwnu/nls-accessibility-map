@@ -29,7 +29,7 @@ class RoadOperatorMapperTest {
 
     @ParameterizedTest
     @EnumSource(RoadOperatorTypeEnum.class)
-    void map_ok(RoadOperatorTypeEnum roadOperatorType) {
+    void map(RoadOperatorTypeEnum roadOperatorType) {
 
         List<RoadOperatorJson> roadOperators = roadOperatorMapper.map(List.of(
                 RoadOperator.builder()

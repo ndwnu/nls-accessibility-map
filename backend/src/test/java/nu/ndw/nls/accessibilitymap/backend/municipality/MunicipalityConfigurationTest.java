@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityMapper;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -32,7 +32,7 @@ class MunicipalityConfigurationTest {
     private Municipality municipalityB;
 
     @Test
-    void construction_ok() {
+    void construction() {
         when(municipalityProperties.getMunicipalities()).thenReturn(Map.of(MUNICIPALITY_NAME_A, municipalityPropertyA,
                 MUNICIPALITY_NAME_B, municipalityPropertyB));
 

@@ -27,7 +27,7 @@ class RestrictionIsAbsoluteFilterPredicateTest {
     private RestrictionIsAbsoluteFilterPredicate restrictionIsAbsoluteFilterPredicate;
 
     @Test
-    void test_ok_includedHasNoNullTextSigns() {
+    void test_includedHasNoNullTextSigns() {
         TrafficSignPropertiesDto propertiesDto = Mockito.mock(TrafficSignPropertiesDto.class);
         TrafficSignGeoJsonDto trafficSignGeoJsonDto = Mockito.mock(TrafficSignGeoJsonDto.class);
 
@@ -37,7 +37,7 @@ class RestrictionIsAbsoluteFilterPredicateTest {
     }
 
     @Test
-    void test_ok_includedHasNoEmptyTextSignsList() {
+    void test_includedHasNoEmptyTextSignsList() {
         TrafficSignPropertiesDto propertiesDto = Mockito.mock(TrafficSignPropertiesDto.class);
         TrafficSignGeoJsonDto trafficSignGeoJsonDto = Mockito.mock(TrafficSignGeoJsonDto.class);
 
@@ -47,22 +47,22 @@ class RestrictionIsAbsoluteFilterPredicateTest {
     }
 
     @Test
-    void test_ok_excludedBecauseItContainsUit() {
+    void test_excludedBecauseItContainsUit() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_UIT));
     }
 
     @Test
-    void test_ok_excludedBecauseItContainsVoor() {
+    void test_excludedBecauseItContainsVoor() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_VOOR));
     }
 
     @Test
-    void test_ok_excludedBecauseItContainsTijd() {
+    void test_excludedBecauseItContainsTijd() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_TIJD));
     }
 
     @Test
-    void test_ok_excludedBecauseItContainsVrij() {
+    void test_excludedBecauseItContainsVrij() {
         restrictionIsAbsoluteFilterPredicate.test(mockSign(IGNORED_TOKEN_CONTAINS_VRIJ));
     }
 
