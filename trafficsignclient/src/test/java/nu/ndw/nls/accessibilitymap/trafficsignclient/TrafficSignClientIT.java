@@ -51,7 +51,7 @@ class TrafficSignClientIT {
     private TrafficSignService trafficSignService;
 
     @Test
-    void getTrafficSigns_ok_correctRvvAndZoneCodes() {
+    void getTrafficSigns_correctRvvAndZoneCodes() {
 
         stubFor(
                 get(urlEqualTo(

@@ -44,7 +44,7 @@ class FileServiceTest {
     }
 
     @Test
-    void createTmpFile_ok() throws IOException {
+    void createTmpFile() throws IOException {
 
         Path tempFile = fileService.createTmpFile("file", ".tmp");
 
@@ -71,7 +71,7 @@ class FileServiceTest {
     }
 
     @Test
-    void moveFileAndOverride_ok() throws IOException {
+    void moveFileAndOverride() throws IOException {
 
         Path source = Files.createTempFile("file1", ".tmp",
                 PosixFilePermissions.asFileAttribute(Set.of(OWNER_READ, OWNER_WRITE, OTHERS_READ)));
@@ -99,7 +99,7 @@ class FileServiceTest {
     }
 
     @Test
-    void moveFileAndOverride_ok_destinationExists() throws IOException {
+    void moveFileAndOverride_destinationExists() throws IOException {
 
         Path source = Files.createTempFile("file1", ".tmp");
         Path destination = Files.createTempFile("file2", ".tmp");

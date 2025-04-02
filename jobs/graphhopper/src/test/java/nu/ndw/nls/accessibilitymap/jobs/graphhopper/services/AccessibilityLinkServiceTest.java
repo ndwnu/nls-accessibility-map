@@ -73,7 +73,7 @@ class AccessibilityLinkServiceTest {
     private java.util.Set<String> rvvCodesSet;
 
     @Test
-    void getLinks_ok() {
+    void getLinks() {
         NwbRoadSectionDto roadSection1 = NwbRoadSectionDto.builder()
                 .roadSectionId(ROAD_SECTION_ID_1)
                 .build();
@@ -122,7 +122,7 @@ class AccessibilityLinkServiceTest {
 
 
     @Test
-    void getLinks_ok_noTrafficSigns() {
+    void getLinks_noTrafficSigns() {
         NwbRoadSectionDto roadSection1 = NwbRoadSectionDto.builder()
                 .roadSectionId(ROAD_SECTION_ID_1)
                 .build();

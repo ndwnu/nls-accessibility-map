@@ -211,7 +211,7 @@ class GeoJsonPolygonWriterTest {
             true,
             false
             """)
-    void prepareGeoJsonFeatureCollection_ok(boolean includeOnlyTimeWindowedSigns) throws IOException {
+    void prepareGeoJsonFeatureCollection(boolean includeOnlyTimeWindowedSigns) throws IOException {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
@@ -295,7 +295,7 @@ class GeoJsonPolygonWriterTest {
     }
 
     @Test
-    void isEnabled_ok() {
+    void isEnabled() {
         GeoJsonPolygonWriter geoJsonPolygonWriter = new GeoJsonPolygonWriter(
                 fileService,
                 generateConfiguration,

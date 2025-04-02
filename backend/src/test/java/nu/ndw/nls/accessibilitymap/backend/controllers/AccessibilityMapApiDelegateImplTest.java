@@ -88,7 +88,7 @@ class AccessibilityMapApiDelegateImplTest {
     private Point startPoint;
 
     @Test
-    void getInaccessibleRoadSections_ok() {
+    void getInaccessibleRoadSections() {
         setUpFixture();
         when(accessibilityResponseMapper.map(idToRoadSectionMap, REQUESTED_ROAD_SECTION_ID))
                 .thenReturn(accessibilityMapResponseJson);
@@ -110,7 +110,7 @@ class AccessibilityMapApiDelegateImplTest {
     }
 
     @Test
-    void getRoadSections_ok() {
+    void getRoadSections() {
         setUpFixture();
         when(roadSectionFeatureCollectionMapper.map(idToRoadSectionMap, true, candidateMatch, true))
                 .thenReturn(roadSectionFeatureCollectionJson);

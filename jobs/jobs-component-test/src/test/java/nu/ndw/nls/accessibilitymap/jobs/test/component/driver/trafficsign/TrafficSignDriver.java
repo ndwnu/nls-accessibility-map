@@ -58,7 +58,6 @@ public class TrafficSignDriver {
                             "/api/rest/static-road-data/traffic-signs/v4/current-state"))
                             .withQueryParam("status", equalTo("PLACED"))
                             .withQueryParam("rvvCode", stringValuePattern)
-                            .withQueryParam("countyCode", equalTo("TEST"))
                             .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_JSON_VALUE))
                             .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/geo+json"))
                             .willReturn(aResponse()

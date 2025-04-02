@@ -32,9 +32,9 @@ import nu.ndw.nls.springboot.messaging.services.MessageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 @SpringBootTest
 @ContextConfiguration(classes = TestConfig.class)
@@ -42,11 +42,13 @@ import org.springframework.test.context.ContextConfiguration;
 class NlsAccessibilityMapJobsIT {
 
     private static final String NETWORK_NAME = "accessibility_latest";
+
     private static final String PROPERTIES = "properties";
+
     private static final String NETWORK_NAME_NO_TRAFFIC_SIGNS = "accessibility_latest_no_traffic_signs";
 
     // Mocking this bean to prevent stderr output about missing PicoCLI commands when running IT
-    @MockBean
+    @MockitoBean
     private AccessibilityMapGraphhoperJobCommandLineRunner accessibilityMapGraphhoperJobCommandLineRunner;
 
     @Autowired
@@ -62,7 +64,7 @@ class NlsAccessibilityMapJobsIT {
     private MessageService messageService;
 
     @Test
-    void publishedMessage_ok() {
+    void publishedMessage() {
         MessageConsumeResult<NlsEvent> result = messageService.receive(ReceiveKey.builder()
                 .eventType(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED)
                 .eventSubjectType(NlsEventSubjectType.ACCESSIBILITY_ROUTING_NETWORK)
@@ -77,7 +79,7 @@ class NlsAccessibilityMapJobsIT {
 
     @SneakyThrows
     @Test
-    void createOrUpdateNetwork_ok() {
+    void createOrUpdateNetwork() {
         Path accessibilityLatest = graphHopperConfiguration.getLatestPath();
         assertTrue(Files.exists(accessibilityLatest));
         // Check whether network is fully built.
@@ -118,10 +120,9 @@ class NlsAccessibilityMapJobsIT {
         assertEdgeValue(networkGraphHopper, 600137823, MAX_WIDTH, 3.5, 3.5);
     }
 
-
     @SneakyThrows
     @Test
-    void createOrUpdateNetwork_ok_noTrafficSigns() {
+    void createOrUpdateNetwork_noTrafficSigns() {
         Path accessibilityLatest = graphHopperConfiguration.getLatestPath();
         assertTrue(Files.exists(accessibilityLatest));
         // Check whether network is fully built.
@@ -160,7 +161,6 @@ class NlsAccessibilityMapJobsIT {
         // Black code - driving direction null
         assertEdgeValue(networkGraphHopper, 600137823, MAX_WIDTH, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
-
 
     private void assertEdgeValue(NetworkGraphHopper networkGraphHopper, long roadSectionId,
             String key, boolean expectedForwardValue, boolean expectedBackwardValue) {

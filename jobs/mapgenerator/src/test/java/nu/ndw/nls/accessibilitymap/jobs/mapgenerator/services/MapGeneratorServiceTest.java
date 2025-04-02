@@ -114,7 +114,7 @@ class MapGeneratorServiceTest {
     }
 
     @Test
-    void generate_ok() {
+    void generate() {
 
         when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
@@ -144,7 +144,7 @@ class MapGeneratorServiceTest {
     }
 
     @Test
-    void generate_ok_doNotPublishEvents() {
+    void generate_doNotPublishEvents() {
 
         when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);

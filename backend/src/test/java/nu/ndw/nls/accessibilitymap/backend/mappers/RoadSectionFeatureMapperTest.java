@@ -43,7 +43,7 @@ class RoadSectionFeatureMapperTest {
     private CandidateMatch candidateMatch;
 
     @Test
-    void map_ok_forward() {
+    void map_forward() {
         when(roadSection.getRoadSectionId()).thenReturn(1);
         when(roadSection.getGeometry()).thenReturn(geometry);
         when(roadSection.getForwardAccessible()).thenReturn(true);
@@ -59,7 +59,7 @@ class RoadSectionFeatureMapperTest {
     }
 
     @Test
-    void map_ok_backward() {
+    void map_backward() {
         when(roadSection.getRoadSectionId()).thenReturn(1);
         when(roadSection.getGeometry()).thenReturn(geometry);
         when(geometry.reverse()).thenReturn(reverseGeometry);
@@ -77,7 +77,7 @@ class RoadSectionFeatureMapperTest {
     }
 
     @Test
-    void map_ok_matchedTrue() {
+    void map_matchedTrue() {
         when(roadSection.getRoadSectionId()).thenReturn(1);
         when(candidateMatch.getMatchedLinkId()).thenReturn(1);
         when(candidateMatch.isReversed()).thenReturn(false);
@@ -88,7 +88,7 @@ class RoadSectionFeatureMapperTest {
     }
 
     @Test
-    void map_ok_matchedFalse() {
+    void map_matchedFalse() {
         when(roadSection.getRoadSectionId()).thenReturn(1);
         when(candidateMatch.getMatchedLinkId()).thenReturn(1);
         when(candidateMatch.isReversed()).thenReturn(true);
@@ -99,7 +99,7 @@ class RoadSectionFeatureMapperTest {
     }
 
     @Test
-    void map_ok_matchedFalseStartPointPresent() {
+    void map_matchedFalseStartPointPresent() {
         when(roadSection.getRoadSectionId()).thenReturn(1);
         when(roadSection.getGeometry()).thenReturn(geometry);
         when(roadSection.getForwardAccessible()).thenReturn(true);

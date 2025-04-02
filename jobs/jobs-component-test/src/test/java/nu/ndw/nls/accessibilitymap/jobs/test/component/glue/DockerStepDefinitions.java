@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.TrafficSignAnalyserJobDriver;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.TrafficSignJobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
 import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
@@ -20,7 +20,7 @@ public class DockerStepDefinitions {
 
     private final MapGenerationJobDriver mapGenerationJobDriver;
 
-    private final TrafficSignAnalyserJobDriver trafficSignAnalyserJobDriver;
+    private final TrafficSignJobDriver trafficSignJobDriver;
 
     @Given("run container in background {word}")
     public void runContainerInBackground(String serviceName) {
@@ -44,6 +44,11 @@ public class DockerStepDefinitions {
     @When("run TrafficSignAnalyser with configuration")
     public void runTrafficSignAnalyser(List<TrafficSignAnalyserJobConfiguration> jobConfigurations) {
 
-        jobConfigurations.forEach(jobConfiguration -> trafficSignAnalyserJobDriver.runTrafficSignAnalysisJob(jobConfiguration));
+        jobConfigurations.forEach(jobConfiguration -> trafficSignJobDriver.runTrafficSignAnalysisJob(jobConfiguration));
+    }
+
+    @When("run TrafficSignUpdateCache")
+    public void runTrafficSignAnalyser() {
+        trafficSignJobDriver.runTrafficSignUpdateCacheJob();
     }
 }

@@ -96,7 +96,7 @@ class TrafficSignAnalyserServiceTest {
     }
 
     @Test
-    void analyse_ok() {
+    void analyse() {
 
         when(analyseProperties.nwbVersion()).thenReturn(1234);
         when(analyseProperties.reportIssues()).thenReturn(true);

@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.validators;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import org.junit.jupiter.api.Test;
@@ -10,12 +11,12 @@ class PointValidatorTest {
     private final PointValidator pointValidator = new PointValidator();
 
     @Test
-    void validateConsistentValues_ok_bothNotSet() {
+    void validateConsistentValues_bothNotSet() {
         pointValidator.validateConsistentValues(null, null);
     }
 
     @Test
-    void validateConsistentValues_ok_bothSet() {
+    void validateConsistentValues_bothSet() {
         pointValidator.validateConsistentValues(1.0, 1.0);
     }
 

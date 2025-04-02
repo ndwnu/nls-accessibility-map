@@ -33,7 +33,7 @@ class NetworkMetaDataServiceTest {
 
     @Test
     @SneakyThrows
-    void loadMetaData_ok() {
+    void loadMetaData() {
         when(graphHopperConfiguration.getMetaDataPath()).thenReturn(Path.of(EXPECT_FILE_PATH_STRING));
         assertEquals(new AccessibilityGraphhopperMetaData(20241231), networkMetaDataService.loadMetaData());
     }
@@ -51,7 +51,7 @@ class NetworkMetaDataServiceTest {
 
     @Test
     @SneakyThrows
-    void saveMetaData_ok() {
+    void saveMetaData() {
         Path tempFile = Files.createTempFile("meta-data", ".json");
         when(graphHopperConfiguration.getMetaDataPath()).thenReturn(tempFile);
 

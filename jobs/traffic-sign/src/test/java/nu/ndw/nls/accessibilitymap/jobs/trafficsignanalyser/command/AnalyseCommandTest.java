@@ -67,7 +67,7 @@ class AnalyseCommandTest {
 
     @ParameterizedTest
     @EnumSource(value = TrafficSignType.class)
-    void call_ok(TrafficSignType trafficSignType) {
+    void call(TrafficSignType trafficSignType) {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 

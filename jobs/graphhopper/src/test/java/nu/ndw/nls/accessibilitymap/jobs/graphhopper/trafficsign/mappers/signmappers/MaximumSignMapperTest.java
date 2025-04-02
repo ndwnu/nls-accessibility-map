@@ -57,12 +57,12 @@ class MaximumSignMapperTest {
     }
 
     @Test
-    void getRvvCodesUsed_ok_allValuesPresent() {
+    void getRvvCodesUsed_allValuesPresent() {
         assertEquals(RVV_CODE, maximumSignToDtoMapper.getRvvCode());
     }
 
     @Test
-    void addToDto_ok_forward() {
+    void addToDto_forward() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING);
         when(propertiesA.getDrivingDirection()).thenReturn(DirectionType.FORTH);
@@ -76,7 +76,7 @@ class MaximumSignMapperTest {
     }
 
     @Test
-    void addToDto_ok_reverse() {
+    void addToDto_reverse() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING);
         when(propertiesA.getDrivingDirection()).thenReturn(DirectionType.BACK);
@@ -90,7 +90,7 @@ class MaximumSignMapperTest {
     }
 
     @Test
-    void addToDto_ok_bothWays() {
+    void addToDto_bothWays() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING);
         when(propertiesA.getDrivingDirection()).thenReturn(null);
@@ -104,7 +104,7 @@ class MaximumSignMapperTest {
     }
 
     @Test
-    void addToDto_ok_multipleSigns() {
+    void addToDto_multipleSigns() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn(MAXIMUM_STRING_MORE_RESTRICTIVE);
         when(propertiesA.getDrivingDirection()).thenReturn(DirectionType.FORTH);
@@ -122,12 +122,12 @@ class MaximumSignMapperTest {
     }
 
     @Test
-    void addToDto_ok_noSigns() {
+    void addToDto_noSigns() {
         testMapping(NO_RESTRICTIONS, Map.of(OTHER_RVV_CODE, List.of(signA)));
     }
 
     @Test
-    void setLinkTags_ok_blackCodeNull() {
+    void setLinkTags_blackCodeNull() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn(null);
         when(propertiesA.getDrivingDirection()).thenReturn(null);
@@ -136,7 +136,7 @@ class MaximumSignMapperTest {
     }
 
     @Test
-    void setLinkTags_ok_unsupportedBlackCode() {
+    void setLinkTags_unsupportedBlackCode() {
         when(signA.getProperties()).thenReturn(propertiesA);
         when(propertiesA.getBlackCode()).thenReturn("10 m");
         when(propertiesA.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);

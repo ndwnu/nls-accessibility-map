@@ -52,7 +52,7 @@ class PointMatchServiceTest {
     }
 
     @Test
-    void match_ok_success() {
+    void match_success() {
         when(this.singlePointMapMatcher.match(SinglePointLocation.builder()
                 .point(point)
                 .cutoffDistance(CUTOFF_DISTANCE)
@@ -62,7 +62,7 @@ class PointMatchServiceTest {
     }
 
     @Test
-    void match_ok_noResult() {
+    void match_noResult() {
         when(this.singlePointMapMatcher.match(SinglePointLocation.builder()
                 .point(point)
                 .cutoffDistance(CUTOFF_DISTANCE)

@@ -53,7 +53,7 @@ class MunicipalityCoordinateMapperTest {
 
     @Test
     @SneakyThrows
-    void map_ok() {
+    void map() {
         when(geometryFactoryWgs84.createPoint(new Coordinate(START_COORDINATE_LONGITUDE, START_COORDINATE_LATITUDE)))
                 .thenReturn(point);
 

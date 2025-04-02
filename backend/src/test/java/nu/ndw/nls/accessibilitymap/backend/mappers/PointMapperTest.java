@@ -17,7 +17,7 @@ class PointMapperTest {
     private final PointMapper pointMapper = new PointMapper(new GeometryFactoryWgs84());
 
     @Test
-    void mapCoordinate_ok_maps() {
+    void mapCoordinate_maps() {
         Optional<Point> result = pointMapper.mapCoordinate(1.0, 2.0);
         assertThat(result).contains(newPoint(2.0, 1.0));
     }
@@ -28,7 +28,7 @@ class PointMapperTest {
 
     @ParameterizedTest
     @MethodSource("mapCoordinate")
-    void mapCoordinate_ok_empty(Double latitude, Double longitude) {
+    void mapCoordinate_empty(Double latitude, Double longitude) {
         Optional<Point> result = pointMapper.mapCoordinate(latitude, longitude);
         assertThat(result).isEmpty();
     }

@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class AccessibilityMapConfigurationIT {
     private MeterRegistryCustomizer<MeterRegistry> metricsCommonTags;
 
     @Test
-    void metricsCommonTags_ok() {
+    void metricsCommonTags() {
         // Assert meter registry customizer is on classpath to add service and environment tags to all metrics.
         assertNotNull(metricsCommonTags);
     }

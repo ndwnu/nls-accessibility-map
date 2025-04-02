@@ -24,21 +24,21 @@ class NotZoneEndsFilterPredicateTest {
     NotZoneEndsFilterPredicate notZoneEndsFilterPredicate;
 
     @Test
-    void test_ok_includingZoneBegins() {
+    void test_includingZoneBegins() {
         when(trafficSignPropertiesDto.getZoneCode()).thenReturn(ZoneCodeType.BEGIN.getValue());
         when(trafficSignJsonDto.getProperties()).thenReturn(trafficSignPropertiesDto);
         assertTrue(notZoneEndsFilterPredicate.test(trafficSignJsonDto));
     }
 
     @Test
-    void test_ok_includingNull() {
+    void test_includingNull() {
         when(trafficSignPropertiesDto.getZoneCode()).thenReturn(null);
         when(trafficSignJsonDto.getProperties()).thenReturn(trafficSignPropertiesDto);
         assertTrue(notZoneEndsFilterPredicate.test(trafficSignJsonDto));
     }
 
     @Test
-    void test_ok_excludingZoneEnds() {
+    void test_excludingZoneEnds() {
         when(trafficSignPropertiesDto.getZoneCode()).thenReturn("ZE");
         when(trafficSignJsonDto.getProperties()).thenReturn(trafficSignPropertiesDto);
         assertFalse(notZoneEndsFilterPredicate.test(trafficSignJsonDto));

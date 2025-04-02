@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Named.named;
 
 import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import nu.ndw.nls.accessibilitymap.backend.controllers.AccessibilityMapApiDelegateImpl.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ class RequestMapperTest {
 
     @ParameterizedTest
     @MethodSource("provideTestScenarios")
-    void mapToVehicleProperties_ok(Pair<VehicleArguments, VehicleProperties> testScenario) {
+    void mapToVehicleProperties(Pair<VehicleArguments, VehicleProperties> testScenario) {
         VehicleProperties result = requestMapper.mapToVehicleProperties(testScenario.getLeft());
         assertThat(result).isEqualTo(testScenario.getRight());
     }

@@ -31,7 +31,7 @@ class RoadOperatorRepositoryTest {
     }
 
     @Test
-    void findAll_ok() {
+    void findAll() {
 
         when(roadOperatorStorage.getRoadOperators()).thenReturn(roadOperators);
 

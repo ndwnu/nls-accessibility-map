@@ -68,7 +68,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_ok_forDirectionalSegment_allRoadSections_andTrafficSigns() throws JsonProcessingException {
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSigns() throws JsonProcessingException {
 
         prepareDirectionsSegments(true, true, true);
 
@@ -93,7 +93,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_ok_forDirectionalSegment_allRoadSections_andTrafficSignsNoTrafficSigns()
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsNoTrafficSigns()
             throws JsonProcessingException {
 
         prepareDirectionsSegments(true, true, false);
@@ -119,7 +119,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_ok_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignLineString()
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignLineString()
             throws JsonProcessingException {
 
         prepareDirectionsSegments(true, true, true);
@@ -145,7 +145,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_ok_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignPoint()
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignPoint()
             throws JsonProcessingException {
 
         prepareDirectionsSegments(true, true, true);
@@ -176,7 +176,7 @@ class FeatureBuilderTest {
             true, false, false
             false, false, false
             """)
-    void createLineStringsAndTrafficSigns_ok_accessibleInAllAvailableDirections(
+    void createLineStringsAndTrafficSigns_accessibleInAllAvailableDirections(
             boolean addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections,
             boolean accessible,
             boolean expectRoadSection) throws JsonProcessingException {
@@ -210,7 +210,7 @@ class FeatureBuilderTest {
             true, false, true
             false, false, false
             """)
-    void createLineStringsAndTrafficSigns_ok_notAccessibleInAllAvailableDirections_blockedInAllDirections(
+    void createLineStringsAndTrafficSigns_notAccessibleInAllAvailableDirections_blockedInAllDirections(
             boolean addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections,
             boolean accessible,
             boolean expectRoadSection) throws JsonProcessingException {
@@ -245,7 +245,7 @@ class FeatureBuilderTest {
             false, false, true, false, false
             false, true, false, true, true
             """)
-    void createLineStringsAndTrafficSigns_ok_partiallyAccessibleSegments(
+    void createLineStringsAndTrafficSigns_partiallyAccessibleSegments(
             boolean writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible,
             boolean forwardAccessible,
             boolean backwardAccessible,
@@ -276,7 +276,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createPolygon_ok()
+    void createPolygon()
             throws JsonProcessingException {
 
         Geometry polygonGeometry = mock(Geometry.class);

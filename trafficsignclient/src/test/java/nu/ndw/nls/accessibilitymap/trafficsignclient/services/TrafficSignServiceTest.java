@@ -41,7 +41,7 @@ class TrafficSignServiceTest {
     private TrafficSignClientProperties.TrafficSignApiProperties api;
 
     @Test
-    void getTrafficSigns_ok_filteredAndGrouped() {
+    void getTrafficSigns_filteredAndGrouped() {
 
         when(trafficSignProperties.getApi()).thenReturn(api);
 

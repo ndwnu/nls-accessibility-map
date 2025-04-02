@@ -34,43 +34,37 @@ public class TrafficSignCacheUpdater {
 
     @EventListener(ApplicationStartedEvent.class)
     @SuppressWarnings({"java:S1166", "java:S2142"})
-    public void watchFileChanges() throws InterruptedException {
-        try {
-            Files.createDirectories(trafficSignCacheConfiguration.getFolder());
+    public void watchFileChanges() throws IOException {
+        Files.createDirectories(trafficSignCacheConfiguration.getFolder());
 
-            // Update on application startup
-            trafficSignDataService.updateTrafficSignsFromFile();
+        // Update on application startup
+        trafficSignDataService.updateTrafficSignData();
 
-            watchService = FileSystems.getDefault().newWatchService();
-            trafficSignCacheConfiguration.getFolder().register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+        watchService = FileSystems.getDefault().newWatchService();
+        trafficSignCacheConfiguration.getFolder().register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 
-            fileWatcherThread = new Thread(() -> {
+        fileWatcherThread = new Thread(() -> {
 
-                try {
-                    log.info("Watching file changes in {}", trafficSignCacheConfiguration.getFolder().toAbsolutePath());
-                    WatchKey key;
-                    while (Objects.nonNull((key = watchService.take()))) {
-                        for (WatchEvent<?> event : key.pollEvents()) {
-                            if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE && event.context().toString()
-                                    .equals(trafficSignCacheConfiguration.getFileNameActiveVersion())) {
+            try {
+                log.info("Watching file changes in {}", trafficSignCacheConfiguration.getFolder().toAbsolutePath());
+                WatchKey key;
+                while (Objects.nonNull((key = watchService.take()))) {
+                    for (WatchEvent<?> event : key.pollEvents()) {
+                        if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE && event.context().toString()
+                                .equals(trafficSignCacheConfiguration.getFileNameActiveVersion())) {
 
-                                trafficSignDataService.updateTrafficSignsFromFile();
-                                log.info("Triggerd update");
-                            }
+                            trafficSignDataService.updateTrafficSignData();
+                            log.info("Triggerd update");
                         }
-
-                        key.reset();
                     }
-                } catch (InterruptedException | ClosedWatchServiceException e) {
-                    // Nothing to do here because the watcher has already been closed or the thread has been stopped by the destroy method.
+
+                    key.reset();
                 }
-            });
-            fileWatcherThread.start();
-        } catch (IOException ioException) {
-            log.warn("Failed watching file changes", ioException);
-            Thread.sleep(ON_ERROR_RETRY_IN_MS);
-            watchFileChanges();
-        }
+            } catch (InterruptedException | ClosedWatchServiceException e) {
+                // Nothing to do here because the watcher has already been closed or the thread has been stopped by the destroy method.
+            }
+        });
+        fileWatcherThread.start();
     }
 
     @PreDestroy
