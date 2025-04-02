@@ -1,5 +1,5 @@
 graphhopper:
-  dir: ../graphhopper
+  dir: ../.tmp/graphhopper
 nls:
   springboot:
     test:
