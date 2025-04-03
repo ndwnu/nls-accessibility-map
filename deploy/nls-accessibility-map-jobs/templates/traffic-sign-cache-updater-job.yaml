@@ -40,6 +40,8 @@ spec:
               env:
                 - name: COMMAND
                   value: {{ .Values.trafficSignCacheUpdater.command }}
+                - name: NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP
+                  value: "false"
                 {{- /*
                 Added as env variable so the dd init container appends the settings instead of an overwrite
                 */}}
@@ -51,7 +53,9 @@ spec:
                   readOnly: true
                 - mountPath: /application/heapdumps
                   name: nls-accessibility-map-jobs-heapdump-volume
-                  subPath: {{ .Values.trafficSignCacheUpdater.name }}
+                  subPath: {{ .Values.trafficSignAnalyser.name }}
+                - mountPath: /application/graphhopper
+                  name: nls-accessibility-map-traffic-sign-analyser-job-volume
                 - mountPath: /application/trafficsigns
                   name: nls-accessibility-map-traffic-sign-cache
           volumes:
@@ -64,6 +68,9 @@ spec:
             - name: nls-accessibility-map-jobs-heapdump-volume
               persistentVolumeClaim:
                 claimName: heapdump-pvc-claim
+            - name: nls-accessibility-map-traffic-sign-analyser-job-volume
+              persistentVolumeClaim:
+                claimName: nls-accessibility-map-api-pvc
             - name: nls-accessibility-map-traffic-sign-cache
               persistentVolumeClaim:
                 claimName: nls-accessibility-map-traffic-sign-cache
