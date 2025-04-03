@@ -11,13 +11,13 @@ public class IsOnlyRelevantIfTextSignOfTypeDetected implements TrafficSignReleva
 
     @Override
     public boolean test(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-        if (Objects.isNull(accessibilityRequest.excludeTextSignTypes())) {
+        if (Objects.isNull(accessibilityRequest.excludeTrafficSignTextSignTypes())) {
             return true; // continue
         }
 
         return trafficSign.textSigns().stream()
-                .map(TextSign::getType)
+                .map(TextSign::type)
                 .filter(Objects::nonNull)
-                .noneMatch(accessibilityRequest.excludeTextSignTypes()::contains);
+                .noneMatch(accessibilityRequest.excludeTrafficSignTextSignTypes()::contains);
     }
 }

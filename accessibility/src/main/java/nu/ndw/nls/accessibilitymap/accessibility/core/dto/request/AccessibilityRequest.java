@@ -28,22 +28,23 @@ public record AccessibilityRequest(
         Double vehicleAxleLoadInKg,
         Set<TransportType> transportTypes,
         Set<TrafficSignType> trafficSignTypes,
-        Set<TextSignType> excludeTextSignTypes,
-        Set<ZoneCodeType> excludeZoneCodeTypes) {
+        Set<TextSignType> trafficSignTextSignTypes,
+        Set<TextSignType> excludeTrafficSignTextSignTypes,
+        Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes) {
 
-    public Set<TextSignType> excludeTextSignTypes() {
+    public Set<TextSignType> excludeTrafficSignTextSignTypes() {
 
-        if (Objects.nonNull(excludeTextSignTypes)) {
-            return excludeTextSignTypes;
+        if (Objects.nonNull(excludeTrafficSignTextSignTypes)) {
+            return excludeTrafficSignTextSignTypes;
         } else {
             return Set.of(TextSignType.EXCLUDING, TextSignType.PRE_ANNOUNCEMENT, TextSignType.FREE_TEXT);
         }
     }
 
-    public Set<ZoneCodeType> excludeZoneCodeTypes() {
+    public Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes() {
 
-        if (Objects.nonNull(excludeZoneCodeTypes)) {
-            return excludeZoneCodeTypes;
+        if (Objects.nonNull(excludeTrafficSignZoneCodeTypes)) {
+            return excludeTrafficSignZoneCodeTypes;
         } else {
             return Set.of(ZoneCodeType.END);
         }
