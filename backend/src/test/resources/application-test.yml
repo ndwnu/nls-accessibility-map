@@ -1,5 +1,5 @@
 graphhopper:
-  dir: ../graphhopper
+  dir: ../.tmp/graphhopper
 nls:
   springboot:
     test:
@@ -10,6 +10,14 @@ nls:
           path: /actuator/health
           duration: PT1M
           description: accessibility-map-api
+
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficsigns:
+          cache:
+            fail-on-no-data-on-startup: false
 
 spring:
   datasource:
