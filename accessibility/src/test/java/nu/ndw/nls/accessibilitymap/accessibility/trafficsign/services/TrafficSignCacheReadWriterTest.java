@@ -199,6 +199,7 @@ class TrafficSignCacheReadWriterTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2699")
     void write_failed() {
 
         try (MockedStatic<Files> files = Mockito.mockStatic(Files.class)) {
