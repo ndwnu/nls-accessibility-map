@@ -27,7 +27,7 @@ public class RestrictionIsAbsoluteFilterPredicate implements TrafficSignIncluded
             return true;
         }
         return trafficSignJsonDto.getProperties().getTextSigns().stream()
-                .map(TextSign::getType)
+                .map(TextSign::type)
                 .filter(Objects::nonNull)
                 .noneMatch(IGNORED_TEXT_SIGN_TYPES::contains);
     }

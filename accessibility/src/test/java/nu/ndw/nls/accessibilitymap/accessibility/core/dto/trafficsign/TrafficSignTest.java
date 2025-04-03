@@ -67,7 +67,7 @@ class TrafficSignTest {
                 ))
                 .build();
 
-        assertThat(trafficSign.findFirstTimeWindowedSign().get().getText()).isEqualTo("1");
+        assertThat(trafficSign.findFirstTimeWindowedSign().get().text()).isEqualTo("1");
     }
 
     @Test

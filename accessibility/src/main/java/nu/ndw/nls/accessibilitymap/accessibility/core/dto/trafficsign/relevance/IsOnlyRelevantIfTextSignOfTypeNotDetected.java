@@ -7,7 +7,7 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IsOnlyRelevantIfTextSignOfTypeDetected implements TrafficSignRelevancy {
+public class IsOnlyRelevantIfTextSignOfTypeNotDetected implements TrafficSignRelevancy {
 
     @Override
     public boolean test(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
