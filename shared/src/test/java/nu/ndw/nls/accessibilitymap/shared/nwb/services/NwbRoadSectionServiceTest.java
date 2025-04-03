@@ -71,7 +71,7 @@ class NwbRoadSectionServiceTest {
     }
 
     @Test
-    void findLazyCar_ok() {
+    void findLazyCar() {
         when(nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(VERSION_ID,
                 CARRIAGEWAY_TYPE_CODES, null, FETCH_SIZE)).thenReturn(nwbRoadSectionDtoStream);
 

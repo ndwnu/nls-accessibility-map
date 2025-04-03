@@ -3,17 +3,17 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>4.2.38-SNAPSHOT</version>
+        <version>4.3.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>jobs</artifactId>
-    <version>4.2.38-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>nls-accessibility-map-jobs</name>
     <modules>
         <module>graphhopper</module>
         <module>mapgenerator</module>
-        <module>trafficsignanalyser</module>
+        <module>traffic-sign</module>
         <module>jobs-component-test</module>
     </modules>
 </project>

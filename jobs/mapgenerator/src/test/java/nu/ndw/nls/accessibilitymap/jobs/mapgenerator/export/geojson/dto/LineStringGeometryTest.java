@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class LineStringGeometryTest {
 
     @Test
-    void getType_ok() {
+    void getType() {
 
         assertThat(LineStringGeometry.builder().build().getType()).isEqualTo("LineString");
     }

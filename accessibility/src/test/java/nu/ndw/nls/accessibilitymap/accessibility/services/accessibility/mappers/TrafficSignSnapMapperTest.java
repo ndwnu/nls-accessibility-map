@@ -188,7 +188,6 @@ class TrafficSignSnapMapperTest {
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID, NWB_VERSION));
     }
 
-
     @ParameterizedTest
     @CsvSource(textBlock = """
             false, true, true

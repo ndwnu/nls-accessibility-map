@@ -49,8 +49,11 @@ nu:
               rootPomRelativePath: "../../"
               modulesUnderTest:
                 - "jobs/mapgenerator"
-                - "jobs/trafficsignanalyser"
+                - "jobs/traffic-sign"
             graph-hopper:
-              locationOnDisk: "../../graphhopper"
+              location-on-disk: "../../.tmp/graphhopper"
+            traffic-sign-cache:
+              location-on-disk: "../../.tmp/trafficsigns"
+              file-name-active-version: "active"
             map-generation-job:
-              locationOnDisk: "../../map-generation-destination"
+              location-on-disk: "../../.tmp/map-generation-destination"

@@ -32,6 +32,14 @@ spring:
   jooq:
     sql-dialect: Postgres
 
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficsigns:
+          cache:
+            folder: "trafficsigns"
+            file-name-active-version: "active"
 nls:
   oauth2:
     jwtResourceProperty: ${spring.application.name}

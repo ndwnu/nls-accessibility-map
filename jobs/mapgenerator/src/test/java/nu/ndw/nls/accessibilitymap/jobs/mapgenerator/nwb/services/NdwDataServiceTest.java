@@ -69,7 +69,7 @@ class NdwDataServiceTest {
     }
 
     @Test
-    void addNwbDataToAccessibility_ok() {
+    void addNwbDataToAccessibility() {
 
         when(nwbRoadSectionCrudService.findById(new Id(1, 1))).thenReturn(Optional.of(nwbRoadSectionDto1));
         when(nwbRoadSectionCrudService.findById(new Id(1, 2))).thenReturn(Optional.of(nwbRoadSectionDto2));

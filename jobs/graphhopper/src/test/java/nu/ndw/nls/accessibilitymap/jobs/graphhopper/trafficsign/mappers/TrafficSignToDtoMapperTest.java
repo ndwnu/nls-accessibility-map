@@ -96,7 +96,7 @@ class TrafficSignToDtoMapperTest {
     private List<TrafficSignGeoJsonDto> trafficSigns;
 
     @Test
-    void test_ok_allPredicatesTrueAndTrafficSignIsMappedBySingleMapper() {
+    void test_allPredicatesTrueAndTrafficSignIsMappedBySingleMapper() {
         when(signA.getProperties()).thenReturn(singAProperties);
         trafficSigns = List.of(signA);
 
@@ -120,7 +120,7 @@ class TrafficSignToDtoMapperTest {
     }
 
     @Test
-    void test_ok_allPredicatesTrueAndTrafficSignIsMappedByMultipleMappers() {
+    void test_allPredicatesTrueAndTrafficSignIsMappedByMultipleMappers() {
         when(signA.getProperties()).thenReturn(singAProperties);
         trafficSigns = List.of(signA);
 
@@ -146,7 +146,7 @@ class TrafficSignToDtoMapperTest {
     }
 
     @Test
-    void test_ok_allPredicatesTrueAndMultipleTrafficSignsAreMappedAndGroupedBySameRvvCode() {
+    void test_allPredicatesTrueAndMultipleTrafficSignsAreMappedAndGroupedBySameRvvCode() {
         when(signA.getProperties()).thenReturn(singAProperties);
         when(signB.getProperties()).thenReturn(signBProperties);
         trafficSigns = List.of(signA, signB);
@@ -177,7 +177,7 @@ class TrafficSignToDtoMapperTest {
     }
 
     @Test
-    void test_ok_allPredicatesTrueAndMultipleTrafficSignsAreMappedAndGroupedByDifferentRvvCode() {
+    void test_allPredicatesTrueAndMultipleTrafficSignsAreMappedAndGroupedByDifferentRvvCode() {
         when(signA.getProperties()).thenReturn(singAProperties);
         when(signB.getProperties()).thenReturn(signBProperties);
         trafficSigns = List.of(signA, signB);
@@ -210,7 +210,7 @@ class TrafficSignToDtoMapperTest {
 
 
     @Test
-    void test_ok_predicatesAFalseAndTrafficSignExcluded() {
+    void test_predicatesAFalseAndTrafficSignExcluded() {
         trafficSigns = List.of(signA);
 
         when(trafficSignMapperRegistry.getMappers()).thenReturn(List.of(signMapperA));
@@ -232,7 +232,7 @@ class TrafficSignToDtoMapperTest {
     }
 
     @Test
-    void test_ok_windowedTrafficSigns() {
+    void test_windowedTrafficSigns() {
         trafficSigns = List.of(c6, c7, c7b, c12, c22c);
 
         when(c6TProperties.getRvvCode()).thenReturn("C6T");

@@ -24,7 +24,7 @@ class TriangulatorTest {
     }
 
     @Test
-    void triangulate_ok() {
+    void triangulate() {
 
         List<Coordinate> coordinates = List.of(
                 new Coordinate(1, 1, 0),

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class FeatureTest {
 
     @Test
-    void getType_ok() {
+    void getType() {
 
         assertThat(Feature.builder().build().getType()).isEqualTo("Feature");
     }

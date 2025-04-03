@@ -1,66 +1,63 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
-import java.util.Arrays;
-import java.util.Collection;
+import jakarta.annotation.PostConstruct;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.locks.ReentrantLock;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.mappers.TrafficSignMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-@ConditionalOnBean(TrafficSignService.class)
+@Slf4j
 public class TrafficSignDataService {
 
-    private final TrafficSignMapper trafficSignMapper;
+    private final TrafficSigns trafficSigns = new TrafficSigns();
 
-    private final TrafficSignService trafficSignService;
+    private final ReentrantLock dataLock = new ReentrantLock();
+
+    private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
+
+    @PostConstruct
+    public void init() {
+
+        updateTrafficSignData();
+    }
 
     public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
 
-        IntegerSequenceSupplier idSupplier = new IntegerSequenceSupplier();
-
-        return trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
-                        .map(TrafficSignType::getRvvCode)
-                        .collect(Collectors.toSet()))
-                .trafficSignsByRoadSectionId().values().stream()
-                .flatMap(Collection::stream)
-                .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                        trafficSignGeoJsonDto,
-                        idSupplier))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return this.getTrafficSigns().stream()
                 .filter(trafficSign -> trafficSign.isRelevant(accessibilityRequest))
                 .toList();
     }
 
-    public List<TrafficSign> findAllByTypes(List<TrafficSignType> trafficSignTypes) {
-
-        IntegerSequenceSupplier idSupplier = new IntegerSequenceSupplier();
-
-        return trafficSignService.getTrafficSigns(mapTrafficSignTypesToRvvCode(trafficSignTypes))
-                .trafficSignsByRoadSectionId().values().stream()
-                .flatMap(Collection::stream)
-                .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                        trafficSignGeoJsonDto,
-                        idSupplier))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+    public List<TrafficSign> getTrafficSigns() {
+        dataLock.lock();
+        try {
+            return new ArrayList<>(trafficSigns);
+        } finally {
+            dataLock.unlock();
+        }
     }
 
-    private Set<String> mapTrafficSignTypesToRvvCode(List<TrafficSignType> trafficSignTypes) {
-        return trafficSignTypes.stream()
-                .map(TrafficSignType::getRvvCode)
-                .collect(Collectors.toSet());
+    protected void updateTrafficSignData() {
+        trafficSignCacheReadWriter.read().ifPresent(newTrafficSignsData -> {
+            OffsetDateTime start = OffsetDateTime.now();
+            dataLock.lock();
+            try {
+                trafficSigns.clear();
+                trafficSigns.addAll(newTrafficSignsData);
+            } finally {
+                dataLock.unlock();
+                log.info("Switched internal traffic signs data structure and was locked for {} ms",
+                        Duration.between(start, OffsetDateTime.now()).toMillis());
+            }
+        });
     }
 }

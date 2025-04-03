@@ -27,7 +27,7 @@ class MultiPolygonFactoryTest {
     }
 
     @Test
-    void createMultiPolygon_ok() throws Exception {
+    void createMultiPolygon() throws Exception {
 
         RoadSectionFragment roadSectionFragmentWithInaccessibleSegments = RoadSectionFragment.builder().build();
         roadSectionFragmentWithInaccessibleSegments.setForwardSegment(

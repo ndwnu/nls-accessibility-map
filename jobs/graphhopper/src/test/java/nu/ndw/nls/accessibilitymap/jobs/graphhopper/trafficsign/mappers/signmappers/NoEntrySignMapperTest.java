@@ -43,12 +43,12 @@ class NoEntrySignMapperTest {
     }
 
     @Test
-    void getRvvCodesUsed_ok_allValuesPresent() {
+    void getRvvCodesUsed_allValuesPresent() {
         assertEquals(RVV_CODE, maximumSignToDtoMapper.getRvvCode());
     }
 
     @Test
-    void addToDto_ok_forward() {
+    void addToDto_forward() {
         DirectionalDto<Boolean> expectedDirectional = DirectionalDto.<Boolean>builder()
                 .forward(true)
                 .reverse(false)
@@ -58,7 +58,7 @@ class NoEntrySignMapperTest {
     }
 
     @Test
-    void addToDto_ok_reverse() {
+    void addToDto_reverse() {
         DirectionalDto<Boolean> expectedDirectional = DirectionalDto.<Boolean>builder()
                 .forward(false)
                 .reverse(true)
@@ -68,19 +68,19 @@ class NoEntrySignMapperTest {
     }
 
     @Test
-    void addToDto_ok_bothWays() {
+    void addToDto_bothWays() {
         DirectionalDto<Boolean> expectedDirectional = new DirectionalDto<>(true);
         testMapping(expectedDirectional, List.of(DirectionType.BOTH));
     }
 
     @Test
-    void addToDto_ok_multipleSigns() {
+    void addToDto_multipleSigns() {
         DirectionalDto<Boolean> expectedDirectional = new DirectionalDto<>(true);
         testMapping(expectedDirectional, List.of(DirectionType.FORTH, DirectionType.BOTH));
     }
 
     @Test
-    void addToDto_ok_noSigns() {
+    void addToDto_noSigns() {
         testMapping(NO_RESTRICTIONS, Map.of(OTHER_RVV_CODE, List.of(mock(TrafficSignGeoJsonDto.class))));
     }
 

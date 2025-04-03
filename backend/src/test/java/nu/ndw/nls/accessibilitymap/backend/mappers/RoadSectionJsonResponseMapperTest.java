@@ -2,8 +2,8 @@ package nu.ndw.nls.accessibilitymap.backend.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
 import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
 import org.junit.jupiter.api.Test;
 
 class RoadSectionJsonResponseMapperTest {
@@ -13,7 +13,7 @@ class RoadSectionJsonResponseMapperTest {
     private final RoadSectionJsonResponseMapper roadSectionJsonResponseMapper = new RoadSectionJsonResponseMapper();
 
     @Test
-    void mapToRoadSectionsJson_ok() {
+    void mapToRoadSectionsJson() {
         assertEquals(new RoadSectionJson().roadSectionId(ID_1).forwardAccessible(true).backwardAccessible(false),
                 roadSectionJsonResponseMapper.mapToRoadSection(new RoadSection(ID_1, null, true, false)));
 

@@ -45,7 +45,7 @@ class ExportPropertiesTest extends ValidationTest {
     }
 
     @Test
-    void validate_ok() {
+    void validate() {
 
         validate(exportProperties, List.of(), List.of());
     }

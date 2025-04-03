@@ -10,14 +10,16 @@ nu:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
       accessibilitymap:
-
         trafficsignclient:
           api:
             url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
             town-codes: GM0307
+        trafficsigns:
+          cache:
+            folder: "./.tmp/trafficsigns/"
         jobs:
           generate:
-            root-export-directory: map-generation-destination
+            root-export-directory: .tmp/map-generation-destination
             prettyPrintJson: true
 logging:
   level:

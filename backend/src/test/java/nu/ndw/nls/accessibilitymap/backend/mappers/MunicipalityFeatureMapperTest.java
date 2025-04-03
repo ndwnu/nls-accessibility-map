@@ -54,7 +54,7 @@ class MunicipalityFeatureMapperTest {
     }
 
     @Test
-    void mapToMunicipalitiesToGeoJson_ok() {
+    void mapToMunicipalitiesToGeoJson() {
         MunicipalityFeatureCollectionJson expectedResult = createExpectedResult(DATE_LAST_CHECK);
 
         MunicipalityFeatureCollectionJson geoJSON = municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(

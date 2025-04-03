@@ -32,7 +32,7 @@ class RoadOperatorServiceTest {
     }
 
     @Test
-    void findAll_ok() {
+    void findAll() {
 
         when(roadOperatorRepository.findAll()).thenReturn(roadOperators);
 

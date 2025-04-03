@@ -15,7 +15,7 @@ class MunicipalityIdMapperTest {
     private MunicipalityIdMapper municipalityIdMapper;
 
     @Test
-    void map_ok() {
+    void map() {
         assertEquals(344, municipalityIdMapper.map("GM0344"));
     }
 

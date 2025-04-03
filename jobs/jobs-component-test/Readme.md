@@ -14,4 +14,4 @@
     - The traffic signs mocked in the component test will be logged as geojson in [.debug](.debug) folder and can be
       loaded into QGIS.
 - Output of jobs is places in the normal locations and the output of the job will be written there as
-  well. [map-generation-destination](../../map-generation-destination)
+  well. [map-generation-destination](../../.tmp/map-generation-destination)

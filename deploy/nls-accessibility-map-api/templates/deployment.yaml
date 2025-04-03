@@ -67,6 +67,8 @@ spec:
             - mountPath: /application/heapdumps
               name: nls-accessibility-map-api-heapdump-volume
               subPath: {{ .Chart.Name }}
+            - mountPath: /application/trafficsigns
+              name: nls-accessibility-map-traffic-sign-cache
       volumes:
         - name: nls-accessibility-map-api-secrets
           csi:
@@ -80,3 +82,6 @@ spec:
         - name: nls-accessibility-map-api-heapdump-volume
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
+        - name: nls-accessibility-map-traffic-sign-cache
+          persistentVolumeClaim:
+            claimName: nls-accessibility-map-traffic-sign-cache

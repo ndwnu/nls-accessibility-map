@@ -92,7 +92,7 @@ class AbstractGeoJsonWriterTest {
             true,
             false
             """)
-    void export_ok(boolean includeOnlyTimeWindowedSigns) throws IOException {
+    void export(boolean includeOnlyTimeWindowedSigns) throws IOException {
 
         when(geoJsonObjectMapperFactory.create(generateConfiguration)).thenReturn(new ObjectMapper());
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);

@@ -18,7 +18,7 @@ class MunicipalityConfigurationIT {
     private MunicipalityConfiguration municipalityConfiguration;
 
     @Test
-    void construction_ok() {
+    void construction() {
         assertNotNull(municipalityConfiguration.getMunicipalities());
         assertEquals(342, municipalityConfiguration.getMunicipalities().size());
     }
