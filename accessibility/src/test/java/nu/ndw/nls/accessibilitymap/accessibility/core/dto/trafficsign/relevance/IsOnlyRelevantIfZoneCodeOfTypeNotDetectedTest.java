@@ -19,9 +19,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
 
 @ExtendWith(MockitoExtension.class)
-class IsOnlyRelevantIfZoneCodeOfTypeDetectedTest {
+class IsOnlyRelevantIfZoneCodeOfTypeNotDetectedTest {
 
-    private IsOnlyRelevantIfZoneCodeOfTypeDetected isOnlyRelevantIfZoneCodeOfTypeDetected;
+    private IsOnlyRelevantIfZoneCodeOfTypeNotDetected isOnlyRelevantIfZoneCodeOfTypeDetected;
 
     private TrafficSign trafficSign;
 
@@ -32,7 +32,7 @@ class IsOnlyRelevantIfZoneCodeOfTypeDetectedTest {
                 .zoneCodeType(ZoneCodeType.START)
                 .build();
 
-        isOnlyRelevantIfZoneCodeOfTypeDetected = new IsOnlyRelevantIfZoneCodeOfTypeDetected();
+        isOnlyRelevantIfZoneCodeOfTypeDetected = new IsOnlyRelevantIfZoneCodeOfTypeNotDetected();
     }
 
     @ParameterizedTest
