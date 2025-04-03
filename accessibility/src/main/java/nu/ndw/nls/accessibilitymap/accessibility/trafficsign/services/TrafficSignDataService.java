@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public class TrafficSignDataService {
 
     private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
+    private final List<TrafficSignRelevancy> trafficSignRelevantDeterminations;
+
     @PostConstruct
     public void init() {
 
@@ -33,8 +36,15 @@ public class TrafficSignDataService {
     public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
 
         return this.getTrafficSigns().stream()
-                .filter(trafficSign -> trafficSign.isRelevant(accessibilityRequest))
+                .filter(trafficSign -> isRelevant(trafficSign, accessibilityRequest))
                 .toList();
+    }
+
+    @SuppressWarnings("java:S1067")
+    private boolean isRelevant(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
+
+        return trafficSignRelevantDeterminations.stream()
+                .allMatch(relevantDetermination -> relevantDetermination.test(trafficSign, accessibilityRequest));
     }
 
     public List<TrafficSign> getTrafficSigns() {

@@ -1,6 +1,11 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.request;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
+import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +52,37 @@ class AccessibilityRequestTest extends ValidationTest {
 
         accessibilityRequest = accessibilityRequest.withStartLocationLongitude(null);
         validate(accessibilityRequest, List.of("startLocationLongitude"), List.of("must not be null"));
+    }
+
+    @Test
+    void excludeTextSignTypes() {
+
+        accessibilityRequest = accessibilityRequest.withExcludeTextSignTypes(Set.of(TextSignType.EMISSION_ZONE));
+        assertThat(accessibilityRequest.excludeTextSignTypes()).containsExactlyInAnyOrder(TextSignType.EMISSION_ZONE);
+    }
+
+    @Test
+    void excludeTextSignTypes_defaultValue() {
+
+        accessibilityRequest = accessibilityRequest.withExcludeTextSignTypes(null);
+        assertThat(accessibilityRequest.excludeTextSignTypes()).containsExactlyInAnyOrder(
+                TextSignType.EXCLUDING,
+                TextSignType.PRE_ANNOUNCEMENT,
+                TextSignType.FREE_TEXT);
+    }
+
+    @Test
+    void excludeZoneCodeTypes() {
+
+        accessibilityRequest = accessibilityRequest.withExcludeZoneCodeTypes(Set.of(ZoneCodeType.START));
+        assertThat(accessibilityRequest.excludeZoneCodeTypes()).containsExactly(ZoneCodeType.START);
+    }
+
+    @Test
+    void excludeZoneCodeTypes_defaultValue() {
+
+        accessibilityRequest = accessibilityRequest.withExcludeZoneCodeTypes(null);
+        assertThat(accessibilityRequest.excludeZoneCodeTypes()).containsExactly(ZoneCodeType.END);
     }
 
     @Override
