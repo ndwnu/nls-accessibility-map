@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,10 +40,18 @@ class TrafficSignDataServiceTest {
     @Mock
     private TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
+    @Mock
+    private TrafficSignRelevancy TrafficSignRelevancy1;
+
+    @Mock
+    private TrafficSignRelevancy TrafficSignRelevancy2;
+
     @BeforeEach
     void setUp() {
 
-        trafficSignDataService = new TrafficSignDataService(trafficSignCacheReadWriter);
+        trafficSignDataService = new TrafficSignDataService(
+                trafficSignCacheReadWriter,
+                List.of(TrafficSignRelevancy1, TrafficSignRelevancy2));
     }
 
     @Test
@@ -58,14 +67,26 @@ class TrafficSignDataServiceTest {
     void findAllBy() {
 
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
-        when(trafficSign1.isRelevant(accessibilityRequest)).thenReturn(true);
-        when(trafficSign2.isRelevant(accessibilityRequest)).thenReturn(false);
+        when(TrafficSignRelevancy1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
+        when(TrafficSignRelevancy2.test(trafficSign1, accessibilityRequest)).thenReturn(true);
 
         assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
 
         trafficSignDataService.init();
-        List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
-        assertThat(trafficSigns).containsExactly(trafficSign1);
+        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).containsExactly(trafficSign1);
+    }
+
+    @Test
+    void findAllBy_notAllRelevantCriteriaSatisfied() {
+
+        when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
+        when(TrafficSignRelevancy1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
+        when(TrafficSignRelevancy2.test(trafficSign1, accessibilityRequest)).thenReturn(false);
+
+        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
+
+        trafficSignDataService.init();
+        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
     }
 
     @Test

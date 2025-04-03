@@ -1,17 +1,22 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.request;
 
+import com.graphhopper.util.shapes.BBox;
 import jakarta.validation.constraints.NotNull;
+import java.util.Objects;
 import java.util.Set;
 import lombok.Builder;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.springframework.validation.annotation.Validated;
 
 @Builder
 @With
 @Validated
 public record AccessibilityRequest(
+        BBox boundingBox,
         Integer municipalityId,
         @NotNull Double searchRadiusInMeters,
         @NotNull Double startLocationLatitude,
@@ -22,6 +27,25 @@ public record AccessibilityRequest(
         Double vehicleWeightInKg,
         Double vehicleAxleLoadInKg,
         Set<TransportType> transportTypes,
-        Set<TrafficSignType> trafficSignTypes) {
+        Set<TrafficSignType> trafficSignTypes,
+        Set<TextSignType> excludeTextSignTypes,
+        Set<ZoneCodeType> excludeZoneCodeTypes) {
 
+    public Set<TextSignType> excludeTextSignTypes() {
+
+        if (Objects.nonNull(excludeTextSignTypes)) {
+            return excludeTextSignTypes;
+        } else {
+            return Set.of(TextSignType.EXCLUDING, TextSignType.PRE_ANNOUNCEMENT, TextSignType.FREE_TEXT);
+        }
+    }
+
+    public Set<ZoneCodeType> excludeZoneCodeTypes() {
+
+        if (Objects.nonNull(excludeZoneCodeTypes)) {
+            return excludeZoneCodeTypes;
+        } else {
+            return Set.of(ZoneCodeType.END);
+        }
+    }
 }

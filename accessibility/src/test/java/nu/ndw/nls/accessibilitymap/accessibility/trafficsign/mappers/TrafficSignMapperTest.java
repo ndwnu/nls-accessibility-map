@@ -13,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.NullSource;
@@ -67,6 +69,7 @@ class TrafficSignMapperTest {
                         .fraction(2d)
                         .blackCode("4.1")
                         .imageUrl("https://example.com/image")
+                        .zoneCode("ZE")
                         .textSigns(textSigns)
                         .build())
                 .geometry(new Point(3d, 4d))
@@ -150,6 +153,64 @@ class TrafficSignMapperTest {
         loggerExtension.containsLog(Level.WARN,
                 "Unprocessable value invalid for traffic sign with id %s and RVV code C6 on road section 1".formatted(
                         trafficSignGeoJsonDto.getId()));
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            ZE, END
+            ZB, START
+            ZH, REPEAT
+            ZO, UNKNOWN
+            """)
+    void mapFromTrafficSignGeoJsonDto_allZoneCodeTypes(String zoneCodeString, String expectedZoneCodeType) {
+
+        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
+                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+        ).thenReturn(restrictions);
+
+        trafficSignGeoJsonDto.getProperties().setZoneCode(zoneCodeString);
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+        validateTrafficSign(trafficSign.get());
+        assertThat(trafficSign.get().zoneCodeType()).isEqualTo(ZoneCodeType.valueOf(expectedZoneCodeType));
+    }
+
+    @Test
+    void mapFromTrafficSignGeoJsonDto_invalidZoneCodeType() {
+
+        trafficSignGeoJsonDto.getProperties().setZoneCode("invalid");
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+
+            assertThat(trafficSign).isEmpty();
+            loggerExtension.containsLog(
+                    Level.WARN,
+                    "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
+                            .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
+                    "Unknown zone code 'invalid'");
+    }
+
+    @Test
+    void mapFromTrafficSignGeoJsonDto_invalidZoneCodeType_null() {
+
+        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
+                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+        ).thenReturn(restrictions);
+
+        trafficSignGeoJsonDto.getProperties().setZoneCode(null);
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+        validateTrafficSign(trafficSign.get());
+        assertThat(trafficSign.get().zoneCodeType()).isNull();
     }
 
     @ParameterizedTest

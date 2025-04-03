@@ -3,12 +3,10 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.Builder;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import org.springframework.validation.annotation.Validated;
 
@@ -27,6 +25,7 @@ public record TrafficSign(
         URI iconUri,
         Double blackCode,
         @NotNull List<TextSign> textSigns,
+        ZoneCodeType zoneCodeType,
         URI trafficSignOrderUrl,
         @NotNull Restrictions restrictions) {
 
@@ -45,25 +44,4 @@ public record TrafficSign(
                 .findFirst();
     }
 
-    public boolean isRelevant(AccessibilityRequest accessibilityRequest) {
-
-        return hasRelevantTrafficSignOrContinue(accessibilityRequest)
-                && hasRelevantRestrictionsOrContinue(accessibilityRequest);
-    }
-
-    private boolean hasRelevantRestrictionsOrContinue(AccessibilityRequest accessibilityRequest) {
-        if (!restrictions.hasActiveRestrictions(accessibilityRequest)) {
-            return true; // continue
-        }
-
-        return restrictions.isRestrictive(accessibilityRequest);
-    }
-
-    private boolean hasRelevantTrafficSignOrContinue(AccessibilityRequest accessibilityRequest) {
-        if (Objects.isNull(accessibilityRequest.trafficSignTypes())) {
-            return true; // continue
-        }
-
-        return accessibilityRequest.trafficSignTypes().contains(trafficSignType);
-    }
 }
