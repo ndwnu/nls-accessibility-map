@@ -11,9 +11,15 @@ management:
     metrics:
       export:
         enabled: false
-
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficsigns:
+          cache:
+            folder: "./.tmp/trafficsigns/"
 graphhopper:
-  dir: graphhopper
+  dir: ".tmp/graphhopper/"
 logging:
   level:
     root: INFO

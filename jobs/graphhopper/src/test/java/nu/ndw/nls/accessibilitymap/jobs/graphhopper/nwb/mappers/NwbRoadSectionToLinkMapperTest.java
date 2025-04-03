@@ -120,7 +120,7 @@ class NwbRoadSectionToLinkMapperTest {
 
 
     @Test
-    void map_ok() {
+    void map() {
         AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_FORWARD),
                 trafficSignJsonDtos);
 
@@ -156,7 +156,7 @@ class NwbRoadSectionToLinkMapperTest {
     }
 
     @Test
-    void map_ok_drivingDirectionBackward() {
+    void map_drivingDirectionBackward() {
         AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_BACKWARD),
                 trafficSignJsonDtos);
 
@@ -165,7 +165,7 @@ class NwbRoadSectionToLinkMapperTest {
     }
 
     @Test
-    void map_ok_drivingDirectionBoth() {
+    void map_drivingDirectionBoth() {
         AccessibilityLink link = nwbRoadSectionToLinkMapper.map(createRoadSectionDto(DRIVING_DIRECTION_BOTH),
                 trafficSignJsonDtos);
 

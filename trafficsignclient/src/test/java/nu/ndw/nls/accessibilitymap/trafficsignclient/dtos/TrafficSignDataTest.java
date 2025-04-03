@@ -19,7 +19,7 @@ class TrafficSignDataTest {
     private TrafficSignGeoJsonDto trafficSign;
 
     @Test
-    void getTrafficSignsByRoadSectionId_ok() {
+    void getTrafficSignsByRoadSectionId() {
         Map<Long, List<TrafficSignGeoJsonDto>> map = Map.of(ROAD_SECTION_ID_PRESENT, List.of(trafficSign));
 
         TrafficSignData data = new TrafficSignData(map, null, null);

@@ -27,7 +27,7 @@ class DirectionalSegmentAccessibleComparatorTest {
             false, true, 1
             false, false, 0
             """)
-    void compare_ok(boolean directionalSegment1Accessible, boolean directionalSegment2Accessible, int expectedResult) {
+    void compare(boolean directionalSegment1Accessible, boolean directionalSegment2Accessible, int expectedResult) {
 
         DirectionalSegment directionalSegment1 = DirectionalSegment.builder()
                 .accessible(directionalSegment1Accessible)

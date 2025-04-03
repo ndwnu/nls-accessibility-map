@@ -39,20 +39,20 @@ class GraphHopperConfigurationTest {
     private Instant trafficSignData;
 
     @Test
-    void getLatestPath_ok() {
+    void getLatestPath() {
         when(graphHopperProperties.getLatestPath()).thenReturn(GRAPHHOPPER_FULL_PATH);
         assertEquals(GRAPHHOPPER_FULL_PATH, graphHopperConfiguration.getLatestPath());
     }
 
     @Test
-    void getMetaDataPath_ok() {
+    void getMetaDataPath() {
         when(graphHopperProperties.getMetaDataPath()).thenReturn(EXPECTED_META_DATA_PATH);
         assertEquals(EXPECTED_META_DATA_PATH, graphHopperConfiguration.getMetaDataPath());
     }
 
 
     @Test
-    void configureLoadingRoutingNetworkSettings_ok() {
+    void configureLoadingRoutingNetworkSettings() {
         when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
         when(graphHopperProperties.getNetworkName()).thenReturn(NETWORK_NAME);
 
@@ -69,7 +69,7 @@ class GraphHopperConfigurationTest {
     }
 
     @Test
-    void configurePersistingRoutingNetworkSettings_ok() {
+    void configurePersistingRoutingNetworkSettings() {
         when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
         when(graphHopperProperties.getNetworkName()).thenReturn(NETWORK_NAME);
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings =

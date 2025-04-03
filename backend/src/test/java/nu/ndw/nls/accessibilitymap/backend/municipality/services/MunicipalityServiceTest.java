@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.exceptions.MunicipalityNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityConfiguration;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,7 +29,7 @@ class MunicipalityServiceTest {
     private MunicipalityService municipalityService;
 
     @Test
-    void getMunicipalityById_ok() {
+    void getMunicipalityById() {
         when(municipalityConfiguration.getMunicipalities())
                 .thenReturn(Map.of(MUNICIPALITY_ID_STRING, municipality));
         Municipality result = municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING);

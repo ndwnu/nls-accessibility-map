@@ -5,11 +5,10 @@ import static org.mockito.Mockito.when;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.time.LocalDate;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,7 +59,7 @@ class MunicipalityMapperTest {
     }
 
     @Test
-    void map_ok() {
+    void map() {
         MunicipalityProperty municipalityProperty = new MunicipalityProperty(NAME, START_COORDINATE_LONGITUDE,
                 START_COORDINATE_LATITUDE, SEARCH_DISTANCE_IN_METRES, MUNICIPALITY_ID_STRING,
                 URL, municipalityBoundingBox, DATE_LAST_CHECK);

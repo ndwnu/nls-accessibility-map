@@ -89,7 +89,7 @@ class AccessibilityMapIT {
     */
 
     @Test
-    void getAccessibleRoadSections_ok_restrictedAccessRoadsInsideMunicipality() {
+    void getAccessibleRoadSections_restrictedAccessRoadsInsideMunicipality() {
 
         // Access roads are blocked, and inside the municipality. Therefore, both these and the inner ring are returned.
         List<AccessibilityLink> additionalRoadSectionsBlocked = createAccessRoads(true, 1);
@@ -99,7 +99,7 @@ class AccessibilityMapIT {
     }
 
     @Test
-    void getAccessibleRoadSections_ok_unrestrictedAccessRoadsOutsideMunicipality() {
+    void getAccessibleRoadSections_unrestrictedAccessRoadsOutsideMunicipality() {
         // Access roads are open, though outside the municipality. Therefore, the inner ring is accessible.
         List<AccessibilityLink> accessRoads = createAccessRoads(false, 2);
         graphHopper = createGhNetwork(accessRoads);
@@ -108,7 +108,7 @@ class AccessibilityMapIT {
     }
 
     @Test
-    void getAccessibleRoadSections_ok_restrictedAccessRoadsOutsideMunicipality() {
+    void getAccessibleRoadSections_restrictedAccessRoadsOutsideMunicipality() {
         // Access roads are closed, and outside the municipality. Therefore, the inner ring is inaccessible.
         List<AccessibilityLink> accessRoads = createAccessRoads(true, 2);
         graphHopper = createGhNetwork(accessRoads);

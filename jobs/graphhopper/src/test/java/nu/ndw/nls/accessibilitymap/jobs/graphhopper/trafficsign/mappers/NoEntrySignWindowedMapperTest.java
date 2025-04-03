@@ -19,7 +19,7 @@ class NoEntrySignWindowedMapperTest {
     NoEntrySignWindowedMapper noEntrySignWindowedMapper;
 
     @Test
-    void map_ok() {
+    void map() {
         testMapping("C6", "C6T", TextSignType.TIME_PERIOD);
         testMapping("C7", "C7T", TextSignType.TIME_PERIOD);
         testMapping("C7b", "C7bT", TextSignType.TIME_PERIOD);

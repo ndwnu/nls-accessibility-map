@@ -34,7 +34,7 @@ class GeoJsonObjectMapperFactoryTest {
             true
             false
             """)
-    void create_ok(boolean prettyPrint) throws IOException {
+    void create(boolean prettyPrint) throws IOException {
 
         when(generateConfiguration.prettyPrintJson()).thenReturn(prettyPrint);
 

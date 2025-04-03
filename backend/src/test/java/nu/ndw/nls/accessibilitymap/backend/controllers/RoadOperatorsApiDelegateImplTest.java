@@ -39,7 +39,7 @@ class RoadOperatorsApiDelegateImplTest {
     }
 
     @Test
-    void getRoadOperators_ok() {
+    void getRoadOperators() {
 
         when(roadOperatorRepository.findAll()).thenReturn(roadOperators);
         when(roadOperatorMapper.map(roadOperators)).thenReturn(mappedRoadOperators);

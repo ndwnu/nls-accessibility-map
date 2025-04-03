@@ -23,13 +23,13 @@ class AccessibilityLinkCarMapperTest {
     private AccessibilityLinkCarMapper mapper;
 
     @Test
-    void getAccessibility_ok() {
+    void getAccessibility() {
         when(link.getAccessibility()).thenReturn(accessibility);
         assertEquals(accessibility, mapper.getAccessibility(link));
     }
 
     @Test
-    void getSpeed_ok() {
+    void getSpeed() {
         DirectionalDto<Double> result = mapper.getSpeed(link);
         assertEquals(50, result.forward());
         assertEquals(50, result.reverse());

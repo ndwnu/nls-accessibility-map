@@ -56,6 +56,8 @@ spec:
                   name: maps-volume
                 - mountPath: /application/graphhopper
                   name: nls-accessibility-map-generator-cron-jobs-volume
+                - mountPath: /application/trafficsigns
+                  name: nls-accessibility-map-traffic-sign-cache
           volumes:
             - name: nls-accessibility-map-jobs-secrets
               csi:
@@ -72,6 +74,9 @@ spec:
             - name: nls-accessibility-map-generator-cron-jobs-volume
               persistentVolumeClaim:
                 claimName: nls-accessibility-map-api-pvc
+            - name: nls-accessibility-map-traffic-sign-cache
+              persistentVolumeClaim:
+                claimName: nls-accessibility-map-traffic-sign-cache
           restartPolicy: Never
       # Don't retry 6 times on failure, just wait for next iteration.
       backoffLimit: 0
