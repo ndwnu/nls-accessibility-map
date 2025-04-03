@@ -1,8 +1,8 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.predicates;
 
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper.TrafficSignIncludedFilterPredicate;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.ZoneCodeType;
 import org.springframework.stereotype.Component;
 
 @Component

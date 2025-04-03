@@ -57,15 +57,15 @@ class AccessibilityRequestTest extends ValidationTest {
     @Test
     void excludeTextSignTypes() {
 
-        accessibilityRequest = accessibilityRequest.withExcludeTextSignTypes(Set.of(TextSignType.EMISSION_ZONE));
-        assertThat(accessibilityRequest.excludeTextSignTypes()).containsExactlyInAnyOrder(TextSignType.EMISSION_ZONE);
+        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignTextSignTypes(Set.of(TextSignType.EMISSION_ZONE));
+        assertThat(accessibilityRequest.excludeTrafficSignTextSignTypes()).containsExactlyInAnyOrder(TextSignType.EMISSION_ZONE);
     }
 
     @Test
     void excludeTextSignTypes_defaultValue() {
 
-        accessibilityRequest = accessibilityRequest.withExcludeTextSignTypes(null);
-        assertThat(accessibilityRequest.excludeTextSignTypes()).containsExactlyInAnyOrder(
+        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignTextSignTypes(null);
+        assertThat(accessibilityRequest.excludeTrafficSignTextSignTypes()).containsExactlyInAnyOrder(
                 TextSignType.EXCLUDING,
                 TextSignType.PRE_ANNOUNCEMENT,
                 TextSignType.FREE_TEXT);
@@ -74,15 +74,15 @@ class AccessibilityRequestTest extends ValidationTest {
     @Test
     void excludeZoneCodeTypes() {
 
-        accessibilityRequest = accessibilityRequest.withExcludeZoneCodeTypes(Set.of(ZoneCodeType.START));
-        assertThat(accessibilityRequest.excludeZoneCodeTypes()).containsExactly(ZoneCodeType.START);
+        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignZoneCodeTypes(Set.of(ZoneCodeType.START));
+        assertThat(accessibilityRequest.excludeTrafficSignZoneCodeTypes()).containsExactly(ZoneCodeType.START);
     }
 
     @Test
     void excludeZoneCodeTypes_defaultValue() {
 
-        accessibilityRequest = accessibilityRequest.withExcludeZoneCodeTypes(null);
-        assertThat(accessibilityRequest.excludeZoneCodeTypes()).containsExactly(ZoneCodeType.END);
+        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignZoneCodeTypes(null);
+        assertThat(accessibilityRequest.excludeTrafficSignZoneCodeTypes()).containsExactly(ZoneCodeType.END);
     }
 
     @Override

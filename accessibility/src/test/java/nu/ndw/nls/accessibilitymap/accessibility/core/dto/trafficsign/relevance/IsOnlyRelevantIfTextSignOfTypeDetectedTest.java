@@ -44,7 +44,7 @@ class IsOnlyRelevantIfTextSignOfTypeDetectedTest {
     void test(TextSignType textSignType) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeTextSignTypes(Set.of(textSignType))
+                .excludeTrafficSignTextSignTypes(Set.of(textSignType))
                 .build();
 
         assertThat(isOnlyRelevantIfTextSignOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
@@ -55,7 +55,7 @@ class IsOnlyRelevantIfTextSignOfTypeDetectedTest {
     void test_notRelevant(TextSignType textSignType) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeTextSignTypes(Set.of(textSignType))
+                .excludeTrafficSignTextSignTypes(Set.of(textSignType))
                 .build();
 
         assertThat(isOnlyRelevantIfTextSignOfTypeDetected.test(trafficSign, accessibilityRequest)).isFalse();
@@ -70,7 +70,7 @@ class IsOnlyRelevantIfTextSignOfTypeDetectedTest {
                 .build();
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeTextSignTypes(Set.of(TextSignType.TIME_PERIOD))
+                .excludeTrafficSignTextSignTypes(Set.of(TextSignType.TIME_PERIOD))
                 .build();
 
         assertThat(isOnlyRelevantIfTextSignOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
@@ -80,7 +80,7 @@ class IsOnlyRelevantIfTextSignOfTypeDetectedTest {
     void test_isRelevant_accessibilityRequest_missingExcludeTextSignTypes() {
 
         AccessibilityRequest accessibilityRequest = mock(AccessibilityRequest.class);
-        when(accessibilityRequest.excludeTextSignTypes()).thenReturn(null);
+        when(accessibilityRequest.excludeTrafficSignTextSignTypes()).thenReturn(null);
 
         assertThat(isOnlyRelevantIfTextSignOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
     }

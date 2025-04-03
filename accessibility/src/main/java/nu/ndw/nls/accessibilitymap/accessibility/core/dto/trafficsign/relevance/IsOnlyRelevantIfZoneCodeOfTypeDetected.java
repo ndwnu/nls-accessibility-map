@@ -10,11 +10,11 @@ public class IsOnlyRelevantIfZoneCodeOfTypeDetected implements TrafficSignReleva
 
     @Override
     public boolean test(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-        if (Objects.isNull(accessibilityRequest.excludeZoneCodeTypes())
+        if (Objects.isNull(accessibilityRequest.excludeTrafficSignZoneCodeTypes())
                 || Objects.isNull(trafficSign.zoneCodeType())) {
             return true; // continue
         }
 
-        return !accessibilityRequest.excludeZoneCodeTypes().contains(trafficSign.zoneCodeType());
+        return !accessibilityRequest.excludeTrafficSignZoneCodeTypes().contains(trafficSign.zoneCodeType());
     }
 }

@@ -40,7 +40,7 @@ class IsOnlyRelevantIfZoneCodeOfTypeDetectedTest {
     void test(ZoneCodeType zoneCodeType) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeZoneCodeTypes(Set.of(zoneCodeType))
+                .excludeTrafficSignZoneCodeTypes(Set.of(zoneCodeType))
                 .build();
 
         assertThat(isOnlyRelevantIfZoneCodeOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
@@ -51,7 +51,7 @@ class IsOnlyRelevantIfZoneCodeOfTypeDetectedTest {
     void test_notRelevant(ZoneCodeType zoneCodeType) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeZoneCodeTypes(Set.of(zoneCodeType))
+                .excludeTrafficSignZoneCodeTypes(Set.of(zoneCodeType))
                 .build();
 
         assertThat(isOnlyRelevantIfZoneCodeOfTypeDetected.test(trafficSign, accessibilityRequest)).isFalse();
@@ -61,7 +61,7 @@ class IsOnlyRelevantIfZoneCodeOfTypeDetectedTest {
     void test_isRelevant_accessibilityRequest_missingExcludeZoneCodeTypes() {
 
         AccessibilityRequest accessibilityRequest = mock(AccessibilityRequest.class);
-        when(accessibilityRequest.excludeZoneCodeTypes()).thenReturn(null);
+        when(accessibilityRequest.excludeTrafficSignZoneCodeTypes()).thenReturn(null);
 
         assertThat(isOnlyRelevantIfZoneCodeOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
     }
@@ -72,7 +72,7 @@ class IsOnlyRelevantIfZoneCodeOfTypeDetectedTest {
         trafficSign = trafficSign.withZoneCodeType(null);
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeZoneCodeTypes(Set.of(ZoneCodeType.START))
+                .excludeTrafficSignZoneCodeTypes(Set.of(ZoneCodeType.START))
                 .build();
 
         assertThat(isOnlyRelevantIfZoneCodeOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
@@ -84,7 +84,7 @@ class IsOnlyRelevantIfZoneCodeOfTypeDetectedTest {
         trafficSign = trafficSign.withZoneCodeType(null);
 
         AccessibilityRequest accessibilityRequest = mock(AccessibilityRequest.class);
-        when(accessibilityRequest.excludeZoneCodeTypes()).thenReturn(null);
+        when(accessibilityRequest.excludeTrafficSignZoneCodeTypes()).thenReturn(null);
 
         assertThat(isOnlyRelevantIfZoneCodeOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
     }
