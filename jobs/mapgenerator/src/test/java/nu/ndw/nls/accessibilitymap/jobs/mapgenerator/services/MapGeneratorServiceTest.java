@@ -82,7 +82,6 @@ class MapGeneratorServiceTest {
                 .nwbVersion(2)
                 .accessibilityRequest(accessibilityRequest)
                 .publishEvents(true)
-                .includeOnlyTimeWindowedSigns(true)
                 .build();
 
         mapGeneratorService = new MapGeneratorService(
@@ -118,7 +117,7 @@ class MapGeneratorServiceTest {
 
         when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
-        when(accessibilityService.calculateAccessibility(accessibilityRequest, exportProperties.includeOnlyTimeWindowedSigns()))
+        when(accessibilityService.calculateAccessibility(accessibilityRequest))
                 .thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
@@ -149,7 +148,7 @@ class MapGeneratorServiceTest {
         when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         exportProperties = exportProperties.withPublishEvents(false);
-        when(accessibilityService.calculateAccessibility(accessibilityRequest, exportProperties.includeOnlyTimeWindowedSigns()))
+        when(accessibilityService.calculateAccessibility(accessibilityRequest))
                 .thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 

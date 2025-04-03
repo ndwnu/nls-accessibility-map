@@ -22,7 +22,6 @@ public record ExportProperties(
         @NotNull Boolean publishEvents,
         @NotNull OffsetDateTime startTime,
         @NotNull AccessibilityRequest accessibilityRequest,
-        @NotNull Boolean includeOnlyTimeWindowedSigns,
         @NotNull GenerateConfiguration generateConfiguration,
         @Positive double polygonMaxDistanceBetweenPoints) {
 

@@ -179,8 +179,7 @@ class AccessibilityServiceTest {
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
         when(locationIndexTree.findClosest(START_LOCATION_LATITUDE, START_LOCATION_LONGITUDE,
                 EdgeFilter.ALL_EDGES)).thenReturn(startSegmentSnap);
-        when(trafficSingSnapMapper.map(List.of(trafficSign),
-                true))
+        when(trafficSingSnapMapper.map(List.of(trafficSign)))
                 .thenReturn(List.of(trafficSignSnap));
         when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture()))
                 .thenReturn(startPoint);
@@ -230,7 +229,7 @@ class AccessibilityServiceTest {
                         List.of(roadSectionRestriction)))
                 .thenReturn(List.of(roadSectionCombined));
 
-        Accessibility result = accessibilityService.calculateAccessibility(accessibilityRequest, true);
+        Accessibility result = accessibilityService.calculateAccessibility(accessibilityRequest);
 
         Accessibility expected = Accessibility
                 .builder()

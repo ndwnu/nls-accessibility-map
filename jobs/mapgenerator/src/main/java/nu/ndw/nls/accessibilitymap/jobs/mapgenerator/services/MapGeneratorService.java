@@ -30,9 +30,7 @@ public class MapGeneratorService {
     public void generate(@Valid ExportProperties exportProperties) {
 
         log.info("Generating with the following properties: {}", exportProperties);
-        Accessibility accessibility = accessibilityService.calculateAccessibility(
-                exportProperties.accessibilityRequest(),
-                exportProperties.includeOnlyTimeWindowedSigns());
+        Accessibility accessibility = accessibilityService.calculateAccessibility(exportProperties.accessibilityRequest());
 
         long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())

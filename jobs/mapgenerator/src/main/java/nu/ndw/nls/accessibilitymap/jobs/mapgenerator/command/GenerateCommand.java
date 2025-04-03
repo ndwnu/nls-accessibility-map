@@ -13,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportPropertie
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services.MapGeneratorService;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -79,8 +80,11 @@ public class GenerateCommand implements Callable<Integer> {
                             .startLocationLatitude(generateConfiguration.startLocationLatitude())
                             .startLocationLongitude(generateConfiguration.startLocationLongitude())
                             .searchRadiusInMeters(generateConfiguration.searchRadiusInMeters())
+                            .trafficSignTextSignTypes(
+                                    includeOnlyTimeWindowedSigns
+                                            ? Set.of(TextSignType.TIME_PERIOD)
+                                            : null)
                             .build())
-                    .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
                     .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
                     .publishEvents(publishEvents)
