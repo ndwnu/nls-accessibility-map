@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TrafficSignCacheUpdater {
 
-    private static final int ON_ERROR_RETRY_IN_MS = 1000;
-
     private final TrafficSignCacheConfiguration trafficSignCacheConfiguration;
 
     private final TrafficSignDataService trafficSignDataService;
@@ -37,9 +35,6 @@ public class TrafficSignCacheUpdater {
     public void watchFileChanges() throws IOException {
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
 
-        // Update on application startup
-        trafficSignDataService.updateTrafficSignData();
-
         watchService = FileSystems.getDefault().newWatchService();
         trafficSignCacheConfiguration.getFolder().register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 
@@ -50,12 +45,7 @@ public class TrafficSignCacheUpdater {
                 WatchKey key;
                 while (Objects.nonNull((key = watchService.take()))) {
                     for (WatchEvent<?> event : key.pollEvents()) {
-                        if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE && event.context().toString()
-                                .equals(trafficSignCacheConfiguration.getFileNameActiveVersion())) {
-
-                            trafficSignDataService.updateTrafficSignData();
-                            log.info("Triggerd update");
-                        }
+                        processEvent(event);
                     }
 
                     key.reset();
@@ -65,6 +55,19 @@ public class TrafficSignCacheUpdater {
             }
         });
         fileWatcherThread.start();
+    }
+
+    private void processEvent(WatchEvent<?> event) {
+        if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE && event.context().toString()
+                .equals(trafficSignCacheConfiguration.getFileNameActiveVersion())) {
+
+            try {
+                trafficSignDataService.updateTrafficSignData();
+                log.info("Triggerd update");
+            } catch (Exception exception) {
+                log.error("Failed to update traffic signs data", exception);
+            }
+        }
     }
 
     @PreDestroy

@@ -81,7 +81,7 @@ extends:
     componentTests:
       - name: "jobs"
         module: "jobs/jobs-component-test"
-        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/trafficsign"
+        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign"
     deployment:
       environments:
         - name: "staging"
