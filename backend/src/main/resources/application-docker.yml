@@ -3,11 +3,7 @@ spring:
     url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
     username: nls-maps
     password: nls-maps
-  rabbitmq:
-    host: nls-rabbitmq
-    stream:
-      username: guest
-      password: guest
+
 graphhopper:
   dir: graphhopper
 

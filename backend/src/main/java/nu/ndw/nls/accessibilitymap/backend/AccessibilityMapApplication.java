@@ -2,12 +2,14 @@ package nu.ndw.nls.accessibilitymap.backend;
 
 import nu.ndw.nls.geojson.geometry.JtsGeoJsonMappersConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
 
 @EnableCaching
-@SpringBootApplication
+@SpringBootApplication(exclude= RabbitAutoConfiguration.class)
 @Import({JtsGeoJsonMappersConfiguration.class})
 public class AccessibilityMapApplication {
 
