@@ -31,12 +31,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers.
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -66,10 +64,10 @@ public class AccessibilityService {
     private final QueryGraphConfigurer queryGraphConfigurer;
 
     @Timed(description = "Time spent calculating accessibility")
-    public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest, boolean includeOnlyTimeWindowedSigns) {
+    public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
 
         OffsetDateTime startTime = clockService.now();
-        List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest, includeOnlyTimeWindowedSigns);
+        List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
         Point startPoint = createPoint(
                 accessibilityRequest.startLocationLatitude(),
                 accessibilityRequest.startLocationLongitude());
@@ -137,10 +135,10 @@ public class AccessibilityService {
                 trafficSignsByEdgeKey);
     }
 
-    private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest, boolean includeOnlyTimeWindowedSigns) {
+    private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
 
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
-        return trafficSingSnapMapper.map(trafficSigns, includeOnlyTimeWindowedSigns);
+        return trafficSingSnapMapper.map(trafficSigns);
     }
 
     private Weighting buildWeightingWithRestrictions(Set<Integer> blockedEdges) {

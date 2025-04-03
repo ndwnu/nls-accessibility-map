@@ -36,7 +36,7 @@ public class TrafficSignAnalyserService {
 
         log.info("Analysing with the following properties: {}", analyseProperties);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(analyseProperties.accessibilityRequest(), false);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(analyseProperties.accessibilityRequest());
 
         analyseTrafficSigns(accessibility, analyseProperties);
     }

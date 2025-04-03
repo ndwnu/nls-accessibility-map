@@ -45,9 +45,6 @@ class GenerateCommandTest {
     private GenerateConfiguration generateConfiguration;
 
     @Mock
-    private AccessibilityRequest accessibilityRequest;
-
-    @Mock
     private ClockService clockService;
 
     @Mock
@@ -94,7 +91,6 @@ class GenerateCommandTest {
                 Set.of(trafficSignType),
                 exportProperties,
                 startTime,
-                true,
                 true);
     }
 
@@ -142,11 +138,9 @@ class GenerateCommandTest {
             Set<TrafficSignType> trafficSignTypes,
             ExportProperties exportProperties,
             OffsetDateTime startTime,
-            boolean includeOnlyTimeWindowedSigns,
             boolean publishEvents) {
 
         assertThat(exportProperties.startTime()).isEqualTo(startTime);
-        assertThat(exportProperties.includeOnlyTimeWindowedSigns()).isEqualTo(includeOnlyTimeWindowedSigns);
         assertThat(exportProperties.publishEvents()).isEqualTo(publishEvents);
         assertThat(exportProperties.accessibilityRequest()).isEqualTo(
                 AccessibilityRequest.builder()
