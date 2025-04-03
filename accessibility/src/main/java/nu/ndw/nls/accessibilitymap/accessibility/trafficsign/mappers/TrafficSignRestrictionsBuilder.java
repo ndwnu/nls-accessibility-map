@@ -129,7 +129,6 @@ public class TrafficSignRestrictionsBuilder {
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
-                        TransportType.MOPED,
                         TransportType.TAXI,
                         TransportType.TRACTOR,
                         TransportType.TRUCK

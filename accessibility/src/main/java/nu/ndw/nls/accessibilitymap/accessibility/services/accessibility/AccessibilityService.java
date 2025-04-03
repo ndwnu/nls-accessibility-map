@@ -42,7 +42,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@ConditionalOnBean(TrafficSignService.class)
+//@ConditionalOnBean(TrafficSignService.class)
 public class AccessibilityService {
 
     private final IsochroneServiceFactory isochroneServiceFactory;
