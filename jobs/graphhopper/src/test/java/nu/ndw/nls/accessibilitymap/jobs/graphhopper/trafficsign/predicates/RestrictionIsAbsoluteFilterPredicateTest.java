@@ -71,7 +71,7 @@ class RestrictionIsAbsoluteFilterPredicateTest {
         TrafficSignPropertiesDto propertiesDto = Mockito.mock(TrafficSignPropertiesDto.class);
         TrafficSignGeoJsonDto trafficSignGeoJsonDto = Mockito.mock(TrafficSignGeoJsonDto.class);
 
-        when(mockedTextSign.getType()).thenReturn(textSignType);
+        when(mockedTextSign.type()).thenReturn(textSignType);
         when(propertiesDto.getTextSigns()).thenReturn(List.of(mockedTextSign));
         when(trafficSignGeoJsonDto.getProperties()).thenReturn(propertiesDto);
         return trafficSignGeoJsonDto;

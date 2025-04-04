@@ -12,7 +12,7 @@ public class NoEntrySignWindowedMapper {
     public TrafficSignGeoJsonDto map(TrafficSignGeoJsonDto trafficSignJsonDto) {
         TrafficSignPropertiesDto properties = trafficSignJsonDto.getProperties();
         TrafficSignPropertiesDtoBuilder builder = properties.toBuilder();
-        if (properties.getTextSigns().stream().anyMatch(sign -> TextSignType.TIME_PERIOD == sign.getType())) {
+        if (properties.getTextSigns().stream().anyMatch(sign -> TextSignType.TIME_PERIOD == sign.type())) {
             String rvvWindowed = properties.getRvvCode().concat("T");
             builder.rvvCode(rvvWindowed);
             return trafficSignJsonDto.toBuilder().properties(builder.build())

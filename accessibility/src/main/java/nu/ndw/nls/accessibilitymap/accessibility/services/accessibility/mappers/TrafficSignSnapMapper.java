@@ -38,10 +38,9 @@ public class TrafficSignSnapMapper {
 
     private final NetworkGraphHopper networkGraphHopper;
 
-    public List<TrafficSignSnap> map(Collection<TrafficSign> trafficSigns, boolean includeOnlyTimeWindowedSigns) {
+    public List<TrafficSignSnap> map(Collection<TrafficSign> trafficSigns) {
 
         return trafficSigns.stream()
-                .filter(trafficSign -> applyTimeWindowedSignFilter(includeOnlyTimeWindowedSigns, trafficSign))
                 .map(trafficSign -> findClosestSnapOnNetwork(trafficSign)
                         .map(snap -> TrafficSignSnap
                                 .builder()
@@ -116,10 +115,6 @@ public class TrafficSignSnapMapper {
     private boolean trafficSignMatchesEdge(TrafficSign trafficSign, EdgeIteratorState edgeIteratorState) {
 
         return getLinkId(edgeIteratorState) == trafficSign.roadSectionId();
-    }
-
-    private static boolean applyTimeWindowedSignFilter(boolean includeOnlyTimeWindowedSigns, TrafficSign trafficSign) {
-        return !includeOnlyTimeWindowedSigns || trafficSign.hasTimeWindowedSign();
     }
 
     private int getLinkId(EdgeIteratorState edge) {

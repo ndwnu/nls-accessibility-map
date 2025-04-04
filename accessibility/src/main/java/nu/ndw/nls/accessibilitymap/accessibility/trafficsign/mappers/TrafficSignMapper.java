@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -46,7 +47,7 @@ public class TrafficSignMapper {
                     .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
                     .iconUri(createUri(trafficSignGeoJsonDto.getProperties().getImageUrl()))
                     .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
-                    .zoneCode(trafficSignGeoJsonDto.getProperties().getZoneCode())
+                    .zoneCodeType(mapZoneCodeType(trafficSignGeoJsonDto))
                     .trafficSignOrderUrl(createUri(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl()))
                     .blackCode(mapToBlackCode(trafficSignGeoJsonDto, type))
                     .build();
@@ -61,18 +62,18 @@ public class TrafficSignMapper {
         }
     }
 
-    Double mapFraction(Double fraction, Direction direction) {
-        if (Objects.isNull(fraction)) {
-            return Direction.FORWARD == direction ? 0.0 : 1.0;
+    private static ZoneCodeType mapZoneCodeType(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
+        if (Objects.isNull(trafficSignGeoJsonDto.getProperties().getZoneCode())) {
+            return null;
         }
-        if (fraction == 1.0 && Direction.FORWARD == direction) {
-            log.warn("incorrect fraction detected for traffic sign with id");
-            return 0.0;
-        } else if (fraction == 0.0 && Direction.BACKWARD == direction) {
-            log.warn("incorrect fraction detected for traffic sign with id");
-            return 1.0;
-        }
-        return fraction;
+        return switch (trafficSignGeoJsonDto.getProperties().getZoneCode()) {
+            case "ZE" -> ZoneCodeType.END;
+            case "ZB" -> ZoneCodeType.START;
+            case "ZH" -> ZoneCodeType.REPEAT;
+            case "ZO" -> ZoneCodeType.UNKNOWN;
+            default -> throw new IllegalArgumentException("Unknown zone code '%s'"
+                    .formatted(trafficSignGeoJsonDto.getProperties().getZoneCode()));
+        };
     }
 
     private static Direction createDirection(DirectionType drivingDirection) {
@@ -85,6 +86,20 @@ public class TrafficSignMapper {
             default -> throw new IllegalArgumentException(
                     "Driving direction '%s' could not be mapped.".formatted(drivingDirection));
         };
+    }
+
+    Double mapFraction(Double fraction, Direction direction) {
+        if (Objects.isNull(fraction)) {
+            return Direction.FORWARD == direction ? 0.0 : 1.0;
+        }
+        if (fraction == 1.0 && Direction.FORWARD == direction) {
+            log.warn("incorrect fraction detected for traffic sign with id");
+            return 0.0;
+        } else if (fraction == 0.0 && Direction.BACKWARD == direction) {
+            log.warn("incorrect fraction detected for traffic sign with id");
+            return 1.0;
+        }
+        return fraction;
     }
 
     private static URI createUri(String value) {
