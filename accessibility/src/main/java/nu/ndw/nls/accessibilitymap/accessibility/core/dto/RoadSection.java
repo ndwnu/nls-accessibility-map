@@ -94,7 +94,8 @@ public final class RoadSection {
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::getForwardSegment)
                 .map(DirectionalSegment::getLineString)
+                .filter(Objects::nonNull)
                 .collect(GeometryCollectors.mergeToLineString())
-                .orElseThrow(() -> new IllegalStateException("no forward geometry found"));
+                .orElseThrow(() -> new IllegalStateException("no forward geometry found for road section " + id ));
     }
 }
