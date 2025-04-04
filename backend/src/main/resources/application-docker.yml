@@ -7,12 +7,7 @@ spring:
 graphhopper:
   dir: graphhopper
 
-nu:
-  ndw:
-    nls:
-      springboot:
-        messaging:
-          broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+
 nls:
   keycloak:
     url: http://nls-keycloak:8000/auth
