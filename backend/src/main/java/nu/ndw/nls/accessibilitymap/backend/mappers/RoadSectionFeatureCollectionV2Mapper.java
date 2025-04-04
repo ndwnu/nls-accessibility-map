@@ -18,13 +18,12 @@ public class RoadSectionFeatureCollectionV2Mapper {
     private final RoadSectionFeatureV2Mapper roadSectionFeatureV2Mapper;
 
     /**
-     * Maps the provided accessibility information, filtering and transforming data
-     * into a collection of road section feature JSON objects.
+     * Maps the provided accessibility information, filtering and transforming data into a collection of road section feature JSON objects.
      *
-     * @param accessibility the accessibility object containing road section data
+     * @param accessibility       the accessibility object containing road section data
      * @param startPointRequested a flag indicating if the starting point is requested
-     * @param startPointMatch an optional candidate match for the starting point
-     * @param accessible an optional flag to filter road sections by their accessibility status
+     * @param startPointMatch     an optional candidate match for the starting point
+     * @param accessible          an optional flag to filter road sections by their accessibility status
      * @return a RoadSectionFeatureCollectionJson object containing type and features
      */
     public RoadSectionFeatureCollectionJson map(
@@ -38,10 +37,18 @@ public class RoadSectionFeatureCollectionV2Mapper {
                         roadSectionFeatureV2Mapper.map(r, startPointRequested, startPointMatch, true),
                         roadSectionFeatureV2Mapper.map(r, startPointRequested, startPointMatch, false)
                 ))
-                .filter(r -> (r.getProperties() != null ? r.getProperties().getAccessible() : null) != null)
-                .filter(r -> accessible == null || accessible.equals(r.getProperties().getAccessible())
-                        || Boolean.TRUE.equals(r.getProperties().getMatched()))
+                .filter(r -> hasAccessibility(r) != null)
+                .filter(r -> equalsAccessibleOrMatched(accessible, r))
                 .toList();
         return new RoadSectionFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION, features);
+    }
+
+    private static boolean equalsAccessibleOrMatched(Boolean accessible, RoadSectionFeatureJson r) {
+        return accessible == null || accessible.equals(r.getProperties().getAccessible())
+                || Boolean.TRUE.equals(r.getProperties().getMatched());
+    }
+
+    private static Boolean hasAccessibility(RoadSectionFeatureJson r) {
+        return r.getProperties() != null ? r.getProperties().getAccessible() : null;
     }
 }

@@ -81,9 +81,13 @@ public class RoadSectionFragment {
         return forwardSegment.isAccessible();
     }
 
+    public Boolean hasBackwardSegment() {
+        return Objects.nonNull(backwardSegment);
+    }
+
     public Boolean isBackwardAccessible() {
 
-        if (backwardSegment == null) {
+        if (!hasBackwardSegment()) {
             return null;
         } else {
             return backwardSegment.isAccessible();

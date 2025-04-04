@@ -1,14 +1,9 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
-import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.model.VehicleProperties;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityMapService.ResultType;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.controllers.dto.VehicleArguments;
@@ -19,7 +14,6 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.mappers.AccessibilityRequestV2Mapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.AccessibilityResponseV2Mapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.PointMapper;
-import nu.ndw.nls.accessibilitymap.backend.mappers.RequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.mappers.RoadSectionFeatureCollectionV2Mapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
@@ -38,8 +32,6 @@ public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiD
     private final PointValidator pointValidator;
     private final PointMapper pointMapper;
     private final PointMatchService pointMatchService;
-    private final RequestMapper requestMapper;
-    private final AccessibilityMapService accessibilityMapService;
     private final AccessibilityResponseV2Mapper accessibilityResponseV2Mapper;
     private final RoadSectionFeatureCollectionV2Mapper roadSectionFeatureCollectionV2Mapper;
     private final MunicipalityService municipalityService;
@@ -96,17 +88,6 @@ public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiD
 
     private void logStartPointMatch(Point point, CandidateMatch match) {
         log.debug("Found road section id: {} by latitude: {}, longitude {}", match.getMatchedLinkId(), point.getY(), point.getX());
-    }
-
-    private Map<Integer, RoadSection> getAccessibility(VehicleArguments requestArguments,
-            String municipalityId) {
-
-        Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-
-        VehicleProperties vehicleProperties = requestMapper.mapToVehicleProperties(requestArguments);
-        return accessibilityMapService.determineAccessibilityByRoadSection(vehicleProperties,
-                municipality.getStartPoint(), municipality.getSearchDistanceInMetres(),
-                municipality.getMunicipalityIdInteger(), ResultType.EFFECTIVE_ACCESSIBILITY);
     }
 
 

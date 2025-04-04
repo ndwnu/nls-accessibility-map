@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class TrafficSignMapper {
+
     private final TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
 
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
@@ -33,17 +34,19 @@ public class TrafficSignMapper {
 
         try {
             TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode());
+            Direction direction = createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection());
             TrafficSign trafficSign = TrafficSign.builder()
                     .id(integerSequenceSupplier.next())
                     .externalId(trafficSignGeoJsonDto.getId().toString())
                     .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
                     .trafficSignType(type)
                     .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
-                    .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
+                    .fraction(mapFraction(trafficSignGeoJsonDto.getProperties().getFraction(), direction))
                     .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
                     .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
                     .iconUri(createUri(trafficSignGeoJsonDto.getProperties().getImageUrl()))
                     .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
+                    .zoneCode(trafficSignGeoJsonDto.getProperties().getZoneCode())
                     .trafficSignOrderUrl(createUri(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl()))
                     .blackCode(mapToBlackCode(trafficSignGeoJsonDto, type))
                     .build();
@@ -58,8 +61,24 @@ public class TrafficSignMapper {
         }
     }
 
-    private static Direction createDirection(DirectionType drivingDirection) {
+    Double mapFraction(Double fraction, Direction direction) {
+        if (Objects.isNull(fraction)) {
+            return Direction.FORWARD == direction ? 0.0 : 1.0;
+        }
+        if (fraction == 1.0 && Direction.FORWARD == direction) {
+            log.warn("incorrect fraction detected for traffic sign with id");
+            return 0.0;
+        } else if (fraction == 0.0 && Direction.BACKWARD == direction) {
+            log.warn("incorrect fraction detected for traffic sign with id");
+            return 1.0;
+        }
+        return fraction;
+    }
 
+    private static Direction createDirection(DirectionType drivingDirection) {
+        if (Objects.isNull(drivingDirection)) {
+            return Direction.FORWARD;
+        }
         return switch (drivingDirection) {
             case FORTH -> Direction.FORWARD;
             case BACK -> Direction.BACKWARD;

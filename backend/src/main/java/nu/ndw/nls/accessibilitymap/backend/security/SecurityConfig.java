@@ -54,6 +54,8 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui.html").permitAll()
                         .requestMatchers("/v1/municipalities/**").permitAll()
                         .requestMatchers("/v1/road-operators/**").permitAll()
+                        .requestMatchers("/v2/municipalities/**").permitAll()
+                        .requestMatchers("/v2/road-operators/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwtConfigurer ->

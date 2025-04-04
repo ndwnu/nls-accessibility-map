@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
+import com.google.common.base.Predicate;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.predicates.NotZoneEndsFilterPredicate;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.predicates.RestrictionIsAbsoluteFilterPredicate;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -24,6 +27,9 @@ public class TrafficSignDataService {
 
     private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
+    private final NotZoneEndsFilterPredicate notZoneEndsFilterPredicate;
+    private final RestrictionIsAbsoluteFilterPredicate restrictionIsAbsoluteFilterPredicate;
+
     @PostConstruct
     public void init() {
 
@@ -33,6 +39,8 @@ public class TrafficSignDataService {
     public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
 
         return this.getTrafficSigns().stream()
+                .filter(notZoneEndsFilterPredicate::test)
+                .filter(restrictionIsAbsoluteFilterPredicate::test)
                 .filter(trafficSign -> trafficSign.isRelevant(accessibilityRequest))
                 .toList();
     }
