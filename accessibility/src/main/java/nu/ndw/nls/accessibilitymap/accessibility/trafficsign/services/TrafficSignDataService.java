@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
-import com.google.common.base.Predicate;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -11,9 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.predicates.NotZoneEndsFilterPredicate;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.predicates.RestrictionIsAbsoluteFilterPredicate;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -27,8 +25,7 @@ public class TrafficSignDataService {
 
     private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
-    private final NotZoneEndsFilterPredicate notZoneEndsFilterPredicate;
-    private final RestrictionIsAbsoluteFilterPredicate restrictionIsAbsoluteFilterPredicate;
+    private final List<TrafficSignRelevancy> trafficSignRelevantDeterminations;
 
     @PostConstruct
     public void init() {
@@ -39,10 +36,15 @@ public class TrafficSignDataService {
     public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
 
         return this.getTrafficSigns().stream()
-                .filter(notZoneEndsFilterPredicate::test)
-                .filter(restrictionIsAbsoluteFilterPredicate::test)
-                .filter(trafficSign -> trafficSign.isRelevant(accessibilityRequest))
+                .filter(trafficSign -> isRelevant(trafficSign, accessibilityRequest))
                 .toList();
+    }
+
+    @SuppressWarnings("java:S1067")
+    private boolean isRelevant(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
+
+        return trafficSignRelevantDeterminations.stream()
+                .allMatch(relevantDetermination -> relevantDetermination.test(trafficSign, accessibilityRequest));
     }
 
     public List<TrafficSign> getTrafficSigns() {

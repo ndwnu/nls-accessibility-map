@@ -94,7 +94,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder().trafficSignTypes(Set.of(TrafficSignType.C7)).build())
                 .generateConfiguration(generateConfiguration)
-                .includeOnlyTimeWindowedSigns(false)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
                 .build();
 

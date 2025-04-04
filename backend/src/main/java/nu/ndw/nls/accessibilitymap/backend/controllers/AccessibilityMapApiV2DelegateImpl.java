@@ -50,7 +50,7 @@ public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiD
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, requestArguments);
-        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest, false);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
         return ResponseEntity.ok(accessibilityResponseV2Mapper.map(accessibility, requestedRoadSectionId));
     }
 
@@ -67,7 +67,7 @@ public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiD
                 vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, requestArguments);
-        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest, false);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
         return ResponseEntity.ok(roadSectionFeatureCollectionV2Mapper.map(accessibility, startPointPresent, startPointMatch, accessible));
     }

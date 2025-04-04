@@ -103,7 +103,7 @@ class TrafficSignAnalyserServiceTest {
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest, false)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -150,7 +150,7 @@ class TrafficSignAnalyserServiceTest {
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest, false)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -186,7 +186,7 @@ class TrafficSignAnalyserServiceTest {
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest, false)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -222,7 +222,7 @@ class TrafficSignAnalyserServiceTest {
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest, false)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));

@@ -32,8 +32,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.mockito.ArgumentCaptor;
@@ -137,10 +135,9 @@ class TrafficSignSnapMapperTest {
 
         setupBaseFixture();
 
-        when(trafficSign.hasTimeWindowedSign()).thenReturn(true);
         when(snap.isValid()).thenReturn(true);
 
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), true);
+        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign));
 
         assertThat(trafficSignSnaps).hasSize(1);
         assertThat(trafficSignSnaps.getFirst().getSnap()).isEqualTo(snap);
@@ -156,11 +153,10 @@ class TrafficSignSnapMapperTest {
 
         setupBaseFixture();
 
-        when(trafficSign.hasTimeWindowedSign()).thenReturn(true);
         when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
         when(snap.isValid()).thenReturn(false);
 
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), true);
+        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign));
 
         assertThat(trafficSignSnaps).isEmpty();
         loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with "
@@ -173,47 +169,15 @@ class TrafficSignSnapMapperTest {
 
         when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
-        when(trafficSign.hasTimeWindowedSign())
-                .thenReturn(true);
-        when(nwbRoadSectionCrudService.findById(any(Id.class)))
-                .thenReturn(Optional.empty());
-        when(networkMetaDataService.loadMetaData())
-                .thenReturn(accessibilityGraphhopperMetaData);
+        when(nwbRoadSectionCrudService.findById(any(Id.class))).thenReturn(Optional.empty());
+        when(networkMetaDataService.loadMetaData()).thenReturn(accessibilityGraphhopperMetaData);
 
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), true);
+        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign));
 
         assertThat(trafficSignSnaps).isEmpty();
         loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with road section "
                 + "id %s for nwb map version %s in the NWB road section database")
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID, NWB_VERSION));
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            false, true, true
-            true, false, false
-            false, false, true
-            true, true, true
-            """)
-    void map_no_textSign(boolean isIncludeOnlyTimeWindowedSigns, boolean hasTimeWindowedSign, boolean isWindowsTextSign) {
-
-        if (isWindowsTextSign) {
-            setupBaseFixture();
-            when(snap.isValid()).thenReturn(true);
-        }
-
-        if (isIncludeOnlyTimeWindowedSigns) {
-            when(trafficSign.hasTimeWindowedSign()).thenReturn(hasTimeWindowedSign);
-        }
-
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign),
-                isIncludeOnlyTimeWindowedSigns);
-
-        if (isWindowsTextSign) {
-            assertThat(trafficSignSnaps).isNotEmpty();
-        } else {
-            assertThat(trafficSignSnaps).isEmpty();
-        }
     }
 
     private void setupBaseFixture() {
@@ -224,17 +188,12 @@ class TrafficSignSnapMapperTest {
         when(nwbRoadSectionCrudService.findById(any(Id.class))).thenReturn(Optional.of(nwbRoadSectionDto));
         when(nwbRoadSectionDto.getGeometry()).thenReturn(lineStringRd);
         when(crsTransformer.transformFromRdNewToWgs84(lineStringRd)).thenReturn(lineStringWgs84);
-        when(fractionAndDistanceCalculator.getCoordinateAndBearing(lineStringWgs84, FRACTION))
-                .thenReturn(coordinateAndBearing);
+        when(fractionAndDistanceCalculator.getCoordinateAndBearing(lineStringWgs84, FRACTION)).thenReturn(coordinateAndBearing);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
         when(coordinateAndBearing.coordinate()).thenReturn(snappedCoordinate);
         when(snappedCoordinate.getX()).thenReturn(X_COORDINATE);
         when(snappedCoordinate.getY()).thenReturn(Y_COORDINATE);
-        when(locationIndexTree.findClosest(
-                eq(Y_COORDINATE),
-                eq(X_COORDINATE),
-                edgeFilterCaptor.capture())
-        ).thenReturn(snap);
+        when(locationIndexTree.findClosest(eq(Y_COORDINATE), eq(X_COORDINATE), edgeFilterCaptor.capture())).thenReturn(snap);
     }
 
     private void verifyIdCreatedOk() {
