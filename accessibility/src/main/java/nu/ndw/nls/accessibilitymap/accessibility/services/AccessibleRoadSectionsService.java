@@ -47,5 +47,4 @@ public class AccessibleRoadSectionsService {
                 .map(accessibleRoadSectionMapper::map)
                 .toList();
     }
-
 }

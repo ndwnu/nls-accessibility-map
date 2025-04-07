@@ -163,7 +163,7 @@ public class AccessibilityMapService {
     }
 
     private RoadSection initializeRoadSection(AccessibilityRoadSection accessibilityRoadSection) {
-        return new RoadSection(accessibilityRoadSection.getRoadSectionId(),
+        return new RoadSection((int) accessibilityRoadSection.getRoadSectionId(),
                 accessibilityRoadSection.getGeometry(),
                 initializeNwbAccessibleRoads(accessibilityRoadSection.isForwardAccessible()),
                 initializeNwbAccessibleRoads(accessibilityRoadSection.isBackwardAccessible()));

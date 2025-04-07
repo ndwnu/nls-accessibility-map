@@ -40,8 +40,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-//@ConditionalOnBean(TrafficSignService.class)
 public class AccessibilityService {
+
+    private static final AccessibleRoadSectionModifier NO_MODIFICATIONS =  (a, b) -> {};
 
     private final IsochroneServiceFactory isochroneServiceFactory;
 
@@ -63,8 +64,15 @@ public class AccessibilityService {
 
     private final QueryGraphConfigurer queryGraphConfigurer;
 
-    @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
+
+        return calculateAccessibility(accessibilityRequest, NO_MODIFICATIONS);
+    }
+
+    @Timed(description = "Time spent calculating accessibility")
+    public Accessibility calculateAccessibility(
+            AccessibilityRequest accessibilityRequest,
+            AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
 
         OffsetDateTime startTime = clockService.now();
         List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
@@ -98,6 +106,10 @@ public class AccessibilityService {
                         startSegment,
                         buildWeightingWithRestrictions(edgeRestrictions.getBlockedEdges()),
                         edgeRestrictions.getTrafficSignsByEdgeKey());
+
+        accessibleRoadSectionModifier.modify(
+                accessibleRoadsSectionsWithoutAppliedRestrictions,
+                accessibleRoadSectionsWithAppliedRestrictions);
 
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)

@@ -27,8 +27,6 @@ public final class RoadSection {
     @NotNull
     private final Long id;
 
-    private RoadSectionMetaData metaData;
-
     @Default
     @NotEmpty
     @Valid
