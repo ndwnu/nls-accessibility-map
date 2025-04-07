@@ -10,9 +10,24 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.backend.controllers.dto.VehicleArguments;
 import org.springframework.stereotype.Component;
 
+/**
+ * Maps information from the {@link VehicleArguments} to a set of {@link TransportType}.
+ * It determines the transport types based on the vehicle type and whether the vehicle has a trailer.
+ * This class is a Spring component that acts as a utility for converting vehicle-related data
+ * to corresponding transport types in the system.
+ */
 @Component
 public class TransportTypeV2Mapper {
 
+    /**
+     * Maps the provided {@link VehicleArguments} to a set of {@link TransportType}.
+     * It determines the transport types based on the given vehicle type and whether
+     * the vehicle has a trailer or not.
+     *
+     * @param vehicleArguments the input arguments containing details about the vehicle,
+     *                         such as its type and trailer status.
+     * @return a set of {@link TransportType} based on the given vehicle arguments.
+     */
        public Set<TransportType> mapToTransportType(VehicleArguments vehicleArguments) {
            Set<TransportType> transportTypes = new HashSet<>();
            if(vehicleArguments.vehicleHasTrailer()){
