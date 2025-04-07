@@ -26,7 +26,6 @@ public class RoadSectionFragment {
     @NotNull
     private RoadSection roadSection;
 
-    @NotNull
     @Valid
     private DirectionalSegment forwardSegment;
 

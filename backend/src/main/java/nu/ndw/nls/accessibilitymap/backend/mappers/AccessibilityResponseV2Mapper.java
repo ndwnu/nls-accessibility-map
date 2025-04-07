@@ -36,8 +36,8 @@ public class AccessibilityResponseV2Mapper {
         return RoadSectionJson
                 .builder()
                 .roadSectionId(Math.toIntExact(roadSection.getId()))
-                .forwardAccessible(roadSection.isForwardAccessible())
-                .backwardAccessible(roadSection.isBackwardAccessible())
+                .forwardAccessible(roadSection.hasForwardSegments() ? roadSection.isForwardAccessible() : null)
+                .backwardAccessible(roadSection.hasBackwardSegments() ? roadSection.isBackwardAccessible() : null)
                 .build();
     }
 

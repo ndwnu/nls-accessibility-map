@@ -12,6 +12,9 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeature
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.springframework.stereotype.Component;
 
+/**
+ *
+ */
 @Component
 @RequiredArgsConstructor
 public class RoadSectionFeatureCollectionMapper {

@@ -40,6 +40,18 @@ public final class RoadSection {
                 .anyMatch(RoadSectionFragment::isPartiallyAccessible);
     }
 
+    public boolean hasForwardSegments() {
+        return roadSectionFragments.stream()
+                .map(RoadSectionFragment::getForwardSegment)
+                .anyMatch(Objects::nonNull);
+    }
+
+    public boolean hasBackwardSegments() {
+        return roadSectionFragments.stream()
+                .map(RoadSectionFragment::getBackwardSegment)
+                .anyMatch(Objects::nonNull);
+    }
+
     /**
      * Evaluates the forward accessibility of the road section by examining all associated road section fragments. If any fragment
      * explicitly indicates restricted forward accessibility, the method returns false. If all fragments are forwardly accessible, the
@@ -47,7 +59,7 @@ public final class RoadSection {
      *
      * @return true if all fragments in the road section are forwardly accessible; false if any fragment is not forwardly accessible.
      */
-    public Boolean isForwardAccessible() {
+    public boolean isForwardAccessible() {
 
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::isForwardAccessible)
@@ -58,29 +70,20 @@ public final class RoadSection {
     }
 
     /**
-     * Evaluates the backward accessibility of the road section by examining all associated road section fragments.
-     * <p>
-     * If any fragment explicitly indicates restricted or unknown backward accessibility, the method returns null. If all fragments are
-     * backwardly accessible, the method returns true. If at least one fragment is not backwardly accessible, the method returns false.
+     * Determines if the road section is backward accessible by evaluating the backward accessibility of all associated road section
+     * fragments. If any fragment explicitly indicates restricted backward accessibility, the method returns false. If all fragments are
+     * backward accessible, the method returns true.
      *
-     * @return true if all fragments in the road section are backwardly accessible; false if at least one fragment is not backwardly
-     * accessible; null if any fragment indicates unknown backward accessibility.
+     * @return true if all fragments in the road section are backward accessible; false if any fragment is not backward accessible.
      */
-    public Boolean isBackwardAccessible() {
-        if (roadSectionFragments.stream()
+    public boolean isBackwardAccessible() {
+        return roadSectionFragments.stream()
                 .map(RoadSectionFragment::isBackwardAccessible)
-                .anyMatch(Objects::isNull)) {
-            return null;
-        } else {
-            return roadSectionFragments.stream()
-                    .map(RoadSectionFragment::isBackwardAccessible)
-                    .filter(Objects::nonNull)
-                    .filter(accessible -> !accessible)
-                    .findFirst()
-                    .orElse(true);
+                .filter(accessible -> !accessible)
+                .findFirst()
+                .orElse(true);
 
 
-        }
     }
 
     /**
@@ -91,12 +94,32 @@ public final class RoadSection {
      * @throws IllegalStateException if no forward geometry can be found
      */
     public LineString getMergedForwardGeometry() {
+        if (!hasForwardSegments()) {
+            throw new IllegalStateException("no forward geometry found for road section " + id);
+        }
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::getForwardSegment)
-                .filter(Objects::nonNull)
                 .map(DirectionalSegment::getLineString)
-                .filter(Objects::nonNull)
                 .collect(GeometryCollectors.mergeToLineString())
-                .orElseThrow(() -> new IllegalStateException("no forward geometry found for road section " + id ));
+                .orElseThrow(() -> new IllegalStateException("no forward geometry found for road section " + id));
+    }
+
+
+    /**
+     * Merges the backward geometry of all directional segments within the collection of road section fragments into a single LineString
+     * representation.
+     *
+     * @return the merged LineString of all backward directional segments in the current road section
+     * @throws IllegalStateException if no backward geometry can be found
+     */
+    public LineString getMergedBackWardGeometry() {
+        if (!hasBackwardSegments()) {
+            throw new IllegalStateException("no backward geometry found for road section " + id);
+        }
+        return roadSectionFragments.stream()
+                .map(RoadSectionFragment::getBackwardSegment)
+                .map(DirectionalSegment::getLineString)
+                .collect(GeometryCollectors.mergeToLineString())
+                .orElseThrow(() -> new IllegalStateException("no backward geometry found for road section " + id));
     }
 }
