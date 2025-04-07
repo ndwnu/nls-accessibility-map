@@ -1,10 +1,14 @@
 package nu.ndw.nls.accessibilitymap.backend.controllers;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.AccessibleRoadSectionModifier;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapV2ApiDelegate;
@@ -30,28 +34,60 @@ import org.springframework.stereotype.Component;
 public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiDelegate {
 
     private final PointValidator pointValidator;
+
     private final PointMapper pointMapper;
+
     private final PointMatchService pointMatchService;
+
     private final AccessibilityResponseV2Mapper accessibilityResponseV2Mapper;
+
     private final RoadSectionFeatureCollectionV2Mapper roadSectionFeatureCollectionV2Mapper;
+
     private final MunicipalityService municipalityService;
+
     private final AccessibilityRequestV2Mapper accessibilityRequestV2Mapper;
+
     private final AccessibilityService accessibilityService;
+
+    private final MissingRoadSectionProvider accessibilityAddMissingBlockedRoadSections;
 
     @Override
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude) {
+
         Integer requestedRoadSectionId = mapStartPoint(latitude, longitude)
                 .flatMap(this::matchStartPoint)
                 .map(CandidateMatch::getMatchedLinkId)
                 .orElse(null);
-        VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
-                vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
+
+        VehicleArguments requestArguments = new VehicleArguments(
+                vehicleType,
+                vehicleLength, vehicleWidth, vehicleHeight,
+                vehicleWeight, vehicleAxleLoad,
+                vehicleHasTrailer);
+
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, requestArguments);
-        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
+
+        Accessibility accessibility = accessibilityService.calculateAccessibility(
+                accessibilityRequest,
+                addMissingRoadSectionsForMunicipality(municipality));
+
         return ResponseEntity.ok(accessibilityResponseV2Mapper.map(accessibility, requestedRoadSectionId));
+    }
+
+    private AccessibleRoadSectionModifier addMissingRoadSectionsForMunicipality(Municipality municipality) {
+        return (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions) -> {
+
+            List<RoadSection> missingRoadSections = accessibilityAddMissingBlockedRoadSections.get(
+                    municipality.getMunicipalityIdInteger(),
+                    roadsSectionsWithoutAppliedRestrictions,
+                    false);
+
+            roadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
+            roadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
+        };
     }
 
     @Override
@@ -59,12 +95,17 @@ public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiD
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
             Double longitude) {
+
         Optional<Point> startPoint = mapStartPoint(latitude, longitude);
         boolean startPointPresent = startPoint.isPresent();
         CandidateMatch startPointMatch = startPoint.flatMap(this::matchStartPoint).orElse(null);
 
-        VehicleArguments requestArguments = new VehicleArguments(vehicleType, vehicleLength, vehicleWidth,
-                vehicleHeight, vehicleWeight, vehicleAxleLoad, vehicleHasTrailer);
+        VehicleArguments requestArguments = new VehicleArguments(
+                vehicleType,
+                vehicleLength, vehicleWidth, vehicleHeight,
+                vehicleWeight, vehicleAxleLoad,
+                vehicleHasTrailer);
+
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, requestArguments);
         Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
@@ -73,12 +114,14 @@ public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiD
     }
 
     private Optional<Point> mapStartPoint(Double latitude, Double longitude) {
+
         pointValidator.validateConsistentValues(latitude, longitude);
 
         return pointMapper.mapCoordinate(latitude, longitude);
     }
 
     private Optional<CandidateMatch> matchStartPoint(Point point) {
+
         Optional<CandidateMatch> candidateMatch = this.pointMatchService.match(point);
 
         candidateMatch.ifPresent(match -> logStartPointMatch(point, match));
@@ -87,8 +130,7 @@ public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiD
     }
 
     private void logStartPointMatch(Point point, CandidateMatch match) {
+
         log.debug("Found road section id: {} by latitude: {}, longitude {}", match.getMatchedLinkId(), point.getY(), point.getX());
     }
-
-
 }

@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.EdgeIteratorState;
@@ -97,6 +98,9 @@ class RoadSectionMapperTest {
             validateSegments(roadSectionFragment.getForwardSegment(), roadSectionFragment, Direction.FORWARD, trafficSignForward);
             assertThat(roadSectionFragment.getBackwardSegment()).isNull();
         }
+
+        // Done because this needs to be a modifiable collection.
+        assertThat(roadSections.add(mock(RoadSection.class))).isTrue();
     }
 
     @SuppressWarnings("unchecked")

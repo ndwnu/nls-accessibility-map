@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers;
 
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -62,7 +63,7 @@ public class RoadSectionMapper {
                     roadSectionFragmentById);
         });
 
-        return roadSectionsById.values();
+        return new ArrayList<>(roadSectionsById.values());
     }
 
     private static List<TrafficSign> getTrafficSigns(

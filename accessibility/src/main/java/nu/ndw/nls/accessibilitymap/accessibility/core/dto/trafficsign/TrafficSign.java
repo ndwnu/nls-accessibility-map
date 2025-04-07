@@ -22,7 +22,6 @@ public record TrafficSign(
         @NotNull Double longitude,
         @NotNull Direction direction,
         @NotNull Double fraction,
-        String zoneCode,
         URI iconUri,
         Double blackCode,
         @NotNull List<TextSign> textSigns,
