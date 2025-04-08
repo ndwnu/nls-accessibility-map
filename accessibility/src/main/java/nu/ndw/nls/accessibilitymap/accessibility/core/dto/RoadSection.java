@@ -84,14 +84,7 @@ public final class RoadSection {
 
     }
 
-    /**
-     * Merges the forward geometry of all directional segments within the collection of road section fragments into a single LineString
-     * representation.
-     *
-     * @return the merged LineString of all forward directional segments in the current road section
-     * @throws IllegalStateException if no forward geometry can be found
-     */
-    public LineString getMergedForwardGeometry() {
+    public LineString getForwardGeometry() {
         if (!hasForwardSegments()) {
             throw new IllegalStateException("no forward geometry found for road section " + id);
         }
@@ -99,18 +92,11 @@ public final class RoadSection {
                 .map(RoadSectionFragment::getForwardSegment)
                 .map(DirectionalSegment::getLineString)
                 .collect(GeometryCollectors.mergeToLineString())
-                .orElseThrow(() -> new IllegalStateException("no forward geometry found for road section " + id));
+                .orElseThrow(() -> new IllegalStateException("invalid forward geometry found for road section " + id));
     }
 
 
-    /**
-     * Merges the backward geometry of all directional segments within the collection of road section fragments into a single LineString
-     * representation.
-     *
-     * @return the merged LineString of all backward directional segments in the current road section
-     * @throws IllegalStateException if no backward geometry can be found
-     */
-    public LineString getMergedBackWardGeometry() {
+    public LineString getBackWardGeometry() {
         if (!hasBackwardSegments()) {
             throw new IllegalStateException("no backward geometry found for road section " + id);
         }
@@ -118,6 +104,7 @@ public final class RoadSection {
                 .map(RoadSectionFragment::getBackwardSegment)
                 .map(DirectionalSegment::getLineString)
                 .collect(GeometryCollectors.mergeToLineString())
-                .orElseThrow(() -> new IllegalStateException("no backward geometry found for road section " + id));
+                .orElseThrow(() -> new IllegalStateException("invalid backward geometry found for road section " + id));
     }
+
 }
