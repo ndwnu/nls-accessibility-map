@@ -46,41 +46,37 @@ public class RoadSectionFeatureV2Mapper {
 
         if (roadSection.hasForwardSegments()) {
             boolean matchesAccessibleFilter = getForwardFilter(accessible).test(roadSection);
-            boolean isMatched = mapMatched(roadSection, startPointRequested, startPointMatch, false) != null;
+            boolean isMatched = startPointRequested && mapMatched(roadSection, startPointMatch, true);
             if (isMatched || matchesAccessibleFilter) {
                 features.add(new RoadSectionFeatureJson(
                         RoadSectionFeatureJson.TypeEnum.FEATURE,
                         Math.toIntExact(roadSection.getId()),
                         jtsLineStringJsonMapper.map(roadSection.getForwardGeometry()),
                         new RoadSectionPropertiesJson(roadSection.isForwardAccessible(),
-                                mapMatched(roadSection, startPointRequested, startPointMatch, true))));
+                                isMatched)));
             }
         }
         if (roadSection.hasBackwardSegments()) {
             boolean matchesAccessibleFilter = getBackwardFilter(accessible).test(roadSection);
-            boolean isMatched = mapMatched(roadSection, startPointRequested, startPointMatch, false) != null;
+            boolean isMatched = startPointRequested && mapMatched(roadSection, startPointMatch, false);
             if (isMatched || matchesAccessibleFilter) {
                 features.add(new RoadSectionFeatureJson(
                         RoadSectionFeatureJson.TypeEnum.FEATURE,
                         Math.toIntExact(-roadSection.getId()),
                         jtsLineStringJsonMapper.map(roadSection.getBackwardGeometry()),
                         new RoadSectionPropertiesJson(roadSection.isBackwardAccessible(),
-                                mapMatched(roadSection, startPointRequested, startPointMatch, false))));
+                                isMatched)));
             }
         }
 
         return features;
     }
 
-    private static @Nullable Boolean mapMatched(
+    private static boolean mapMatched(
             RoadSection roadSection,
-            boolean startPointPresent,
             @Nullable CandidateMatch startPointMatch,
             boolean forward
     ) {
-        if (!startPointPresent) {
-            return null;
-        }
 
         if (startPointMatch == null) {
             return false;
