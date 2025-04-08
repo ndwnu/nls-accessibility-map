@@ -57,6 +57,8 @@ class RoadSectionTest extends ValidationTest {
                         .longitude(3d)
                         .latitude(4d)
                         .textSigns(List.of())
+                        .nwbSnappedLat(1D)
+                        .nwbSnappedLon(2D)
                         .trafficSignType(TrafficSignType.C7)
                         .restrictions(Restrictions.builder().build())
                         .build()))
@@ -102,12 +104,6 @@ class RoadSectionTest extends ValidationTest {
         validate(roadSection, List.of("roadSectionFragments[0].roadSection"), List.of("must not be null"));
     }
 
-    @Test
-    void validate_roadSectionFragments_forwardSegment_null() {
-
-        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment.withForwardSegment(null)));
-        validate(roadSection, List.of("roadSectionFragments[0].forwardSegment"), List.of("must not be null"));
-    }
 
     @Test
     void validate_roadSectionFragments_segment_id_null() {

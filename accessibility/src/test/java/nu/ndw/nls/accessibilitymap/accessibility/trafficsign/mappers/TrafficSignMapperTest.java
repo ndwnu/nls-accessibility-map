@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +21,7 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
+import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.geojson.Point;
@@ -32,6 +34,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.NullSource;
+import org.locationtech.jts.geom.Coordinate;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
@@ -40,6 +43,8 @@ import org.springframework.stereotype.Component;
 @ExtendWith(MockitoExtension.class)
 class TrafficSignMapperTest {
 
+    private static final double DEFAULT_X_COORDINATE = 1d;
+    private static final double DEFAULT_Y_COORDINATE = 2d;
     private TrafficSignMapper trafficSignMapper;
 
 
@@ -57,6 +62,11 @@ class TrafficSignMapperTest {
 
     @Mock
     private Restrictions restrictions;
+
+    @Mock
+    private CoordinateAndBearing coordinateAndBearing;
+    @Mock
+    private Coordinate coordinate;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -88,6 +98,8 @@ class TrafficSignMapperTest {
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign -> trafficSign.trafficSignType() == trafficSignType)))
                 .thenReturn(restrictions);
 
+        setupFixtureForNwbSnap();
+
         trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
@@ -96,6 +108,7 @@ class TrafficSignMapperTest {
 
         validateTrafficSign(trafficSign.get());
     }
+
 
     @ParameterizedTest
     @EnumSource(value = TrafficSignType.class, mode = Mode.INCLUDE, names = {"C17", "C18", "C19", "C20", "C21"})
@@ -148,7 +161,7 @@ class TrafficSignMapperTest {
         ).thenReturn(restrictions);
 
         trafficSignGeoJsonDto.getProperties().setBlackCode("invalid");
-
+        setupFixtureForNwbSnap();
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -173,7 +186,7 @@ class TrafficSignMapperTest {
         ).thenReturn(restrictions);
 
         trafficSignGeoJsonDto.getProperties().setZoneCode(zoneCodeString);
-
+        setupFixtureForNwbSnap();
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -208,6 +221,7 @@ class TrafficSignMapperTest {
         ).thenReturn(restrictions);
 
         trafficSignGeoJsonDto.getProperties().setZoneCode(null);
+        setupFixtureForNwbSnap();
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
                 trafficSignGeoJsonDto,
@@ -222,6 +236,7 @@ class TrafficSignMapperTest {
     void mapFromTrafficSignGeoJsonDto_allDirections(DirectionType directionType) {
 
         if (directionType != DirectionType.BOTH) {
+            setupFixtureForNwbSnap();
             when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                     trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
             ).thenReturn(restrictions);
@@ -302,12 +317,21 @@ class TrafficSignMapperTest {
         assertThat(trafficSign.textSigns()).isEqualTo(trafficSignGeoJsonDto.getProperties().getTextSigns());
         assertThat(trafficSign.iconUri()).isEqualTo(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()));
         assertThat(trafficSign.restrictions()).isEqualTo(restrictions);
-
+        assertThat(trafficSign.nwbSnappedLat()).isEqualTo(DEFAULT_Y_COORDINATE);
+        assertThat(trafficSign.nwbSnappedLon()).isEqualTo(DEFAULT_X_COORDINATE);
         if (trafficSignGeoJsonDto.getProperties().getBlackCode().equals("invalid")) {
             assertThat(trafficSign.blackCode()).isNull();
         } else {
             assertThat(trafficSign.blackCode()).isEqualTo(Double.parseDouble(trafficSignGeoJsonDto.getProperties().getBlackCode()));
         }
+    }
+
+    private void setupFixtureForNwbSnap() {
+        when(nwbRoadSectionSnapService.snapTrafficSign(any()))
+                .thenReturn(Optional.of(coordinateAndBearing));
+        when(coordinateAndBearing.coordinate()).thenReturn(coordinate);
+        when(coordinate.getX()).thenReturn(DEFAULT_X_COORDINATE);
+        when(coordinate.getY()).thenReturn(DEFAULT_Y_COORDINATE);
     }
 
     private Direction createDirection(DirectionType drivingDirection) {
