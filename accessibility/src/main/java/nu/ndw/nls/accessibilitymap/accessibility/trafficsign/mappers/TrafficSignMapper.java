@@ -60,8 +60,8 @@ public class TrafficSignMapper {
                             .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
                             .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
                             .build())
-                    .orElse(finalTrafficSign);
-            return Optional.of(trafficSign);
+                    .orElse(null);
+            return Optional.ofNullable(trafficSign);
         } catch (RuntimeException exception) {
             log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
                     trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto, exception);
