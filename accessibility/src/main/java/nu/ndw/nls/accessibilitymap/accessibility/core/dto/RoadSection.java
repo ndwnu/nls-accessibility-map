@@ -50,38 +50,15 @@ public final class RoadSection {
                 .anyMatch(Objects::nonNull);
     }
 
-    /**
-     * Evaluates the forward accessibility of the road section by examining all associated road section fragments. If any fragment
-     * explicitly indicates restricted forward accessibility, the method returns false. If all fragments are forwardly accessible, the
-     * method returns true.
-     *
-     * @return true if all fragments in the road section are forwardly accessible; false if any fragment is not forwardly accessible.
-     */
     public boolean isForwardAccessible() {
 
         return roadSectionFragments.stream()
-                .map(RoadSectionFragment::isForwardAccessible)
-                .filter(accessible -> !accessible)
-                .findFirst()
-                .orElse(true);
-
+                .allMatch(RoadSectionFragment::isForwardAccessible);
     }
 
-    /**
-     * Determines if the road section is backward accessible by evaluating the backward accessibility of all associated road section
-     * fragments. If any fragment explicitly indicates restricted backward accessibility, the method returns false. If all fragments are
-     * backward accessible, the method returns true.
-     *
-     * @return true if all fragments in the road section are backward accessible; false if any fragment is not backward accessible.
-     */
     public boolean isBackwardAccessible() {
         return roadSectionFragments.stream()
-                .map(RoadSectionFragment::isBackwardAccessible)
-                .filter(accessible -> !accessible)
-                .findFirst()
-                .orElse(true);
-
-
+                .allMatch(RoadSectionFragment::isBackwardAccessible);
     }
 
     public LineString getForwardGeometry() {
@@ -95,8 +72,7 @@ public final class RoadSection {
                 .orElseThrow(() -> new IllegalStateException("invalid forward geometry found for road section " + id));
     }
 
-
-    public LineString getBackWardGeometry() {
+    public LineString getBackwardGeometry() {
         if (!hasBackwardSegments()) {
             throw new IllegalStateException("no backward geometry found for road section " + id);
         }

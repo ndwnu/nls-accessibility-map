@@ -37,8 +37,8 @@ public class TrafficSignSnapMapper {
     private Optional<Snap> buildSnap(TrafficSign trafficSign) {
         Snap snap = networkGraphHopper.getLocationIndex()
                 .findClosest(
-                        trafficSign.nwbSnappedLat(),
-                        trafficSign.nwbSnappedLon(),
+                        trafficSign.networkSnappedLatitude(),
+                        trafficSign.networkSnappedLongitude(),
                         edgeIteratorState -> trafficSignMatchesEdge(trafficSign, edgeIteratorState)
                 );
         if (!snap.isValid()) {

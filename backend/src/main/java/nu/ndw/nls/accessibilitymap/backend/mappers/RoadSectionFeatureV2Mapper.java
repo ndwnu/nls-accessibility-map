@@ -63,7 +63,7 @@ public class RoadSectionFeatureV2Mapper {
                 features.add(new RoadSectionFeatureJson(
                         RoadSectionFeatureJson.TypeEnum.FEATURE,
                         Math.toIntExact(-roadSection.getId()),
-                        jtsLineStringJsonMapper.map(roadSection.getBackWardGeometry()),
+                        jtsLineStringJsonMapper.map(roadSection.getBackwardGeometry()),
                         new RoadSectionPropertiesJson(roadSection.isBackwardAccessible(),
                                 mapMatched(roadSection, startPointRequested, startPointMatch, false))));
             }

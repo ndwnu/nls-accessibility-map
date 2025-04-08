@@ -111,7 +111,7 @@ public class AccessibilityMapApiV2DelegateImpl implements AccessibilityMapV2ApiD
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 accessibilityRequest,
                 addMissingRoadSectionsForMunicipality(municipality));
-        
+
         return ResponseEntity.ok(roadSectionFeatureCollectionV2Mapper.map(accessibility, startPointPresent, startPointMatch, accessible));
     }
 

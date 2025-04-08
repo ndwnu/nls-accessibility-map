@@ -62,8 +62,8 @@
 //                .longitude(LONGITUDE)
 //                .direction(null)
 //                .fraction(FRACTION)
-//                .nwbSnappedLon(NWB_SNAPPED_LON)
-//                .nwbSnappedLat(NWB_SNAPPED_LAT)
+//                .networkSnappedLongitude(NWB_SNAPPED_LON)
+//                .networkSnappedLatitude(NWB_SNAPPED_LAT)
 //                .textSigns(List.of())
 //                .restrictions(null)
 //                .build();
@@ -101,8 +101,8 @@
 //                .longitude(5.0)
 //                .direction(null)
 //                .fraction(0.5)
-//                .nwbSnappedLon(5.1)
-//                .nwbSnappedLat(52.2)
+//                .networkSnappedLongitude(5.1)
+//                .networkSnappedLatitude(52.2)
 //                .textSigns(List.of())
 //                .restrictions(null)
 //                .build();
@@ -128,8 +128,8 @@
 //                .longitude(6.0)
 //                .direction(null)
 //                .fraction(0.3)
-//                .nwbSnappedLon(6.1)
-//                .nwbSnappedLat(51.2)
+//                .networkSnappedLongitude(6.1)
+//                .networkSnappedLatitude(51.2)
 //                .textSigns(List.of())
 //                .restrictions(null)
 //                .build();
