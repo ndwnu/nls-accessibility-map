@@ -53,7 +53,7 @@ public class RoadSectionFeatureV2Mapper {
                         Math.toIntExact(roadSection.getId()),
                         jtsLineStringJsonMapper.map(roadSection.getForwardGeometry()),
                         new RoadSectionPropertiesJson(roadSection.isForwardAccessible(),
-                                isMatched)));
+                                isMatched? true : null)));
             }
         }
         if (roadSection.hasBackwardSegments()) {
@@ -65,7 +65,7 @@ public class RoadSectionFeatureV2Mapper {
                         Math.toIntExact(-roadSection.getId()),
                         jtsLineStringJsonMapper.map(roadSection.getBackwardGeometry()),
                         new RoadSectionPropertiesJson(roadSection.isBackwardAccessible(),
-                                isMatched)));
+                                isMatched? true : null)));
             }
         }
 
