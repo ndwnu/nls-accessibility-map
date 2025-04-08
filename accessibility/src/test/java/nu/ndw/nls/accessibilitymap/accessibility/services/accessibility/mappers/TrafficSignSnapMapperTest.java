@@ -15,14 +15,12 @@ import com.graphhopper.util.EdgeIteratorState;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
-import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto.Id;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.locationtech.jts.geom.Coordinate;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -107,8 +105,8 @@ class TrafficSignSnapMapperTest {
     private void setupBaseFixture() {
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
-        when(trafficSign.nwbSnappedLon()).thenReturn(X_COORDINATE);
-        when(trafficSign.nwbSnappedLat()).thenReturn(Y_COORDINATE);
+        when(trafficSign.networkSnappedLongitude()).thenReturn(X_COORDINATE);
+        when(trafficSign.networkSnappedLatitude()).thenReturn(Y_COORDINATE);
         when(locationIndexTree.findClosest(eq(Y_COORDINATE), eq(X_COORDINATE), edgeFilterCaptor.capture())).thenReturn(snap);
     }
 

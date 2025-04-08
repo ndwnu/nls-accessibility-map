@@ -69,28 +69,37 @@ public class RoadSectionFragment {
                 .noneMatch(DirectionalSegment::isAccessible);
     }
 
-
     public boolean isPartiallyAccessible() {
 
         return getSegments().stream().anyMatch(DirectionalSegment::isAccessible)
                 && getSegments().stream().anyMatch(directionalSegment -> !directionalSegment.isAccessible());
     }
 
-    public Boolean isForwardAccessible() {
-        return forwardSegment.isAccessible();
+    public boolean hasForwardSegment() {
+
+        return Objects.nonNull(forwardSegment);
     }
 
-    public Boolean hasBackwardSegment() {
+    public boolean isForwardAccessible() {
+
+        if (!hasForwardSegment()) {
+            return false;
+        } else {
+            return forwardSegment.isAccessible();
+        }
+    }
+
+    public boolean hasBackwardSegment() {
+
         return Objects.nonNull(backwardSegment);
     }
 
-    public Boolean isBackwardAccessible() {
+    public boolean isBackwardAccessible() {
 
         if (!hasBackwardSegment()) {
-            return null;
+            return false;
         } else {
             return backwardSegment.isAccessible();
         }
-
     }
 }

@@ -317,8 +317,8 @@ class TrafficSignMapperTest {
         assertThat(trafficSign.textSigns()).isEqualTo(trafficSignGeoJsonDto.getProperties().getTextSigns());
         assertThat(trafficSign.iconUri()).isEqualTo(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()));
         assertThat(trafficSign.restrictions()).isEqualTo(restrictions);
-        assertThat(trafficSign.nwbSnappedLat()).isEqualTo(DEFAULT_Y_COORDINATE);
-        assertThat(trafficSign.nwbSnappedLon()).isEqualTo(DEFAULT_X_COORDINATE);
+        assertThat(trafficSign.networkSnappedLatitude()).isEqualTo(DEFAULT_Y_COORDINATE);
+        assertThat(trafficSign.networkSnappedLongitude()).isEqualTo(DEFAULT_X_COORDINATE);
         if (trafficSignGeoJsonDto.getProperties().getBlackCode().equals("invalid")) {
             assertThat(trafficSign.blackCode()).isNull();
         } else {
