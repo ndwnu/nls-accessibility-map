@@ -57,8 +57,8 @@ public class TrafficSignMapper {
             trafficSign = nwbRoadSectionSnapService.snapTrafficSign(trafficSign)
                     .map(coordinateAndBearing -> finalTrafficSign
                             .toBuilder()
-                            .nwbSnappedLat(coordinateAndBearing.coordinate().getY())
-                            .nwbSnappedLon(coordinateAndBearing.coordinate().getX())
+                            .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
+                            .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
                             .build())
                     .orElse(finalTrafficSign);
             return Optional.of(trafficSign);
