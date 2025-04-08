@@ -14,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
+import nu.ndw.nls.accessibilitymap.accessibility.services.NwbRoadSectionSnapService;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
@@ -41,9 +42,12 @@ class TrafficSignMapperTest {
 
     private TrafficSignMapper trafficSignMapper;
 
+
     private TrafficSignGeoJsonDto trafficSignGeoJsonDto;
 
     private IntegerSequenceSupplier integerSequenceSupplier;
+    @Mock
+    private NwbRoadSectionSnapService nwbRoadSectionSnapService;
 
     @Mock
     private List<TextSign> textSigns;
@@ -74,7 +78,7 @@ class TrafficSignMapperTest {
                         .build())
                 .geometry(new Point(3d, 4d))
                 .build();
-        trafficSignMapper = new TrafficSignMapper(trafficSignRestrictionsBuilder);
+        trafficSignMapper = new TrafficSignMapper(trafficSignRestrictionsBuilder,nwbRoadSectionSnapService);
     }
 
     @ParameterizedTest

@@ -10,7 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import org.springframework.validation.annotation.Validated;
 
-@Builder
+@Builder(toBuilder = true)
 @With
 @Validated
 public record TrafficSign(
@@ -22,6 +22,8 @@ public record TrafficSign(
         @NotNull Double longitude,
         @NotNull Direction direction,
         @NotNull Double fraction,
+        @NotNull  Double nwbSnappedLon,
+        @NotNull  Double nwbSnappedLat,
         URI iconUri,
         Double blackCode,
         @NotNull List<TextSign> textSigns,

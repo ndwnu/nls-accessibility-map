@@ -16,6 +16,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
+import nu.ndw.nls.accessibilitymap.accessibility.services.NwbRoadSectionSnapService;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Component;
 public class TrafficSignMapper {
 
     private final TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
+    private final NwbRoadSectionSnapService nwbRoadSectionSnapService;
 
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
             TrafficSignGeoJsonDto trafficSignGeoJsonDto,
@@ -35,14 +37,13 @@ public class TrafficSignMapper {
 
         try {
             TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode());
-            Direction direction = createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection());
             TrafficSign trafficSign = TrafficSign.builder()
                     .id(integerSequenceSupplier.next())
                     .externalId(trafficSignGeoJsonDto.getId().toString())
                     .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
                     .trafficSignType(type)
                     .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
-                    .fraction(mapFraction(trafficSignGeoJsonDto.getProperties().getFraction(), direction))
+                    .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
                     .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
                     .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
                     .iconUri(createUri(trafficSignGeoJsonDto.getProperties().getImageUrl()))
@@ -51,9 +52,15 @@ public class TrafficSignMapper {
                     .trafficSignOrderUrl(createUri(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl()))
                     .blackCode(mapToBlackCode(trafficSignGeoJsonDto, type))
                     .build();
-
             trafficSign = trafficSign.withRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign));
-
+            TrafficSign finalTrafficSign = trafficSign;
+            trafficSign = nwbRoadSectionSnapService.snapTrafficSign(trafficSign)
+                    .map(coordinateAndBearing -> finalTrafficSign
+                            .toBuilder()
+                            .nwbSnappedLat(coordinateAndBearing.coordinate().getY())
+                            .nwbSnappedLon(coordinateAndBearing.coordinate().getX())
+                            .build())
+                    .orElse(finalTrafficSign);
             return Optional.of(trafficSign);
         } catch (RuntimeException exception) {
             log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
@@ -77,9 +84,6 @@ public class TrafficSignMapper {
     }
 
     private static Direction createDirection(DirectionType drivingDirection) {
-        if (Objects.isNull(drivingDirection)) {
-            return Direction.FORWARD;
-        }
         return switch (drivingDirection) {
             case FORTH -> Direction.FORWARD;
             case BACK -> Direction.BACKWARD;
@@ -87,21 +91,7 @@ public class TrafficSignMapper {
                     "Driving direction '%s' could not be mapped.".formatted(drivingDirection));
         };
     }
-
-    Double mapFraction(Double fraction, Direction direction) {
-        if (Objects.isNull(fraction)) {
-            return Direction.FORWARD == direction ? 0.0 : 1.0;
-        }
-        if (fraction == 1.0 && Direction.FORWARD == direction) {
-            log.warn("incorrect fraction detected for traffic sign with id");
-            return 0.0;
-        } else if (fraction == 0.0 && Direction.BACKWARD == direction) {
-            log.warn("incorrect fraction detected for traffic sign with id");
-            return 1.0;
-        }
-        return fraction;
-    }
-
+//
     private static URI createUri(String value) {
         if (Objects.isNull(value)) {
             return null;
