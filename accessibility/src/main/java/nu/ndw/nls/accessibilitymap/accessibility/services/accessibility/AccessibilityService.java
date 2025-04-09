@@ -76,17 +76,24 @@ public class AccessibilityService {
 
         OffsetDateTime startTime = clockService.now();
         List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
+        log.info("Building snaps took: %s ms"
+                .formatted(ChronoUnit.MILLIS.between(startTime, clockService.now())));
         Point startPoint = createPoint(
                 accessibilityRequest.startLocationLatitude(),
                 accessibilityRequest.startLocationLongitude());
         Snap startSegment = networkGraphHopper.getLocationIndex()
                 .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
+        OffsetDateTime startTime2 = clockService.now();
         QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
-
+        log.info("Building query graph took: %s ms"
+                .formatted(ChronoUnit.MILLIS.between(startTime2, clockService.now())));
+        OffsetDateTime startTime3 = clockService.now();
         var edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
-
+        log.info("Building edge restrictions took: %s ms"
+                .formatted(ChronoUnit.MILLIS.between(startTime3, clockService.now())));
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
+        OffsetDateTime startTime4 = clockService.now();
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 getRoadSections(
                         accessibilityRequest,
@@ -120,8 +127,8 @@ public class AccessibilityService {
                                 accessibleRoadSectionsWithAppliedRestrictions))
                 .build();
 
-        log.debug("Accessibility generation done. It took: %s ms"
-                .formatted(ChronoUnit.MILLIS.between(startTime, clockService.now())));
+        log.info("Accessibility calculation done. It took: %s ms"
+                .formatted(ChronoUnit.MILLIS.between(startTime4, clockService.now())));
         return accessibility;
     }
 
