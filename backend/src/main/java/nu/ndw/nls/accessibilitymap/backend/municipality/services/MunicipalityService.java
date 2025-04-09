@@ -1,9 +1,9 @@
 package nu.ndw.nls.accessibilitymap.backend.municipality.services;
 
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.exceptions.MunicipalityNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityConfiguration;
+import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import org.springframework.stereotype.Service;
 
 @Service

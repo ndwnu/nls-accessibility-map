@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class AccessibilityRoutingNetworkEventMapper {
 
-    public NlsEvent map(int nwbVersionId, Instant trafficSignTimestamp) {
+    public NlsEvent map(int nwbVersionId, Instant dataTimestamp) {
         return NlsEvent.builder()
                 .type(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED)
                 .subject(NlsEventSubject.builder()
                         .type(NlsEventSubjectType.ACCESSIBILITY_ROUTING_NETWORK)
                         .nwbVersion(String.valueOf(nwbVersionId))
-                        .timestamp(trafficSignTimestamp.toString())
+                        .timestamp(dataTimestamp.toString())
                         .build())
                 .build();
     }

@@ -3,12 +3,9 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.value
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class MaximumTest {
 
     @ParameterizedTest

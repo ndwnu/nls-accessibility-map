@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import java.io.IOException;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.AccessibilityNetworkService;
-import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperProperties;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
@@ -36,9 +35,6 @@ class CreateOrUpdateNetworkCommandTest {
     private AccessibilityNetworkService accessibilityNetworkService;
 
     @Mock
-    private GraphHopperProperties graphHopperProperties;
-
-    @Mock
     private MessageService messageService;
 
     @RegisterExtension
@@ -47,34 +43,12 @@ class CreateOrUpdateNetworkCommandTest {
     @BeforeEach
     void setUp() {
 
-        createOrUpdateNetworkCommand = new CreateOrUpdateNetworkCommand(accessibilityNetworkService, graphHopperProperties, messageService);
+        createOrUpdateNetworkCommand = new CreateOrUpdateNetworkCommand(accessibilityNetworkService, messageService);
     }
 
     @Test
-    void call_withTrafficSigns() throws IOException {
+    void call() throws IOException {
 
-        when(graphHopperProperties.isWithTrafficSigns()).thenReturn(true);
-
-        assertThat(new CommandLine(createOrUpdateNetworkCommand).execute()).isZero();
-
-        verify(accessibilityNetworkService).storeLatestNetworkOnDisk();
-    }
-
-    @Test
-    void call_withTrafficSigns_unableToStoreNetwork() throws IOException {
-
-        when(graphHopperProperties.isWithTrafficSigns()).thenReturn(true);
-        doThrow(new RuntimeException("error")).when(accessibilityNetworkService).storeLatestNetworkOnDisk();
-
-        assertThat(new CommandLine(createOrUpdateNetworkCommand).execute()).isOne();
-
-        loggerExtension.containsLog(Level.ERROR, "And error occurred while creating or updating latest network", "error");
-    }
-
-    @Test
-    void call_withoutTrafficSigns() throws IOException {
-
-        when(graphHopperProperties.isWithTrafficSigns()).thenReturn(false);
         when(messageService.receive(eq(NlsEventType.NWB_IMPORTED_EVENT), any())).thenAnswer(answer -> {
             NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
             return MessageConsumeResult.builder()
@@ -88,9 +62,8 @@ class CreateOrUpdateNetworkCommandTest {
     }
 
     @Test
-    void call_withoutTrafficSigns_unableToStoreNetwork() throws IOException {
+    void call_unableToStoreNetwork() throws IOException {
 
-        when(graphHopperProperties.isWithTrafficSigns()).thenReturn(false);
         when(messageService.receive(eq(NlsEventType.NWB_IMPORTED_EVENT), any())).thenAnswer(answer -> {
             NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
             return MessageConsumeResult.builder()

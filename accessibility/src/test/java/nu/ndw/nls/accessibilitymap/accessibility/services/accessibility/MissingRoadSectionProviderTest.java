@@ -8,8 +8,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionsService;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityRoadSectionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,7 +24,7 @@ class MissingRoadSectionProviderTest {
     private MissingRoadSectionProvider missingRoadSectionProvider;
 
     @Mock
-    private AccessibleRoadSectionsService accessibleRoadSectionsService;
+    private AccessibilityRoadSectionsService accessibilityRoadSectionsService;
 
     @Mock
     private LineString roadSection1LineString;
@@ -60,7 +60,7 @@ class MissingRoadSectionProviderTest {
                 ))
                 .build();
 
-        missingRoadSectionProvider = new MissingRoadSectionProvider(accessibleRoadSectionsService);
+        missingRoadSectionProvider = new MissingRoadSectionProvider(accessibilityRoadSectionsService);
     }
 
     @ParameterizedTest
@@ -72,14 +72,14 @@ class MissingRoadSectionProviderTest {
 
         when(roadSection2LineString.reverse()).thenReturn(roadSection2LineStringBackwards);
 
-        when(accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(123)).thenReturn(List.of(
-                AccessibilityRoadSection.builder()
+        when(accessibilityRoadSectionsService.getRoadSectionsByMunicipalityId(123)).thenReturn(List.of(
+                AccessibilityNwbRoadSection.builder()
                         .roadSectionId(1)
                         .backwardAccessible(true)
                         .forwardAccessible(true)
                         .geometry(roadSection1LineString)
                         .build(),
-                AccessibilityRoadSection.builder()
+                AccessibilityNwbRoadSection.builder()
                         .roadSectionId(45648)
                         .backwardAccessible(true)
                         .forwardAccessible(true)

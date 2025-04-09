@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.LocalDate;
-import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.backend.core.dto.response.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import org.junit.jupiter.api.BeforeEach;

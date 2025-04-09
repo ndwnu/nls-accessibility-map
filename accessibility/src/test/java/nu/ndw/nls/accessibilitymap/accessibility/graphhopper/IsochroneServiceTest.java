@@ -20,7 +20,8 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.function.Consumer;
 import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
@@ -42,9 +43,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class IsochroneServiceTest {
 
     private static final int ROOT_ID = -1;
+
     private static final double ISOCHRONE_VALUE_METERS = 200D;
+
     private static final int START_NODE_ID = 1;
+
     private static final int MUNICIPALITY_ID = 1;
+
     private static final String MUNICIPALITY_CODE_KEY = "municipality_code";
 
     private static final int LINK_ID = 5;
@@ -84,6 +89,7 @@ class IsochroneServiceTest {
 
     @Mock
     private IntEncodedValue idIntEncodedValue;
+
     @Mock
     private Weighting weighting;
 
@@ -116,7 +122,7 @@ class IsochroneServiceTest {
                 ISOCHRONE_VALUE_METERS,
                 IsochroneUnit.METERS,
                 false,
-                false,LINK_ID))
+                false, LINK_ID))
                 .thenReturn(isochroneAlgorithm);
 
         when(queryGraph.getEdgeIteratorState(anyInt(), anyInt())).thenReturn(currentEdge);

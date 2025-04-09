@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.accessibility;
 
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.model.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import org.mockito.ArgumentMatcher;
 
 @RequiredArgsConstructor

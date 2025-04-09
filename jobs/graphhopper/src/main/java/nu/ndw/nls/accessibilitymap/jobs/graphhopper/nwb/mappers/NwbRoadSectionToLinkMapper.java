@@ -1,28 +1,17 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper.nwb.mappers;
 
-import java.util.List;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignAccessibilityDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.jobs.graphhopper.trafficsign.mappers.TrafficSignToDtoMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class NwbRoadSectionToLinkMapper {
 
     private static final String BACKWARD = "T";
+
     private static final String FORWARD = "H";
-
-    @Autowired
-    private TrafficSignToDtoMapper trafficSignToDtoMapper;
-
-    public AccessibilityLink map(NwbRoadSectionDto roadSectionDto, List<TrafficSignGeoJsonDto> trafficSigns) {
-        return this.map(roadSectionDto, trafficSignToDtoMapper.map(trafficSigns));
-    }
 
     @Mapping(source = "roadSection.roadSectionId", target = "id")
     @Mapping(source = "roadSection.junctionIdFrom", target = "fromNodeId")
@@ -30,7 +19,7 @@ public abstract class NwbRoadSectionToLinkMapper {
     @Mapping(source = "roadSection.geometry.length", target = "distanceInMeters")
     @Mapping(source = "roadSection.municipalityId", target = "municipalityCode")
     @Mapping(source = "roadSection.drivingDirection", target = "accessibility")
-    protected abstract AccessibilityLink map(NwbRoadSectionDto roadSection, TrafficSignAccessibilityDto accessibility);
+    public abstract AccessibilityLink map(NwbRoadSectionDto roadSection);
 
     protected DirectionalDto<Boolean> getAccessibility(String drivingDirection) {
         return DirectionalDto.<Boolean>builder()
@@ -38,5 +27,4 @@ public abstract class NwbRoadSectionToLinkMapper {
                 .reverse(!FORWARD.equals(drivingDirection))
                 .build();
     }
-
 }

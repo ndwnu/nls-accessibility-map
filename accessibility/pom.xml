@@ -11,11 +11,6 @@
     <dependencies>
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <artifactId>shared</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>nu.ndw.nls.accessibilitymap</groupId>
             <artifactId>trafficsignclient</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
@@ -26,6 +21,11 @@
         <dependency>
             <groupId>nu.ndw.nls.geometry</groupId>
             <artifactId>nls-geometry</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

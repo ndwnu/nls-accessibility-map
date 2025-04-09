@@ -11,14 +11,13 @@ import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.TrafficSignAnalyserService;
-import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +38,7 @@ class AnalyseCommandTest {
     private AnalyseCommand analyseCommand;
 
     @Mock
-    private AccessibilityConfiguration accessibilityConfiguration;
+    private GraphhopperConfiguration graphhopperConfiguration;
 
     @Mock
     private AnalyserConfiguration analyserConfiguration;
@@ -51,10 +50,7 @@ class AnalyseCommandTest {
     private TrafficSignAnalyserService trafficSignAnalyserService;
 
     @Mock
-    private AccessibilityGraphhopperMetaData accessibilityGraphhopperMetaData;
-
-    @Mock
-    private AccessibilityRequest accessibilityRequest;
+    private GraphhopperMetaData graphhopperMetaData;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -62,7 +58,7 @@ class AnalyseCommandTest {
     @BeforeEach
     void setUp() {
 
-        analyseCommand = new AnalyseCommand(accessibilityConfiguration, analyserConfiguration, clockService, trafficSignAnalyserService);
+        analyseCommand = new AnalyseCommand(graphhopperConfiguration, analyserConfiguration, clockService, trafficSignAnalyserService);
     }
 
     @ParameterizedTest
@@ -71,8 +67,8 @@ class AnalyseCommandTest {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
-        when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
-        when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
+        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
 
         when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
@@ -106,8 +102,8 @@ class AnalyseCommandTest {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
-        when(accessibilityConfiguration.accessibilityGraphhopperMetaData()).thenReturn(accessibilityGraphhopperMetaData);
-        when(accessibilityGraphhopperMetaData.nwbVersion()).thenReturn(123);
+        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
 
         when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);

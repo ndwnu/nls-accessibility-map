@@ -4,7 +4,7 @@ import com.esotericsoftware.kryo.kryo5.serializers.FieldSerializer.NotNull;
 import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.config.YamlPropertySourceFactory;
+import nu.ndw.nls.accessibilitymap.backend.core.yaml.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;

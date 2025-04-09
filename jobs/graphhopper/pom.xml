@@ -12,11 +12,6 @@
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
             <version>${project.parent.version}</version>
-            <artifactId>shared</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <version>${project.parent.version}</version>
             <artifactId>accessibility</artifactId>
         </dependency>
         <dependency>
@@ -184,7 +179,6 @@
                                         <argument>-d</argument>
                                         <argument>nls-postgres</argument>
                                         <argument>nls-rabbitmq</argument>
-                                        <argument>accessibility-wiremock-stub</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -278,38 +272,6 @@
                                         <argument>run</argument>
                                         <argument>-e</argument>
                                         <argument>COMMAND=configureRabbitMQ</argument>
-                                        <argument>nls-accessibility-map-graphhopper-job</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>create-or-update-network-no-traffic-signs-publish-event</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>bash</executable>
-                                    <commandlineArgs>scripts/publish-events.sh</commandlineArgs>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-compose-run-create-or-update-network-no-traffic-signs</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments combine.children="append">
-                                        <argument>run</argument>
-                                        <argument>-e</argument>
-                                        <argument>COMMAND=createOrUpdateNetwork</argument>
-                                        <argument>-e</argument>
-                                        <argument>GRAPHHOPPER_PUBLISHEVENTS=false</argument>
-                                        <argument>-e</argument>
-                                        <argument>GRAPHHOPPER_WITHTRAFFICSIGNS=false</argument>
-                                        <argument>-e</argument>
-                                        <argument>GRAPHHOPPER_NETWORKNAME=accessibility_latest_no_traffic_signs</argument>
                                         <argument>nls-accessibility-map-graphhopper-job</argument>
                                     </arguments>
                                 </configuration>

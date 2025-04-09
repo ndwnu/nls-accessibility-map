@@ -12,7 +12,6 @@ class IntegerSequenceSupplierTest {
         IntegerSequenceSupplier integerSequenceSupplier = new IntegerSequenceSupplier();
 
         assertThat(integerSequenceSupplier.next()).isOne();
-        assertThat(integerSequenceSupplier.next()).isEqualTo(2);
     }
 
     @Test

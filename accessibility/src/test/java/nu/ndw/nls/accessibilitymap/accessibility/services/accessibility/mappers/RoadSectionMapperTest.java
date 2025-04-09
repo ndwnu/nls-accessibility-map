@@ -26,10 +26,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class RoadSectionMapperTest {
 
     private static final int ROAD_SECTION_ID = 1;
-    private static final int EDGE_ID = 2;
-    private static final int EDGE_KEY = 3;
-    private RoadSectionMapper roadSectionMapper;
 
+    private static final int EDGE_ID = 2;
+
+    private static final int EDGE_KEY = 3;
+
+    private RoadSectionMapper roadSectionMapper;
 
     @Mock
     private IsochroneMatch isochroneMatch;
@@ -39,6 +41,7 @@ class RoadSectionMapperTest {
 
     @Mock
     private TrafficSign trafficSignForward;
+
     @Mock
     private TrafficSign trafficSignBackward;
 

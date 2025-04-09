@@ -14,6 +14,17 @@ public class GraphHopperStepDefinitions {
     @Given("a simple Graph Hopper network")
     public void graphHopperNetwork() {
 
+        buildSimpleNetwork().buildNetwork();
+    }
+
+    @Given("a simpel nwb network")
+    public void prepareNwbDatabaseNetwork() {
+
+        buildSimpleNetwork().buildNwbDatabaseNetwork();
+    }
+
+    private GraphHopperDriver buildSimpleNetwork() {
+
         /*
          6----5-----4
          |    |     |
@@ -25,7 +36,7 @@ public class GraphHopperStepDefinitions {
          |    |     |
          1----2-----3
          */
-        graphHopperDriver
+        return graphHopperDriver
                 .createNode(1, 1, 1)
                 .createNode(2, 5, 1)
                 .createNode(3, 10, 1)
@@ -47,7 +58,6 @@ public class GraphHopperStepDefinitions {
                 .createRoad(10, 11).createRoad(11, 7)
 
                 //Circle connections
-                .createRoad(8, 2).createRoad(5, 11)
-                .buildNetwork();
+                .createRoad(8, 2).createRoad(5, 11);
     }
 }

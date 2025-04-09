@@ -27,7 +27,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
-import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;

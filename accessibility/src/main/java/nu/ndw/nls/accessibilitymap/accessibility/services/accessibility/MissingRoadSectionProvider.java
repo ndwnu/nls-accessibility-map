@@ -12,8 +12,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.model.AccessibilityRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionsService;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityRoadSectionsService;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MissingRoadSectionProvider {
 
-    private final AccessibleRoadSectionsService accessibleRoadSectionsService;
+    private final AccessibilityRoadSectionsService accessibilityRoadSectionsService;
 
     public List<RoadSection> get(
             int municipalityId,
@@ -36,14 +36,14 @@ public class MissingRoadSectionProvider {
             int municipalityId,
             Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
             boolean isAccessible) {
-        List<AccessibilityRoadSection> municipalityRoadSections = accessibleRoadSectionsService.getRoadSectionsByMunicipalityId(
+        List<AccessibilityNwbRoadSection> municipalityRoadSections = accessibilityRoadSectionsService.getRoadSectionsByMunicipalityId(
                 municipalityId);
 
         var roadSectionsById = accessibleRoadsSectionsWithoutAppliedRestrictions.stream()
                 .collect(Collectors.groupingBy(RoadSection::getId));
 
-        Map<Long, List<AccessibilityRoadSection>> allNwbRoadSectionById = municipalityRoadSections.stream()
-                .collect(Collectors.groupingBy(AccessibilityRoadSection::getRoadSectionId));
+        Map<Long, List<AccessibilityNwbRoadSection>> allNwbRoadSectionById = municipalityRoadSections.stream()
+                .collect(Collectors.groupingBy(AccessibilityNwbRoadSection::getRoadSectionId));
 
         SetView<Long> missingBlockedRoadSectionIds = Sets.difference(allNwbRoadSectionById.keySet(), roadSectionsById.keySet());
 

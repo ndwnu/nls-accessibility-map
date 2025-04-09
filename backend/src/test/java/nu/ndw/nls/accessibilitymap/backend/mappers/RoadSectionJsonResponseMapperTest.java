@@ -2,7 +2,8 @@ package nu.ndw.nls.accessibilitymap.backend.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import nu.ndw.nls.accessibilitymap.accessibility.model.RoadSection;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.response.RoadSection;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.RoadSectionJsonResponseMapper;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
 import org.junit.jupiter.api.Test;
 

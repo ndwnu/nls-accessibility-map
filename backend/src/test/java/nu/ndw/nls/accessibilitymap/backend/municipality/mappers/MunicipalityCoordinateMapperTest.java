@@ -8,7 +8,7 @@ import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
 import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.backend.core.dto.response.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.Test;
