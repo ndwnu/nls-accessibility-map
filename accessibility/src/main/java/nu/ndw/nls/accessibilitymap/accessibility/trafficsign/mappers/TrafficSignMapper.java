@@ -6,6 +6,7 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Tra
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C20;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C21;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +31,7 @@ public class TrafficSignMapper {
 
     private final TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
     private final NwbRoadSectionSnapService nwbRoadSectionSnapService;
-
+    @Valid
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
             TrafficSignGeoJsonDto trafficSignGeoJsonDto,
             IntegerSequenceSupplier integerSequenceSupplier) {
@@ -60,8 +61,8 @@ public class TrafficSignMapper {
                             .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
                             .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
                             .build())
-                    .orElse(null);
-            return Optional.ofNullable(trafficSign);
+                    .orElse(finalTrafficSign);
+            return Optional.of(trafficSign);
         } catch (RuntimeException exception) {
             log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
                     trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto, exception);
