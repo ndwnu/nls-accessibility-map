@@ -269,7 +269,7 @@ class TrafficSignMapperTest {
         ).thenReturn(restrictions);
 
         trafficSignGeoJsonDto.getProperties().setImageUrl(imageUrl);
-
+        setupFixtureForNwbSnap();
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -284,7 +284,7 @@ class TrafficSignMapperTest {
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                 trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
         ).thenReturn(restrictions);
-
+        setupFixtureForNwbSnap();
         trafficSignGeoJsonDto.getProperties().setBlackCode(blackCode);
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
