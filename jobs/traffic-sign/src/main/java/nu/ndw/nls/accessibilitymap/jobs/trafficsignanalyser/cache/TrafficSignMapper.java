@@ -64,8 +64,6 @@ public class TrafficSignMapper {
                             .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
                             .build())
                     .orElse(finalTrafficSign);
-
-            //validate
             return Optional.of(trafficSign);
         } catch (RuntimeException exception) {
             log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
@@ -97,7 +95,6 @@ public class TrafficSignMapper {
         };
     }
 
-    //
     private static URI createUri(String value) {
         if (Objects.isNull(value)) {
             return null;
