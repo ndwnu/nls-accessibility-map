@@ -1,10 +1,13 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.AccessibleRoadSectionModifier;
 import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.MissingRoadSectionProvider;
@@ -51,6 +54,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private final MissingRoadSectionProvider accessibilityAddMissingBlockedRoadSections;
 
+    private final ClockService clockService;
+
     @Override
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
@@ -79,7 +84,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private AccessibleRoadSectionModifier addMissingRoadSectionsForMunicipality(Municipality municipality) {
         return (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions) -> {
-
+            OffsetDateTime startTime = clockService.now();
             List<RoadSection> missingRoadSections = accessibilityAddMissingBlockedRoadSections.get(
                     municipality.getMunicipalityIdInteger(),
                     roadsSectionsWithoutAppliedRestrictions,
@@ -87,6 +92,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
             roadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
             roadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
+            log.info("Added {} missing road sections in {} ms", missingRoadSections.size(),
+                    clockService.now().toInstant().toEpochMilli() - startTime.toInstant().toEpochMilli());
         };
     }
 
