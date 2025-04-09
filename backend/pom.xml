@@ -76,10 +76,6 @@
 
         <!--Additional dependencies-->
         <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxjava</artifactId>
-        </dependency>
-        <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
@@ -330,7 +326,29 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>docker-compose-run-ts-cache</id>
+                                <id>wait-for-rabbitmq</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../scripts/rabbit-isready.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>wait-for-database</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../scripts/pg-isready.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-traffic-sign-update-cache</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>exec</goal>
@@ -339,6 +357,43 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-graphhopper-configureRabbitMQ</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>nls-accessibility-map-graphhopper-configure-rabbitmq</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>publish-event-nwb-imported</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../scripts/publish-event-nwb-imported.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-graphhopper-createOrUpdateNetwork</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>nls-accessibility-map-graphhopper-job</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

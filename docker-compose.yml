@@ -49,6 +49,18 @@ services:
     networks:
       - nls-accessibility-map-network
 
+  nls-accessibility-map-graphhopper-configure-rabbitmq:
+    build: docker/nls-accessibility-map-graphhopper-job
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - COMMAND=configureRabbitMQ
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
+    volumes:
+      - ./.tmp/graphhopper:/application/graphhopper
+    networks:
+      - nls-accessibility-map-network
+
   nls-accessibility-map-generator-jobs:
     build: docker/nls-accessibility-map-generator-jobs
     environment:
@@ -125,28 +137,6 @@ services:
     command: --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
     ports:
       - "8888:8080"
-    networks:
-      - nls-accessibility-map-network
-
-  nls-messaging-configurator-graphhopper:
-    image: ndwnls.azurecr.io/nls-messaging-configurator:20240811.1
-    volumes:
-      - ./docker/nls-messaging-configurator/graphhopper/application.yml:/application/config/application.yml
-    environment:
-      COMMAND: configureRabbitMQ
-      MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED: false
-      NU_NDW_NLS_SPRINGBOOT_MESSAGING_BROKER_URI: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
-    networks:
-      - nls-accessibility-map-network
-
-  nls-messaging-configurator-mapgenerator:
-    image: ndwnls.azurecr.io/nls-messaging-configurator:20240811.1
-    volumes:
-      - ./docker/nls-messaging-configurator/mapgenerator/application.yml:/application/config/application.yml
-    environment:
-      COMMAND: configureRabbitMQ
-      MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED: false
-      NU_NDW_NLS_SPRINGBOOT_MESSAGING_BROKER_URI: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
     networks:
       - nls-accessibility-map-network
 
