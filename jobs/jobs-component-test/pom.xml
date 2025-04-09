@@ -191,19 +191,6 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>docker-compose-build-nls-accessibility-mapgenerator-configure-rabbit</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments combine.children="append">
-                                        <argument>run</argument>
-                                        <argument>nls-messaging-configurator-mapgenerator</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>docker-compose-stop</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
