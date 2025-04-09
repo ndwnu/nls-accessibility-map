@@ -5,7 +5,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.ev.DecimalEncodedValue;
-import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.util.EdgeIteratorState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,9 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class DoubleEdgeSetterTest {
 
     private static final double DECIMAL_VALUE = 128D;
-
-    @Mock
-    private EncodingManager encodingManager;
 
     @Mock
     private EdgeIteratorState edgeIteratorState;

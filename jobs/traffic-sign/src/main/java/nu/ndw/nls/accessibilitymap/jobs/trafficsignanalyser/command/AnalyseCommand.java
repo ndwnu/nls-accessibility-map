@@ -9,10 +9,10 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.command.dto.AnalyseProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsignanalyser.service.TrafficSignAnalyserService;
@@ -26,7 +26,7 @@ import picocli.CommandLine.Option;
 @RequiredArgsConstructor
 public class AnalyseCommand implements Callable<Integer> {
 
-    private final AccessibilityConfiguration accessibilityConfiguration;
+    private final GraphhopperConfiguration graphhopperConfiguration;
 
     private final AnalyserConfiguration analyserConfiguration;
 
@@ -64,7 +64,7 @@ public class AnalyseCommand implements Callable<Integer> {
                                 .startLocationLongitude(analyserConfiguration.startLocationLongitude())
                                 .searchRadiusInMeters(analyserConfiguration.searchRadiusInMeters())
                                 .build())
-                        .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
+                        .nwbVersion(graphhopperConfiguration.getMetaData().nwbVersion())
                         .reportIssues(reportIssues)
                         .build();
 

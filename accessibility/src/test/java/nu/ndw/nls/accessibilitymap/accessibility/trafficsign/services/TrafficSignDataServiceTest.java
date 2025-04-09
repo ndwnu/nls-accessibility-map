@@ -11,9 +11,9 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,17 +41,17 @@ class TrafficSignDataServiceTest {
     private TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
     @Mock
-    private TrafficSignRelevancy TrafficSignRelevancy1;
+    private TrafficSignRelevancy trafficSignRelevancy1;
 
     @Mock
-    private TrafficSignRelevancy TrafficSignRelevancy2;
+    private TrafficSignRelevancy trafficSignRelevancy2;
 
     @BeforeEach
     void setUp() {
 
         trafficSignDataService = new TrafficSignDataService(
                 trafficSignCacheReadWriter,
-                List.of(TrafficSignRelevancy1, TrafficSignRelevancy2));
+                List.of(trafficSignRelevancy1, trafficSignRelevancy2));
     }
 
     @Test
@@ -67,8 +67,8 @@ class TrafficSignDataServiceTest {
     void findAllBy() {
 
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
-        when(TrafficSignRelevancy1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
-        when(TrafficSignRelevancy2.test(trafficSign1, accessibilityRequest)).thenReturn(true);
+        when(trafficSignRelevancy1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
+        when(trafficSignRelevancy2.test(trafficSign1, accessibilityRequest)).thenReturn(true);
 
         assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
 
@@ -80,8 +80,8 @@ class TrafficSignDataServiceTest {
     void findAllBy_notAllRelevantCriteriaSatisfied() {
 
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
-        when(TrafficSignRelevancy1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
-        when(TrafficSignRelevancy2.test(trafficSign1, accessibilityRequest)).thenReturn(false);
+        when(trafficSignRelevancy1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
+        when(trafficSignRelevancy2.test(trafficSign1, accessibilityRequest)).thenReturn(false);
 
         assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
 

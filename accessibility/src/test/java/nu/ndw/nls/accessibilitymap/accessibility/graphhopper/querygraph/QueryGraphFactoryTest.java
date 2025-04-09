@@ -23,9 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class QueryGraphFactoryTest {
 
     @Mock
-    private QueryGraphConfigurer queryGraphConfigurer;
-
-    @Mock
     private NetworkGraphHopper networkGraphHopper;
 
     @Mock

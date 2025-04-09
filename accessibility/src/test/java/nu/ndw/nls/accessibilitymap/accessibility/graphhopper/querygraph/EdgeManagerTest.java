@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 
-import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRAFFIC_SIGN_ID;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.REVERSED_LINK_ID;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,7 +11,7 @@ import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIterator;
 import java.util.Optional;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.network.annotations.mappers.EncodedValuesMapper;
 import nu.ndw.nls.routingmapmatcher.network.annotations.model.EncodedValueDto;
 import nu.ndw.nls.routingmapmatcher.network.annotations.model.EncodedValuesByTypeDto;
@@ -108,11 +107,11 @@ class EdgeManagerTest {
     @Test
     void resetRestrictionsOnEdge_noResults() {
         when(reverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
-        when(encodedValuesByTypeDto.getNetworkEncodedValueNameKeySet()).thenReturn(Set.of(TRAFFIC_SIGN_ID, WAY_ID_KEY, REVERSED_LINK_ID));
+        when(encodedValuesByTypeDto.getNetworkEncodedValueNameKeySet()).thenReturn(Set.of(WAY_ID_KEY, REVERSED_LINK_ID));
 
         edgeManager.resetRestrictionsOnEdge(edgeIterator);
 
         verify(edgeSetter, times(0))
-                .setDefaultValue(edgeIterator, TRAFFIC_SIGN_ID, false);
+                .setDefaultValue(edgeIterator, WAY_ID_KEY, false);
     }
 }

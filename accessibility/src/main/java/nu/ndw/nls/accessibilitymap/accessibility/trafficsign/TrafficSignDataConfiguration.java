@@ -4,7 +4,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("nu.ndw.nls.accessibilitymap.accessibility.trafficsign")
+@ComponentScan
 public class TrafficSignDataConfiguration {
 
 }

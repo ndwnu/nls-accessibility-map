@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory;
 
-import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;

@@ -6,21 +6,18 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
 
-@ExtendWith(MockitoExtension.class)
 class HasRelevantTextSignOfTypeTest {
 
     private HasRelevantTextSignOfType hasRelevantTextSignOfType;

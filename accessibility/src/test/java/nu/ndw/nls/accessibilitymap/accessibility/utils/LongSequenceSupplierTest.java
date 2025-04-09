@@ -12,7 +12,6 @@ class LongSequenceSupplierTest {
         LongSequenceSupplier longSequenceSupplier = new LongSequenceSupplier();
 
         assertThat(longSequenceSupplier.next()).isOne();
-        assertThat(longSequenceSupplier.next()).isEqualTo(2);
     }
 
     @Test

@@ -5,9 +5,6 @@
     "queryParameters": {
       "status": {
         "equalTo": "PLACED"
-      },
-      "countyCode": {
-        "equalTo": "GM0307"
       }
     }
   },
@@ -17,7 +14,7 @@
       "Content-Type": "application/geo+json; charset=utf-8;"
     },
     "transformerParameters": {
-      "queryParams": "rvvCode,countyCode",
+      "queryParams": "rvvCode",
       "fileName": "realdata",
       "extension": ".json"
     },

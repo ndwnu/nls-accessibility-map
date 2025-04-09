@@ -5,10 +5,10 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -27,7 +27,7 @@ public class GenerateCommand implements Callable<Integer> {
 
     private final MapGeneratorService mapGeneratorService;
 
-    private final AccessibilityConfiguration accessibilityConfiguration;
+    private final GraphhopperConfiguration graphhopperConfiguration;
 
     private final GenerateConfiguration generateConfiguration;
 
@@ -86,7 +86,7 @@ public class GenerateCommand implements Callable<Integer> {
                                             : null)
                             .build())
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
-                    .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
+                    .nwbVersion(graphhopperConfiguration.getMetaData().nwbVersion())
                     .publishEvents(publishEvents)
                     .generateConfiguration(generateConfiguration)
                     .build();

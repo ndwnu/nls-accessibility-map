@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.municipality;
 
 import java.net.URL;
 import java.time.LocalDate;
-import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.backend.core.dto.response.MunicipalityBoundingBox;
 
 
 public record MunicipalityProperty(String name, double startCoordinateLongitude, double startCoordinateLatitude,

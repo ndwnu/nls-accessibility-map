@@ -13,8 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class EdgeRestrictionsTest {
 
-    private EdgeRestrictions edgeRestrictions;
-
     @Mock
     private TrafficSign trafficSign1;
 

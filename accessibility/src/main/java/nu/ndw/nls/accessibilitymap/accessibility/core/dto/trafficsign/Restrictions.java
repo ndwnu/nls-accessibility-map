@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
+import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
 
 @Builder
 public record Restrictions(

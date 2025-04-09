@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 import com.graphhopper.routing.ev.BooleanEncodedValue;
-import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.util.EdgeIteratorState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,9 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class BooleanEdgeSetterTest {
-
-    @Mock
-    private EncodingManager encodingManager;
 
     @Mock
     private EdgeIteratorState edgeIteratorState;

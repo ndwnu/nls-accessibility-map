@@ -2,14 +2,17 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.services;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Instant;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkSettingsBuilder;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
-import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.AccessibilityLinkService.AccessibilityLinkData;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
-import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
-import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
+import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
@@ -23,36 +26,44 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccessibilityNetworkService {
 
     private final GraphHopperNetworkService graphHopperNetworkService;
+
     private final AccessibilityLinkService accessibilityLinkService;
-    private final GraphHopperConfiguration graphHopperConfiguration;
+
+    private final GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder;
+
     private final MessageService messageService;
+
     private final AccessibilityRoutingNetworkEventMapper accessibilityRoutingNetworkEventMapper;
+
     private final NetworkMetaDataService networkMetaDataService;
+
+    private final NwbVersionCrudService nwbVersionCrudService;
+
+    private final ClockService clockService;
 
     @Transactional
     public void storeLatestNetworkOnDisk() throws IOException {
-        log.debug("Starting network creation for {}", graphHopperConfiguration.getLatestPath());
+        log.info("Starting network creation for {}", graphHopperNetworkSettingsBuilder.getLatestPath());
 
-        Files.createDirectories(graphHopperConfiguration.getLatestPath());
+        Files.createDirectories(graphHopperNetworkSettingsBuilder.getLatestPath());
 
-        log.debug("Retrieving link data");
-        AccessibilityLinkData linkData = accessibilityLinkService.getLinks();
+        int nwbVersionId = nwbVersionCrudService.findLatestVersionId();
+
+        log.info("Retrieving link data");
+        List<AccessibilityLink> accessibilityLinks = accessibilityLinkService.getLinks(nwbVersionId);
+        Instant dataTimestamp = clockService.now().toInstant();
 
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings =
-                graphHopperConfiguration.configurePersistingRoutingNetworkSettings(
-                        () -> linkData.links().iterator(),
-                        linkData.trafficSignTimestamp());
+                graphHopperNetworkSettingsBuilder.buildNetworkSettingsWithData(accessibilityLinks, dataTimestamp);
 
-        log.debug("Creating GraphHopper network and writing to disk");
+        log.info("Creating GraphHopper network and writing to disk");
         graphHopperNetworkService.storeOnDisk(accessibilityLinkRoutingNetworkSettings);
 
-        int nwbVersionId = linkData.nwbVersionId();
-        networkMetaDataService.saveMetaData(new AccessibilityGraphhopperMetaData(nwbVersionId));
+        networkMetaDataService.saveMetaData(new GraphhopperMetaData(nwbVersionId));
 
-        if (graphHopperConfiguration.publishEvents()) {
-            NlsEvent nlsEvent = accessibilityRoutingNetworkEventMapper.map(nwbVersionId, linkData.trafficSignTimestamp());
-            log.debug("Sending {} event for NWB version {} and traffic sign timestamp {}",
-                    nlsEvent.getType().getLabel(), linkData.nwbVersionId(), linkData.trafficSignTimestamp());
+        if (graphHopperNetworkSettingsBuilder.publishEvents()) {
+            NlsEvent nlsEvent = accessibilityRoutingNetworkEventMapper.map(nwbVersionId, dataTimestamp);
+            log.info("Sending {} event for NWB version {}", nlsEvent.getType().getLabel(), nwbVersionId);
             messageService.publish(nlsEvent);
         }
     }
