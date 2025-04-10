@@ -330,7 +330,7 @@
 //
 //    private void setupFixtureForNwbSnap() {
 //
-//        when(nwbRoadSectionSnapService.snapTrafficSign(any()))
+//        when(nwbRoadSectionSnapService.snapToLine(any()))
 //                .thenReturn(Optional.of(coordinateAndBearing));
 //        when(coordinateAndBearing.coordinate()).thenReturn(coordinate);
 //        when(coordinate.getX()).thenReturn(DEFAULT_X_COORDINATE);
