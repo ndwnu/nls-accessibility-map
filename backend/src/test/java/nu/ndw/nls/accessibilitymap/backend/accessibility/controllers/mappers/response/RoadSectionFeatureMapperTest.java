@@ -84,7 +84,6 @@ class RoadSectionFeatureMapperTest {
 
     }
 
-
     @ParameterizedTest
     @MethodSource("provideFilterValues")
     void map_withBackwardAccessibleAndFilters(boolean startPointRequested, Boolean accessible) {
