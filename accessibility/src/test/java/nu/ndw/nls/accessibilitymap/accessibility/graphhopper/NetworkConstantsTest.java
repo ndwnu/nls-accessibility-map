@@ -1,0 +1,21 @@
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
+
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.VEHICLE_NAME_CAR;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.graphhopper.config.Profile;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
+class NetworkConstantsTest {
+
+    @Test
+    void staticValues() {
+
+        assertThat(VEHICLE_NAME_CAR).isEqualTo("car");
+        assertThat(PROFILE).isEqualTo(new Profile("car"));
+    }
+}

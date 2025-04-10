@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
