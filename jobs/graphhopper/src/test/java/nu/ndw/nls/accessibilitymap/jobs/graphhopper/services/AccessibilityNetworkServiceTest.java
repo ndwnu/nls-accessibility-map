@@ -122,7 +122,7 @@ class AccessibilityNetworkServiceTest {
         when(accessibilityLinkService.getLinks(nwbVersionId)).thenReturn(accessibilityLinks);
         when(clockService.now()).thenReturn(timestamp);
 
-        when(graphHopperNetworkSettingsBuilder.buildNetworkSettingsWithData(accessibilityLinks, timestamp.toInstant()))
+        when(graphHopperNetworkSettingsBuilder.networkSettingsWithData(accessibilityLinks, timestamp.toInstant()))
                 .thenReturn(routingNetworkSettings);
 
         if (publishEvents) {

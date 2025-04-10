@@ -28,11 +28,11 @@ public class GraphHopperNetworkSettingsBuilder {
         return graphHopperProperties.getMetaDataPath();
     }
 
-    public RoutingNetworkSettings<AccessibilityLink> buildDefaultNetworkSettings() {
+    public RoutingNetworkSettings<AccessibilityLink> defaultNetworkSettings() {
         return defaultNetworkSettingsBuilder().build();
     }
 
-    public RoutingNetworkSettings<AccessibilityLink> buildNetworkSettingsWithData(
+    public RoutingNetworkSettings<AccessibilityLink> networkSettingsWithData(
             List<AccessibilityLink> accessibilityLinks,
             Instant dataTimestamp) {
 

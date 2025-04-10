@@ -50,7 +50,7 @@ public class TrafficSignCacheReadWriter {
             return Optional.ofNullable(trafficSigns);
         } catch (IOException exception) {
             log.error("Failed to read traffic signs from file", exception);
-            if(trafficSignCacheConfiguration.isFailOnNoDataOnStartup()) {
+            if (trafficSignCacheConfiguration.isFailOnNoDataOnStartup()) {
                 throw new IllegalStateException("Failed to read traffic signs from file", exception);
             }
             return Optional.empty();

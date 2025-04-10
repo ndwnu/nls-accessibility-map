@@ -24,23 +24,17 @@ public class GraphhopperJobDriver implements StateManagement {
                 generalConfiguration.isWaitForDebuggerToBeConnected() ? Mode.DEBUG : Mode.NORMAL,
                 List.of(
                         Environment.builder()
-                                .key("COMMAND")
-                                .value("createOrUpdateNetwork")
-                                .build()
-                ));
+                                .key("GRAPHHOPPER_NETWORKNAME")
+                                .value("accessibility_latest_component_test")
+                                .build()));
     }
 
     public void runGraphhopperJobConfigureRabbitMQ() {
 
         dockerDriver.startServiceAndWaitToBeFinished(
-                "nls-accessibility-map-graphhopper-job",
+                "nls-accessibility-map-graphhopper-configure-rabbitmq",
                 Mode.NORMAL,
-                List.of(
-                        Environment.builder()
-                                .key("COMMAND")
-                                .value("configureRabbitMQ")
-                                .build()
-                ));
+                List.of());
     }
 
     @Override
