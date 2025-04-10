@@ -8,6 +8,7 @@ import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.AccessibilityNetwor
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 
@@ -15,6 +16,7 @@ import picocli.CommandLine.Command;
 @Component
 @Command(name = "createOrUpdateNetwork")
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "graphhopper.enabled", havingValue = "true", matchIfMissing = true)
 public class CreateOrUpdateNetworkCommand implements Callable<Integer> {
 
     private final AccessibilityNetworkService accessibilityNetworkService;

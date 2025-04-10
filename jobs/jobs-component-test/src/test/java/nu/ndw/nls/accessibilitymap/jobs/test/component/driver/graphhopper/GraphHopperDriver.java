@@ -42,7 +42,9 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.nw
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.repository.RoadSectionRepository;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.repository.VersionRepository;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
+import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import org.springframework.stereotype.Service;
 
@@ -91,6 +93,17 @@ public class GraphHopperDriver {
         return this;
     }
 
+    public NetworkGraphHopper loadFromDisk() throws GraphHopperNotImportedException {
+        RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = RoutingNetworkSettings.builder(AccessibilityLink.class)
+                .indexed(true)
+                .graphhopperRootPath(graphHopperConfiguration.getLocationOnDisk())
+                .networkNameAndVersion(VERSION)
+                .profiles(List.of(PROFILE))
+                .build();
+
+        return graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
+    }
+
     @SuppressWarnings("java:S3658")
     public void buildNetwork() {
 
@@ -115,6 +128,7 @@ public class GraphHopperDriver {
         }
 
         buildNwbDatabaseNetwork();
+
 
         graphHopperNetworkService.storeOnDisk(routingNetworkSettings);
         try {

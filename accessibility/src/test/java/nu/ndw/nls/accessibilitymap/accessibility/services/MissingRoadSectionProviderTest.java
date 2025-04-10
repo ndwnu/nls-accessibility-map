@@ -8,6 +8,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityRoadSectionsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +39,9 @@ class MissingRoadSectionProviderTest {
     @Mock
     private LineString roadSection2LineStringBackwards;
 
+    @Mock
+    private GraphhopperMetaData graphhopperMetaData;
+
     private RoadSection roadSectionExisting;
 
     @BeforeEach
@@ -60,7 +64,7 @@ class MissingRoadSectionProviderTest {
                 ))
                 .build();
 
-        missingRoadSectionProvider = new MissingRoadSectionProvider(accessibilityRoadSectionsService);
+        missingRoadSectionProvider = new MissingRoadSectionProvider(accessibilityRoadSectionsService, graphhopperMetaData);
     }
 
     @ParameterizedTest
@@ -70,9 +74,10 @@ class MissingRoadSectionProviderTest {
             """)
     void get(boolean isAccessible) {
 
+        when(graphhopperMetaData.nwbVersion()).thenReturn(456);
         when(roadSection2LineString.reverse()).thenReturn(roadSection2LineStringBackwards);
 
-        when(accessibilityRoadSectionsService.getRoadSectionsByMunicipalityId(123)).thenReturn(List.of(
+        when(accessibilityRoadSectionsService.getRoadSectionsByMunicipalityId(456, 123)).thenReturn(List.of(
                 AccessibilityNwbRoadSection.builder()
                         .roadSectionId(1)
                         .backwardAccessible(true)
@@ -113,6 +118,5 @@ class MissingRoadSectionProviderTest {
         assertThat(roadSectionFragment.getBackwardSegment().getTrafficSigns()).isNull();
         assertThat(roadSectionFragment.getBackwardSegment().isAccessible()).isEqualTo(isAccessible);
         assertThat(roadSectionFragment.getBackwardSegment().getRoadSectionFragment()).isEqualTo(roadSectionFragment);
-
     }
 }

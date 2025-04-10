@@ -12,6 +12,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityRoadSectionsService;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Component;
 public class MissingRoadSectionProvider {
 
     private final AccessibilityRoadSectionsService accessibilityRoadSectionsService;
+
+    private final GraphhopperMetaData graphhopperMetaData;
 
     public List<RoadSection> get(
             int municipalityId,
@@ -36,7 +39,9 @@ public class MissingRoadSectionProvider {
             int municipalityId,
             Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
             boolean isAccessible) {
+
         List<AccessibilityNwbRoadSection> municipalityRoadSections = accessibilityRoadSectionsService.getRoadSectionsByMunicipalityId(
+                graphhopperMetaData.nwbVersion(),
                 municipalityId);
 
         var roadSectionsById = accessibleRoadsSectionsWithoutAppliedRestrictions.stream()

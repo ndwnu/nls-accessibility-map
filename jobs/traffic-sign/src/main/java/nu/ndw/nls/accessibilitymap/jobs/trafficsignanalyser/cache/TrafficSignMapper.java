@@ -21,7 +21,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapS
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import org.apache.logging.log4j.util.Strings;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -35,18 +37,30 @@ public class TrafficSignMapper {
 
     @Valid
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
+            LineString nwbRoadSectionDto,
             TrafficSignGeoJsonDto trafficSignGeoJsonDto,
             IntegerSequenceSupplier integerSequenceSupplier) {
 
         try {
+            if (Objects.isNull(nwbRoadSectionDto)) {
+                throw new IllegalStateException("Traffic sign with id '%s' is missing a road section.");
+            }
+
             TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode());
+
+            Double fraction = trafficSignGeoJsonDto.getProperties().getFraction();
+            if (Objects.isNull(fraction)) {
+                throw new IllegalStateException("Traffic sign with id '%s' is missing fraction.");
+            }
+            CoordinateAndBearing coordinate = nwbRoadSectionSnapService.snapTrafficSign(nwbRoadSectionDto, fraction);
+
             TrafficSign trafficSign = TrafficSign.builder()
                     .id(integerSequenceSupplier.next())
                     .externalId(trafficSignGeoJsonDto.getId().toString())
                     .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
                     .trafficSignType(type)
                     .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
-                    .fraction(trafficSignGeoJsonDto.getProperties().getFraction())
+                    .fraction(fraction)
                     .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
                     .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
                     .iconUri(createUri(trafficSignGeoJsonDto.getProperties().getImageUrl()))
@@ -54,17 +68,11 @@ public class TrafficSignMapper {
                     .zoneCodeType(mapZoneCodeType(trafficSignGeoJsonDto))
                     .trafficSignOrderUrl(createUri(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl()))
                     .blackCode(mapToBlackCode(trafficSignGeoJsonDto, type))
+                    .networkSnappedLatitude(coordinate.coordinate().getY())
+                    .networkSnappedLongitude(coordinate.coordinate().getX())
                     .build();
-            trafficSign = trafficSign.withRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign));
-            TrafficSign finalTrafficSign = trafficSign;
-            trafficSign = nwbRoadSectionSnapService.snapTrafficSign(trafficSign)
-                    .map(coordinateAndBearing -> finalTrafficSign
-                            .toBuilder()
-                            .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
-                            .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
-                            .build())
-                    .orElse(finalTrafficSign);
-            return Optional.of(trafficSign);
+
+            return Optional.of(trafficSign.withRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign)));
         } catch (RuntimeException exception) {
             log.warn("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
                     trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto, exception);

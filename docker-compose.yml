@@ -52,7 +52,7 @@ services:
   nls-accessibility-map-graphhopper-configure-rabbitmq:
     build: docker/nls-accessibility-map-graphhopper-job
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=docker,disable-graphhopper
       - COMMAND=configureRabbitMQ
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
