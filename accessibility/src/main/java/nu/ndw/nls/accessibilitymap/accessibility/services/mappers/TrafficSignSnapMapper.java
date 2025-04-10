@@ -14,12 +14,23 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Component;
 
+/**
+ * The TrafficSignSnapMapper class is responsible for mapping traffic signs to their closest snap point on a network. It utilizes the
+ * provided NetworkGraphHopper instance to match traffic signs to valid road sections on the network.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class TrafficSignSnapMapper {
     private final NetworkGraphHopper networkGraphHopper;
 
+    /**
+     * Maps a collection of TrafficSign objects to their corresponding TrafficSignSnap objects. For each TrafficSign, it tries to find its
+     * closest snap point on the network and creates a TrafficSignSnap object if a valid snap is found.
+     *
+     * @param trafficSigns the collection of TrafficSign objects to be mapped
+     * @return a list of TrafficSignSnap objects representing the mapping of TrafficSign objects to their closest snap point on the network
+     */
     public List<TrafficSignSnap> map(Collection<TrafficSign> trafficSigns) {
 
         return trafficSigns.stream()
