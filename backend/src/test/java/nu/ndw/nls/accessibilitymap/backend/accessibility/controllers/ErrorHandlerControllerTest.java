@@ -7,12 +7,19 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import java.util.Set;
+import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.APIErrorJson;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,7 +33,6 @@ class ErrorHandlerControllerTest {
 
     private static final String MESSAGE = "test";
     private static final String PATH = "path";
-    private static final String PROPERTY_NAME = "propertyName";
 
     @InjectMocks
     private ErrorHandlerController errorHandlerController;
@@ -55,13 +61,14 @@ class ErrorHandlerControllerTest {
                 .isEqualTo("An internal server error occurred while processing this request");
     }
 
-    @Test
-    void handleBadRequestException() {
+    @ParameterizedTest
+    @MethodSource("provideExceptions")
+    void handleBadRequestException(RuntimeException exception, String message) {
         ResponseEntity<APIErrorJson> response = errorHandlerController
-                .handleBadRequestException(new RuntimeException(MESSAGE));
+                .handleBadRequestException(exception);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo(MESSAGE);
+        assertThat(response.getBody().getMessage()).isEqualTo(message);
     }
 
     @Test
@@ -69,6 +76,7 @@ class ErrorHandlerControllerTest {
         ResponseEntity<Void> response = errorHandlerController.handleAccessDenied(new AccessDeniedException(MESSAGE));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
+
 
     @Test
     void handleMethodArgumentTypeMismatchException() {
@@ -123,5 +131,14 @@ class ErrorHandlerControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getMessage()).isEqualTo("'" + path + "' " + MESSAGE);
+    }
+
+    private static Stream<Arguments> provideExceptions() {
+        return Stream.of(
+                Arguments.of(new VehicleTypeNotSupportedException("VehicleTypeNotSupportedException"), "VehicleTypeNotSupportedException"),
+                Arguments.of(new VehicleWeightRequiredException("VehicleWeightRequiredException"), "VehicleWeightRequiredException"),
+                Arguments.of(new IncompleteArgumentsException("IncompleteArgumentsException"), "IncompleteArgumentsException")
+
+        );
     }
 }
