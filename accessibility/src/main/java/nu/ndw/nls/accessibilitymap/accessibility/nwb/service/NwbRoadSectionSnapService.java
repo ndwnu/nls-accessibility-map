@@ -18,7 +18,7 @@ public class NwbRoadSectionSnapService {
 
     private final CrsTransformer crsTransformer;
 
-    public CoordinateAndBearing snapTrafficSign(LineString geometry, double fraction) {
+    public CoordinateAndBearing snapToLine(LineString geometry, double fraction) {
 
         LineString lineStringWgs84 = (LineString) crsTransformer.transformFromRdNewToWgs84(geometry);
         lineStringWgs84.setSRID(SRID.WGS84.value);

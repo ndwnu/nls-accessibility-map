@@ -52,7 +52,7 @@ public class TrafficSignMapper {
             if (Objects.isNull(fraction)) {
                 throw new IllegalStateException("Traffic sign with id '%s' is missing fraction.");
             }
-            CoordinateAndBearing coordinate = nwbRoadSectionSnapService.snapTrafficSign(nwbRoadSectionDto, fraction);
+            CoordinateAndBearing coordinate = nwbRoadSectionSnapService.snapToLine(nwbRoadSectionDto, fraction);
 
             TrafficSign trafficSign = TrafficSign.builder()
                     .id(integerSequenceSupplier.next())
