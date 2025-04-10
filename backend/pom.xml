@@ -372,6 +372,20 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>chmod-777-maps</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>777</argument>
+                                        <argument>../.tmp/graphhopper</argument>
+                                    </arguments>
+                                    <executable>chmod</executable>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>docker-compose-run-graphhopper-createOrUpdateNetwork</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
