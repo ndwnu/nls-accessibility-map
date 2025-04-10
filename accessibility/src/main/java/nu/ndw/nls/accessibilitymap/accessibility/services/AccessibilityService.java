@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.services;
 
+import static java.time.temporal.ChronoUnit.MILLIS;
+
 import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
@@ -8,7 +10,6 @@ import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccessibilityService {
 
-    private static final AccessibleRoadSectionModifier NO_MODIFICATIONS =  (a, b) -> {};
+    private static final AccessibleRoadSectionModifier NO_MODIFICATIONS = (a, b) -> {
+    };
 
     private final IsochroneServiceFactory isochroneServiceFactory;
 
@@ -76,24 +78,22 @@ public class AccessibilityService {
 
         OffsetDateTime startTime = clockService.now();
         List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
-        log.info("Building snaps took: %s ms"
-                .formatted(ChronoUnit.MILLIS.between(startTime, clockService.now())));
-        Point startPoint = createPoint(
-                accessibilityRequest.startLocationLatitude(),
-                accessibilityRequest.startLocationLongitude());
-        Snap startSegment = networkGraphHopper.getLocationIndex()
-                .findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
-        OffsetDateTime startTime2 = clockService.now();
+        log.info("Building snaps took: %s ms".formatted(MILLIS.between(startTime, clockService.now())));
+
+        Point startPoint = createPoint(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude());
+        Snap startSegment = networkGraphHopper.getLocationIndex().findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
+
+        OffsetDateTime startTimeCreateQueryGraph = clockService.now();
         QueryGraph queryGraph = queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
-        log.info("Building query graph took: %s ms"
-                .formatted(ChronoUnit.MILLIS.between(startTime2, clockService.now())));
-        OffsetDateTime startTime3 = clockService.now();
+        log.info("Building query graph took: %s ms".formatted(MILLIS.between(startTimeCreateQueryGraph, clockService.now())));
+
+        OffsetDateTime startTimeCreatingEdgeRestrictions = clockService.now();
         var edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
-        log.info("Building edge restrictions took: %s ms"
-                .formatted(ChronoUnit.MILLIS.between(startTime3, clockService.now())));
+        log.info("Building edge restrictions took: %s ms".formatted(MILLIS.between(startTimeCreatingEdgeRestrictions, clockService.now())));
+
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
-        OffsetDateTime startTime4 = clockService.now();
+        OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 getRoadSections(
                         accessibilityRequest,
@@ -128,7 +128,7 @@ public class AccessibilityService {
                 .build();
 
         log.info("Accessibility calculation done. It took: %s ms"
-                .formatted(ChronoUnit.MILLIS.between(startTime4, clockService.now())));
+                .formatted(MILLIS.between(startTimeCalculatingAccessibility, clockService.now())));
         return accessibility;
     }
 
