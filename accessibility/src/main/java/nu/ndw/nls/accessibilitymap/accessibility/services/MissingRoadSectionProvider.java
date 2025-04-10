@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility;
+package nu.ndw.nls.accessibilitymap.accessibility.services;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;

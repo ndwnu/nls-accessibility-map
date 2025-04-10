@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto;
+package nu.ndw.nls.accessibilitymap.accessibility.services.dto;
 
 import com.graphhopper.storage.index.Snap;
 import jakarta.validation.constraints.NotNull;

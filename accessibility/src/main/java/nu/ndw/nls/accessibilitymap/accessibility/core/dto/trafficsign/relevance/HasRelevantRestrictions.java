@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance;
 
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import org.springframework.stereotype.Component;
 
 @Component

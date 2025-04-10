@@ -348,19 +348,6 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>docker-compose-run-traffic-sign-update-cache</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments combine.children="append">
-                                        <argument>run</argument>
-                                        <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>docker-compose-run-graphhopper-configureRabbitMQ</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
@@ -394,6 +381,19 @@
                                     <arguments combine.children="append">
                                         <argument>run</argument>
                                         <argument>nls-accessibility-map-graphhopper-job</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-traffic-sign-update-cache-job</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
                                     </arguments>
                                 </configuration>
                             </execution>

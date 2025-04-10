@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility;
+package nu.ndw.nls.accessibilitymap.accessibility.services;
 
 import java.util.Collection;
 import java.util.List;

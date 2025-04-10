@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility;
+package nu.ndw.nls.accessibilitymap.accessibility.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -31,11 +31,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGra
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers.RoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers.TrafficSignSnapMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;

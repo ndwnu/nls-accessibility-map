@@ -36,5 +36,4 @@ public class BooleanEdgeSetter extends EdgeSetter<Boolean, BooleanEncodedValue> 
     protected void setReverse(EdgeIteratorState edge, BooleanEncodedValue encodedValue, Boolean value) {
         edge.setReverse(encodedValue, value);
     }
-
 }

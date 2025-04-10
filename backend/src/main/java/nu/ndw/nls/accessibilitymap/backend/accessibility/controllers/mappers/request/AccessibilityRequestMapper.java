@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.re
 
 import com.graphhopper.util.shapes.BBox;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import org.springframework.stereotype.Component;
