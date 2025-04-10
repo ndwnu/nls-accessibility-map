@@ -1,10 +1,9 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
+import com.graphhopper.routing.util.EncodingManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,6 +45,9 @@ class GraphhopperConfigurationTest {
     @Mock
     private GraphhopperMetaData graphhopperMetaData;
 
+    @Mock
+    private EncodingManager encodingManager;
+
     private Path testDir;
 
     @BeforeEach
@@ -81,13 +83,20 @@ class GraphhopperConfigurationTest {
 
         when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
 
-        assertEquals(graphhopperMetaData, accessibilityConfiguration.getMetaData());
+        assertThat(accessibilityConfiguration.getMetaData()).isEqualTo(graphhopperMetaData);
     }
 
     @Test
     void edgeIteratorStateReverseExtractor() {
 
-        assertNotNull(accessibilityConfiguration.edgeIteratorStateReverseExtractor());
+        assertThat(accessibilityConfiguration.edgeIteratorStateReverseExtractor()).isNotNull();
+    }
 
+    @Test
+    void encodingManger() {
+
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+
+        assertThat(accessibilityConfiguration.encodingManger(networkGraphHopper)).isEqualTo(encodingManager);
     }
 }
