@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers;
+package nu.ndw.nls.accessibilitymap.accessibility.services.mappers;
 
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
@@ -10,7 +10,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Component;
 

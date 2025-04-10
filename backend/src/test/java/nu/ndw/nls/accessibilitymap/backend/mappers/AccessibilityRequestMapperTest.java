@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import com.graphhopper.util.shapes.BBox;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.TransportTypeMapper;

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto;
+package nu.ndw.nls.accessibilitymap.accessibility.services.dto;
 
 import java.util.Collection;
 import lombok.Builder;

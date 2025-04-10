@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers;
+package nu.ndw.nls.accessibilitymap.accessibility.services.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

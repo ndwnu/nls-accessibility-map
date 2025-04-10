@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.mappers;
+package nu.ndw.nls.accessibilitymap.accessibility.services.mappers;
 
 import jakarta.validation.Valid;
 import java.util.ArrayList;
