@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.mappers;
+package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response;
 
 import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
 import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.MunicipalityFeatureMapper;
 import nu.ndw.nls.accessibilitymap.backend.core.dto.response.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;

@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response;
 
 import jakarta.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RoadSectionFeatureCollectionMapper {
 
-    private final RoadSectionFeatureMapper roadSectionFeatureV2Mapper;
+    private final RoadSectionFeatureMapper roadSectionFeatureMapper;
 
     /**
      * Maps the specified accessibility information into a `RoadSectionFeatureCollectionJson` object.
@@ -33,8 +34,8 @@ public class RoadSectionFeatureCollectionMapper {
     ) {
 
         List<RoadSectionFeatureJson> features = accessibility.combinedAccessibility().stream()
-                .map(r -> roadSectionFeatureV2Mapper.map(r, startPointRequested, startPointMatch, accessible))
-                .flatMap(roadSectionFeatureJsons -> roadSectionFeatureJsons.stream())
+                .map(r -> roadSectionFeatureMapper.map(r, startPointRequested, startPointMatch, accessible))
+                .flatMap(Collection::stream)
                 .toList();
 
         return new RoadSectionFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION, features);

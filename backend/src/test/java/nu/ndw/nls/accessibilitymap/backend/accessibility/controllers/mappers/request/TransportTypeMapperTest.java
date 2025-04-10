@@ -1,9 +1,8 @@
-package nu.ndw.nls.accessibilitymap.backend.mappers;
+package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request;
 
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

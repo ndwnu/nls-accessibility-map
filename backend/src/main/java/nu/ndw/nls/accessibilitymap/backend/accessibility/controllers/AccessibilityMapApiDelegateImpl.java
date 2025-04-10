@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +10,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionM
 import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.AccessibilityResponseMapper;
@@ -41,7 +39,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private final PointMatchService pointMatchService;
 
-    private final AccessibilityResponseMapper accessibilityResponseV2Mapper;
+    private final AccessibilityResponseMapper accessibilityResponseMapper;
 
     private final RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionV2Mapper;
 
@@ -51,9 +49,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private final AccessibilityService accessibilityService;
 
-    private final MissingRoadSectionProvider accessibilityAddMissingBlockedRoadSections;
-
-    private final ClockService clockService;
+    private final MissingRoadSectionProvider missingRoadSectionProvider;
 
     @Override
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
@@ -78,21 +74,17 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 accessibilityRequest,
                 addMissingRoadSectionsForMunicipality(municipality));
 
-        return ResponseEntity.ok(accessibilityResponseV2Mapper.map(accessibility, requestedRoadSectionId));
+        return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility, requestedRoadSectionId));
     }
 
     private AccessibleRoadSectionModifier addMissingRoadSectionsForMunicipality(Municipality municipality) {
         return (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions) -> {
-            OffsetDateTime startTime = clockService.now();
-            List<RoadSection> missingRoadSections = accessibilityAddMissingBlockedRoadSections.get(
+            List<RoadSection> missingRoadSections = missingRoadSectionProvider.get(
                     municipality.getMunicipalityIdInteger(),
                     roadsSectionsWithoutAppliedRestrictions,
                     false);
-
             roadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
             roadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
-            log.info("Added {} missing road sections in {} ms", missingRoadSections.size(),
-                    clockService.now().toInstant().toEpochMilli() - startTime.toInstant().toEpochMilli());
         };
     }
 

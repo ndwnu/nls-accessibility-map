@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.mappers;
+package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -8,8 +8,6 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.AccessibilityRequestMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.core.dto.response.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
 import org.junit.jupiter.api.Test;

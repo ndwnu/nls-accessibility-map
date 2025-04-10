@@ -1,10 +1,9 @@
-package nu.ndw.nls.accessibilitymap.backend.mappers;
+package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.PointMapper;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
