@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper;
 
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperWriteConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.NwbConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.time.TimeConfiguration;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.TrafficSignClientConfiguration;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({GraphhopperConfiguration.class, NwbConfiguration.class, TrafficSignClientConfiguration.class, TimeConfiguration.class,
+@Import({GraphhopperWriteConfiguration.class, NwbConfiguration.class, TrafficSignClientConfiguration.class, TimeConfiguration.class,
         MessagingConfig.class, DatadogConfiguration.class})
 @MessagingRequiredConfiguration(receive = {}, publish = {NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED})
 public class AccessibilityMapGraphhoperJobConfiguration {
