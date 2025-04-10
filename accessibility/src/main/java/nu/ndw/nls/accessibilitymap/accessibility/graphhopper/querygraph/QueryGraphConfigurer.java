@@ -47,7 +47,7 @@ public class QueryGraphConfigurer {
     /**
      * Creates edge restrictions for traffic signs by mapping the snapped traffic signs
      * to road edges in the query graph, based on the characteristics of the traffic signs and edges.
-     * Ensures compatible matches between traffic signs and edges, and logs any unassignable traffic signs.
+     * Ensures compatible matches between traffic signs and edges, and logs any unassigned traffic signs.
      *
      * @param queryGraph the query graph containing the nodes and edges used for mapping traffic signs
      * @param snappedTrafficSigns a list of traffic signs with their corresponding snapped locations
@@ -58,6 +58,7 @@ public class QueryGraphConfigurer {
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         Set<TrafficSignSnap> assignedTrafficSignSnaps = new HashSet<>();
         Stopwatch stopwatch = Stopwatch.createStarted();
+
         log.debug("Configuring query graph total nodes {} total edges {}", queryGraph.getNodes(),
                 queryGraph.getEdges());
         snappedTrafficSigns.forEach(trafficSignSnap -> {
