@@ -21,15 +21,18 @@ class NwbRoadSectionSnapServiceTest {
 
     @Mock
     private FractionAndDistanceCalculator fractionAndDistanceCalculator;
+
     @Mock
     private CrsTransformer crsTransformer;
 
     private NwbRoadSectionSnapService nwbRoadSectionSnapService;
+
     @Mock
     private LineString lineStringWgs84;
 
     @Mock
     private LineString lineStringRdNew;
+
     @Mock
     private CoordinateAndBearing coordinateAndBearing;
 
@@ -40,13 +43,14 @@ class NwbRoadSectionSnapServiceTest {
 
     @Test
     void snapToLine() {
-        when(crsTransformer.transformFromRdNewToWgs84(lineStringRdNew))
-                .thenReturn(lineStringWgs84);
+        when(crsTransformer.transformFromRdNewToWgs84(lineStringRdNew)).thenReturn(lineStringWgs84);
         when(fractionAndDistanceCalculator.getCoordinateAndBearing(lineStringWgs84, 0.5)).thenReturn(coordinateAndBearing);
+
         double fraction = 0.5;
+
         CoordinateAndBearing result = nwbRoadSectionSnapService.snapToLine(lineStringRdNew, fraction);
+
         assertThat(result).isEqualTo(coordinateAndBearing);
         verify(lineStringWgs84, times(1)).setSRID(SRID.WGS84.value);
     }
-
 }
