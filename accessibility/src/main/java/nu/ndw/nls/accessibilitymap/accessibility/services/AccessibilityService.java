@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
@@ -88,7 +89,7 @@ public class AccessibilityService {
         log.info("Building query graph took: %s ms".formatted(MILLIS.between(startTimeCreateQueryGraph, clockService.now())));
 
         OffsetDateTime startTimeCreatingEdgeRestrictions = clockService.now();
-        var edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
+        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
         log.info("Building edge restrictions took: %s ms".formatted(MILLIS.between(startTimeCreatingEdgeRestrictions, clockService.now())));
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);

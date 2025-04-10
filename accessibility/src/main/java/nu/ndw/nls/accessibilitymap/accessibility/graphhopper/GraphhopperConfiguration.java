@@ -10,6 +10,7 @@ import nu.ndw.nls.routingmapmatcher.RoutingMapMatcherConfiguration;
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @RequiredArgsConstructor
 @Import({GeometryConfiguration.class, RoutingMapMatcherConfiguration.class})
+@ConditionalOnProperty(name = "graphhopper.enabled", havingValue = "true", matchIfMissing = true)
 public class GraphhopperConfiguration {
 
     private final GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder;

@@ -1,9 +1,12 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
 
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.GraphHopperDriver;
+import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,6 +24,18 @@ public class GraphHopperStepDefinitions {
     public void prepareNwbDatabaseNetwork() {
 
         buildSimpleNetwork().buildNwbDatabaseNetwork();
+    }
+
+    @Then("written graphhopper on disk should be comparable with simple nwb network")
+    public void graphhopperShouldBeComparableWithSimpleNwbNetwork() throws GraphHopperNotImportedException {
+
+        NetworkGraphHopper network = graphHopperDriver.loadFromDisk();
+
+        int nodes = network.getBaseGraph().getNodes();
+
+
+
+
     }
 
     private GraphHopperDriver buildSimpleNetwork() {

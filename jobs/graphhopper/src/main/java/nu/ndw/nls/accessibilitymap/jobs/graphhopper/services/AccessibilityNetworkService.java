@@ -17,12 +17,14 @@ import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "graphhopper.enabled", havingValue = "true", matchIfMissing = true)
 public class AccessibilityNetworkService {
 
     private final GraphHopperNetworkService graphHopperNetworkService;
