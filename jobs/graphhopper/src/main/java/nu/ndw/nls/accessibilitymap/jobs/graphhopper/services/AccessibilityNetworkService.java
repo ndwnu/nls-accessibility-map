@@ -54,7 +54,7 @@ public class AccessibilityNetworkService {
         Instant dataTimestamp = clockService.now().toInstant();
 
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings =
-                graphHopperNetworkSettingsBuilder.buildNetworkSettingsWithData(accessibilityLinks, dataTimestamp);
+                graphHopperNetworkSettingsBuilder.networkSettingsWithData(accessibilityLinks, dataTimestamp);
 
         log.info("Creating GraphHopper network and writing to disk");
         graphHopperNetworkService.storeOnDisk(accessibilityLinkRoutingNetworkSettings);

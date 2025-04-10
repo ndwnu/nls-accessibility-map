@@ -41,7 +41,7 @@ public class GraphhopperConfiguration {
 
     @Bean
     public NetworkGraphHopper networkGraphHopper() throws GraphHopperNotImportedException, IOException {
-        RoutingNetworkSettings<AccessibilityLink> networkSettings = graphHopperNetworkSettingsBuilder.buildDefaultNetworkSettings();
+        RoutingNetworkSettings<AccessibilityLink> networkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
         Files.createDirectories(networkSettings.getGraphhopperRootPath().resolve(Path.of(networkSettings.getNetworkNameAndVersion())));
         return graphHopperNetworkService.loadFromDisk(networkSettings);
     }
