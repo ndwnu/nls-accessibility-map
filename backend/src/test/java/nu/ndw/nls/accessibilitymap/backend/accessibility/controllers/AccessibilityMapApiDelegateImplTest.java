@@ -6,7 +6,11 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionModifier;
 import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
@@ -38,41 +42,61 @@ import org.springframework.http.ResponseEntity;
 class AccessibilityMapApiDelegateImplTest {
 
     private static final float VEHICLE_LENGTH = 1F;
+
     private static final float VEHICLE_WIDTH = 2F;
+
     private static final float VEHICLE_HEIGHT = 3F;
+
     private static final float VEHICLE_WEIGHT = 4F;
+
     private static final float VEHICLE_AXLE_LOAD = 5F;
+
     private static final String MUNICIPALITY_ID = "GM0344";
+
     private static final int REQUESTED_ROAD_SECTION_ID = 123;
+
     private static final double REQUESTED_LONGITUDE = 3333;
+
     private static final double REQUESTED_LATITUDE = 222;
+
     private static final int MUNICIPALITY_ID_INTEGER = 123;
-    private static final double SEARCH_DISTANCE_IN_METER = 1000D;
 
     @Mock
     private PointValidator pointValidator;
+
     @Mock
     private PointMapper pointMapper;
+
     @Mock
     private PointMatchService pointMatchService;
+
     @Mock
     private AccessibilityResponseMapper accessibilityResponseMapper;
+
     @Mock
     private RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
+
     @Mock
     private AccessibilityRequestMapper accessibilityRequestMapper;
+
     @Mock
     private Point requestedPoint;
+
     @Mock
     private CandidateMatch candidateMatch;
+
     @Mock
     private AccessibilityMapResponseJson accessibilityMapResponseJson;
+
     @Mock
     private RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson;
+
     @Mock
     private MunicipalityService municipalityService;
+
     @Mock
     private AccessibilityService accessibilityService;
+
     @Mock
     private MissingRoadSectionProvider missingRoadSectionProvider;
 
@@ -80,15 +104,26 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Mock
     private Municipality municipality;
-    @Mock
-    private Point startPoint;
+
     @Mock
     private AccessibilityRequest accessibilityRequest;
+
     @Mock
     private Accessibility accessibility;
 
+    @Mock
+    private RoadSection missingRoadSection;
+
+    private Collection<RoadSection> roadsSectionsWithoutAppliedRestrictions;
+
+    private Collection<RoadSection> roadSectionsWithAppliedRestrictions;
+
     @BeforeEach
     void setup() {
+
+        roadsSectionsWithoutAppliedRestrictions = new ArrayList<>();
+        roadSectionsWithAppliedRestrictions = new ArrayList<>();
+
         accessibilityMapApiDelegate = new AccessibilityMapApiDelegateImpl(pointValidator,
                 pointMapper,
                 pointMatchService,
@@ -117,6 +152,9 @@ class AccessibilityMapApiDelegateImplTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(accessibilityMapResponseJson);
 
+        assertThat(roadsSectionsWithoutAppliedRestrictions).containsExactly(missingRoadSection);
+        assertThat(roadSectionsWithAppliedRestrictions).containsExactly(missingRoadSection);
+
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
 
@@ -139,10 +177,26 @@ class AccessibilityMapApiDelegateImplTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
 
+        assertThat(roadsSectionsWithoutAppliedRestrictions).containsExactly(missingRoadSection);
+        assertThat(roadSectionsWithAppliedRestrictions).containsExactly(missingRoadSection);
+
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
 
     private void setUpFixture() {
+
+        when(accessibilityService.calculateAccessibility(eq(accessibilityRequest),
+                any(AccessibleRoadSectionModifier.class)))
+                .thenAnswer(invocationOnMock -> {
+                    invocationOnMock.getArgument(1, AccessibleRoadSectionModifier.class).modify(
+                            roadsSectionsWithoutAppliedRestrictions,
+                            roadSectionsWithAppliedRestrictions
+                    );
+                    return accessibility;
+                });
+        when(missingRoadSectionProvider.get(MUNICIPALITY_ID_INTEGER, roadsSectionsWithoutAppliedRestrictions, false))
+                .thenReturn(List.of(missingRoadSection));
+        when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
         when(accessibilityRequestMapper.mapToAccessibilityRequest(municipality, VehicleArguments.builder()
                 .vehicleType(VehicleTypeJson.CAR)
@@ -157,9 +211,7 @@ class AccessibilityMapApiDelegateImplTest {
         when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
         when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
         when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
-        when(accessibilityService.calculateAccessibility(eq(accessibilityRequest),
-                any(AccessibleRoadSectionModifier.class)))
-                .thenReturn(accessibility);
+
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);
     }
 }
