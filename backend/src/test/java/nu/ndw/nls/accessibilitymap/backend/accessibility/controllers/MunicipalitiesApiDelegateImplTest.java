@@ -21,19 +21,25 @@ import org.springframework.http.ResponseEntity;
 class MunicipalitiesApiDelegateImplTest {
 
     private static final String MUNICIPALITY_ID_STRING = "GM0307";
+
     private static final String MUNICIPALITY_ID_2_STRING = "GM0008";
+
     private static final String MUNICIPALITY_ID_2 = "GM0008";
+
     private static final String MUNICIPALITY_ID = "GM0307";
 
     @Mock
     private MunicipalityFeatureMapper municipalityFeatureMapper;
+
     @Mock
     private MunicipalityConfiguration municipalityConfiguration;
 
     @Mock
     private Municipality municipality1;
+
     @Mock
     private Municipality municipality2;
+
     @Mock
     private MunicipalityFeatureCollectionJson featureCollection;
 

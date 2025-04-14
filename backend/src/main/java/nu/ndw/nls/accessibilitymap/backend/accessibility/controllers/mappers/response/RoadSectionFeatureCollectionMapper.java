@@ -20,10 +20,10 @@ public class RoadSectionFeatureCollectionMapper {
     /**
      * Maps the specified accessibility information into a `RoadSectionFeatureCollectionJson` object.
      *
-     * @param accessibility the accessibility details containing collections of road sections
+     * @param accessibility       the accessibility details containing collections of road sections
      * @param startPointRequested indicates whether the start point was requested
-     * @param startPointMatch optional parameter representing the match for the starting point
-     * @param accessible optional parameter indicating if accessibility should be considered
+     * @param startPointMatch     optional parameter representing the match for the starting point
+     * @param accessible          optional parameter indicating if accessibility should be considered
      * @return a `RoadSectionFeatureCollectionJson` containing a collection of mapped road section features
      */
     public RoadSectionFeatureCollectionJson map(
@@ -40,6 +40,5 @@ public class RoadSectionFeatureCollectionMapper {
 
         return new RoadSectionFeatureCollectionJson(TypeEnum.FEATURE_COLLECTION, features);
     }
-
 
 }

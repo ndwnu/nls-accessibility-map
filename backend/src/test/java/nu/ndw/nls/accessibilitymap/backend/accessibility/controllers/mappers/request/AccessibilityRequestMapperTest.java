@@ -21,15 +21,25 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityRequestMapperTest {
 
     private static final float DEFAULT_VEHICLE_AXLE_LOAD = 4.0F;
+
     private static final float DEFAULT_VEHICLE_HEIGHT = 1.0F;
+
     private static final float DEFAULT_VEHICLE_LENGTH = 10.0F;
+
     private static final float DEFAULT_VEHICLE_WIDTH = 2.0F;
+
     private static final double DEFAULT_SEARCH_DISTANCE = 50000D;
+
     private static final int DEFAULT_MUNICIPALITY_ID = 307;
+
     private static final double DEFAULT_X_COORDINATE = 0.0;
+
     private static final double DEFAULT_Y_COORDINATE = 1.0;
+
     private static final double MAX_LONGITUDE = 2.0;
+
     private static final double MAX_LATITUDE = 3.0;
+
     private static final float DEFAULT_VEHICLE_WEIGHT = 1000.0F;
 
     @Mock

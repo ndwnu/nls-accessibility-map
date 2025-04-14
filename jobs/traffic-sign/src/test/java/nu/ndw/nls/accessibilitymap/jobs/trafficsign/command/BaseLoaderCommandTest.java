@@ -28,7 +28,10 @@ class BaseLoaderCommandTest {
                 Command.class,
                 annotation -> {
                     assertThat(annotation.name()).isEqualTo("jobs");
-                    assertThat(annotation.subcommands()).containsExactlyInAnyOrder(AnalyseCommand.class, UpdateCacheCommand.class, ConfigureRabbitMQCommand.class);
+                    assertThat(annotation.subcommands()).containsExactlyInAnyOrder(
+                            AnalyseCommand.class,
+                            UpdateCacheCommand.class,
+                            ConfigureRabbitMQCommand.class);
                 }
         );
     }

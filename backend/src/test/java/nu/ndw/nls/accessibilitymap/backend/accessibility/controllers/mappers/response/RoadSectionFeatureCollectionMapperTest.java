@@ -20,15 +20,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class RoadSectionFeatureCollectionMapperTest {
 
     private static final boolean START_POINT_REQUESTED = true;
+
     private static final boolean ACCESSIBLE = true;
+
     @Mock
     private RoadSectionFeatureMapper roadSectionFeatureMapper;
+
     @Mock
     private RoadSectionFeatureJson roadSectionFeatureJson;
+
     @Mock
     private RoadSection roadSection;
+
     @Mock
     private Accessibility accessibility;
+
     @Mock
     private CandidateMatch candidateMatch;
 

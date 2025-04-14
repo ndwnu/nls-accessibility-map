@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto;
 import lombok.Builder;
 import lombok.Getter;
 
-
 @Getter
 @Builder
 public class Feature {

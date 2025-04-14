@@ -52,7 +52,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
     @Mock
     private GenerateConfiguration generateConfiguration;
 
-
     private ExportProperties exportProperties;
 
     @Mock
@@ -178,7 +177,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                     Level.DEBUG,
                     "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
 
-
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }
@@ -194,7 +192,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                 new GeoJsonObjectMapperFactory());
         assertThat(geoJsonRoadAsymmetricTrafficSignWriter.isEnabled(Set.of(ExportType.ASYMMETRIC_TRAFFIC_SIGNS_GEO_JSON))).isTrue();
     }
-
 
     private void prepareCreateFeaturesForDirectionalSegment(DirectionalSegment directionalSegmentForward1) {
 

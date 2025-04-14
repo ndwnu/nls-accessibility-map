@@ -104,7 +104,6 @@ class RoadSectionTest extends ValidationTest {
         validate(roadSection, List.of("roadSectionFragments[0].roadSection"), List.of("must not be null"));
     }
 
-
     @Test
     void validate_roadSectionFragments_segment_id_null() {
 

@@ -25,6 +25,7 @@ public enum TrafficSignType {
     C20("C20"),
     C21("C21"),
     C22("C22");
+
     private final String rvvCode;
 
     public static TrafficSignType fromRvvCode(String rvvCode) {

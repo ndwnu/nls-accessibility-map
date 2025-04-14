@@ -29,7 +29,6 @@ public class GeoJsonRoadAsymmetricTrafficSignWriter extends AbstractGeoJsonWrite
         this.featureBuilder = featureBuilder;
     }
 
-
     @Override
     public boolean isEnabled(Set<ExportType> exportTypes) {
         return exportTypes.contains(ExportType.ASYMMETRIC_TRAFFIC_SIGNS_GEO_JSON);
