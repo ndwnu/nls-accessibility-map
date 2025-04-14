@@ -46,7 +46,6 @@ class TrafficSignMapperTest {
     private static final double DEFAULT_X_COORDINATE = 1d;
 
     private static final double DEFAULT_Y_COORDINATE = 2d;
-    private static final double FRACTION_VALUE = 2d;
 
     private TrafficSignMapper trafficSignMapper;
 
@@ -73,13 +72,14 @@ class TrafficSignMapperTest {
     private Coordinate coordinate;
 
     @Mock
-    private LineString lineString;
+    private LineString nwbRoadSectionGeometry;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
     @BeforeEach
     void setUp() {
+
         integerSequenceSupplier = new IntegerSequenceSupplier();
         trafficSignGeoJsonDto = TrafficSignGeoJsonDto.builder()
                 .id(UUID.randomUUID())
@@ -87,7 +87,7 @@ class TrafficSignMapperTest {
                         .roadSectionId(1L)
                         .rvvCode("C6")
                         .drivingDirection(DirectionType.BACK)
-                        .fraction(FRACTION_VALUE)
+                        .fraction(2d)
                         .blackCode("4.1")
                         .imageUrl("https://example.com/image")
                         .zoneCode("ZE")
@@ -110,10 +110,51 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         validateTrafficSign(trafficSign.get());
+    }
+
+    @ParameterizedTest
+    @NullSource
+    void mapFromTrafficSignGeoJsonDto_noNwbRoadSectionGeometrySupplied(LineString nwbRoadSectionGeometry) {
+
+        TrafficSignType trafficSignType = TrafficSignType.C1;
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+        assertThat(trafficSign).isEmpty();
+
+        loggerExtension.containsLog(
+                Level.WARN,
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
+                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
+                "Traffic sign with id '%s' is missing a road section.".formatted(trafficSignGeoJsonDto.getId()));
+    }
+
+    @Test
+    void mapFromTrafficSignGeoJsonDto_missingFraction() {
+
+        TrafficSignType trafficSignType = TrafficSignType.C1;
+        trafficSignGeoJsonDto.getProperties().setFraction(null);
+
+        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
+                integerSequenceSupplier);
+
+        assertThat(trafficSign).isEmpty();
+
+        loggerExtension.containsLog(
+                Level.WARN,
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
+                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
+                "Traffic sign with id '%s' is missing a fraction.".formatted(trafficSignGeoJsonDto.getId()));
     }
 
     @ParameterizedTest
@@ -124,7 +165,8 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setBlackCode(null);
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         assertThat(trafficSign).isEmpty();
@@ -146,7 +188,8 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setBlackCode("invalid");
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         assertThat(trafficSign).isEmpty();
@@ -169,7 +212,8 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setBlackCode("invalid");
         setupFixtureForNwbSnap();
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         validateTrafficSign(trafficSign.get());
@@ -194,7 +238,8 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setZoneCode(zoneCodeString);
         setupFixtureForNwbSnap();
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         validateTrafficSign(trafficSign.get());
@@ -207,7 +252,8 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setZoneCode("invalid");
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         assertThat(trafficSign).isEmpty();
@@ -229,7 +275,8 @@ class TrafficSignMapperTest {
         setupFixtureForNwbSnap();
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         validateTrafficSign(trafficSign.get());
@@ -250,7 +297,8 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setDrivingDirection(directionType);
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         if (directionType == DirectionType.BOTH) {
@@ -276,7 +324,8 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setImageUrl(imageUrl);
         setupFixtureForNwbSnap();
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         assertThat(trafficSign.get().iconUri()).isNull();
@@ -293,7 +342,8 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setBlackCode(blackCode);
 
         Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                lineString, trafficSignGeoJsonDto,
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDto,
                 integerSequenceSupplier);
 
         assertThat(trafficSign.get().blackCode()).isNull();
@@ -334,8 +384,8 @@ class TrafficSignMapperTest {
 
     private void setupFixtureForNwbSnap() {
 
-        when(nwbRoadSectionSnapService.snapToLine(lineString, FRACTION_VALUE))
-                .thenReturn(coordinateAndBearing);
+        when(nwbRoadSectionSnapService.snapToLine(nwbRoadSectionGeometry, trafficSignGeoJsonDto.getProperties().getFraction())).thenReturn(
+                coordinateAndBearing);
         when(coordinateAndBearing.coordinate()).thenReturn(coordinate);
         when(coordinate.getX()).thenReturn(DEFAULT_X_COORDINATE);
         when(coordinate.getY()).thenReturn(DEFAULT_Y_COORDINATE);

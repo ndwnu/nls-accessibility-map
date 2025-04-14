@@ -37,20 +37,22 @@ public class TrafficSignMapper {
 
     @Valid
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
-            LineString lineString,
+            LineString nwbRoadSectionGeometry,
             TrafficSignGeoJsonDto trafficSignGeoJsonDto,
             IntegerSequenceSupplier integerSequenceSupplier) {
 
         try {
-            if (Objects.isNull(lineString)) {
-                throw new IllegalStateException("Traffic sign with id '%s' is missing a road section.");
+            if (Objects.isNull(nwbRoadSectionGeometry)) {
+                throw new IllegalStateException("Traffic sign with id '%s' is missing a road section."
+                        .formatted(trafficSignGeoJsonDto.getId()));
             }
 
             TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode());
 
             Double fraction = trafficSignGeoJsonDto.getProperties().getFraction();
             if (Objects.isNull(fraction)) {
-                throw new IllegalStateException("Traffic sign with id '%s' is missing fraction.");
+                throw new IllegalStateException("Traffic sign with id '%s' is missing a fraction."
+                        .formatted(trafficSignGeoJsonDto.getId()));
             }
             CoordinateAndBearing coordinateAndBearing = nwbRoadSectionSnapService.snapToLine(lineString, fraction);
 
