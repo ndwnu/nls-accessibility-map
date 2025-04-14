@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
-import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +25,8 @@ public class RoadSectionFeatureMapper {
 
     private final static Predicate<RoadSection> FORWARD_INACCESSIBLE_FILTER = r -> !r.isForwardAccessible();
 
-    private final JtsLineStringJsonMapper jtsLineStringJsonMapper;
+    private final GeoJsonLineStringMergeMapper geoJsonLineStringMergeMapper;
+
 
     /**
      * Maps a given RoadSection to a list of RoadSectionFeatureJson objects. The mapping is based on the accessibility and match filters
@@ -53,7 +53,7 @@ public class RoadSectionFeatureMapper {
                 features.add(new RoadSectionFeatureJson(
                         RoadSectionFeatureJson.TypeEnum.FEATURE,
                         Math.toIntExact(roadSection.getId()),
-                        jtsLineStringJsonMapper.map(roadSection.getForwardGeometry()),
+                        geoJsonLineStringMergeMapper.mapToLineStringJson(roadSection.getForwardGeometries()),
                         new RoadSectionPropertiesJson(
                                 roadSection.isForwardAccessible(),
                                 isMatched ? true : null)));
@@ -66,7 +66,7 @@ public class RoadSectionFeatureMapper {
                 features.add(new RoadSectionFeatureJson(
                         RoadSectionFeatureJson.TypeEnum.FEATURE,
                         Math.toIntExact(-roadSection.getId()),
-                        jtsLineStringJsonMapper.map(roadSection.getBackwardGeometry()),
+                        geoJsonLineStringMergeMapper.mapToLineStringJson(roadSection.getBackwardGeometries()),
                         new RoadSectionPropertiesJson(
                                 roadSection.isBackwardAccessible(),
                                 isMatched ? true : null)));

@@ -182,4 +182,43 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>regression-test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>docker-compose-build</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>build</argument>
+                                        <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+
+                        </executions>
+                        <configuration>
+                            <arguments>
+                                <argument>compose</argument>
+                            </arguments>
+                            <executable>docker</executable>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

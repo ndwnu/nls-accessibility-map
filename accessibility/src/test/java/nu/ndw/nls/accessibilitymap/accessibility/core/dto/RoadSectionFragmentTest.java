@@ -21,6 +21,65 @@ class RoadSectionFragmentTest {
     private DirectionalSegment backwardSegment;
 
     @Test
+    void hasForwardSegment_noForwardSegment() {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
+        assertThat(roadSectionFragment.hasForwardSegment()).isFalse();
+    }
+
+    @Test
+    void hasForwardSegment_withForwardSegment() {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .forwardSegment(forwardSegment)
+                .build();
+        assertThat(roadSectionFragment.hasForwardSegment()).isTrue();
+    }
+
+
+    @Test
+    void hasBackwardSegment_noBackwardSegment() {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
+        assertThat(roadSectionFragment.hasBackwardSegment()).isFalse();
+    }
+
+    @Test
+    void hasBackwardSegment_withBackwardSegment() {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .backwardSegment(backwardSegment)
+                .build();
+        assertThat(roadSectionFragment.hasBackwardSegment()).isTrue();
+    }
+
+    @Test
+    void isForwardAccessible_noForwardSegment() {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
+        assertThat(roadSectionFragment.isForwardAccessible()).isFalse();
+    }
+
+    @Test
+    void isForwardAccessible_withForwardSegment_notAccessible() {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .forwardSegment(forwardSegment)
+                .build();
+        when(forwardSegment.isAccessible()).thenReturn(false);
+        assertThat(roadSectionFragment.isForwardAccessible()).isFalse();
+    }
+
+    @Test
+    void isBackwardAccessible_noBackwardSegment() {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
+        assertThat(roadSectionFragment.isBackwardAccessible()).isFalse();
+    }
+
+    @Test
+    void isBackwardAccessible_withBackwardSegment_notAccessible() {
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .backwardSegment(backwardSegment)
+                .build();
+        when(backwardSegment.isAccessible()).thenReturn(false);
+        assertThat(roadSectionFragment.isBackwardAccessible()).isFalse();
+    }
+
+    @Test
     void setForwardSegment() {
 
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();

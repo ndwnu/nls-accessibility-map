@@ -37,12 +37,12 @@ public class TrafficSignMapper {
 
     @Valid
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
-            LineString nwbRoadSectionDto,
+            LineString lineString,
             TrafficSignGeoJsonDto trafficSignGeoJsonDto,
             IntegerSequenceSupplier integerSequenceSupplier) {
 
         try {
-            if (Objects.isNull(nwbRoadSectionDto)) {
+            if (Objects.isNull(lineString)) {
                 throw new IllegalStateException("Traffic sign with id '%s' is missing a road section.");
             }
 
@@ -52,7 +52,7 @@ public class TrafficSignMapper {
             if (Objects.isNull(fraction)) {
                 throw new IllegalStateException("Traffic sign with id '%s' is missing fraction.");
             }
-            CoordinateAndBearing coordinate = nwbRoadSectionSnapService.snapToLine(nwbRoadSectionDto, fraction);
+            CoordinateAndBearing coordinateAndBearing = nwbRoadSectionSnapService.snapToLine(lineString, fraction);
 
             TrafficSign trafficSign = TrafficSign.builder()
                     .id(integerSequenceSupplier.next())
@@ -68,8 +68,8 @@ public class TrafficSignMapper {
                     .zoneCodeType(mapZoneCodeType(trafficSignGeoJsonDto))
                     .trafficSignOrderUrl(createUri(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl()))
                     .blackCode(mapToBlackCode(trafficSignGeoJsonDto, type))
-                    .networkSnappedLatitude(coordinate.coordinate().getY())
-                    .networkSnappedLongitude(coordinate.coordinate().getX())
+                    .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
+                    .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
                     .build();
 
             return Optional.of(trafficSign.withRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign)));
