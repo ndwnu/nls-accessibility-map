@@ -185,8 +185,7 @@ class AccessibilityMapApiDelegateImplTest {
 
     private void setUpFixture() {
 
-        when(accessibilityService.calculateAccessibility(eq(accessibilityRequest),
-                any(AccessibleRoadSectionModifier.class)))
+        when(accessibilityService.calculateAccessibility(eq(accessibilityRequest), any(AccessibleRoadSectionModifier.class)))
                 .thenAnswer(invocationOnMock -> {
                     invocationOnMock.getArgument(1, AccessibleRoadSectionModifier.class).modify(
                             roadsSectionsWithoutAppliedRestrictions,
