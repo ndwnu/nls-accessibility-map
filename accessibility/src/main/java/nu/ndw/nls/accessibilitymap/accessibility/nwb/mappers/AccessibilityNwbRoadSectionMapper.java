@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class AccessibilityNwbRoadSectionMapper {
 
     private static final String ROAD_SECTION_DRIVING_DIRECTION_FORWARD = "H";
+
     private static final String ROAD_SECTION_DRIVING_DIRECTION_BACKWARD = "T";
 
     public AccessibilityNwbRoadSection map(NwbRoadSectionDto nwbRoadSectionDto) {

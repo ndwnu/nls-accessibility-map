@@ -24,8 +24,11 @@ import nu.ndw.nls.routingmapmatcher.model.IsochroneUnit;
 public class IsochroneService {
 
     private static final int ROOT_PARENT = -1;
+
     private final EncodingManager encodingManager;
+
     private final IsochroneMatchMapper isochroneMatchMapper;
+
     private final ShortestPathTreeFactory shortestPathTreeFactory;
 
     /**

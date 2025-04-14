@@ -10,8 +10,8 @@ import org.mapstruct.Mapping;
         {MunicipalityCoordinateMapper.class, MunicipalityIdMapper.class})
 public interface MunicipalityMapper {
 
-    @Mapping(source=".", target = "startPoint")
-    @Mapping(source="municipalityId", target = "municipalityIdInteger")
+    @Mapping(source = ".", target = "startPoint")
+    @Mapping(source = "municipalityId", target = "municipalityIdInteger")
     Municipality map(MunicipalityProperty municipalityProperty);
 
 }

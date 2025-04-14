@@ -11,12 +11,17 @@ import nu.ndw.nls.events.NlsEventType;
 import org.junit.jupiter.api.Test;
 
 class AccessibilityRoutingNetworkEventMapperTest {
+
     private static final int NWB_VERSION_ID = 20231001;
+
     private static final String NWB_VERSION_ID_STRING = "20231001";
+
     private static final String TRAFFIC_SIGN_TIMESTAMP_STRING = "2023-11-07T15:37:23Z";
+
     private static final Instant TRAFFIC_SIGN_TIMESTAMP = Instant.parse(TRAFFIC_SIGN_TIMESTAMP_STRING);
 
     private final AccessibilityRoutingNetworkEventMapper mapper = new AccessibilityRoutingNetworkEventMapper();
+
     @Test
     void map() {
         NlsEvent event = mapper.map(NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP);

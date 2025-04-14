@@ -6,5 +6,4 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityReque
 
 public interface TrafficSignRelevancy extends BiPredicate<TrafficSign, AccessibilityRequest> {
 
-
 }

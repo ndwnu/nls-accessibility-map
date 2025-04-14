@@ -65,5 +65,4 @@ public class DockerStepDefinitions {
         graphhopperJobDriver.runGraphhopperJobConfigureRabbitMQ();
     }
 
-
 }

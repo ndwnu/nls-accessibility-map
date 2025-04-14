@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 public class MunicipalityService {
 
     private static final String MESSAGE_TEMPLATE = "The municipality with id: %s cannot be found";
-    private final MunicipalityConfiguration municipalityConfiguration;
 
+    private final MunicipalityConfiguration municipalityConfiguration;
 
     public Municipality getMunicipalityById(String municipalityId) {
         if (!municipalityConfiguration.getMunicipalities().containsKey(municipalityId)) {

@@ -161,8 +161,8 @@ class AccessibilityServiceTest {
     void calculateAccessibility_withoutModifier() {
 
         when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                        List.of(roadSectionNoRestriction),
-                        List.of(roadSectionRestriction)))
+                List.of(roadSectionNoRestriction),
+                List.of(roadSectionRestriction)))
                 .thenReturn(List.of(roadSectionCombined));
 
         Accessibility result = calculateAccessibility((roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions)
@@ -188,8 +188,8 @@ class AccessibilityServiceTest {
         RoadSection newRoadSection = mock(RoadSection.class);
 
         when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                        List.of(roadSectionNoRestriction, newRoadSection),
-                        List.of(roadSectionRestriction)))
+                List.of(roadSectionNoRestriction, newRoadSection),
+                List.of(roadSectionRestriction)))
                 .thenReturn(new ArrayList(List.of(roadSectionCombined)));
 
         Accessibility result = calculateAccessibility((roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions)
@@ -277,7 +277,7 @@ class AccessibilityServiceTest {
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction), edgeRestrictions.getTrafficSignsByEdgeKey()))
                 .thenReturn(new ArrayList<>(List.of(roadSectionRestriction)));
 
-        return  accessibilityService.calculateAccessibility(accessibilityRequest, accessibileRoadSectionModifier);
+        return accessibilityService.calculateAccessibility(accessibilityRequest, accessibileRoadSectionModifier);
     }
 
     private void mockWeighting() {

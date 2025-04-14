@@ -23,11 +23,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MunicipalityCoordinateMapperTest {
 
     private static final double START_COORDINATE_LONGITUDE = 1D;
-    private static final double START_COORDINATE_LATITUDE = 2D;
-    private static final String NAME = "name";
-    private static final String MUNICIPALITY_ID_STRING = "123";
-    private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
+    private static final double START_COORDINATE_LATITUDE = 2D;
+
+    private static final String NAME = "name";
+
+    private static final String MUNICIPALITY_ID_STRING = "123";
+
+    private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
     private static final URL URL;
 
@@ -66,7 +69,6 @@ class MunicipalityCoordinateMapperTest {
                         URL,
                         municipalityBoundingBox,
                         DATE_LAST_CHECK)));
-
 
     }
 }

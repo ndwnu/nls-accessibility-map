@@ -35,10 +35,10 @@ public class NetworkDataService implements StateManagement {
     private final CrsTransformer crsTransformer;
 
     @Getter
-    private List<Link> links = new ArrayList<>();
+    private final List<Link> links = new ArrayList<>();
 
     @Getter
-    private Map<Long, Node> nodes = new HashMap<>();
+    private final Map<Long, Node> nodes = new HashMap<>();
 
     public NetworkDataService createRoad(long startNodeId, long endNodeId) {
 

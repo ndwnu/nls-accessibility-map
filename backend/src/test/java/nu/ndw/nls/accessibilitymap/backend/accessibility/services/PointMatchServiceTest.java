@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PointMatchServiceTest {
 
     private static final int CUTOFF_DISTANCE = 150;
+
     @Mock
     private MapMatcherFactory<SinglePointMapMatcher> singlePointMapMatcherMapMatcherFactory;
 
