@@ -14,7 +14,6 @@ public class GeoJsonLineStringMergeMapper {
 
     private final JtsLineStringJsonMapper jtsLineStringJsonMapper;
 
-
     public LineStringJson mapToLineStringJson(List<LineString> lineStrings) {
 
         return lineStrings.stream()

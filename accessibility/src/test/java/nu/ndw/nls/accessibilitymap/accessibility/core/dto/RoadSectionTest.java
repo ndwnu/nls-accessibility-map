@@ -30,6 +30,11 @@ class RoadSectionTest extends ValidationTest {
     @Mock
     private LineString lineString;
 
+    @Mock
+    private LineString lineString1;
+    @Mock
+    private LineString lineString2;
+
     private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
 
 
@@ -206,6 +211,45 @@ class RoadSectionTest extends ValidationTest {
         ));
         boolean result = roadSection.isBackwardAccessible();
         assertThat(result).isTrue();
+    }
+
+    @Test
+    void getForwardGeometries() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                                .withForwardSegment(directionalSegmentForward
+                                        .withLineString(lineString1)
+                                ),
+                        roadSectionFragment
+                                .withForwardSegment(directionalSegmentForward
+                                        .withLineString(lineString2)
+                                )
+
+                )
+        );
+
+        List<LineString> result = roadSection.getForwardGeometries();
+        List<LineString> expected = List.of(lineString1, lineString2);
+        assertThat(result).isEqualTo(expected);
+    }
+
+
+    @Test
+    void getBackwardGeometries() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                                .withBackwardSegment(directionalSegmentForward
+                                        .withLineString(lineString1)
+                                ),
+                        roadSectionFragment
+                                .withBackwardSegment(directionalSegmentForward
+                                        .withLineString(lineString2)
+                                )
+
+                )
+        );
+
+        List<LineString> result = roadSection.getBackwardGeometries();
+        List<LineString> expected = List.of(lineString1, lineString2);
+        assertThat(result).isEqualTo(expected);
     }
 
 
