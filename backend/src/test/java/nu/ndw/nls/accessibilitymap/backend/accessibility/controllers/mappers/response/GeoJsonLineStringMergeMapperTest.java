@@ -1,8 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -40,7 +39,6 @@ class GeoJsonLineStringMergeMapperTest {
         LineString lineString2 = geometryFactory.createLineString(new Coordinate[]{new Coordinate(1, 1), new Coordinate(2, 2)});
         LineString mergedLineString = geometryFactory.createLineString(
                 new Coordinate[]{new Coordinate(0, 0), new Coordinate(1, 1), new Coordinate(2, 2)});
-
         when(jtsLineStringJsonMapper.map(mergedLineString)).thenReturn(expectedLineStringJson);
 
         LineStringJson result = geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(lineString1, lineString2));
@@ -50,17 +48,17 @@ class GeoJsonLineStringMergeMapperTest {
 
     @Test
     void mapToLineStringJson_withEmptyListThrowsException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> geoJsonLineStringMergeMapper.mapToLineStringJson(List.of()));
 
-        assertEquals("Cannot merge empty line strings", exception.getMessage());
+        assertThatThrownBy(() -> geoJsonLineStringMergeMapper.mapToLineStringJson(List.of()))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Cannot merge empty line strings");
+
     }
 
     @Test
     void mapToLineStringJson_withSingleLineString() {
         GeometryFactory geometryFactory = new GeometryFactory();
         LineString lineString = geometryFactory.createLineString(new Coordinate[]{new Coordinate(0, 0), new Coordinate(1, 1)});
-
         when(jtsLineStringJsonMapper.map(lineString)).thenReturn(expectedLineStringJson);
 
         LineStringJson result = geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(lineString));
