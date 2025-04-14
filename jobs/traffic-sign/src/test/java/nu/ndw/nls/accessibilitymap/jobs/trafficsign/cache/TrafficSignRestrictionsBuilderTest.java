@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -40,10 +41,35 @@ class TrafficSignRestrictionsBuilderTest {
     }
 
     @Test
+    void buildFor_noTrafficSignType() {
+
+        TrafficSign trafficSign = TrafficSign.builder().build();
+
+        assertThat(catchThrowable(() ->trafficSignRestrictionsBuilder.buildFor(trafficSign)))
+                .withFailMessage("Traffic sign type null is not supported")
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+
+    @Test
     void buildFor_c1() {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .trafficSignType(TrafficSignType.C1)
+                .build();
+
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+                .transportTypes(Arrays.stream(TransportType.values())
+                        .filter(transportType -> transportType != TransportType.PEDESTRIAN)
+                        .collect(Collectors.toSet()))
+                .build());
+    }
+
+    @Test
+    void buildFor_c2() {
+
+        TrafficSign trafficSign = TrafficSign.builder()
+                .trafficSignType(TrafficSignType.C2)
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
@@ -130,6 +156,20 @@ class TrafficSignRestrictionsBuilderTest {
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
                 .transportTypes(Set.of(
                         TransportType.VEHICLE_WITH_TRAILER
+                ))
+                .build());
+    }
+
+    @Test
+    void buildFor_c11() {
+
+        TrafficSign trafficSign = TrafficSign.builder()
+                .trafficSignType(TrafficSignType.C11)
+                .build();
+
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+                .transportTypes(Set.of(
+                        TransportType.MOTORCYCLE
                 ))
                 .build());
     }
