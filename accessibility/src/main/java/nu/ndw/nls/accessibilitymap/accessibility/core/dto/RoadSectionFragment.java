@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @With
 @Validated
 public class RoadSectionFragment {

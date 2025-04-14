@@ -12,7 +12,6 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.With;
-import nu.ndw.nls.geometry.stream.collectors.GeometryCollectors;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
@@ -61,26 +60,26 @@ public final class RoadSection {
                 .allMatch(RoadSectionFragment::isBackwardAccessible);
     }
 
-    public LineString getForwardGeometry() {
+    public List<LineString> getForwardGeometries() {
         if (!hasForwardSegments()) {
             throw new IllegalStateException("no forward geometry found for road section " + id);
         }
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::getForwardSegment)
                 .map(DirectionalSegment::getLineString)
-                .collect(GeometryCollectors.mergeToLineString())
-                .orElseThrow(() -> new IllegalStateException("invalid forward geometry found for road section " + id));
+                .toList();
+
     }
 
-    public LineString getBackwardGeometry() {
+    public List<LineString> getBackwardGeometries() {
         if (!hasBackwardSegments()) {
             throw new IllegalStateException("no backward geometry found for road section " + id);
         }
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::getBackwardSegment)
                 .map(DirectionalSegment::getLineString)
-                .collect(GeometryCollectors.mergeToLineString())
-                .orElseThrow(() -> new IllegalStateException("invalid backward geometry found for road section " + id));
+                .toList();
+
     }
 
 }

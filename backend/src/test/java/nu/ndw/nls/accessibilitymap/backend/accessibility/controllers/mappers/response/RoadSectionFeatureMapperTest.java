@@ -10,7 +10,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
-import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +26,7 @@ class RoadSectionFeatureMapperTest {
 
     private static final long ROAD_SECTION_ID = 123L;
     @Mock
-    private JtsLineStringJsonMapper jtsLineStringJsonMapper;
+    private GeoJsonLineStringMergeMapper geoJsonLineStringMergeMapper;
 
     private RoadSectionFeatureMapper roadSectionFeatureMapper;
 
@@ -44,7 +43,7 @@ class RoadSectionFeatureMapperTest {
 
     @BeforeEach
     void setUp() {
-        roadSectionFeatureMapper = new RoadSectionFeatureMapper(jtsLineStringJsonMapper);
+        roadSectionFeatureMapper = new RoadSectionFeatureMapper(geoJsonLineStringMergeMapper);
     }
 
     @ParameterizedTest
@@ -56,8 +55,8 @@ class RoadSectionFeatureMapperTest {
             when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         }
         if (!Boolean.FALSE.equals(accessible)) {
-            when(roadSection.getForwardGeometry()).thenReturn(forwardGeometry);
-            when(jtsLineStringJsonMapper.map(forwardGeometry))
+            when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
+            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry)))
                     .thenReturn(lineStringJson);
         }
 
@@ -93,8 +92,8 @@ class RoadSectionFeatureMapperTest {
             when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         }
         if (!Boolean.FALSE.equals(accessible)) {
-            when(roadSection.getBackwardGeometry()).thenReturn(backwardGeometry);
-            when(jtsLineStringJsonMapper.map(backwardGeometry))
+            when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
+            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry)))
                     .thenReturn(lineStringJson);
         }
 
@@ -129,8 +128,8 @@ class RoadSectionFeatureMapperTest {
             when(candidateMatch.getMatchedLinkId())
                     .thenReturn((int) ROAD_SECTION_ID);
             when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
-            when(roadSection.getForwardGeometry()).thenReturn(forwardGeometry);
-            when(jtsLineStringJsonMapper.map(forwardGeometry))
+            when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
+            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry)))
                     .thenReturn(lineStringJson);
         }
 
@@ -167,8 +166,8 @@ class RoadSectionFeatureMapperTest {
             when(candidateMatch.isReversed())
                     .thenReturn(true);
             when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
-            when(roadSection.getBackwardGeometry()).thenReturn(backwardGeometry);
-            when(jtsLineStringJsonMapper.map(backwardGeometry))
+            when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
+            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry)))
                     .thenReturn(lineStringJson);
         }
 

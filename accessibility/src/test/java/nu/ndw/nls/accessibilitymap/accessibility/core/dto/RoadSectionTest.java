@@ -1,11 +1,13 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,9 @@ class RoadSectionTest extends ValidationTest {
 
     @Mock
     private LineString lineString;
+
+    private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
+
 
     @BeforeEach
     void setUp() {
@@ -71,10 +76,145 @@ class RoadSectionTest extends ValidationTest {
     }
 
     @Test
+    void hasForwardSegments_whenNoSegments_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder().forwardSegment(null)
+                .build()));
+        boolean result = roadSection.hasForwardSegments();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void hasBackwardSegments_whenNoSegments_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder().backwardSegment(null)
+                .build()));
+        boolean result = roadSection.hasBackwardSegments();
+        assertThat(result).isFalse();
+    }
+
+
+    @Test
+    void isRestrictedInAnyDirection_whenNoRestrictions_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder()
+                .forwardSegment(directionalSegmentForward.withAccessible(true))
+                .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                .build()));
+
+        boolean result = roadSection.isRestrictedInAnyDirection();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isRestrictedInAnyDirection_whenRestrictionsExist_shouldReturnTrue() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder()
+                .forwardSegment(directionalSegmentForward.withAccessible(false))
+                .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                .build()));
+
+        boolean result = roadSection.isRestrictedInAnyDirection();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isRestrictedInAnyDirection_whenRestrictionsExist_shouldReturnTrue_whenBothDirectionsAreInAccessible() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder()
+                .forwardSegment(directionalSegmentForward.withAccessible(false))
+                .backwardSegment(directionalSegmentBackward.withAccessible(false))
+                .build()));
+        boolean result = roadSection.isRestrictedInAnyDirection();
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isForwardAccessible_whenNoSegments_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder().forwardSegment(null)
+                .build()));
+        boolean result = roadSection.isForwardAccessible();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isForwardAccessible_whenOneIsInaccessible_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                        .toBuilder()
+                        .forwardSegment(directionalSegmentForward.withAccessible(true))
+                        .build(),
+                roadSectionFragment
+                        .toBuilder()
+                        .forwardSegment(directionalSegmentForward.withAccessible(false))
+                        .build()
+        ));
+        boolean result = roadSection.isForwardAccessible();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isForwardAccessible_whenAllAreAccessible_shouldReturnTrue() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                        .toBuilder()
+                        .forwardSegment(directionalSegmentForward.withAccessible(true))
+                        .build(),
+                roadSectionFragment
+                        .toBuilder()
+                        .forwardSegment(directionalSegmentForward.withAccessible(true))
+                        .build()
+        ));
+        boolean result = roadSection.isForwardAccessible();
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isBackwardAccessible_whenNoSegments_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder().backwardSegment(null)
+                .build()));
+        boolean result = roadSection.isBackwardAccessible();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isBackwardAccessible_whenOneIsInaccessible_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                        .toBuilder()
+                        .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                        .build(),
+                roadSectionFragment
+                        .toBuilder()
+                        .backwardSegment(directionalSegmentBackward.withAccessible(false))
+                        .build()
+        ));
+        boolean result = roadSection.isBackwardAccessible();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isBackwardAccessible_whenAllAreAccessible_shouldReturnTrue() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                        .toBuilder()
+                        .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                        .build(),
+                roadSectionFragment
+                        .toBuilder()
+                        .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                        .build()
+        ));
+        boolean result = roadSection.isBackwardAccessible();
+        assertThat(result).isTrue();
+    }
+
+
+    @Test
     void validate() {
 
         validate(roadSection, List.of(), List.of());
     }
+
 
     @Test
     void validate_id_null() {
