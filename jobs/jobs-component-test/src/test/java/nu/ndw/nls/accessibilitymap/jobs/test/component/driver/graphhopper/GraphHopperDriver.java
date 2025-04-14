@@ -129,7 +129,6 @@ public class GraphHopperDriver {
 
         buildNwbDatabaseNetwork();
 
-
         graphHopperNetworkService.storeOnDisk(routingNetworkSettings);
         try {
             new ObjectMapper().writeValue(fullStorageLocation.resolve(ACCESSIBILITY_META_DATA_JSON).toFile(),

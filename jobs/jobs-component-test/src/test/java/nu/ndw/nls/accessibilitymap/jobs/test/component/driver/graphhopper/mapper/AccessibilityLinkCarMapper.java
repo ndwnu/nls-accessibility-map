@@ -6,7 +6,6 @@ import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import nu.ndw.nls.routingmapmatcher.network.model.LinkVehicleMapper;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class AccessibilityLinkCarMapper extends LinkVehicleMapper<AccessibilityLink> {
 

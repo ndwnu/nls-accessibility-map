@@ -26,7 +26,7 @@ public record Restrictions(
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
 
         List<Predicate<AccessibilityRequest>> activeRestrictions = getActiveRestrictions(accessibilityRequest);
-        if(activeRestrictions.isEmpty()) {
+        if (activeRestrictions.isEmpty()) {
             return false;
         }
 

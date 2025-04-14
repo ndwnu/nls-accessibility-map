@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class TrafficSignSnapMapper {
+
     private final NetworkGraphHopper networkGraphHopper;
 
     /**

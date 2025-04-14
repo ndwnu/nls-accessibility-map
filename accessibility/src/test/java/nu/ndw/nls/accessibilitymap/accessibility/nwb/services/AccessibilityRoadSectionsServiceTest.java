@@ -34,7 +34,6 @@ class AccessibilityRoadSectionsServiceTest {
     @Mock
     private AccessibilityNwbRoadSectionMapper accessibleRoadSectionMapper;
 
-
     @Mock
     private NwbRoadSectionDto nwbRoadSectionDtoA;
 

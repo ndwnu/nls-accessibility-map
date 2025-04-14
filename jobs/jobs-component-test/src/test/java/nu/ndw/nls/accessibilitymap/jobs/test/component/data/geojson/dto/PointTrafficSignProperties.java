@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PointTrafficSignProperties implements Properties{
+public class PointTrafficSignProperties implements Properties {
 
     private final UUID trafficSignId;
 

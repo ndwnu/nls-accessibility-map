@@ -39,6 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MapGeneratorServiceTest {
 
     private static final Set<ExportType> EXPORT_TYPES = Set.of(POLYGON_GEO_JSON, LINE_STRING_GEO_JSON);
+
     private MapGeneratorService mapGeneratorService;
 
     @Mock
@@ -46,6 +47,7 @@ class MapGeneratorServiceTest {
 
     @Mock
     private GeoJsonPolygonWriter geoJsonPolygonWriter;
+
     @Mock
     private GeoJsonRoadSectionWriter geoJsonRoadSectionWriter;
 

@@ -4,7 +4,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import nu.ndw.nls.accessibilitymap.backend.core.dto.response.MunicipalityBoundingBox;
 
-
 public record MunicipalityProperty(String name, double startCoordinateLongitude, double startCoordinateLatitude,
                                    double searchDistanceInMetres, String municipalityId, URL requestExemptionUrl,
                                    MunicipalityBoundingBox bounds, LocalDate dateLastCheck) {

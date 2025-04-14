@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class MunicipalitiesApiDelegateImpl implements MunicipalitiesApiDelegate {
 
     private final MunicipalityFeatureMapper municipalityFeatureMapper;
+
     private final MunicipalityConfiguration municipalityConfiguration;
 
     @Override

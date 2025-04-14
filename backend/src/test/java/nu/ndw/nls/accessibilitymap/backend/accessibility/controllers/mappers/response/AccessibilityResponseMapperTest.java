@@ -23,9 +23,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityResponseMapperTest {
 
     private static final long ROAD_SECTION_ID = 123L;
+
     private AccessibilityResponseMapper accessibilityResponseMapper;
+
     @Mock
     private Accessibility accessibility;
+
     @Mock
     private RoadSection roadSection;
 
@@ -55,7 +58,6 @@ class AccessibilityResponseMapperTest {
                 .matchedRoadSection(expectedRoadSection)
                 .build());
 
-
     }
 
     @Test
@@ -76,7 +78,6 @@ class AccessibilityResponseMapperTest {
                 .inaccessibleRoadSections(List.of(expectedRoadSection))
                 .matchedRoadSection(expectedRoadSection)
                 .build());
-
 
     }
 
@@ -99,7 +100,6 @@ class AccessibilityResponseMapperTest {
                 .inaccessibleRoadSections(List.of(expectedRoadSection))
                 .matchedRoadSection(expectedRoadSection)
                 .build());
-
 
     }
 
@@ -134,7 +134,6 @@ class AccessibilityResponseMapperTest {
                 .builder()
                 .inaccessibleRoadSections(List.of())
                 .build());
-
 
     }
 

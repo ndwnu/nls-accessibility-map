@@ -21,8 +21,11 @@ public class AccessibilityMapGeneratorJobCommandLineRunner implements CommandLin
             .withZone(ZoneId.from(ZoneOffset.UTC));
 
     private final BuildProperties buildProperties;
+
     private final BaseLoaderCommand baseLoaderCommand;
+
     private final CommandLine.IFactory factory;
+
     private int exitCode;
 
     @Override
