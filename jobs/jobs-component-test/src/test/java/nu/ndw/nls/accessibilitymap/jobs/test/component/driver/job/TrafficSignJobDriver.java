@@ -56,6 +56,10 @@ public class TrafficSignJobDriver implements StateManagement {
                                 .value("update-cache")
                                 .build(),
                         Environment.builder()
+                                .key("GRAPHHOPPER_NETWORKNAME")
+                                .value("accessibility_latest_component_test")
+                                .build(),
+                        Environment.builder()
                                 .key("NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP")
                                 .value("false")
                                 .build()
