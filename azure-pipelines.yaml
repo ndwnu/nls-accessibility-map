@@ -4,7 +4,7 @@ trigger:
       - main
 
 pool:
-  name: Kubernetes
+  vmImage: ubuntu-latest
 
 resources:
   repositories:
