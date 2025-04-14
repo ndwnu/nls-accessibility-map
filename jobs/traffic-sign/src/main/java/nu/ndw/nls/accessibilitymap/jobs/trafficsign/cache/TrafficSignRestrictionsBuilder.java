@@ -23,6 +23,7 @@ public class TrafficSignRestrictionsBuilder {
 
         nonDynamicTrafficSigns = new EnumMap<>(TrafficSignType.class);
         nonDynamicTrafficSigns.put(TrafficSignType.C1, buildC1Restrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C2, buildC2Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C6, buildC6Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7, buildC7Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7A, buildC7aRestrictions());
@@ -31,6 +32,7 @@ public class TrafficSignRestrictionsBuilder {
         nonDynamicTrafficSigns.put(TrafficSignType.C8, buildC8Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C9, buildC9Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C10, buildC10Restrictions());
+        nonDynamicTrafficSigns.put(TrafficSignType.C11, buildC11Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C12, buildC12Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C22, buildC22Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C22C, buildC22cRestrictions());
@@ -57,6 +59,12 @@ public class TrafficSignRestrictionsBuilder {
     }
 
     private static Restrictions buildC1Restrictions() {
+        return Restrictions.builder()
+                .transportTypes(TransportType.allExcept(TransportType.PEDESTRIAN))
+                .build();
+    }
+
+    private static Restrictions buildC2Restrictions() {
         return Restrictions.builder()
                 .transportTypes(TransportType.allExcept(TransportType.PEDESTRIAN))
                 .build();
@@ -119,6 +127,12 @@ public class TrafficSignRestrictionsBuilder {
     private static Restrictions buildC10Restrictions() {
         return Restrictions.builder()
                 .transportTypes(Set.of(TransportType.VEHICLE_WITH_TRAILER))
+                .build();
+    }
+
+    private static Restrictions buildC11Restrictions() {
+        return Restrictions.builder()
+                .transportTypes(Set.of(TransportType.MOTORCYCLE))
                 .build();
     }
 

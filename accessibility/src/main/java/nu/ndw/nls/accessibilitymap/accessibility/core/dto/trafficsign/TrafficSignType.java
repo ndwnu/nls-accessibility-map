@@ -9,6 +9,7 @@ import lombok.Getter;
 public enum TrafficSignType {
 
     C1("C1"),
+    C2("C2"),
     C6("C6"),
     C7("C7"),
     C7A("C7a"),
@@ -17,6 +18,7 @@ public enum TrafficSignType {
     C8("C8"),
     C9("C9"),
     C10("C10"),
+    C11("C11"),
     C12("C12"),
     C22C("C22c"),
     C17("C17"),
