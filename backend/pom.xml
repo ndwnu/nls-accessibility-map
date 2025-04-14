@@ -311,21 +311,6 @@
                             </execution>
 
                             <execution>
-                                <id>docker-compose-build</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments combine.children="append">
-                                        <argument>build</argument>
-                                        <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
-                                        <argument>nls-accessibility-map-graphhopper-job</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-
-                            <execution>
                                 <id>docker-compose-up-infra</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
