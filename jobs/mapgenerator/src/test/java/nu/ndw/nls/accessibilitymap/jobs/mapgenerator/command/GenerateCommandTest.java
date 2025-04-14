@@ -90,7 +90,43 @@ class GenerateCommandTest {
                 Set.of(trafficSignType),
                 exportProperties,
                 startTime,
+                true,
                 true);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TrafficSignType.class)
+    void call_withoutTimeWindows(TrafficSignType trafficSignType) {
+
+        OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
+
+        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(graphhopperMetaData.nwbVersion()).thenReturn(123);
+        when(clockService.now()).thenReturn(startTime);
+        when(generateConfiguration.startLocationLatitude()).thenReturn(1d);
+        when(generateConfiguration.startLocationLongitude()).thenReturn(2d);
+        when(generateConfiguration.searchRadiusInMeters()).thenReturn(3d);
+
+        assertThat(new CommandLine(generateCommand)
+                .execute("--export-name=%s".formatted(trafficSignType.name()),
+                        "--traffic-sign=%s".formatted(trafficSignType.name()),
+                        "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
+                        "--publish-events")
+        ).isZero();
+
+        ArgumentCaptor<ExportProperties> exportPropertiesCaptor = ArgumentCaptor.forClass(
+                ExportProperties.class);
+        verify(mapGeneratorService).generate(exportPropertiesCaptor.capture());
+
+        ExportProperties exportProperties = exportPropertiesCaptor.getValue();
+
+        validateExportPropertiesValid(
+                Set.of(trafficSignType),
+                exportProperties,
+                startTime,
+                true,
+                false);
     }
 
     @Test
@@ -124,7 +160,8 @@ class GenerateCommandTest {
                 Set.of(trafficSignType),
                 exportProperties,
                 startTime,
-                false);
+                false,
+                true);
     }
 
     @Test
@@ -171,7 +208,8 @@ class GenerateCommandTest {
             Set<TrafficSignType> trafficSignTypes,
             ExportProperties exportProperties,
             OffsetDateTime startTime,
-            boolean publishEvents) {
+            boolean publishEvents,
+            boolean includeTimeWindowedSigns) {
 
         assertThat(exportProperties.startTime()).isEqualTo(startTime);
         assertThat(exportProperties.publishEvents()).isEqualTo(publishEvents);
@@ -181,7 +219,7 @@ class GenerateCommandTest {
                         .startLocationLatitude(1d)
                         .startLocationLongitude(2d)
                         .searchRadiusInMeters(3d)
-                        .trafficSignTextSignTypes(Set.of(TextSignType.TIME_PERIOD))
+                        .trafficSignTextSignTypes(includeTimeWindowedSigns ? Set.of(TextSignType.TIME_PERIOD) : null)
                         .build());
         assertThat(exportProperties.generateConfiguration()).isEqualTo(generateConfiguration);
 
