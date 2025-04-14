@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class NwbRoadSectionService {
 
     private static final int FETCH_SIZE = 250;
+
     private static final EnumSet<CarriagewayTypeCode> EXCLUSIONS = EnumSet.of(
             CarriagewayTypeCode.BU,
             CarriagewayTypeCode.BUS,
@@ -28,6 +29,7 @@ public class NwbRoadSectionService {
             CarriagewayTypeCode.VV,
             CarriagewayTypeCode.VDF,
             CarriagewayTypeCode.VDV);
+
     private static final Collection<CarriagewayTypeCode> CARRIAGE_WAY_TYPE_CODE_INCLUSIONS;
 
     static {
@@ -41,8 +43,7 @@ public class NwbRoadSectionService {
     private final NwbRoadSectionCrudService nwbRoadSectionCrudService;
 
     /**
-     * Make sure to add {@link Transactional} around the method in which you use this stream and close the stream after
-     * use
+     * Make sure to add {@link Transactional} around the method in which you use this stream and close the stream after use
      *
      * @param versionId version id
      * @return Lazy stream
@@ -52,8 +53,7 @@ public class NwbRoadSectionService {
     }
 
     /**
-     * Make sure to add {@link Transactional} around the method in which you use this stream and close the stream after
-     * use
+     * Make sure to add {@link Transactional} around the method in which you use this stream and close the stream after use
      *
      * @param versionId version id
      * @return Lazy stream

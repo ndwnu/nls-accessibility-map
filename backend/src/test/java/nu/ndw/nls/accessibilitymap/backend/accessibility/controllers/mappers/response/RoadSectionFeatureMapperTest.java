@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class RoadSectionFeatureMapperTest {
 
     private static final long ROAD_SECTION_ID = 123L;
+
     @Mock
     private JtsLineStringJsonMapper jtsLineStringJsonMapper;
 
@@ -33,12 +34,16 @@ class RoadSectionFeatureMapperTest {
 
     @Mock
     private LineStringJson lineStringJson;
+
     @Mock
     private RoadSection roadSection;
+
     @Mock
     private LineString backwardGeometry;
+
     @Mock
     private LineString forwardGeometry;
+
     @Mock
     private CandidateMatch candidateMatch;
 

@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MunicipalityConfigurationTest {
 
     private static final String MUNICIPALITY_NAME_A = "a";
+
     private static final String MUNICIPALITY_NAME_B = "b";
 
     @Mock
@@ -22,12 +23,16 @@ class MunicipalityConfigurationTest {
 
     @Mock
     private MunicipalityProperties municipalityProperties;
+
     @Mock
     private MunicipalityProperty municipalityPropertyA;
+
     @Mock
     private MunicipalityProperty municipalityPropertyB;
+
     @Mock
     private Municipality municipalityA;
+
     @Mock
     private Municipality municipalityB;
 

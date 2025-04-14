@@ -19,8 +19,8 @@ import org.springframework.context.annotation.Import;
 @SpringBootTest(classes = MunicipalityConfiguration.class)
 @EnableConfigurationProperties
 @ExtendWith(MockitoExtension.class)
-@Import({GeometryConfiguration.class, MunicipalityMapperImpl.class, MunicipalityCoordinateMapper.class, MunicipalityIdMapper.class, MunicipalityProperties.class,
-        YamlPropertySourceFactory.class})
+@Import({GeometryConfiguration.class, MunicipalityMapperImpl.class, MunicipalityCoordinateMapper.class, MunicipalityIdMapper.class,
+        MunicipalityProperties.class, YamlPropertySourceFactory.class})
 class MunicipalityConfigurationIT {
 
     @Autowired

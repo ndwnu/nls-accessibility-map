@@ -29,6 +29,7 @@ class PointValidatorTest {
 
         assertEquals("When longitude is present, latitude must also be specified", incompleteArgumentsException.getMessage());
     }
+
     @Test
     void validateConsistentValues_fail_longitudeNotSet() {
         IncompleteArgumentsException incompleteArgumentsException = assertThrows(IncompleteArgumentsException.class,

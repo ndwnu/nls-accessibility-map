@@ -9,7 +9,7 @@ import picocli.CommandLine.Command;
  * That's why there's this empty container class.
  */
 @Component
-@Command(name = "jobs", subcommands = { CreateOrUpdateNetworkCommand.class, ConfigureRabbitMQCommand.class })
+@Command(name = "jobs", subcommands = {CreateOrUpdateNetworkCommand.class, ConfigureRabbitMQCommand.class})
 public class BaseLoaderCommand {
 
 }

@@ -16,7 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class MunicipalityServiceTest {
+
     private static final String MUNICIPALITY_ID_STRING = "GM0307";
+
     private static final String MUNICIPALITY_ID_2_STRING = "GM0008";
 
     @Mock

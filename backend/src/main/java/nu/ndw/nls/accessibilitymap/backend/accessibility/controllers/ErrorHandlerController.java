@@ -29,8 +29,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ErrorHandlerController extends ResponseEntityExceptionHandler {
 
     /**
-     * Default handler, catches all exceptions that have no specific handlers. Does not expose any details about the
-     * cause of the problem to avoid leaking security sensitive information.
+     * Default handler, catches all exceptions that have no specific handlers. Does not expose any details about the cause of the problem to
+     * avoid leaking security sensitive information.
      */
     @ExceptionHandler({Exception.class})
     public ResponseEntity<APIErrorJson> handleInternalServerErrorException(Throwable exception) {

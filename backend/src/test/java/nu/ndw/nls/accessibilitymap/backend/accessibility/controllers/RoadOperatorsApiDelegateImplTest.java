@@ -27,6 +27,7 @@ class RoadOperatorsApiDelegateImplTest {
 
     @Mock
     private List<RoadOperator> roadOperators;
+
     @Mock
     private List<RoadOperatorJson> mappedRoadOperators;
 

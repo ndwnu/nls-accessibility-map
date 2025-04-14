@@ -32,6 +32,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 class ErrorHandlerControllerTest {
 
     private static final String MESSAGE = "test";
+
     private static final String PATH = "path";
 
     @InjectMocks
@@ -39,12 +40,16 @@ class ErrorHandlerControllerTest {
 
     @Mock
     private ConstraintViolationException constraintViolationException;
+
     @Mock
     private ConstraintViolation<?> constraintViolation;
+
     @Mock
     private PathImpl pathImpl;
+
     @Mock
     private NodeImpl nodeImpl;
+
     @Mock
     private Path path;
 
@@ -76,7 +81,6 @@ class ErrorHandlerControllerTest {
         ResponseEntity<Void> response = errorHandlerController.handleAccessDenied(new AccessDeniedException(MESSAGE));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
-
 
     @Test
     void handleMethodArgumentTypeMismatchException() {

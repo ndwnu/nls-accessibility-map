@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
 
 @EnableCaching
-@SpringBootApplication(exclude= RabbitAutoConfiguration.class)
+@SpringBootApplication(exclude = RabbitAutoConfiguration.class)
 @Import({JtsGeoJsonMappersConfiguration.class})
 public class AccessibilityMapApplication {
 

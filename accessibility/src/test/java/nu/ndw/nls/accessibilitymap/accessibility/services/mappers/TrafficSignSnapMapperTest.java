@@ -101,7 +101,6 @@ class TrafficSignSnapMapperTest {
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID));
     }
 
-
     private void setupBaseFixture() {
         when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
@@ -109,7 +108,6 @@ class TrafficSignSnapMapperTest {
         when(trafficSign.networkSnappedLatitude()).thenReturn(Y_COORDINATE);
         when(locationIndexTree.findClosest(eq(Y_COORDINATE), eq(X_COORDINATE), edgeFilterCaptor.capture())).thenReturn(snap);
     }
-
 
     private void verifyEdgeFilterOk() {
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
