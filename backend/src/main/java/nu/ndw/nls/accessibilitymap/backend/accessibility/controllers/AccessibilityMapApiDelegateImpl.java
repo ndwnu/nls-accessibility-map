@@ -21,7 +21,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiD
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.locationtech.jts.geom.Point;
