@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityConfiguration;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

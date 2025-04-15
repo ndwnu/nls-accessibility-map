@@ -3,10 +3,10 @@ package nu.ndw.nls.accessibilitymap.backend.municipality;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import nu.ndw.nls.accessibilitymap.backend.core.yaml.YamlPropertySourceFactory;
-import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityCoordinateMapper;
-import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityIdMapper;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityCoordinateMapper;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityIdMapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityMapperImpl;
+import nu.ndw.nls.accessibilitymap.backend.yaml.YamlPropertySourceFactory;
 import nu.ndw.nls.geometry.GeometryConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

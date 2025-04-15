@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
+package nu.ndw.nls.accessibilitymap.backend.municipality.controllers;
 
 import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.res
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.MunicipalitiesApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityConfiguration;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 

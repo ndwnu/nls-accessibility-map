@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.roadoperator.dto;
+package nu.ndw.nls.accessibilitymap.backend.roadoperator.controllers.dto;
 
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;

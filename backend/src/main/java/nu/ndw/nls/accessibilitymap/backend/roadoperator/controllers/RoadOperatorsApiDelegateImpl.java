@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
+package nu.ndw.nls.accessibilitymap.backend.roadoperator.controllers;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
