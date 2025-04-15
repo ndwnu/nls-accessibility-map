@@ -86,7 +86,6 @@ Feature: Road sections GeoJSON endpoint
     And param longitude = 5.37886419
     And method GET
     Then status 200
-    * print response
     And match response == okResponseAccessibleFalse
 
   Scenario: accessibility map with longitude set, but latitude missing should return 400
