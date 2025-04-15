@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransportTypeMapper {
 
-    Map<VehicleTypeJson, TransportType> vehicleTypeToTransportTypeMap = Map.of(
+    private static final Map<VehicleTypeJson, TransportType> vehicleTypeToTransportTypeMap = Map.of(
             CAR, TransportType.CAR,
             TRUCK, TransportType.TRUCK,
             BUS, TransportType.BUS,
@@ -40,6 +40,7 @@ public class TransportTypeMapper {
      * @param vehicleArguments the input arguments containing details about the vehicle, such as its type and trailer status.
      * @return a set of {@link TransportType} based on the given vehicle arguments.
      */
+    @SuppressWarnings("java:S1641")
     public Set<TransportType> mapToTransportType(VehicleArguments vehicleArguments) {
         Set<TransportType> transportTypes = new HashSet<>();
         if (Boolean.TRUE.equals(vehicleArguments.vehicleHasTrailer())) {
