@@ -225,18 +225,16 @@ class AccessibilityServiceTest {
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
         when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
-        when(locationIndexTree.findClosest(START_LOCATION_LATITUDE, START_LOCATION_LONGITUDE,
-                EdgeFilter.ALL_EDGES)).thenReturn(startSegmentSnap);
-        when(trafficSingSnapMapper.map(List.of(trafficSign)))
-                .thenReturn(List.of(trafficSignSnap));
-        when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture()))
-                .thenReturn(startPoint);
-        when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap))
-                .thenReturn(queryGraph);
+        when(locationIndexTree.findClosest(
+                START_LOCATION_LATITUDE,
+                START_LOCATION_LONGITUDE,
+                EdgeFilter.ALL_EDGES))
+                .thenReturn(startSegmentSnap);
+        when(trafficSingSnapMapper.map(List.of(trafficSign))).thenReturn(List.of(trafficSignSnap));
+        when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture())).thenReturn(startPoint);
+        when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap)).thenReturn(queryGraph);
         when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap))).thenReturn(edgeRestrictions);
-        when(edgeRestrictions.getTrafficSignsByEdgeKey()).thenReturn(Map.of(1, List.of(TrafficSign
-                .builder()
-                .build())));
+        when(edgeRestrictions.getTrafficSignsByEdgeKey()).thenReturn(Map.of(1, List.of(TrafficSign.builder().build())));
         when(edgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
