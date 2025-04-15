@@ -1,7 +1,7 @@
-package nu.ndw.nls.accessibilitymap.backend.municipality.mappers;
+package nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers;
 
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

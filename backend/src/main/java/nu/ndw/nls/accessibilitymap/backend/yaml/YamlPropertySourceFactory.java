@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.core.yaml;
+package nu.ndw.nls.accessibilitymap.backend.yaml;
 
 import java.util.Objects;
 import java.util.Properties;

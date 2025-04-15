@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.core.dto.response;
+package nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto;
 
 public record MunicipalityBoundingBox(double longitudeFrom,
                                       double latitudeFrom,

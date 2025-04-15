@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson;
-import nu.ndw.nls.accessibilitymap.backend.roadoperator.dto.RoadOperator;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.controllers.dto.RoadOperator;
 import org.springframework.stereotype.Component;
 
 @Component

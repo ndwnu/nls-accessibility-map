@@ -3,8 +3,8 @@ package nu.ndw.nls.accessibilitymap.backend.municipality;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
-import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityMapper;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityMapper;
 import org.springframework.context.annotation.Configuration;
 
 @Getter

@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson.RoadOperatorTypeEnum;
-import nu.ndw.nls.accessibilitymap.backend.roadoperator.dto.RoadOperator;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.controllers.dto.RoadOperator;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
