@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.services;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +48,7 @@ class PointMatchServiceTest {
 
     @BeforeEach
     void setUp() {
-        when(singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, PROFILE.getName()))
+        when(singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, CAR_PROFILE.getName()))
                 .thenReturn(singlePointMapMatcher);
         pointMatchService = new PointMatchService(singlePointMapMatcherMapMatcherFactory, networkGraphHopper);
     }

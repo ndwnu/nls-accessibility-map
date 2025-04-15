@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
@@ -121,9 +120,6 @@ class AccessibilityServiceTest {
     private QueryGraph queryGraph;
 
     @Mock
-    private Profile profile;
-
-    @Mock
     private Weighting weightingNoRestrictions;
 
     @Mock
@@ -190,12 +186,11 @@ class AccessibilityServiceTest {
         when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
                 List.of(roadSectionNoRestriction, newRoadSection),
                 List.of(roadSectionRestriction)))
-                .thenReturn(new ArrayList(List.of(roadSectionCombined)));
+                .thenReturn(new ArrayList<>(List.of(roadSectionCombined)));
 
-        Accessibility result = calculateAccessibility((roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions)
-                -> {
-            roadsSectionsWithoutAppliedRestrictions.add(newRoadSection);
-        });
+        Accessibility result = calculateAccessibility(
+                (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions)
+                -> roadsSectionsWithoutAppliedRestrictions.add(newRoadSection));
 
         Accessibility expected = Accessibility.builder()
                 .combinedAccessibility(List.of(roadSectionCombined))
@@ -282,11 +277,7 @@ class AccessibilityServiceTest {
 
     private void mockWeighting() {
 
-        when(networkGraphHopper
-                .getProfile(NetworkConstants.VEHICLE_NAME_CAR))
-                .thenReturn(profile);
-
-        when(networkGraphHopper.createWeighting(eq(profile), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
+        when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
                 weightingNoRestrictions);
     }
 

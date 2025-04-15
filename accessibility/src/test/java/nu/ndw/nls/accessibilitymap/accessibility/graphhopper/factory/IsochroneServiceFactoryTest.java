@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -26,7 +26,7 @@ class IsochroneServiceFactoryTest {
     void createService() {
         isochroneServiceFactory.createService(network);
 
-        verify(network).createWeighting(eq(PROFILE), any(PMap.class));
+        verify(network).createWeighting(eq(CAR_PROFILE), any(PMap.class));
         verify(network).getEncodingManager();
     }
 }
