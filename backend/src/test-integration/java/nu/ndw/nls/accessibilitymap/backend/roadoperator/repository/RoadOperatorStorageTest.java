@@ -77,7 +77,7 @@ class RoadOperatorStorageTest {
         AnnotationUtil.fieldContainsAnnotation(
                 RoadOperatorStorage.class,
                 Valid.class,
-                "RoadOperators",
+                "roadOperators",
                 annotation -> assertThat(annotation).isNotNull());
     }
 
