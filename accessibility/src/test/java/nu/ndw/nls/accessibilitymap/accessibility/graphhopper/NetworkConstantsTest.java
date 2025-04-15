@@ -13,9 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class NetworkConstantsTest {
 
     @Test
+    @SuppressWarnings("java:S3415")
     void staticValues() {
 
-        assertThat(VEHICLE_NAME_CAR).isEqualTo("car");
         assertThat(CAR_PROFILE).isEqualTo(new Profile("car"));
+        assertThat(VEHICLE_NAME_CAR).isEqualTo("car");
     }
 }

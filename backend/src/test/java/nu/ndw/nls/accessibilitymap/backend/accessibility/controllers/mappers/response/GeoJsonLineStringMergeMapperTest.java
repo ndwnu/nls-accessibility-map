@@ -49,7 +49,8 @@ class GeoJsonLineStringMergeMapperTest {
     @Test
     void mapToLineStringJson_withEmptyListThrowsException() {
 
-        assertThatThrownBy(() -> geoJsonLineStringMergeMapper.mapToLineStringJson(List.of()))
+        List<LineString> emptyList = List.of();
+        assertThatThrownBy(() -> geoJsonLineStringMergeMapper.mapToLineStringJson(emptyList))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Cannot merge empty line strings");
 
