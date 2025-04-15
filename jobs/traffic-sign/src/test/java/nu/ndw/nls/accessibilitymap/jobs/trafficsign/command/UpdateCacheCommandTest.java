@@ -42,7 +42,9 @@ import picocli.CommandLine.Command;
 class UpdateCacheCommandTest {
 
     private static final int NWB_VERSION = 123;
+
     private static final long ROAD_SECTION_ID = 1235L;
+
     private UpdateCacheCommand updateCacheCommand;
 
     @Mock

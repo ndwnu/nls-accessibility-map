@@ -27,7 +27,6 @@ public class RoadSectionFeatureMapper {
 
     private final GeoJsonLineStringMergeMapper geoJsonLineStringMergeMapper;
 
-
     /**
      * Maps a given RoadSection to a list of RoadSectionFeatureJson objects. The mapping is based on the accessibility and match filters
      * applied to the road section.

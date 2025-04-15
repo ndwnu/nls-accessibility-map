@@ -4,14 +4,14 @@ import com.graphhopper.util.shapes.BBox;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class AccessibilityRequestMapper {
 
-    private final TransportTypeMapper transportTypeV2Mapper;
+    private final TransportTypeMapper transportTypeMapper;
 
     public AccessibilityRequest mapToAccessibilityRequest(Municipality municipality, VehicleArguments vehicleArguments) {
 
@@ -32,7 +32,7 @@ public class AccessibilityRequestMapper {
                 .vehicleLengthInCm(mapToDouble(vehicleArguments.vehicleLength()))
                 .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth()))
                 .vehicleWeightInKg(mapToDouble(vehicleArguments.vehicleWeight()))
-                .transportTypes(transportTypeV2Mapper.mapToTransportType(vehicleArguments))
+                .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))
                 .build();
     }
 

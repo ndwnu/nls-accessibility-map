@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.core.yaml;
+package nu.ndw.nls.accessibilitymap.backend.yaml;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
