@@ -5,7 +5,7 @@ import static java.nio.file.attribute.PosixFilePermission.OTHERS_READ;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_WRITE;
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -98,7 +98,7 @@ public class GraphHopperDriver {
                 .indexed(true)
                 .graphhopperRootPath(graphHopperConfiguration.getLocationOnDisk())
                 .networkNameAndVersion(VERSION)
-                .profiles(List.of(PROFILE))
+                .profiles(List.of(CAR_PROFILE))
                 .build();
 
         return graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
@@ -116,7 +116,7 @@ public class GraphHopperDriver {
                         .toList())).iterator())
                 .graphhopperRootPath(graphHopperConfiguration.getLocationOnDisk())
                 .networkNameAndVersion(VERSION)
-                .profiles(List.of(PROFILE))
+                .profiles(List.of(CAR_PROFILE))
                 .build();
 
         Path fullStorageLocation = graphHopperConfiguration.getLocationOnDisk()

@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.services;
 
 import static java.time.temporal.ChronoUnit.MILLIS;
 
-import com.graphhopper.config.Profile;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
@@ -162,8 +161,8 @@ public class AccessibilityService {
     }
 
     private Weighting buildWeightingWithRestrictions(Set<Integer> blockedEdges) {
-        Profile profile = networkGraphHopper.getProfile(NetworkConstants.VEHICLE_NAME_CAR);
-        return new RestrictionWeightingAdapter(networkGraphHopper.createWeighting(profile, new PMap()), blockedEdges);
+
+        return new RestrictionWeightingAdapter(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()), blockedEdges);
     }
 
     private Point createPoint(double latitude, double longitude) {
