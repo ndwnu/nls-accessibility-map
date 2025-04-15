@@ -8,6 +8,7 @@ import com.graphhopper.util.EdgeIteratorState;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -15,6 +16,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -46,9 +48,6 @@ class RoadSectionMapperTest {
     private TrafficSign trafficSignBackward;
 
     @Mock
-    private Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey;
-
-    @Mock
     private LineString geometry;
 
     @BeforeEach
@@ -59,7 +58,7 @@ class RoadSectionMapperTest {
     @ParameterizedTest
     @CsvSource(textBlock = """
             true,
-            false
+            false,
             """)
     void mapToRoadSections(boolean isReversed) {
 
@@ -72,12 +71,12 @@ class RoadSectionMapperTest {
 
         when(isochroneMatch.isReversed()).thenReturn(isReversed);
         when(isochroneMatch.getGeometry()).thenReturn(geometry);
-        when(trafficSignsByEdgeKey.containsKey(EDGE_KEY)).thenReturn(true);
 
+        Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey;
         if (isReversed) {
-            when(trafficSignsByEdgeKey.get(EDGE_KEY)).thenReturn(List.of(trafficSignBackward));
+            trafficSignsByEdgeKey = Map.of(EDGE_KEY, List.of(trafficSignBackward));
         } else {
-            when(trafficSignsByEdgeKey.get(EDGE_KEY)).thenReturn(List.of(trafficSignForward));
+            trafficSignsByEdgeKey = Map.of(EDGE_KEY, List.of(trafficSignForward));
         }
         Collection<RoadSection> roadSections = roadSectionMapper.mapToRoadSections(isochroneMatches, trafficSignsByEdgeKey);
 
@@ -106,6 +105,42 @@ class RoadSectionMapperTest {
         assertThat(roadSections.add(mock(RoadSection.class))).isTrue();
     }
 
+    @Test
+    void mapToRoadSections_noTrafficSigns() {
+
+        List<IsochroneMatch> isochroneMatches = List.of(isochroneMatch);
+
+        when(isochroneMatch.getMatchedLinkId()).thenReturn(ROAD_SECTION_ID);
+        when(isochroneMatch.getEdge()).thenReturn(edgeIteratorState);
+        when(edgeIteratorState.getEdge()).thenReturn(EDGE_ID);
+        when(edgeIteratorState.getEdgeKey()).thenReturn(EDGE_KEY);
+
+        when(isochroneMatch.isReversed()).thenReturn(false);
+        when(isochroneMatch.getGeometry()).thenReturn(geometry);
+
+        Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey = Map.of();
+        Collection<RoadSection> roadSections = roadSectionMapper.mapToRoadSections(isochroneMatches, trafficSignsByEdgeKey);
+
+        assertThat(roadSections)
+                .isNotEmpty()
+                .hasSize(1);
+
+        RoadSection roadSection = roadSections.iterator().next();
+        assertThat(roadSection.getId()).isEqualTo(ROAD_SECTION_ID);
+
+        assertThat(roadSection.getRoadSectionFragments()).hasSize(1);
+        RoadSectionFragment roadSectionFragment = roadSection.getRoadSectionFragments().getFirst();
+
+        assertThat(roadSectionFragment.getId()).isEqualTo(EDGE_ID);
+        assertThat(roadSectionFragment.getRoadSection()).isEqualTo(roadSection);
+
+        validateSegments(roadSectionFragment.getForwardSegment(), roadSectionFragment, Direction.FORWARD, null);
+        assertThat(roadSectionFragment.getBackwardSegment()).isNull();
+
+        // Done because this needs to be a modifiable collection.
+        assertThat(roadSections.add(mock(RoadSection.class))).isTrue();
+    }
+
     @SuppressWarnings("unchecked")
     private void validateSegments(
             DirectionalSegment segment,
@@ -115,7 +150,11 @@ class RoadSectionMapperTest {
 
         assertThat(segment.getId()).isEqualTo(EDGE_KEY);
         assertThat(segment.getDirection()).isEqualTo(direction);
-        assertThat(segment.getTrafficSigns()).isEqualTo(List.of(trafficSign));
+        if (Objects.nonNull(trafficSign)) {
+            assertThat(segment.getTrafficSigns()).isEqualTo(List.of(trafficSign));
+        } else {
+            assertThat(segment.getTrafficSigns()).isEmpty();
+        }
         assertThat(segment.getRoadSectionFragment()).isEqualTo(roadSectionFragment);
         assertThat(segment.isAccessible()).isTrue();
         assertThat(segment.getLineString()).isEqualTo(geometry);

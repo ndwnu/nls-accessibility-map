@@ -11,8 +11,11 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @RequiredArgsConstructor
 @Import({
-        GeometryConfiguration.class, RoutingMapMatcherConfiguration.class,
-        GraphHopperNetworkSettingsBuilder.class, GraphHopperNetworkService.class, NetworkMetaDataService.class})
+        GeometryConfiguration.class,
+        RoutingMapMatcherConfiguration.class,
+        GraphHopperNetworkSettingsBuilder.class,
+        GraphHopperNetworkService.class,
+        NetworkMetaDataService.class})
 public class GraphhopperWriteConfiguration {
 
 }
