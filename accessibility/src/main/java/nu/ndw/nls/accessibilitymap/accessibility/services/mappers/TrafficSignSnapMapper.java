@@ -54,11 +54,7 @@ public class TrafficSignSnapMapper {
                         edgeIteratorState -> trafficSignMatchesEdge(trafficSign, edgeIteratorState)
                 );
         if (!snap.isValid()) {
-            log.warn(
-                    "No road section present for traffic sign id {} " +
-                            "with road section id {} " +
-                            "in nwb map " +
-                            "on graphhopper network",
+            log.warn("No road section present for traffic sign id {} with road section id {} in nwb map on graphhopper network",
                     trafficSign.externalId(), trafficSign.roadSectionId());
         }
 

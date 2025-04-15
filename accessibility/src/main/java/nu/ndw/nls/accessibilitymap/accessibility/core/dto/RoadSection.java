@@ -67,8 +67,9 @@ public final class RoadSection {
     public List<LineString> getForwardGeometries() {
 
         if (!hasForwardSegments()) {
-            throw new IllegalStateException("no forward geometry found for road section " + id);
+            throw new IllegalStateException("No forward geometry found for road section %s".formatted(id));
         }
+
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::getForwardSegment)
                 .map(DirectionalSegment::getLineString)
@@ -78,7 +79,7 @@ public final class RoadSection {
     public List<LineString> getBackwardGeometries() {
 
         if (!hasBackwardSegments()) {
-            throw new IllegalStateException("no backward geometry found for road section " + id);
+            throw new IllegalStateException("no backward geometry found for road section %s".formatted(id));
         }
 
         return roadSectionFragments.stream()

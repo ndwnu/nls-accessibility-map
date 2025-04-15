@@ -10,5 +10,5 @@ public final class NetworkConstants {
 
     public static final String VEHICLE_NAME_CAR = "car";
 
-    public static final Profile PROFILE = new Profile(VEHICLE_NAME_CAR);
+    public static final Profile CAR_PROFILE = new Profile(VEHICLE_NAME_CAR);
 }

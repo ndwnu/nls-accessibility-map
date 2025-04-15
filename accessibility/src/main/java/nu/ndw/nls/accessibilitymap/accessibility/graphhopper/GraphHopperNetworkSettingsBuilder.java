@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 
 import java.nio.file.Path;
 import java.time.Instant;
@@ -49,7 +49,7 @@ public class GraphHopperNetworkSettingsBuilder {
                 .indexed(true)
                 .graphhopperRootPath(graphHopperProperties.getDir())
                 .networkNameAndVersion(graphHopperProperties.getNetworkName())
-                .profiles(List.of(PROFILE));
+                .profiles(List.of(CAR_PROFILE));
     }
 
     public boolean publishEvents() {
