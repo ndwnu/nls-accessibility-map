@@ -98,7 +98,6 @@ public class AccessibilityService {
                 getRoadSections(
                         accessibilityRequest,
                         isochroneService,
-                        startPoint,
                         queryGraph,
                         startSegment,
                         buildWeightingWithRestrictions(Set.of()),
@@ -108,7 +107,6 @@ public class AccessibilityService {
                 getRoadSections(
                         accessibilityRequest,
                         isochroneService,
-                        startPoint,
                         queryGraph,
                         startSegment,
                         buildWeightingWithRestrictions(edgeRestrictions.getBlockedEdges()),
@@ -135,7 +133,6 @@ public class AccessibilityService {
     private Collection<RoadSection> getRoadSections(
             AccessibilityRequest accessibilityRequest,
             IsochroneService isochroneService,
-            Point startPoint,
             QueryGraph queryGraph,
             Snap startSegment,
             Weighting weighting,
@@ -145,7 +142,6 @@ public class AccessibilityService {
                 isochroneService.getIsochroneMatchesByMunicipalityId(
                         IsochroneArguments.builder()
                                 .weighting(weighting)
-                                .startPoint(startPoint)
                                 .municipalityId(accessibilityRequest.municipalityId())
                                 .searchDistanceInMetres(accessibilityRequest.searchRadiusInMeters())
                                 .build(),

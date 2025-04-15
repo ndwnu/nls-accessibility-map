@@ -190,7 +190,7 @@ class AccessibilityServiceTest {
 
         Accessibility result = calculateAccessibility(
                 (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions)
-                -> roadsSectionsWithoutAppliedRestrictions.add(newRoadSection));
+                        -> roadsSectionsWithoutAppliedRestrictions.add(newRoadSection));
 
         Accessibility expected = Accessibility.builder()
                 .combinedAccessibility(List.of(roadSectionCombined))
@@ -243,7 +243,6 @@ class AccessibilityServiceTest {
                         argThat(new IsochroneArgumentMatcher(IsochroneArguments
                                 .builder()
                                 .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, edgeRestrictions.getBlockedEdges()))
-                                .startPoint(startPoint)
                                 .municipalityId(MUNICIPALITY_ID)
                                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
                                 .build())),
@@ -255,9 +254,7 @@ class AccessibilityServiceTest {
                 .getIsochroneMatchesByMunicipalityId(
                         argThat(new IsochroneArgumentMatcher(IsochroneArguments
                                         .builder()
-                                        .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions,
-                                                Set.of()))
-                                        .startPoint(startPoint)
+                                        .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, Set.of()))
                                         .municipalityId(MUNICIPALITY_ID)
                                         .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
                                         .build()

@@ -31,7 +31,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.locationtech.jts.geom.Point;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -67,9 +66,6 @@ class IsochroneServiceTest {
 
     @Mock
     private QueryGraph queryGraph;
-
-    @Mock
-    private Point point;
 
     @Mock
     private Snap startSegment;
@@ -151,7 +147,6 @@ class IsochroneServiceTest {
                 IsochroneArguments.builder()
                         .weighting(weighting)
                         .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
-                        .startPoint(point)
                         .municipalityId(MUNICIPALITY_ID)
                         .build(),
                 queryGraph,
@@ -202,7 +197,6 @@ class IsochroneServiceTest {
                 IsochroneArguments.builder()
                         .weighting(weighting)
                         .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
-                        .startPoint(point)
                         .build(),
                 queryGraph,
                 startSegment);
