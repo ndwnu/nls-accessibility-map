@@ -32,18 +32,21 @@ public final class RoadSection {
     private List<RoadSectionFragment> roadSectionFragments = new ArrayList<>();
 
     public boolean isRestrictedInAnyDirection() {
+
         return roadSectionFragments.stream()
                 .anyMatch(RoadSectionFragment::isNotAccessibleFromAllSegments)
                 || roadSectionFragments.stream().anyMatch(RoadSectionFragment::isPartiallyAccessible);
     }
 
     public boolean hasForwardSegments() {
+
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::getForwardSegment)
                 .anyMatch(Objects::nonNull);
     }
 
     public boolean hasBackwardSegments() {
+
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::getBackwardSegment)
                 .anyMatch(Objects::nonNull);
@@ -56,11 +59,13 @@ public final class RoadSection {
     }
 
     public boolean isBackwardAccessible() {
+
         return roadSectionFragments.stream()
                 .allMatch(RoadSectionFragment::isBackwardAccessible);
     }
 
     public List<LineString> getForwardGeometries() {
+
         if (!hasForwardSegments()) {
             throw new IllegalStateException("no forward geometry found for road section " + id);
         }
@@ -68,18 +73,18 @@ public final class RoadSection {
                 .map(RoadSectionFragment::getForwardSegment)
                 .map(DirectionalSegment::getLineString)
                 .toList();
-
     }
 
     public List<LineString> getBackwardGeometries() {
+
         if (!hasBackwardSegments()) {
             throw new IllegalStateException("no backward geometry found for road section " + id);
         }
+
         return roadSectionFragments.stream()
                 .map(RoadSectionFragment::getBackwardSegment)
                 .map(DirectionalSegment::getLineString)
                 .toList();
-
     }
 
 }

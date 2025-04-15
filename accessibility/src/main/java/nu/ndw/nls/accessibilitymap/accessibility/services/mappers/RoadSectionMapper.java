@@ -58,22 +58,12 @@ public class RoadSectionMapper {
             addSegmentsToRoadSectionFragment(
                     roadSectionFragment,
                     isochroneMatch,
-                    getTrafficSigns(directionalSegmentId, trafficSignsByEdgeKey),
+                    trafficSignsByEdgeKey.getOrDefault(directionalSegmentId, Collections.emptyList()),
                     directionalSegmentId,
                     roadSectionFragmentById);
         });
 
         return new ArrayList<>(roadSectionsById.values());
-    }
-
-    private static List<TrafficSign> getTrafficSigns(
-            Integer directionalSegmentId,
-            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey
-    ) {
-        if (trafficSignsByEdgeKey.containsKey(directionalSegmentId)) {
-            return trafficSignsByEdgeKey.get(directionalSegmentId);
-        }
-        return Collections.emptyList();
     }
 
     private static void addSegmentsToRoadSectionFragment(

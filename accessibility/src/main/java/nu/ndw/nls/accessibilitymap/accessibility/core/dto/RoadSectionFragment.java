@@ -47,6 +47,7 @@ public class RoadSectionFragment {
             throw new IllegalStateException("backSegment has already been assigned. "
                     + "There should be always only one backSegment per RoadSectionFragment.");
         }
+
         this.backwardSegment = backwardSegment;
     }
 
