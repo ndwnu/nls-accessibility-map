@@ -1,8 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -36,21 +35,18 @@ class NetworkMetaDataServiceTest {
     private NetworkMetaDataService networkMetaDataService;
 
     @Test
-    @SneakyThrows
     void loadMetaData() {
         when(graphHopperNetworkSettingsBuilder.getMetaDataPath()).thenReturn(Path.of(EXPECT_FILE_PATH_STRING));
-        assertEquals(new GraphhopperMetaData(20241231), networkMetaDataService.loadMetaData());
+        assertThat(networkMetaDataService.loadMetaData()).isEqualTo(new GraphhopperMetaData(20241231));
     }
 
     @Test
-    @SneakyThrows
     void loadMetaData_fail_ioexception() {
         when(graphHopperNetworkSettingsBuilder.getMetaDataPath()).thenReturn(Path.of(FILE_DOES_NOT_EXIST));
-        IllegalStateException illegalStateException = assertThrows(IllegalStateException.class,
-                () -> networkMetaDataService.loadMetaData());
 
-        assertEquals("Could not load meta-data from file path: file-does-not-exist",
-                illegalStateException.getMessage());
+        assertThat(catchThrowable(() -> networkMetaDataService.loadMetaData()))
+                .withFailMessage("Could not load meta-data from file path: file-does-not-exist")
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -60,7 +56,7 @@ class NetworkMetaDataServiceTest {
         when(graphHopperNetworkSettingsBuilder.getMetaDataPath()).thenReturn(tempFile);
 
         networkMetaDataService.saveMetaData(new GraphhopperMetaData(20241231));
-        assertTrue(Files.exists(tempFile));
+        assertThat(Files.exists(tempFile)).isTrue();
         FileUtils.contentEquals(EXPECTED_CONTENT, tempFile.toFile());
     }
 
@@ -72,10 +68,8 @@ class NetworkMetaDataServiceTest {
         when(graphHopperNetworkSettingsBuilder.getMetaDataPath())
                 .thenReturn(tempDirectory);
 
-        IllegalStateException illegalStateException = assertThrows(IllegalStateException.class,
-                () -> networkMetaDataService.saveMetaData(new GraphhopperMetaData(20241231)));
-
-        assertEquals("Could not write meta-data to file path: " + tempDirectory,
-                illegalStateException.getMessage());
+        assertThat(catchThrowable(() -> networkMetaDataService.saveMetaData(new GraphhopperMetaData(20241231))))
+                .withFailMessage("Could not write meta-data to file path: " + tempDirectory)
+                .isInstanceOf(IllegalStateException.class);
     }
 }

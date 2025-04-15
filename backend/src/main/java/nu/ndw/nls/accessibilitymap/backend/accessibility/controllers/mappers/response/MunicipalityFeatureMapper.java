@@ -23,9 +23,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MunicipalityFeatureMapper {
 
-    private final RoundDoubleMapper doubleMapper;
-
     private static final String EMPTY_STRING = "";
+
+    private final RoundDoubleMapper doubleMapper;
 
     public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
         return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION,

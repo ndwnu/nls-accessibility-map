@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,13 +19,13 @@ public class RoadSectionFeatureMapper {
 
     private static final Predicate<RoadSection> NO_FILTER = r -> true;
 
-    private final static Predicate<RoadSection> FORWARD_ACCESSIBLE_FILTER = RoadSection::isForwardAccessible;
+    private static final Predicate<RoadSection> FORWARD_ACCESSIBLE_FILTER = RoadSection::isForwardAccessible;
 
-    private final static Predicate<RoadSection> BACKWARD_ACCESSIBLE_FILTER = RoadSection::isBackwardAccessible;
+    private static final Predicate<RoadSection> BACKWARD_ACCESSIBLE_FILTER = RoadSection::isBackwardAccessible;
 
-    private final static Predicate<RoadSection> BACKWARD_INACCESSIBLE_FILTER = r -> !r.isBackwardAccessible();
+    private static final Predicate<RoadSection> BACKWARD_INACCESSIBLE_FILTER = r -> !r.isBackwardAccessible();
 
-    private final static Predicate<RoadSection> FORWARD_INACCESSIBLE_FILTER = r -> !r.isForwardAccessible();
+    private static final Predicate<RoadSection> FORWARD_INACCESSIBLE_FILTER = r -> !r.isForwardAccessible();
 
     private final GeoJsonLineStringMergeMapper geoJsonLineStringMergeMapper;
 
@@ -50,30 +51,40 @@ public class RoadSectionFeatureMapper {
             boolean matchesAccessibleFilter = getForwardFilter(accessible).test(roadSection);
             boolean isMatched = startPointRequested && mapMatched(roadSection, startPointMatch, true);
             if (isMatched || matchesAccessibleFilter) {
-                features.add(new RoadSectionFeatureJson(
-                        RoadSectionFeatureJson.TypeEnum.FEATURE,
-                        Math.toIntExact(roadSection.getId()),
-                        geoJsonLineStringMergeMapper.mapToLineStringJson(roadSection.getForwardGeometries()),
-                        new RoadSectionPropertiesJson(
-                                roadSection.isForwardAccessible(),
-                                isMatched ? true : null)));
+                features.add(buildRoadSectionFeature(
+                        roadSection.getId(),
+                        roadSection.getForwardGeometries(),
+                        roadSection.isForwardAccessible(),
+                        isMatched));
             }
         }
+
         if (roadSection.hasBackwardSegments()) {
             boolean matchesAccessibleFilter = getBackwardFilter(accessible).test(roadSection);
             boolean isMatched = startPointRequested && mapMatched(roadSection, startPointMatch, false);
             if (isMatched || matchesAccessibleFilter) {
-                features.add(new RoadSectionFeatureJson(
-                        RoadSectionFeatureJson.TypeEnum.FEATURE,
-                        Math.toIntExact(-roadSection.getId()),
-                        geoJsonLineStringMergeMapper.mapToLineStringJson(roadSection.getBackwardGeometries()),
-                        new RoadSectionPropertiesJson(
-                                roadSection.isBackwardAccessible(),
-                                isMatched ? true : null)));
+                features.add(buildRoadSectionFeature(
+                        -roadSection.getId(),
+                        roadSection.getBackwardGeometries(),
+                        roadSection.isBackwardAccessible(),
+                        isMatched));
             }
         }
 
         return features;
+    }
+
+    private RoadSectionFeatureJson buildRoadSectionFeature(
+            long roadSection,
+            List<LineString> geometries,
+            boolean isRoadSectionAccessible,
+            boolean isMatched) {
+
+        return new RoadSectionFeatureJson(
+                RoadSectionFeatureJson.TypeEnum.FEATURE,
+                Math.toIntExact(roadSection),
+                geoJsonLineStringMergeMapper.mapToLineStringJson(geometries),
+                new RoadSectionPropertiesJson(isRoadSectionAccessible, isMatched ? true : null));
     }
 
     private static boolean mapMatched(

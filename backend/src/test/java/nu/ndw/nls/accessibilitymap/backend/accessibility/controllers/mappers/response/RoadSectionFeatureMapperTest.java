@@ -72,7 +72,7 @@ class RoadSectionFeatureMapperTest {
                 accessible   // accessible
         );
         if (Boolean.FALSE.equals(accessible)) {
-            assertThat(result).hasSize(0);
+            assertThat(result).isEmpty();
         } else {
             assertThat(result).hasSize(1);
             assertThat(result.getFirst()).isEqualTo(RoadSectionFeatureJson
@@ -109,7 +109,7 @@ class RoadSectionFeatureMapperTest {
                 accessible
         );
         if (Boolean.FALSE.equals(accessible)) {
-            assertThat(result).hasSize(0);
+            assertThat(result).isEmpty();
         } else {
             assertThat(result).hasSize(1);
             assertThat(result.getFirst()).isEqualTo(RoadSectionFeatureJson
