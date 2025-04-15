@@ -129,8 +129,8 @@ class IsochroneServiceTest {
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
         when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
         when(currentEdge.get(intEncodedValue)).thenReturn(MUNICIPALITY_ID);
-        doAnswer(ans -> {
-            Consumer<IsoLabel> callback = ans.getArgument(1, Consumer.class);
+        doAnswer(invocation -> {
+            Consumer<IsoLabel> callback = invocation.getArgument(1, Consumer.class);
             callback.accept(isoLabel);
             return null;
         }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
@@ -153,6 +153,56 @@ class IsochroneServiceTest {
                         .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
                         .startPoint(point)
                         .municipalityId(MUNICIPALITY_ID)
+                        .build(),
+                queryGraph,
+                startSegment);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(1);
+
+        assertThat(result.getFirst()).isEqualTo(isochroneMatch);
+    }
+
+    @Test
+    void getIsochroneMatchesByMunicipalityId_noMunicipality() {
+        IsoLabel isoLabel = createIsoLabel();
+
+        when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
+                weighting,
+                queryGraph,
+                TraversalMode.EDGE_BASED,
+                ISOCHRONE_VALUE_METERS,
+                IsochroneUnit.METERS,
+                false,
+                false, LINK_ID))
+                .thenReturn(isochroneAlgorithm);
+
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
+        when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
+        doAnswer(invocation -> {
+            Consumer<IsoLabel> callback = invocation.getArgument(1, Consumer.class);
+            callback.accept(isoLabel);
+            return null;
+        }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
+
+        when(startSegment.getClosestEdge()).thenReturn(startEdge);
+        when(isochroneMatchMapper.mapToIsochroneMatch(
+                isoLabel,
+                Double.POSITIVE_INFINITY,
+                queryGraph,
+                startSegment.getClosestEdge(),
+                false)
+        ).thenReturn(isochroneMatch);
+
+        when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
+        queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
+
+        List<IsochroneMatch> result = isochroneService.getIsochroneMatchesByMunicipalityId(
+                IsochroneArguments.builder()
+                        .weighting(weighting)
+                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
+                        .startPoint(point)
                         .build(),
                 queryGraph,
                 startSegment);

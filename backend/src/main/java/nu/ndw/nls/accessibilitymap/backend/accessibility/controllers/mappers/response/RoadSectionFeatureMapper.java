@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.re
 import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -41,8 +42,8 @@ public class RoadSectionFeatureMapper {
             RoadSection roadSection,
             boolean startPointRequested,
             @Nullable CandidateMatch startPointMatch,
-            @Nullable Boolean accessible
-    ) {
+            @Nullable Boolean accessible) {
+
         List<RoadSectionFeatureJson> features = new ArrayList<>();
 
         if (roadSection.hasForwardSegments()) {
@@ -78,8 +79,7 @@ public class RoadSectionFeatureMapper {
     private static boolean mapMatched(
             RoadSection roadSection,
             @Nullable CandidateMatch startPointMatch,
-            boolean forward
-    ) {
+            boolean forward) {
 
         if (startPointMatch == null) {
             return false;
@@ -89,11 +89,21 @@ public class RoadSectionFeatureMapper {
     }
 
     private static Predicate<RoadSection> getForwardFilter(Boolean accessible) {
-        return accessible == null ? NO_FILTER : accessible ? FORWARD_ACCESSIBLE_FILTER : FORWARD_INACCESSIBLE_FILTER;
+
+        if (Objects.isNull(accessible)) {
+            return NO_FILTER;
+        } else {
+            return Boolean.TRUE.equals(accessible) ? FORWARD_ACCESSIBLE_FILTER : FORWARD_INACCESSIBLE_FILTER;
+        }
     }
 
     private static Predicate<RoadSection> getBackwardFilter(Boolean accessible) {
-        return accessible == null ? NO_FILTER : accessible ? BACKWARD_ACCESSIBLE_FILTER : BACKWARD_INACCESSIBLE_FILTER;
+
+        if (Objects.isNull(accessible)) {
+            return NO_FILTER;
+        } else {
+            return Boolean.TRUE.equals(accessible) ? BACKWARD_ACCESSIBLE_FILTER : BACKWARD_INACCESSIBLE_FILTER;
+        }
     }
 
 }

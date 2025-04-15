@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto;
 
 import com.graphhopper.routing.weighting.Weighting;
-import java.util.Optional;
 import lombok.Builder;
 import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.Point;
@@ -13,8 +12,5 @@ public record IsochroneArguments(
         double searchDistanceInMetres,
         Integer municipalityId) {
 
-    public Optional<Integer> getMunicipalityId() {
-        return Optional.ofNullable(municipalityId);
-    }
 }
 

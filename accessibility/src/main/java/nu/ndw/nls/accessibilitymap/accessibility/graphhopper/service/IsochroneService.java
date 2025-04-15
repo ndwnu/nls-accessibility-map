@@ -11,6 +11,7 @@ import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
@@ -66,7 +67,7 @@ public class IsochroneService {
             IsoLabel isoLabel,
             IsochroneArguments isochroneArguments) {
 
-        if (isochroneArguments.getMunicipalityId().isEmpty()) {
+        if (Objects.isNull(isochroneArguments.municipalityId())) {
             return true;
         }
 
