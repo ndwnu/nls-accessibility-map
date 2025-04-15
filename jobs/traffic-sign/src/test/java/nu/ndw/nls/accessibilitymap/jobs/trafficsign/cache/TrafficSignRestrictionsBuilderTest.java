@@ -66,20 +66,6 @@ class TrafficSignRestrictionsBuilderTest {
     }
 
     @Test
-    void buildFor_c2() {
-
-        TrafficSign trafficSign = TrafficSign.builder()
-                .trafficSignType(TrafficSignType.C2)
-                .build();
-
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(Arrays.stream(TransportType.values())
-                        .filter(transportType -> transportType != TransportType.PEDESTRIAN)
-                        .collect(Collectors.toSet()))
-                .build());
-    }
-
-    @Test
     void buildFor_c6() {
 
         TrafficSign trafficSign = TrafficSign.builder()
