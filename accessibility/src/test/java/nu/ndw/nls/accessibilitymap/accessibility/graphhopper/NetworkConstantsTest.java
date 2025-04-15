@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.VEHICLE_NAME_CAR;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,6 +16,6 @@ class NetworkConstantsTest {
     void staticValues() {
 
         assertThat(VEHICLE_NAME_CAR).isEqualTo("car");
-        assertThat(PROFILE).isEqualTo(new Profile("car"));
+        assertThat(CAR_PROFILE).isEqualTo(new Profile("car"));
     }
 }

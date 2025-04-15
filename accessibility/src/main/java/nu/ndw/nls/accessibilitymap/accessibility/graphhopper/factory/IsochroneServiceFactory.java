@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
@@ -36,7 +36,7 @@ public class IsochroneServiceFactory {
                 new PointListUtil(geometryFactory),
                 fractionAndDistanceCalculator);
 
-        Weighting weighting = network.createWeighting(PROFILE, new PMap());
+        Weighting weighting = network.createWeighting(CAR_PROFILE, new PMap());
         ShortestPathTreeFactory shortestPathTreeFactory = new ShortestPathTreeFactory(weighting, encodingManager);
 
         return new IsochroneService(encodingManager, isochroneMatchMapper, shortestPathTreeFactory);

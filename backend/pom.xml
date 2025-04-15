@@ -383,6 +383,7 @@
                                     <arguments>
                                         <argument>777</argument>
                                         <argument>../.tmp/graphhopper</argument>
+                                        <argument>../.tmp/trafficsigns</argument>
                                     </arguments>
                                     <executable>chmod</executable>
                                 </configuration>

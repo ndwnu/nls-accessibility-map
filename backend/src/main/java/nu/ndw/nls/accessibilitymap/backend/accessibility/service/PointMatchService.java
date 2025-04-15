@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.service;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 
 import java.util.Optional;
 import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
@@ -23,7 +23,7 @@ public class PointMatchService {
             MapMatcherFactory<SinglePointMapMatcher> singlePointMapMatcherMapMatcherFactory,
             NetworkGraphHopper networkGraphHopper
     ) {
-        this.singlePointMapMatcher = singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, PROFILE.getName());
+        this.singlePointMapMatcher = singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, CAR_PROFILE.getName());
     }
 
     public Optional<CandidateMatch> match(Point point) {

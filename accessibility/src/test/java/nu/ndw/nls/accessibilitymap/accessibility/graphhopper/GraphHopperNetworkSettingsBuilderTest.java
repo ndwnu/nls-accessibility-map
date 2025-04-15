@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -83,7 +83,7 @@ class GraphHopperNetworkSettingsBuilderTest {
                 .indexed(true)
                 .graphhopperRootPath(GRAPHHOPPER_BASE_PATH)
                 .networkNameAndVersion(NETWORK_NAME)
-                .profiles(List.of(PROFILE))
+                .profiles(List.of(CAR_PROFILE))
                 .build(), accessibilityLinkRoutingNetworkSettings);
     }
 
@@ -100,7 +100,7 @@ class GraphHopperNetworkSettingsBuilderTest {
 
         assertThat(accessibilityLinkRoutingNetworkSettings.getGraphhopperRootPath()).isEqualTo(GRAPHHOPPER_BASE_PATH);
         assertThat(accessibilityLinkRoutingNetworkSettings.getNetworkNameAndVersion()).isEqualTo(NETWORK_NAME);
-        assertThat(accessibilityLinkRoutingNetworkSettings.getProfiles()).containsExactly(PROFILE);
+        assertThat(accessibilityLinkRoutingNetworkSettings.getProfiles()).containsExactly(CAR_PROFILE);
         assertThat(accessibilityLinkRoutingNetworkSettings.isIndexed()).isTrue();
         assertThat(accessibilityLinkRoutingNetworkSettings.getLinkSupplier().get()).isEqualTo(accessibilityLinksIterator);
         assertThat(accessibilityLinkRoutingNetworkSettings.getDataDate()).isEqualTo(trafficSignData);
