@@ -40,6 +40,7 @@ public class GraphhopperConfiguration {
     }
 
     @Bean
+    @SuppressWarnings("java:S1160")
     public NetworkGraphHopper networkGraphHopper() throws GraphHopperNotImportedException, IOException {
         RoutingNetworkSettings<AccessibilityLink> networkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
         Files.createDirectories(networkSettings.getGraphhopperRootPath().resolve(Path.of(networkSettings.getNetworkNameAndVersion())));

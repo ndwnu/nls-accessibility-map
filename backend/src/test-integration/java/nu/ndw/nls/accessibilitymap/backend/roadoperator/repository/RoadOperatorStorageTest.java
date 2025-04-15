@@ -74,10 +74,11 @@ class RoadOperatorStorageTest {
     @Test
     void annotation_fieldValidationPropegation_roadOperators() {
 
-        AnnotationUtil.getAnnotationForField(
+        AnnotationUtil.fieldContainsAnnotation(
                 RoadOperatorStorage.class,
                 Valid.class,
-                "RoadOperators");
+                "RoadOperators",
+                annotation -> assertThat(annotation).isNotNull());
     }
 
     @Test

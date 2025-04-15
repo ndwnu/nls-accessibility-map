@@ -1,11 +1,19 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.VEHICLE_WITH_TRAILER;
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson.BUS;
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson.CAR;
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson.LIGHT_COMMERCIAL_VEHICLE;
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson.MOTORCYCLE;
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson.TRACTOR;
+import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson.TRUCK;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,6 +24,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransportTypeMapper {
 
+    Map<VehicleTypeJson, TransportType> vehicleTypeToTransportTypeMap = Map.of(
+            CAR, TransportType.CAR,
+            TRUCK, TransportType.TRUCK,
+            BUS, TransportType.BUS,
+            LIGHT_COMMERCIAL_VEHICLE, TransportType.DELIVERY_VAN,
+            MOTORCYCLE, TransportType.MOTORCYCLE,
+            TRACTOR, TransportType.TRACTOR
+    );
+
     /**
      * Maps the provided {@link VehicleArguments} to a set of {@link TransportType}. It determines the transport types based on the given
      * vehicle type and whether the vehicle has a trailer or not.
@@ -25,16 +42,11 @@ public class TransportTypeMapper {
      */
     public Set<TransportType> mapToTransportType(VehicleArguments vehicleArguments) {
         Set<TransportType> transportTypes = new HashSet<>();
-        if (vehicleArguments.vehicleHasTrailer()) {
+        if (Boolean.TRUE.equals(vehicleArguments.vehicleHasTrailer())) {
             transportTypes.add(VEHICLE_WITH_TRAILER);
         }
-        switch (vehicleArguments.vehicleType()) {
-            case CAR -> transportTypes.add(TransportType.CAR);
-            case TRUCK -> transportTypes.add(TransportType.TRUCK);
-            case BUS -> transportTypes.add(TransportType.BUS);
-            case LIGHT_COMMERCIAL_VEHICLE -> transportTypes.add(TransportType.DELIVERY_VAN);
-            case MOTORCYCLE -> transportTypes.add(TransportType.MOTORCYCLE);
-            case TRACTOR -> transportTypes.add(TransportType.TRACTOR);
+        if (vehicleTypeToTransportTypeMap.containsKey(vehicleArguments.vehicleType())) {
+            transportTypes.add(vehicleTypeToTransportTypeMap.get(vehicleArguments.vehicleType()));
         }
         return transportTypes;
     }
