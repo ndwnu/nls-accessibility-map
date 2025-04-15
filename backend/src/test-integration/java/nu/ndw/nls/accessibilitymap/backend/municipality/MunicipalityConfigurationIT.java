@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityCoordinateMapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityIdMapper;
-import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityMapperImpl;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityMapperImpl;
 import nu.ndw.nls.accessibilitymap.backend.yaml.YamlPropertySourceFactory;
 import nu.ndw.nls.geometry.GeometryConfiguration;
 import org.junit.jupiter.api.Test;
