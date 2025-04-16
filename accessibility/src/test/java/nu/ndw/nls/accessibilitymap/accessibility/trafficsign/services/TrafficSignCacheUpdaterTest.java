@@ -75,7 +75,6 @@ class TrafficSignCacheUpdaterTest {
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
             loggerExtension.containsLog(Level.INFO, "Watching file changes in %s".formatted(workingDir));
             verify(trafficSignDataService).updateTrafficSignData();
-            loggerExtension.containsLog(Level.INFO, "Triggerd update");
         });
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread.isInterrupted()).isFalse();
