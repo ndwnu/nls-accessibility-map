@@ -37,7 +37,7 @@
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <karate.version>1.4.1</karate.version>
-        <keycloak-authz-client.version>26.0.4</keycloak-authz-client.version>
+        <keycloak-authz-client.version>26.0.5</keycloak-authz-client.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <openapi-generator-maven-plugin.version>7.12.0</openapi-generator-maven-plugin.version>
         <picocli.version>4.7.6</picocli.version>
