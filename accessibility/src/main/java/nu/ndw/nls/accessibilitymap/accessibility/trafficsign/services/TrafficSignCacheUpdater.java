@@ -2,12 +2,9 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import jakarta.annotation.PreDestroy;
 import java.io.IOException;
-import java.nio.file.ClosedWatchServiceException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -44,34 +41,24 @@ public class TrafficSignCacheUpdater {
 
         fileWatcherThread = new Thread(() -> {
 
-            try {
-                log.info("Watching file changes in {}", trafficSignCacheConfiguration.getFolder().toAbsolutePath());
-                WatchKey key;
-                while (Objects.nonNull((key = watchService.take()))) {
-                    for (WatchEvent<?> event : key.pollEvents()) {
-                        processEvent(event);
-                    }
+            log.info("Watching file changes in {}", trafficSignCacheConfiguration.getFolder().toAbsolutePath());
+            long lastModified = trafficSignCacheConfiguration.getActiveVersion().lastModified();
+            while (true) {
 
-                    key.reset();
+                try {
+                    if (lastModified != trafficSignCacheConfiguration.getActiveVersion().lastModified()) {
+                        lastModified = trafficSignCacheConfiguration.getActiveVersion().lastModified();
+                        log.info("Triggering update");
+                        trafficSignDataService.updateTrafficSignData();
+                    }
+                    Thread.sleep(1000);
+                } catch (InterruptedException interruptedException) {
+                    log.info("File watcher thread interrupted");
+                    return;
                 }
-            } catch (InterruptedException | ClosedWatchServiceException e) {
-                // Nothing to do here because the watcher has already been closed or the thread has been stopped by the destroy method.
             }
         });
         fileWatcherThread.start();
-    }
-
-    private void processEvent(WatchEvent<?> event) {
-        log.info("File change detected: {} on file: {}", event.kind(), event.context().toString());
-        if ((event.kind() == StandardWatchEventKinds.ENTRY_CREATE || event.kind() == StandardWatchEventKinds.ENTRY_MODIFY)
-                && event.context().toString().equals(trafficSignCacheConfiguration.getFileNameActiveVersion())) {
-
-            try {
-                trafficSignDataService.updateTrafficSignData();
-            } catch (RuntimeException exception) {
-                log.error("Failed to update traffic signs data", exception);
-            }
-        }
     }
 
     @PreDestroy
