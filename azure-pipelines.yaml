@@ -17,6 +17,9 @@ parameters:
   - name: skipSonar
     type: boolean
     default: false
+  - name: skipTests
+    type: boolean
+    default: false
   - name: skipDocker
     type: boolean
     default: false
@@ -40,6 +43,7 @@ extends:
   template: v2/pipelines/java.yml@nls-pipeline-templates
   parameters:
     skipSonar: ${{ parameters.skipSonar }}
+    skipTests: ${{ parameters.skipTests }}
     skipSecurityScanning: ${{ parameters.skipSecurityScanning }}
     skipComponentTesting: ${{ parameters.skipComponentTesting }}
     skipPerformanceTesting: true
