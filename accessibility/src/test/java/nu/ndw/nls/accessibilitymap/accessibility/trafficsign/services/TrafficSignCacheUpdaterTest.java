@@ -61,6 +61,7 @@ class TrafficSignCacheUpdaterTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2925")
     void watchFileChanges_fileChanges() throws IOException, InterruptedException {
 
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
@@ -84,14 +85,18 @@ class TrafficSignCacheUpdaterTest {
     }
 
     @Test
+    @SuppressWarnings("java:S2925")
     void watchFileChanges_failedToUpdateData() throws IOException, InterruptedException {
 
         doThrow(new RuntimeException("some error")).when(trafficSignDataService).updateTrafficSignData();
 
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
+        Awaitility.await().atMost(Duration.ofSeconds(5))
+                .until(() -> Files.exists(trafficSignCacheConfiguration.getActiveVersion().toPath()));
+
         trafficSignCacheUpdater.watchFileChanges();
-        Thread.sleep(2);
+        Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis() + 1);
         Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
