@@ -65,7 +65,10 @@ springdoc:
     show-common-extensions: true
 
 openapi:
-  accessibilityMapV2:
-    base-path: /v2
   accessibilityMapV1:
     base-path: /v1
+
+logging:
+  level:
+    root: WARN
+    nu.ndw.nls: ERROR
