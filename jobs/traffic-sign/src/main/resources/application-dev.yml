@@ -14,6 +14,9 @@ nu:
           api:
             url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
         trafficsigns:
+          emission-zone:
+            client:
+              url: http://localhost:8888/api/area/ibbm/emission-zones/v1
           cache:
             folder: "./.tmp/trafficsigns/"
 logging:

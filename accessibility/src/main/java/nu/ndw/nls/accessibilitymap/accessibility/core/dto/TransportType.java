@@ -14,6 +14,8 @@ public enum TransportType {
     BICYCLE("Bicycle"),
     MOPED("Moped"),
     MOTORCYCLE("Motorcycle"),
+    MOTORSCOOTER("motorscooter"),
+    CARAVAN("Caravan"),
     CAR("Car"),
     TRUCK("Truck"),
     TRACTOR("Tractor"),

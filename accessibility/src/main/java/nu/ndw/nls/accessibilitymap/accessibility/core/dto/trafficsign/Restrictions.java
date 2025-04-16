@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 
@@ -17,7 +18,8 @@ public record Restrictions(
         Maximum vehicleHeightInCm,
         Maximum vehicleWidthInCm,
         Maximum vehicleWeightInKg,
-        Maximum vehicleAxleLoadInKg) {
+        Maximum vehicleAxleLoadInKg,
+        EmissionZone emissionZone) {
 
     public boolean hasActiveRestrictions(AccessibilityRequest accessibilityRequest) {
         return !getActiveRestrictions(accessibilityRequest).isEmpty();

@@ -34,7 +34,6 @@ public class TrafficSignRestrictionsBuilder {
         nonDynamicTrafficSigns.put(TrafficSignType.C11, buildC11Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C12, buildC12Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C22, buildC22Restrictions());
-        nonDynamicTrafficSigns.put(TrafficSignType.C22C, buildC22cRestrictions());
 
         dynamicTrafficSigns = new EnumMap<>(TrafficSignType.class);
         dynamicTrafficSigns.put(TrafficSignType.C17, buildC17Restrictions());
@@ -42,6 +41,8 @@ public class TrafficSignRestrictionsBuilder {
         dynamicTrafficSigns.put(TrafficSignType.C19, buildC19Restrictions());
         dynamicTrafficSigns.put(TrafficSignType.C20, buildC20Restrictions());
         dynamicTrafficSigns.put(TrafficSignType.C21, buildC21Restrictions());
+        dynamicTrafficSigns.put(TrafficSignType.C22A, buildEmissionZoneRestrictions());
+        dynamicTrafficSigns.put(TrafficSignType.C22C, buildEmissionZoneRestrictions());
     }
 
     public Restrictions buildFor(TrafficSign trafficSign) {
@@ -217,10 +218,10 @@ public class TrafficSignRestrictionsBuilder {
                 .build();
     }
 
-    private static Restrictions buildC22cRestrictions() {
+    private Function<TrafficSign, Restrictions> buildEmissionZoneRestrictions() {
 
-        return Restrictions.builder()
-                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+        return trafficSign -> Restrictions.builder()
+                //TODO map emissions
                 .build();
     }
 }
