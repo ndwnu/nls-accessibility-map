@@ -10,6 +10,9 @@ nu:
             url: http://accessibility-wiremock-stub:8080/api/rest/static-road-data/traffic-signs/v4
             town-codes: GM0307
         trafficsigns:
+          emission-zone:
+            client:
+              url: http://accessibility-wiremock-stub:8080/api/area/ibbm/emission-zones/v1
           cache:
             fail-on-no-data-on-startup: false
 

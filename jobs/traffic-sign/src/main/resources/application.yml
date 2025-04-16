@@ -72,10 +72,24 @@ nu:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
         trafficsigns:
+          emission-zone:
+            client:
+              url: https://wegkenmerken.ndw.nu/api/area/ibbm/emission-zones/v1
           cache:
             folder: "trafficsigns"
             file-name-active-version: "active"
 
+resilience4j.retry:
+  instances:
+    emissionZone:
+      maxAttempts: 3
+      waitDuration: 1s
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      retryExceptions:
+        - feign.codec.DecodeException
+        - feign.FeignException.InternalServerError
+        - feign.RetryableException
 
 management:
   observations:

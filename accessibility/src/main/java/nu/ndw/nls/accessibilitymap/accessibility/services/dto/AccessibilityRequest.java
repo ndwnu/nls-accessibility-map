@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.Builder;
 import lombok.With;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClassification;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
@@ -26,6 +28,8 @@ public record AccessibilityRequest(
         Double vehicleWidthInCm,
         Double vehicleWeightInKg,
         Double vehicleAxleLoadInKg,
+        Set<FuelType> fuelTypes,
+        Set<EmissionClassification> emissionClassifications,
         Set<TransportType> transportTypes,
         Set<TrafficSignType> trafficSignTypes,
         Set<TextSignType> trafficSignTextSignTypes,
