@@ -36,7 +36,11 @@ public class TrafficSignCacheUpdater {
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
 
         watchService = FileSystems.getDefault().newWatchService();
-        trafficSignCacheConfiguration.getFolder().register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+        trafficSignCacheConfiguration.getFolder().register(watchService,
+                StandardWatchEventKinds.ENTRY_CREATE,
+                StandardWatchEventKinds.ENTRY_MODIFY,
+                StandardWatchEventKinds.ENTRY_DELETE,
+                StandardWatchEventKinds.OVERFLOW);
 
         fileWatcherThread = new Thread(() -> {
 
@@ -58,13 +62,13 @@ public class TrafficSignCacheUpdater {
     }
 
     private void processEvent(WatchEvent<?> event) {
-        if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE && event.context().toString()
-                .equals(trafficSignCacheConfiguration.getFileNameActiveVersion())) {
+        log.info("File change detected: {} on file: {}", event.kind(), event.context().toString());
+        if ((event.kind() == StandardWatchEventKinds.ENTRY_CREATE || event.kind() == StandardWatchEventKinds.ENTRY_MODIFY)
+                && event.context().toString().equals(trafficSignCacheConfiguration.getFileNameActiveVersion())) {
 
             try {
                 trafficSignDataService.updateTrafficSignData();
-                log.info("Triggerd update");
-            } catch (Exception exception) {
+            } catch (RuntimeException exception) {
                 log.error("Failed to update traffic signs data", exception);
             }
         }
