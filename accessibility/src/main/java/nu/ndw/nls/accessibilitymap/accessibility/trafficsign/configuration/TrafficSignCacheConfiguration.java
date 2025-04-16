@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.nio.file.Path;
+import java.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,9 @@ public class TrafficSignCacheConfiguration {
 
     @NotEmpty
     private String fileNameActiveVersion;
+
+    @NotEmpty
+    private Duration fileWatcherInterval = Duration.ofSeconds(1);
 
     public File getActiveVersion() {
         return folder.resolve(fileNameActiveVersion).toFile();
