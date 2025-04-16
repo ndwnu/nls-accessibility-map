@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @With
 @Validated
 public class RoadSectionFragment {
@@ -26,7 +26,6 @@ public class RoadSectionFragment {
     @NotNull
     private RoadSection roadSection;
 
-    @NotNull
     @Valid
     private DirectionalSegment forwardSegment;
 
@@ -48,6 +47,7 @@ public class RoadSectionFragment {
             throw new IllegalStateException("backSegment has already been assigned. "
                     + "There should be always only one backSegment per RoadSectionFragment.");
         }
+
         this.backwardSegment = backwardSegment;
     }
 
@@ -70,10 +70,37 @@ public class RoadSectionFragment {
                 .noneMatch(DirectionalSegment::isAccessible);
     }
 
-
     public boolean isPartiallyAccessible() {
 
         return getSegments().stream().anyMatch(DirectionalSegment::isAccessible)
                 && getSegments().stream().anyMatch(directionalSegment -> !directionalSegment.isAccessible());
+    }
+
+    public boolean hasForwardSegment() {
+
+        return Objects.nonNull(forwardSegment);
+    }
+
+    public boolean isForwardAccessible() {
+
+        if (!hasForwardSegment()) {
+            return false;
+        } else {
+            return forwardSegment.isAccessible();
+        }
+    }
+
+    public boolean hasBackwardSegment() {
+
+        return Objects.nonNull(backwardSegment);
+    }
+
+    public boolean isBackwardAccessible() {
+
+        if (!hasBackwardSegment()) {
+            return false;
+        } else {
+            return backwardSegment.isAccessible();
+        }
     }
 }

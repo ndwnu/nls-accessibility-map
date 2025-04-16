@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink.AccessibilityLinkBuilder;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Node;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
 import nu.ndw.nls.geometry.crs.CrsTransformer;
 import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -35,10 +35,10 @@ public class NetworkDataService implements StateManagement {
     private final CrsTransformer crsTransformer;
 
     @Getter
-    private List<Link> links = new ArrayList<>();
+    private final List<Link> links = new ArrayList<>();
 
     @Getter
-    private Map<Long, Node> nodes = new HashMap<>();
+    private final Map<Long, Node> nodes = new HashMap<>();
 
     public NetworkDataService createRoad(long startNodeId, long endNodeId) {
 

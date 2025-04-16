@@ -5,11 +5,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-@Import({MessagingConfig.class })
+@Import({MessagingConfig.class})
 @SpringBootApplication
 public class AccessibilityMapGraphhoperJobApplication {
 
     public static void main(String[] args) {
-        System.exit(SpringApplication.exit(SpringApplication.run(AccessibilityMapGraphhoperJobApplication.class,args)));
+        System.exit(SpringApplication.exit(SpringApplication.run(AccessibilityMapGraphhoperJobApplication.class, args)));
     }
 }

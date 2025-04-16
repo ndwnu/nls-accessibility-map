@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 
 @Builder
 public record Restrictions(
@@ -26,7 +26,7 @@ public record Restrictions(
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
 
         List<Predicate<AccessibilityRequest>> activeRestrictions = getActiveRestrictions(accessibilityRequest);
-        if(activeRestrictions.isEmpty()) {
+        if (activeRestrictions.isEmpty()) {
             return false;
         }
 

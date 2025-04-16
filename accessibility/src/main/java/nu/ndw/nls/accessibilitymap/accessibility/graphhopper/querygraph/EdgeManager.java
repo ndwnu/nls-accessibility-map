@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 
-import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.MUNICIPALITY_CODE;
-import static nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.TRAFFIC_SIGN_ID;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink.MUNICIPALITY_CODE;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.REVERSED_LINK_ID;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
@@ -9,7 +8,7 @@ import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.network.annotations.mappers.EncodedValuesMapper;
 import nu.ndw.nls.routingmapmatcher.network.annotations.model.EncodedValueDto;
 import nu.ndw.nls.routingmapmatcher.network.annotations.model.EncodedValuesByTypeDto;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EdgeManager {
 
-    private static final List<String> EXCLUDED_KEYS = List.of(TRAFFIC_SIGN_ID, WAY_ID_KEY, REVERSED_LINK_ID,
+    private static final List<String> EXCLUDED_KEYS = List.of(WAY_ID_KEY, REVERSED_LINK_ID,
             MUNICIPALITY_CODE);
 
     private final EncodedValuesByTypeDto<?> encodedValuesByTypeDto;
@@ -48,7 +47,6 @@ public class EdgeManager {
                 .map(this::mapToEncodedValueDto)
                 .forEach(encodedValueDto -> getEdgeSetter(encodedValueDto.valueType())
                         .setDefaultValue(edgeIterator, encodedValueDto.key(), reverse));
-
     }
 
     private EncodedValueDto<?, ?> mapToEncodedValueDto(String key) {
@@ -68,5 +66,4 @@ public class EdgeManager {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid key: %s"
                         .formatted(key)));
     }
-
 }

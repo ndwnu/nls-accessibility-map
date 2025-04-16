@@ -1,9 +1,0 @@
-apiVersion: keda.sh/v1alpha1
-kind: TriggerAuthentication
-metadata:
-  name: {{ .Values.graphhopperNoTrafficSign.name}}-trigger-auth
-spec:
-  secretTargetRef:
-    - parameter: host
-      name: nls-keda-secret
-      key: broker_url

@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>4.3.12-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>jobs-component-test</artifactId>
     <name>NLS Accessibility Map Jobs- Component test</name>
@@ -27,13 +27,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <artifactId>shared</artifactId>
-            <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -195,19 +188,6 @@
                                 <configuration>
                                     <executable>bash</executable>
                                     <commandlineArgs>../../scripts/rabbit-isready.sh</commandlineArgs>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>docker-compose-build-nls-accessibility-mapgenerator-configure-rabbit</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments combine.children="append">
-                                        <argument>run</argument>
-                                        <argument>nls-messaging-configurator-mapgenerator</argument>
-                                    </arguments>
                                 </configuration>
                             </execution>
                             <execution>

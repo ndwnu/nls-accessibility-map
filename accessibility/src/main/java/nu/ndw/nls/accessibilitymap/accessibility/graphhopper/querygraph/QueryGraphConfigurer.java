@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.slf4j.event.Level;
@@ -45,11 +45,11 @@ public class QueryGraphConfigurer {
     private final EncodingManager encodingManager;
 
     /**
-     * Creates edge restrictions for traffic signs by mapping the snapped traffic signs
-     * to road edges in the query graph, based on the characteristics of the traffic signs and edges.
-     * Ensures compatible matches between traffic signs and edges, and logs any unassignable traffic signs.
+     * Creates edge restrictions for traffic signs by mapping the snapped traffic signs to road edges in the query graph, based on the
+     * characteristics of the traffic signs and edges. Ensures compatible matches between traffic signs and edges, and logs any unassigned
+     * traffic signs.
      *
-     * @param queryGraph the query graph containing the nodes and edges used for mapping traffic signs
+     * @param queryGraph          the query graph containing the nodes and edges used for mapping traffic signs
      * @param snappedTrafficSigns a list of traffic signs with their corresponding snapped locations
      * @return an instance of TrafficSignEdgeRestrictions containing the mapped edge restrictions
      */
@@ -58,6 +58,7 @@ public class QueryGraphConfigurer {
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         Set<TrafficSignSnap> assignedTrafficSignSnaps = new HashSet<>();
         Stopwatch stopwatch = Stopwatch.createStarted();
+
         log.debug("Configuring query graph total nodes {} total edges {}", queryGraph.getNodes(),
                 queryGraph.getEdges());
         snappedTrafficSigns.forEach(trafficSignSnap -> {
@@ -100,6 +101,14 @@ public class QueryGraphConfigurer {
         return new EdgeRestrictions(edgeRestrictions);
     }
 
+    /**
+     * Determines if a traffic sign is located in front of the specified edge. The method compares the coordinates of the snapped point of
+     * the traffic sign with the starting coordinate of the edge, within a defined tolerance.
+     *
+     * @param edgeIteratorState the edge being evaluated
+     * @param trafficSignSnap   the snapped traffic sign point containing the location data
+     * @return true if the traffic sign is considered to be positioned in front of the edge, false otherwise
+     */
     private static boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {
 
         GHPoint point = trafficSignSnap.getSnap().getSnappedPoint();

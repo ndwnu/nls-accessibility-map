@@ -22,9 +22,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
@@ -51,7 +51,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
 
     @Mock
     private GenerateConfiguration generateConfiguration;
-
 
     private ExportProperties exportProperties;
 
@@ -94,7 +93,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder().trafficSignTypes(Set.of(TrafficSignType.C7)).build())
                 .generateConfiguration(generateConfiguration)
-                .includeOnlyTimeWindowedSigns(false)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
                 .build();
 
@@ -179,7 +177,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                     Level.DEBUG,
                     "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
 
-
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }
@@ -195,7 +192,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                 new GeoJsonObjectMapperFactory());
         assertThat(geoJsonRoadAsymmetricTrafficSignWriter.isEnabled(Set.of(ExportType.ASYMMETRIC_TRAFFIC_SIGNS_GEO_JSON))).isTrue();
     }
-
 
     private void prepareCreateFeaturesForDirectionalSegment(DirectionalSegment directionalSegmentForward1) {
 

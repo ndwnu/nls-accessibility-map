@@ -1,6 +1,6 @@
 graphhopper:
   dir: /application/graphhopper
-  network-name: accessibility_latest_no_traffic_signs
+  network-name: accessibility_latest
 
 jooq:
   schema-validation:
@@ -86,3 +86,5 @@ logging:
   level:
     root: WARN
     nu.ndw.nls: INFO
+    nu.ndw.nls.accessibilitymap.accessibility.services.mappers.TrafficSignSnapMapper: ERROR
+    nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer: ERROR

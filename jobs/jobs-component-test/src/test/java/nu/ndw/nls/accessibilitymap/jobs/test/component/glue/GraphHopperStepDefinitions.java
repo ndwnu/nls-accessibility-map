@@ -1,9 +1,22 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.util.EdgeExplorer;
+import com.graphhopper.util.EdgeIterator;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.GraphHopperDriver;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
+import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -11,8 +24,49 @@ public class GraphHopperStepDefinitions {
 
     private final GraphHopperDriver graphHopperDriver;
 
+    private final NetworkDataService networkDataService;
+
     @Given("a simple Graph Hopper network")
     public void graphHopperNetwork() {
+
+        buildSimpleNetwork().buildNetwork();
+    }
+
+    @Given("a simpel nwb network")
+    public void prepareNwbDatabaseNetwork() {
+
+        buildSimpleNetwork().buildNwbDatabaseNetwork();
+    }
+
+    @Then("written graphhopper on disk should be comparable with network")
+    public void graphhopperShouldBeComparableWithSimpleNwbNetwork() throws GraphHopperNotImportedException {
+
+        NetworkGraphHopper network = graphHopperDriver.loadFromDisk();
+
+        QueryGraph queryGraph = QueryGraph.create(network.getBaseGraph(), List.of());
+        EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
+        Set<String> roadsDetected = new HashSet<>();
+
+        for (int startNode = 0; startNode < queryGraph.getNodes(); startNode++) {
+            EdgeIterator edgeIterator = edgeExplorer.setBaseNode(startNode);
+            while (edgeIterator.next()) {
+                int fromNode = edgeIterator.getBaseNode() + 1;
+                int toNode = edgeIterator.getAdjNode() + 1;
+                roadsDetected.add(fromNode + "-" + toNode);
+            }
+        }
+
+        assertThat(networkDataService.getLinks().stream()
+                .map(Link::getAccessibilityLink)
+                .allMatch(link ->
+                        roadsDetected.contains(link.getFromNodeId() + "-" + link.getToNodeId())
+                                && roadsDetected.contains(link.getToNodeId() + "-" + link.getFromNodeId())))
+                .withFailMessage("Not all roads were detected. Detected roads: %s".formatted(roadsDetected))
+                .isTrue();
+        assertThat(network.getBaseGraph().getNodes()).isEqualTo(11);
+    }
+
+    private GraphHopperDriver buildSimpleNetwork() {
 
         /*
          6----5-----4
@@ -25,7 +79,7 @@ public class GraphHopperStepDefinitions {
          |    |     |
          1----2-----3
          */
-        graphHopperDriver
+        return graphHopperDriver
                 .createNode(1, 1, 1)
                 .createNode(2, 5, 1)
                 .createNode(3, 10, 1)
@@ -47,7 +101,6 @@ public class GraphHopperStepDefinitions {
                 .createRoad(10, 11).createRoad(11, 7)
 
                 //Circle connections
-                .createRoad(8, 2).createRoad(5, 11)
-                .buildNetwork();
+                .createRoad(8, 2).createRoad(5, 11);
     }
 }

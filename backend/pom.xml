@@ -6,12 +6,12 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>parent</artifactId>
-        <version>4.3.12-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>backend</artifactId>
 
-    <version>4.3.12-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <name>NLS Accessibility Map Backend</name>
 
     <description>Accessibility Map REST API</description>
@@ -22,11 +22,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <version>${project.parent.version}</version>
-            <artifactId>shared</artifactId>
-        </dependency>
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
             <artifactId>accessibility</artifactId>
@@ -112,13 +107,22 @@
             <scope>test</scope>
         </dependency>
         <!-- This dependency is used to force the build
-                    order to first build and run the jobs module.
+                    order to first build and run the graphhopper-job< module.
                  -->
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>
             <artifactId>graphhopper-job</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!-- This dependency is used to force the build
+                order to first build and run the traffic-sign module.
+                this is done to ensure a traffic sign file on disk exists
+             -->
+        <dependency>
+            <groupId>nu.ndw.nls.accessibilitymap</groupId>
+            <artifactId>traffic-sign</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
@@ -198,6 +202,38 @@
             </plugin>
 
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>generate-test-sources</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src/test-integration/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-test-resource</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>add-test-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>src/test-integration/resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <executions>
@@ -269,9 +305,11 @@
                                 <configuration>
                                     <arguments combine.children="append">
                                         <argument>down</argument>
+                                        <argument>--remove-orphans</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
+
                             <execution>
                                 <id>docker-compose-up-infra</id>
                                 <phase>pre-integration-test</phase>
@@ -284,19 +322,97 @@
                                         <argument>-d</argument>
                                         <argument>nls-postgres</argument>
                                         <argument>nls-keycloak</argument>
+                                        <argument>nls-rabbitmq</argument>
+                                        <argument>accessibility-wiremock-stub</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>docker-compose-build-nls-accessibility-map-api</id>
+                                <id>wait-for-rabbitmq</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../scripts/rabbit-isready.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>wait-for-database</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../scripts/pg-isready.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-graphhopper-configureRabbitMQ</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
                                     <arguments combine.children="append">
-                                        <argument>build</argument>
-                                        <argument>nls-accessibility-map-api</argument>
+                                        <argument>run</argument>
+                                        <argument>nls-accessibility-map-graphhopper-configure-rabbitmq</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>publish-event-nwb-imported</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../scripts/publish-event-nwb-imported.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>chmod-777-maps</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>
+                                        <argument>777</argument>
+                                        <argument>../.tmp/graphhopper</argument>
+                                        <argument>../.tmp/trafficsigns</argument>
+                                    </arguments>
+                                    <executable>chmod</executable>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-graphhopper-createOrUpdateNetwork</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>--build</argument>
+                                        <argument>nls-accessibility-map-graphhopper-job</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>docker-compose-run-traffic-sign-update-cache-job</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>run</argument>
+                                        <argument>--build</argument>
+                                        <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -310,6 +426,7 @@
                                     <arguments combine.children="append">
                                         <argument>up</argument>
                                         <argument>-d</argument>
+                                        <argument>--build</argument>
                                         <argument>nls-accessibility-map-api</argument>
                                     </arguments>
                                 </configuration>

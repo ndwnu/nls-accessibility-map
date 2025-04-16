@@ -22,15 +22,16 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.FeatureCollection;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,8 +65,6 @@ class AbstractGeoJsonWriterTest {
     @Mock
     private Path exportFile;
 
-    private ExportProperties exportProperties;
-
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -77,14 +76,6 @@ class AbstractGeoJsonWriterTest {
     @BeforeEach
     void setUp() {
 
-        exportProperties = ExportProperties.builder()
-                .name(TrafficSignType.C7.name())
-                .accessibilityRequest(AccessibilityRequest.builder()
-                        .trafficSignTypes(Set.of(TrafficSignType.C7))
-                        .build())
-                .generateConfiguration(generateConfiguration)
-                .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
-                .build();
     }
 
     @ParameterizedTest
@@ -97,8 +88,8 @@ class AbstractGeoJsonWriterTest {
         when(geoJsonObjectMapperFactory.create(generateConfiguration)).thenReturn(new ObjectMapper());
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
-        exportProperties = exportProperties.withIncludeOnlyTimeWindowedSigns(
-                includeOnlyTimeWindowedSigns);
+        ExportProperties exportProperties = buildExportProperties(includeOnlyTimeWindowedSigns);
+
         try {
             String expectedFileName = "c7".concat(includeOnlyTimeWindowedSigns ? "WindowTimeSegments" : "");
 
@@ -154,7 +145,7 @@ class AbstractGeoJsonWriterTest {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
-        exportProperties = exportProperties.withIncludeOnlyTimeWindowedSigns(false);
+        ExportProperties exportProperties = buildExportProperties(false);
 
         try {
             String expectedFileName = "c7";
@@ -223,4 +214,19 @@ class AbstractGeoJsonWriterTest {
                     .build();
         }
     }
+
+    private ExportProperties buildExportProperties(boolean includeOnlyTimeWindowedSigns) {
+        return ExportProperties.builder()
+                .name(TrafficSignType.C7.name())
+                .accessibilityRequest(AccessibilityRequest.builder()
+                        .trafficSignTypes(Set.of(TrafficSignType.C7))
+                        .trafficSignTextSignTypes(
+                                includeOnlyTimeWindowedSigns
+                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
+                        .build())
+                .generateConfiguration(generateConfiguration)
+                .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
+                .build();
+    }
+
 }

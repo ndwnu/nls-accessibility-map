@@ -11,5 +11,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 public class EdgeRestriction {
 
     Integer edgeKey;
+
     TrafficSign trafficSign;
 }

@@ -5,7 +5,7 @@ import static java.nio.file.attribute.PosixFilePermission.OTHERS_READ;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_EXECUTE;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_READ;
 import static java.nio.file.attribute.PosixFilePermission.OWNER_WRITE;
-import static nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants.PROFILE;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,6 +24,9 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink.AccessibilityLinkBuilder;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
@@ -39,10 +42,9 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.nw
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.repository.RoadSectionRepository;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.repository.VersionRepository;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
-import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
+import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import org.springframework.stereotype.Service;
 
@@ -91,20 +93,30 @@ public class GraphHopperDriver {
         return this;
     }
 
+    public NetworkGraphHopper loadFromDisk() throws GraphHopperNotImportedException {
+        RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = RoutingNetworkSettings.builder(AccessibilityLink.class)
+                .indexed(true)
+                .graphhopperRootPath(graphHopperConfiguration.getLocationOnDisk())
+                .networkNameAndVersion(VERSION)
+                .profiles(List.of(CAR_PROFILE))
+                .build();
+
+        return graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
+    }
+
     @SuppressWarnings("java:S3658")
     public void buildNetwork() {
 
         writeNetworkAsGeoJsonToDisk();
 
-        RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = RoutingNetworkSettings.builder(
-                        AccessibilityLink.class)
+        RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = RoutingNetworkSettings.builder(AccessibilityLink.class)
                 .indexed(true)
                 .linkSupplier(() -> join(List.of(networkDataService.getLinks().stream()
                         .map(Link::getAccessibilityLink)
                         .toList())).iterator())
                 .graphhopperRootPath(graphHopperConfiguration.getLocationOnDisk())
                 .networkNameAndVersion(VERSION)
-                .profiles(List.of(PROFILE))
+                .profiles(List.of(CAR_PROFILE))
                 .build();
 
         Path fullStorageLocation = graphHopperConfiguration.getLocationOnDisk()
@@ -115,6 +127,18 @@ public class GraphHopperDriver {
             fail(exception);
         }
 
+        buildNwbDatabaseNetwork();
+
+        graphHopperNetworkService.storeOnDisk(routingNetworkSettings);
+        try {
+            new ObjectMapper().writeValue(fullStorageLocation.resolve(ACCESSIBILITY_META_DATA_JSON).toFile(),
+                    new GraphhopperMetaData(1));
+        } catch (IOException exception) {
+            fail(exception);
+        }
+    }
+
+    public void buildNwbDatabaseNetwork() {
         versionRepository.save(Version.builder()
                 .versionId(1)
                 .status("OK")
@@ -131,14 +155,6 @@ public class GraphHopperDriver {
                         .roadOperatorType("Municipality")
                         .geometry(link.getRijksDiehoekLineString())
                         .build()));
-
-        graphHopperNetworkService.storeOnDisk(routingNetworkSettings);
-        try {
-            new ObjectMapper().writeValue(fullStorageLocation.resolve(ACCESSIBILITY_META_DATA_JSON).toFile(),
-                    new AccessibilityGraphhopperMetaData(1));
-        } catch (IOException exception) {
-            fail(exception);
-        }
     }
 
     @SuppressWarnings("java:S3658")

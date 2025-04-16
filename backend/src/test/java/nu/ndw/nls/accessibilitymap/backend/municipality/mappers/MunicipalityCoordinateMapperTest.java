@@ -8,8 +8,9 @@ import java.net.URI;
 import java.net.URL;
 import java.time.LocalDate;
 import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityCoordinateMapper;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +24,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MunicipalityCoordinateMapperTest {
 
     private static final double START_COORDINATE_LONGITUDE = 1D;
-    private static final double START_COORDINATE_LATITUDE = 2D;
-    private static final String NAME = "name";
-    private static final String MUNICIPALITY_ID_STRING = "123";
-    private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
+    private static final double START_COORDINATE_LATITUDE = 2D;
+
+    private static final String NAME = "name";
+
+    private static final String MUNICIPALITY_ID_STRING = "123";
+
+    private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
     private static final URL URL;
 
@@ -66,7 +70,6 @@ class MunicipalityCoordinateMapperTest {
                         URL,
                         municipalityBoundingBox,
                         DATE_LAST_CHECK)));
-
 
     }
 }

@@ -1,66 +1,32 @@
 package nu.ndw.nls.accessibilitymap.accessibility;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
-import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
-import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
-import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
-import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
-@ExtendWith(MockitoExtension.class)
 class AccessibilityConfigurationTest {
-    @Mock
-    private GraphHopperConfiguration graphHopperConfiguration;
-
-    @Mock
-    private GraphHopperNetworkService graphHopperNetworkService;
-
-    @Mock
-    private NetworkMetaDataService networkMetaDataService;
-
-    @InjectMocks
-    private AccessibilityConfiguration accessibilityConfiguration;
-
-    @Mock
-    private RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
-    private AccessibilityGraphhopperMetaData accessibilityGraphhopperMetaData;
-
 
     @Test
-    @SneakyThrows
-    void networkGraphHopper() {
-        when(graphHopperConfiguration.configureLoadingRoutingNetworkSettings()).thenReturn(routingNetworkSettings);
-        when(graphHopperNetworkService.loadFromDisk(routingNetworkSettings)).thenReturn(networkGraphHopper);
-        assertEquals(networkGraphHopper, accessibilityConfiguration.networkGraphHopper());
+    void class_configurationAnnotation() {
+
+        AnnotationUtil.classContainsAnnotation(
+                AccessibilityConfiguration.class,
+                Configuration.class,
+                annotation -> assertThat(annotation).isNotNull()
+        );
     }
 
     @Test
-    @SneakyThrows
-    void accessibilityGraphhopperMetaData() {
-        when(networkMetaDataService.loadMetaData()).thenReturn(accessibilityGraphhopperMetaData);
-        assertEquals(accessibilityGraphhopperMetaData,
-                accessibilityConfiguration.accessibilityGraphhopperMetaData());
+    void class_componentScanAnnotation() {
+
+        AnnotationUtil.classContainsAnnotation(
+                AccessibilityConfiguration.class,
+                ComponentScan.class,
+                annotation -> assertThat(annotation).isNotNull()
+        );
     }
 
-    @Test
-    void edgeIteratorStateReverseExtractor() {
-        assertNotNull(accessibilityConfiguration.edgeIteratorStateReverseExtractor());
-
-    }
 }
