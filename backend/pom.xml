@@ -389,6 +389,19 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>docker-compose-build</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments combine.children="append">
+                                        <argument>build</argument>
+                                        <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>docker-compose-run-graphhopper-createOrUpdateNetwork</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
@@ -397,6 +410,7 @@
                                 <configuration>
                                     <arguments combine.children="append">
                                         <argument>run</argument>
+                                        <argument>--build</argument>
                                         <argument>nls-accessibility-map-graphhopper-job</argument>
                                     </arguments>
                                 </configuration>
@@ -410,21 +424,8 @@
                                 <configuration>
                                     <arguments combine.children="append">
                                         <argument>run</argument>
+                                        <argument>--build</argument>
                                         <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>docker-compose-build-nls-accessibility-map-api</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments combine.children="append">
-                                        <argument>build</argument>
-                                        <argument>nls-accessibility-map-api</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
@@ -438,6 +439,7 @@
                                     <arguments combine.children="append">
                                         <argument>up</argument>
                                         <argument>-d</argument>
+                                        <argument>--build</argument>
                                         <argument>nls-accessibility-map-api</argument>
                                     </arguments>
                                 </configuration>

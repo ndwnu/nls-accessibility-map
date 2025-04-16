@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.List;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +21,7 @@ class TrafficSignCacheConfigurationTest extends ValidationTest {
         trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
                 .folder(Path.of("folder"))
                 .fileNameActiveVersion("activeVersion")
+                .fileWatcherInterval(Duration.ofMillis(2))
                 .build();
     }
 
@@ -41,6 +43,15 @@ class TrafficSignCacheConfigurationTest extends ValidationTest {
         trafficSignCacheConfiguration.setFolder(null);
         validate(trafficSignCacheConfiguration,
                 List.of("folder"),
+                List.of("must not be null"));
+    }
+
+    @Test
+    void validate_fileWatcherInterval_null() {
+
+        trafficSignCacheConfiguration.setFileWatcherInterval(null);
+        validate(trafficSignCacheConfiguration,
+                List.of("fileWatcherInterval"),
                 List.of("must not be null"));
     }
 

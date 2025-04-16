@@ -11,7 +11,7 @@ resources:
     - repository: nls-pipeline-templates
       type: git
       name: NLS/nls-pipeline-templates
-      ref: feature/90886/skip-tests
+      ref: main
 
 parameters:
   - name: skipSonar

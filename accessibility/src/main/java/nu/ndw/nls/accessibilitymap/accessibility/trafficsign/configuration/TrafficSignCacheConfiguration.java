@@ -32,7 +32,7 @@ public class TrafficSignCacheConfiguration {
     @NotEmpty
     private String fileNameActiveVersion;
 
-    @NotEmpty
+    @NotNull
     private Duration fileWatcherInterval = Duration.ofSeconds(1);
 
     public File getActiveVersion() {
