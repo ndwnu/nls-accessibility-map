@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
-import nu.ndw.nls.geometry.stream.collectors.GeometryCollectors;
+import nu.ndw.nls.geometry.merging.GeometryCollectors;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
