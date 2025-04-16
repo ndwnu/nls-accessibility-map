@@ -27,8 +27,8 @@ nu:
         messaging:
           broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
           publish:
-            - routingKey: ndw.nls.accessibility.routing.network.updated
-              expectedEventType: ACCESSIBILITY_ROUTING_NETWORK_UPDATED
+            - routingKey: ndw.nls.nwb.imported
+              expectedEventType: NWB_IMPORTED_EVENT
         test:
           component:
             driver:
@@ -48,6 +48,7 @@ nu:
             maven:
               rootPomRelativePath: "../../"
               modulesUnderTest:
+                - "jobs/graphhopper"
                 - "jobs/mapgenerator"
                 - "jobs/traffic-sign"
             graph-hopper:

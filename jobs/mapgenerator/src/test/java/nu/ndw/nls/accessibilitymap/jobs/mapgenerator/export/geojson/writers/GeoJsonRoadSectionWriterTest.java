@@ -27,9 +27,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
@@ -38,6 +38,7 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.RoadSectionProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.TrafficSignProperties;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,8 +60,6 @@ class GeoJsonRoadSectionWriterTest {
 
     @Mock
     private GenerateConfiguration generateConfiguration;
-
-    private ExportProperties exportProperties;
 
     @Mock
     private Accessibility accessibility;
@@ -97,13 +96,6 @@ class GeoJsonRoadSectionWriterTest {
     @BeforeEach
     void setUp() {
 
-        exportProperties = ExportProperties.builder()
-                .name(TrafficSignType.C7.name())
-                .accessibilityRequest(AccessibilityRequest.builder().trafficSignTypes(Set.of(TrafficSignType.C7)).build())
-                .generateConfiguration(generateConfiguration)
-                .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
-                .build();
-
         roadSection = RoadSection.builder()
                 .roadSectionFragments(List.of(
                         RoadSectionFragment.builder()
@@ -128,8 +120,8 @@ class GeoJsonRoadSectionWriterTest {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
-        exportProperties = exportProperties.withIncludeOnlyTimeWindowedSigns(
-                includeOnlyTimeWindowedSigns);
+        ExportProperties exportProperties = buildExportProperties(includeOnlyTimeWindowedSigns);
+
         try {
             String expectedFileName = "c7".concat(includeOnlyTimeWindowedSigns ? "WindowTimeSegments" : "");
             GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
@@ -223,7 +215,7 @@ class GeoJsonRoadSectionWriterTest {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
-        exportProperties = exportProperties.withIncludeOnlyTimeWindowedSigns(false);
+        ExportProperties exportProperties = buildExportProperties(false);
         GeoJsonObjectMapperFactory geoJsonObjectMapperFactory = mock(GeoJsonObjectMapperFactory.class);
         ObjectMapper goeJsonObjectMapper = mock(ObjectMapper.class);
 
@@ -309,5 +301,19 @@ class GeoJsonRoadSectionWriterTest {
                 geoJsonObjectMapperFactory);
 
         assertThat(geoJsonRoadSectionWriter.isEnabled(Set.of(ExportType.LINE_STRING_GEO_JSON))).isTrue();
+    }
+
+    private ExportProperties buildExportProperties(boolean includeOnlyTimeWindowedSigns) {
+        return ExportProperties.builder()
+                .name(TrafficSignType.C7.name())
+                .accessibilityRequest(AccessibilityRequest.builder()
+                        .trafficSignTypes(Set.of(TrafficSignType.C7))
+                        .trafficSignTextSignTypes(
+                                includeOnlyTimeWindowedSigns
+                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
+                        .build())
+                .generateConfiguration(generateConfiguration)
+                .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
+                .build();
     }
 }

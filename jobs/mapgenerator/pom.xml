@@ -4,7 +4,7 @@
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
         <artifactId>jobs</artifactId>
-        <version>4.3.12-SNAPSHOT</version>
+        <version>5.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>mapgenerator-job</artifactId>
     <name>NLS Accessibility Map generate GeoJson jobs</name>
@@ -12,11 +12,6 @@
         <dependency>
             <groupId>nu.ndw.nls.locationdataissuesapi</groupId>
             <artifactId>client-feign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <version>${project.parent.version}</version>
-            <artifactId>shared</artifactId>
         </dependency>
         <dependency>
             <groupId>nu.ndw.nls.accessibilitymap</groupId>

@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
-import nu.ndw.nls.accessibilitymap.backend.municipality.mappers.MunicipalityMapper;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MunicipalityConfigurationTest {
 
     private static final String MUNICIPALITY_NAME_A = "a";
+
     private static final String MUNICIPALITY_NAME_B = "b";
 
     @Mock
@@ -22,12 +23,16 @@ class MunicipalityConfigurationTest {
 
     @Mock
     private MunicipalityProperties municipalityProperties;
+
     @Mock
     private MunicipalityProperty municipalityPropertyA;
+
     @Mock
     private MunicipalityProperty municipalityPropertyB;
+
     @Mock
     private Municipality municipalityA;
+
     @Mock
     private Municipality municipalityB;
 

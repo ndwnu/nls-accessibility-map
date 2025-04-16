@@ -1,11 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
+    url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map&stringtype=unspecified
     username: nls-maps
     password: nls-maps
 
 graphhopper:
   dir: graphhopper
+
+
 nls:
   keycloak:
     url: http://nls-keycloak:8000/auth

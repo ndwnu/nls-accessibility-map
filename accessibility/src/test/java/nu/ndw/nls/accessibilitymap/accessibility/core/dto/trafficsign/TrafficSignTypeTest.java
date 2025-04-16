@@ -19,7 +19,7 @@ class TrafficSignTypeTest {
     @Test
     void fromRvvCode_exception() {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(()->TrafficSignType.fromRvvCode("test"))
+                .isThrownBy(() -> TrafficSignType.fromRvvCode("test"))
                 .withMessage("Invalid TrafficSignType: test");
     }
 

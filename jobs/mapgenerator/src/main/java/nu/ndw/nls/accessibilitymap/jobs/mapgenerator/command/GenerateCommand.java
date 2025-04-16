@@ -5,14 +5,15 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.AccessibilityConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.time.ClockService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services.MapGeneratorService;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -26,7 +27,7 @@ public class GenerateCommand implements Callable<Integer> {
 
     private final MapGeneratorService mapGeneratorService;
 
-    private final AccessibilityConfiguration accessibilityConfiguration;
+    private final GraphhopperConfiguration graphhopperConfiguration;
 
     private final GenerateConfiguration generateConfiguration;
 
@@ -79,10 +80,13 @@ public class GenerateCommand implements Callable<Integer> {
                             .startLocationLatitude(generateConfiguration.startLocationLatitude())
                             .startLocationLongitude(generateConfiguration.startLocationLongitude())
                             .searchRadiusInMeters(generateConfiguration.searchRadiusInMeters())
+                            .trafficSignTextSignTypes(
+                                    includeOnlyTimeWindowedSigns
+                                            ? Set.of(TextSignType.TIME_PERIOD)
+                                            : null)
                             .build())
-                    .includeOnlyTimeWindowedSigns(includeOnlyTimeWindowedSigns)
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
-                    .nwbVersion(accessibilityConfiguration.accessibilityGraphhopperMetaData().nwbVersion())
+                    .nwbVersion(graphhopperConfiguration.getMetaData().nwbVersion())
                     .publishEvents(publishEvents)
                     .generateConfiguration(generateConfiguration)
                     .build();

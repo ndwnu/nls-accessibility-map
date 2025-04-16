@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper;
 
 import java.util.function.Consumer;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink.AccessibilityLinkBuilder;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink.AccessibilityLinkBuilder;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 
 public class AllAccessibleLinkBuilderConsumer implements Consumer<AccessibilityLinkBuilder> {

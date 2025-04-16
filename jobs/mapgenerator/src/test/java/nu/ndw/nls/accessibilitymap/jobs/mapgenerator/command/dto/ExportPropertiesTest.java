@@ -4,8 +4,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
@@ -39,7 +39,6 @@ class ExportPropertiesTest extends ValidationTest {
                 .startTime(OffsetDateTime.now())
                 .accessibilityRequest(accessibilityRequest)
                 .polygonMaxDistanceBetweenPoints(0.000000000000001d)
-                .includeOnlyTimeWindowedSigns(true)
                 .generateConfiguration(generateConfiguration)
                 .build();
     }
@@ -108,14 +107,6 @@ class ExportPropertiesTest extends ValidationTest {
     }
 
     @Test
-    void validate_includeOnlyTimeWindowedSigns_null() {
-
-        exportProperties = exportProperties.withIncludeOnlyTimeWindowedSigns(null);
-
-        validate(exportProperties, List.of("includeOnlyTimeWindowedSigns"), List.of("must not be null"));
-    }
-
-    @Test
     void validate_generateConfiguration_null() {
 
         exportProperties = exportProperties.withGenerateConfiguration(null);
@@ -130,7 +121,6 @@ class ExportPropertiesTest extends ValidationTest {
 
         validate(exportProperties, List.of("accessibilityRequest"), List.of("must not be null"));
     }
-
 
     @Override
     protected Class<?> getClassToTest() {

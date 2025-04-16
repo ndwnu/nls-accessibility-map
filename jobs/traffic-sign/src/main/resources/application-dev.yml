@@ -21,10 +21,10 @@ logging:
     root: INFO
     nu.ndw.nls: DEBUG
 graphhopper:
-  dir: graphhopper
+  dir: .tmp/graphhopper
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
+    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-traffic-sign-jobs&stringtype=unspecified
     username: nls-maps
     password: nls-maps
   cloud:

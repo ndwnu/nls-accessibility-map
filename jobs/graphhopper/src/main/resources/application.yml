@@ -38,18 +38,13 @@ spring:
 nu:
   ndw:
     nls:
-      accessibilitymap:
-        trafficsignclient:
-          api:
-            url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
-            current-state-path: /current-state
       springboot:
         messaging:
           publish:
             - routingKey: ndw.nls.accessibility.routing.network.updated
               expectedEventType: ACCESSIBILITY_ROUTING_NETWORK_UPDATED
           receive:
-            - queue: nls_accessibility_map_graphhopper_job_no_traffic_sign_nwb_imported
+            - queue: nls_accessibility_map_graphhopper_job_nwb_imported
               routingKey: ndw.nls.nwb.imported
               expectedEventTypes:
                 - NWB_IMPORTED_EVENT

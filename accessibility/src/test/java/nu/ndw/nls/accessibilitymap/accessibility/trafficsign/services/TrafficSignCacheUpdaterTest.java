@@ -9,7 +9,6 @@ import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.WatchService;
 import java.time.Duration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -36,12 +35,7 @@ class TrafficSignCacheUpdaterTest {
     @Mock
     private TrafficSignDataService trafficSignDataService;
 
-    @Mock
-    private WatchService watchService;
-
     private Path testDir;
-
-    private Path workingDir;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -50,11 +44,11 @@ class TrafficSignCacheUpdaterTest {
     void setUp() throws IOException {
 
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
-        workingDir = testDir.resolve("testFolder");
 
         trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
                 .folder(testDir.resolve("testFolder"))
                 .fileNameActiveVersion("active")
+                .fileWatcherInterval(Duration.ofMillis(1))
                 .build();
 
         trafficSignCacheUpdater = new TrafficSignCacheUpdater(trafficSignCacheConfiguration, trafficSignDataService);
@@ -67,27 +61,43 @@ class TrafficSignCacheUpdaterTest {
     }
 
     @Test
-    void watchFileChanges_fileChanges() throws IOException {
+    @SuppressWarnings("java:S2925")
+    void watchFileChanges_fileChanges() throws IOException, InterruptedException {
+
+        Files.createDirectories(trafficSignCacheConfiguration.getFolder());
+        Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
+        Awaitility.await().atMost(Duration.ofSeconds(5))
+                .until(() -> Files.exists(trafficSignCacheConfiguration.getActiveVersion().toPath()));
 
         trafficSignCacheUpdater.watchFileChanges();
-        Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
+        Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis() + 1);
+        Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-            loggerExtension.containsLog(Level.INFO, "Watching file changes in %s".formatted(workingDir));
+            loggerExtension.containsLog(Level.INFO,
+                    "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion()));
             verify(trafficSignDataService).updateTrafficSignData();
-            loggerExtension.containsLog(Level.INFO, "Triggerd update");
+            loggerExtension.containsLog(Level.INFO, "Triggering update");
+            loggerExtension.containsLog(Level.INFO, "Finished update");
         });
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread.isInterrupted()).isFalse();
     }
 
     @Test
-    void watchFileChanges_failedToUpdateData() throws IOException {
+    @SuppressWarnings("java:S2925")
+    void watchFileChanges_failedToUpdateData() throws IOException, InterruptedException {
 
         doThrow(new RuntimeException("some error")).when(trafficSignDataService).updateTrafficSignData();
 
-        trafficSignCacheUpdater.watchFileChanges();
+        Files.createDirectories(trafficSignCacheConfiguration.getFolder());
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
+        Awaitility.await().atMost(Duration.ofSeconds(5))
+                .until(() -> Files.exists(trafficSignCacheConfiguration.getActiveVersion().toPath()));
+
+        trafficSignCacheUpdater.watchFileChanges();
+        Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis() + 1);
+        Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
                 loggerExtension.containsLog(Level.ERROR, "Failed to update traffic signs data", "some error"));
@@ -105,32 +115,10 @@ class TrafficSignCacheUpdaterTest {
     }
 
     @Test
-    void destroy_verifyWatcherClosed() throws IOException {
-
-        trafficSignCacheUpdater.watchService = watchService;
-        trafficSignCacheUpdater.destroy();
-
-        verify(watchService).close();
-    }
-
-    @Test
-    void destroy_verifyWatcherClosed_handleIoExceptions() throws IOException {
-
-        trafficSignCacheUpdater.watchService = watchService;
-
-        doThrow(new IOException("some error")).when(watchService).close();
-        trafficSignCacheUpdater.destroy();
-
-        verify(watchService).close();
-        loggerExtension.containsLog(Level.WARN, "Failed to stop watching file changes", "some error");
-    }
-
-    @Test
     void destroy_withoutInitialisation() {
 
         trafficSignCacheUpdater.destroy();
 
-        assertThat(trafficSignCacheUpdater.watchService).isNull();
         assertThat(trafficSignCacheUpdater.fileWatcherThread).isNull();
     }
 

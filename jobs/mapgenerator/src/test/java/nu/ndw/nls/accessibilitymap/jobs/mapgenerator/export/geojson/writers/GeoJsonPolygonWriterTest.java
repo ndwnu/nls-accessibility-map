@@ -20,10 +20,10 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.request.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
@@ -60,18 +60,10 @@ class GeoJsonPolygonWriterTest {
     @Mock
     private GenerateConfiguration generateConfiguration;
 
-    private ExportProperties exportProperties;
-
     @Mock
     private Accessibility accessibility;
 
     private RoadSection roadSection;
-
-    @Mock
-    private DirectionalSegment directionalSegmentForward1;
-
-    @Mock
-    private DirectionalSegment directionalSegmentBackward1;
 
     @Mock
     private LineString lineStringDoesNotIntersect;
@@ -108,13 +100,6 @@ class GeoJsonPolygonWriterTest {
 
     @BeforeEach
     void setUp() {
-        exportProperties = ExportProperties.builder()
-                .name(TrafficSignType.C7.name())
-                .accessibilityRequest(AccessibilityRequest.builder().trafficSignTypes(Set.of(TrafficSignType.C7)).build())
-                .generateConfiguration(generateConfiguration)
-                .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
-                .polygonMaxDistanceBetweenPoints(0.0005)
-                .build();
 
         roadSection = RoadSection.builder()
                 .id(1L)
@@ -215,11 +200,10 @@ class GeoJsonPolygonWriterTest {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
-        exportProperties = exportProperties.withIncludeOnlyTimeWindowedSigns(
-                includeOnlyTimeWindowedSigns);
+        ExportProperties exportProperties = buildExportProperties(includeOnlyTimeWindowedSigns);
+
         try {
-            String expectedFileName = "c7%s-polygon".formatted(
-                    includeOnlyTimeWindowedSigns ? "WindowTimeSegments" : "");
+            String expectedFileName = "c7%s-polygon".formatted(includeOnlyTimeWindowedSigns ? "WindowTimeSegments" : "");
 
             GeoJsonPolygonWriter geoJsonPolygonWriter = new GeoJsonPolygonWriter(
                     fileService,
@@ -304,5 +288,21 @@ class GeoJsonPolygonWriterTest {
                 featureBuilder);
 
         assertThat(geoJsonPolygonWriter.isEnabled(Set.of(ExportType.POLYGON_GEO_JSON))).isTrue();
+    }
+
+    private ExportProperties buildExportProperties(boolean includeOnlyTimeWindowedSigns) {
+
+        return ExportProperties.builder()
+                .name(TrafficSignType.C7.name())
+                .accessibilityRequest(AccessibilityRequest.builder()
+                        .trafficSignTypes(Set.of(TrafficSignType.C7))
+                        .trafficSignTextSignTypes(
+                                includeOnlyTimeWindowedSigns
+                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
+                        .build())
+                .generateConfiguration(generateConfiguration)
+                .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
+                .polygonMaxDistanceBetweenPoints(0.0005)
+                .build();
     }
 }

@@ -1,138 +1,182 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper.services;
 
 import static nu.ndw.nls.events.NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import ch.qos.logback.classic.Level;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Supplier;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkSettingsBuilder;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
-import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.AccessibilityLinkService.AccessibilityLinkData;
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.shared.network.dtos.AccessibilityGraphhopperMetaData;
-import nu.ndw.nls.accessibilitymap.shared.network.services.NetworkMetaDataService;
-import nu.ndw.nls.accessibilitymap.shared.properties.GraphHopperConfiguration;
+import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
+import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityNetworkServiceTest {
 
-    private static final int NWB_VERSION_ID = 20231001;
-    private static final String TRAFFIC_SIGN_TIMESTAMP_STRING = "2023-11-07T15:37:23Z";
-    private static final Instant TRAFFIC_SIGN_TIMESTAMP = Instant.parse(TRAFFIC_SIGN_TIMESTAMP_STRING);
-
+    private AccessibilityNetworkService accessibilityNetworkService;
 
     @Mock
     private List<AccessibilityLink> links;
+
     @Mock
     private Iterator<AccessibilityLink> linkIterator;
+
     @Mock
-    private NlsEvent publishEvent;
+    private NlsEvent publishedEvent;
+
     @Mock
     private GraphHopperNetworkService indexedGraphHopperNetworkService;
+
     @Mock
     private AccessibilityLinkService accessibilityLinkService;
+
     @Mock
-    private GraphHopperConfiguration graphHopperConfiguration;
+    private GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder;
+
     @Mock
     private MessageService messageService;
+
     @Mock
     private AccessibilityRoutingNetworkEventMapper accessibilityRoutingNetworkEventMapper;
+
     @Mock
     private NetworkMetaDataService networkMetaDataService;
 
-    @InjectMocks
-    private AccessibilityNetworkService accessibilityNetworkService;
+    @Mock
+    private NwbVersionCrudService nwbVersionCrudService;
 
     @Mock
     private RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings;
 
-    @Captor
-    ArgumentCaptor<Supplier<Iterator<AccessibilityLink>>> supplierArgumentCaptor;
+    @Mock
+    private List<AccessibilityLink> accessibilityLinks;
 
-    private Path tmpLatestPathFolder;
+    @Mock
+    private ClockService clockService;
+
+    @RegisterExtension
+    LoggerExtension loggerExtension = new LoggerExtension();
+
+    private Path testFolder;
 
     @SneakyThrows
     @BeforeEach
     void setUp() {
-        tmpLatestPathFolder = Files.createTempDirectory("test-accessibility-network-service");
-        when(graphHopperConfiguration.getLatestPath()).thenReturn(tmpLatestPathFolder);
+
+        accessibilityNetworkService = new AccessibilityNetworkService(
+                indexedGraphHopperNetworkService,
+                accessibilityLinkService,
+                graphHopperNetworkSettingsBuilder,
+                messageService,
+                accessibilityRoutingNetworkEventMapper,
+                networkMetaDataService,
+                nwbVersionCrudService,
+                clockService);
+
+        testFolder = Files.createTempDirectory("test-accessibility-network-service");
     }
 
-    @SneakyThrows
-    @Test
-    void storeLatestNetworkOnDisk() {
-        when(graphHopperConfiguration.publishEvents()).thenReturn(true);
-        when(accessibilityLinkService.getLinks()).thenReturn(
-                new AccessibilityLinkData(links, NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP));
-        when(links.iterator()).thenReturn(linkIterator);
+    @AfterEach
+    void tearDown() throws IOException {
 
-        when(accessibilityRoutingNetworkEventMapper.map(NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP))
-                .thenReturn(publishEvent);
-        when(publishEvent.getType()).thenReturn(ACCESSIBILITY_ROUTING_NETWORK_UPDATED);
+        FileUtils.deleteDirectory(testFolder.toFile());
+    }
 
-        when(graphHopperConfiguration.configurePersistingRoutingNetworkSettings(any(), eq(TRAFFIC_SIGN_TIMESTAMP)))
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void storeLatestNetworkOnDisk(boolean publishEvents) throws IOException {
+
+        Path graphopperPath = testFolder.resolve("latest");
+        OffsetDateTime timestamp = OffsetDateTime.parse("2022-12-06T09:00:00.001Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        when(graphHopperNetworkSettingsBuilder.getLatestPath()).thenReturn(graphopperPath);
+
+        int nwbVersionId = 123;
+        when(nwbVersionCrudService.findLatestVersionId()).thenReturn(nwbVersionId);
+        when(accessibilityLinkService.getLinks(nwbVersionId)).thenReturn(accessibilityLinks);
+        when(clockService.now()).thenReturn(timestamp);
+
+        when(graphHopperNetworkSettingsBuilder.networkSettingsWithData(accessibilityLinks, timestamp.toInstant()))
                 .thenReturn(routingNetworkSettings);
+
+        if (publishEvents) {
+            when(graphHopperNetworkSettingsBuilder.publishEvents()).thenReturn(true);
+            when(accessibilityRoutingNetworkEventMapper.map(nwbVersionId, timestamp.toInstant())).thenReturn(publishedEvent);
+            when(publishedEvent.getType()).thenReturn(ACCESSIBILITY_ROUTING_NETWORK_UPDATED);
+            when(accessibilityRoutingNetworkEventMapper.map(nwbVersionId, timestamp.toInstant())).thenReturn(publishedEvent);
+        }
 
         accessibilityNetworkService.storeLatestNetworkOnDisk();
 
-        verify(networkMetaDataService).saveMetaData(new AccessibilityGraphhopperMetaData(NWB_VERSION_ID));
-
-        verify(graphHopperConfiguration).configurePersistingRoutingNetworkSettings(supplierArgumentCaptor.capture(),
-                eq(TRAFFIC_SIGN_TIMESTAMP));
-
-        assertEquals(linkIterator, supplierArgumentCaptor.getValue().get());
+        assertThat(Files.exists(graphopperPath)).isTrue();
 
         verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkSettings);
-        assertTrue(Files.exists(tmpLatestPathFolder));
+        verify(networkMetaDataService).saveMetaData(new GraphhopperMetaData(nwbVersionId));
 
-        verify(messageService).publish(publishEvent);
+        if (publishEvents) {
+            verify(messageService).publish(publishedEvent);
+            loggerExtension.containsLog(Level.INFO, "Sending %s event for NWB version %s"
+                    .formatted(
+                            ACCESSIBILITY_ROUTING_NETWORK_UPDATED.getLabel(),
+                            nwbVersionId));
+        } else {
+            verifyNoMoreInteractions(messageService);
+        }
+
+        loggerExtension.containsLog(Level.INFO, "Starting network creation for %s".formatted(graphopperPath.toAbsolutePath()));
+        loggerExtension.containsLog(Level.INFO, "Retrieving link data");
+        loggerExtension.containsLog(Level.INFO, "Creating GraphHopper network and writing to disk");
+
     }
 
-    @SneakyThrows
-    @Test
-    void storeLatestNetworkOnDisk_noEvents() {
-        when(accessibilityLinkService.getLinks()).thenReturn(
-                new AccessibilityLinkData(links, NWB_VERSION_ID, TRAFFIC_SIGN_TIMESTAMP));
-        when(links.iterator()).thenReturn(linkIterator);
-        when(graphHopperConfiguration.publishEvents()).thenReturn(false);
-        when(graphHopperConfiguration.configurePersistingRoutingNetworkSettings(any(), eq(TRAFFIC_SIGN_TIMESTAMP)))
-                .thenReturn(routingNetworkSettings);
-
-        accessibilityNetworkService.storeLatestNetworkOnDisk();
-
-        verify(networkMetaDataService).saveMetaData(new AccessibilityGraphhopperMetaData(NWB_VERSION_ID));
-
-        verify(graphHopperConfiguration).configurePersistingRoutingNetworkSettings(supplierArgumentCaptor.capture(),
-                eq(TRAFFIC_SIGN_TIMESTAMP));
-
-        assertEquals(linkIterator, supplierArgumentCaptor.getValue().get());
-
-        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkSettings);
-        assertTrue(Files.exists(tmpLatestPathFolder));
-
-        verifyNoInteractions(messageService);
-    }
+//    @SneakyThrows
+//    @Test
+//    void storeLatestNetworkOnDisk_noEvents() {
+//        when(accessibilityLinkService.getLinks()).thenReturn(accessibilityLinks);
+//        when(links.iterator()).thenReturn(linkIterator);
+//        when(graphHopperNetworkSettingsBuilder.publishEvents()).thenReturn(false);
+//        when(graphHopperNetworkSettingsBuilder.configurePersistingRoutingNetworkSettings(any(), eq(TRAFFIC_SIGN_TIMESTAMP)))
+//                .thenReturn(routingNetworkSettings);
+//
+//        accessibilityNetworkService.storeLatestNetworkOnDisk();
+//
+//        verify(networkMetaDataService).saveMetaData(new AccessibilityGraphhopperMetaData(NWB_VERSION_ID));
+//
+//        verify(graphHopperNetworkSettingsBuilder).configurePersistingRoutingNetworkSettings(supplierArgumentCaptor.capture(),
+//                eq(TRAFFIC_SIGN_TIMESTAMP));
+//
+//        assertEquals(linkIterator, supplierArgumentCaptor.getValue().get());
+//
+//        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkSettings);
+//        assertTrue(Files.exists(tmpLatestPathFolder));
+//
+//        verifyNoInteractions(messageService);
+//    }
 
 }

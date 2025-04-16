@@ -6,9 +6,13 @@ import static org.mockito.Mockito.when;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.time.LocalDate;
-import nu.ndw.nls.accessibilitymap.accessibility.model.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityProperty;
-import nu.ndw.nls.accessibilitymap.backend.municipality.model.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityCoordinateMapper;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityIdMapper;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityMapper;
+import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers.MunicipalityMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,15 +23,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MunicipalityMapperTest {
 
-
     private static final double START_COORDINATE_LONGITUDE = 1D;
+
     private static final double START_COORDINATE_LATITUDE = 2D;
 
     private static final java.net.URL URL;
+
     private static final double SEARCH_DISTANCE_IN_METRES = 3D;
+
     private static final String MUNICIPALITY_ID_STRING = "123";
+
     private static final String NAME = "name";
+
     private static final int MUNICIPALITY_ID = 123;
+
     private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
     static {
@@ -43,7 +52,6 @@ class MunicipalityMapperTest {
 
     @Mock
     private MunicipalityIdMapper municipalityIdMapper;
-
 
     private MunicipalityMapper municipalityMapper;
 
@@ -78,7 +86,6 @@ class MunicipalityMapperTest {
         assertEquals(DATE_LAST_CHECK, municipality.getDateLastCheck());
 
         assertEquals(point, municipality.getStartPoint());
-
 
     }
 }

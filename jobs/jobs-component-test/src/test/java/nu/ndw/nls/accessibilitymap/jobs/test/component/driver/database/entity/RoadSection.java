@@ -24,9 +24,9 @@ public class RoadSection {
 
     private long junctionIdFrom;
 
-	private long junctionIdTo;
+    private long junctionIdTo;
 
     private String roadOperatorType;
 
-	private LineString geometry;
+    private LineString geometry;
 }

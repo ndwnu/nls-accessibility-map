@@ -1,11 +1,14 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +30,14 @@ class RoadSectionTest extends ValidationTest {
 
     @Mock
     private LineString lineString;
+
+    @Mock
+    private LineString lineString1;
+
+    @Mock
+    private LineString lineString2;
+
+    private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
 
     @BeforeEach
     void setUp() {
@@ -57,6 +68,8 @@ class RoadSectionTest extends ValidationTest {
                         .longitude(3d)
                         .latitude(4d)
                         .textSigns(List.of())
+                        .networkSnappedLatitude(1D)
+                        .networkSnappedLongitude(2D)
                         .trafficSignType(TrafficSignType.C7)
                         .restrictions(Restrictions.builder().build())
                         .build()))
@@ -66,6 +79,192 @@ class RoadSectionTest extends ValidationTest {
 
         roadSectionFragment.setForwardSegment(directionalSegmentForward);
         roadSectionFragment.setBackwardSegment(directionalSegmentBackward);
+    }
+
+    @Test
+    void hasForwardSegments_whenNoSegments_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder().forwardSegment(null)
+                .build()));
+        boolean result = roadSection.hasForwardSegments();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void hasBackwardSegments_whenNoSegments_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder().backwardSegment(null)
+                .build()));
+        boolean result = roadSection.hasBackwardSegments();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isRestrictedInAnyDirection_whenNoRestrictions_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder()
+                .forwardSegment(directionalSegmentForward.withAccessible(true))
+                .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                .build()));
+
+        boolean result = roadSection.isRestrictedInAnyDirection();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isRestrictedInAnyDirection_whenRestrictionsExist_shouldReturnTrue() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder()
+                .forwardSegment(directionalSegmentForward.withAccessible(false))
+                .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                .build()));
+
+        boolean result = roadSection.isRestrictedInAnyDirection();
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isRestrictedInAnyDirection_whenRestrictionsExist_shouldReturnTrue_whenBothDirectionsAreInAccessible() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder()
+                .forwardSegment(directionalSegmentForward.withAccessible(false))
+                .backwardSegment(directionalSegmentBackward.withAccessible(false))
+                .build()));
+        boolean result = roadSection.isRestrictedInAnyDirection();
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isForwardAccessible_whenNoSegments_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder().forwardSegment(null)
+                .build()));
+        boolean result = roadSection.isForwardAccessible();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isForwardAccessible_whenOneIsInaccessible_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                        .toBuilder()
+                        .forwardSegment(directionalSegmentForward.withAccessible(true))
+                        .build(),
+                roadSectionFragment
+                        .toBuilder()
+                        .forwardSegment(directionalSegmentForward.withAccessible(false))
+                        .build()
+        ));
+        boolean result = roadSection.isForwardAccessible();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isForwardAccessible_whenAllAreAccessible_shouldReturnTrue() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                        .toBuilder()
+                        .forwardSegment(directionalSegmentForward.withAccessible(true))
+                        .build(),
+                roadSectionFragment
+                        .toBuilder()
+                        .forwardSegment(directionalSegmentForward.withAccessible(true))
+                        .build()
+        ));
+        boolean result = roadSection.isForwardAccessible();
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isBackwardAccessible_whenNoSegments_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder().backwardSegment(null)
+                .build()));
+        boolean result = roadSection.isBackwardAccessible();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isBackwardAccessible_whenOneIsInaccessible_shouldReturnFalse() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                        .toBuilder()
+                        .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                        .build(),
+                roadSectionFragment
+                        .toBuilder()
+                        .backwardSegment(directionalSegmentBackward.withAccessible(false))
+                        .build()
+        ));
+        boolean result = roadSection.isBackwardAccessible();
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void isBackwardAccessible_whenAllAreAccessible_shouldReturnTrue() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                        .toBuilder()
+                        .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                        .build(),
+                roadSectionFragment
+                        .toBuilder()
+                        .backwardSegment(directionalSegmentBackward.withAccessible(true))
+                        .build()
+        ));
+        boolean result = roadSection.isBackwardAccessible();
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void getForwardGeometries() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(
+                        roadSectionFragment.withForwardSegment(directionalSegmentForward.withLineString(lineString1)),
+                        roadSectionFragment.withForwardSegment(directionalSegmentForward.withLineString(lineString2))
+                )
+        );
+
+        List<LineString> result = roadSection.getForwardGeometries();
+        List<LineString> expected = List.of(lineString1, lineString2);
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void getForwardGeometries_noForwardSegment() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(
+                        roadSectionFragment
+                                .withForwardSegment(null)
+                                .withBackwardSegment(directionalSegmentBackward)
+                )
+        );
+
+        assertThat(catchThrowable(() -> roadSection.getForwardGeometries()))
+                .withFailMessage("No forward geometry found for road section %s".formatted(roadSection.getId()))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void getBackwardGeometries() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(
+                        roadSectionFragment.withBackwardSegment(directionalSegmentForward.withLineString(lineString1)),
+                        roadSectionFragment.withBackwardSegment(directionalSegmentForward.withLineString(lineString2))
+                )
+        );
+
+        List<LineString> result = roadSection.getBackwardGeometries();
+        List<LineString> expected = List.of(lineString1, lineString2);
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void getBackwardGeometries_noBackwardSegment() {
+        roadSection = roadSection.withRoadSectionFragments(List.of(
+                        roadSectionFragment
+                                .withForwardSegment(directionalSegmentForward)
+                                .withBackwardSegment(null)
+                )
+        );
+
+        assertThat(catchThrowable(() -> roadSection.getBackwardGeometries()))
+                .withFailMessage("No backward geometry found for road section %s".formatted(roadSection.getId()))
+                .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -100,13 +299,6 @@ class RoadSectionTest extends ValidationTest {
 
         roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment.withRoadSection(null)));
         validate(roadSection, List.of("roadSectionFragments[0].roadSection"), List.of("must not be null"));
-    }
-
-    @Test
-    void validate_roadSectionFragments_forwardSegment_null() {
-
-        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment.withForwardSegment(null)));
-        validate(roadSection, List.of("roadSectionFragments[0].forwardSegment"), List.of("must not be null"));
     }
 
     @Test
@@ -194,7 +386,7 @@ class RoadSectionTest extends ValidationTest {
                 List.of(directionalSegmentForward.getTrafficSigns().getFirst()
                         .withId(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
+        roadSectionFragment = roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 
@@ -211,7 +403,6 @@ class RoadSectionTest extends ValidationTest {
                 List.of(directionalSegmentForward.getTrafficSigns().getFirst()
                         .withExternalId(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 
@@ -227,7 +418,6 @@ class RoadSectionTest extends ValidationTest {
         directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
                 directionalSegmentForward.getTrafficSigns().getFirst().withRoadSectionId(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 
@@ -243,7 +433,6 @@ class RoadSectionTest extends ValidationTest {
         directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
                 directionalSegmentForward.getTrafficSigns().getFirst().withTrafficSignType(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 
@@ -259,7 +448,6 @@ class RoadSectionTest extends ValidationTest {
         directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
                 directionalSegmentForward.getTrafficSigns().getFirst().withLatitude(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 
@@ -275,7 +463,6 @@ class RoadSectionTest extends ValidationTest {
         directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
                 directionalSegmentForward.getTrafficSigns().getFirst().withLongitude(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 
@@ -291,7 +478,6 @@ class RoadSectionTest extends ValidationTest {
         directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
                 directionalSegmentForward.getTrafficSigns().getFirst().withDirection(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 
@@ -307,7 +493,6 @@ class RoadSectionTest extends ValidationTest {
         directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
                 directionalSegmentForward.getTrafficSigns().getFirst().withFraction(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 
@@ -323,7 +508,6 @@ class RoadSectionTest extends ValidationTest {
         directionalSegmentForward = directionalSegmentForward.withTrafficSigns(List.of(
                 directionalSegmentForward.getTrafficSigns().getFirst().withTextSigns(null))
         );
-        roadSectionFragment.withForwardSegment(directionalSegmentForward);
         roadSection = roadSection.withRoadSectionFragments(List.of(
                 roadSectionFragment.withForwardSegment(directionalSegmentForward)));
 

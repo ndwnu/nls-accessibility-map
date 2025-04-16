@@ -5,6 +5,7 @@ import io.cucumber.java.en.When;
 import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.GraphhopperJobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.TrafficSignJobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
@@ -21,6 +22,8 @@ public class DockerStepDefinitions {
     private final MapGenerationJobDriver mapGenerationJobDriver;
 
     private final TrafficSignJobDriver trafficSignJobDriver;
+
+    private final GraphhopperJobDriver graphhopperJobDriver;
 
     @Given("run container in background {word}")
     public void runContainerInBackground(String serviceName) {
@@ -51,4 +54,15 @@ public class DockerStepDefinitions {
     public void runTrafficSignAnalyser() {
         trafficSignJobDriver.runTrafficSignUpdateCacheJob();
     }
+
+    @When("run GraphhopperJob createOrUpdateNetwork is executed")
+    public void runGraphhopperJobCreateOrUpdateNetwork() {
+        graphhopperJobDriver.runGraphhopperJobCreateOrUpdateNetwork();
+    }
+
+    @When("run GraphhopperJob RabbitMQ is configured")
+    public void runGraphhopperJobConfigureRabbitMQ() {
+        graphhopperJobDriver.runGraphhopperJobConfigureRabbitMQ();
+    }
+
 }

@@ -67,3 +67,10 @@ springdoc:
 openapi:
   accessibilityMapV1:
     base-path: /v1
+
+logging:
+  level:
+    root: WARN
+    nu.ndw.nls: INFO
+    nu.ndw.nls.accessibilitymap.accessibility.services.mappers.TrafficSignSnapMapper: ERROR
+    nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer: ERROR

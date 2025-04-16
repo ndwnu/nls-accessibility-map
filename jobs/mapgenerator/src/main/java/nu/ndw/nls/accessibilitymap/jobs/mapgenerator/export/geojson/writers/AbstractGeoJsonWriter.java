@@ -4,15 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.services.accessibility.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.Exporter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.FeatureCollection;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 
 @Slf4j
 @Getter(AccessLevel.PROTECTED)
@@ -76,7 +78,8 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
         StringBuilder exportFileName = new StringBuilder();
 
         exportFileName.append(exportProperties.name().toLowerCase(Locale.US));
-        if (exportProperties.includeOnlyTimeWindowedSigns()) {
+        if (Objects.nonNull(exportProperties.accessibilityRequest().trafficSignTextSignTypes())
+                && exportProperties.accessibilityRequest().trafficSignTextSignTypes().contains(TextSignType.TIME_PERIOD)) {
             exportFileName.append("WindowTimeSegments");
         }
 

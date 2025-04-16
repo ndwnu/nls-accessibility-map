@@ -1,11 +1,10 @@
 package nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper;
 
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.shared.model.NetworkConstants;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import nu.ndw.nls.routingmapmatcher.network.model.LinkVehicleMapper;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class AccessibilityLinkCarMapper extends LinkVehicleMapper<AccessibilityLink> {

@@ -87,5 +87,4 @@ public class MultiPolygonFactory {
         return densifier.getResultGeometry();
     }
 
-
 }

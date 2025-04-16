@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import nu.ndw.nls.accessibilitymap.shared.model.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +16,7 @@ class AccessibilityLinkCarMapperTest {
 
     @Mock
     private AccessibilityLink link;
+
     @Mock
     private DirectionalDto<Boolean> accessibility;
 
