@@ -85,4 +85,4 @@ management:
 logging:
   level:
     root: WARN
-    nu.ndw.nls: INFO
+    nu.ndw.nls: ERROR
