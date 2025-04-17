@@ -47,8 +47,6 @@ class AccessibilityRequestMapperTest {
 
     private static final float DEFAULT_VEHICLE_WEIGHT = 1000.0F;
 
-    private AccessibilityRequestMapper accessibilityRequestV2Mapper;
-
     @Mock
     private TransportTypeMapper transportTypeV2Mapper;
 
@@ -58,7 +56,7 @@ class AccessibilityRequestMapperTest {
     @Mock
     private EmissionClassificationMapper emissionClassificationMapper;
 
-    private AccessibilityRequestMapper accessibilityRequestV2Mapper;
+    private AccessibilityRequestMapper accessibilityRequestMapper;
 
     @Mock
     private VehicleArguments vehicleArguments;
@@ -77,13 +75,9 @@ class AccessibilityRequestMapperTest {
 
     @BeforeEach
     void setUp() {
-        accessibilityRequestV2Mapper = new AccessibilityRequestMapper(transportTypeV2Mapper);
+        accessibilityRequestMapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassificationMapper, fuelTypeMapper);
     }
 
-    @BeforeEach
-    void setUp() {
-        accessibilityRequestV2Mapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassificationMapper, fuelTypeMapper);
-    }
 
     @Test
     void mapToAccessibilityRequest_mapsFieldsCorrectly() {
@@ -113,7 +107,8 @@ class AccessibilityRequestMapperTest {
         when(emissionClassificationMapper.mapEmissionClassification(EmissionClassJson.ONE)).thenReturn(Set.of(EmissionClassification.ONE));
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, vehicleArguments);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality,
+                vehicleArguments);
         AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest.builder()
                 .timestamp(timestamp)
                 .boundingBox(BBox.fromPoints(DEFAULT_Y_COORDINATE, DEFAULT_X_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
@@ -129,7 +124,8 @@ class AccessibilityRequestMapperTest {
                 .emissionClassifications(Set.of(EmissionClassification.ONE))
                 .fuelTypes(Set.of(FuelType.PETROL))
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
-                .build());
+                .build();
+        assertThat(accessibilityRequest).isEqualTo(expectedAccessibilityRequest);
     }
 
     @Test
@@ -160,7 +156,8 @@ class AccessibilityRequestMapperTest {
         when(fuelTypeMapper.mapFuelType(null)).thenReturn(null);
         when(emissionClassificationMapper.mapEmissionClassification(null)).thenReturn(null);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, vehicleArguments);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality,
+                vehicleArguments);
         AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest.builder()
                 .timestamp(timestamp)
                 .boundingBox(BBox.fromPoints(DEFAULT_Y_COORDINATE, DEFAULT_X_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
@@ -169,6 +166,7 @@ class AccessibilityRequestMapperTest {
                 .startLocationLatitude(DEFAULT_Y_COORDINATE)
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
-                .build());
+                .build();
+        assertThat(accessibilityRequest).isEqualTo(expectedAccessibilityRequest);
     }
 }

@@ -1,14 +1,18 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.FuelTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mockito;
 
 class FuelTypeMapperTest {
 
@@ -17,6 +21,17 @@ class FuelTypeMapperTest {
     @BeforeEach
     void setUp() {
         fuelTypeMapper = new FuelTypeMapper();
+    }
+
+    @Test
+    void mapFuelType_shouldThrowNotSupportedException() {
+        FuelTypeJson mockFuelType = Mockito.mock(FuelTypeJson.class);
+        when(mockFuelType.name()).thenReturn("unsupported fuel type");
+
+        assertThatThrownBy(() -> fuelTypeMapper.mapFuelType(mockFuelType))
+                .isExactlyInstanceOf(FuelTypeNotSupportedException.class)
+                .hasMessageContaining("Invalid fuel type: unsupported fuel type");
+
     }
 
     @Test
