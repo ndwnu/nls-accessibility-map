@@ -47,6 +47,8 @@ class AccessibilityRequestMapperTest {
 
     private static final float DEFAULT_VEHICLE_WEIGHT = 1000.0F;
 
+    private AccessibilityRequestMapper accessibilityRequestMapper;
+
     @Mock
     private TransportTypeMapper transportTypeV2Mapper;
 
@@ -55,8 +57,6 @@ class AccessibilityRequestMapperTest {
 
     @Mock
     private EmissionClassificationMapper emissionClassificationMapper;
-
-    private AccessibilityRequestMapper accessibilityRequestMapper;
 
     @Mock
     private VehicleArguments vehicleArguments;
@@ -77,7 +77,6 @@ class AccessibilityRequestMapperTest {
     void setUp() {
         accessibilityRequestMapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassificationMapper, fuelTypeMapper);
     }
-
 
     @Test
     void mapToAccessibilityRequest_mapsFieldsCorrectly() {
