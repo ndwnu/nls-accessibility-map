@@ -8,8 +8,8 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public record Restriction(
         @NotNull String id,
-        @NotNull FuelType fuelType,
-        @NotNull VehicleType vehicleType,
-        @NotNull @JsonProperty("euVehicleCategories") Set<VehicleCategory> vehicleCategories) {
+        FuelType fuelType,
+        VehicleType vehicleType,
+        @JsonProperty("euVehicleCategories") Set<VehicleCategory> vehicleCategories) {
 
 }

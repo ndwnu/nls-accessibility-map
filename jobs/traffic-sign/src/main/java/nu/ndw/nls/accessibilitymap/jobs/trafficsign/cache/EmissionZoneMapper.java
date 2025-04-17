@@ -69,9 +69,16 @@ public class EmissionZoneMapper {
                 .startTime(Objects.nonNull(exemption.startTime()) ? exemption.startTime() : OffsetDateTime.MIN)
                 .endTime(Objects.nonNull(exemption.endTime()) ? exemption.endTime() : OffsetDateTime.MIN)
                 .transportTypes(mapVehicleTypes(exemption.vehicleCategories()))
-                .vehicleWeightInKg(mapMaximumWeight(exemption.vehicleCategories(), (double) exemption.vehicleWeightInKg()))
+                .vehicleWeightInKg(mapMaximumWeight(exemption.vehicleCategories(), mapToDouble(exemption.vehicleWeightInKg())))
                 .emissionClassifications(mapEmissionClassification(exemption.euroClassifications()))
                 .build();
+    }
+
+    private Double mapToDouble(Integer value) {
+        if (Objects.isNull(value)) {
+            return null;
+        }
+        return Double.valueOf(value);
     }
 
     private Set<EmissionClassification> mapEmissionClassification(Set<EuroClassification> euroClassifications) {
@@ -112,6 +119,10 @@ public class EmissionZoneMapper {
 
     private Maximum mapMaximumWeight(Set<VehicleCategory> vehicleCategories) {
 
+        if (Objects.isNull(vehicleCategories)) {
+            return null;
+        }
+
         return vehicleCategories.stream()
                 .map(vehicleCategory ->
                         switch (vehicleCategory) {
@@ -132,7 +143,21 @@ public class EmissionZoneMapper {
 
     private Set<TransportType> mapVehicleTypes(VehicleType vehicleType, Set<VehicleCategory> vehicleCategories) {
 
-        Set<TransportType> vehicleTypes = switch (vehicleType) {
+        var vehicleTypes = mapVehicleTypes(vehicleType);
+
+        var vehicleTypesFromCategories = mapVehicleTypes(vehicleCategories);
+
+        return Stream.concat(vehicleTypes.stream(), vehicleTypesFromCategories.stream()).collect(Collectors.toSet());
+
+    }
+
+    private static Set<TransportType> mapVehicleTypes(VehicleType vehicleType) {
+
+        if (vehicleType == null) {
+            return Set.of();
+        }
+
+        return switch (vehicleType) {
             case AGRICULTURAL_VEHICLE -> Set.of(TransportType.TRACTOR);
             case ANY_VEHICLE -> Set.of(TransportType.values());
             case BICYCLE -> Set.of(TransportType.BICYCLE);
@@ -149,13 +174,12 @@ public class EmissionZoneMapper {
                  MOBILE_LANE_SIGNALING_VEHICLE -> Set.of();
             case UNKNOWN -> throw new IllegalStateException("Unknown vehicle type '%s'.".formatted(vehicleType));
         };
-
-        Set<TransportType> vehicleTypesFromCategories = mapVehicleTypes(vehicleCategories);
-
-        return Stream.concat(vehicleTypes.stream(), vehicleTypesFromCategories.stream()).collect(Collectors.toSet());
     }
 
     private Set<TransportType> mapVehicleTypes(Set<VehicleCategory> vehicleCategories) {
+        if (Objects.isNull(vehicleCategories)) {
+            return Set.of();
+        }
         return vehicleCategories.stream()
                 .map(vehicleCategory ->
                         switch (vehicleCategory) {
@@ -169,6 +193,10 @@ public class EmissionZoneMapper {
     }
 
     private Set<FuelType> mapFuelTypes(nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.FuelType fuelType) {
+
+        if (Objects.isNull(fuelType)) {
+            return Set.of();
+        }
 
         return switch (fuelType) {
             case ALL -> Set.of(FuelType.values());
