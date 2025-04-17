@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +17,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionM
 import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.AccessibilityResponseMapper;
@@ -117,6 +119,11 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Mock
     private RoadSection missingRoadSection;
+    @Mock
+    private ClockService clockService;
+
+    @Mock
+    private OffsetDateTime timestamp;
 
     private Collection<RoadSection> roadsSectionsWithoutAppliedRestrictions;
 
@@ -135,7 +142,9 @@ class AccessibilityMapApiDelegateImplTest {
                 roadSectionFeatureCollectionMapper,
                 municipalityService,
                 accessibilityRequestMapper,
-                accessibilityService, missingRoadSectionProvider);
+                accessibilityService,
+                missingRoadSectionProvider,
+                clockService);
     }
 
     @ParameterizedTest
@@ -147,9 +156,12 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections() {
+
         setUpFixture();
+
         when(accessibilityResponseMapper.map(accessibility, REQUESTED_ROAD_SECTION_ID))
                 .thenReturn(accessibilityMapResponseJson);
+
         ResponseEntity<AccessibilityMapResponseJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(
                 MUNICIPALITY_ID,
                 VehicleTypeJson.CAR,
@@ -172,10 +184,13 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections() {
+
         setUpFixture();
+
         when(roadSectionFeatureCollectionMapper
                 .map(accessibility, true, candidateMatch, true))
                 .thenReturn(roadSectionFeatureCollectionJson);
+
         ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
                 MUNICIPALITY_ID,
                 VehicleTypeJson.CAR,
@@ -198,6 +213,7 @@ class AccessibilityMapApiDelegateImplTest {
 
     private void setUpFixture() {
 
+        when(clockService.now()).thenReturn(timestamp);
         when(accessibilityService.calculateAccessibility(eq(accessibilityRequest), any(AccessibleRoadSectionModifier.class)))
                 .thenAnswer(invocationOnMock -> {
                     invocationOnMock.getArgument(1, AccessibleRoadSectionModifier.class).modify(
@@ -210,7 +226,7 @@ class AccessibilityMapApiDelegateImplTest {
                 .thenReturn(List.of(missingRoadSection));
         when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
-        when(accessibilityRequestMapper.mapToAccessibilityRequest(municipality, VehicleArguments.builder()
+        when(accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, VehicleArguments.builder()
                 .vehicleType(VehicleTypeJson.CAR)
                 .vehicleHeight(VEHICLE_HEIGHT)
                 .vehicleLength(VEHICLE_LENGTH)
@@ -220,6 +236,7 @@ class AccessibilityMapApiDelegateImplTest {
                 .vehicleHasTrailer(false)
                 .build()))
                 .thenReturn(accessibilityRequest);
+
         when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
         when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
         when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);

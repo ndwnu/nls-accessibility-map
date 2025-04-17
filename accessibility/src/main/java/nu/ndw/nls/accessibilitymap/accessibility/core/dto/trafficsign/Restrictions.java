@@ -39,6 +39,13 @@ public record Restrictions(
     private List<Predicate<AccessibilityRequest>> getActiveRestrictions(AccessibilityRequest accessibilityRequest) {
         List<Predicate<AccessibilityRequest>> activeRestrictions = new ArrayList<>();
 
+        if (Objects.nonNull(emissionZone)
+                && emissionZone.isActive(accessibilityRequest.timestamp())
+                && Objects.nonNull(accessibilityRequest.fuelTypes())
+                && Objects.nonNull(accessibilityRequest.emissionClassifications())) {
+            activeRestrictions.add(buildEmissionRestriction());
+        }
+
         if (Objects.nonNull(transportTypes) && Objects.nonNull(accessibilityRequest.transportTypes())) {
             activeRestrictions.add(containsTransportType());
         }
@@ -64,6 +71,13 @@ public record Restrictions(
         }
 
         return activeRestrictions;
+    }
+
+    private Predicate<AccessibilityRequest> buildEmissionRestriction() {
+        return accessibilityRequest -> {
+            //TODO Implement this.
+            return false;
+        };
     }
 
     private Predicate<AccessibilityRequest> isExceedingVehicleLength() {

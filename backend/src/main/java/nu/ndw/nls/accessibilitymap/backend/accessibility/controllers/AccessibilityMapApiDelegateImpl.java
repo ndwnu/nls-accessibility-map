@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionM
 import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.AccessibilityResponseMapper;
@@ -54,6 +55,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private final MissingRoadSectionProvider missingRoadSectionProvider;
 
+    private final ClockService clockService;
+
     @Override
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
@@ -73,7 +76,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHasTrailer, emissionClass, fuelType);
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, requestArguments);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(clockService.now(), municipality, requestArguments);
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 accessibilityRequest,
@@ -111,7 +114,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHasTrailer, emissionClass, fuelType);
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, requestArguments);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(clockService.now(), municipality, requestArguments);
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 accessibilityRequest,
                 addMissingRoadSectionsForMunicipality(municipality));

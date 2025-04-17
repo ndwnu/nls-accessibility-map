@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
@@ -22,6 +23,7 @@ class AccessibilityRequestTest extends ValidationTest {
     void setUp() {
 
         accessibilityRequest = AccessibilityRequest.builder()
+                .timestamp(OffsetDateTime.now())
                 .searchRadiusInMeters(1d)
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
@@ -32,6 +34,13 @@ class AccessibilityRequestTest extends ValidationTest {
     void validate() {
 
         validate(accessibilityRequest, List.of(), List.of());
+    }
+
+    @Test
+    void validate_timestamp_null() {
+
+        accessibilityRequest = accessibilityRequest.withTimestamp(null);
+        validate(accessibilityRequest, List.of("timestamp"), List.of("must not be null"));
     }
 
     @Test

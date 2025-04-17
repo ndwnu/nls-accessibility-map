@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @FeignClient(
         value = "EmissionZoneClient",
-        url = "${nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission-zone.client.url}",
+        url = "${nu.ndw.nls.accessibilitymap.trafficsigns.emission-zone.client.url}",
         configuration = EmissionZoneFeignClientConfiguration.class)
 @Retry(name = "emissionZone")
 @Validated

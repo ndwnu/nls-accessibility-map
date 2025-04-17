@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.services.dto;
 
 import com.graphhopper.util.shapes.BBox;
 import jakarta.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
 import lombok.Builder;
@@ -18,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 @With
 @Validated
 public record AccessibilityRequest(
+        @NotNull OffsetDateTime timestamp,
         BBox boundingBox,
         Integer municipalityId,
         @NotNull Double searchRadiusInMeters,

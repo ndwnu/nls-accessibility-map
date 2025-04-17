@@ -28,10 +28,11 @@ public class DataTypeRegister {
                 .startNodeId(Integer.parseInt(entry.get("startNodeId")))
                 .endNodeId(Integer.parseInt(entry.get("endNodeId")))
                 .fraction(Double.parseDouble(entry.get("fraction")))
-                .rvvCode(entry.get("rvvCode").toUpperCase(Locale.US))
+                .rvvCode(entry.get("rvvCode"))
                 .blackCode(Objects.isNull(entry.get("blackCode")) ? null : entry.get("blackCode").toUpperCase(Locale.US))
                 .directionType(DirectionType.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(entry.get("windowTime"))
+                .emissionZoneId(entry.get("emissionZoneId"))
                 .build();
     }
 

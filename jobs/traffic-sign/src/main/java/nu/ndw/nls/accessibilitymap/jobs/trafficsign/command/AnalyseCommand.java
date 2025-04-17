@@ -59,6 +59,7 @@ public class AnalyseCommand implements Callable<Integer> {
                 AnalyseProperties analyseProperties = AnalyseProperties.builder()
                         .startTime(startTime)
                         .accessibilityRequest(AccessibilityRequest.builder()
+                                .timestamp(startTime)
                                 .trafficSignTypes(trafficSignTypes)
                                 .startLocationLatitude(analyserConfiguration.startLocationLatitude())
                                 .startLocationLongitude(analyserConfiguration.startLocationLongitude())

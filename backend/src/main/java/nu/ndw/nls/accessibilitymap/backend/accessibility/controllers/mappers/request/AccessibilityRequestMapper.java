@@ -1,6 +1,8 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request;
 
 import com.graphhopper.util.shapes.BBox;
+import jakarta.validation.Valid;
+import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
@@ -15,10 +17,11 @@ public class AccessibilityRequestMapper {
     private final EmissionClassificationMapper emissionClassificationMapper;
     private final FuelTypeMapper fuelTypeMapper;
 
-    public AccessibilityRequest mapToAccessibilityRequest(Municipality municipality, VehicleArguments vehicleArguments) {
+    @Valid
+    public AccessibilityRequest mapToAccessibilityRequest(OffsetDateTime timestamp, Municipality municipality, VehicleArguments vehicleArguments) {
 
-        return AccessibilityRequest
-                .builder()
+        return AccessibilityRequest.builder()
+                .timestamp(timestamp)
                 .municipalityId(municipality.getMunicipalityIdInteger())
                 .boundingBox(BBox.fromPoints(
                         municipality.getBounds().latitudeFrom(),
