@@ -19,7 +19,11 @@ public class TrafficSignRestrictionsBuilder {
 
     private final Map<TrafficSignType, Function<TrafficSign, Restrictions>> dynamicTrafficSigns;
 
-    public TrafficSignRestrictionsBuilder() {
+    private final EmissionZoneMapper emissionZoneMapper;
+
+    public TrafficSignRestrictionsBuilder(EmissionZoneMapper emissionZoneMapper) {
+
+        this.emissionZoneMapper = emissionZoneMapper;
 
         nonDynamicTrafficSigns = new EnumMap<>(TrafficSignType.class);
         nonDynamicTrafficSigns.put(TrafficSignType.C1, buildC1Restrictions());
@@ -221,7 +225,7 @@ public class TrafficSignRestrictionsBuilder {
     private Function<TrafficSign, Restrictions> buildEmissionZoneRestrictions() {
 
         return trafficSign -> Restrictions.builder()
-                //TODO map emissions
+                .emissionZone(emissionZoneMapper.map(trafficSign.trafficSignOrderUrl().toString()))
                 .build();
     }
 }
