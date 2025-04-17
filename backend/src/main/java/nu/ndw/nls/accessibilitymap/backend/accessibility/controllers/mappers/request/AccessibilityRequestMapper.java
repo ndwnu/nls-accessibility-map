@@ -14,11 +14,16 @@ import org.springframework.stereotype.Component;
 public class AccessibilityRequestMapper {
 
     private final TransportTypeMapper transportTypeMapper;
+
     private final EmissionClassificationMapper emissionClassificationMapper;
+
     private final FuelTypeMapper fuelTypeMapper;
 
     @Valid
-    public AccessibilityRequest mapToAccessibilityRequest(OffsetDateTime timestamp, Municipality municipality, VehicleArguments vehicleArguments) {
+    public AccessibilityRequest mapToAccessibilityRequest(
+            OffsetDateTime timestamp,
+            Municipality municipality,
+            VehicleArguments vehicleArguments) {
 
         return AccessibilityRequest.builder()
                 .timestamp(timestamp)
@@ -42,7 +47,6 @@ public class AccessibilityRequestMapper {
                 .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))
                 .build();
     }
-
 
     private static Double mapToDouble(Float value) {
         return value != null ? Double.valueOf(value) : null;

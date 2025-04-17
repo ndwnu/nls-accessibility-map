@@ -70,6 +70,7 @@ class AccessibilityMapApiDelegateImpTest {
     private static final double REQUESTED_LATITUDE = 222;
 
     private static final int MUNICIPALITY_ID_INTEGER = 123;
+
     private static final String ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE = "If one of the environmental zone parameters is set, the other must be set as well.";
 
     @Mock
@@ -124,6 +125,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     @Mock
     private RoadSection missingRoadSection;
+
     @Mock
     private ClockService clockService;
 
