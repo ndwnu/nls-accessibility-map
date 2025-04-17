@@ -107,9 +107,10 @@ class AccessibilityRequestMapperTest {
         when(emissionClassificationMapper.mapEmissionClassification(EmissionClassJson.ONE)).thenReturn(Set.of(EmissionClassification.ONE));
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality,
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality,
                 vehicleArguments);
-        AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest.builder()
+
+        assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
                 .boundingBox(BBox.fromPoints(DEFAULT_Y_COORDINATE, DEFAULT_X_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
                 .transportTypes(Set.of(TransportType.CAR))
@@ -124,8 +125,7 @@ class AccessibilityRequestMapperTest {
                 .emissionClassifications(Set.of(EmissionClassification.ONE))
                 .fuelTypes(Set.of(FuelType.PETROL))
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
-                .build();
-        assertThat(accessibilityRequest).isEqualTo(expectedAccessibilityRequest);
+                .build());
     }
 
     @Test
@@ -156,9 +156,10 @@ class AccessibilityRequestMapperTest {
         when(fuelTypeMapper.mapFuelType(null)).thenReturn(null);
         when(emissionClassificationMapper.mapEmissionClassification(null)).thenReturn(null);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality,
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality,
                 vehicleArguments);
-        AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest.builder()
+
+        assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
                 .boundingBox(BBox.fromPoints(DEFAULT_Y_COORDINATE, DEFAULT_X_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
                 .transportTypes(Set.of(TransportType.CAR))
@@ -166,7 +167,6 @@ class AccessibilityRequestMapperTest {
                 .startLocationLatitude(DEFAULT_Y_COORDINATE)
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
-                .build();
-        assertThat(accessibilityRequest).isEqualTo(expectedAccessibilityRequest);
+                .build());
     }
 }
