@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.Set;
 import lombok.Builder;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClassification;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 public record EmissionZoneExemption(
         @NotNull OffsetDateTime startTime,
         @NotNull OffsetDateTime endTime,
-        @NotEmpty Set<EmissionClassification> emissionClassifications,
+        @NotEmpty Set<EmissionClass> emissionClasses,
         @NotEmpty Set<TransportType> transportTypes,
         @NotNull Maximum vehicleWeightInKg) {
 
