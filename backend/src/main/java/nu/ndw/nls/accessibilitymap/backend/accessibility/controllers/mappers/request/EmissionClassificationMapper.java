@@ -21,6 +21,5 @@ public class EmissionClassificationMapper {
                     .orElseThrow(() -> new EmissionClassNotSupportedException("Invalid emission classification type: %s"
                             .formatted(emissionClassJson.name())));
         }
-
     }
 }
