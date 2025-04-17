@@ -36,11 +36,7 @@ class EmissionClassMapperTest {
 
     @Test
     void mapFuelType_shouldReturnNullWhenMappingNullFuelTypeJson() {
-
-        EmissionClassJson nullEmissionClassJson = null;
-
-        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClassification(nullEmissionClassJson);
-
+        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClassification(null);
         assertThat(result).isNull();
     }
 
@@ -50,9 +46,6 @@ class EmissionClassMapperTest {
 
         Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClassification(emissionClassJson);
 
-        assertThat(result)
-                .isNotNull()
-                .hasSize(1)
-                .contains(EmissionClass.valueOf(emissionClassJson.name()));
+        assertThat(result).containsExactly((EmissionClass.valueOf(emissionClassJson.name())));
     }
 }
