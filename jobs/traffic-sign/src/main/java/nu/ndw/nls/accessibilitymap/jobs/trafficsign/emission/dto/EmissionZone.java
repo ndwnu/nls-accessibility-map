@@ -16,4 +16,7 @@ public record EmissionZone(
         @NotNull @JsonProperty("euVehicleCategoryAndEmissionClassificationRestrictionExemptions") List<Exemption> exemptions,
         @NotNull @JsonProperty("genericVehicleRestriction") Restriction restriction) {
 
+    public boolean isActive() {
+        return status == EmissionZoneStatus.ACTIVE;
+    }
 }

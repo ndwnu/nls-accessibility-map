@@ -15,4 +15,8 @@ public record EmissionZone(
         @NotNull @Valid Set<EmissionZoneExemption> exemptions,
         @NotNull @Valid EmissionZoneRestriction restriction) {
 
+    public boolean isActive(OffsetDateTime time) {
+        return (startTime.isEqual(time) || startTime.isAfter(time))
+                && (endTime.isEqual(time) || endTime.isBefore(time));
+    }
 }
