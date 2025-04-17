@@ -19,4 +19,8 @@ public record EmissionZoneExemption(
         @NotEmpty Set<TransportType> transportTypes,
         @NotNull Maximum vehicleWeightInKg) {
 
+    public boolean isActive(OffsetDateTime time) {
+        return (startTime.isEqual(time) || startTime.isAfter(time))
+                && (endTime.isEqual(time) || endTime.isBefore(time));
+    }
 }

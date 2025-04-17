@@ -80,7 +80,7 @@ class TrafficSignCacheReadWriterTest {
                         .text("signText")
                         .build()))
                 .iconUri(URI.create("http://some.uri/icon.png"))
-                .trafficSignOrderUrl(URI.create("http://some.uri/order.html"))
+                .emissionZoneId("emissionZoneId1")
                 .latitude(1.1)
                 .longitude(2.2)
                 .direction(Direction.FORWARD)
