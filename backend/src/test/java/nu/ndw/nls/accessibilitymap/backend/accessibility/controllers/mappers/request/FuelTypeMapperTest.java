@@ -36,9 +36,8 @@ class FuelTypeMapperTest {
 
     @Test
     void mapFuelType_shouldReturnNullWhenMappingNullFuelTypeJson() {
-        FuelTypeJson nullFuelTypeJson = null;
 
-        Set<FuelType> result = fuelTypeMapper.mapFuelType(nullFuelTypeJson);
+        Set<FuelType> result = fuelTypeMapper.mapFuelType(null);
 
         assertThat(result).isNull();
     }
@@ -49,10 +48,7 @@ class FuelTypeMapperTest {
 
         Set<FuelType> result = fuelTypeMapper.mapFuelType(fuelTypeJson);
 
-        assertThat(result)
-                .isNotNull()
-                .hasSize(1)
-                .contains(FuelType.valueOf(fuelTypeJson.name()));
+        assertThat(result).containsExactly((FuelType.valueOf(fuelTypeJson.name())));
     }
 
 }
