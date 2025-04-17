@@ -225,7 +225,7 @@ public class TrafficSignRestrictionsBuilder {
     private Function<TrafficSign, Restrictions> buildEmissionZoneRestrictions() {
 
         return trafficSign -> Restrictions.builder()
-                .emissionZone(emissionZoneMapper.map(trafficSign.trafficSignOrderUrl().toString()))
+                .emissionZone(emissionZoneMapper.map(trafficSign.emissionZoneId()))
                 .build();
     }
 }

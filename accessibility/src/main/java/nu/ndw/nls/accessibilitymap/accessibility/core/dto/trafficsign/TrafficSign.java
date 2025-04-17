@@ -28,7 +28,7 @@ public record TrafficSign(
         Double blackCode,
         @NotNull List<TextSign> textSigns,
         ZoneCodeType zoneCodeType,
-        URI trafficSignOrderUrl,
+        String emissionZoneId,
         @NotNull Restrictions restrictions) {
 
     public boolean hasTimeWindowedSign() {
