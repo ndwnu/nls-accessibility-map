@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.emission.EmissionZoneDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.trafficsign.TrafficSignDriver;
@@ -28,15 +29,18 @@ public class TrafficSignStepDefinitions {
 
     private final TrafficSignDriver trafficSignDriver;
 
+    private final EmissionZoneDriver emissionZoneDriver;
+
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Given("with traffic signs")
     public void trafficSigns(List<TrafficSign> trafficSigns) {
+
         trafficSignDriver.stubTrafficSignRequest(
                 trafficSigns.stream()
                         .map(this::createTrafficSignGeoJsonDto)
-                        .toList()
-        );
+                        .toList());
+        emissionZoneDriver.stubEmissionZone();
     }
 
     private TrafficSignGeoJsonDto createTrafficSignGeoJsonDto(TrafficSign trafficSign) {
@@ -62,6 +66,7 @@ public class TrafficSignStepDefinitions {
                         .rvvCode(trafficSign.rvvCode())
                         .drivingDirection(trafficSign.directionType())
                         .roadSectionId(link.getAccessibilityLink().getId())
+                        .trafficOrderUrl(trafficSign.emissionZoneId())
                         .textSigns(List.of(
                                 TextSign.builder()
                                         .type(TextSignType.TIME_PERIOD)
