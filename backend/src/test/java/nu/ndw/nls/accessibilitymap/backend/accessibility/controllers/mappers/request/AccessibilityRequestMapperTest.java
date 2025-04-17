@@ -107,8 +107,7 @@ class AccessibilityRequestMapperTest {
         when(emissionClassificationMapper.mapEmissionClassification(EmissionClassJson.ONE)).thenReturn(Set.of(EmissionClassification.ONE));
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
 
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality,
-                vehicleArguments);
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
@@ -156,8 +155,7 @@ class AccessibilityRequestMapperTest {
         when(fuelTypeMapper.mapFuelType(null)).thenReturn(null);
         when(emissionClassificationMapper.mapEmissionClassification(null)).thenReturn(null);
 
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality,
-                vehicleArguments);
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
