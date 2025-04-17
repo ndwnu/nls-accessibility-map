@@ -34,6 +34,7 @@ public class EmissionZoneMapper {
     public EmissionZone map(String emissionZoneId) {
 
         return emissionService.findById(emissionZoneId)
+                .filter(nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EmissionZone::isActive)
                 .map(emissionZone -> {
                     try {
                         return EmissionZone.builder()

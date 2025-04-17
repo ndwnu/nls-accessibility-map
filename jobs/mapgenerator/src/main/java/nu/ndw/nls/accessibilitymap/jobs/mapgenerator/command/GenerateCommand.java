@@ -76,6 +76,7 @@ public class GenerateCommand implements Callable<Integer> {
                     .name(exportName)
                     .exportTypes(exportTypes)
                     .accessibilityRequest(AccessibilityRequest.builder()
+                            .timestamp(startTime)
                             .trafficSignTypes(trafficSignTypes)
                             .startLocationLatitude(generateConfiguration.startLocationLatitude())
                             .startLocationLongitude(generateConfiguration.startLocationLongitude())

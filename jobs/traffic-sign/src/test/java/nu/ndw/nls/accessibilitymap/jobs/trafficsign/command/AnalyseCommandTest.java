@@ -14,6 +14,7 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.command.dto.AnalyseProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.configuration.AnalyserConfiguration;
@@ -87,10 +88,14 @@ class AnalyseCommandTest {
 
         AnalyseProperties analyseProperties = analysePropertiesCaptor.getValue();
         assertThat(analyseProperties.startTime()).isEqualTo(startTime);
-        assertThat(analyseProperties.accessibilityRequest().startLocationLatitude()).isEqualTo(2d);
-        assertThat(analyseProperties.accessibilityRequest().startLocationLongitude()).isEqualTo(3d);
-        assertThat(analyseProperties.accessibilityRequest().trafficSignTypes()).isEqualTo(Set.of(trafficSignType));
-        assertThat(analyseProperties.accessibilityRequest().searchRadiusInMeters()).isEqualTo(4d);
+
+        assertThat(analyseProperties.accessibilityRequest()).isEqualTo(AccessibilityRequest.builder()
+                .timestamp(startTime)
+                .startLocationLatitude(2d)
+                .startLocationLongitude(3d)
+                .trafficSignTypes(Set.of(trafficSignType))
+                .searchRadiusInMeters(4d)
+                .build());
         assertThat(analyseProperties.nwbVersion()).isEqualTo(123);
         assertThat(analyseProperties.reportIssues()).isTrue();
 
