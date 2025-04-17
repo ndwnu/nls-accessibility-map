@@ -24,6 +24,8 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.res
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.validators.PointValidator;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.service.PointMatchService;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
@@ -32,6 +34,8 @@ import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.Candidate
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.locationtech.jts.geom.Point;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -134,6 +138,13 @@ class AccessibilityMapApiDelegateImplTest {
                 accessibilityService, missingRoadSectionProvider);
     }
 
+    @ParameterizedTest
+    @MethodSource("provideEmissionZoneParameters")
+    void getInaccessibleRoadSections_shouldThrowIncompleteArgumentsException(EmissionClassJson emissionClassJson,
+            FuelTypeJson fuelTypeJson) {
+
+    }
+
     @Test
     void getInaccessibleRoadSections() {
         setUpFixture();
@@ -147,8 +158,8 @@ class AccessibilityMapApiDelegateImplTest {
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
                 VEHICLE_AXLE_LOAD,
-                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, null,
-                null);
+                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, EmissionClassJson.FIVE,
+                FuelTypeJson.PETROL);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(accessibilityMapResponseJson);
@@ -173,8 +184,8 @@ class AccessibilityMapApiDelegateImplTest {
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
                 VEHICLE_AXLE_LOAD,
-                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, null,
-                null);
+                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, EmissionClassJson.FIVE,
+                FuelTypeJson.PETROL);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);

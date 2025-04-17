@@ -20,6 +20,5 @@ public class FuelTypeMapper {
                     .map(Set::of)
                     .orElseThrow(() -> new FuelTypeNotSupportedException("Invalid fuel type: %s".formatted(fuelTypeJson.name())));
         }
-
     }
 }

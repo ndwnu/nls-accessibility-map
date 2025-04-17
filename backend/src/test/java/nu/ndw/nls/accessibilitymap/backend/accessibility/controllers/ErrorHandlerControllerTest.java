@@ -8,6 +8,8 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import java.util.Set;
 import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.EmissionClassNotSupportedException;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.FuelTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
@@ -141,7 +143,10 @@ class ErrorHandlerControllerTest {
         return Stream.of(
                 Arguments.of(new VehicleTypeNotSupportedException("VehicleTypeNotSupportedException"), "VehicleTypeNotSupportedException"),
                 Arguments.of(new VehicleWeightRequiredException("VehicleWeightRequiredException"), "VehicleWeightRequiredException"),
-                Arguments.of(new IncompleteArgumentsException("IncompleteArgumentsException"), "IncompleteArgumentsException")
+                Arguments.of(new IncompleteArgumentsException("IncompleteArgumentsException"), "IncompleteArgumentsException"),
+                Arguments.of(new FuelTypeNotSupportedException("FuelTypeNotSupportedException"), "FuelTypeNotSupportedException"),
+                Arguments.of(new EmissionClassNotSupportedException("EmissionClassNotSupportedException"),
+                        "EmissionClassNotSupportedException")
 
         );
     }
