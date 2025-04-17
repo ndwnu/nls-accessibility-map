@@ -7,6 +7,8 @@ import jakarta.validation.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.EmissionClassNotSupportedException;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.FuelTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.ResourceNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
@@ -45,7 +47,7 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
      * Bad request handler for domain exceptions
      */
     @ExceptionHandler({VehicleTypeNotSupportedException.class, VehicleWeightRequiredException.class,
-            IncompleteArgumentsException.class})
+            IncompleteArgumentsException.class, FuelTypeNotSupportedException.class, EmissionClassNotSupportedException.class})
     public ResponseEntity<APIErrorJson> handleBadRequestException(RuntimeException exception) {
         APIErrorJson restError = new APIErrorJson()
                 .message(exception.getMessage());
