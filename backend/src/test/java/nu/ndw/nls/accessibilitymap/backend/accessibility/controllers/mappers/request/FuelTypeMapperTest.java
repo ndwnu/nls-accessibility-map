@@ -1,0 +1,43 @@
+package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+class FuelTypeMapperTest {
+
+    private FuelTypeMapper fuelTypeMapper = new FuelTypeMapper();
+
+    @BeforeEach
+    void setUp() {
+        fuelTypeMapper = new FuelTypeMapper();
+    }
+
+    @Test
+    void mapFuelType_shouldReturnNullWhenMappingNullFuelTypeJson() {
+        FuelTypeJson nullFuelTypeJson = null;
+
+        Set<FuelType> result = fuelTypeMapper.mapFuelType(nullFuelTypeJson);
+
+        assertThat(result).isNull();
+    }
+
+    @ParameterizedTest
+    @EnumSource(FuelTypeJson.class)
+    void mapFuelType_AllSupportedFuelTypeJsonValues(FuelTypeJson fuelTypeJson) {
+
+        Set<FuelType> result = fuelTypeMapper.mapFuelType(fuelTypeJson);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(1)
+                .contains(FuelType.valueOf(fuelTypeJson.name()));
+    }
+
+}

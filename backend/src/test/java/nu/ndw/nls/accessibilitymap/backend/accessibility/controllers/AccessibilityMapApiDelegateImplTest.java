@@ -147,7 +147,8 @@ class AccessibilityMapApiDelegateImplTest {
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
                 VEHICLE_AXLE_LOAD,
-                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
+                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, null,
+                null);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(accessibilityMapResponseJson);
@@ -172,7 +173,8 @@ class AccessibilityMapApiDelegateImplTest {
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
                 VEHICLE_AXLE_LOAD,
-                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
+                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, null,
+                null);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);

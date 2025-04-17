@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 public class AccessibilityRequestMapper {
 
     private final TransportTypeMapper transportTypeMapper;
+    private final EmissionClassificationMapper emissionClassificationMapper;
+    private final FuelTypeMapper fuelTypeMapper;
 
     public AccessibilityRequest mapToAccessibilityRequest(Municipality municipality, VehicleArguments vehicleArguments) {
 
@@ -32,9 +34,12 @@ public class AccessibilityRequestMapper {
                 .vehicleLengthInCm(mapToDouble(vehicleArguments.vehicleLength()))
                 .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth()))
                 .vehicleWeightInKg(mapToDouble(vehicleArguments.vehicleWeight()))
+                .fuelTypes(fuelTypeMapper.mapFuelType(vehicleArguments.fuelType()))
+                .emissionClassifications(emissionClassificationMapper.mapEmissionClassification(vehicleArguments.emissionClass()))
                 .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))
                 .build();
     }
+
 
     private static Double mapToDouble(Float value) {
         return value != null ? Double.valueOf(value) : null;
