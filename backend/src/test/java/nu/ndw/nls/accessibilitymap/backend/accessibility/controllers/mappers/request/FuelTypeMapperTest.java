@@ -31,7 +31,6 @@ class FuelTypeMapperTest {
         assertThatThrownBy(() -> fuelTypeMapper.mapFuelType(mockFuelType))
                 .isExactlyInstanceOf(FuelTypeNotSupportedException.class)
                 .hasMessageContaining("Invalid fuel type: unsupported fuel type");
-
     }
 
     @Test
@@ -50,5 +49,4 @@ class FuelTypeMapperTest {
 
         assertThat(result).containsExactly((FuelType.valueOf(fuelTypeJson.name())));
     }
-
 }
