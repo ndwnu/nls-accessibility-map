@@ -25,13 +25,13 @@ class EmissionClassificationMapperTest {
 
     @Test
     void mapEmissionClassification_shouldThrowNotSupportedException() {
+
         EmissionClassJson mockEmissionClass = Mockito.mock(EmissionClassJson.class);
         when(mockEmissionClass.name()).thenReturn("unsupported emission type");
 
         assertThatThrownBy(() -> emissionClassificationMapper.mapEmissionClassification(mockEmissionClass))
                 .isExactlyInstanceOf(EmissionClassNotSupportedException.class)
                 .hasMessageContaining("Invalid emission classification type: unsupported emission type");
-
     }
 
     @Test
@@ -43,8 +43,9 @@ class EmissionClassificationMapperTest {
     @ParameterizedTest
     @EnumSource(EmissionClassJson.class)
     void mapFuelType_AllSupportedFuelTypeJsonValues(EmissionClassJson emissionClassJson) {
+
         Set<EmissionClassification> result = emissionClassificationMapper.mapEmissionClassification(emissionClassJson);
+
         assertThat(result).containsExactly((EmissionClassification.valueOf(emissionClassJson.name())));
     }
-
 }
