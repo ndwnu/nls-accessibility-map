@@ -5,15 +5,19 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.shapes.BBox;
 import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClassification;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.MunicipalityBoundingBox;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.locationtech.jts.geom.Point;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -45,7 +49,12 @@ class AccessibilityRequestMapperTest {
     @Mock
     private TransportTypeMapper transportTypeV2Mapper;
 
-    @InjectMocks
+    @Mock
+    private FuelTypeMapper fuelTypeMapper;
+
+    @Mock
+    private EmissionClassificationMapper emissionClassificationMapper;
+
     private AccessibilityRequestMapper accessibilityRequestV2Mapper;
 
     @Mock
@@ -60,6 +69,11 @@ class AccessibilityRequestMapperTest {
     @Mock
     private MunicipalityBoundingBox municipalityBoundingBox;
 
+    @BeforeEach
+    void setUp() {
+        accessibilityRequestV2Mapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassificationMapper, fuelTypeMapper);
+    }
+
     @Test
     void mapToAccessibilityRequest_mapsFieldsCorrectly() {
         when(vehicleArguments.vehicleAxleLoad()).thenReturn(DEFAULT_VEHICLE_AXLE_LOAD);
@@ -67,17 +81,26 @@ class AccessibilityRequestMapperTest {
         when(vehicleArguments.vehicleLength()).thenReturn(DEFAULT_VEHICLE_LENGTH);
         when(vehicleArguments.vehicleWidth()).thenReturn(DEFAULT_VEHICLE_WIDTH);
         when(vehicleArguments.vehicleWeight()).thenReturn(DEFAULT_VEHICLE_WEIGHT);
+        when(vehicleArguments.emissionClass()).thenReturn(EmissionClassJson.ONE);
+        when(vehicleArguments.fuelType()).thenReturn(FuelTypeJson.PETROL);
+
         when(municipality.getMunicipalityIdInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
         when(municipality.getSearchDistanceInMetres()).thenReturn(DEFAULT_SEARCH_DISTANCE);
         when(municipality.getStartPoint()).thenReturn(point);
         when(municipality.getBounds()).thenReturn(municipalityBoundingBox);
+
         when(point.getX()).thenReturn(DEFAULT_X_COORDINATE);
         when(point.getY()).thenReturn(DEFAULT_Y_COORDINATE);
+
         when(municipalityBoundingBox.longitudeFrom()).thenReturn(DEFAULT_X_COORDINATE);
         when(municipalityBoundingBox.latitudeFrom()).thenReturn(DEFAULT_Y_COORDINATE);
         when(municipalityBoundingBox.longitudeTo()).thenReturn(MAX_LONGITUDE);
         when(municipalityBoundingBox.latitudeTo()).thenReturn(MAX_LATITUDE);
+
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
+        when(emissionClassificationMapper.mapEmissionClassification(EmissionClassJson.ONE)).thenReturn(Set.of(EmissionClassification.ONE));
+        when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
+
         AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, vehicleArguments);
         AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest.builder()
                 .boundingBox(BBox.fromPoints(DEFAULT_Y_COORDINATE, DEFAULT_X_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
@@ -90,6 +113,8 @@ class AccessibilityRequestMapperTest {
                 .startLocationLongitude(DEFAULT_X_COORDINATE)
                 .startLocationLatitude(DEFAULT_Y_COORDINATE)
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
+                .emissionClassifications(Set.of(EmissionClassification.ONE))
+                .fuelTypes(Set.of(FuelType.PETROL))
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
                 .build();
 
@@ -104,17 +129,26 @@ class AccessibilityRequestMapperTest {
         when(vehicleArguments.vehicleLength()).thenReturn(null);
         when(vehicleArguments.vehicleWidth()).thenReturn(null);
         when(vehicleArguments.vehicleWeight()).thenReturn(null);
+        when(vehicleArguments.emissionClass()).thenReturn(null);
+        when(vehicleArguments.fuelType()).thenReturn(null);
+
         when(municipality.getMunicipalityIdInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
         when(municipality.getSearchDistanceInMetres()).thenReturn(DEFAULT_SEARCH_DISTANCE);
         when(municipality.getStartPoint()).thenReturn(point);
         when(municipality.getBounds()).thenReturn(municipalityBoundingBox);
+
         when(point.getX()).thenReturn(DEFAULT_X_COORDINATE);
         when(point.getY()).thenReturn(DEFAULT_Y_COORDINATE);
+
         when(municipalityBoundingBox.longitudeFrom()).thenReturn(DEFAULT_X_COORDINATE);
         when(municipalityBoundingBox.latitudeFrom()).thenReturn(DEFAULT_Y_COORDINATE);
         when(municipalityBoundingBox.longitudeTo()).thenReturn(MAX_LONGITUDE);
         when(municipalityBoundingBox.latitudeTo()).thenReturn(MAX_LATITUDE);
+
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
+        when(fuelTypeMapper.mapFuelType(null)).thenReturn(null);
+        when(emissionClassificationMapper.mapEmissionClassification(null)).thenReturn(null);
+
         AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, vehicleArguments);
         AccessibilityRequest expectedAccessibilityRequest = AccessibilityRequest.builder()
                 .boundingBox(BBox.fromPoints(DEFAULT_Y_COORDINATE, DEFAULT_X_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))

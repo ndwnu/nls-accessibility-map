@@ -26,6 +26,8 @@ paths:
         - $ref: '#/components/parameters/VehicleHasTrailerParam'
         - $ref: '#/components/parameters/LatitudeParam'
         - $ref: '#/components/parameters/LongitudeParam'
+        - $ref: '#/components/parameters/EmissionClassParam'
+        - $ref: '#/components/parameters/FuelTypeParam'
       responses:
         '200':
           description: OK
@@ -70,6 +72,8 @@ paths:
         - $ref: '#/components/parameters/AccessibleParam'
         - $ref: '#/components/parameters/LatitudeParam'
         - $ref: '#/components/parameters/LongitudeParam'
+        - $ref: '#/components/parameters/EmissionClassParam'
+        - $ref: '#/components/parameters/FuelTypeParam'
       responses:
         '200':
           description: OK
@@ -247,8 +251,49 @@ components:
         type: number
         format: double
         example: 5.2913
+    EmissionClassParam:
+      in: query
+      name: emissionClass
+      example: six
+      description: Vehicle's Euro emissions standard
+      required: false
+      schema:
+        $ref: '#/components/schemas/EmissionClass'
+    FuelTypeParam:
+      in: query
+      description: The vehicle's fuel type
+      example: petrol
+      name: fuelType
+      required: false
+      schema:
+        $ref: '#/components/schemas/FuelType'
 
   schemas:
+    FuelType:
+      type: string
+      example: petrol
+      description: The vehicle's fuel type
+      enum:
+        - electric
+        - biodiesel
+        - diesel
+        - hydrogen
+        - lpg
+        - methane
+        - petrol
+
+    EmissionClass:
+      type: string
+      example: six
+      description: Vehicle's Euro emissions standard
+      enum:
+        - one
+        - two
+        - three
+        - four
+        - five
+        - six
+
     RoadOperators:
       type: "array"
       description: A collection of road operators

@@ -17,8 +17,11 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.res
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.RoadSectionFeatureCollectionMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.validators.PointValidator;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.service.PointMatchService;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
@@ -54,8 +57,10 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     @Override
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
-            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude) {
-
+            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude,
+            EmissionClassJson emissionClass,
+            FuelTypeJson fuelType) {
+        ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
         Integer requestedRoadSectionId = mapStartPoint(latitude, longitude)
                 .flatMap(this::matchStartPoint)
                 .map(CandidateMatch::getMatchedLinkId)
@@ -65,7 +70,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleType,
                 vehicleLength, vehicleWidth, vehicleHeight,
                 vehicleWeight, vehicleAxleLoad,
-                vehicleHasTrailer);
+                vehicleHasTrailer, emissionClass, fuelType);
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, requestArguments);
@@ -92,8 +97,9 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
-            Double longitude) {
-
+            Double longitude, EmissionClassJson emissionClass,
+            FuelTypeJson fuelType) {
+        ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
         Optional<Point> startPoint = mapStartPoint(latitude, longitude);
         boolean startPointPresent = startPoint.isPresent();
         CandidateMatch startPointMatch = startPoint.flatMap(this::matchStartPoint).orElse(null);
@@ -102,7 +108,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleType,
                 vehicleLength, vehicleWidth, vehicleHeight,
                 vehicleWeight, vehicleAxleLoad,
-                vehicleHasTrailer);
+                vehicleHasTrailer, emissionClass, fuelType);
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(municipality, requestArguments);
@@ -111,6 +117,21 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 addMissingRoadSectionsForMunicipality(municipality));
 
         return ResponseEntity.ok(roadSectionFeatureCollectionV2Mapper.map(accessibility, startPointPresent, startPointMatch, accessible));
+    }
+
+    /**
+     * Ensures that the parameters related to environmental zone restrictions are consistent. If one of the parameters is set and the other
+     * is not, an exception is thrown.
+     *
+     * @param emissionClass the emission class information. Can be null, but if it is null, the fuelType must also be null.
+     * @param fuelType      the fuel type information. Can be null, but if it is null, the emissionClass must also be null.
+     * @throws IncompleteArgumentsException if only one of the parameters is set while the other is not.
+     */
+    private void ensureEnvironmentalZoneParameterConsistency(EmissionClassJson emissionClass, FuelTypeJson fuelType) {
+        if (emissionClass == null && fuelType != null || fuelType == null && emissionClass != null) {
+            throw new IncompleteArgumentsException("If one of the environmental zone parameters is set, the other must be set as well.");
+        }
+
     }
 
     private Optional<Point> mapStartPoint(Double latitude, Double longitude) {
