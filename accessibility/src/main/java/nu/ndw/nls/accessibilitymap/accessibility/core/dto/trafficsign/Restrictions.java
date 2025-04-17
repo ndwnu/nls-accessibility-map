@@ -42,7 +42,7 @@ public record Restrictions(
         if (Objects.nonNull(emissionZone)
                 && emissionZone.isActive(accessibilityRequest.timestamp())
                 && Objects.nonNull(accessibilityRequest.fuelTypes())
-                && Objects.nonNull(accessibilityRequest.emissionClassifications())) {
+                && Objects.nonNull(accessibilityRequest.emissionClasses())) {
             activeRestrictions.add(buildEmissionRestriction());
         }
 

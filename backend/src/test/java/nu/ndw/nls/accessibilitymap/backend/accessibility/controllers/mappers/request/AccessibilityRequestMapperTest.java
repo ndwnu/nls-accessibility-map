@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import com.graphhopper.util.shapes.BBox;
 import java.time.OffsetDateTime;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClassification;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
@@ -103,7 +103,7 @@ class AccessibilityRequestMapperTest {
         when(municipalityBoundingBox.latitudeTo()).thenReturn(MAX_LATITUDE);
 
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
-        when(emissionClassificationMapper.mapEmissionClassification(EmissionClassJson.ONE)).thenReturn(Set.of(EmissionClassification.ONE));
+        when(emissionClassificationMapper.mapEmissionClassification(EmissionClassJson.ONE)).thenReturn(Set.of(EmissionClass.ONE));
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
 
         var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments);
@@ -120,7 +120,7 @@ class AccessibilityRequestMapperTest {
                 .startLocationLongitude(DEFAULT_X_COORDINATE)
                 .startLocationLatitude(DEFAULT_Y_COORDINATE)
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
-                .emissionClassifications(Set.of(EmissionClassification.ONE))
+                .emissionClasses(Set.of(EmissionClass.ONE))
                 .fuelTypes(Set.of(FuelType.PETROL))
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
                 .build());

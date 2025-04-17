@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClassification;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
@@ -71,7 +71,7 @@ public class EmissionZoneMapper {
                 .endTime(Objects.nonNull(exemption.endTime()) ? exemption.endTime() : OffsetDateTime.MIN)
                 .transportTypes(mapVehicleTypes(exemption.vehicleCategories()))
                 .vehicleWeightInKg(mapMaximumWeight(exemption.vehicleCategories(), mapToDouble(exemption.vehicleWeightInKg())))
-                .emissionClassifications(mapEmissionClassification(exemption.euroClassifications()))
+                .emissionClasses(mapEmissionClassification(exemption.euroClassifications()))
                 .build();
     }
 
@@ -82,16 +82,16 @@ public class EmissionZoneMapper {
         return Double.valueOf(value);
     }
 
-    private Set<EmissionClassification> mapEmissionClassification(Set<EuroClassification> euroClassifications) {
+    private Set<EmissionClass> mapEmissionClassification(Set<EuroClassification> euroClassifications) {
 
         return euroClassifications.stream()
                 .map(euroClassification -> switch (euroClassification) {
-                    case EURO_1 -> EmissionClassification.ONE;
-                    case EURO_2 -> EmissionClassification.TWO;
-                    case EURO_3 -> EmissionClassification.THREE;
-                    case EURO_4 -> EmissionClassification.FOUR;
-                    case EURO_5 -> EmissionClassification.FIVE;
-                    case EURO_6 -> EmissionClassification.SIX;
+                    case EURO_1 -> EmissionClass.ONE;
+                    case EURO_2 -> EmissionClass.TWO;
+                    case EURO_3 -> EmissionClass.THREE;
+                    case EURO_4 -> EmissionClass.FOUR;
+                    case EURO_5 -> EmissionClass.FIVE;
+                    case EURO_6 -> EmissionClass.SIX;
                     case UNKNOWN -> throw new IllegalStateException("Unknown euro classification '%s'.".formatted(euroClassification));
                 })
                 .collect(Collectors.toSet());

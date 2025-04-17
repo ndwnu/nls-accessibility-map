@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClassification;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.EmissionClassNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
 
-class EmissionClassificationMapperTest {
+class EmissionClassMapperTest {
 
     private EmissionClassificationMapper emissionClassificationMapper;
 
@@ -39,7 +39,7 @@ class EmissionClassificationMapperTest {
 
         EmissionClassJson nullEmissionClassJson = null;
 
-        Set<EmissionClassification> result = emissionClassificationMapper.mapEmissionClassification(nullEmissionClassJson);
+        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClassification(nullEmissionClassJson);
 
         assertThat(result).isNull();
     }
@@ -48,11 +48,11 @@ class EmissionClassificationMapperTest {
     @EnumSource(EmissionClassJson.class)
     void mapFuelType_AllSupportedFuelTypeJsonValues(EmissionClassJson emissionClassJson) {
 
-        Set<EmissionClassification> result = emissionClassificationMapper.mapEmissionClassification(emissionClassJson);
+        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClassification(emissionClassJson);
 
         assertThat(result)
                 .isNotNull()
                 .hasSize(1)
-                .contains(EmissionClassification.valueOf(emissionClassJson.name()));
+                .contains(EmissionClass.valueOf(emissionClassJson.name()));
     }
 }
