@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.EmissionClassNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,14 +28,14 @@ class EmissionClassMapperTest {
         EmissionClassJson mockEmissionClass = Mockito.mock(EmissionClassJson.class);
         when(mockEmissionClass.name()).thenReturn("unsupported emission type");
 
-        assertThatThrownBy(() -> emissionClassificationMapper.mapEmissionClassification(mockEmissionClass))
-                .isExactlyInstanceOf(EmissionClassNotSupportedException.class)
+        assertThatThrownBy(() -> emissionClassificationMapper.mapEmissionClass(mockEmissionClass))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid emission classification type: unsupported emission type");
     }
 
     @Test
     void mapFuelType_shouldReturnNullWhenMappingNullFuelTypeJson() {
-        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClassification(null);
+        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClass(null);
         assertThat(result).isNull();
     }
 
@@ -44,7 +43,7 @@ class EmissionClassMapperTest {
     @EnumSource(EmissionClassJson.class)
     void mapFuelType_AllSupportedFuelTypeJsonValues(EmissionClassJson emissionClassJson) {
 
-        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClassification(emissionClassJson);
+        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClass(emissionClassJson);
 
         assertThat(result).containsExactly((EmissionClass.valueOf(emissionClassJson.name())));
     }
