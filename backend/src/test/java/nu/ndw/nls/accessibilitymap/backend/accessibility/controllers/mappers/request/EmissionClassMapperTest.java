@@ -15,11 +15,11 @@ import org.mockito.Mockito;
 
 class EmissionClassMapperTest {
 
-    private EmissionClassificationMapper emissionClassificationMapper;
+    private EmissionClassMapper emissionClassMapper;
 
     @BeforeEach
     void setUp() {
-        emissionClassificationMapper = new EmissionClassificationMapper();
+        emissionClassMapper = new EmissionClassMapper();
     }
 
     @Test
@@ -28,14 +28,14 @@ class EmissionClassMapperTest {
         EmissionClassJson mockEmissionClass = Mockito.mock(EmissionClassJson.class);
         when(mockEmissionClass.name()).thenReturn("unsupported emission type");
 
-        assertThatThrownBy(() -> emissionClassificationMapper.mapEmissionClass(mockEmissionClass))
+        assertThatThrownBy(() -> emissionClassMapper.mapEmissionClass(mockEmissionClass))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid emission classification type: unsupported emission type");
     }
 
     @Test
     void mapFuelType_shouldReturnNullWhenMappingNullFuelTypeJson() {
-        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClass(null);
+        Set<EmissionClass> result = emissionClassMapper.mapEmissionClass(null);
         assertThat(result).isNull();
     }
 
@@ -43,7 +43,7 @@ class EmissionClassMapperTest {
     @EnumSource(EmissionClassJson.class)
     void mapFuelType_AllSupportedFuelTypeJsonValues(EmissionClassJson emissionClassJson) {
 
-        Set<EmissionClass> result = emissionClassificationMapper.mapEmissionClass(emissionClassJson);
+        Set<EmissionClass> result = emissionClassMapper.mapEmissionClass(emissionClassJson);
 
         assertThat(result).containsExactly((EmissionClass.valueOf(emissionClassJson.name())));
     }
