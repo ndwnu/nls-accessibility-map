@@ -7,21 +7,13 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import java.util.Set;
-import java.util.stream.Stream;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.EmissionClassNotSupportedException;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.FuelTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.APIErrorJson;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -60,22 +52,20 @@ class ErrorHandlerControllerTest {
 
     @Test
     void handleInternalServerErrorException() {
-        ResponseEntity<APIErrorJson> response = errorHandlerController
-                .handleInternalServerErrorException(new Exception(MESSAGE));
+        ResponseEntity<APIErrorJson> response = errorHandlerController.handleInternalServerErrorException(new Exception(MESSAGE));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage())
-                .isEqualTo("An internal server error occurred while processing this request");
+        assertThat(response.getBody().getMessage()).isEqualTo("An internal server error occurred while processing this request");
     }
 
-    @ParameterizedTest
-    @MethodSource("provideExceptions")
-    void handleBadRequestException(RuntimeException exception, String message) {
-        ResponseEntity<APIErrorJson> response = errorHandlerController
-                .handleBadRequestException(exception);
+    @Test
+    void handleBadRequestException() {
+        var exception = new IncompleteArgumentsException("IncompleteArgumentsException");
+        ResponseEntity<APIErrorJson> response = errorHandlerController.handleBadRequestException(
+                new IncompleteArgumentsException("IncompleteArgumentsException"));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo(message);
+        assertThat(response.getBody().getMessage()).isEqualTo(exception.getMessage());
     }
 
     @Test
@@ -86,18 +76,18 @@ class ErrorHandlerControllerTest {
 
     @Test
     void handleMethodArgumentTypeMismatchException() {
-        when(methodArgumentTypeMismatchException.getMessage()).thenReturn(MESSAGE);
-        ResponseEntity<APIErrorJson> response = errorHandlerController
-                .handleMethodArgumentTypeMismatchException(methodArgumentTypeMismatchException);
+        when(methodArgumentTypeMismatchException.getName()).thenReturn("name");
+        when(methodArgumentTypeMismatchException.getValue()).thenReturn("value");
+        ResponseEntity<APIErrorJson> response = errorHandlerController.handleMethodArgumentTypeMismatchException(
+                methodArgumentTypeMismatchException);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo(MESSAGE);
+        assertThat(response.getBody().getMessage()).isEqualTo("Argument 'name' with value 'value' is not valid");
     }
 
     @Test
     void handleNotFoundException() {
-        ResponseEntity<APIErrorJson> response = errorHandlerController
-                .handleNotFoundException(new MunicipalityNotFoundException(MESSAGE));
+        ResponseEntity<APIErrorJson> response = errorHandlerController.handleNotFoundException(new MunicipalityNotFoundException(MESSAGE));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getMessage()).isEqualTo(MESSAGE);
@@ -131,23 +121,11 @@ class ErrorHandlerControllerTest {
         when(constraintViolationException.getConstraintViolations()).thenReturn(Set.of(constraintViolation));
         when(constraintViolation.getMessage()).thenReturn(MESSAGE);
 
-        ResponseEntity<APIErrorJson> response = errorHandlerController.handleConstraintViolationException(
-                constraintViolationException);
+        ResponseEntity<APIErrorJson> response = errorHandlerController.handleConstraintViolationException(constraintViolationException);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getMessage()).isEqualTo("'" + path + "' " + MESSAGE);
     }
 
-    private static Stream<Arguments> provideExceptions() {
-        return Stream.of(
-                Arguments.of(new VehicleTypeNotSupportedException("VehicleTypeNotSupportedException"), "VehicleTypeNotSupportedException"),
-                Arguments.of(new VehicleWeightRequiredException("VehicleWeightRequiredException"), "VehicleWeightRequiredException"),
-                Arguments.of(new IncompleteArgumentsException("IncompleteArgumentsException"), "IncompleteArgumentsException"),
-                Arguments.of(new FuelTypeNotSupportedException("FuelTypeNotSupportedException"), "FuelTypeNotSupportedException"),
-                Arguments.of(new EmissionClassNotSupportedException("EmissionClassNotSupportedException"),
-                        "EmissionClassNotSupportedException")
-
-        );
-    }
 }

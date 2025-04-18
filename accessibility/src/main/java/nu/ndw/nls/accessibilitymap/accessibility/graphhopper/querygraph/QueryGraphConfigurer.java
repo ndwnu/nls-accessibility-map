@@ -51,7 +51,7 @@ public class QueryGraphConfigurer {
      *
      * @param queryGraph          the query graph containing the nodes and edges used for mapping traffic signs
      * @param snappedTrafficSigns a list of traffic signs with their corresponding snapped locations
-     * @return an instance of TrafficSignEdgeRestrictions containing the mapped edge restrictions
+     * @return an instance of EdgeRestrictions containing the mapped edge restrictions
      */
     public EdgeRestrictions createEdgeRestrictions(QueryGraph queryGraph, List<TrafficSignSnap> snappedTrafficSigns) {
         List<EdgeRestriction> edgeRestrictions = new ArrayList<>();
@@ -65,6 +65,7 @@ public class QueryGraphConfigurer {
             // By creating a query graph with a snap, the closestNode of the snap is updated to a virtual node if applicable.
             // See QueryOverlayBuilder.buildVirtualEdges
             EdgeIterator edgeIterator = edgeExplorer.setBaseNode(trafficSignSnap.getSnap().getClosestNode());
+
             while (edgeIterator.next()) {
                 if (isTrafficSignInSameDirectionAsEdge(edgeIterator, trafficSignSnap) && isTrafficSignInFrontOfEdge(edgeIterator,
                         trafficSignSnap)) {

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.FuelTypeNotSupportedException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,7 @@ class FuelTypeMapperTest {
         when(mockFuelType.name()).thenReturn("unsupported fuel type");
 
         assertThatThrownBy(() -> fuelTypeMapper.mapFuelType(mockFuelType))
-                .isExactlyInstanceOf(FuelTypeNotSupportedException.class)
+                .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid fuel type: unsupported fuel type");
     }
 

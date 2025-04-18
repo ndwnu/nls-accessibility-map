@@ -43,7 +43,7 @@ public class AccessibilityRequestMapper {
                 .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth()))
                 .vehicleWeightInKg(mapToDouble(vehicleArguments.vehicleWeight()))
                 .fuelTypes(fuelTypeMapper.mapFuelType(vehicleArguments.fuelType()))
-                .emissionClassifications(emissionClassificationMapper.mapEmissionClassification(vehicleArguments.emissionClass()))
+                .emissionClasses(emissionClassificationMapper.mapEmissionClass(vehicleArguments.emissionClass()))
                 .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))
                 .build();
     }
