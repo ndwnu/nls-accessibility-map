@@ -22,6 +22,7 @@ public record Restrictions(
         EmissionZone emissionZone) {
 
     public boolean hasActiveRestrictions(AccessibilityRequest accessibilityRequest) {
+
         return !getActiveRestrictions(accessibilityRequest).isEmpty();
     }
 
@@ -42,7 +43,7 @@ public record Restrictions(
         if (Objects.nonNull(emissionZone)
                 && emissionZone.isActive(accessibilityRequest.timestamp())
                 && Objects.nonNull(accessibilityRequest.fuelTypes())
-                && Objects.nonNull(accessibilityRequest.emissionClassifications())) {
+                && Objects.nonNull(accessibilityRequest.emissionClasses())) {
             activeRestrictions.add(buildEmissionRestriction());
         }
 
@@ -75,7 +76,18 @@ public record Restrictions(
 
     private Predicate<AccessibilityRequest> buildEmissionRestriction() {
         return accessibilityRequest -> {
-            //TODO Implement this.
+
+            if (emissionZone.isRelevant(
+                    accessibilityRequest.vehicleWeightInKg(),
+                    accessibilityRequest.fuelTypes(),
+                    accessibilityRequest.transportTypes())) {
+
+                return !emissionZone.isExempt(
+                        accessibilityRequest.timestamp(),
+                        accessibilityRequest.vehicleWeightInKg(),
+                        accessibilityRequest.emissionClasses(),
+                        accessibilityRequest.transportTypes());
+            }
             return false;
         };
     }

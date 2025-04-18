@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum EmissionClassification {
+public enum EmissionClass {
     ONE,
     TWO,
     THREE,

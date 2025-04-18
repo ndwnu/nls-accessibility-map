@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClassification;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
@@ -17,10 +17,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneE
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EuroClassification;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.Exemption;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.VehicleCategory;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.VehicleType;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.service.EmissionService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -40,9 +40,7 @@ public class EmissionZoneMapper {
                         return EmissionZone.builder()
                                 .startTime(emissionZone.startTime())
                                 .endTime(Objects.nonNull(emissionZone.endTime()) ? emissionZone.endTime() : OffsetDateTime.MAX)
-                                .exemptions(emissionZone.exemptions().stream()
-                                        .map(this::mapExemption)
-                                        .collect(Collectors.toSet()))
+                                .exemptions(mapExceptions(emissionZone))
                                 .restriction(mapRestriction(emissionZone))
                                 .build();
                     } catch (RuntimeException exception) {
@@ -58,21 +56,28 @@ public class EmissionZoneMapper {
         return EmissionZoneRestriction.builder()
                 .id(emissionZone.restriction().id())
                 .fuelTypes(mapFuelTypes(emissionZone.restriction().fuelType()))
-                .vehicleTypes(mapVehicleTypes(emissionZone.restriction().vehicleType(),
+                .transportTypes(mapVehicleTypes(emissionZone.restriction().vehicleType(),
                         emissionZone.restriction().vehicleCategories()))
                 .vehicleWeightInKg(mapMaximumWeight(emissionZone.restriction().vehicleCategories()))
                 .build();
     }
 
-    private EmissionZoneExemption mapExemption(Exemption exemption) {
+    @NotNull
+    private Set<EmissionZoneExemption> mapExceptions(nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EmissionZone emissionZone) {
 
-        return EmissionZoneExemption.builder()
-                .startTime(Objects.nonNull(exemption.startTime()) ? exemption.startTime() : OffsetDateTime.MIN)
-                .endTime(Objects.nonNull(exemption.endTime()) ? exemption.endTime() : OffsetDateTime.MIN)
-                .transportTypes(mapVehicleTypes(exemption.vehicleCategories()))
-                .vehicleWeightInKg(mapMaximumWeight(exemption.vehicleCategories(), mapToDouble(exemption.vehicleWeightInKg())))
-                .emissionClassifications(mapEmissionClassification(exemption.euroClassifications()))
-                .build();
+        if (Objects.isNull(emissionZone.exemptions())) {
+            return Set.of();
+        }
+
+        return emissionZone.exemptions().stream()
+                .map(exemption -> EmissionZoneExemption.builder()
+                        .startTime(Objects.nonNull(exemption.startTime()) ? exemption.startTime() : OffsetDateTime.MIN)
+                        .endTime(Objects.nonNull(exemption.endTime()) ? exemption.endTime() : OffsetDateTime.MIN)
+                        .transportTypes(mapVehicleTypes(exemption.vehicleCategories()))
+                        .vehicleWeightInKg(mapMaximumWeight(exemption.vehicleCategories(), mapToDouble(exemption.vehicleWeightInKg())))
+                        .emissionClasses(mapEmissionClass(exemption.euroClassifications()))
+                        .build())
+                .collect(Collectors.toSet());
     }
 
     private Double mapToDouble(Integer value) {
@@ -82,16 +87,16 @@ public class EmissionZoneMapper {
         return Double.valueOf(value);
     }
 
-    private Set<EmissionClassification> mapEmissionClassification(Set<EuroClassification> euroClassifications) {
+    private Set<EmissionClass> mapEmissionClass(Set<EuroClassification> euroClassifications) {
 
         return euroClassifications.stream()
                 .map(euroClassification -> switch (euroClassification) {
-                    case EURO_1 -> EmissionClassification.ONE;
-                    case EURO_2 -> EmissionClassification.TWO;
-                    case EURO_3 -> EmissionClassification.THREE;
-                    case EURO_4 -> EmissionClassification.FOUR;
-                    case EURO_5 -> EmissionClassification.FIVE;
-                    case EURO_6 -> EmissionClassification.SIX;
+                    case EURO_1 -> EmissionClass.ONE;
+                    case EURO_2 -> EmissionClass.TWO;
+                    case EURO_3 -> EmissionClass.THREE;
+                    case EURO_4 -> EmissionClass.FOUR;
+                    case EURO_5 -> EmissionClass.FIVE;
+                    case EURO_6 -> EmissionClass.SIX;
                     case UNKNOWN -> throw new IllegalStateException("Unknown euro classification '%s'.".formatted(euroClassification));
                 })
                 .collect(Collectors.toSet());
