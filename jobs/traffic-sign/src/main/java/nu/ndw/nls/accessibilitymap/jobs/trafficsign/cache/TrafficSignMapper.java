@@ -25,10 +25,12 @@ import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import org.apache.logging.log4j.util.Strings;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Validated
 public class TrafficSignMapper {
 
     private final TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
