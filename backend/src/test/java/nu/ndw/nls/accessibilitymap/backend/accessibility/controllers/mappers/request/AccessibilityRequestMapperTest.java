@@ -56,7 +56,7 @@ class AccessibilityRequestMapperTest {
     private FuelTypeMapper fuelTypeMapper;
 
     @Mock
-    private EmissionClassificationMapper emissionClassificationMapper;
+    private EmissionClassMapper emissionClassMapper;
 
     @Mock
     private VehicleArguments vehicleArguments;
@@ -75,7 +75,7 @@ class AccessibilityRequestMapperTest {
 
     @BeforeEach
     void setUp() {
-        accessibilityRequestMapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassificationMapper, fuelTypeMapper);
+        accessibilityRequestMapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassMapper, fuelTypeMapper);
     }
 
     @Test
@@ -103,7 +103,7 @@ class AccessibilityRequestMapperTest {
         when(municipalityBoundingBox.latitudeTo()).thenReturn(MAX_LATITUDE);
 
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
-        when(emissionClassificationMapper.mapEmissionClass(EmissionClassJson.ONE)).thenReturn(Set.of(EmissionClass.ONE));
+        when(emissionClassMapper.mapEmissionClass(EmissionClassJson.ONE)).thenReturn(Set.of(EmissionClass.ONE));
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
 
         var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments);
@@ -152,7 +152,7 @@ class AccessibilityRequestMapperTest {
 
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
         when(fuelTypeMapper.mapFuelType(null)).thenReturn(null);
-        when(emissionClassificationMapper.mapEmissionClass(null)).thenReturn(null);
+        when(emissionClassMapper.mapEmissionClass(null)).thenReturn(null);
 
         var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments);
 

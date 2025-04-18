@@ -15,7 +15,7 @@ public class AccessibilityRequestMapper {
 
     private final TransportTypeMapper transportTypeMapper;
 
-    private final EmissionClassificationMapper emissionClassificationMapper;
+    private final EmissionClassMapper emissionClassMapper;
 
     private final FuelTypeMapper fuelTypeMapper;
 
@@ -43,7 +43,7 @@ public class AccessibilityRequestMapper {
                 .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth()))
                 .vehicleWeightInKg(mapToDouble(vehicleArguments.vehicleWeight()))
                 .fuelTypes(fuelTypeMapper.mapFuelType(vehicleArguments.fuelType()))
-                .emissionClasses(emissionClassificationMapper.mapEmissionClass(vehicleArguments.emissionClass()))
+                .emissionClasses(emissionClassMapper.mapEmissionClass(vehicleArguments.emissionClass()))
                 .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))
                 .build();
     }
