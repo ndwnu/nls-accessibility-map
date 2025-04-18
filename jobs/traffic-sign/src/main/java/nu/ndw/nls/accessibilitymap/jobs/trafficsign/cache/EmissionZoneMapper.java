@@ -17,7 +17,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneE
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EuroClassification;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.Exemption;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.VehicleCategory;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.VehicleType;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.service.EmissionService;
@@ -40,9 +39,7 @@ public class EmissionZoneMapper {
                         return EmissionZone.builder()
                                 .startTime(emissionZone.startTime())
                                 .endTime(Objects.nonNull(emissionZone.endTime()) ? emissionZone.endTime() : OffsetDateTime.MAX)
-                                .exemptions(emissionZone.exemptions().stream()
-                                        .map(this::mapExemption)
-                                        .collect(Collectors.toSet()))
+                                .exemptions(mapExceptions(emissionZone))
                                 .restriction(mapRestriction(emissionZone))
                                 .build();
                     } catch (RuntimeException exception) {
@@ -58,21 +55,27 @@ public class EmissionZoneMapper {
         return EmissionZoneRestriction.builder()
                 .id(emissionZone.restriction().id())
                 .fuelTypes(mapFuelTypes(emissionZone.restriction().fuelType()))
-                .vehicleTypes(mapVehicleTypes(emissionZone.restriction().vehicleType(),
+                .transportTypes(mapVehicleTypes(emissionZone.restriction().vehicleType(),
                         emissionZone.restriction().vehicleCategories()))
                 .vehicleWeightInKg(mapMaximumWeight(emissionZone.restriction().vehicleCategories()))
                 .build();
     }
 
-    private EmissionZoneExemption mapExemption(Exemption exemption) {
+    private Set<EmissionZoneExemption> mapExceptions(nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EmissionZone emissionZone) {
 
-        return EmissionZoneExemption.builder()
-                .startTime(Objects.nonNull(exemption.startTime()) ? exemption.startTime() : OffsetDateTime.MIN)
-                .endTime(Objects.nonNull(exemption.endTime()) ? exemption.endTime() : OffsetDateTime.MIN)
-                .transportTypes(mapVehicleTypes(exemption.vehicleCategories()))
-                .vehicleWeightInKg(mapMaximumWeight(exemption.vehicleCategories(), mapToDouble(exemption.vehicleWeightInKg())))
-                .emissionClasses(mapEmissionClassification(exemption.euroClassifications()))
-                .build();
+        if (Objects.isNull(emissionZone.exemptions())) {
+            return Set.of();
+        }
+
+        return emissionZone.exemptions().stream()
+                .map(exemption -> EmissionZoneExemption.builder()
+                        .startTime(Objects.nonNull(exemption.startTime()) ? exemption.startTime() : OffsetDateTime.MIN)
+                        .endTime(Objects.nonNull(exemption.endTime()) ? exemption.endTime() : OffsetDateTime.MIN)
+                        .transportTypes(mapVehicleTypes(exemption.vehicleCategories()))
+                        .vehicleWeightInKg(mapMaximumWeight(exemption.vehicleCategories(), mapToDouble(exemption.vehicleWeightInKg())))
+                        .emissionClasses(mapEmissionClass(exemption.euroClassifications()))
+                        .build())
+                .collect(Collectors.toSet());
     }
 
     private Double mapToDouble(Integer value) {
@@ -82,7 +85,7 @@ public class EmissionZoneMapper {
         return Double.valueOf(value);
     }
 
-    private Set<EmissionClass> mapEmissionClassification(Set<EuroClassification> euroClassifications) {
+    private Set<EmissionClass> mapEmissionClass(Set<EuroClassification> euroClassifications) {
 
         return euroClassifications.stream()
                 .map(euroClassification -> switch (euroClassification) {

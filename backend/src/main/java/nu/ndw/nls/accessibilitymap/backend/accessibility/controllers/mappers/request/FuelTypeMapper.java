@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FuelTypeMapper {
 
+    @SuppressWarnings("java:S1168")
     public Set<FuelType> mapFuelType(FuelTypeJson fuelTypeJson) {
         if (Objects.isNull(fuelTypeJson)) {
             return null;

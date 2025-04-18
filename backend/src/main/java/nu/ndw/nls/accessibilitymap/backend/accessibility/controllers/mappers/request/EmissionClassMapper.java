@@ -8,8 +8,9 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmissionClassificationMapper {
+public class EmissionClassMapper {
 
+    @SuppressWarnings("java:S1168")
     public Set<EmissionClass> mapEmissionClass(EmissionClassJson emissionClassJson) {
         if (Objects.isNull(emissionClassJson)) {
             return null;
