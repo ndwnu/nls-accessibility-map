@@ -76,7 +76,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHasTrailer, emissionClass, fuelType);
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(clockService.now(), municipality, requestArguments);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(clockService.now(), municipality,
+                requestArguments);
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 accessibilityRequest,
@@ -114,7 +115,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHasTrailer, emissionClass, fuelType);
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(clockService.now(), municipality, requestArguments);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestV2Mapper.mapToAccessibilityRequest(clockService.now(), municipality,
+                requestArguments);
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 accessibilityRequest,
                 addMissingRoadSectionsForMunicipality(municipality));
@@ -131,7 +133,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
      * @throws IncompleteArgumentsException if only one of the parameters is set while the other is not.
      */
     private void ensureEnvironmentalZoneParameterConsistency(EmissionClassJson emissionClass, FuelTypeJson fuelType) {
-        if (emissionClass == null && fuelType != null || fuelType == null && emissionClass != null) {
+        if ((emissionClass == null && fuelType != null) || (fuelType == null && emissionClass != null)) {
             throw new IncompleteArgumentsException("If one of the environmental zone parameters is set, the other must be set as well.");
         }
 
