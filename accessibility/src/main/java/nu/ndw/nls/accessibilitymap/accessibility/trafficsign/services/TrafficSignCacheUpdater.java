@@ -27,7 +27,7 @@ public class TrafficSignCacheUpdater {
      * File watcher but as it turns out that is not reliable on azure.
      */
     @EventListener(ApplicationStartedEvent.class)
-    @SuppressWarnings({"java:S1166", "java:S2142"})
+    @SuppressWarnings({"java:S1166", "java:S2142",  "java:S134"})
     public void watchFileChanges() throws IOException {
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
 
