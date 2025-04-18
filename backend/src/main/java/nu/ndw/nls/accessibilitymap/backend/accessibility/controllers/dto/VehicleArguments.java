@@ -15,7 +15,6 @@ public record VehicleArguments(
         Float vehicleAxleLoad,
         Boolean vehicleHasTrailer,
         EmissionClassJson emissionClass,
-        FuelTypeJson fuelType
-) {
+        FuelTypeJson fuelType) {
 
 }
