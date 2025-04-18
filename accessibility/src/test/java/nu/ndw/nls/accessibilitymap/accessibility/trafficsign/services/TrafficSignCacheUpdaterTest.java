@@ -48,7 +48,7 @@ class TrafficSignCacheUpdaterTest {
         trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
                 .folder(testDir.resolve("testFolder"))
                 .fileNameActiveVersion("active")
-                .fileWatcherInterval(Duration.ofMillis(1))
+                .fileWatcherInterval(Duration.ofMillis(10))
                 .build();
 
         trafficSignCacheUpdater = new TrafficSignCacheUpdater(trafficSignCacheConfiguration, trafficSignDataService);
@@ -96,6 +96,11 @@ class TrafficSignCacheUpdaterTest {
                 .until(() -> Files.exists(trafficSignCacheConfiguration.getActiveVersion().toPath()));
 
         trafficSignCacheUpdater.watchFileChanges();
+        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            loggerExtension.containsLog(Level.INFO,
+                    "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion()));
+        });
+
         Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis() + 1);
         Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
 
