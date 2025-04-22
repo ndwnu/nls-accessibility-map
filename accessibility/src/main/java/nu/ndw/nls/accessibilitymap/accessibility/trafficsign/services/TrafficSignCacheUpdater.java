@@ -7,6 +7,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@ConditionalOnProperty(
+        value = "nu.ndw.nls.accessibilitymap.trafficsigns.cache.filewatcher.enabled",
+        havingValue = "true", matchIfMissing = true
+)
 public class TrafficSignCacheUpdater {
 
     private final TrafficSignCacheConfiguration trafficSignCacheConfiguration;
