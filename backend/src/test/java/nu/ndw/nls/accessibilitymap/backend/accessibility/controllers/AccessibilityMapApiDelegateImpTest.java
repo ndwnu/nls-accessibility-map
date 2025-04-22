@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionModifier;
@@ -25,15 +27,20 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.res
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.RoadSectionFeatureCollectionMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.validators.PointValidator;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.service.PointMatchService;
+import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.locationtech.jts.geom.Point;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,7 +48,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
-class AccessibilityMapApiDelegateImplTest {
+class AccessibilityMapApiDelegateImpTest {
 
     private static final float VEHICLE_LENGTH = 1F;
 
@@ -62,6 +69,8 @@ class AccessibilityMapApiDelegateImplTest {
     private static final double REQUESTED_LATITUDE = 222;
 
     private static final int MUNICIPALITY_ID_INTEGER = 123;
+
+    private static final String ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE = "If one of the environmental zone parameters is set, the other must be set as well.";
 
     @Mock
     private PointValidator pointValidator;
@@ -115,6 +124,7 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Mock
     private RoadSection missingRoadSection;
+
     @Mock
     private ClockService clockService;
 
@@ -143,10 +153,30 @@ class AccessibilityMapApiDelegateImplTest {
                 clockService);
     }
 
-    @Test
-    void getInaccessibleRoadSections() {
+    @ParameterizedTest
+    @MethodSource("provideIncorrectEmissionZoneParameters")
+    void getInaccessibleRoadSections_shouldThrowIncompleteArgumentsException(EmissionClassJson emissionClassJson,
+            FuelTypeJson fuelTypeJson) {
+        assertThatThrownBy(() -> accessibilityMapApiDelegate.getInaccessibleRoadSections(
+                MUNICIPALITY_ID,
+                VehicleTypeJson.CAR,
+                VEHICLE_LENGTH,
+                VEHICLE_WIDTH,
+                VEHICLE_HEIGHT,
+                VEHICLE_WEIGHT,
+                VEHICLE_AXLE_LOAD,
+                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
+                fuelTypeJson))
+                .isExactlyInstanceOf(IncompleteArgumentsException.class)
+                .hasMessageContaining(ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE);
+    }
 
-        setUpFixture();
+    @ParameterizedTest
+    @MethodSource("provideCorrectEmissionZoneParameters")
+    void getInaccessibleRoadSections(EmissionClassJson emissionClassJson,
+            FuelTypeJson fuelTypeJson) {
+
+        setUpFixture(emissionClassJson, fuelTypeJson);
 
         when(accessibilityResponseMapper.map(accessibility, REQUESTED_ROAD_SECTION_ID))
                 .thenReturn(accessibilityMapResponseJson);
@@ -159,7 +189,8 @@ class AccessibilityMapApiDelegateImplTest {
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
                 VEHICLE_AXLE_LOAD,
-                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
+                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
+                fuelTypeJson);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(accessibilityMapResponseJson);
@@ -170,10 +201,30 @@ class AccessibilityMapApiDelegateImplTest {
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
 
-    @Test
-    void getRoadSections() {
+    @ParameterizedTest
+    @MethodSource("provideIncorrectEmissionZoneParameters")
+    void getRoadSections_shouldThrowIncompleteArgumentsException(EmissionClassJson emissionClassJson,
+            FuelTypeJson fuelTypeJson) {
+        assertThatThrownBy(() -> accessibilityMapApiDelegate.getRoadSections(
+                MUNICIPALITY_ID,
+                VehicleTypeJson.CAR,
+                VEHICLE_LENGTH,
+                VEHICLE_WIDTH,
+                VEHICLE_HEIGHT,
+                VEHICLE_WEIGHT,
+                VEHICLE_AXLE_LOAD,
+                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
+                fuelTypeJson))
+                .isExactlyInstanceOf(IncompleteArgumentsException.class)
+                .hasMessageContaining(ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE);
+    }
 
-        setUpFixture();
+    @ParameterizedTest
+    @MethodSource("provideCorrectEmissionZoneParameters")
+    void getRoadSections(EmissionClassJson emissionClassJson,
+            FuelTypeJson fuelTypeJson) {
+
+        setUpFixture(emissionClassJson, fuelTypeJson);
 
         when(roadSectionFeatureCollectionMapper
                 .map(accessibility, true, candidateMatch, true))
@@ -187,7 +238,8 @@ class AccessibilityMapApiDelegateImplTest {
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
                 VEHICLE_AXLE_LOAD,
-                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
+                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
+                fuelTypeJson);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
@@ -198,7 +250,7 @@ class AccessibilityMapApiDelegateImplTest {
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
 
-    private void setUpFixture() {
+    private void setUpFixture(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
         when(clockService.now()).thenReturn(timestamp);
         when(accessibilityService.calculateAccessibility(eq(accessibilityRequest), any(AccessibleRoadSectionModifier.class)))
@@ -221,6 +273,8 @@ class AccessibilityMapApiDelegateImplTest {
                 .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHasTrailer(false)
+                .emissionClass(emissionClassJson)
+                .fuelType(fuelTypeJson)
                 .build()))
                 .thenReturn(accessibilityRequest);
 
@@ -229,5 +283,20 @@ class AccessibilityMapApiDelegateImplTest {
         when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
 
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);
+    }
+
+    static Stream<Arguments> provideIncorrectEmissionZoneParameters() {
+        return Stream.of(
+                Arguments.of(EmissionClassJson.FIVE, null),
+                Arguments.of(null, FuelTypeJson.PETROL)
+        );
+    }
+
+
+    static Stream<Arguments> provideCorrectEmissionZoneParameters() {
+        return Stream.of(
+                Arguments.of(EmissionClassJson.FIVE, FuelTypeJson.PETROL),
+                Arguments.of(null, null)
+        );
     }
 }
