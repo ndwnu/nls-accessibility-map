@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.apache.commons.io.FileUtils;
 import org.awaitility.Awaitility;
@@ -57,12 +59,13 @@ class TrafficSignCacheUpdaterTest {
     @AfterEach
     void tearDown() throws IOException {
 
+        trafficSignCacheUpdater.destroy();
         FileUtils.deleteDirectory(testDir.toFile());
     }
 
     @Test
     @SuppressWarnings("java:S2925")
-    void watchFileChanges_fileChanges() throws IOException, InterruptedException {
+    void watchFileChanges_fileChanges() throws IOException {
 
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
@@ -70,15 +73,18 @@ class TrafficSignCacheUpdaterTest {
                 .until(() -> Files.exists(trafficSignCacheConfiguration.getActiveVersion().toPath()));
 
         trafficSignCacheUpdater.watchFileChanges();
-        Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis() + 1);
-        Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
             loggerExtension.containsLog(Level.INFO,
                     "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion()));
-            verify(trafficSignDataService).updateTrafficSignData();
-            loggerExtension.containsLog(Level.INFO, "Triggering update");
-            loggerExtension.containsLog(Level.INFO, "Finished update");
+        });
+
+        Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
+
+        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            loggerExtension.containsLog(Level.INFO, "Triggering update", VerificationMode.atLeastOnce());
+            loggerExtension.containsLog(Level.INFO, "Finished update", VerificationMode.atLeastOnce());
+            verify(trafficSignDataService, atLeastOnce()).updateTrafficSignData();
         });
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread.isInterrupted()).isFalse();
@@ -96,11 +102,20 @@ class TrafficSignCacheUpdaterTest {
                 .until(() -> Files.exists(trafficSignCacheConfiguration.getActiveVersion().toPath()));
 
         trafficSignCacheUpdater.watchFileChanges();
-        Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis() + 1);
+
+        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            loggerExtension.containsLog(Level.INFO,
+                    "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion()));
+        });
+
         Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() ->
-                loggerExtension.containsLog(Level.ERROR, "Failed to update traffic signs data", "some error"));
+                loggerExtension.containsLog(
+                        Level.ERROR,
+                        "Failed to update traffic signs data",
+                        "some error",
+                        VerificationMode.atLeastOnce()));
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread.isInterrupted()).isFalse();
     }
