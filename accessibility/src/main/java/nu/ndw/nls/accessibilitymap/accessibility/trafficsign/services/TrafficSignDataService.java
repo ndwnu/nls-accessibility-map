@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
+import nu.ndw.nls.accessibilitymap.accessibility.services.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class TrafficSignDataService {
     private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
     private final List<TrafficSignRelevancy> trafficSignRelevantDeterminations;
+
+    private final NetworkCacheDataService networkCacheDataService;
 
     @PostConstruct
     public void init() {
@@ -63,6 +66,7 @@ public class TrafficSignDataService {
             try {
                 trafficSigns.clear();
                 trafficSigns.addAll(newTrafficSignsData);
+                networkCacheDataService.create(newTrafficSignsData);
             } finally {
                 dataLock.unlock();
                 log.info("Switched internal traffic signs data structure and was locked for {} ms",
