@@ -30,7 +30,7 @@
         <nls-springboot.logging.version>8.4.6</nls-springboot.logging.version>
         <nls-springboot.component-test.version>8.5.0</nls-springboot.component-test.version>
         <nls-springboot.monitoring.version>8.4.6</nls-springboot.monitoring.version>
-        <nls-springboot.test.version>9.0.0-SNAPSHOT</nls-springboot.test.version>
+        <nls-springboot.test.version>9.0.0</nls-springboot.test.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
