@@ -15,8 +15,15 @@ public class AccessibilityRequestMapper {
 
     private final TransportTypeMapper transportTypeMapper;
 
+    private final EmissionClassMapper emissionClassMapper;
+
+    private final FuelTypeMapper fuelTypeMapper;
+
     @Valid
-    public AccessibilityRequest mapToAccessibilityRequest(OffsetDateTime timestamp, Municipality municipality, VehicleArguments vehicleArguments) {
+    public AccessibilityRequest mapToAccessibilityRequest(
+            OffsetDateTime timestamp,
+            Municipality municipality,
+            VehicleArguments vehicleArguments) {
 
         return AccessibilityRequest.builder()
                 .timestamp(timestamp)
@@ -35,6 +42,8 @@ public class AccessibilityRequestMapper {
                 .vehicleLengthInCm(mapToDouble(vehicleArguments.vehicleLength()))
                 .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth()))
                 .vehicleWeightInKg(mapToDouble(vehicleArguments.vehicleWeight()))
+                .fuelTypes(fuelTypeMapper.mapFuelType(vehicleArguments.fuelType()))
+                .emissionClasses(emissionClassMapper.mapEmissionClass(vehicleArguments.emissionClass()))
                 .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))
                 .build();
     }

@@ -20,7 +20,6 @@ import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EuroClassificat
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.VehicleCategory;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.VehicleType;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.service.EmissionService;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -62,7 +61,6 @@ public class EmissionZoneMapper {
                 .build();
     }
 
-    @NotNull
     private Set<EmissionZoneExemption> mapExceptions(nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EmissionZone emissionZone) {
 
         if (Objects.isNull(emissionZone.exemptions())) {
