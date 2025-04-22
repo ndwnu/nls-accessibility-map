@@ -44,7 +44,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private final AccessibilityResponseMapper accessibilityResponseMapper;
 
-    private final RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionV2Mapper;
+    private final RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
 
     private final MunicipalityService municipalityService;
 
@@ -62,11 +62,53 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude,
             EmissionClassJson emissionClass,
             FuelTypeJson fuelType) {
+
         ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
+
         Integer requestedRoadSectionId = mapStartPoint(latitude, longitude)
                 .flatMap(this::matchStartPoint)
                 .map(CandidateMatch::getMatchedLinkId)
                 .orElse(null);
+
+        Accessibility accessibility = calculateAccessibility(
+                municipalityId,
+                vehicleType, fuelType, emissionClass,
+                vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight, vehicleAxleLoad,
+                vehicleHasTrailer);
+
+        return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility, requestedRoadSectionId));
+    }
+
+    @Override
+    public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(String municipalityId,
+            VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
+            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
+            Double longitude, EmissionClassJson emissionClass,
+            FuelTypeJson fuelType) {
+
+        ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
+
+        CandidateMatch startPoint = mapStartPoint(latitude, longitude)
+                .flatMap(this::matchStartPoint)
+                .orElse(null);
+
+        Accessibility accessibility = calculateAccessibility(
+                municipalityId,
+                vehicleType, fuelType, emissionClass,
+                vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight, vehicleAxleLoad,
+                vehicleHasTrailer);
+
+        return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(accessibility, startPoint, accessible));
+    }
+
+    @SuppressWarnings("java:S107")
+    private Accessibility calculateAccessibility(
+            String municipalityId,
+            VehicleTypeJson vehicleType,
+            FuelTypeJson fuelType,
+            EmissionClassJson emissionClass,
+            Float vehicleLength, Float vehicleWidth, Float vehicleHeight, Float vehicleWeight, Float vehicleAxleLoad,
+            Boolean vehicleHasTrailer) {
 
         VehicleArguments requestArguments = new VehicleArguments(
                 vehicleType,
@@ -78,11 +120,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(clockService.now(), municipality,
                 requestArguments);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(
-                accessibilityRequest,
-                addMissingRoadSectionsForMunicipality(municipality));
-
-        return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility, requestedRoadSectionId));
+        return accessibilityService.calculateAccessibility(accessibilityRequest, addMissingRoadSectionsForMunicipality(municipality));
     }
 
     private AccessibleRoadSectionModifier addMissingRoadSectionsForMunicipality(Municipality municipality) {
@@ -94,33 +132,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             roadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
             roadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
         };
-    }
-
-    @Override
-    public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(String municipalityId,
-            VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
-            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
-            Double longitude, EmissionClassJson emissionClass,
-            FuelTypeJson fuelType) {
-        ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
-        Optional<Point> startPoint = mapStartPoint(latitude, longitude);
-        boolean startPointPresent = startPoint.isPresent();
-        CandidateMatch startPointMatch = startPoint.flatMap(this::matchStartPoint).orElse(null);
-
-        VehicleArguments requestArguments = new VehicleArguments(
-                vehicleType,
-                vehicleLength, vehicleWidth, vehicleHeight,
-                vehicleWeight, vehicleAxleLoad,
-                vehicleHasTrailer, emissionClass, fuelType);
-
-        Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(clockService.now(), municipality,
-                requestArguments);
-        Accessibility accessibility = accessibilityService.calculateAccessibility(
-                accessibilityRequest,
-                addMissingRoadSectionsForMunicipality(municipality));
-
-        return ResponseEntity.ok(roadSectionFeatureCollectionV2Mapper.map(accessibility, startPointPresent, startPointMatch, accessible));
     }
 
     /**

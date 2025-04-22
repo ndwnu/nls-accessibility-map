@@ -36,7 +36,7 @@ class RoadSectionFeatureCollectionMapperTest {
     private Accessibility accessibility;
 
     @Mock
-    private CandidateMatch candidateMatch;
+    private CandidateMatch startPoint;
 
     private RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
 
@@ -50,12 +50,13 @@ class RoadSectionFeatureCollectionMapperTest {
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSectionFeatureMapper.map(roadSection,
                 START_POINT_REQUESTED,
-                candidateMatch,
+                startPoint,
                 ACCESSIBLE))
                 .thenReturn(List.of(roadSectionFeatureJson));
-        RoadSectionFeatureCollectionJson result = roadSectionFeatureCollectionMapper.map(accessibility, START_POINT_REQUESTED,
-                candidateMatch, ACCESSIBLE);
-        assertThat(result).isEqualTo(
+
+        var roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(accessibility, startPoint, ACCESSIBLE);
+
+        assertThat(roadSectionFeatureCollection).isEqualTo(
                 new RoadSectionFeatureCollectionJson()
                         .type(TypeEnum.FEATURE_COLLECTION)
                         .features(List.of(roadSectionFeatureJson)));
