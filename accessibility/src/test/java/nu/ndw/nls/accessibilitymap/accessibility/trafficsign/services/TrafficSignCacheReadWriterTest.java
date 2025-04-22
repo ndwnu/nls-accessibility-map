@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static nu.ndw.nls.springboot.test.logging.dto.VerificationMode.times;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -241,9 +242,9 @@ class TrafficSignCacheReadWriterTest {
                 .isEqualTo(new ObjectMapper().writeValueAsString(List.of(trafficSign1, trafficSign2)));
 
         loggerExtension.containsLog(Level.INFO, "Writing traffic signs to file: %s".formatted(oldTrafficSignFile.toAbsolutePath()));
-        // loggerExtension.containsLog(Level.INFO, "Removed old symlink target: %s".formatted(oldTrafficSignFile.toAbsolutePath()));
+        loggerExtension.containsLog(Level.INFO, "Removed old symlink target: %s".formatted(oldTrafficSignFile.toAbsolutePath()));
         loggerExtension.containsLog(Level.INFO, "Writing traffic signs to file: %s".formatted(newTrafficSignFile.toAbsolutePath()));
-        loggerExtension.containsLog(Level.INFO, "Updated symlink: %s".formatted(activeFile.toPath().toAbsolutePath()), List.of(), 2);
+        loggerExtension.containsLog(Level.INFO, "Updated symlink: %s".formatted(activeFile.toPath().toAbsolutePath()), List.of(), times(2));
     }
 
     @Test

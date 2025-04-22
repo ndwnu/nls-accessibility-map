@@ -32,31 +32,34 @@ public class TrafficSignCacheUpdater {
      * File watcher but as it turns out that is not reliable on azure.
      */
     @EventListener(ApplicationStartedEvent.class)
-    @SuppressWarnings({"java:S1166", "java:S2142"})
+    @SuppressWarnings({"java:S1166", "java:S2142", "java:S134"})
     public void watchFileChanges() throws IOException {
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
 
         fileWatcherThread = new Thread(() -> {
 
-            log.info("Watching file changes on {}", trafficSignCacheConfiguration.getActiveVersion());
             long lastModified = trafficSignCacheConfiguration.getActiveVersion().lastModified();
-            while (true) {
+            log.info("Watching file changes on {}", trafficSignCacheConfiguration.getActiveVersion());
 
+            while (true) {
                 try {
                     if (lastModified != trafficSignCacheConfiguration.getActiveVersion().lastModified()) {
                         lastModified = trafficSignCacheConfiguration.getActiveVersion().lastModified();
 
                         log.info("Triggering update");
-                        trafficSignDataService.updateTrafficSignData();
-                        log.info("Finished update");
+                        try {
+                            trafficSignDataService.updateTrafficSignData();
+                            log.info("Finished update");
+                        } catch (RuntimeException runtimeException) {
+                            log.error("Failed to update traffic signs data", runtimeException);
+                        }
                     }
-                    Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis());
-                } catch (InterruptedException interruptedException) {
-                    log.warn("File watcher thread interrupted");
-                    return;
-                } catch (RuntimeException runtimeException) {
-                    log.error("Failed to update traffic signs data", runtimeException);
-                    return;
+                } finally {
+                    try {
+                        Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis());
+                    } catch (InterruptedException exception) {
+                        log.error("Failed to sleep", exception);
+                    }
                 }
             }
         });
