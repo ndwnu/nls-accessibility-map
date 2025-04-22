@@ -94,7 +94,7 @@ class AccessibilityMapApiDelegateImpTest {
     private Point requestedPoint;
 
     @Mock
-    private CandidateMatch candidateMatch;
+    private CandidateMatch startPoint;
 
     @Mock
     private AccessibilityMapResponseJson accessibilityMapResponseJson;
@@ -227,7 +227,7 @@ class AccessibilityMapApiDelegateImpTest {
         setUpFixture(emissionClassJson, fuelTypeJson);
 
         when(roadSectionFeatureCollectionMapper
-                .map(accessibility, true, candidateMatch, true))
+                .map(accessibility, startPoint, true))
                 .thenReturn(roadSectionFeatureCollectionJson);
 
         ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
@@ -279,8 +279,8 @@ class AccessibilityMapApiDelegateImpTest {
                 .thenReturn(accessibilityRequest);
 
         when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
-        when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(candidateMatch));
-        when(candidateMatch.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
+        when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(startPoint));
+        when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
 
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);
     }
