@@ -37,7 +37,6 @@ import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipa
 import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -172,10 +171,12 @@ class AccessibilityMapApiDelegateImpTest {
                 .hasMessageContaining(ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE);
     }
 
-    @Test
-    void getInaccessibleRoadSections() {
+    @ParameterizedTest
+    @MethodSource("provideCorrectEmissionZoneParameters")
+    void getInaccessibleRoadSections(EmissionClassJson emissionClassJson,
+            FuelTypeJson fuelTypeJson) {
 
-        setUpFixture();
+        setUpFixture(emissionClassJson, fuelTypeJson);
 
         when(accessibilityResponseMapper.map(accessibility, REQUESTED_ROAD_SECTION_ID))
                 .thenReturn(accessibilityMapResponseJson);
@@ -188,8 +189,8 @@ class AccessibilityMapApiDelegateImpTest {
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
                 VEHICLE_AXLE_LOAD,
-                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, EmissionClassJson.FIVE,
-                FuelTypeJson.PETROL);
+                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
+                fuelTypeJson);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(accessibilityMapResponseJson);
@@ -218,10 +219,12 @@ class AccessibilityMapApiDelegateImpTest {
                 .hasMessageContaining(ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE);
     }
 
-    @Test
-    void getRoadSections() {
+    @ParameterizedTest
+    @MethodSource("provideCorrectEmissionZoneParameters")
+    void getRoadSections(EmissionClassJson emissionClassJson,
+            FuelTypeJson fuelTypeJson) {
 
-        setUpFixture();
+        setUpFixture(emissionClassJson, fuelTypeJson);
 
         when(roadSectionFeatureCollectionMapper
                 .map(accessibility, true, candidateMatch, true))
@@ -235,8 +238,8 @@ class AccessibilityMapApiDelegateImpTest {
                 VEHICLE_HEIGHT,
                 VEHICLE_WEIGHT,
                 VEHICLE_AXLE_LOAD,
-                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, EmissionClassJson.FIVE,
-                FuelTypeJson.PETROL);
+                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
+                fuelTypeJson);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
@@ -247,7 +250,7 @@ class AccessibilityMapApiDelegateImpTest {
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
 
-    private void setUpFixture() {
+    private void setUpFixture(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
         when(clockService.now()).thenReturn(timestamp);
         when(accessibilityService.calculateAccessibility(eq(accessibilityRequest), any(AccessibleRoadSectionModifier.class)))
@@ -270,8 +273,8 @@ class AccessibilityMapApiDelegateImpTest {
                 .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
                 .vehicleWidth(VEHICLE_WIDTH)
                 .vehicleHasTrailer(false)
-                .emissionClass(EmissionClassJson.FIVE)
-                .fuelType(FuelTypeJson.PETROL)
+                .emissionClass(emissionClassJson)
+                .fuelType(fuelTypeJson)
                 .build()))
                 .thenReturn(accessibilityRequest);
 
@@ -286,6 +289,14 @@ class AccessibilityMapApiDelegateImpTest {
         return Stream.of(
                 Arguments.of(EmissionClassJson.FIVE, null),
                 Arguments.of(null, FuelTypeJson.PETROL)
+        );
+    }
+
+
+    static Stream<Arguments> provideCorrectEmissionZoneParameters() {
+        return Stream.of(
+                Arguments.of(EmissionClassJson.FIVE, FuelTypeJson.PETROL),
+                Arguments.of(null, null)
         );
     }
 }
