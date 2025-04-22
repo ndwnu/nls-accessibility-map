@@ -1,9 +1,22 @@
 # Introduction
-This is a multi-module project for the Accessibility Map API. It consists of the following modules:
 
-- Specification (API YAML definition)
-- [Backend REST API](backend/README.md)
-- Network generation job
+This project is used for calculations concerning road accessibility given certain traffic sign restrictions based on vehicle
+characteristics.
+It's main functional modules are rest api service called backend and a jobs module subdivided into multiple more specialised submodules.
+
+[Techincal details](docs/technical-details.md)
+
+Module setup :
+
+* Specification (API YAML definition)
+* [Backend REST API](backend/README.md)
+* accessibility shared core module
+* Jobs module for background cron and event triggered jobs
+  * graphhopper module to create a new graphhopper routable network on disk listens to nwb imported events
+  * jobs-component-test module to run job's component tests
+  * mapgenerator module to run various (geojson based) map generation routines
+  * traffic-sign module for network analyses jobs and traffic sign cache updates
+  * trafficsignclient module for accessing the traffic sign api to get the traffic sign data
 
 ## GitHub vs Azure DevOps
 This project is maintained by Nationaal Dataportaal Wegverkeer (NDW)
@@ -20,12 +33,13 @@ the `openapi-generator-maven-plugin` to generate controllers for the backend app
 
 ## Building
 Build Maven with profile `regression-test` to build the project with unit and integration testing.
+If you want the component tests to run then also add `component-test`
 
 ## Build application and run IT tests via Maven
 Make sure your Spring Boot application is not running in IntelliJ.
 Run:
 ```shell
-mvn verify -P regression-test
+mvn verify -P regression-test -P component-test
 ```
 
 ## Testing on staging
@@ -82,3 +96,4 @@ https://wiki.openstreetmap.org/wiki/Key:opening_hours
 
 ## Pretty printing geojson
 jq . c6WindowTimeSegments.geojson | sponge c6WindowTimeSegments.geojson
+
