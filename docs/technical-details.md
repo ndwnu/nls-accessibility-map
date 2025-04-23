@@ -13,9 +13,9 @@ A custom model allows you to modify the default behavior of a vehicle profile by
  </p>
 <p>There are however a number of drawbacks to this approach.</p>
 
-1. If a traffic sign was not at the end of the beginning of the edge but on a fraction this was not possible to encode.
-2. When no direction is specified in the data a traffic sign is placed on both sides of the road section.
-3. Restriction calculation of more complex use cases (ie time based access) is not supported because only simple values are supported as
+1. If a traffic sign was not placed at the beginning or the end of the edge but on a fraction this was not possible to encode.
+2. When no direction was specified in the data a traffic sign was placed on both sides of the road section.
+3. Restriction calculation of more complex use cases (ie time based access) was not supported because only simple values are supported as
    encoded values.
 
 ## New setup
@@ -25,11 +25,11 @@ In order to accommodate aforementioned shortcomings a new approach was investiga
 This involved moving away from the graphhopper custom model api and creating a new implementation to handle edge restrictions.
 The first step was to use the functionality provided by Graphhoppers' Querygraph class to add support for fractionally placed edge restrictions.
 The query graph is used in graphhopper to allow adding via points for routing among others.
-This 'network cutting functionality' comes in handy when you want to precisely calculate the accessibility based on fractional traffic sign restrictions.
+This 'network cutting functionality' comes in handy when you want to precisely calculate the accessibility based on fractionally placed traffic sign restrictions.
 Furthermore, the traffic sign restrictions are not encoded on the network but calculated per request.
 The traffic sign restrictions are then associated with the correct edges (edge keys) and passed to a custom weighting adapter.
 This weighting adapter then blocks access to an edge if it encounters an edge in the set of blocked edges.
-The disadvantage is that it does not integrate with the graphhopper custom model api
+The disadvantage is that it does not integrate with the graphhopper custom model api.
 But because the restriction calculation is done entirely separate from graphhopper it allows for more complex use cases.
 </p>
 <p>
