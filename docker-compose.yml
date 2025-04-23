@@ -37,6 +37,23 @@ services:
       - ./.tmp/graphhopper:/application/graphhopper
       - ./.tmp/trafficsigns:/application/trafficsigns
 
+  nls-accessibility-map-api-component-test:
+    build: docker/nls-accessibility-map-api
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker,component-test
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - NLS_KEYCLOAK_URL=http://nls-keycloak:8000/auth
+      - NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP=false
+    ports:
+      - "8080:8080"
+    depends_on:
+      - nls-keycloak
+    networks:
+      - nls-accessibility-map-network
+    volumes:
+      - ./.tmp/graphhopper:/application/graphhopper
+      - ./.tmp/trafficsigns:/application/trafficsigns
+
   nls-accessibility-map-graphhopper-job:
     build: docker/nls-accessibility-map-graphhopper-job
     environment:

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response;
+package nu.ndw.nls.accessibilitymap.backend.municipality.controllers.mappers;
 
 import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
 import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
-import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.rounding.dto.RoundDoubleConfiguration;
 import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
@@ -28,32 +28,36 @@ public class MunicipalityFeatureMapper {
     private final RoundDoubleMapper doubleMapper;
 
     public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
+
         return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION,
                 municipalities.stream().map(this::mapMunicipality).toList());
     }
 
-    private MunicipalityFeatureJson mapMunicipality(Municipality m) {
-        List<List<Double>> bounds = mapMunicipalityBounds(m.getBounds());
+    private MunicipalityFeatureJson mapMunicipality(Municipality municipality) {
 
-        String requestExemptionUrlString = Optional.ofNullable(m.getRequestExemptionUrl())
+        List<List<Double>> bounds = mapMunicipalityBounds(municipality.bounds());
+
+        String requestExemptionUrlString = Optional.ofNullable(municipality.requestExemptionUrl())
                 .map(URL::toString)
                 .orElse(EMPTY_STRING);
 
         return new MunicipalityFeatureJson(
                 FEATURE,
-                m.getMunicipalityId(),
-                mapStartPoint(m),
+                municipality.municipalityId(),
+                mapStartPoint(municipality),
                 new MunicipalityPropertiesJson(
-                        m.getName(),
-                        (int) m.getSearchDistanceInMetres(),
+                        municipality.name(),
+                        (int) municipality.searchDistanceInMetres(),
                         bounds,
                         requestExemptionUrlString,
-                        m.getDateLastCheck()));
+                        municipality.dateLastCheck()));
     }
 
-    private PointJson mapStartPoint(Municipality m) {
-        double roundedX = roundCoordinate(m.getStartPoint().getX());
-        double roundedY = roundCoordinate(m.getStartPoint().getY());
+    private PointJson mapStartPoint(Municipality municipality) {
+
+        double roundedX = roundCoordinate(municipality.startCoordinateLongitude());
+        double roundedY = roundCoordinate(municipality.startCoordinateLatitude());
+
         return mapPointJson(roundedX, roundedY);
     }
 
@@ -62,14 +66,15 @@ public class MunicipalityFeatureMapper {
     }
 
     private List<List<Double>> mapMunicipalityBounds(MunicipalityBoundingBox boundingBox) {
-        List<Double> from = List.of(roundCoordinate(boundingBox.longitudeFrom()),
-                roundCoordinate(boundingBox.latitudeFrom()));
-        List<Double> to = List.of(roundCoordinate(boundingBox.longitudeTo()),
-                roundCoordinate(boundingBox.latitudeTo()));
+
+        List<Double> from = List.of(roundCoordinate(boundingBox.longitudeFrom()), roundCoordinate(boundingBox.latitudeFrom()));
+        List<Double> to = List.of(roundCoordinate(boundingBox.longitudeTo()), roundCoordinate(boundingBox.latitudeTo()));
+
         return List.of(from, to);
     }
 
     private Double roundCoordinate(double unRounded) {
+
         return doubleMapper.round(unRounded, RoundDoubleConfiguration.ROUND_7_HALF_UP);
     }
 }

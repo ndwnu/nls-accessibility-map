@@ -43,6 +43,9 @@ nu:
             timeZone: "Europe/Amsterdam"
             waitForDebuggerToBeConnected: false
           driver:
+            accessibility-map:
+              host: localhost
+              port: 8080
             general:
               debugFolder: ".debug/"
             maven:

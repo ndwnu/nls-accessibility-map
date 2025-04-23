@@ -5,8 +5,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.Set;
+import lombok.Builder;
+import lombok.With;
 import org.springframework.validation.annotation.Validated;
 
+@Builder
+@With
 @Validated
 public record Exemption(
         @NotNull String id,

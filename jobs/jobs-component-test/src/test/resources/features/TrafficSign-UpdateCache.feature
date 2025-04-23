@@ -13,6 +13,6 @@ Feature: TrafficSign-UpdateCache
     Then validate trafficSignCache
       | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | windowTime | emissionZoneId | id                                   |
       | 5           | 11        | 0.5      | C12     |           | FORTH         | window 1   |                | 00000000-0000-4000-0000-000000000001 |
-      | 6           | 1         | 1.0      | C17     | 1.9       | BACK          | window 5   |                | 00000000-0000-4000-0000-000000000003 |
-      | 7           | 8         | 0.5      | C22a    | 1.9       | BACK          |            | zone-zero      | 00000000-0000-4000-0000-000000000004 |
-      | 7           | 8         | 0.5      | C22c    | 1.9       | BACK          |            | zone-low       | 00000000-0000-4000-0000-000000000005 |
+      | 6           | 1         | 1.0      | C17     | 190       | BACK          | window 5   |                | 00000000-0000-4000-0000-000000000003 |
+      | 7           | 8         | 0.5      | C22a    | 190       | BACK          |            | zone-zero      | 00000000-0000-4000-0000-000000000004 |
+      | 7           | 8         | 0.5      | C22c    | 190       | BACK          |            | zone-low       | 00000000-0000-4000-0000-000000000005 |

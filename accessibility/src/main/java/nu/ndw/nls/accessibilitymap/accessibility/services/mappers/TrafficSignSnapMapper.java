@@ -23,8 +23,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TrafficSignSnapMapper {
 
-    private final NetworkGraphHopper networkGraphHopper;
-
     /**
      * Maps a collection of TrafficSign objects to their corresponding TrafficSignSnap objects. For each TrafficSign, it tries to find its
      * closest snap point on the network and creates a TrafficSignSnap object if a valid snap is found.
@@ -32,10 +30,10 @@ public class TrafficSignSnapMapper {
      * @param trafficSigns the collection of TrafficSign objects to be mapped
      * @return a list of TrafficSignSnap objects representing the mapping of TrafficSign objects to their closest snap point on the network
      */
-    public List<TrafficSignSnap> map(Collection<TrafficSign> trafficSigns) {
+    public List<TrafficSignSnap> map(Collection<TrafficSign> trafficSigns, NetworkGraphHopper networkGraphHopper) {
 
         return trafficSigns.stream()
-                .map(trafficSign -> buildSnap(trafficSign)
+                .map(trafficSign -> buildSnap(trafficSign, networkGraphHopper)
                         .map(snap -> TrafficSignSnap
                                 .builder()
                                 .trafficSign(trafficSign)
@@ -46,12 +44,12 @@ public class TrafficSignSnapMapper {
                 .toList();
     }
 
-    private Optional<Snap> buildSnap(TrafficSign trafficSign) {
+    private Optional<Snap> buildSnap(TrafficSign trafficSign, NetworkGraphHopper networkGraphHopper) {
         Snap snap = networkGraphHopper.getLocationIndex()
                 .findClosest(
                         trafficSign.networkSnappedLatitude(),
                         trafficSign.networkSnappedLongitude(),
-                        edgeIteratorState -> trafficSignMatchesEdge(trafficSign, edgeIteratorState)
+                        edgeIteratorState -> trafficSignMatchesEdge(trafficSign, networkGraphHopper, edgeIteratorState)
                 );
         if (!snap.isValid()) {
             log.warn("No road section present for traffic sign id {} with road section id {} in nwb map on graphhopper network",
@@ -71,12 +69,15 @@ public class TrafficSignSnapMapper {
      * @param edgeIteratorState - The edge that it should be linked up with.
      * @return - True if they match, false if they don't.
      */
-    private boolean trafficSignMatchesEdge(TrafficSign trafficSign, EdgeIteratorState edgeIteratorState) {
+    private boolean trafficSignMatchesEdge(
+            TrafficSign trafficSign,
+            NetworkGraphHopper networkGraphHopper,
+            EdgeIteratorState edgeIteratorState) {
 
-        return getLinkId(edgeIteratorState) == trafficSign.roadSectionId();
+        return getLinkId(networkGraphHopper, edgeIteratorState) == trafficSign.roadSectionId();
     }
 
-    private int getLinkId(EdgeIteratorState edge) {
+    private int getLinkId(NetworkGraphHopper networkGraphHopper, EdgeIteratorState edge) {
 
         return edge.get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
     }

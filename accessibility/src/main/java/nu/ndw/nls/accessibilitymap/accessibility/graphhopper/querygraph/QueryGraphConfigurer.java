@@ -42,8 +42,6 @@ public class QueryGraphConfigurer {
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
-    private final EncodingManager encodingManager;
-
     /**
      * Creates edge restrictions for traffic signs by mapping the snapped traffic signs to road edges in the query graph, based on the
      * characteristics of the traffic signs and edges. Ensures compatible matches between traffic signs and edges, and logs any unassigned
@@ -53,7 +51,10 @@ public class QueryGraphConfigurer {
      * @param snappedTrafficSigns a list of traffic signs with their corresponding snapped locations
      * @return an instance of EdgeRestrictions containing the mapped edge restrictions
      */
-    public EdgeRestrictions createEdgeRestrictions(QueryGraph queryGraph, List<TrafficSignSnap> snappedTrafficSigns) {
+    public EdgeRestrictions createEdgeRestrictions(
+            QueryGraph queryGraph,
+            EncodingManager encodingManager,
+            List<TrafficSignSnap> snappedTrafficSigns) {
         List<EdgeRestriction> edgeRestrictions = new ArrayList<>();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         Set<TrafficSignSnap> assignedTrafficSignSnaps = new HashSet<>();
@@ -69,10 +70,10 @@ public class QueryGraphConfigurer {
             while (edgeIterator.next()) {
                 if (isTrafficSignInSameDirectionAsEdge(edgeIterator, trafficSignSnap) && isTrafficSignInFrontOfEdge(edgeIterator,
                         trafficSignSnap)) {
-                    if (trafficSignDoesNotMatchEdge(trafficSignSnap.getTrafficSign(), edgeIterator)) {
+                    if (trafficSignDoesNotMatchEdge(encodingManager, trafficSignSnap.getTrafficSign(), edgeIterator)) {
                         log.warn("Traffic sign {} and road section id {} does not match linked edge with road section id {}",
                                 trafficSignSnap,
-                                trafficSignSnap.getTrafficSign().roadSectionId(), getLinkId(edgeIterator));
+                                trafficSignSnap.getTrafficSign().roadSectionId(), getLinkId(encodingManager, edgeIterator));
                     } else {
 
                         edgeRestrictions.add(EdgeRestriction.builder()
@@ -136,12 +137,15 @@ public class QueryGraphConfigurer {
         return lineString.getStartPoint().getCoordinate();
     }
 
-    private boolean trafficSignDoesNotMatchEdge(TrafficSign trafficSign, EdgeIteratorState edgeIteratorState) {
+    private boolean trafficSignDoesNotMatchEdge(
+            EncodingManager encodingManager,
+            TrafficSign trafficSign,
+            EdgeIteratorState edgeIteratorState) {
 
-        return getLinkId(edgeIteratorState) != trafficSign.roadSectionId();
+        return getLinkId(encodingManager, edgeIteratorState) != trafficSign.roadSectionId();
     }
 
-    private int getLinkId(EdgeIteratorState edge) {
+    private int getLinkId(EncodingManager encodingManager, EdgeIteratorState edge) {
 
         return edge.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
     }

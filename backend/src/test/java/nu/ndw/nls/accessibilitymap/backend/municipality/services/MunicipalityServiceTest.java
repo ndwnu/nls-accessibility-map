@@ -4,10 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.MunicipalityNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.municipality.MunicipalityConfiguration;
-import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.repository.MunicipalityRepository;
+import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,10 +20,8 @@ class MunicipalityServiceTest {
 
     private static final String MUNICIPALITY_ID_STRING = "GM0307";
 
-    private static final String MUNICIPALITY_ID_2_STRING = "GM0008";
-
     @Mock
-    private MunicipalityConfiguration municipalityConfiguration;
+    private MunicipalityRepository repository;
 
     @Mock
     private Municipality municipality;
@@ -32,19 +31,43 @@ class MunicipalityServiceTest {
 
     @Test
     void getMunicipalityById() {
-        when(municipalityConfiguration.getMunicipalities())
-                .thenReturn(Map.of(MUNICIPALITY_ID_STRING, municipality));
+
+        when(repository.findFirstById(MUNICIPALITY_ID_STRING)).thenReturn(Optional.of(municipality));
+
         Municipality result = municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING);
+
         assertThat(result).isEqualTo(municipality);
     }
 
     @Test
     void getMunicipalityById_exception_notFound() {
-        when(municipalityConfiguration.getMunicipalities())
-                .thenReturn(Map.of(MUNICIPALITY_ID_2_STRING, municipality));
+
+        when(repository.findFirstById(MUNICIPALITY_ID_STRING)).thenReturn(Optional.empty());
+
         MunicipalityNotFoundException municipalityNotFoundException = assertThrows(MunicipalityNotFoundException.class,
                 () -> municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING));
+
         assertThat(municipalityNotFoundException.getMessage())
-                .isEqualTo("The municipality with id: GM0307 cannot be found");
+                .isEqualTo("The municipality with id: %s cannot be found".formatted(MUNICIPALITY_ID_STRING));
+    }
+
+    @Test
+    void findAll() {
+
+        when(repository.findAll()).thenReturn(List.of(municipality));
+
+        List<Municipality> municipalities = municipalityService.findAll();
+
+        assertThat(municipalities).containsExactly(municipality);
+    }
+
+    @Test
+    void findAll_nothingFound() {
+
+        when(repository.findAll()).thenReturn(List.of());
+
+        List<Municipality> municipalities = municipalityService.findAll();
+
+        assertThat(municipalities).isEmpty();
     }
 }

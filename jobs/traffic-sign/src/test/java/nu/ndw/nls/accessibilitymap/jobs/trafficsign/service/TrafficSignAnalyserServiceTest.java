@@ -30,6 +30,7 @@ import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiCl
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.ReportApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.IssueJson;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,9 @@ class TrafficSignAnalyserServiceTest {
 
     @Mock
     private AccessibilityService accessibilityService;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private IssueApiClient issueApiClient;
@@ -103,7 +107,7 @@ class TrafficSignAnalyserServiceTest {
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -124,7 +128,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(issueApiClient.createIssue(createIssueJson)).thenReturn(createIssueResponse);
 
-        trafficSignAnalyserService.analyse(analyseProperties);
+        trafficSignAnalyserService.analyse(networkGraphHopper, analyseProperties);
 
         verify(issueApiClient).createIssue(createIssueJson);
         verify(reportApiClient).reportComplete(argThat(completeReportJson -> {
@@ -150,7 +154,7 @@ class TrafficSignAnalyserServiceTest {
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -169,7 +173,7 @@ class TrafficSignAnalyserServiceTest {
                 eq("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(), TrafficSignType.C22C.getRvvCode()))
         )).thenReturn(createIssueJson);
 
-        trafficSignAnalyserService.analyse(analyseProperties);
+        trafficSignAnalyserService.analyse(networkGraphHopper, analyseProperties);
 
         verify(issueApiClient, never()).createIssue(any());
         verify(reportApiClient, never()).reportComplete(any());
@@ -186,7 +190,7 @@ class TrafficSignAnalyserServiceTest {
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -207,7 +211,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(issueApiClient.createIssue(createIssueJson)).thenThrow(feignServerException);
 
-        assertThat(catchThrowable(() -> trafficSignAnalyserService.analyse(analyseProperties)))
+        assertThat(catchThrowable(() -> trafficSignAnalyserService.analyse(networkGraphHopper, analyseProperties)))
                 .isInstanceOf(FeignServerException.class);
 
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseProperties");
@@ -222,7 +226,7 @@ class TrafficSignAnalyserServiceTest {
         when(analyseProperties.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -243,7 +247,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(issueApiClient.createIssue(createIssueJson)).thenThrow(feignClientException);
 
-        assertThat(catchThrowable(() -> trafficSignAnalyserService.analyse(analyseProperties)))
+        assertThat(catchThrowable(() -> trafficSignAnalyserService.analyse(networkGraphHopper, analyseProperties)))
                 .isInstanceOf(FeignClientException.class);
 
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseProperties");

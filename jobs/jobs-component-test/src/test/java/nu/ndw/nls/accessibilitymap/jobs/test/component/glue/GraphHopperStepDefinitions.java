@@ -103,4 +103,5 @@ public class GraphHopperStepDefinitions {
                 //Circle connections
                 .createRoad(8, 2).createRoad(5, 11);
     }
+
 }

@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @SuppressWarnings("ConfigurationProperties")
 @Configuration
 @ConfigurationProperties
-@PropertySource(value = "classpath:road-operators.yml", factory = YamlPropertySourceFactory.class)
+@PropertySource(value = "classpath:data/road-operators.yml", factory = YamlPropertySourceFactory.class)
 @Validated
 @RequiredArgsConstructor
 @Getter

@@ -5,7 +5,7 @@
     {
       "startTime":"2025-01-01T00:00:00Z",
       "endTime":"2027-12-31T23:00:00Z",
-      "EmissionClasss":[
+      "emissionClasses":[
         "SIX"
       ],
       "transportTypes":[
@@ -19,7 +19,7 @@
     {
       "startTime":"2025-01-01T00:00:00Z",
       "endTime":"2026-12-31T23:00:00Z",
-      "EmissionClasss":[
+      "emissionClasses":[
         "FIVE"
       ],
       "transportTypes":[
@@ -34,7 +34,7 @@
   "restriction":{
     "id":"NDW11_64717e49-b364-4001-b6f9-14270d068764_restriction",
     "fuelTypes":[],
-    "vehicleTypes":[
+    "transportTypes":[
       "TRUCK",
       "DELIVERY_VAN"
     ],

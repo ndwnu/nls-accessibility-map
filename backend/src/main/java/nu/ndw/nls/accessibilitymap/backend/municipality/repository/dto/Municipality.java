@@ -1,0 +1,34 @@
+package nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import lombok.With;
+
+@With
+public record Municipality(
+        @NotNull @JsonProperty("start-coordinate-latitude") double startCoordinateLatitude,
+        @NotNull @JsonProperty("start-coordinate-longitude") double startCoordinateLongitude,
+        @NotNull @JsonProperty("search-distance-in-metres") double searchDistanceInMetres,
+        @NotNull @JsonProperty("municipality-id") String municipalityId,
+        @NotNull String name,
+        @JsonProperty("request-exemption-url") URL requestExemptionUrl,
+        @NotNull @Valid MunicipalityBoundingBox bounds,
+        @JsonProperty("date-last-check") LocalDate dateLastCheck) {
+
+    private static final Pattern PATTERN = Pattern.compile(".{2}0*(\\d+)$");
+
+    public int municipalityIdAsInteger() {
+
+        Matcher m = PATTERN.matcher(municipalityId);
+        if (m.find()) {
+            return Integer.parseInt(m.group(1));
+        } else {
+            throw new IllegalStateException("Incorrect municipalityId " + municipalityId);
+        }
+    }
+}

@@ -5,7 +5,7 @@
     {
       "startTime":"-999999999-01-01T00:00:00+18:00",
       "endTime":"-999999999-01-01T00:00:00+18:00",
-      "EmissionClasss":[
+      "emissionClasses":[
         "SIX"
       ],
       "transportTypes":[
@@ -22,7 +22,7 @@
     "fuelTypes":[
       "DIESEL"
     ],
-    "vehicleTypes":[
+    "transportTypes":[
       "TRUCK",
       "VEHICLE_WITH_DANGEROUS_SUPPLIES",
       "MOPED",

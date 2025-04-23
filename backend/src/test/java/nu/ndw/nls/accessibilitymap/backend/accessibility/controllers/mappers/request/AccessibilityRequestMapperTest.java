@@ -13,12 +13,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityReque
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.locationtech.jts.geom.Point;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -37,9 +36,9 @@ class AccessibilityRequestMapperTest {
 
     private static final int DEFAULT_MUNICIPALITY_ID = 307;
 
-    private static final double DEFAULT_X_COORDINATE = 0.0;
+    private static final double DEFAULT_LONGITUDE_COORDINATE = 0.0;
 
-    private static final double DEFAULT_Y_COORDINATE = 1.0;
+    private static final double DEFAULT_LATITUDE_COORDINATE = 1.0;
 
     private static final double MAX_LONGITUDE = 2.0;
 
@@ -65,9 +64,6 @@ class AccessibilityRequestMapperTest {
     private Municipality municipality;
 
     @Mock
-    private Point point;
-
-    @Mock
     private MunicipalityBoundingBox municipalityBoundingBox;
 
     @Mock
@@ -89,16 +85,14 @@ class AccessibilityRequestMapperTest {
         when(vehicleArguments.emissionClass()).thenReturn(EmissionClassJson.ONE);
         when(vehicleArguments.fuelType()).thenReturn(FuelTypeJson.PETROL);
 
-        when(municipality.getMunicipalityIdInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
-        when(municipality.getSearchDistanceInMetres()).thenReturn(DEFAULT_SEARCH_DISTANCE);
-        when(municipality.getStartPoint()).thenReturn(point);
-        when(municipality.getBounds()).thenReturn(municipalityBoundingBox);
+        when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
+        when(municipality.searchDistanceInMetres()).thenReturn(DEFAULT_SEARCH_DISTANCE);
+        when(municipality.startCoordinateLatitude()).thenReturn(DEFAULT_LATITUDE_COORDINATE);
+        when(municipality.startCoordinateLongitude()).thenReturn(DEFAULT_LONGITUDE_COORDINATE);
+        when(municipality.bounds()).thenReturn(municipalityBoundingBox);
 
-        when(point.getX()).thenReturn(DEFAULT_X_COORDINATE);
-        when(point.getY()).thenReturn(DEFAULT_Y_COORDINATE);
-
-        when(municipalityBoundingBox.longitudeFrom()).thenReturn(DEFAULT_X_COORDINATE);
-        when(municipalityBoundingBox.latitudeFrom()).thenReturn(DEFAULT_Y_COORDINATE);
+        when(municipalityBoundingBox.longitudeFrom()).thenReturn(DEFAULT_LONGITUDE_COORDINATE);
+        when(municipalityBoundingBox.latitudeFrom()).thenReturn(DEFAULT_LATITUDE_COORDINATE);
         when(municipalityBoundingBox.longitudeTo()).thenReturn(MAX_LONGITUDE);
         when(municipalityBoundingBox.latitudeTo()).thenReturn(MAX_LATITUDE);
 
@@ -110,15 +104,15 @@ class AccessibilityRequestMapperTest {
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
-                .boundingBox(BBox.fromPoints(DEFAULT_Y_COORDINATE, DEFAULT_X_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
+                .boundingBox(BBox.fromPoints(DEFAULT_LATITUDE_COORDINATE, DEFAULT_LONGITUDE_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
                 .transportTypes(Set.of(TransportType.CAR))
-                .vehicleHeightInCm((double) DEFAULT_VEHICLE_HEIGHT)
-                .vehicleWeightInKg((double) DEFAULT_VEHICLE_WEIGHT)
-                .vehicleLengthInCm((double) DEFAULT_VEHICLE_LENGTH)
-                .vehicleWidthInCm((double) DEFAULT_VEHICLE_WIDTH)
-                .vehicleAxleLoadInKg((double) DEFAULT_VEHICLE_AXLE_LOAD)
-                .startLocationLongitude(DEFAULT_X_COORDINATE)
-                .startLocationLatitude(DEFAULT_Y_COORDINATE)
+                .vehicleHeightInCm((double) DEFAULT_VEHICLE_HEIGHT * 100)
+                .vehicleLengthInCm((double) DEFAULT_VEHICLE_LENGTH* 100)
+                .vehicleWidthInCm((double) DEFAULT_VEHICLE_WIDTH* 100)
+                .vehicleWeightInKg((double) DEFAULT_VEHICLE_WEIGHT * 1_000)
+                .vehicleAxleLoadInKg((double) DEFAULT_VEHICLE_AXLE_LOAD * 1_000)
+                .startLocationLatitude(DEFAULT_LATITUDE_COORDINATE)
+                .startLocationLongitude(DEFAULT_LONGITUDE_COORDINATE)
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
                 .emissionClasses(Set.of(EmissionClass.ONE))
                 .fuelTypes(Set.of(FuelType.PETROL))
@@ -137,16 +131,14 @@ class AccessibilityRequestMapperTest {
         when(vehicleArguments.emissionClass()).thenReturn(null);
         when(vehicleArguments.fuelType()).thenReturn(null);
 
-        when(municipality.getMunicipalityIdInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
-        when(municipality.getSearchDistanceInMetres()).thenReturn(DEFAULT_SEARCH_DISTANCE);
-        when(municipality.getStartPoint()).thenReturn(point);
-        when(municipality.getBounds()).thenReturn(municipalityBoundingBox);
+        when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
+        when(municipality.searchDistanceInMetres()).thenReturn(DEFAULT_SEARCH_DISTANCE);
+        when(municipality.startCoordinateLatitude()).thenReturn(DEFAULT_LATITUDE_COORDINATE);
+        when(municipality.startCoordinateLongitude()).thenReturn(DEFAULT_LONGITUDE_COORDINATE);
+        when(municipality.bounds()).thenReturn(municipalityBoundingBox);
 
-        when(point.getX()).thenReturn(DEFAULT_X_COORDINATE);
-        when(point.getY()).thenReturn(DEFAULT_Y_COORDINATE);
-
-        when(municipalityBoundingBox.longitudeFrom()).thenReturn(DEFAULT_X_COORDINATE);
-        when(municipalityBoundingBox.latitudeFrom()).thenReturn(DEFAULT_Y_COORDINATE);
+        when(municipalityBoundingBox.longitudeFrom()).thenReturn(DEFAULT_LONGITUDE_COORDINATE);
+        when(municipalityBoundingBox.latitudeFrom()).thenReturn(DEFAULT_LATITUDE_COORDINATE);
         when(municipalityBoundingBox.longitudeTo()).thenReturn(MAX_LONGITUDE);
         when(municipalityBoundingBox.latitudeTo()).thenReturn(MAX_LATITUDE);
 
@@ -158,10 +150,10 @@ class AccessibilityRequestMapperTest {
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
-                .boundingBox(BBox.fromPoints(DEFAULT_Y_COORDINATE, DEFAULT_X_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
+                .boundingBox(BBox.fromPoints(DEFAULT_LATITUDE_COORDINATE, DEFAULT_LONGITUDE_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
                 .transportTypes(Set.of(TransportType.CAR))
-                .startLocationLongitude(DEFAULT_X_COORDINATE)
-                .startLocationLatitude(DEFAULT_Y_COORDINATE)
+                .startLocationLongitude(DEFAULT_LONGITUDE_COORDINATE)
+                .startLocationLatitude(DEFAULT_LATITUDE_COORDINATE)
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
                 .build());

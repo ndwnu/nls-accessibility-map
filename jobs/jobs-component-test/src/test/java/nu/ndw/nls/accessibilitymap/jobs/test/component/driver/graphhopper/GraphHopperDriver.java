@@ -11,6 +11,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.util.EdgeExplorer;
+import com.graphhopper.util.EdgeIterator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,12 +21,16 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink.AccessibilityLinkBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
@@ -45,6 +52,7 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Li
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +64,7 @@ public class GraphHopperDriver {
     private static final FileAttribute<?> FOLDER_PERMISSIONS = PosixFilePermissions.asFileAttribute(
             Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE));
 
-    private static final String VERSION = "accessibility_latest_component_test";
+    private static final String VERSION = "accessibility_latest";
 
     private static final String ACCESSIBILITY_META_DATA_JSON = "accessibility_meta_data.json";
 
@@ -107,8 +115,6 @@ public class GraphHopperDriver {
     @SuppressWarnings("java:S3658")
     public void buildNetwork() {
 
-        writeNetworkAsGeoJsonToDisk();
-
         RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = RoutingNetworkSettings.builder(AccessibilityLink.class)
                 .indexed(true)
                 .linkSupplier(() -> join(List.of(networkDataService.getLinks().stream()
@@ -131,11 +137,13 @@ public class GraphHopperDriver {
 
         graphHopperNetworkService.storeOnDisk(routingNetworkSettings);
         try {
-            new ObjectMapper().writeValue(fullStorageLocation.resolve(ACCESSIBILITY_META_DATA_JSON).toFile(),
+            new ObjectMapper().writeValue(
+                    fullStorageLocation.resolve(ACCESSIBILITY_META_DATA_JSON).toFile(),
                     new GraphhopperMetaData(1));
         } catch (IOException exception) {
             fail(exception);
         }
+        writeGraphHopperNetworkAsGeoJsonToDisk(routingNetworkSettings);
     }
 
     public void buildNwbDatabaseNetwork() {
@@ -158,25 +166,58 @@ public class GraphHopperDriver {
     }
 
     @SuppressWarnings("java:S3658")
-    private void writeNetworkAsGeoJsonToDisk() {
+    private void writeGraphHopperNetworkAsGeoJsonToDisk(RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings) {
+
+        Map<String, LinkInfo> roadsDetected = new HashMap<>();
+        try {
+            NetworkGraphHopper network = graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
+
+            QueryGraph queryGraph = QueryGraph.create(network.getBaseGraph(), List.of());
+            EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
+
+            for (int startNode = 0; startNode < queryGraph.getNodes(); startNode++) {
+                EdgeIterator edgeIterator = edgeExplorer.setBaseNode(startNode);
+                while (edgeIterator.next()) {
+                    int fromNode = edgeIterator.getBaseNode() + 1;
+                    int toNode = edgeIterator.getAdjNode() + 1;
+                    roadsDetected.put(fromNode + "-" + toNode, LinkInfo.builder()
+                            .fromNode(fromNode)
+                            .toNode(toNode)
+                            .edge(edgeIterator.getEdge())
+                            .edgeKey(edgeIterator.getEdgeKey())
+                            .reverseEdgeKey(edgeIterator.getReverseEdgeKey())
+                            .build());
+                }
+            }
+        } catch (GraphHopperNotImportedException exception) {
+            fail(exception);
+        }
 
         LongSequenceSupplier idSupplier = new LongSequenceSupplier();
         FeatureCollection featureCollection = FeatureCollection.builder()
                 .features(Stream.concat(
                         networkDataService.getLinks().stream()
-                                .map(link -> Feature.builder()
-                                        .id(idSupplier.next())
-                                        .geometry(LineStringGeometry.builder()
-                                                .coordinates(Arrays.stream(link.getWgs84LineString().getCoordinates()).
-                                                        map(coordinate -> List.of(coordinate.getX(), coordinate.getY()))
-                                                        .toList())
-                                                .build())
-                                        .properties(LineStringProperties.builder()
-                                                .roadSectionId(link.getAccessibilityLink().getId())
-                                                .fromNodeId(link.getAccessibilityLink().getFromNodeId())
-                                                .toNodeId(link.getAccessibilityLink().getToNodeId())
-                                                .build())
-                                        .build()),
+                                .map(link -> {
+                                    LinkInfo linkInfo = roadsDetected.get(
+                                            link.getAccessibilityLink().getFromNodeId() + "-" + link.getAccessibilityLink().getToNodeId());
+                                    return Feature.builder()
+                                            .id(idSupplier.next())
+                                            .geometry(LineStringGeometry.builder()
+                                                    .coordinates(Arrays.stream(link.getWgs84LineString().getCoordinates()).
+                                                            map(coordinate -> List.of(coordinate.getX(), coordinate.getY()))
+                                                            .toList())
+                                                    .build())
+                                            .properties(LineStringProperties.builder()
+                                                    .roadSectionId(link.getAccessibilityLink().getId())
+                                                    .directions(mapDirections(link.getAccessibilityLink().getAccessibility()))
+                                                    .fromNodeId(linkInfo.fromNode())
+                                                    .toNodeId(linkInfo.toNode())
+                                                    .edge(linkInfo.edge())
+                                                    .edgeKey(linkInfo.edgeKey())
+                                                    .reverseEdgeKey(linkInfo.reverseEdgeKey())
+                                                    .build())
+                                            .build();
+                                }),
                         networkDataService.getNodes().values().stream()
                                 .map(node -> Feature.builder()
                                         .id(idSupplier.next())
@@ -202,6 +243,33 @@ public class GraphHopperDriver {
         } catch (JsonProcessingException exception) {
             fail(exception);
         }
+    }
+
+    private List<Direction> mapDirections(DirectionalDto<Boolean> accessibility) {
+
+        if (accessibility.isEqualForBothDirections()) {
+            return List.of(Direction.FORWARD, Direction.BACKWARD);
+        }
+
+        if (accessibility.forward()) {
+            return List.of(Direction.FORWARD);
+        }
+
+        if (accessibility.reverse()) {
+            return List.of(Direction.FORWARD);
+        }
+
+        return List.of();
+    }
+
+    @Builder
+    private record LinkInfo(
+            int fromNode,
+            int toNode,
+            int edge,
+            int edgeKey,
+            int reverseEdgeKey) {
+
     }
 
     private <T> List<T> join(List<List<T>> lists) {

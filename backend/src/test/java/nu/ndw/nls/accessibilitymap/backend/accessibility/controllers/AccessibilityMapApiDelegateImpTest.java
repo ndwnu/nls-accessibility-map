@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionModifier;
 import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
@@ -33,9 +34,10 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -71,6 +73,12 @@ class AccessibilityMapApiDelegateImpTest {
     private static final int MUNICIPALITY_ID_INTEGER = 123;
 
     private static final String ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE = "If one of the environmental zone parameters is set, the other must be set as well.";
+
+    @Mock
+    private GraphHopperService graphHopperService;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private PointValidator pointValidator;
@@ -143,6 +151,7 @@ class AccessibilityMapApiDelegateImpTest {
 
         accessibilityMapApiDelegate = new AccessibilityMapApiDelegateImpl(pointValidator,
                 pointMapper,
+                graphHopperService,
                 pointMatchService,
                 accessibilityResponseMapper,
                 roadSectionFeatureCollectionMapper,
@@ -155,8 +164,10 @@ class AccessibilityMapApiDelegateImpTest {
 
     @ParameterizedTest
     @MethodSource("provideIncorrectEmissionZoneParameters")
-    void getInaccessibleRoadSections_shouldThrowIncompleteArgumentsException(EmissionClassJson emissionClassJson,
+    void getInaccessibleRoadSections_shouldThrowIncompleteArgumentsException(
+            EmissionClassJson emissionClassJson,
             FuelTypeJson fuelTypeJson) {
+
         assertThatThrownBy(() -> accessibilityMapApiDelegate.getInaccessibleRoadSections(
                 MUNICIPALITY_ID,
                 VehicleTypeJson.CAR,
@@ -173,8 +184,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     @ParameterizedTest
     @MethodSource("provideCorrectEmissionZoneParameters")
-    void getInaccessibleRoadSections(EmissionClassJson emissionClassJson,
-            FuelTypeJson fuelTypeJson) {
+    void getInaccessibleRoadSections(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
         setUpFixture(emissionClassJson, fuelTypeJson);
 
@@ -253,9 +263,10 @@ class AccessibilityMapApiDelegateImpTest {
     private void setUpFixture(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
         when(clockService.now()).thenReturn(timestamp);
-        when(accessibilityService.calculateAccessibility(eq(accessibilityRequest), any(AccessibleRoadSectionModifier.class)))
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+        when(accessibilityService.calculateAccessibility(eq(networkGraphHopper), eq(accessibilityRequest), any(AccessibleRoadSectionModifier.class)))
                 .thenAnswer(invocationOnMock -> {
-                    invocationOnMock.getArgument(1, AccessibleRoadSectionModifier.class).modify(
+                    invocationOnMock.getArgument(2, AccessibleRoadSectionModifier.class).modify(
                             roadsSectionsWithoutAppliedRestrictions,
                             roadSectionsWithAppliedRestrictions
                     );
@@ -263,7 +274,7 @@ class AccessibilityMapApiDelegateImpTest {
                 });
         when(missingRoadSectionProvider.get(MUNICIPALITY_ID_INTEGER, roadsSectionsWithoutAppliedRestrictions, false))
                 .thenReturn(List.of(missingRoadSection));
-        when(municipality.getMunicipalityIdInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
+        when(municipality.municipalityIdAsInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
 
         when(accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, VehicleArguments.builder()
                 .vehicleType(VehicleTypeJson.CAR)
@@ -279,7 +290,7 @@ class AccessibilityMapApiDelegateImpTest {
                 .thenReturn(accessibilityRequest);
 
         when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
-        when(pointMatchService.match(requestedPoint)).thenReturn(Optional.of(startPoint));
+        when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
         when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
 
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);
