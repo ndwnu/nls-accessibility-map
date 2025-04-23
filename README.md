@@ -2,7 +2,7 @@
 
 This project is used for calculations concerning road accessibility given certain traffic sign restrictions based on vehicle
 characteristics.
-It's main functional modules are rest api service called backend and a jobs module subdivided into multiple more specialised submodules.
+It's main functional modules are a rest api service called backend and a jobs module subdivided into multiple more specialised submodules.
 
 [Techincal details](docs/technical-details.md)
 
