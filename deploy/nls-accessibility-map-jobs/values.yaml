@@ -39,7 +39,7 @@ trafficSignAnalyser:
 trafficSignCacheUpdater:
   name: nls-accessibility-map-traffic-sign-cache-updater-job
   command: update-cache
-  memory: 2Gi
+  memory: 3Gi
 
 graphhopper:
   name: nls-accessibility-map-graphhopper-job
