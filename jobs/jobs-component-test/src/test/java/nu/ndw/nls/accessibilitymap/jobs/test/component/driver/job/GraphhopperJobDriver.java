@@ -25,7 +25,7 @@ public class GraphhopperJobDriver implements StateManagement {
                 List.of(
                         Environment.builder()
                                 .key("GRAPHHOPPER_NETWORKNAME")
-                                .value("accessibility_latest_component_test")
+                                .value("accessibility_latest")
                                 .build()));
     }
 

@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionModifier;
 import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
@@ -24,9 +25,10 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.municipality.controllers.dto.Municipality;
+import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.Point;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -39,6 +41,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     private final PointValidator pointValidator;
 
     private final PointMapper pointMapper;
+
+    private final GraphHopperService graphHopperService;
 
     private final PointMatchService pointMatchService;
 
@@ -65,12 +69,14 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
 
+        NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
         Integer requestedRoadSectionId = mapStartPoint(latitude, longitude)
-                .flatMap(this::matchStartPoint)
+                .flatMap(point -> matchStartPoint(networkGraphHopper, point))
                 .map(CandidateMatch::getMatchedLinkId)
                 .orElse(null);
 
         Accessibility accessibility = calculateAccessibility(
+                networkGraphHopper,
                 municipalityId,
                 vehicleType, fuelType, emissionClass,
                 vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight, vehicleAxleLoad,
@@ -88,11 +94,13 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
 
+        NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
         CandidateMatch startPoint = mapStartPoint(latitude, longitude)
-                .flatMap(this::matchStartPoint)
+                .flatMap(point -> matchStartPoint(networkGraphHopper, point))
                 .orElse(null);
 
         Accessibility accessibility = calculateAccessibility(
+                networkGraphHopper,
                 municipalityId,
                 vehicleType, fuelType, emissionClass,
                 vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight, vehicleAxleLoad,
@@ -103,6 +111,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     @SuppressWarnings("java:S107")
     private Accessibility calculateAccessibility(
+            NetworkGraphHopper networkGraphHopper,
             String municipalityId,
             VehicleTypeJson vehicleType,
             FuelTypeJson fuelType,
@@ -117,16 +126,19 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHasTrailer, emissionClass, fuelType);
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(clockService.now(), municipality,
-                requestArguments);
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(clockService.now(), municipality, requestArguments);
 
-        return accessibilityService.calculateAccessibility(accessibilityRequest, addMissingRoadSectionsForMunicipality(municipality));
+        return accessibilityService.calculateAccessibility(
+                networkGraphHopper,
+                accessibilityRequest,
+                addMissingRoadSectionsForMunicipality(municipality));
     }
 
     private AccessibleRoadSectionModifier addMissingRoadSectionsForMunicipality(Municipality municipality) {
+
         return (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions) -> {
             List<RoadSection> missingRoadSections = missingRoadSectionProvider.get(
-                    municipality.getMunicipalityIdInteger(),
+                    municipality.municipalityIdAsInteger(),
                     roadsSectionsWithoutAppliedRestrictions,
                     false);
             roadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
@@ -143,10 +155,10 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
      * @throws IncompleteArgumentsException if only one of the parameters is set while the other is not.
      */
     private void ensureEnvironmentalZoneParameterConsistency(EmissionClassJson emissionClass, FuelTypeJson fuelType) {
+
         if ((emissionClass == null && fuelType != null) || (fuelType == null && emissionClass != null)) {
             throw new IncompleteArgumentsException("If one of the environmental zone parameters is set, the other must be set as well.");
         }
-
     }
 
     private Optional<Point> mapStartPoint(Double latitude, Double longitude) {
@@ -156,9 +168,9 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         return pointMapper.mapCoordinate(latitude, longitude);
     }
 
-    private Optional<CandidateMatch> matchStartPoint(Point point) {
+    private Optional<CandidateMatch> matchStartPoint(NetworkGraphHopper networkGraphHopper, Point point) {
 
-        Optional<CandidateMatch> candidateMatch = this.pointMatchService.match(point);
+        Optional<CandidateMatch> candidateMatch = this.pointMatchService.match(networkGraphHopper, point);
 
         candidateMatch.ifPresent(match -> logStartPointMatch(point, match));
 

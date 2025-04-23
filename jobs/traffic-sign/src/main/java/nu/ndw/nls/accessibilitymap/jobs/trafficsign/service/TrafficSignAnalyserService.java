@@ -17,6 +17,7 @@ import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiCl
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.ReportApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CompleteReportJson;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,11 +33,11 @@ public class TrafficSignAnalyserService {
 
     private final IssueMapper issueMapper;
 
-    public void analyse(@Valid AnalyseProperties analyseProperties) {
+    public void analyse(NetworkGraphHopper networkGraphHopper, @Valid AnalyseProperties analyseProperties) {
 
         log.info("Analysing with the following properties: {}", analyseProperties);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(analyseProperties.accessibilityRequest());
+        Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, analyseProperties.accessibilityRequest());
 
         analyseTrafficSigns(accessibility, analyseProperties);
     }

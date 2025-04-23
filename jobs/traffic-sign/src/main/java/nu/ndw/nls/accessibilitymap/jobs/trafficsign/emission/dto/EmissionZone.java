@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.List;
+import lombok.Builder;
+import lombok.With;
 import org.springframework.validation.annotation.Validated;
 
+@Builder
+@With
 @Validated
 public record EmissionZone(
         @NotNull @JsonProperty("trafficRegulationOrderId") String id,

@@ -53,10 +53,11 @@ public class UpdateCacheCommand implements Callable<Integer> {
                                     .collect(Collectors.toSet()))
                             .trafficSignsByRoadSectionId().values().stream()
                             .flatMap(Collection::stream)
-                            .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                                    getNwbRoadSectionGeometry(trafficSignGeoJsonDto),
-                                    trafficSignGeoJsonDto,
-                                    idSupplier))
+                            .map(trafficSignGeoJsonDto ->
+                                    trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                                            getNwbRoadSectionGeometry(trafficSignGeoJsonDto),
+                                            trafficSignGeoJsonDto,
+                                            idSupplier))
                             .filter(Optional::isPresent)
                             .map(Optional::get)
                             .toList());

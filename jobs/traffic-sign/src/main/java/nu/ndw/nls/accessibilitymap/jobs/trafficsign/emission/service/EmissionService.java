@@ -28,7 +28,6 @@ public class EmissionService {
             }
 
             return cachedEmissionZones;
-
         } catch (final FeignException.FeignServerException | ConstraintViolationException exception) {
             log.error("Something went wrong with getting emission information from the Road Features Area API.", exception);
             return List.of();

@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TrafficSignRestrictionsBuilder {
 
+    private static final int MULTIPLIER_FROM_CM_TO_METERS = 100;
+
+    private static final int MULTIPLIER_FROM_TON_TO_KILO_GRAM = 1000;
+
     private final Map<TrafficSignType, Restrictions> nonDynamicTrafficSigns;
 
     private final Map<TrafficSignType, Function<TrafficSign, Restrictions>> dynamicTrafficSigns;
@@ -155,7 +159,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleLengthInCm(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_CM_TO_METERS)
                             .build())
                     .build();
         };
@@ -168,7 +172,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleWidthInCm(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_CM_TO_METERS)
                             .build())
                     .build();
         };
@@ -181,7 +185,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleHeightInCm(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_CM_TO_METERS)
                             .build())
                     .build();
         };
@@ -195,7 +199,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleAxleLoadInKg(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_TON_TO_KILO_GRAM)
                             .build())
                     .build();
         };
@@ -209,7 +213,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleWeightInKg(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_TON_TO_KILO_GRAM)
                             .build())
                     .build();
         };

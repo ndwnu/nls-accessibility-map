@@ -215,6 +215,7 @@ class GenerateCommandTest {
         assertThat(exportProperties.publishEvents()).isEqualTo(publishEvents);
         assertThat(exportProperties.accessibilityRequest()).isEqualTo(
                 AccessibilityRequest.builder()
+                        .timestamp(startTime)
                         .trafficSignTypes(trafficSignTypes)
                         .startLocationLatitude(1d)
                         .startLocationLongitude(2d)

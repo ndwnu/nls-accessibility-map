@@ -13,5 +13,12 @@
 - Traffic signs
     - The traffic signs mocked in the component test will be logged as geojson in [.debug](.debug) folder and can be
       loaded into QGIS.
-- Output of jobs is places in the normal locations and the output of the job will be written there as
-  well. [map-generation-destination](../../.tmp/map-generation-destination)
+- Output of jobs is placed at normal locations, the output of the job will be written there as
+  well.
+    - [Map generation destination](../../.tmp/map-generation-destination)
+    - [Graph hopper destination](../../.tmp/graphhopper/accessibility_latest)
+    - [Traffic signs destination](../../.tmp/trafficsigns)
+
+# Debugging graph situations
+ - Go to [.debug](.debug)
+ - Load all relevant geojson files into QGIS to get a representation of what happened.

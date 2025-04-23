@@ -7,5 +7,7 @@ import lombok.Getter;
 @Builder
 public class PointNodeProperties implements Properties {
 
+    private final String name;
+
     private final long nodeId;
 }

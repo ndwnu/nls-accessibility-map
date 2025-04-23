@@ -31,10 +31,6 @@ public class TrafficSignJobDriver implements StateManagement {
                                 .value(buildAnalyseCommand(jobConfiguration))
                                 .build(),
                         Environment.builder()
-                                .key("GRAPHHOPPER_NETWORKNAME")
-                                .value("accessibility_latest_component_test")
-                                .build(),
-                        Environment.builder()
                                 .key("NU_NDW_NLS_ACCESSIBILITYMAP_JOBS_ANALYSE_STARTLOCATIONLATITUDE")
                                 .value(String.valueOf(jobConfiguration.startNode().getLatitude()))
                                 .build(),
@@ -54,10 +50,6 @@ public class TrafficSignJobDriver implements StateManagement {
                         Environment.builder()
                                 .key("COMMAND")
                                 .value("update-cache")
-                                .build(),
-                        Environment.builder()
-                                .key("GRAPHHOPPER_NETWORKNAME")
-                                .value("accessibility_latest_component_test")
                                 .build(),
                         Environment.builder()
                                 .key("NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP")

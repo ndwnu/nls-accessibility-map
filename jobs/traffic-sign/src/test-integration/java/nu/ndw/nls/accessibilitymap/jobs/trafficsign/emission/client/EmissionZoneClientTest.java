@@ -38,7 +38,7 @@ import org.springframework.test.context.TestPropertySource;
 @EnableConfigurationProperties
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(properties = {
-        "nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission-zone.client.url=http://localhost:${wiremock.server.port}",
+        "nu.ndw.nls.accessibilitymap.trafficsigns.emission-zone.client.url=http://localhost:${wiremock.server.port}",
         "resilience4j.retry.instances.emissionZone.maxAttempts=2",
         "resilience4j.retry.instances.emissionZone.waitDuration=1ms"
 })
