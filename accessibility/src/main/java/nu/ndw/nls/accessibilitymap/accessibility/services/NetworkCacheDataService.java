@@ -67,11 +67,6 @@ public class NetworkCacheDataService {
             return trafficSignsIds.stream()
                     .filter(trafficSignSnaps::containsKey)
                     .map(trafficSignSnaps::get)
-                    .map(trafficSignSnap -> TrafficSignSnap.builder()
-                            .snap(trafficSignSnap.getSnap())
-                            .trafficSign(trafficSignSnap.getTrafficSign().toBuilder()
-                                    .build())
-                            .build())
                     .toList();
         } finally {
             dataLock.unlock();
@@ -99,6 +94,7 @@ public class NetworkCacheDataService {
                 return baseAccessibilityByMunicipalityId.computeIfAbsent(municipalityId,
                                 id -> calculateBaseAccessibility(municipalityId, snap, searchRadiusInMeters)).stream()
                         .map(RoadSection::clone)
+                        // assign traffic signs here in separate class (geen mapper)
                         .toList();
             } finally {
                 dataLock.unlock();
