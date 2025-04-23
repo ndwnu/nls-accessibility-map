@@ -6,10 +6,11 @@ It does so by calculating the difference in output for a calculation without res
 
 ## Original setup
 
-<p>When this project was first created the traffic sign restrictions were encoded directly on the network as Edge attributes.
+<p>
+When this project was first created the traffic sign restrictions were encoded directly on the network as Edge attributes.
 This integrates well with the graphhopper custom model api to customise access on edges.
 A custom model allows you to modify the default behavior of a vehicle profile by specifying a set of rule expressions.
-This was done at the time of network creation. </p>
+ </p>
 <p>There are however a number of drawbacks to this approach.</p>
 
 1. If a traffic sign was not at the end of the beginning of the edge but on a fraction this was not possible to encode.
