@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -28,8 +27,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.Restricti
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
-import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionAccessibilityMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionTrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -62,7 +61,9 @@ public class AccessibilityService {
 
     private final NetworkCacheDataService networkCacheDataService;
 
-    private final RoadSectionAccessibilityMapper roadSectionAccessibilityMapper;
+    private final RoadSectionTrafficSignMapper roadSectionTrafficSignMapper;
+
+    private final RoadSectionCombinator roadSectionCombinator;
 
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
 
@@ -92,8 +93,10 @@ public class AccessibilityService {
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
-        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = networkCacheDataService.getBaseAccessibility(
-                accessibilityRequest.municipalityId(), startSegment, accessibilityRequest.searchRadiusInMeters());
+        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = roadSectionTrafficSignMapper.mapTrafficSigns(
+                networkCacheDataService.getBaseAccessibility(
+                        accessibilityRequest.municipalityId(), startSegment, accessibilityRequest.searchRadiusInMeters()),
+                edgeRestrictions.getTrafficSignsByEdgeKey());
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(
@@ -104,12 +107,6 @@ public class AccessibilityService {
                         buildWeightingWithRestrictions(edgeRestrictions.getBlockedEdges()),
                         edgeRestrictions.getTrafficSignsByEdgeKey());
 
-        Set<Integer> accessibleEdgesWithRestrictions = accessibleRoadSectionsWithAppliedRestrictions.stream()
-                .flatMap(r -> r.getRoadSectionFragments().stream())
-                .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                .map(directionalSegment -> directionalSegment.getId())
-                .collect(Collectors.toSet());
-
         accessibleRoadSectionModifier.modify(
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                 accessibleRoadSectionsWithAppliedRestrictions);
@@ -117,8 +114,8 @@ public class AccessibilityService {
         Accessibility accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
                 .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
-                .combinedAccessibility(roadSectionAccessibilityMapper.mapCombined(accessibleRoadsSectionsWithoutAppliedRestrictions,
-                        accessibleEdgesWithRestrictions, edgeRestrictions.getTrafficSignsByEdgeKey()))
+                .combinedAccessibility(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+                        accessibleRoadsSectionsWithoutAppliedRestrictions, accessibleRoadSectionsWithAppliedRestrictions))
                 .build();
 
         log.info("Accessibility calculation done. It took: %s ms"

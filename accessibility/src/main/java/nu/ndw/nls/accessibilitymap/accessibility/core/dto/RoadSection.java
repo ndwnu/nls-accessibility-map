@@ -5,7 +5,10 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -86,6 +89,26 @@ public final class RoadSection {
                 .map(RoadSectionFragment::getBackwardSegment)
                 .map(DirectionalSegment::getLineString)
                 .toList();
+    }
+
+    public RoadSection clone() {
+        RoadSection newRoadSection = toBuilder().build();
+        List<RoadSectionFragment> newRoadSectionFragments = roadSectionFragments.stream()
+                .map(f -> {
+                    RoadSectionFragment newFragment = f.toBuilder().build();
+                    newFragment.setRoadSection(newRoadSection);
+                    Map<Direction, DirectionalSegment> newSegments = f.getSegments().stream()
+                            .map(d -> d.toBuilder()
+                                    .roadSectionFragment(newFragment)
+                                    .build())
+                            .collect(Collectors.toMap(DirectionalSegment::getDirection, Function.identity()));
+                    newFragment.setForwardSegment(newSegments.get(Direction.FORWARD));
+                    newFragment.setBackwardSegment(newSegments.get(Direction.BACKWARD));
+                    return newFragment;
+                })
+                .toList();
+        newRoadSection.setRoadSectionFragments(newRoadSectionFragments);
+        return newRoadSection;
     }
 
 }
