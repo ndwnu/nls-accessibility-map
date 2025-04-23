@@ -28,7 +28,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionTrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -61,8 +60,6 @@ public class AccessibilityService {
 
     private final NetworkCacheDataService networkCacheDataService;
 
-    private final RoadSectionTrafficSignMapper roadSectionTrafficSignMapper;
-
     private final RoadSectionCombinator roadSectionCombinator;
 
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
@@ -93,10 +90,10 @@ public class AccessibilityService {
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
-        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = roadSectionTrafficSignMapper.mapTrafficSigns(
+        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
                 networkCacheDataService.getBaseAccessibility(
-                        accessibilityRequest.municipalityId(), startSegment, accessibilityRequest.searchRadiusInMeters()),
-                edgeRestrictions.getTrafficSignsByEdgeKey());
+                        accessibilityRequest.municipalityId(), startSegment, accessibilityRequest.searchRadiusInMeters(),
+                        edgeRestrictions.getTrafficSignsByEdgeKey());
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(

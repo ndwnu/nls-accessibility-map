@@ -91,7 +91,7 @@ public final class RoadSection {
                 .toList();
     }
 
-    public RoadSection clone() {
+    public RoadSection cloneRoadSection() {
         RoadSection newRoadSection = toBuilder().build();
         List<RoadSectionFragment> newRoadSectionFragments = roadSectionFragments.stream()
                 .map(f -> {
