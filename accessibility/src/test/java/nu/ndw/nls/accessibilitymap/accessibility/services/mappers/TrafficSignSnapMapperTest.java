@@ -97,7 +97,7 @@ class TrafficSignSnapMapperTest {
 
         assertThat(trafficSignSnaps).isEmpty();
         loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with "
-                + "road section id %d in nwb mapCombined on graphhopper network")
+                + "road section id %d in nwb mapTrafficSigns on graphhopper network")
                 .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID));
     }
 

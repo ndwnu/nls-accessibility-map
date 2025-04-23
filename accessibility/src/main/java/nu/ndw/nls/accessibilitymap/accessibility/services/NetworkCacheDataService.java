@@ -97,7 +97,9 @@ public class NetworkCacheDataService {
             dataLock.lock();
             try {
                 return baseAccessibilityByMunicipalityId.computeIfAbsent(municipalityId,
-                        id -> calculateBaseAccessibility(municipalityId, snap, searchRadiusInMeters));
+                                id -> calculateBaseAccessibility(municipalityId, snap, searchRadiusInMeters)).stream()
+                        .map(RoadSection::clone)
+                        .toList();
             } finally {
                 dataLock.unlock();
             }
