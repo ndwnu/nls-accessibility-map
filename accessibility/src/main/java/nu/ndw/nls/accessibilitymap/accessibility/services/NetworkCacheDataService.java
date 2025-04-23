@@ -1,8 +1,11 @@
 package nu.ndw.nls.accessibilitymap.accessibility.services;
 
+import static java.util.stream.Collectors.toCollection;
+
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,6 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
@@ -36,6 +40,7 @@ public class NetworkCacheDataService {
     private final IsochroneServiceFactory isochroneServiceFactory;
     private final RoadSectionMapper roadSectionMapper;
     private final NetworkGraphHopper networkGraphHopper;
+    private final RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner;
     private final ReentrantLock dataLock = new ReentrantLock();
 
     private QueryGraph queryGraph;
@@ -85,7 +90,21 @@ public class NetworkCacheDataService {
         }
     }
 
-    public Collection<RoadSection> getBaseAccessibility(Integer municipalityId, Snap snap, double searchRadiusInMeters) {
+    /**
+     * Retrieves a collection of road sections representing the base accessibility for a given municipality or area based on specified
+     * parameters, such as the municipality ID, snap point, search radius, and associated traffic signs. If a municipality ID is provided,
+     * it computes and caches the result; otherwise, it calculates the accessibility directly without caching.
+     *
+     * @param municipalityId        the ID of the municipality for which to retrieve the base accessibility. If null, accessibility is
+     *                              calculated without caching.
+     * @param snap                  the snap point representing the geographic location from which to begin the calculation.
+     * @param searchRadiusInMeters  the search radius (in meters) used to determine the area of interest.
+     * @param trafficSignsByEdgeKey a map of traffic signs grouped by edge key that will be used to assign traffic signs to the road
+     *                              sections.
+     * @return a collection of road sections representing the base accessibility, including assigned traffic signs, where applicable.
+     */
+    public Collection<RoadSection> getBaseAccessibility(Integer municipalityId, Snap snap, double searchRadiusInMeters,
+            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
         if (municipalityId == null) {
             return calculateBaseAccessibility(null, snap, searchRadiusInMeters);
         } else {
@@ -93,9 +112,9 @@ public class NetworkCacheDataService {
             try {
                 return baseAccessibilityByMunicipalityId.computeIfAbsent(municipalityId,
                                 id -> calculateBaseAccessibility(municipalityId, snap, searchRadiusInMeters)).stream()
-                        .map(RoadSection::clone)
-                        // assign traffic signs here in separate class (geen mapper)
-                        .toList();
+                        .map(RoadSection::cloneRoadSection)
+                        .map(r -> roadSectionTrafficSignAssigner.assignTrafficSigns(r, trafficSignsByEdgeKey))
+                        .collect(toCollection(ArrayList::new));
             } finally {
                 dataLock.unlock();
             }

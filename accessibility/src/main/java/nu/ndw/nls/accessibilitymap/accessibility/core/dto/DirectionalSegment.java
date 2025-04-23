@@ -34,7 +34,7 @@ public final class DirectionalSegment {
     private RoadSectionFragment roadSectionFragment;
 
     @Valid
-    private final List<TrafficSign> trafficSigns;
+    private List<TrafficSign> trafficSigns;
 
     private final boolean accessible;
 
