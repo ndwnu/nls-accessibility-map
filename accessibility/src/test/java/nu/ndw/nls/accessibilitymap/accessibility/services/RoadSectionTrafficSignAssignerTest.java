@@ -53,10 +53,12 @@ class RoadSectionTrafficSignAssignerTest {
 
     @Test
     void assignTrafficSigns_WhenNoTrafficSignsExistForSegments() {
+
         trafficSignsByEdgeKey.put(SEGMENT_ID, List.of(trafficSign));
         when(fragment.getSegments()).thenReturn(List.of(segment));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(fragment));
         when(segment.getId()).thenReturn(2);
+
         assigner.assignTrafficSigns(roadSection, trafficSignsByEdgeKey);
 
         verify(segment).setTrafficSigns(null);
