@@ -1,10 +1,11 @@
-package nu.ndw.nls.accessibilitymap.jobs.test.component.driver;
+package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.accessibilitymap;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
@@ -12,11 +13,14 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointGeometry;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointNodeProperties;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.AccessibilityRequest;
+import nu.ndw.nls.springboot.test.component.driver.keycloak.KeycloakDriver;
 import nu.ndw.nls.springboot.test.component.driver.web.AbstractWebClient;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Request;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -28,11 +32,15 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @RequiredArgsConstructor
 public class AccessibilityMapApiClient extends AbstractWebClient {
 
+    private static final String ADMIN_CLIENT_ID = "admin-client";
+
     private final AccessibilityMapApiConfiguration accessibilityMapApiConfiguration;
 
     private final FileService fileService;
 
     private final DriverGeneralConfiguration driverGeneralConfiguration;
+
+    private final KeycloakDriver keycloakDriver;
 
     @SneakyThrows
     public Response reloadGraphHopper() {
@@ -44,9 +52,11 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .build();
 
         getCache().getRequests().add(request);
+
         try {
             ResponseEntity<String> response = WebClient.create(getEndpoint() + request.path())
                     .method(request.method())
+                    .header(HttpHeaders.AUTHORIZATION, keycloakDriver.getClientById(ADMIN_CLIENT_ID).obtainBearerToken())
                     .retrieve()
                     .toEntity(String.class)
                     .block();
@@ -61,15 +71,17 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     public Response reloadTrafficSigns() {
 
         Request request = Request.builder()
-                .id("reloadGraphHopper")
-                .path("/api/rest/static-road-data/accessibility-map/management/traffic-signs/reload")
+                .id("reloadTrafficSigns")
+                .path("/api/rest/static-road-data/accessibility-map/management/traffic-sign/reload")
                 .method(HttpMethod.PUT)
                 .build();
 
         getCache().getRequests().add(request);
+
         try {
             ResponseEntity<String> response = WebClient.create(getEndpoint() + request.path())
                     .method(request.method())
+                    .header(HttpHeaders.AUTHORIZATION, keycloakDriver.getClientById(ADMIN_CLIENT_ID).obtainBearerToken())
                     .retrieve()
                     .toEntity(String.class)
                     .block();
@@ -85,7 +97,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
         Request request = Request.builder()
                 .id("getAccessibilityForMunicipality")
-                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections".formatted(
+                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections" .formatted(
                         accessibilityRequest.municipalityId()))
                 .method(HttpMethod.GET)
                 .queryParameters(buildQueryParameters(accessibilityRequest))
@@ -94,7 +106,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         var startPoint = buildGeoJsonStartPoint(accessibilityRequest.startLatitude(), accessibilityRequest.startLongitude());
 
         fileService.writeDataToFile(
-                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson".formatted(request.id())).toFile(),
+                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson" .formatted(request.id())).toFile(),
                 JsonMapper.builder().build().writeValueAsString(startPoint));
 
         getCache().getRequests().add(request);
@@ -123,7 +135,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
         Request request = Request.builder()
                 .id("getAccessibilityForMunicipality")
-                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson".formatted(
+                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson" .formatted(
                         accessibilityRequest.municipalityId()))
                 .method(HttpMethod.GET)
                 .queryParameters(buildQueryParameters(accessibilityRequest))
@@ -132,7 +144,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         var startPoint = buildGeoJsonStartPoint(accessibilityRequest.startLatitude(), accessibilityRequest.startLongitude());
 
         fileService.writeDataToFile(
-                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson".formatted(request.id())).toFile(),
+                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson" .formatted(request.id())).toFile(),
                 JsonMapper.builder().build().writeValueAsString(startPoint));
 
         getCache().getRequests().add(request);
@@ -228,5 +240,19 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         return accessibilityMapApiConfiguration.getHost();
     }
 
-//    http://localhost:8080/api/rest/static-road-data/accessibility-map/api/management/graphHopper/reload
+    @Override
+    public void prepareState() {
+
+        keycloakDriver.createAndActivateClient(
+                ADMIN_CLIENT_ID,
+                Set.of("admin"));
+    }
+
+    @Override
+    public void clearState() {
+        //KeycloakDriver will handle cleanup of the admin client.
+        super.clearState();
+    }
+
+    //    http://localhost:8080/api/rest/static-road-data/accessibility-map/api/management/graphHopper/reload
 }

@@ -32,10 +32,10 @@ public class EmissionService {
             log.error("Something went wrong with getting emission information from the Road Features Area API.", exception);
             return List.of();
         } catch (final FeignException.FeignClientException exception) {
-            log.warn("No emission information available.", exception);
+            log.error("No emission information available.", exception);
             return List.of();
         } catch (final RuntimeException exception) {
-            log.warn("Error while retrieving emission. Retrying at a later moment", exception);
+            log.warn("Error while retrieving emission. Retrying at a later moment.", exception);
             throw exception;
         }
     }

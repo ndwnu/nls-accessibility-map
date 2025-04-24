@@ -12,7 +12,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Option;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.AccessibilityMapApiClient;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.accessibilitymap.AccessibilityMapApiClient;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoadSection;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;

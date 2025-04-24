@@ -37,6 +37,17 @@ nu:
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
+              keycloak:
+                url: "http://nls-keycloak:8000/auth"
+                realm: "ndw"
+                admin-username: "nls"
+                admin-password: "nls"
+                await:
+                  duration: PT1M
+                application-under-test:
+                  client-id: "nls-accessibility-map-api-local"
+                  roles:
+                    - "admin"
       test:
         component:
           general:

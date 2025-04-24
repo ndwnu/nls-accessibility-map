@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.test.component.driver;
+package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.accessibilitymap;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
