@@ -85,6 +85,8 @@ nu:
           cache:
             folder: "trafficsigns"
             file-name-active-version: "active"
+            filewatcher:
+              enabled: false
 
 resilience4j.retry:
   instances:
