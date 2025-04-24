@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -77,32 +76,6 @@ class RoadSectionFragmentTest {
                 .build();
         when(backwardSegment.isAccessible()).thenReturn(false);
         assertThat(roadSectionFragment.isBackwardAccessible()).isFalse();
-    }
-
-    @Test
-    void setForwardSegment() {
-
-        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
-        roadSectionFragment.setForwardSegment(forwardSegment);
-
-        assertThat(roadSectionFragment.getForwardSegment()).isEqualTo(forwardSegment);
-        assertThat(catchThrowable(() -> roadSectionFragment.setForwardSegment(forwardSegment)))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("forwardSegment has already been assigned. "
-                        + "There should be always only one forwardSegment per RoadSectionFragment.");
-    }
-
-    @Test
-    void setBackwardSegment() {
-
-        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
-        roadSectionFragment.setBackwardSegment(backwardSegment);
-
-        assertThat(roadSectionFragment.getBackwardSegment()).isEqualTo(backwardSegment);
-        assertThat(catchThrowable(() -> roadSectionFragment.setBackwardSegment(backwardSegment)))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("backSegment has already been assigned. "
-                        + "There should be always only one backSegment per RoadSectionFragment.");
     }
 
     @Test
