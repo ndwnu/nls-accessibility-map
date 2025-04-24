@@ -29,7 +29,7 @@ This 'network cutting functionality' comes in handy when you want to precisely c
 Furthermore, the traffic sign restrictions are not encoded on the network but calculated per request.
 The traffic sign restrictions are then associated with the correct edges (edge keys) and passed to a custom weighting adapter.
 This weighting adapter then blocks access to an edge if it encounters an edge in the set of blocked edges.
-The disadvantage is that it does not integrate with the graphhopper custom model api.
+The disadvantage is that it does not integrate with the graphhopper custom model api because the restriction calculation is done entirely separate from graphhopper.
 But because the restriction calculation is done entirely separate from graphhopper it allows for more complex use cases.
 </p>
 <p>
