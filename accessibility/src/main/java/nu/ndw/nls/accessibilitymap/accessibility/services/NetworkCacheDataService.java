@@ -7,7 +7,6 @@ import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,16 @@ import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Component;
 
+/**
+ * The NetworkCacheDataService class provides functionality to manage cached traffic sign data, road section accessibility, and query graph
+ * generation within a network. It ensures thread-safe access and modification of the cached data through the use of a lock mechanism.
+ * <p>
+ * This service is responsible for: - Creating and maintaining a query graph based on traffic sign data. - Retrieving snapped traffic sign
+ * data for specified traffic sign IDs. - Calculating and managing base accessibility of road sections by municipality, including optional
+ * caching.
+ * <p>
+ * The class ensures data consistency and protection against concurrent access through the use of a ReentrantLock.
+ */
 @Component
 @RequiredArgsConstructor
 public class NetworkCacheDataService {
@@ -46,6 +55,7 @@ public class NetworkCacheDataService {
     private QueryGraph queryGraph;
     private Map<String, TrafficSignSnap> trafficSignSnaps;
     private Map<Integer, Collection<RoadSection>> baseAccessibilityByMunicipalityId = new HashMap<>();
+    private Collection<RoadSection> allBaseAccessibility;
 
     public void create(TrafficSigns trafficSigns) {
         List<TrafficSignSnap> trafficSignSnapList = trafficSignSnapMapper.map(trafficSigns.stream()
@@ -55,6 +65,7 @@ public class NetworkCacheDataService {
                         Function.identity()));
         dataLock.lock();
         try {
+            allBaseAccessibility = null;
             baseAccessibilityByMunicipalityId = new HashMap<>();
             trafficSignSnaps = newTrafficSignSnaps;
             queryGraph = queryGraphFactory.createQueryGraph(trafficSignSnapList);
@@ -91,33 +102,39 @@ public class NetworkCacheDataService {
     }
 
     /**
-     * Retrieves a collection of road sections representing the base accessibility for a given municipality or area based on specified
-     * parameters, such as the municipality ID, snap point, search radius, and associated traffic signs. If a municipality ID is provided,
-     * it computes and caches the result; otherwise, it calculates the accessibility directly without caching.
+     * Retrieves base accessibility road sections, optionally restricted to a specific municipality. Adds traffic sign information to the
+     * road sections based on the provided mappings.
      *
-     * @param municipalityId        the ID of the municipality for which to retrieve the base accessibility. If null, accessibility is
-     *                              calculated without caching.
-     * @param snap                  the snap point representing the geographic location from which to begin the calculation.
-     * @param searchRadiusInMeters  the search radius (in meters) used to determine the area of interest.
-     * @param trafficSignsByEdgeKey a map of traffic signs grouped by edge key that will be used to assign traffic signs to the road
-     *                              sections.
-     * @return a collection of road sections representing the base accessibility, including assigned traffic signs, where applicable.
+     * @param municipalityId        the ID of the municipality for which to calculate accessibility; if null, calculates for all
+     *                              municipalities
+     * @param snap                  the snapping point used for geographical calculations
+     * @param searchRadiusInMeters  the search radius, in meters, used for accessibility calculations
+     * @param trafficSignsByEdgeKey a map linking edge keys to their associated traffic signs
+     * @return a collection of road sections representing the base accessibility, with traffic sign information included
      */
     public Collection<RoadSection> getBaseAccessibility(Integer municipalityId, Snap snap, double searchRadiusInMeters,
             Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
-        if (municipalityId == null) {
-            return calculateBaseAccessibility(null, snap, searchRadiusInMeters);
-        } else {
-            dataLock.lock();
-            try {
+        dataLock.lock();
+        try {
+            if (municipalityId == null) {
+                if (allBaseAccessibility == null) {
+                    allBaseAccessibility = calculateBaseAccessibility(null, snap, searchRadiusInMeters);
+                }
+                return allBaseAccessibility.stream()
+                        .map(RoadSection::cloneRoadSection)
+                        .map(r -> roadSectionTrafficSignAssigner.assignTrafficSigns(r, trafficSignsByEdgeKey))
+                        .collect(toCollection(ArrayList::new));
+            } else {
+
                 return baseAccessibilityByMunicipalityId.computeIfAbsent(municipalityId,
                                 id -> calculateBaseAccessibility(municipalityId, snap, searchRadiusInMeters)).stream()
                         .map(RoadSection::cloneRoadSection)
                         .map(r -> roadSectionTrafficSignAssigner.assignTrafficSigns(r, trafficSignsByEdgeKey))
                         .collect(toCollection(ArrayList::new));
-            } finally {
-                dataLock.unlock();
+
             }
+        } finally {
+            dataLock.unlock();
         }
 
     }
@@ -134,7 +151,7 @@ public class NetworkCacheDataService {
                                 .searchDistanceInMetres(searchRadiusInMeters)
                                 .build(),
                         getQueryGraph(),
-                        snappedPoint), Collections.emptyMap());
+                        snappedPoint));
     }
 
 
