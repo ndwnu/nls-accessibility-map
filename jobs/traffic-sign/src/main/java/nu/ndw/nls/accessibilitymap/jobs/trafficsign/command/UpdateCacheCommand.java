@@ -13,7 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.Graphho
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheReadWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.TrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.mapper.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;

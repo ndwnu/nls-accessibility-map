@@ -30,10 +30,10 @@ class TrafficSignCacheUpdaterTest {
 
     private TrafficSignCacheUpdater trafficSignCacheUpdater;
 
-    private TrafficSignCacheConfiguration trafficSignCacheConfiguration;
-
     @Mock
     private TrafficSignDataService trafficSignDataService;
+
+    private TrafficSignCacheConfiguration trafficSignCacheConfiguration;
 
     private Path testDir;
 
@@ -75,8 +75,10 @@ class TrafficSignCacheUpdaterTest {
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
             loggerExtension.containsLog(Level.INFO,
-                    "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion()));
+                    "Watching file changes on %s" .formatted(trafficSignCacheConfiguration.getActiveVersion()));
+
             verify(trafficSignDataService).updateTrafficSignData();
+
             loggerExtension.containsLog(Level.INFO, "Triggering update");
             loggerExtension.containsLog(Level.INFO, "Finished update");
         });
@@ -103,6 +105,17 @@ class TrafficSignCacheUpdaterTest {
                 loggerExtension.containsLog(Level.ERROR, "Failed to update traffic signs data", "some error"));
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread.isInterrupted()).isFalse();
+    }
+
+    @Test
+    void updateCache() {
+
+        trafficSignCacheUpdater.updateCache();
+
+        verify(trafficSignDataService).updateTrafficSignData();
+
+        loggerExtension.containsLog(Level.INFO, "Triggering update");
+        loggerExtension.containsLog(Level.INFO, "Finished update");
     }
 
     @Test

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache;
+package nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.mapper;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C17;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C18;
@@ -19,6 +19,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapService;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.TrafficSignRestrictionsBuilder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;

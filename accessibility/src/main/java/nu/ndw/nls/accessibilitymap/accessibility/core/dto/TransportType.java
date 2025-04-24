@@ -39,7 +39,7 @@ public enum TransportType {
     public static Set<TransportType> allExcept(Set<TransportType> excludingTypes) {
 
         return Stream.of(TransportType.values())
-                .filter(t -> !excludingTypes.contains(t))
+                .filter(transportType -> !excludingTypes.contains(transportType))
                 .collect(Collectors.toSet());
     }
 }
