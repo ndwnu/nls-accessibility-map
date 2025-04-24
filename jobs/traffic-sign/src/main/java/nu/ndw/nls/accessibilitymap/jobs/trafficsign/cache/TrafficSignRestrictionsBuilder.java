@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.mapper.EmissionZoneMapper;
 import org.springframework.stereotype.Service;
 
 @Service
