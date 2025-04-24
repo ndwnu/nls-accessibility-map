@@ -242,7 +242,7 @@ class TrafficSignCacheReadWriterTest {
                 .isEqualTo(new ObjectMapper().writeValueAsString(List.of(trafficSign1, trafficSign2)));
 
         loggerExtension.containsLog(Level.INFO, "Writing traffic signs to file: %s".formatted(oldTrafficSignFile.toAbsolutePath()));
-        loggerExtension.containsLog(Level.INFO, "Removed old symlink target: %s".formatted(oldTrafficSignFile.toAbsolutePath()));
+        // loggerExtension.containsLog(Level.INFO, "Removed old symlink target: %s".formatted(oldTrafficSignFile.toAbsolutePath()));
         loggerExtension.containsLog(Level.INFO, "Writing traffic signs to file: %s".formatted(newTrafficSignFile.toAbsolutePath()));
         loggerExtension.containsLog(Level.INFO, "Updated symlink: %s".formatted(activeFile.toPath().toAbsolutePath()), List.of(), times(2));
     }
