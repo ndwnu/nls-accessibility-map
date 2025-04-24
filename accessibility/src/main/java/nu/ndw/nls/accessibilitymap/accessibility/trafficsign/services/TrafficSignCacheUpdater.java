@@ -41,9 +41,7 @@ public class TrafficSignCacheUpdater {
                     if (lastModified != trafficSignCacheConfiguration.getActiveVersion().lastModified()) {
                         lastModified = trafficSignCacheConfiguration.getActiveVersion().lastModified();
 
-                        log.info("Triggering update");
-                        trafficSignDataService.updateTrafficSignData();
-                        log.info("Finished update");
+                        updateCache();
                     }
                     Thread.sleep(trafficSignCacheConfiguration.getFileWatcherInterval().toMillis());
                 } catch (InterruptedException interruptedException) {
@@ -56,6 +54,13 @@ public class TrafficSignCacheUpdater {
             }
         });
         fileWatcherThread.start();
+    }
+
+    public void updateCache() {
+
+        log.info("Triggering update");
+        trafficSignDataService.updateTrafficSignData();
+        log.info("Finished update");
     }
 
     @PreDestroy

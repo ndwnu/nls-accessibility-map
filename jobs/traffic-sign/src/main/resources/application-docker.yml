@@ -29,7 +29,7 @@ spring:
     password: nls-maps
 
 keycloak:
-  server-url: http://nls-keycloak:8000/auth
+  server-url: http://accessibility-wiremock-stub:8080/auth
   client-id: nls-accessibility-map-api-service-account
   client-secret: cfe4793c-ddf7-405a-940f-51b43800aed4
 

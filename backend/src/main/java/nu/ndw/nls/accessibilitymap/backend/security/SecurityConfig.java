@@ -55,7 +55,6 @@ public class SecurityConfig {
                         .requestMatchers("/v1/municipalities/**").permitAll()
                         .requestMatchers("/v1/road-operators/**").permitAll()
                         .requestMatchers("/v2/municipalities/**").permitAll()
-                        .requestMatchers("/management/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwtConfigurer ->
