@@ -11,7 +11,6 @@ import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,6 @@ public class AccessibilityService {
     private final RoadSectionCombinator roadSectionCombinator;
 
     public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
-
         return calculateAccessibility(accessibilityRequest, NO_MODIFICATIONS);
     }
 
@@ -90,10 +88,11 @@ public class AccessibilityService {
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
-        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
-                networkCacheDataService.getBaseAccessibility(
-                        accessibilityRequest.municipalityId(), startSegment, accessibilityRequest.searchRadiusInMeters(),
-                        edgeRestrictions.getTrafficSignsByEdgeKey());
+        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = networkCacheDataService.getBaseAccessibility(
+                accessibilityRequest.municipalityId(),
+                startSegment,
+                accessibilityRequest.searchRadiusInMeters(),
+                edgeRestrictions.getTrafficSignsByEdgeKey());
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(
@@ -101,8 +100,7 @@ public class AccessibilityService {
                         isochroneService,
                         queryGraph,
                         startSegment,
-                        buildWeightingWithRestrictions(edgeRestrictions.getBlockedEdges()),
-                        edgeRestrictions.getTrafficSignsByEdgeKey());
+                        buildWeightingWithRestrictions(edgeRestrictions.getBlockedEdges()));
 
         accessibleRoadSectionModifier.modify(
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
@@ -125,8 +123,7 @@ public class AccessibilityService {
             IsochroneService isochroneService,
             QueryGraph queryGraph,
             Snap startSegment,
-            Weighting weighting,
-            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
+            Weighting weighting) {
 
         return roadSectionMapper.mapToRoadSections(
                 isochroneService.getIsochroneMatchesByMunicipalityId(
@@ -136,8 +133,7 @@ public class AccessibilityService {
                                 .searchDistanceInMetres(accessibilityRequest.searchRadiusInMeters())
                                 .build(),
                         queryGraph,
-                        startSegment),
-                trafficSignsByEdgeKey);
+                        startSegment));
     }
 
     private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
