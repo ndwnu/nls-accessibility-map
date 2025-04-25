@@ -78,7 +78,7 @@ public class AccessibilityService {
         Snap startSegment = networkGraphHopper.getLocationIndex().findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
 
         OffsetDateTime startTimeCreateQueryGraph = clockService.now();
-        QueryGraph queryGraph = networkCacheDataService.getQueryGraph(); //queryGraphFactory.createQueryGraph(snappedTrafficSigns, startSegment);
+        QueryGraph queryGraph = networkCacheDataService.getQueryGraph();
         log.info("Building query graph took: %s ms".formatted(MILLIS.between(startTimeCreateQueryGraph, clockService.now())));
 
         OffsetDateTime startTimeCreatingEdgeRestrictions = clockService.now();

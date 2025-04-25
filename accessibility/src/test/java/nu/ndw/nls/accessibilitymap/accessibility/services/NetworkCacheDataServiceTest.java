@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -129,14 +130,15 @@ class NetworkCacheDataServiceTest {
 
     @Test
     void getTrafficSignSnaps_shouldThrowExceptionIfCreateWasNotCalledBefore() {
-        assertThatCode(() -> networkCacheDataService.getTrafficSignSnaps(List.of(TRAFFIC_SIGN_ID_1, TRAFFIC_SIGN_ID_2)))
+        assertThatThrownBy(() -> networkCacheDataService.getTrafficSignSnaps(List.of(TRAFFIC_SIGN_ID_1, TRAFFIC_SIGN_ID_2)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("No trafficSignSnaps available");
     }
 
     @Test
     void getQueryGraph_shouldThrowExceptionIfCreateWasNotCalledBefore() {
-        assertThatCode(() -> networkCacheDataService.getQueryGraph())
+
+        assertThatThrownBy(() -> networkCacheDataService.getQueryGraph())
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("No queryGraph available");
     }
