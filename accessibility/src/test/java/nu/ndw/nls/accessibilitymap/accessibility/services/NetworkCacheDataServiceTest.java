@@ -130,7 +130,8 @@ class NetworkCacheDataServiceTest {
 
     @Test
     void getTrafficSignSnaps_shouldThrowExceptionIfCreateWasNotCalledBefore() {
-        assertThatThrownBy(() -> networkCacheDataService.getTrafficSignSnaps(List.of(TRAFFIC_SIGN_ID_1, TRAFFIC_SIGN_ID_2)))
+        List<String> trafficSignIds = List.of(TRAFFIC_SIGN_ID_1, TRAFFIC_SIGN_ID_2);
+        assertThatThrownBy(() -> networkCacheDataService.getTrafficSignSnaps(trafficSignIds))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("No trafficSignSnaps available");
     }
