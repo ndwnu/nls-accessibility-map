@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.roadoperator.controllers.dto.RoadOperator;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.RoadOperatorRepository;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

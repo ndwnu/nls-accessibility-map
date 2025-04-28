@@ -164,9 +164,7 @@ class AccessibilityServiceTest {
                 List.of(roadSectionRestriction)))
                 .thenReturn(List.of(roadSectionCombined));
 
-        Accessibility result = calculateAccessibility((roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions)
-                -> {
-        });
+        Accessibility result = calculateAccessibility(null);
 
         Accessibility expected = Accessibility
                 .builder()
@@ -207,7 +205,7 @@ class AccessibilityServiceTest {
         assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
     }
 
-    private Accessibility calculateAccessibility(AccessibleRoadSectionModifier accessibileRoadSectionModifier) {
+    private Accessibility calculateAccessibility(AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
 
         when(clockService.now())
                 .thenReturn(OffsetDateTime.MIN)
@@ -237,13 +235,13 @@ class AccessibilityServiceTest {
         when(trafficSingSnapMapper.map(List.of(trafficSign), networkGraphHopper)).thenReturn(List.of(trafficSignSnap));
         when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture())).thenReturn(startPoint);
         when(queryGraphFactory.createQueryGraph(networkGraphHopper, List.of(trafficSignSnap), startSegmentSnap)).thenReturn(queryGraph);
-        when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, List.of(trafficSignSnap))).thenReturn(edgeRestrictions);
+        when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, List.of(trafficSignSnap))).thenReturn(
+                edgeRestrictions);
         when(edgeRestrictions.getTrafficSignsByEdgeKey()).thenReturn(Map.of(1, List.of(TrafficSign.builder().build())));
         when(edgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
-                        argThat(new IsochroneArgumentMatcher(IsochroneArguments
-                                .builder()
+                        argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
                                 .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, edgeRestrictions.getBlockedEdges()))
                                 .municipalityId(MUNICIPALITY_ID)
                                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
@@ -254,14 +252,11 @@ class AccessibilityServiceTest {
 
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
-                        argThat(new IsochroneArgumentMatcher(IsochroneArguments
-                                        .builder()
+                        argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
                                         .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, Set.of()))
                                         .municipalityId(MUNICIPALITY_ID)
                                         .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
-                                        .build()
-                                )
-                        ),
+                                        .build())),
                         eq(queryGraph),
                         eq(startSegmentSnap)))
                 .thenReturn(List.of(isochroneMatchNoRestriction));
@@ -271,7 +266,11 @@ class AccessibilityServiceTest {
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction), edgeRestrictions.getTrafficSignsByEdgeKey()))
                 .thenReturn(new ArrayList<>(List.of(roadSectionRestriction)));
 
-        return accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest, accessibileRoadSectionModifier);
+        if (Objects.nonNull(accessibleRoadSectionModifier)) {
+            return accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest, accessibleRoadSectionModifier);
+        } else {
+            return accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+        }
     }
 
     private void mockWeighting() {

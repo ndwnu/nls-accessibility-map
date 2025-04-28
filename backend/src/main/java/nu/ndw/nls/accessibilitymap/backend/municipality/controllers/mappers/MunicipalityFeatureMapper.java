@@ -47,7 +47,7 @@ public class MunicipalityFeatureMapper {
                 mapStartPoint(municipality),
                 new MunicipalityPropertiesJson(
                         municipality.name(),
-                        (int) municipality.searchDistanceInMetres(),
+                        municipality.searchDistanceInMetres().intValue(),
                         bounds,
                         requestExemptionUrlString,
                         municipality.dateLastCheck()));
