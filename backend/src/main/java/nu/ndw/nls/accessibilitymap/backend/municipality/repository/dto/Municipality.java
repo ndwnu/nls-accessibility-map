@@ -7,13 +7,17 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.Builder;
 import lombok.With;
+import org.springframework.validation.annotation.Validated;
 
+@Builder
 @With
+@Validated
 public record Municipality(
-        @NotNull @JsonProperty("start-coordinate-latitude") double startCoordinateLatitude,
-        @NotNull @JsonProperty("start-coordinate-longitude") double startCoordinateLongitude,
-        @NotNull @JsonProperty("search-distance-in-metres") double searchDistanceInMetres,
+        @NotNull @JsonProperty("start-coordinate-latitude") Double startCoordinateLatitude,
+        @NotNull @JsonProperty("start-coordinate-longitude") Double startCoordinateLongitude,
+        @NotNull @JsonProperty("search-distance-in-metres") Integer searchDistanceInMetres,
         @NotNull @JsonProperty("municipality-id") String municipalityId,
         @NotNull String name,
         @JsonProperty("request-exemption-url") URL requestExemptionUrl,

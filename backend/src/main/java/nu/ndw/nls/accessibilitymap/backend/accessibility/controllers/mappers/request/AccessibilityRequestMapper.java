@@ -39,7 +39,7 @@ public class AccessibilityRequestMapper {
                         municipality.bounds().latitudeTo(),
                         municipality.bounds().longitudeTo()
                 ))
-                .searchRadiusInMeters(municipality.searchDistanceInMetres())
+                .searchRadiusInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
                 .startLocationLatitude(municipality.startCoordinateLatitude())
                 .startLocationLongitude(municipality.startCoordinateLongitude())
                 .vehicleHeightInCm(mapToDouble(vehicleArguments.vehicleHeight(), MULTIPLIER_FROM_CM_TO_METERS))

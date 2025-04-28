@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.roadoperator.controllers.dto.RoadOperator;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import nu.ndw.nls.accessibilitymap.backend.yaml.YamlPropertySourceFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

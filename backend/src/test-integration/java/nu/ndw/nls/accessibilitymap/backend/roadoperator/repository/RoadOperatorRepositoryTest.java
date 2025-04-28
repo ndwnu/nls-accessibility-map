@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson.RoadOperatorTypeEnum;
-import nu.ndw.nls.accessibilitymap.backend.roadoperator.controllers.dto.RoadOperator;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,20 +16,20 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.annotation.Validated;
 
-@SpringBootTest(classes = RoadOperatorStorage.class)
+@SpringBootTest(classes = RoadOperatorRepository.class)
 @EnableConfigurationProperties
 @ExtendWith(MockitoExtension.class)
-class RoadOperatorStorageTest {
+class RoadOperatorRepositoryTest {
 
     @Autowired
-    private RoadOperatorStorage roadOperatorStorage;
+    private RoadOperatorRepository roadOperatorRepository;
 
     @Test
     void loadFromConfigFile_ok() {
 
-        assertThat(roadOperatorStorage).isNotNull();
+        assertThat(roadOperatorRepository).isNotNull();
 
-        List<RoadOperator> roadOperators = roadOperatorStorage.getRoadOperators();
+        List<RoadOperator> roadOperators = roadOperatorRepository.findAll();
 
         assertThat(roadOperators).containsExactlyInAnyOrderElementsOf(List.of(
                 RoadOperator.builder()
@@ -72,7 +72,7 @@ class RoadOperatorStorageTest {
     }
 
     @Test
-    void annotation_fieldValidationPropegation_roadOperators() {
+    void annotation_fieldValidationPropagation_roadOperators() {
 
         AnnotationUtil.fieldContainsAnnotation(
                 RoadOperatorStorage.class,

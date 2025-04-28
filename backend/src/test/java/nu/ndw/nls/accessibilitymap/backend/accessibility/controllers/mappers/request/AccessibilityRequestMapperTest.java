@@ -32,7 +32,7 @@ class AccessibilityRequestMapperTest {
 
     private static final float DEFAULT_VEHICLE_WIDTH = 2.0F;
 
-    private static final double DEFAULT_SEARCH_DISTANCE = 50000D;
+    private static final double DEFAULT_SEARCH_DISTANCE = 50000;
 
     private static final int DEFAULT_MUNICIPALITY_ID = 307;
 
@@ -86,7 +86,7 @@ class AccessibilityRequestMapperTest {
         when(vehicleArguments.fuelType()).thenReturn(FuelTypeJson.PETROL);
 
         when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
-        when(municipality.searchDistanceInMetres()).thenReturn(DEFAULT_SEARCH_DISTANCE);
+        when(municipality.searchDistanceInMetres()).thenReturn((int) DEFAULT_SEARCH_DISTANCE);
         when(municipality.startCoordinateLatitude()).thenReturn(DEFAULT_LATITUDE_COORDINATE);
         when(municipality.startCoordinateLongitude()).thenReturn(DEFAULT_LONGITUDE_COORDINATE);
         when(municipality.bounds()).thenReturn(municipalityBoundingBox);
@@ -107,8 +107,8 @@ class AccessibilityRequestMapperTest {
                 .boundingBox(BBox.fromPoints(DEFAULT_LATITUDE_COORDINATE, DEFAULT_LONGITUDE_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
                 .transportTypes(Set.of(TransportType.CAR))
                 .vehicleHeightInCm((double) DEFAULT_VEHICLE_HEIGHT * 100)
-                .vehicleLengthInCm((double) DEFAULT_VEHICLE_LENGTH* 100)
-                .vehicleWidthInCm((double) DEFAULT_VEHICLE_WIDTH* 100)
+                .vehicleLengthInCm((double) DEFAULT_VEHICLE_LENGTH * 100)
+                .vehicleWidthInCm((double) DEFAULT_VEHICLE_WIDTH * 100)
                 .vehicleWeightInKg((double) DEFAULT_VEHICLE_WEIGHT * 1_000)
                 .vehicleAxleLoadInKg((double) DEFAULT_VEHICLE_AXLE_LOAD * 1_000)
                 .startLocationLatitude(DEFAULT_LATITUDE_COORDINATE)
@@ -132,7 +132,7 @@ class AccessibilityRequestMapperTest {
         when(vehicleArguments.fuelType()).thenReturn(null);
 
         when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
-        when(municipality.searchDistanceInMetres()).thenReturn(DEFAULT_SEARCH_DISTANCE);
+        when(municipality.searchDistanceInMetres()).thenReturn((int) DEFAULT_SEARCH_DISTANCE);
         when(municipality.startCoordinateLatitude()).thenReturn(DEFAULT_LATITUDE_COORDINATE);
         when(municipality.startCoordinateLongitude()).thenReturn(DEFAULT_LONGITUDE_COORDINATE);
         when(municipality.bounds()).thenReturn(municipalityBoundingBox);

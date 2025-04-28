@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccessibilityService {
 
-    private static final AccessibleRoadSectionModifier NO_MODIFICATIONS = (a, b) -> {
+    public static final AccessibleRoadSectionModifier NO_MODIFICATIONS = (a, b) -> {
     };
 
     private final IsochroneServiceFactory isochroneServiceFactory;
