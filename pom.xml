@@ -25,6 +25,7 @@
         <module>backend</module>
     </modules>
     <properties>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <java.version>21</java.version>
         <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
         <nls-springboot.logging.version>8.4.6</nls-springboot.logging.version>
