@@ -8,7 +8,6 @@ import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,6 @@ class RoadSectionTest extends ValidationTest {
     @Mock
     private LineString lineString2;
 
-    private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
 
     @BeforeEach
     void setUp() {

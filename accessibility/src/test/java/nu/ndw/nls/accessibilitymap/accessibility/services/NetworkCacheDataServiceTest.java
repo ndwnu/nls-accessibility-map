@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -124,9 +123,7 @@ class NetworkCacheDataServiceTest {
 
         setupFixtureForCreate();
         setupFixtureForBaseAccessibleCalculation(MUNICIPALITY_ID);
-
-        assertThatCode(() -> networkCacheDataService.create(trafficSigns))
-                .doesNotThrowAnyException();
+        networkCacheDataService.create(trafficSigns);
 
         NetworkData networkData = networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns);
         NetworkData expectedNetworkData = NetworkData.builder()
