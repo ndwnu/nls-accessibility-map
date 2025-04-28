@@ -11,12 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RoadSectionTrafficSignAssigner {
 
-    public RoadSection assignTrafficSigns(RoadSection baseAccessibleRoad,
-            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
-        baseAccessibleRoad.getRoadSectionFragments()
+    public RoadSection assignTrafficSigns(RoadSection roadSection, Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
+        roadSection.getRoadSectionFragments()
                 .forEach(roadSectionFragment -> roadSectionFragment.getSegments()
                         .forEach(directionalSegment -> directionalSegment.setTrafficSigns(
                                 trafficSignsByEdgeKey.get(directionalSegment.getId()))));
-        return baseAccessibleRoad;
+        return roadSection;
     }
 }

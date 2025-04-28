@@ -21,8 +21,7 @@ import org.springframework.stereotype.Component;
 public class RoadSectionMapper {
 
     @SuppressWarnings({"java:S5612", "java:S1941"})
-    public @Valid Collection<RoadSection> mapToRoadSections(
-            Iterable<IsochroneMatch> isochroneMatches) {
+    public @Valid Collection<RoadSection> mapToRoadSections(Iterable<IsochroneMatch> isochroneMatches) {
 
         SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
