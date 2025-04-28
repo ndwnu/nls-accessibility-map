@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ import org.springframework.validation.annotation.Validated;
 @Builder(toBuilder = true)
 @With
 @Validated
-public final class RoadSection {
+public final class RoadSection implements Serializable {
 
     @NotNull
     private final Long id;
@@ -91,14 +92,20 @@ public final class RoadSection {
                 .toList();
     }
 
-    public RoadSection cloneRoadSection() {
-        RoadSection newRoadSection = toBuilder().build();
+    public RoadSection copy() {
+
+        RoadSection newRoadSection = toBuilder()
+                .build();
+
         List<RoadSectionFragment> newRoadSectionFragments = roadSectionFragments.stream()
                 .map(f -> {
-                    RoadSectionFragment newFragment = f.toBuilder().build();
+                    RoadSectionFragment newFragment = f.toBuilder()
+                            .build();
                     newFragment.setRoadSection(newRoadSection);
                     Map<Direction, DirectionalSegment> newSegments = f.getSegments().stream()
                             .map(d -> d.toBuilder()
+                                    .direction(Direction.valueOf(d.getDirection().name()))
+                                    .lineString((LineString) d.getLineString().copy())
                                     .roadSectionFragment(newFragment)
                                     .build())
                             .collect(Collectors.toMap(DirectionalSegment::getDirection, Function.identity()));

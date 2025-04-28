@@ -82,8 +82,8 @@ class RoadSectionTest extends ValidationTest {
     }
 
     @Test
-    void cloneRoadSection() {
-        RoadSection clonedRoadSection = roadSection.cloneRoadSection();
+    void copy() {
+        RoadSection clonedRoadSection = roadSection.copy();
         clonedRoadSection.getRoadSectionFragments()
                 .forEach(roadSectionFragment -> roadSectionFragment.setBackwardSegment(null));
         assertThat(roadSection.isBackwardAccessible()).isTrue();

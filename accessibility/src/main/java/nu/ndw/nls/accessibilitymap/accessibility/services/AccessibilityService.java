@@ -14,18 +14,16 @@ import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
@@ -55,8 +53,6 @@ public class AccessibilityService {
 
     private final ClockService clockService;
 
-    private final QueryGraphConfigurer queryGraphConfigurer;
-
     private final NetworkCacheDataService networkCacheDataService;
 
     private final RoadSectionCombinator roadSectionCombinator;
@@ -71,36 +67,35 @@ public class AccessibilityService {
             AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
 
         OffsetDateTime startTime = clockService.now();
-        List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest);
+
         log.info("Building snaps took: %s ms".formatted(MILLIS.between(startTime, clockService.now())));
 
         Point startPoint = createPoint(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude());
         Snap startSegment = networkGraphHopper.getLocationIndex().findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
-
+        List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
         OffsetDateTime startTimeCreateQueryGraph = clockService.now();
-        QueryGraph queryGraph = networkCacheDataService.getQueryGraph();
+        NetworkData networkData = networkCacheDataService.getNetworkData(accessibilityRequest.municipalityId(),
+                startSegment,
+                accessibilityRequest.searchRadiusInMeters(), trafficSigns);
+
         log.info("Building query graph took: %s ms".formatted(MILLIS.between(startTimeCreateQueryGraph, clockService.now())));
 
         OffsetDateTime startTimeCreatingEdgeRestrictions = clockService.now();
-        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, snappedTrafficSigns);
+
         log.info("Building edge restrictions took: %s ms".formatted(MILLIS.between(startTimeCreatingEdgeRestrictions, clockService.now())));
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
-        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = networkCacheDataService.getBaseAccessibility(
-                accessibilityRequest.municipalityId(),
-                startSegment,
-                accessibilityRequest.searchRadiusInMeters(),
-                edgeRestrictions.getTrafficSignsByEdgeKey());
+        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = networkData.baseAccessibleRoads();
 
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(
                         accessibilityRequest,
                         isochroneService,
-                        queryGraph,
+                        networkData.queryGraph(),
                         startSegment,
-                        buildWeightingWithRestrictions(edgeRestrictions.getBlockedEdges()));
+                        buildWeightingWithRestrictions(networkData.edgeRestrictions().getBlockedEdges()));
 
         accessibleRoadSectionModifier.modify(
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
@@ -136,12 +131,6 @@ public class AccessibilityService {
                         startSegment));
     }
 
-    private List<TrafficSignSnap> buildTrafficSignSnaps(AccessibilityRequest accessibilityRequest) {
-        List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
-        return networkCacheDataService.getTrafficSignSnaps(trafficSigns.stream()
-                .map(TrafficSign::externalId)
-                .toList());
-    }
 
     private Weighting buildWeightingWithRestrictions(Set<Integer> blockedEdges) {
 

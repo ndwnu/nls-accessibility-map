@@ -15,11 +15,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
@@ -50,6 +53,7 @@ public class NetworkCacheDataService {
     private final RoadSectionMapper roadSectionMapper;
     private final NetworkGraphHopper networkGraphHopper;
     private final RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner;
+    private final QueryGraphConfigurer queryGraphConfigurer;
     private final ReentrantLock dataLock = new ReentrantLock();
 
     private QueryGraph queryGraph;
@@ -58,47 +62,53 @@ public class NetworkCacheDataService {
     private Collection<RoadSection> allBaseAccessibility;
 
     public void create(TrafficSigns trafficSigns) {
-        List<TrafficSignSnap> trafficSignSnapList = trafficSignSnapMapper.map(trafficSigns.stream()
-                .toList());
+        List<TrafficSignSnap> trafficSignSnapList = trafficSignSnapMapper.map(trafficSigns);
         Map<String, TrafficSignSnap> newTrafficSignSnaps = trafficSignSnapList.stream()
                 .collect(Collectors.toMap(t -> t.getTrafficSign().externalId(),
                         Function.identity()));
+        QueryGraph newQueryGraph = queryGraphFactory.createQueryGraph(trafficSignSnapList);
         dataLock.lock();
         try {
             allBaseAccessibility = null;
             baseAccessibilityByMunicipalityId = new HashMap<>();
             trafficSignSnaps = newTrafficSignSnaps;
-            queryGraph = queryGraphFactory.createQueryGraph(trafficSignSnapList);
+            queryGraph = newQueryGraph;
         } finally {
             dataLock.unlock();
         }
     }
 
-    public List<TrafficSignSnap> getTrafficSignSnaps(List<String> trafficSignsIds) {
-        if (trafficSignSnaps == null) {
-            throw new IllegalStateException("No trafficSignSnaps available");
+    public NetworkData getNetworkData(Integer municipalityId, Snap snap, double searchRadiusInMeters,
+            List<TrafficSign> trafficSigns) {
+        if (queryGraph == null || trafficSignSnaps == null) {
+            throw new IllegalStateException("NetworkData is not initialised. Call create() before calling getNetworkData().");
         }
         dataLock.lock();
         try {
-            return trafficSignsIds.stream()
-                    .filter(trafficSignSnaps::containsKey)
-                    .map(trafficSignSnaps::get)
-                    .toList();
+            List<TrafficSignSnap> snappedTrafficSigns = getTrafficSignSnaps(trafficSigns.stream().map(TrafficSign::externalId).toList());
+            EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(getQueryGraph(), snappedTrafficSigns);
+            return NetworkData.builder()
+                    .edgeRestrictions(edgeRestrictions)
+                    .queryGraph(getQueryGraph())
+                    .baseAccessibleRoads(
+                            getBaseAccessibility(municipalityId, snap, searchRadiusInMeters, edgeRestrictions.getTrafficSignsByEdgeKey()))
+                    .build();
         } finally {
             dataLock.unlock();
         }
     }
 
-    public QueryGraph getQueryGraph() {
-        if (queryGraph == null) {
-            throw new IllegalStateException("No queryGraph available");
-        }
-        dataLock.lock();
-        try {
-            return queryGraph;
-        } finally {
-            dataLock.unlock();
-        }
+    private List<TrafficSignSnap> getTrafficSignSnaps(List<String> trafficSignsIds) {
+        return trafficSignsIds.stream()
+                .filter(trafficSignSnaps::containsKey)
+                .map(trafficSignSnaps::get)
+                .toList();
+
+    }
+
+    private QueryGraph getQueryGraph() {
+
+        return queryGraph;
     }
 
     /**
@@ -112,7 +122,7 @@ public class NetworkCacheDataService {
      * @param trafficSignsByEdgeKey a map linking edge keys to their associated traffic signs
      * @return a collection of road sections representing the base accessibility, with traffic sign information included
      */
-    public Collection<RoadSection> getBaseAccessibility(Integer municipalityId, Snap snap, double searchRadiusInMeters,
+    private Collection<RoadSection> getBaseAccessibility(Integer municipalityId, Snap snap, double searchRadiusInMeters,
             Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
         dataLock.lock();
         try {
@@ -121,14 +131,14 @@ public class NetworkCacheDataService {
                     allBaseAccessibility = calculateBaseAccessibility(null, snap, searchRadiusInMeters);
                 }
                 return allBaseAccessibility.stream()
-                        .map(RoadSection::cloneRoadSection)
+                        .map(RoadSection::copy)
                         .map(r -> roadSectionTrafficSignAssigner.assignTrafficSigns(r, trafficSignsByEdgeKey))
                         .collect(toCollection(ArrayList::new));
             } else {
 
                 return baseAccessibilityByMunicipalityId.computeIfAbsent(municipalityId,
                                 id -> calculateBaseAccessibility(municipalityId, snap, searchRadiusInMeters)).stream()
-                        .map(RoadSection::cloneRoadSection)
+                        .map(RoadSection::copy)
                         .map(r -> roadSectionTrafficSignAssigner.assignTrafficSigns(r, trafficSignsByEdgeKey))
                         .collect(toCollection(ArrayList::new));
 
