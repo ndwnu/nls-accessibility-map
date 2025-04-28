@@ -288,6 +288,17 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>init-component-test</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>scripts/prepare-files-component-test.sh</commandlineArgs>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>docker-compose-up-nls-accessibility-map-api</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
