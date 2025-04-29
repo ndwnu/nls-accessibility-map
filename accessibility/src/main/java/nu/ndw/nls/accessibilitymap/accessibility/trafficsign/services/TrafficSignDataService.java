@@ -10,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -30,10 +32,12 @@ public class TrafficSignDataService {
 
     private final NetworkCacheDataService networkCacheDataService;
 
+    private final GraphHopperService graphHopperService;
+
     @PostConstruct
     public void init() {
 
-        updateTrafficSignData();
+        updateTrafficSignData(graphHopperService.getNetworkGraphHopper());
     }
 
     public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
@@ -59,14 +63,14 @@ public class TrafficSignDataService {
         }
     }
 
-    protected void updateTrafficSignData() {
+    protected void updateTrafficSignData(NetworkGraphHopper networkGraphHopper) {
         trafficSignCacheReadWriter.read().ifPresent(newTrafficSignsData -> {
             OffsetDateTime start = OffsetDateTime.now();
             dataLock.lock();
             try {
                 trafficSigns.clear();
                 trafficSigns.addAll(newTrafficSignsData);
-                networkCacheDataService.create(newTrafficSignsData);
+                networkCacheDataService.create(newTrafficSignsData, networkGraphHopper);
             } finally {
                 dataLock.unlock();
                 log.info("Switched internal traffic signs data structure and was locked for {} ms",

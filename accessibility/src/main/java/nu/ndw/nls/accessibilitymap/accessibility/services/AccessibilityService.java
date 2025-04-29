@@ -71,7 +71,9 @@ public class AccessibilityService {
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
         NetworkData networkData = networkCacheDataService.getNetworkData(accessibilityRequest.municipalityId(),
                 startSegment,
-                accessibilityRequest.searchRadiusInMeters(), trafficSigns);
+                accessibilityRequest.searchRadiusInMeters(),
+                trafficSigns,
+                networkGraphHopper);
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
@@ -84,7 +86,7 @@ public class AccessibilityService {
                         isochroneService,
                         networkData.queryGraph(),
                         startSegment,
-                        buildWeightingWithRestrictions(networkData.edgeRestrictions().getBlockedEdges()));
+                        buildWeightingWithRestrictions(networkGraphHopper, networkData.edgeRestrictions().getBlockedEdges()));
 
         accessibleRoadSectionModifier.modify(
                 accessibleRoadsSectionsWithoutAppliedRestrictions,

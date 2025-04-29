@@ -46,7 +46,7 @@ public class QueryGraphFactory {
      *                         QueryGraph
      * @return a QueryGraph instance with modified edge structures reflecting the snapped positions
      */
-    public QueryGraph createQueryGraph(List<TrafficSignSnap> trafficSignSnaps) {
+    public QueryGraph createQueryGraph(List<TrafficSignSnap> trafficSignSnaps, NetworkGraphHopper networkGraphHopper) {
 
         List<Snap> snaps = trafficSignSnaps.stream()
                 .map(TrafficSignSnap::getSnap)

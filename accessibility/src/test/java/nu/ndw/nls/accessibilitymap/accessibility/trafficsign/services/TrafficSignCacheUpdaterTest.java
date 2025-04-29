@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import jakarta.annotation.PreDestroy;
@@ -11,7 +12,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -35,6 +38,11 @@ class TrafficSignCacheUpdaterTest {
     @Mock
     private TrafficSignDataService trafficSignDataService;
 
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
+    @Mock
+    private GraphHopperService graphHopperService;
+
     private TrafficSignCacheConfiguration trafficSignCacheConfiguration;
 
     private Path testDir;
@@ -53,7 +61,7 @@ class TrafficSignCacheUpdaterTest {
                 .fileWatcherInterval(Duration.ofMillis(1))
                 .build();
 
-        trafficSignCacheUpdater = new TrafficSignCacheUpdater(trafficSignCacheConfiguration, trafficSignDataService);
+        trafficSignCacheUpdater = new TrafficSignCacheUpdater(trafficSignCacheConfiguration, trafficSignDataService, graphHopperService);
     }
 
     @AfterEach
@@ -67,6 +75,7 @@ class TrafficSignCacheUpdaterTest {
     @SuppressWarnings("java:S2925")
     void watchFileChanges_fileChanges() throws IOException {
 
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
         Awaitility.await().atMost(Duration.ofSeconds(5))
@@ -74,17 +83,15 @@ class TrafficSignCacheUpdaterTest {
 
         trafficSignCacheUpdater.watchFileChanges();
 
-        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-            loggerExtension.containsLog(Level.INFO,
-                    "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion()));
-        });
+        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> loggerExtension.containsLog(Level.INFO,
+                "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion())));
 
         Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
             loggerExtension.containsLog(Level.INFO, "Triggering update", VerificationMode.atLeastOnce());
             loggerExtension.containsLog(Level.INFO, "Finished update", VerificationMode.atLeastOnce());
-            verify(trafficSignDataService, atLeastOnce()).updateTrafficSignData();
+            verify(trafficSignDataService, atLeastOnce()).updateTrafficSignData(networkGraphHopper);
         });
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread.isInterrupted()).isFalse();
@@ -92,9 +99,10 @@ class TrafficSignCacheUpdaterTest {
 
     @Test
     @SuppressWarnings("java:S2925")
-    void watchFileChanges_failedToUpdateData() throws IOException, InterruptedException {
+    void watchFileChanges_failedToUpdateData() throws IOException {
 
-        doThrow(new RuntimeException("some error")).when(trafficSignDataService).updateTrafficSignData();
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+        doThrow(new RuntimeException("some error")).when(trafficSignDataService).updateTrafficSignData(networkGraphHopper);
 
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
@@ -103,10 +111,8 @@ class TrafficSignCacheUpdaterTest {
 
         trafficSignCacheUpdater.watchFileChanges();
 
-        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-            loggerExtension.containsLog(Level.INFO,
-                    "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion()));
-        });
+        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> loggerExtension.containsLog(Level.INFO,
+                "Watching file changes on %s".formatted(trafficSignCacheConfiguration.getActiveVersion())));
 
         Files.writeString(trafficSignCacheConfiguration.getActiveVersion().toPath(), "changed");
 
@@ -123,9 +129,9 @@ class TrafficSignCacheUpdaterTest {
     @Test
     void updateCache() {
 
-        trafficSignCacheUpdater.updateCache();
+        trafficSignCacheUpdater.updateCache(networkGraphHopper);
 
-        verify(trafficSignDataService).updateTrafficSignData();
+        verify(trafficSignDataService).updateTrafficSignData(networkGraphHopper);
 
         loggerExtension.containsLog(Level.INFO, "Triggering update");
         loggerExtension.containsLog(Level.INFO, "Finished update");

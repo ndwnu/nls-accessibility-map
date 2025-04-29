@@ -2,14 +2,18 @@ package nu.ndw.nls.accessibilitymap.backend.management.api;
 
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import nu.ndw.nls.accessibilitymap.backend.security.SecurityConfig;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -44,6 +48,12 @@ class TrafficSignControllerTest {
     @MockitoBean
     private TrafficSignCacheUpdater trafficSignCacheUpdater;
 
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
+
+    @MockitoBean
+    private GraphHopperService graphHopperService;
+
     private Jwt jwt;
 
     @BeforeEach
@@ -63,7 +73,7 @@ class TrafficSignControllerTest {
             null, 401
             """)
     void reload(String authority, int expectedHttpStatusCode) throws Exception {
-
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         HttpStatus expectedHttpStatus = HttpStatus.valueOf(expectedHttpStatusCode);
 
         ResultActions mockMvcBuilder = mockMvc
@@ -77,11 +87,11 @@ class TrafficSignControllerTest {
         if (expectedHttpStatus.is2xxSuccessful()) {
             mockMvcBuilder.andExpect(status().is(expectedHttpStatus.value()));
 
-            verify(trafficSignCacheUpdater).updateCache();
+            verify(trafficSignCacheUpdater).updateCache(networkGraphHopper);
 
         } else {
             mockMvcBuilder.andExpect(status().is(expectedHttpStatus.value()));
-            verify(trafficSignCacheUpdater, never()).updateCache();
+            verify(trafficSignCacheUpdater, never()).updateCache(networkGraphHopper);
         }
     }
 

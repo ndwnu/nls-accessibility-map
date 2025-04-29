@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.management.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +20,11 @@ public class TrafficSignController {
 
     private final TrafficSignCacheUpdater trafficSignCacheUpdater;
 
+    private final GraphHopperService graphHopperService;
+
     @PutMapping(path = "/reload")
     public void reloadGraphHopperNetwork() {
 
-        trafficSignCacheUpdater.updateCache();
+        trafficSignCacheUpdater.updateCache(graphHopperService.getNetworkGraphHopper());
     }
 }

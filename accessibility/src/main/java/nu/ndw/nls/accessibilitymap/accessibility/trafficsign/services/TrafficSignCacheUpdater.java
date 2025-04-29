@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
@@ -24,6 +26,8 @@ public class TrafficSignCacheUpdater {
     private final TrafficSignCacheConfiguration trafficSignCacheConfiguration;
 
     private final TrafficSignDataService trafficSignDataService;
+
+    private final GraphHopperService graphHopperService;
 
     protected Thread fileWatcherThread;
 
@@ -47,7 +51,7 @@ public class TrafficSignCacheUpdater {
                         lastModified = trafficSignCacheConfiguration.getActiveVersion().lastModified();
 
                         try {
-                            updateCache();
+                            updateCache(graphHopperService.getNetworkGraphHopper());
                         } catch (RuntimeException runtimeException) {
                             log.error("Failed to update traffic signs data", runtimeException);
                         }
@@ -64,10 +68,10 @@ public class TrafficSignCacheUpdater {
         fileWatcherThread.start();
     }
 
-    public void updateCache() {
+    public void updateCache(NetworkGraphHopper networkGraphHopper) {
 
         log.info("Triggering update");
-        trafficSignDataService.updateTrafficSignData();
+        trafficSignDataService.updateTrafficSignData(networkGraphHopper);
         log.info("Finished update");
     }
 
