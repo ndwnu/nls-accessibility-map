@@ -53,9 +53,8 @@ public class TransportTypeMapper {
             case CAR_WITH_TRAILER -> Set.of(TransportType.CAR, TransportType.VEHICLE_WITH_TRAILER);
             case LORRY -> Set.of(TransportType.TRUCK);
             case VAN -> Set.of(TransportType.DELIVERY_VAN);
-            case MOPED -> Set.of(TransportType.MOPED);
+            case MOPED, MOTORSCOOTER -> Set.of(TransportType.MOPED);
             case MOTORCYCLE -> Set.of(TransportType.MOTORCYCLE);
-            case MOTORSCOOTER -> Set.of(TransportType.MOTORSCOOTER);
             case VEHICLE_WITH_TRAILER -> Set.of(TransportType.VEHICLE_WITH_TRAILER);
             case ARROW_BOARD_VEHICLE, CONSTRUCTION_OR_MAINTENANCE_VEHICLE, CRASH_DAMPENING_VEHICLE, MOBILE_VARIABLE_MESSAGE_SIGN_VEHICLE,
                  MOBILE_LANE_SIGNALING_VEHICLE -> Set.of();
