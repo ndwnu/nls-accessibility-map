@@ -24,6 +24,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 @Slf4j
+@SuppressWarnings("java:S1694")
 public abstract class AbstractYamlRepository<T extends List<?>> {
 
     @Getter

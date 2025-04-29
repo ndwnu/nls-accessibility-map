@@ -46,7 +46,7 @@ class MaximumWeightMapperTest {
         if(Objects.nonNull(expectedValue)) {
             assertThat(maximumWeight).isEqualTo(Maximum.builder().value(expectedValue).build());
         } else {
-            assertThat(maximumWeight).isEqualTo(expectedValue);
+            assertThat(maximumWeight).isNull();
         }
     }
 
