@@ -19,6 +19,7 @@ public class EmissionZoneFeignClientConfiguration {
         return requestTemplate ->
                 requestTemplate.header(
                         HttpHeaders.AUTHORIZATION,
-                        String.format("Bearer %s", oAuth2ClientCredentialsTokenService.getAccessToken(emissionZoneOAuthConfiguration.getRegistrationId())));
+                        "Bearer %s".formatted(
+                                oAuth2ClientCredentialsTokenService.getAccessToken(emissionZoneOAuthConfiguration.getRegistrationId())));
     }
 }

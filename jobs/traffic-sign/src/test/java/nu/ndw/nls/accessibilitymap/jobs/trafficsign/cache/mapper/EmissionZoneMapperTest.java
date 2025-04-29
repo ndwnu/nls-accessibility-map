@@ -193,7 +193,7 @@ class EmissionZoneMapperTest {
         assertThat(emissionZone.startTime()).isEqualTo(emissionZoneDto.startTime());
         assertThat(Objects.nonNull(emissionZoneDto.endTime())
                 ? OffsetDateTime.parse("2022-03-11T10:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME)
-                : OffsetDateTime.MAX);
+                : OffsetDateTime.MAX).isEqualTo(emissionZone.endTime());
         assertThat(emissionZone.exemptions()).containsExactlyElementsOf(Set.of(
                 EmissionZoneExemption.builder()
                         .startTime(

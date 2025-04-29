@@ -270,9 +270,8 @@ class RestrictionsTest {
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isEqualTo(true);
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isTrue();
     }
-
 
     @Test
     void isRestrictive_emissionZone_isExempt() {
@@ -301,7 +300,7 @@ class RestrictionsTest {
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isEqualTo(false);
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -325,7 +324,7 @@ class RestrictionsTest {
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isEqualTo(false);
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -344,7 +343,7 @@ class RestrictionsTest {
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isEqualTo(false);
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -363,7 +362,7 @@ class RestrictionsTest {
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isEqualTo(false);
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -382,6 +381,6 @@ class RestrictionsTest {
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isEqualTo(false);
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 }

@@ -24,6 +24,7 @@ public record Municipality(
         @NotNull @Valid MunicipalityBoundingBox bounds,
         @JsonProperty("date-last-check") LocalDate dateLastCheck) {
 
+    @SuppressWarnings("java:S5852")
     private static final Pattern PATTERN = Pattern.compile(".{2}0*(\\d+)$");
 
     public int municipalityIdAsInteger() {

@@ -9,12 +9,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class MaximumWeightMapper {
 
+    @SuppressWarnings("java:S1142")
     public Maximum map(Set<VehicleCategory> vehicleCategories, Double maximumWeightInKg) {
 
         Maximum vehicleCategoriesMaximumWeightInKg = map(vehicleCategories);
         if (Objects.isNull(vehicleCategoriesMaximumWeightInKg) && Objects.isNull(maximumWeightInKg)) {
             return null;
         }
+
         if (Objects.nonNull(vehicleCategoriesMaximumWeightInKg) && Objects.isNull(maximumWeightInKg)) {
             return vehicleCategoriesMaximumWeightInKg;
         }
@@ -30,6 +32,7 @@ public class MaximumWeightMapper {
         }
     }
 
+    @SuppressWarnings("java:S109")
     public Maximum map(Set<VehicleCategory> vehicleCategories) {
 
         if (Objects.isNull(vehicleCategories)) {

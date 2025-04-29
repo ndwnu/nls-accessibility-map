@@ -57,12 +57,14 @@ public class TrafficSignCacheStepDefinitions {
                 && (Objects.isNull(cachedTrafficSign.emissionZoneId()) || Objects.isNull(actualRestrictions.emissionZone()))) {
             fail("Traffic sign with id '%s' has an emission zone, but the cache is missing an emission restriction."
                     .formatted(cachedTrafficSign.externalId()));
+            return false;
         }
 
         if (Objects.isNull(trafficSignExpected.emissionZoneId())) {
             if ((Objects.nonNull(cachedTrafficSign.emissionZoneId()) || Objects.nonNull(actualRestrictions.emissionZone()))) {
                 fail("Traffic sign with id '%s' has no emission zone, but the cache has an unexpected emission restriction."
                         .formatted(cachedTrafficSign.externalId()));
+                return false;
             }
             return true;
         }
@@ -79,6 +81,7 @@ public class TrafficSignCacheStepDefinitions {
                     .isEqualTo(emissionZoneJsonExpected);
         } catch (JsonProcessingException exception) {
             fail(exception.getMessage(), exception);
+            return false;
         }
 
         return true;
