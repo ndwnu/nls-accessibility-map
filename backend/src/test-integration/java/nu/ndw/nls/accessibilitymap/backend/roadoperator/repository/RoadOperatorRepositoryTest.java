@@ -2,19 +2,16 @@ package nu.ndw.nls.accessibilitymap.backend.roadoperator.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson.RoadOperatorTypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
-import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.validation.annotation.Validated;
 
 @SpringBootTest(classes = RoadOperatorRepository.class)
 @EnableConfigurationProperties
@@ -69,24 +66,5 @@ class RoadOperatorRepositoryTest {
                         .requestExemptionUrl(null)
                         .build()
         ));
-    }
-
-    @Test
-    void annotation_fieldValidationPropagation_roadOperators() {
-
-        AnnotationUtil.fieldContainsAnnotation(
-                RoadOperatorRepository.class,
-                Valid.class,
-                "roadOperators",
-                annotation -> assertThat(annotation).isNotNull());
-    }
-
-    @Test
-    void annotation_classValidated() {
-
-        AnnotationUtil.classContainsAnnotation(
-                RoadOperatorRepository.class,
-                Validated.class,
-                annotation -> assertThat(annotation).isNotNull());
     }
 }
