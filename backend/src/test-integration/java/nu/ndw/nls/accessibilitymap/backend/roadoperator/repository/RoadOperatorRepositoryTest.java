@@ -75,7 +75,7 @@ class RoadOperatorRepositoryTest {
     void annotation_fieldValidationPropagation_roadOperators() {
 
         AnnotationUtil.fieldContainsAnnotation(
-                RoadOperatorStorage.class,
+                RoadOperatorRepository.class,
                 Valid.class,
                 "roadOperators",
                 annotation -> assertThat(annotation).isNotNull());
@@ -85,7 +85,7 @@ class RoadOperatorRepositoryTest {
     void annotation_classValidated() {
 
         AnnotationUtil.classContainsAnnotation(
-                RoadOperatorStorage.class,
+                RoadOperatorRepository.class,
                 Validated.class,
                 annotation -> assertThat(annotation).isNotNull());
     }
