@@ -2,12 +2,12 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +36,7 @@ class RoadSectionTest extends ValidationTest {
     @Mock
     private LineString lineString2;
 
+    private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
 
     @BeforeEach
     void setUp() {
@@ -50,7 +51,6 @@ class RoadSectionTest extends ValidationTest {
                 .build();
         roadSection.getRoadSectionFragments().add(roadSectionFragment);
 
-        directionalSegmentForward = mock(DirectionalSegment.class);
         directionalSegmentForward = DirectionalSegment.builder()
                 .id(3)
                 .accessible(true)
@@ -81,11 +81,34 @@ class RoadSectionTest extends ValidationTest {
 
     @Test
     void copy() {
+        LineString lineString3 = geometryFactoryWgs84.createLineString();
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder()
+                .forwardSegment(directionalSegmentForward.withLineString(lineString3))
+                .backwardSegment(directionalSegmentBackward.withLineString(lineString3))
+                .build()));
         RoadSection clonedRoadSection = roadSection.copy();
-        clonedRoadSection.getRoadSectionFragments()
-                .forEach(roadSectionFragment -> roadSectionFragment.setBackwardSegment(null));
-        assertThat(roadSection.isBackwardAccessible()).isTrue();
-        assertThat(clonedRoadSection.isBackwardAccessible()).isFalse();
+        assertThat(clonedRoadSection).isNotSameAs(roadSection);
+        assertThat(clonedRoadSection.getId()).isEqualTo(roadSection.getId());
+        for (int i = 0; i < roadSection.getRoadSectionFragments().size(); i++) {
+            RoadSectionFragment rsFragment = roadSection.getRoadSectionFragments().get(i);
+            RoadSectionFragment clonedRsFragment = clonedRoadSection.getRoadSectionFragments().get(i);
+            assertThat(clonedRsFragment).isNotSameAs(rsFragment);
+            assertThat(clonedRsFragment.getId()).isEqualTo(rsFragment.getId());
+            DirectionalSegment clonedForwardSegment = clonedRsFragment.getForwardSegment();
+            DirectionalSegment clonedBackwardSegment = clonedRsFragment.getBackwardSegment();
+            assertThat(clonedForwardSegment).isNotSameAs(rsFragment.getForwardSegment());
+            assertThat(clonedBackwardSegment).isNotSameAs(rsFragment.getBackwardSegment());
+            assertThat(clonedForwardSegment.getId()).isEqualTo(rsFragment.getForwardSegment().getId());
+            assertThat(clonedBackwardSegment.getId()).isEqualTo(rsFragment.getBackwardSegment().getId());
+            // enums are fixed reference types
+            assertThat(clonedForwardSegment.getDirection()).isEqualTo(rsFragment.getForwardSegment().getDirection());
+            assertThat(clonedBackwardSegment.getDirection()).isEqualTo(rsFragment.getBackwardSegment().getDirection());
+            assertThat(clonedForwardSegment.getLineString()).isEqualTo(rsFragment.getForwardSegment().getLineString());
+            assertThat(clonedForwardSegment.getLineString()).isNotSameAs(rsFragment.getForwardSegment().getLineString());
+            assertThat(clonedBackwardSegment.getLineString()).isEqualTo(rsFragment.getBackwardSegment().getLineString());
+            assertThat(clonedBackwardSegment.getLineString()).isNotSameAs(rsFragment.getBackwardSegment().getLineString());
+        }
     }
 
     @Test

@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
@@ -118,6 +120,7 @@ class NetworkCacheDataServiceTest {
                 roadSectionMapper, networkGraphHopper, roadSectionTrafficSignAssigner, queryGraphConfigurer);
     }
 
+
     @Test
     void create_shouldInitializeTrafficSignSnapsAndQueryGraph() {
 
@@ -136,6 +139,26 @@ class NetworkCacheDataServiceTest {
         verify(trafficSignSnapMapper).map(trafficSigns.stream().toList());
         verify(queryGraphFactory).createQueryGraph(trafficSignSnapList);
     }
+
+    @Test
+    @SuppressWarnings("java:S2925")
+    void getNetworkData_threadSafe() throws InterruptedException {
+        setupFixtureForCreate();
+        setupFixtureForBaseAccessibleCalculation(null);
+        when(queryGraphFactory.createQueryGraph(trafficSignSnapList)).thenAnswer(invocationOnMock -> {
+            Thread.sleep(100);
+            return queryGraph;
+        });
+        networkCacheDataService.create(trafficSigns);
+        try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
+            executorService.submit(() -> networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns));
+            executorService.submit(() -> networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns));
+            executorService.shutdown();
+            executorService.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS);
+        }
+
+    }
+
 
     @Test
     void getNetworkData_shouldThrowExceptionIfCreateWasNotCalledBefore() {

@@ -60,7 +60,6 @@ class AccessibilityServiceTest {
     private static final int MUNICIPALITY_ID = 11;
 
     private static final double SEARCH_DISTANCE_IN_METRES = 200D;
-    private static final String TRAFFIC_SIGN_ID = "id";
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
