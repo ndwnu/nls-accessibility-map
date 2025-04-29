@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
@@ -52,7 +51,6 @@ class RoadSectionTest extends ValidationTest {
                 .build();
         roadSection.getRoadSectionFragments().add(roadSectionFragment);
 
-        directionalSegmentForward = mock(DirectionalSegment.class);
         directionalSegmentForward = DirectionalSegment.builder()
                 .id(3)
                 .accessible(true)
@@ -79,6 +77,42 @@ class RoadSectionTest extends ValidationTest {
 
         roadSectionFragment.setForwardSegment(directionalSegmentForward);
         roadSectionFragment.setBackwardSegment(directionalSegmentBackward);
+    }
+
+    @Test
+    void copy() {
+
+        LineString lineString = geometryFactoryWgs84.createLineString();
+        roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment
+                .toBuilder()
+                .forwardSegment(directionalSegmentForward.withLineString(lineString))
+                .backwardSegment(directionalSegmentBackward.withLineString(lineString))
+                .build()));
+
+        RoadSection copiedRoadSection = roadSection.copy();
+        assertThat(copiedRoadSection).isNotSameAs(roadSection);
+        assertThat(copiedRoadSection.getId()).isEqualTo(roadSection.getId());
+
+        for (int i = 0; i < roadSection.getRoadSectionFragments().size(); i++) {
+            RoadSectionFragment roadSectionFragment = roadSection.getRoadSectionFragments().get(i);
+            RoadSectionFragment copiedRoadSectionFragment = copiedRoadSection.getRoadSectionFragments().get(i);
+
+            assertThat(copiedRoadSectionFragment).isNotSameAs(roadSectionFragment);
+            assertThat(copiedRoadSectionFragment.getId()).isEqualTo(roadSectionFragment.getId());
+            DirectionalSegment copiedForwardSegment = copiedRoadSectionFragment.getForwardSegment();
+            DirectionalSegment copiedBackwardSegment = copiedRoadSectionFragment.getBackwardSegment();
+            assertThat(copiedForwardSegment).isNotSameAs(roadSectionFragment.getForwardSegment());
+            assertThat(copiedBackwardSegment).isNotSameAs(roadSectionFragment.getBackwardSegment());
+            assertThat(copiedForwardSegment.getId()).isEqualTo(roadSectionFragment.getForwardSegment().getId());
+            assertThat(copiedBackwardSegment.getId()).isEqualTo(roadSectionFragment.getBackwardSegment().getId());
+            // enums are fixed reference types
+            assertThat(copiedForwardSegment.getDirection()).isEqualTo(roadSectionFragment.getForwardSegment().getDirection());
+            assertThat(copiedBackwardSegment.getDirection()).isEqualTo(roadSectionFragment.getBackwardSegment().getDirection());
+            assertThat(copiedForwardSegment.getLineString()).isEqualTo(roadSectionFragment.getForwardSegment().getLineString());
+            assertThat(copiedForwardSegment.getLineString()).isNotSameAs(roadSectionFragment.getForwardSegment().getLineString());
+            assertThat(copiedBackwardSegment.getLineString()).isEqualTo(roadSectionFragment.getBackwardSegment().getLineString());
+            assertThat(copiedBackwardSegment.getLineString()).isNotSameAs(roadSectionFragment.getBackwardSegment().getLineString());
+        }
     }
 
     @Test

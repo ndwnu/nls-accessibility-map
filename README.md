@@ -96,4 +96,3 @@ https://wiki.openstreetmap.org/wiki/Key:opening_hours
 
 ## Pretty printing geojson
 jq . c6WindowTimeSegments.geojson | sponge c6WindowTimeSegments.geojson
-
