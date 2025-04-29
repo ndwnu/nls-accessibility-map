@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
@@ -66,23 +67,12 @@ public class AccessibilityService {
             AccessibilityRequest accessibilityRequest,
             AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
 
-        OffsetDateTime startTime = clockService.now();
-
-        log.info("Building snaps took: %s ms".formatted(MILLIS.between(startTime, clockService.now())));
-
         Point startPoint = createPoint(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude());
         Snap startSegment = networkGraphHopper.getLocationIndex().findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
-        OffsetDateTime startTimeCreateQueryGraph = clockService.now();
         NetworkData networkData = networkCacheDataService.getNetworkData(accessibilityRequest.municipalityId(),
                 startSegment,
                 accessibilityRequest.searchRadiusInMeters(), trafficSigns);
-
-        log.info("Building query graph took: %s ms".formatted(MILLIS.between(startTimeCreateQueryGraph, clockService.now())));
-
-        OffsetDateTime startTimeCreatingEdgeRestrictions = clockService.now();
-
-        log.info("Building edge restrictions took: %s ms".formatted(MILLIS.between(startTimeCreatingEdgeRestrictions, clockService.now())));
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 

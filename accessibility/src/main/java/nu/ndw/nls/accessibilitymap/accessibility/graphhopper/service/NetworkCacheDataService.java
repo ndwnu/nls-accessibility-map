@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.services;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 
 import static java.util.stream.Collectors.toCollection;
 
@@ -15,17 +15,17 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
+import nu.ndw.nls.accessibilitymap.accessibility.services.RoadSectionTrafficSignAssigner;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.TrafficSignSnapMapper;
@@ -78,8 +78,7 @@ public class NetworkCacheDataService {
         }
     }
 
-    public NetworkData getNetworkData(Integer municipalityId, Snap snap, double searchRadiusInMeters,
-            List<TrafficSign> trafficSigns) {
+    public NetworkData getNetworkData(Integer municipalityId, Snap snap, double searchRadiusInMeters, List<TrafficSign> trafficSigns) {
         if (queryGraph == null || trafficSignSnaps == null) {
             throw new IllegalStateException("NetworkData is not initialised. Call create() before calling getNetworkData().");
         }

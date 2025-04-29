@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
-import nu.ndw.nls.accessibilitymap.accessibility.services.NetworkCacheDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;

@@ -97,14 +97,13 @@ public final class RoadSection {
                 .build();
 
         List<RoadSectionFragment> newRoadSectionFragments = roadSectionFragments.stream()
-                .map(f -> {
-                    RoadSectionFragment newFragment = f.toBuilder()
+                .map(roadSectionFragment -> {
+                    RoadSectionFragment newFragment = roadSectionFragment.toBuilder()
                             .build();
                     newFragment.setRoadSection(newRoadSection);
-                    Map<Direction, DirectionalSegment> newSegments = f.getSegments().stream()
-                            .map(d -> d.toBuilder()
-                                    .direction(Direction.valueOf(d.getDirection().name()))
-                                    .lineString((LineString) d.getLineString().copy())
+                    Map<Direction, DirectionalSegment> newSegments = roadSectionFragment.getSegments().stream()
+                            .map(directionalSegment -> directionalSegment.toBuilder()
+                                    .lineString((LineString) directionalSegment.getLineString().copy())
                                     .roadSectionFragment(newFragment)
                                     .build())
                             .collect(Collectors.toMap(DirectionalSegment::getDirection, Function.identity()));

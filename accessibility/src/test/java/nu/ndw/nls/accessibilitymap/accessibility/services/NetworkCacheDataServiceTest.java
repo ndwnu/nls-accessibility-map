@@ -18,16 +18,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
@@ -154,9 +155,8 @@ class NetworkCacheDataServiceTest {
             executorService.submit(() -> networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns));
             executorService.submit(() -> networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns));
             executorService.shutdown();
-            executorService.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS);
+            assertThat(executorService.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)).isTrue();
         }
-
     }
 
 
