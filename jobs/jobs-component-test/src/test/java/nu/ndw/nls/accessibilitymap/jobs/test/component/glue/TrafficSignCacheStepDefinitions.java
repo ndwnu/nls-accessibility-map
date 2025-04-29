@@ -48,6 +48,7 @@ public class TrafficSignCacheStepDefinitions {
                 .isTrue();
     }
 
+    @SuppressWarnings("java:S3658")
     private boolean verifyEmissionRestrictions(
             nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign cachedTrafficSign,
             TrafficSign trafficSignExpected) {

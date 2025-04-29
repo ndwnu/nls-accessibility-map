@@ -11,28 +11,46 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum VehicleCategory {
-    //Power-driven vehicles having at least four wheels and used for the carriage of passengers.
+    /*
+        Power-driven vehicles having at least four wheels and used for the carriage of passengers.
+     */
     M("M"),
 
-    //Vehicles used for the carriage of passengers and comprising not more than eight seats in addition to the driver's seat.
+    /*
+        Vehicles used for the carriage of passengers and comprising not more than eight seats in addition to the driver's seat.
+     */
     M_1("M_1"),
 
-    //Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat, and having a maximum mass not exceeding 5 tonnes.
+    /*
+        Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat
+        and having a maximum mass not exceeding 5 tonnes.
+     */
     M_2("M_2"),
 
-    //Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat, and having a maximum mass exceeding 5 tonnes.
+    /*
+        Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat
+        and having a maximum mass exceeding 5 tonnes.
+     */
     M_3("M_3"),
 
-    //Power-driven vehicles having at least four wheels and used for the carriage of goods
+    /*
+        Power-driven vehicles having at least four wheels and used for the carriage of goods
+     */
     N("N"),
 
-    //Vehicles used for the carriage of goods and having a maximum mass not exceeding 3.5 tonnes.
+    /*
+        Vehicles used for the carriage of goods and having a maximum mass not exceeding 3.5 tonnes.
+     */
     N_1("N_1"),
 
-    //Vehicles used for the carriage of goods and having a maximum mass exceeding 3.5 tonnes but not exceeding 12 tonnes.
+    /*
+        Vehicles used for the carriage of goods and having a maximum mass exceeding 3.5 tonnes but not exceeding 12 tonnes.
+     */
     N_2("N_2"),
 
-    //Vehicles used for the carriage of goods and having a maximum mass exceeding 12 tonnes.
+    /*
+        Vehicles used for the carriage of goods and having a maximum mass exceeding 12 tonnes.
+     */
     N_3("N_3"),
 
     UNKNOWN("UNKNOWN");

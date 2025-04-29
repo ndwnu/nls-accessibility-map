@@ -75,23 +75,17 @@ public class AccessibilityService {
             AccessibilityRequest accessibilityRequest,
             AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
 
-        OffsetDateTime startTime = clockService.now();
         List<TrafficSignSnap> snappedTrafficSigns = buildTrafficSignSnaps(accessibilityRequest, networkGraphHopper);
-        log.info("Building snaps took: %s ms".formatted(MILLIS.between(startTime, clockService.now())));
 
         Point startPoint = createPoint(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude());
         Snap startSegment = networkGraphHopper.getLocationIndex().findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
 
-        OffsetDateTime startTimeCreateQueryGraph = clockService.now();
         QueryGraph queryGraph = queryGraphFactory.createQueryGraph(networkGraphHopper, snappedTrafficSigns, startSegment);
-        log.info("Building query graph took: %s ms".formatted(MILLIS.between(startTimeCreateQueryGraph, clockService.now())));
 
-        OffsetDateTime startTimeCreatingEdgeRestrictions = clockService.now();
         EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
                 networkGraphHopper.getEncodingManager(),
                 snappedTrafficSigns);
-        log.info("Building edge restrictions took: %s ms".formatted(MILLIS.between(startTimeCreatingEdgeRestrictions, clockService.now())));
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 

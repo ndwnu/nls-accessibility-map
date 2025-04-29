@@ -8,9 +8,11 @@ import java.time.OffsetDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +36,7 @@ public class GraphHopperService {
 
     public synchronized void createNetworkGraphHopper() {
         try {
-            var routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
+            RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
             Files.createDirectories(
                     routingNetworkSettings.getGraphhopperRootPath().resolve(Path.of(routingNetworkSettings.getNetworkNameAndVersion())));
 
