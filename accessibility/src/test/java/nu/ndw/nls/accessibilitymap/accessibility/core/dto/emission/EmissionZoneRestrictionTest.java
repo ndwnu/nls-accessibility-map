@@ -42,7 +42,7 @@ class EmissionZoneRestrictionTest extends ValidationTest {
             null,   null,       DIESEL, DIESEL,         CAR,    CAR,    true,
             null,   2d,         DIESEL, DIESEL,         CAR,    CAR,    true,
             
-            2d,     2d,         DIESEL, LPG,            CAR,    CAR,    false,
+            2d,     2d,         DIESEL, ETHANOL,        CAR,    CAR,    false,
             2d,     2d,         DIESEL, null,           CAR,    CAR,    true,
             2d,     2d,         null,   null,           CAR,    CAR,    true,
             2d,     2d,         null,   DIESEL,         CAR,    CAR,    true,

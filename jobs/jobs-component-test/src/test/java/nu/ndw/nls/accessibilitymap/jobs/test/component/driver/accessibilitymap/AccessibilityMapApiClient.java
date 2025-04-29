@@ -97,7 +97,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
         Request request = Request.builder()
                 .id("getAccessibilityForMunicipality")
-                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections" .formatted(
+                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections".formatted(
                         accessibilityRequest.municipalityId()))
                 .method(HttpMethod.GET)
                 .queryParameters(buildQueryParameters(accessibilityRequest))
@@ -106,7 +106,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         var startPoint = buildGeoJsonStartPoint(accessibilityRequest.startLatitude(), accessibilityRequest.startLongitude());
 
         fileService.writeDataToFile(
-                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson" .formatted(request.id())).toFile(),
+                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson".formatted(request.id())).toFile(),
                 JsonMapper.builder().build().writeValueAsString(startPoint));
 
         getCache().getRequests().add(request);
@@ -135,7 +135,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
         Request request = Request.builder()
                 .id("getAccessibilityForMunicipality")
-                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson" .formatted(
+                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson".formatted(
                         accessibilityRequest.municipalityId()))
                 .method(HttpMethod.GET)
                 .queryParameters(buildQueryParameters(accessibilityRequest))
@@ -144,7 +144,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         var startPoint = buildGeoJsonStartPoint(accessibilityRequest.startLatitude(), accessibilityRequest.startLongitude());
 
         fileService.writeDataToFile(
-                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson" .formatted(request.id())).toFile(),
+                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson".formatted(request.id())).toFile(),
                 JsonMapper.builder().build().writeValueAsString(startPoint));
 
         getCache().getRequests().add(request);
@@ -253,6 +253,4 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         //KeycloakDriver will handle cleanup of the admin client.
         super.clearState();
     }
-
-    //    http://localhost:8080/api/rest/static-road-data/accessibility-map/api/management/graphHopper/reload
 }

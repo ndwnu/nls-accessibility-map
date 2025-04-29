@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class TrafficSignRestrictionsBuilder {
 
-    private static final int MULTIPLIER_FROM_CM_TO_METERS = 100;
+    private static final int MULTIPLIER_FROM_METERS_TO_CM = 100;
 
-    private static final int MULTIPLIER_FROM_TON_TO_KILO_GRAM = 1000;
+    private static final int MULTIPLIER_FROM_TONNE_TO_KILO_GRAM = 1000;
 
     private final Map<TrafficSignType, Restrictions> nonDynamicTrafficSigns;
 
@@ -142,10 +142,12 @@ public class TrafficSignRestrictionsBuilder {
     private static Restrictions buildC12Restrictions() {
         return Restrictions.builder()
                 .transportTypes(Set.of(
-                        TransportType.MOTORCYCLE,
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
+                        TransportType.MOPED,
+                        TransportType.MOTORCYCLE,
+                        TransportType.MOTORSCOOTER,
                         TransportType.TAXI,
                         TransportType.TRACTOR,
                         TransportType.TRUCK
@@ -160,7 +162,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleLengthInCm(Maximum.builder()
-                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_CM_TO_METERS)
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
                     .build();
         };
@@ -173,7 +175,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleWidthInCm(Maximum.builder()
-                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_CM_TO_METERS)
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
                     .build();
         };
@@ -186,7 +188,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleHeightInCm(Maximum.builder()
-                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_CM_TO_METERS)
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
                     .build();
         };
@@ -200,7 +202,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleAxleLoadInKg(Maximum.builder()
-                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_TON_TO_KILO_GRAM)
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM)
                             .build())
                     .build();
         };
@@ -214,7 +216,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleWeightInKg(Maximum.builder()
-                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_TON_TO_KILO_GRAM)
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM)
                             .build())
                     .build();
         };

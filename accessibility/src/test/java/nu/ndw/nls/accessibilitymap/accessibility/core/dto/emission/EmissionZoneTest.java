@@ -53,7 +53,7 @@ class EmissionZoneTest extends ValidationTest {
                 .exemptions(Set.of(EmissionZoneExemption.builder()
                         .startTime(OffsetDateTime.MIN)
                         .endTime(OffsetDateTime.MAX)
-                        .emissionClasses(Set.of(EmissionClass.FIVE, EmissionClass.SIX))
+                        .emissionClasses(Set.of(EmissionClass.EURO_5, EmissionClass.EURO_6))
                         .transportTypes(Set.of(TransportType.CAR, TransportType.TAXI))
                         .vehicleWeightInKg(Maximum.builder().value(3d).build())
                         .build()))

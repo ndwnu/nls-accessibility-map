@@ -12,9 +12,9 @@ public enum TransportType {
 
     PEDESTRIAN("Pedestrian"),
     BICYCLE("Bicycle"),
-    MOPED("Moped"),
+    MOPED("Moped"), //Bromfiets, Snorfiets
     MOTORCYCLE("Motorcycle"),
-    MOTORSCOOTER("motorscooter"),
+    MOTORSCOOTER("Motorscooter"), //Scooter
     CARAVAN("Caravan"),
     CAR("Car"),
     TRUCK("Truck"),

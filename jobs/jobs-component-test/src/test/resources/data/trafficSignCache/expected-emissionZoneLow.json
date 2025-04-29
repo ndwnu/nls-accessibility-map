@@ -6,7 +6,7 @@
       "startTime":"-999999999-01-01T00:00:00+18:00",
       "endTime":"+999999999-12-31T23:59:59.999999999-18:00",
       "emissionClasses":[
-        "SIX"
+        "EURO_6"
       ],
       "transportTypes":[
         "TRUCK",

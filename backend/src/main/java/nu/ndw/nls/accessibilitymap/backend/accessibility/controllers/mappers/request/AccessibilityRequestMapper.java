@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccessibilityRequestMapper {
 
-    private static final int MULTIPLIER_FROM_CM_TO_METERS = 100;
+    private static final int MULTIPLIER_FROM_METERS_TO_CM = 100;
 
-    private static final int MULTIPLIER_FROM_TON_TO_KILO_GRAM = 1000;
+    private static final int MULTIPLIER_FROM_TONNE_TO_KILO_GRAM = 1000;
 
     private final TransportTypeMapper transportTypeMapper;
 
@@ -42,11 +42,11 @@ public class AccessibilityRequestMapper {
                 .searchRadiusInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
                 .startLocationLatitude(municipality.startCoordinateLatitude())
                 .startLocationLongitude(municipality.startCoordinateLongitude())
-                .vehicleHeightInCm(mapToDouble(vehicleArguments.vehicleHeight(), MULTIPLIER_FROM_CM_TO_METERS))
-                .vehicleLengthInCm(mapToDouble(vehicleArguments.vehicleLength(), MULTIPLIER_FROM_CM_TO_METERS))
-                .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth(), MULTIPLIER_FROM_CM_TO_METERS))
-                .vehicleWeightInKg(mapToDouble(vehicleArguments.vehicleWeight(), MULTIPLIER_FROM_TON_TO_KILO_GRAM))
-                .vehicleAxleLoadInKg(mapToDouble(vehicleArguments.vehicleAxleLoad(), MULTIPLIER_FROM_TON_TO_KILO_GRAM))
+                .vehicleHeightInCm(mapToDouble(vehicleArguments.vehicleHeight(), MULTIPLIER_FROM_METERS_TO_CM))
+                .vehicleLengthInCm(mapToDouble(vehicleArguments.vehicleLength(), MULTIPLIER_FROM_METERS_TO_CM))
+                .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth(), MULTIPLIER_FROM_METERS_TO_CM))
+                .vehicleWeightInKg(mapToDouble(vehicleArguments.vehicleWeight(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
+                .vehicleAxleLoadInKg(mapToDouble(vehicleArguments.vehicleAxleLoad(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
                 .fuelTypes(fuelTypeMapper.mapFuelType(vehicleArguments.fuelType()))
                 .emissionClasses(emissionClassMapper.mapEmissionClass(vehicleArguments.emissionClass()))
                 .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))

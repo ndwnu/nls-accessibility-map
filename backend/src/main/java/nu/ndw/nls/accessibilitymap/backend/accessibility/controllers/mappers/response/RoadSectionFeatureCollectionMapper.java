@@ -28,7 +28,7 @@ public class RoadSectionFeatureCollectionMapper {
      */
     public RoadSectionFeatureCollectionJson map(
             Accessibility accessibility,
-            @Nullable CandidateMatch startPoint,
+            CandidateMatch startPoint,
             @Nullable Boolean accessible
     ) {
 

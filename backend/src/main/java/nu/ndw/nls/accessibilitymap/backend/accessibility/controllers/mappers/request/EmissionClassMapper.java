@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request;
 
-import com.google.common.base.Enums;
 import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
@@ -15,11 +14,14 @@ public class EmissionClassMapper {
         if (Objects.isNull(emissionClassJson)) {
             return null;
         } else {
-            return Enums.getIfPresent(EmissionClass.class, emissionClassJson.name())
-                    .toJavaUtil()
-                    .map(Set::of)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid emission classification type: %s"
-                            .formatted(emissionClassJson.name())));
+            return switch (emissionClassJson) {
+                case _1 -> Set.of(EmissionClass.EURO_1);
+                case _2 -> Set.of(EmissionClass.EURO_2);
+                case _3 -> Set.of(EmissionClass.EURO_3);
+                case _4 -> Set.of(EmissionClass.EURO_4);
+                case _5 -> Set.of(EmissionClass.EURO_5);
+                case _6 -> Set.of(EmissionClass.EURO_6);
+            };
         }
     }
 }

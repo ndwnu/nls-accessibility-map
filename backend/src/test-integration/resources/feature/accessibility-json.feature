@@ -83,7 +83,7 @@ Feature: Inaccessible road sections JSON endpoint
   Scenario: accessibility map with emission class set, but fuel type missing should return 400
     Given path '/v1/municipalities/GM0307/road-sections'
     And param vehicleType = 'car'
-    And param emissionClass = 'one'
+    And param emissionClass = 'euro_1'
     And method GET
     Then status 400
     And match response == badRequestIncorrectEmissionZoneParameters

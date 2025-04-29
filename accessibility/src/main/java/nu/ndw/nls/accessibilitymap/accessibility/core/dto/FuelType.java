@@ -6,12 +6,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum FuelType {
-    ELECTRIC,
-    BIODIESEL,
+    COMPRESSED_NATURAL_GAS,
     DIESEL,
+    ETHANOL,
+    ELECTRIC,
     HYDROGEN,
-    LPG,
-    METHANE,
+    LIQUEFIED_PETROLEUM_GAS,
+    LIQUEFIED_NATURAL_GAS,
     PETROL,
-    UNKNOWN;
+    UNKNOWN
 }

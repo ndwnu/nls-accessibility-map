@@ -13,12 +13,12 @@ public class EmissionClassMapper {
 
         return euroClassifications.stream()
                 .map(euroClassification -> switch (euroClassification) {
-                    case EURO_1 -> EmissionClass.ONE;
-                    case EURO_2 -> EmissionClass.TWO;
-                    case EURO_3 -> EmissionClass.THREE;
-                    case EURO_4 -> EmissionClass.FOUR;
-                    case EURO_5 -> EmissionClass.FIVE;
-                    case EURO_6 -> EmissionClass.SIX;
+                    case EURO_1 -> EmissionClass.EURO_1;
+                    case EURO_2 -> EmissionClass.EURO_2;
+                    case EURO_3 -> EmissionClass.EURO_3;
+                    case EURO_4 -> EmissionClass.EURO_4;
+                    case EURO_5 -> EmissionClass.EURO_5;
+                    case EURO_6 -> EmissionClass.EURO_6;
                     case UNKNOWN -> throw new IllegalStateException("Unknown euro classification '%s'." .formatted(euroClassification));
                 })
                 .collect(Collectors.toSet());

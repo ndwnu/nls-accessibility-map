@@ -251,7 +251,7 @@ class RestrictionsTest {
                 .withTransportTypes(Set.of(TransportType.CAR))
                 .withTimestamp(timestamp)
                 .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(Set.of(EmissionClass.FOUR));
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
 
         when(emissionZone.isActive(timestamp)).thenReturn(true);
         when(emissionZone.isRelevant(
@@ -281,7 +281,7 @@ class RestrictionsTest {
                 .withTransportTypes(Set.of(TransportType.CAR))
                 .withTimestamp(timestamp)
                 .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(Set.of(EmissionClass.FOUR));
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
 
         when(emissionZone.isActive(timestamp)).thenReturn(true);
         when(emissionZone.isRelevant(
@@ -311,7 +311,7 @@ class RestrictionsTest {
                 .withTransportTypes(Set.of(TransportType.CAR))
                 .withTimestamp(timestamp)
                 .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(Set.of(EmissionClass.FOUR));
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
 
         when(emissionZone.isActive(timestamp)).thenReturn(true);
         when(emissionZone.isRelevant(
@@ -335,7 +335,7 @@ class RestrictionsTest {
                 .withTransportTypes(Set.of(TransportType.CAR))
                 .withTimestamp(timestamp)
                 .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(Set.of(EmissionClass.FOUR));
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
 
         when(emissionZone.isActive(timestamp)).thenReturn(false);
 
@@ -354,7 +354,7 @@ class RestrictionsTest {
                 .withTransportTypes(Set.of(TransportType.CAR))
                 .withTimestamp(timestamp)
                 .withFuelTypes(null)
-                .withEmissionClasses(Set.of(EmissionClass.FOUR));
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
 
         when(emissionZone.isActive(timestamp)).thenReturn(true);
 

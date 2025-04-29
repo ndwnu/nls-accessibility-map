@@ -181,7 +181,9 @@ class TrafficSignRestrictionsBuilderTest {
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
+                        TransportType.MOPED,
                         TransportType.MOTORCYCLE,
+                        TransportType.MOTORSCOOTER,
                         TransportType.TAXI,
                         TransportType.TRACTOR,
                         TransportType.TRUCK
