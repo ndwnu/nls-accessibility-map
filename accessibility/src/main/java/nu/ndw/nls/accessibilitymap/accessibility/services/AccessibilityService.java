@@ -121,7 +121,6 @@ public class AccessibilityService {
                         startSegment));
     }
 
-
     private Weighting buildWeightingWithRestrictions(Set<Integer> blockedEdges) {
 
         return new RestrictionWeightingAdapter(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()), blockedEdges);

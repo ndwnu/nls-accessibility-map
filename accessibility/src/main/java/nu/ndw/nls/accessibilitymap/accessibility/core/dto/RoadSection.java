@@ -93,23 +93,21 @@ public final class RoadSection {
 
     public RoadSection copy() {
 
-        RoadSection newRoadSection = toBuilder()
-                .build();
+        RoadSection newRoadSection = toBuilder().build();
 
         List<RoadSectionFragment> newRoadSectionFragments = roadSectionFragments.stream()
                 .map(roadSectionFragment -> {
-                    RoadSectionFragment newFragment = roadSectionFragment.toBuilder()
-                            .build();
-                    newFragment.setRoadSection(newRoadSection);
-                    Map<Direction, DirectionalSegment> newSegments = roadSectionFragment.getSegments().stream()
+                    RoadSectionFragment newRoadSectionFragment = roadSectionFragment.toBuilder().build();
+                    newRoadSectionFragment.setRoadSection(newRoadSection);
+                    Map<Direction, DirectionalSegment> newDirectionalSegment = roadSectionFragment.getSegments().stream()
                             .map(directionalSegment -> directionalSegment.toBuilder()
                                     .lineString((LineString) directionalSegment.getLineString().copy())
-                                    .roadSectionFragment(newFragment)
+                                    .roadSectionFragment(newRoadSectionFragment)
                                     .build())
                             .collect(Collectors.toMap(DirectionalSegment::getDirection, Function.identity()));
-                    newFragment.setForwardSegment(newSegments.get(Direction.FORWARD));
-                    newFragment.setBackwardSegment(newSegments.get(Direction.BACKWARD));
-                    return newFragment;
+                    newRoadSectionFragment.setForwardSegment(newDirectionalSegment.get(Direction.FORWARD));
+                    newRoadSectionFragment.setBackwardSegment(newDirectionalSegment.get(Direction.BACKWARD));
+                    return newRoadSectionFragment;
                 })
                 .toList();
         newRoadSection.setRoadSectionFragments(newRoadSectionFragments);

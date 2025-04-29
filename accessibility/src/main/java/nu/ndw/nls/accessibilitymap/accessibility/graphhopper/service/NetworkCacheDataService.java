@@ -48,17 +48,27 @@ import org.springframework.stereotype.Component;
 public class NetworkCacheDataService {
 
     private final QueryGraphFactory queryGraphFactory;
+
     private final TrafficSignSnapMapper trafficSignSnapMapper;
+
     private final IsochroneServiceFactory isochroneServiceFactory;
+
     private final RoadSectionMapper roadSectionMapper;
+
     private final NetworkGraphHopper networkGraphHopper;
+
     private final RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner;
+
     private final QueryGraphConfigurer queryGraphConfigurer;
+
     private final ReentrantLock dataLock = new ReentrantLock();
 
     private QueryGraph queryGraph;
+
     private Map<String, TrafficSignSnap> trafficSignSnaps;
+
     private Map<Integer, Collection<RoadSection>> baseAccessibilityByMunicipalityId = new HashMap<>();
+
     private Collection<RoadSection> allBaseAccessibility;
 
     public void create(TrafficSigns trafficSigns) {
@@ -121,8 +131,12 @@ public class NetworkCacheDataService {
      * @param trafficSignsByEdgeKey a map linking edge keys to their associated traffic signs
      * @return a collection of road sections representing the base accessibility, with traffic sign information included
      */
-    private Collection<RoadSection> getBaseAccessibility(Integer municipalityId, Snap snap, double searchRadiusInMeters,
+    private Collection<RoadSection> getBaseAccessibility(
+            Integer municipalityId,
+            Snap snap,
+            double searchRadiusInMeters,
             Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey) {
+
         dataLock.lock();
         try {
             if (municipalityId == null) {
@@ -162,6 +176,5 @@ public class NetworkCacheDataService {
                         getQueryGraph(),
                         snappedPoint));
     }
-
 
 }
