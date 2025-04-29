@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -46,12 +48,15 @@ class TrafficSignDataServiceTest {
     @Mock
     private TrafficSignRelevancy trafficSignRelevancy2;
 
+    @Mock
+    private NetworkCacheDataService networkCacheDataService;
+
     @BeforeEach
     void setUp() {
 
         trafficSignDataService = new TrafficSignDataService(
                 trafficSignCacheReadWriter,
-                List.of(trafficSignRelevancy1, trafficSignRelevancy2));
+                List.of(trafficSignRelevancy1, trafficSignRelevancy2), networkCacheDataService);
     }
 
     @Test
@@ -105,6 +110,7 @@ class TrafficSignDataServiceTest {
         List<TrafficSign> cachedTrafficSigns = trafficSignDataService.getTrafficSigns();
 
         verify(trafficSignCacheReadWriter).read();
+        verify(networkCacheDataService).create(argThat(t -> t.equals(trafficSigns)));
         assertThat(cachedTrafficSigns).isEqualTo(trafficSigns);
     }
 

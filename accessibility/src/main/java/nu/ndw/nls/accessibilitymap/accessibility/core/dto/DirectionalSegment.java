@@ -16,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @With
 @Validated
 public final class DirectionalSegment {
@@ -34,7 +34,7 @@ public final class DirectionalSegment {
     private RoadSectionFragment roadSectionFragment;
 
     @Valid
-    private final List<TrafficSign> trafficSigns;
+    private List<TrafficSign> trafficSigns;
 
     private final boolean accessible;
 
