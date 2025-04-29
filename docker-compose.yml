@@ -93,7 +93,7 @@ services:
   nls-accessibility-map-traffic-sign-analyser-job:
     build: docker/nls-accessibility-map-traffic-sign-job
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=component-test
       - COMMAND=analyse
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
@@ -106,7 +106,7 @@ services:
   nls-accessibility-map-traffic-sign-update-cache-job:
     build: docker/nls-accessibility-map-traffic-sign-job
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,update-cache
+      - SPRING_PROFILES_ACTIVE=component-test,update-cache
       - COMMAND=update-cache
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
     volumes:
