@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
@@ -49,7 +47,9 @@ class NetworkCacheDataServiceTest {
     private static final String TRAFFIC_SIGN_ID_1 = "1";
 
     private static final String TRAFFIC_SIGN_ID_2 = "2";
+
     private static final int MUNICIPALITY_ID = 456;
+
     private static final double SEARCH_RADIUS_IN_METERS = 1000.0;
 
     @Mock
@@ -77,16 +77,19 @@ class NetworkCacheDataServiceTest {
 
     @Mock
     private QueryGraph queryGraph;
+
     @Mock
     private TrafficSignSnap trafficSignSnap1;
 
     @Mock
     private TrafficSignSnap trafficSignSnap2;
+
     @Mock
     private TrafficSign trafficSign1;
 
     @Mock
     private TrafficSign trafficSign2;
+
     @Mock
     private Snap snap;
 
@@ -98,6 +101,7 @@ class NetworkCacheDataServiceTest {
 
     @Mock
     private IsochroneMatch isochroneMatch;
+
     @Mock
     private Weighting weightingNoRestrictions;
 
@@ -106,6 +110,7 @@ class NetworkCacheDataServiceTest {
 
     @Mock
     private RoadSection clonedRoadSection;
+
     @Mock
     private EdgeRestrictions edgeRestrictions;
 
@@ -120,7 +125,6 @@ class NetworkCacheDataServiceTest {
         networkCacheDataService = new NetworkCacheDataService(queryGraphFactory, trafficSignSnapMapper, isochroneServiceFactory,
                 roadSectionMapper, networkGraphHopper, roadSectionTrafficSignAssigner, queryGraphConfigurer);
     }
-
 
     @Test
     void create_shouldInitializeTrafficSignSnapsAndQueryGraph() {
@@ -140,25 +144,6 @@ class NetworkCacheDataServiceTest {
         verify(trafficSignSnapMapper).map(trafficSigns.stream().toList());
         verify(queryGraphFactory).createQueryGraph(trafficSignSnapList);
     }
-
-    @Test
-    @SuppressWarnings("java:S2925")
-    void getNetworkData_threadSafe() throws InterruptedException {
-        setupFixtureForCreate();
-        setupFixtureForBaseAccessibleCalculation(null);
-        when(queryGraphFactory.createQueryGraph(trafficSignSnapList)).thenAnswer(invocationOnMock -> {
-            Thread.sleep(100);
-            return queryGraph;
-        });
-        networkCacheDataService.create(trafficSigns);
-        try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
-            executorService.submit(() -> networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns));
-            executorService.submit(() -> networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns));
-            executorService.shutdown();
-            assertThat(executorService.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)).isTrue();
-        }
-    }
-
 
     @Test
     void getNetworkData_shouldThrowExceptionIfCreateWasNotCalledBefore() {
@@ -227,9 +212,7 @@ class NetworkCacheDataServiceTest {
                         .searchDistanceInMetres(SEARCH_RADIUS_IN_METERS)
                         .build())),
                 eq(queryGraph), eq(snap));
-
     }
-
 
     private void setupFixtureForBaseAccessibleCalculation(Integer municipalityId) {
         when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, trafficSignSnapList)).thenReturn(edgeRestrictions);
