@@ -38,7 +38,7 @@ nu:
                 host: ${hostWireMock}
                 port: 8888
               keycloak:
-                url: "http://nls-keycloak:8000/auth"
+                url: "http://localhost:8000/auth"
                 realm: "ndw"
                 admin-username: "nls"
                 admin-password: "nls"
