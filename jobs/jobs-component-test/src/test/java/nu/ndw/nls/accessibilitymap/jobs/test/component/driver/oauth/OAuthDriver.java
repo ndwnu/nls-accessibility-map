@@ -18,7 +18,7 @@ public class OAuthDriver implements StateManagement {
 
     public static final String SIMULATED_BEARER_TOKEN = "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3";
 
-    public void prepareTokenRetreival() {
+    public void prepareTokenRetrieval() {
 
         stubFor(WireMock.post(urlEqualTo("/auth/realms/ndw/protocol/openid-connect/token"))
                 .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/x-www-form-urlencoded;charset=UTF-8"))
@@ -47,6 +47,6 @@ public class OAuthDriver implements StateManagement {
     public void prepareState() {
 
         StateManagement.super.prepareState();
-        prepareTokenRetreival();
+        prepareTokenRetrieval();
     }
 }
