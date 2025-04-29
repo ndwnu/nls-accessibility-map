@@ -6,7 +6,7 @@
       "startTime":"2025-01-01T00:00:00Z",
       "endTime":"2027-12-31T23:00:00Z",
       "emissionClasses":[
-        "SIX"
+        "EURO_6"
       ],
       "transportTypes":[
         "TRUCK",
@@ -20,7 +20,7 @@
       "startTime":"2025-01-01T00:00:00Z",
       "endTime":"2026-12-31T23:00:00Z",
       "emissionClasses":[
-        "FIVE"
+        "EURO_5"
       ],
       "transportTypes":[
         "TRUCK",

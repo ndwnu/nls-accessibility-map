@@ -38,7 +38,7 @@ public class EmissionZoneMapper {
                         return EmissionZone.builder()
                                 .startTime(emissionZone.startTime())
                                 .endTime(Objects.nonNull(emissionZone.endTime()) ? emissionZone.endTime() : OffsetDateTime.MAX)
-                                .exemptions(mapExceptions(emissionZone))
+                                .exemptions(mapExemptions(emissionZone))
                                 .restriction(mapRestriction(emissionZone))
                                 .build();
                     } catch (RuntimeException exception) {
@@ -62,7 +62,7 @@ public class EmissionZoneMapper {
                 .build();
     }
 
-    private Set<EmissionZoneExemption> mapExceptions(nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EmissionZone emissionZone) {
+    private Set<EmissionZoneExemption> mapExemptions(nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EmissionZone emissionZone) {
 
         if (Objects.isNull(emissionZone.exemptions())) {
             return Set.of();

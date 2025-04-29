@@ -31,7 +31,7 @@ class EmissionZoneExemptionTest extends ValidationTest {
         emissionZoneExemption = EmissionZoneExemption.builder()
                 .startTime(OffsetDateTime.MIN)
                 .endTime(OffsetDateTime.MAX)
-                .emissionClasses(Set.of(EmissionClass.FIVE, EmissionClass.SIX))
+                .emissionClasses(Set.of(EmissionClass.EURO_5, EmissionClass.EURO_6))
                 .transportTypes(Set.of(TransportType.CAR, TransportType.TAXI))
                 .vehicleWeightInKg(Maximum.builder().value(3d).build())
                 .build();
@@ -55,13 +55,13 @@ class EmissionZoneExemptionTest extends ValidationTest {
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
-            2d,     FIVE,   CAR,    true,
-            4d,     FIVE,   CAR,    false,
-            2d,     FOUR,   CAR,    false,
-            2d,     FIVE,   BUS,    false,
-            null,   FIVE,   CAR,    true,
+            2d,     EURO5,   CAR,    true,
+            4d,     EURO5,   CAR,    false,
+            2d,     EURO4,   CAR,    false,
+            2d,     EURO5,   BUS,    false,
+            null,   EURO5,   CAR,    true,
             2d,     null,   CAR,    true,
-            2d,     FIVE,   null,   true,
+            2d,     EURO5,   null,   true,
             """)
     void isExempt(
             Double vehicleWeightInKg,
@@ -71,12 +71,12 @@ class EmissionZoneExemptionTest extends ValidationTest {
 
         emissionZoneExemption = emissionZoneExemption
                 .withTransportTypes(Set.of(TransportType.CAR, TransportType.TAXI))
-                .withEmissionClasses(Set.of(EmissionClass.FIVE, EmissionClass.SIX))
+                .withEmissionClasses(Set.of(EmissionClass.EURO_5, EmissionClass.EURO_6))
                 .withVehicleWeightInKg(Maximum.builder().value(3d).build());
 
         assertThat(emissionZoneExemption.isExempt(
                 vehicleWeightInKg,
-                Objects.nonNull(emissionClass) ? Set.of(EmissionClass.valueOf(emissionClass)) : Set.of(),
+                Objects.nonNull(emissionClass) ? Set.of(emissionClass.equals("EURO5") ? EmissionClass.EURO_5 : EmissionClass.EURO_4) : Set.of(),
                 Objects.nonNull(transportType) ? Set.of(TransportType.valueOf(transportType)) : Set.of()))
                 .isEqualTo(expectedExemption);
     }
@@ -91,7 +91,7 @@ class EmissionZoneExemptionTest extends ValidationTest {
     @Test
     void isExempt_noTransportTypes() {
 
-        assertThat(catchThrowable(() -> emissionZoneExemption.isExempt(2d, Set.of(EmissionClass.FIVE), null)))
+        assertThat(catchThrowable(() -> emissionZoneExemption.isExempt(2d, Set.of(EmissionClass.EURO_5), null)))
                 .isInstanceOf(NullPointerException.class);
     }
 

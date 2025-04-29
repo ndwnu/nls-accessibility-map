@@ -91,7 +91,7 @@ class EmissionZoneMapperTest {
         when(maximumWeightMapper.map(emissionZoneDto.exemptions().getFirst().vehicleCategories(), 2D)).thenReturn(
                 Maximum.builder().value(2D).build());
         when(maximumWeightMapper.map(emissionZoneDto.restriction().vehicleCategories())).thenReturn(Maximum.builder().value(3D).build());
-        when(emissionClassMapper.map(emissionZoneDto.exemptions().getFirst().euroClassifications())).thenReturn(Set.of(EmissionClass.ONE));
+        when(emissionClassMapper.map(emissionZoneDto.exemptions().getFirst().euroClassifications())).thenReturn(Set.of(EmissionClass.EURO_1));
         when(fuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
         when(transportTypeMapper.map(emissionZoneDto.restriction().vehicleType(),
                 emissionZoneDto.restriction().vehicleCategories())).thenReturn(Set.of(TransportType.BUS));
@@ -177,7 +177,7 @@ class EmissionZoneMapperTest {
         when(maximumWeightMapper.map(emissionZoneDto.exemptions().getFirst().vehicleCategories(), null)).thenReturn(
                 Maximum.builder().value(2D).build());
         when(maximumWeightMapper.map(emissionZoneDto.restriction().vehicleCategories())).thenReturn(Maximum.builder().value(3D).build());
-        when(emissionClassMapper.map(emissionZoneDto.exemptions().getFirst().euroClassifications())).thenReturn(Set.of(EmissionClass.ONE));
+        when(emissionClassMapper.map(emissionZoneDto.exemptions().getFirst().euroClassifications())).thenReturn(Set.of(EmissionClass.EURO_1));
         when(fuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
         when(transportTypeMapper.map(emissionZoneDto.restriction().vehicleType(),
                 emissionZoneDto.restriction().vehicleCategories())).thenReturn(Set.of(TransportType.BUS));
@@ -204,7 +204,7 @@ class EmissionZoneMapperTest {
                                 Objects.nonNull(emissionZoneDto.exemptions().getFirst().endTime())
                                         ? OffsetDateTime.parse("2022-03-11T10:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME)
                                         : OffsetDateTime.MAX)
-                        .emissionClasses(Set.of(EmissionClass.ONE))
+                        .emissionClasses(Set.of(EmissionClass.EURO_1))
                         .transportTypes(Set.of(TransportType.CAR))
                         .vehicleWeightInKg(Maximum.builder().value(2D).build())
                         .build()));

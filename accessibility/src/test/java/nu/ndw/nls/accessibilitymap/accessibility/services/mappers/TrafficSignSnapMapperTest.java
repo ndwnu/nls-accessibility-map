@@ -61,14 +61,14 @@ class TrafficSignSnapMapperTest {
     @Mock
     private EdgeIteratorState edgeIteratorState;
 
-    private TrafficSignSnapMapper trafficSingSnapMapper;
+    private TrafficSignSnapMapper trafficSignSnapMapper;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
     @BeforeEach
     void setUp() {
-        trafficSingSnapMapper = new TrafficSignSnapMapper();
+        trafficSignSnapMapper = new TrafficSignSnapMapper();
     }
 
     @Test
@@ -76,7 +76,7 @@ class TrafficSignSnapMapperTest {
 
         setupBaseFixture();
         when(snap.isValid()).thenReturn(true);
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), networkGraphHopper);
+        List<TrafficSignSnap> trafficSignSnaps = trafficSignSnapMapper.map(List.of(trafficSign), networkGraphHopper);
         assertThat(trafficSignSnaps).hasSize(1);
         assertThat(trafficSignSnaps.getFirst().getSnap()).isEqualTo(snap);
         assertThat(trafficSignSnaps.getFirst().getTrafficSign()).isEqualTo(trafficSign);
@@ -93,7 +93,7 @@ class TrafficSignSnapMapperTest {
         when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
         when(snap.isValid()).thenReturn(false);
 
-        List<TrafficSignSnap> trafficSignSnaps = trafficSingSnapMapper.map(List.of(trafficSign), networkGraphHopper);
+        List<TrafficSignSnap> trafficSignSnaps = trafficSignSnapMapper.map(List.of(trafficSign), networkGraphHopper);
 
         assertThat(trafficSignSnaps).isEmpty();
         loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with "

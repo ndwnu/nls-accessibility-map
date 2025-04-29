@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EmissionClass {
-    ONE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX,
+    EURO_1,
+    EURO_2,
+    EURO_3,
+    EURO_4,
+    EURO_5,
+    EURO_6,
     UNKNOWN;
 }

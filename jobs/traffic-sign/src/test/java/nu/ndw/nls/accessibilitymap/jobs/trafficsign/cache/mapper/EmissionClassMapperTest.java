@@ -43,12 +43,12 @@ class EmissionClassMapperTest {
     private EmissionClass mapEmissionClass(EuroClassification euroClassifications) {
 
         return switch (euroClassifications) {
-            case EuroClassification.EURO_1 -> EmissionClass.ONE;
-            case EuroClassification.EURO_2 -> EmissionClass.TWO;
-            case EuroClassification.EURO_3 -> EmissionClass.THREE;
-            case EuroClassification.EURO_4 -> EmissionClass.FOUR;
-            case EuroClassification.EURO_5 -> EmissionClass.FIVE;
-            case EuroClassification.EURO_6 -> EmissionClass.SIX;
+            case EuroClassification.EURO_1 -> EmissionClass.EURO_1;
+            case EuroClassification.EURO_2 -> EmissionClass.EURO_2;
+            case EuroClassification.EURO_3 -> EmissionClass.EURO_3;
+            case EuroClassification.EURO_4 -> EmissionClass.EURO_4;
+            case EuroClassification.EURO_5 -> EmissionClass.EURO_5;
+            case EuroClassification.EURO_6 -> EmissionClass.EURO_6;
 
             case nu.ndw.nls.accessibilitymap.jobs.trafficsign.emission.dto.EuroClassification.UNKNOWN -> EmissionClass.UNKNOWN;
         };

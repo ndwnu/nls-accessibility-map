@@ -105,7 +105,8 @@ class TransportTypeMapperTest {
             case CAR -> Set.of(TransportType.CAR);
             case CAR_WITH_CARAVAN -> Set.of(TransportType.CARAVAN);
             case CAR_WITH_TRAILER -> Set.of(TransportType.CAR, TransportType.VEHICLE_WITH_TRAILER);
-            case LORRY, VAN -> Set.of(TransportType.DELIVERY_VAN);
+            case LORRY  -> Set.of(TransportType.TRUCK);
+            case VAN -> Set.of(TransportType.DELIVERY_VAN);
             case MOPED -> Set.of(TransportType.MOPED);
             case MOTORCYCLE -> Set.of(TransportType.MOTORCYCLE);
             case MOTORSCOOTER -> Set.of(TransportType.MOTORSCOOTER);

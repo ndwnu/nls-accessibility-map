@@ -298,7 +298,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     static Stream<Arguments> provideIncorrectEmissionZoneParameters() {
         return Stream.of(
-                Arguments.of(EmissionClassJson.FIVE, null),
+                Arguments.of(EmissionClassJson._5, null),
                 Arguments.of(null, FuelTypeJson.PETROL)
         );
     }
@@ -306,7 +306,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     static Stream<Arguments> provideCorrectEmissionZoneParameters() {
         return Stream.of(
-                Arguments.of(EmissionClassJson.FIVE, FuelTypeJson.PETROL),
+                Arguments.of(EmissionClassJson._5, FuelTypeJson.PETROL),
                 Arguments.of(null, null)
         );
     }

@@ -254,7 +254,7 @@ components:
     EmissionClassParam:
       in: query
       name: emissionClass
-      example: six
+      example: euro_6
       description: Vehicle's Euro emissions standard
       required: false
       schema:
@@ -275,24 +275,25 @@ components:
       description: The vehicle's fuel type
       enum:
         - electric
-        - biodiesel
         - diesel
         - hydrogen
-        - lpg
-        - methane
+        - liquefied_petroleum_gas
+        - compressed_natural_gas
+        - liquefied_natural_gas
+        - ethanol
         - petrol
 
     EmissionClass:
       type: string
-      example: six
+      example: euro_6
       description: Vehicle's Euro emissions standard
       enum:
-        - one
-        - two
-        - three
-        - four
-        - five
-        - six
+        - euro_1
+        - euro_2
+        - euro_3
+        - euro_4
+        - euro_5
+        - euro_6
 
     RoadOperators:
       type: "array"

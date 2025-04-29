@@ -15,7 +15,7 @@ Feature: Api
     And traffic signs data is reloaded
     When request accessibility for
       | startLatitude | startLongitude | municipalityId | vehicleType | fuelType | emissionClass | vehicleWidth |
-      | 3             | 7              | GM0001         | truck       | diesel   | three         | 2            |
+      | 3             | 7              | GM0001         | truck       | diesel   | euro_3         | 2            |
     Then we expect the following blocked roadSections with matched roadSection with id 9 and is forward accessible true and backward accessible true
       | roadSectionId | forwardAccessible | backwardAccessible |
       | 6             | true              | false              |
@@ -24,5 +24,5 @@ Feature: Api
       | 13            | false             | true               |
     When request accessibility geojson for
       | startLatitude | startLongitude | municipalityId | vehicleType | fuelType | emissionClass | vehicleWidth |
-      | 3             | 7              | GM0001         | truck       | diesel   | three         | 2            |
+      | 3             | 7              | GM0001         | truck       | diesel   | euro_3         | 2            |
     Then we expect geojson to match response.emission-zone.geojson
