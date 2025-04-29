@@ -115,10 +115,6 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                    </plugin>
-                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
                         <executions>
@@ -164,10 +160,13 @@
                                     <arguments>
                                         <argument>777</argument>
                                         <argument>../../.tmp/map-generation-destination</argument>
+                                        <argument>../../.tmp/graphhopper</argument>
+                                        <argument>../../.tmp/trafficsigns</argument>
                                     </arguments>
                                     <executable>chmod</executable>
                                 </configuration>
                             </execution>
+
                             <execution>
                                 <id>wait-for-database</id>
                                 <phase>pre-integration-test</phase>

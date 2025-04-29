@@ -32,24 +32,6 @@ public class RoadSectionFragment {
     @Valid
     private DirectionalSegment backwardSegment;
 
-    public void setForwardSegment(@NotNull @Valid DirectionalSegment forwardSegment) {
-
-        if (Objects.nonNull(this.forwardSegment)) {
-            throw new IllegalStateException("forwardSegment has already been assigned. "
-                    + "There should be always only one forwardSegment per RoadSectionFragment.");
-        }
-        this.forwardSegment = forwardSegment;
-    }
-
-    public void setBackwardSegment(@NotNull @Valid DirectionalSegment backwardSegment) {
-
-        if (Objects.nonNull(this.backwardSegment)) {
-            throw new IllegalStateException("backSegment has already been assigned. "
-                    + "There should be always only one backSegment per RoadSectionFragment.");
-        }
-
-        this.backwardSegment = backwardSegment;
-    }
 
     public List<DirectionalSegment> getSegments() {
 

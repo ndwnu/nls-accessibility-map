@@ -16,7 +16,6 @@ import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -25,16 +24,14 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -89,14 +86,6 @@ class AccessibilityServiceTest {
     @Mock
     private ClockService clockService;
 
-    @Mock
-    private TrafficSignSnapMapper trafficSingSnapMapper;
-
-    @Mock
-    private QueryGraphFactory queryGraphFactory;
-
-    @Mock
-    private QueryGraphConfigurer queryGraphConfigurer;
 
     @Mock
     private TrafficSign trafficSign;
@@ -109,9 +98,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private Point startPoint;
-
-    @Mock
-    private TrafficSignSnap trafficSignSnap;
 
     @Mock
     private LocationIndexTree locationIndexTree;
@@ -132,26 +118,53 @@ class AccessibilityServiceTest {
     private RoadSection roadSectionCombined;
 
     @Mock
-    private IsochroneMatch isochroneMatchNoRestriction;
-
-    @Mock
     private IsochroneMatch isochroneMatchRestriction;
 
     @Mock
     private EdgeRestrictions edgeRestrictions;
 
+    @Mock
+    private NetworkData networkData;
+
+    @Mock
+    private NetworkCacheDataService networkCacheDataService;
     @Captor
     private ArgumentCaptor<Coordinate> coordinateArgumentCaptor;
 
     private AccessibilityService accessibilityService;
 
+
     @BeforeEach
     void setUp() {
 
         accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper,
-                trafficSignDataService, geometryFactoryWgs84, roadSectionMapper, roadSectionCombinator,
-                clockService, trafficSingSnapMapper, queryGraphFactory, queryGraphConfigurer);
+                trafficSignDataService, geometryFactoryWgs84, roadSectionMapper, clockService,
+                networkCacheDataService, roadSectionCombinator);
     }
+
+    @Test
+    void calculateAccessibility_witNoOpsModifier() {
+
+        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+                List.of(roadSectionNoRestriction),
+                List.of(roadSectionRestriction)))
+                .thenReturn(List.of(roadSectionCombined));
+
+        Accessibility result = calculateAccessibility(null);
+
+        Accessibility expected = Accessibility
+                .builder()
+                .combinedAccessibility(List.of(roadSectionCombined))
+                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
+                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
+                .build();
+
+        assertThat(result).isEqualTo(expected);
+        Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
+        assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
+        assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
+    }
+
 
     @Test
     void calculateAccessibility_withoutModifier() {
@@ -220,7 +233,8 @@ class AccessibilityServiceTest {
 
         mockTrafficSignData(accessibilityRequest);
         mockWeighting();
-
+        when(networkCacheDataService.getNetworkData(MUNICIPALITY_ID, startSegmentSnap, SEARCH_DISTANCE_IN_METRES,
+                List.of(trafficSign))).thenReturn(networkData);
         when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
         when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
@@ -230,11 +244,10 @@ class AccessibilityServiceTest {
                 START_LOCATION_LONGITUDE,
                 EdgeFilter.ALL_EDGES))
                 .thenReturn(startSegmentSnap);
-        when(trafficSingSnapMapper.map(List.of(trafficSign))).thenReturn(List.of(trafficSignSnap));
+
         when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture())).thenReturn(startPoint);
-        when(queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), startSegmentSnap)).thenReturn(queryGraph);
-        when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap))).thenReturn(edgeRestrictions);
-        when(edgeRestrictions.getTrafficSignsByEdgeKey()).thenReturn(Map.of(1, List.of(TrafficSign.builder().build())));
+        when(networkData.queryGraph()).thenReturn(queryGraph);
+        when(networkData.edgeRestrictions()).thenReturn(edgeRestrictions);
         when(edgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
@@ -248,26 +261,13 @@ class AccessibilityServiceTest {
                         eq(startSegmentSnap)))
                 .thenReturn(List.of(isochroneMatchRestriction));
 
-        when(isochroneService
-                .getIsochroneMatchesByMunicipalityId(
-                        argThat(new IsochroneArgumentMatcher(IsochroneArguments
-                                        .builder()
-                                        .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, Set.of()))
-                                        .municipalityId(MUNICIPALITY_ID)
-                                        .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
-                                        .build()
-                                )
-                        ),
-                        eq(queryGraph),
-                        eq(startSegmentSnap)))
-                .thenReturn(List.of(isochroneMatchNoRestriction));
-
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchNoRestriction), edgeRestrictions.getTrafficSignsByEdgeKey()))
+        when(networkData.baseAccessibleRoads())
                 .thenReturn(new ArrayList<>(List.of(roadSectionNoRestriction)));
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction), edgeRestrictions.getTrafficSignsByEdgeKey()))
+        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction)))
                 .thenReturn(new ArrayList<>(List.of(roadSectionRestriction)));
 
-        return accessibilityService.calculateAccessibility(accessibilityRequest, accessibileRoadSectionModifier);
+        return accessibileRoadSectionModifier != null ? accessibilityService.calculateAccessibility(accessibilityRequest,
+                accessibileRoadSectionModifier) : accessibilityService.calculateAccessibility(accessibilityRequest);
     }
 
     private void mockWeighting() {
