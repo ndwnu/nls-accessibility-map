@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
-import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.storage.index.Snap;
@@ -71,9 +70,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
-    private EncodingManager encodingManager;
 
     @Mock
     private TrafficSignDataService trafficSignDataService;
@@ -142,7 +138,7 @@ class AccessibilityServiceTest {
     void setUp() {
 
         accessibilityService = new AccessibilityService(isochroneServiceFactory, trafficSignDataService, geometryFactoryWgs84,
-                roadSectionMapper,  clockService, networkCacheDataService, roadSectionCombinator);
+                roadSectionMapper, clockService, networkCacheDataService, roadSectionCombinator);
     }
 
     @Test
@@ -235,12 +231,11 @@ class AccessibilityServiceTest {
         mockTrafficSignData(accessibilityRequest);
         mockWeighting();
         when(networkCacheDataService.getNetworkData(MUNICIPALITY_ID, startSegmentSnap, SEARCH_DISTANCE_IN_METRES,
-                List.of(trafficSign))).thenReturn(networkData);
+                List.of(trafficSign), networkGraphHopper)).thenReturn(networkData);
         when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
         when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
-        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(locationIndexTree.findClosest(
                 START_LOCATION_LATITUDE,
                 START_LOCATION_LONGITUDE,

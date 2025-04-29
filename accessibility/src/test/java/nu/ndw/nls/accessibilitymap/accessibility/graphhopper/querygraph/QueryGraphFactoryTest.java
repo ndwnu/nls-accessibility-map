@@ -72,7 +72,7 @@ class QueryGraphFactoryTest {
         when(trafficSignSnap.getSnap()).thenReturn(snapForTrafficSign);
         queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(snapForTrafficSign))).thenReturn(queryGraph);
 
-        QueryGraph result = queryGraphFactory.createQueryGraph(List.of(trafficSignSnap));
+        QueryGraph result = queryGraphFactory.createQueryGraph(List.of(trafficSignSnap), networkGraphHopper);
 
         assertThat(result).isEqualTo(queryGraph);
     }

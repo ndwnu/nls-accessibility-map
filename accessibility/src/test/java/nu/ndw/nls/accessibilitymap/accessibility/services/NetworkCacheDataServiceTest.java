@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
@@ -114,6 +115,9 @@ class NetworkCacheDataServiceTest {
     @Mock
     private EdgeRestrictions edgeRestrictions;
 
+    @Mock
+    private EncodingManager encodingManager;
+
     private TrafficSigns trafficSigns;
 
     private List<TrafficSignSnap> trafficSignSnapList;
@@ -123,7 +127,7 @@ class NetworkCacheDataServiceTest {
         trafficSigns = new TrafficSigns(trafficSign1, trafficSign2);
         trafficSignSnapList = List.of(trafficSignSnap1, trafficSignSnap2);
         networkCacheDataService = new NetworkCacheDataService(queryGraphFactory, trafficSignSnapMapper, isochroneServiceFactory,
-                roadSectionMapper, networkGraphHopper, roadSectionTrafficSignAssigner, queryGraphConfigurer);
+                roadSectionMapper, roadSectionTrafficSignAssigner, queryGraphConfigurer);
     }
 
     @Test
@@ -131,9 +135,10 @@ class NetworkCacheDataServiceTest {
 
         setupFixtureForCreate();
         setupFixtureForBaseAccessibleCalculation(MUNICIPALITY_ID);
-        networkCacheDataService.create(trafficSigns);
+        networkCacheDataService.create(trafficSigns, networkGraphHopper);
 
-        NetworkData networkData = networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns);
+        NetworkData networkData = networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns,
+                networkGraphHopper);
         NetworkData expectedNetworkData = NetworkData.builder()
                 .queryGraph(queryGraph)
                 .edgeRestrictions(edgeRestrictions)
@@ -141,13 +146,14 @@ class NetworkCacheDataServiceTest {
                 .build();
 
         assertThat(networkData).isEqualTo(expectedNetworkData);
-        verify(trafficSignSnapMapper).map(trafficSigns.stream().toList());
-        verify(queryGraphFactory).createQueryGraph(trafficSignSnapList);
+        verify(trafficSignSnapMapper).map(trafficSigns.stream().toList(), networkGraphHopper);
+        verify(queryGraphFactory).createQueryGraph(trafficSignSnapList, networkGraphHopper);
     }
 
     @Test
     void getNetworkData_shouldThrowExceptionIfCreateWasNotCalledBefore() {
-        assertThatThrownBy(() -> networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns))
+        assertThatThrownBy(() -> networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns,
+                networkGraphHopper))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("NetworkData is not initialised. Call create() before calling getNetworkData().");
     }
@@ -155,11 +161,12 @@ class NetworkCacheDataServiceTest {
     @Test
     void getNetworkData_shouldComputeForNullMunicipalityIdAndCacheResults() {
         setupFixtureForCreate();
-        networkCacheDataService.create(trafficSigns);
+        networkCacheDataService.create(trafficSigns, networkGraphHopper);
         setupFixtureForBaseAccessibleCalculation(null);
 
-        networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns);
-        NetworkData networkData = networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns);
+        networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns, networkGraphHopper);
+        NetworkData networkData = networkCacheDataService.getNetworkData(null, snap, SEARCH_RADIUS_IN_METERS, trafficSigns,
+                networkGraphHopper);
 
         NetworkData expectedNetworkData = NetworkData.builder()
                 .queryGraph(queryGraph)
@@ -168,7 +175,7 @@ class NetworkCacheDataServiceTest {
                 .build();
 
         assertThat(networkData).isEqualTo(expectedNetworkData);
-        verify(queryGraphConfigurer, times(2)).createEdgeRestrictions(queryGraph, trafficSignSnapList);
+        verify(queryGraphConfigurer, times(2)).createEdgeRestrictions(queryGraph, encodingManager, trafficSignSnapList);
         verify(roadSectionMapper, times(1))
                 .mapToRoadSections(List.of(isochroneMatch));
         verify(networkGraphHopper, times(1)).createWeighting(eq(NetworkConstants.CAR_PROFILE),
@@ -187,9 +194,10 @@ class NetworkCacheDataServiceTest {
     @Test
     void getNetworkData_shouldComputeForSpecificMunicipalityIdAndCacheResults() {
         setupFixtureForCreate();
-        networkCacheDataService.create(trafficSigns);
+        networkCacheDataService.create(trafficSigns, networkGraphHopper);
         setupFixtureForBaseAccessibleCalculation(MUNICIPALITY_ID);
-        NetworkData networkData = networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns);
+        NetworkData networkData = networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns,
+                networkGraphHopper);
         NetworkData expectedNetworkData = NetworkData.builder()
                 .queryGraph(queryGraph)
                 .edgeRestrictions(edgeRestrictions)
@@ -197,8 +205,8 @@ class NetworkCacheDataServiceTest {
                 .build();
 
         assertThat(networkData).isEqualTo(expectedNetworkData);
-        networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns);
-        verify(queryGraphConfigurer, times(2)).createEdgeRestrictions(queryGraph, trafficSignSnapList);
+        networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns, networkGraphHopper);
+        verify(queryGraphConfigurer, times(2)).createEdgeRestrictions(queryGraph, encodingManager, trafficSignSnapList);
         verify(roadSectionMapper, times(1))
                 .mapToRoadSections(List.of(isochroneMatch));
         verify(networkGraphHopper, times(1)).createWeighting(eq(NetworkConstants.CAR_PROFILE),
@@ -215,7 +223,8 @@ class NetworkCacheDataServiceTest {
     }
 
     private void setupFixtureForBaseAccessibleCalculation(Integer municipalityId) {
-        when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, trafficSignSnapList)).thenReturn(edgeRestrictions);
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+        when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, trafficSignSnapList)).thenReturn(edgeRestrictions);
         when(edgeRestrictions.getTrafficSignsByEdgeKey()).thenReturn(trafficSignsByEdgeKey);
         when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
                 weightingNoRestrictions);
@@ -240,8 +249,8 @@ class NetworkCacheDataServiceTest {
         when(trafficSign2.externalId()).thenReturn(TRAFFIC_SIGN_ID_2);
         when(trafficSignSnap1.getTrafficSign()).thenReturn(trafficSign1);
         when(trafficSignSnap2.getTrafficSign()).thenReturn(trafficSign2);
-        when(trafficSignSnapMapper.map(trafficSigns.stream().toList())).thenReturn(trafficSignSnapList);
-        when(queryGraphFactory.createQueryGraph(trafficSignSnapList)).thenReturn(queryGraph);
+        when(trafficSignSnapMapper.map(trafficSigns.stream().toList(), networkGraphHopper)).thenReturn(trafficSignSnapList);
+        when(queryGraphFactory.createQueryGraph(trafficSignSnapList, networkGraphHopper)).thenReturn(queryGraph);
     }
 
     private record IsochroneArgumentMatcher(IsochroneArguments expected) implements
