@@ -47,9 +47,12 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     private final AwaitService awaitService;
 
+    private boolean apiIsStarted = false;
+
     @SneakyThrows
     public Response reloadGraphHopper() {
 
+        validateApiIsStarted();
         Request request = Request.builder()
                 .id("reloadGraphHopper")
                 .path("/api/rest/static-road-data/accessibility-map/management/graph-hopper/reload")
@@ -75,6 +78,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     @SneakyThrows
     public Response reloadTrafficSigns() {
 
+        validateApiIsStarted();
         Request request = Request.builder()
                 .id("reloadTrafficSigns")
                 .path("/api/rest/static-road-data/accessibility-map/management/traffic-sign/reload")
@@ -100,6 +104,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     @SneakyThrows
     public Response getAccessibilityForMunicipality(AccessibilityRequest accessibilityRequest) {
 
+        validateApiIsStarted();
         Request request = Request.builder()
                 .id("getAccessibilityForMunicipality")
                 .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections".formatted(
@@ -138,6 +143,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     @SneakyThrows
     public Response getAccessibilityGeoJsonForMunicipality(AccessibilityRequest accessibilityRequest) {
 
+        validateApiIsStarted();
         Request request = Request.builder()
                 .id("getAccessibilityForMunicipality")
                 .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson".formatted(
@@ -170,6 +176,19 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
             return cacheResponse(response, request);
         } catch (WebClientResponseException exception) {
             return cacheErrorResponse(exception, request);
+        }
+    }
+
+    private void validateApiIsStarted() {
+
+        if (!apiIsStarted) {
+            awaitService.waitFor(
+                    URI.create("http://%s:%s/api/rest/static-road-data/accessibility-map/actuator/health".formatted(getHost(), getPort())),
+                    "AccessibilityApi",
+                    accessibilityMapApiConfiguration.getAwaitDuration(),
+                    AwaitResponseStatusOkPredicate.getInstance());
+
+            apiIsStarted = true;
         }
     }
 
@@ -247,12 +266,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @Override
     public void prepareState() {
-
-        awaitService.waitFor(
-                URI.create("http://%s:%s/api/rest/static-road-data/accessibility-map/actuator/health".formatted(getHost(), getPort())),
-                "AccessibilityApi",
-                accessibilityMapApiConfiguration.getAwaitDuration(),
-                AwaitResponseStatusOkPredicate.getInstance());
 
         keycloakDriver.createAndActivateClient(
                 ADMIN_CLIENT_ID,

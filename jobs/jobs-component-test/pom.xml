@@ -294,7 +294,7 @@
                                 </goals>
                                 <configuration>
                                     <executable>bash</executable>
-                                    <commandlineArgs>scripts/prepare-files-component-test.sh</commandlineArgs>
+                                    <commandlineArgs>../../scripts/prepare-files-component-test.sh</commandlineArgs>
                                 </configuration>
                             </execution>
                             <execution>

@@ -14,6 +14,7 @@ stop:                                ## Stops the docker environment
 start-infra:
     ## Starts specific containers needed for local environment --adapt when needed
 	$(dc) up -d nls-keycloak nls-postgres accessibility-wiremock-stub nls-rabbitmq
+	./scripts/prepare-files-component-test.sh
 
 update-data-traffic-signs:
 	curl "https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4/current-state?rvvCode=C6&countyCode=GM0307&status=PLACED" > docker/accessibility-wiremock-stub/responses/realdata-C6_GM0307.json
