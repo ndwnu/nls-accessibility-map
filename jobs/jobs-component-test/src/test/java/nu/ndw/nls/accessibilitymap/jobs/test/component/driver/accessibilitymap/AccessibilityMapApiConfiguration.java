@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.accessibilitymap;
 
 import jakarta.validation.constraints.NotNull;
+import java.time.Duration;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,5 +20,8 @@ public class AccessibilityMapApiConfiguration {
 
     @NotNull
     private Integer port;
+
+    @NotNull
+    private Duration awaitDuration = Duration.ofMinutes(1);
 
 }
