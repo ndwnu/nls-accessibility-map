@@ -1,5 +1,11 @@
 echo "Preparing files so backend api can start"
 
+# Go to working directory if set as first argument
+workingDir=$@;
+if [[ -n "$workingDir" ]]; then
+  cd $workingDir
+fi
+
 cd .tmp/trafficsigns
 if [[ ! -e active ]]; then
   echo "[]" > test
