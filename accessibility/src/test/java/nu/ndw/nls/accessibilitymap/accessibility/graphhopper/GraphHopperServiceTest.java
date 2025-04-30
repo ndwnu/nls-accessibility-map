@@ -79,7 +79,7 @@ class GraphHopperServiceTest {
         when(graphHopperNetworkService.loadFromDisk(routingNetworkSettings)).thenThrow(cause);
 
         assertThat(catchThrowable(() ->graphHopperService.getNetworkGraphHopper()))
-                .withFailMessage("Could not create network graph hopper")
+                .hasMessage("Could not create network GraphHopper from %s".formatted(testDir.resolve(Path.of("graphhopper"))))
                 .hasCause(cause)
                 .isInstanceOf(IllegalStateException.class);
     }

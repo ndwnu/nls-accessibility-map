@@ -41,10 +41,13 @@ public class GraphHopperService {
                     routingNetworkSettings.getGraphhopperRootPath().resolve(Path.of(routingNetworkSettings.getNetworkNameAndVersion())));
 
             OffsetDateTime start = OffsetDateTime.now();
+
             networkGraphHopper = graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
             log.info("GraphHopper network loaded from disk in {}ms", Duration.between(start, OffsetDateTime.now()).toMillis());
         } catch (IOException | GraphHopperNotImportedException exception) {
-            throw new IllegalStateException("Could not create network graph hopper", exception);
+            RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
+            throw new IllegalStateException("Could not create network GraphHopper from %s"
+                    .formatted(routingNetworkSettings.getGraphhopperRootPath().toAbsolutePath()), exception);
         }
     }
 }
