@@ -22,6 +22,6 @@ public class AccessibilityMapApiConfiguration {
     private Integer port;
 
     @NotNull
-    private Duration awaitDuration = Duration.ofMinutes(1);
+    private Duration awaitDuration = Duration.ofMinutes(5);
 
 }
