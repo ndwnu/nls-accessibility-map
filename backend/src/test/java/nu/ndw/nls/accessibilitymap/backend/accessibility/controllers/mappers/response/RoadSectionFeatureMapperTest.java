@@ -82,10 +82,10 @@ class RoadSectionFeatureMapperTest {
                     .type(TypeEnum.FEATURE)
                     .properties(RoadSectionPropertiesJson.builder()
                             .accessible(true)
+                            .matched(false)
                             .build())
                     .build());
         }
-
     }
 
     @ParameterizedTest
@@ -119,10 +119,10 @@ class RoadSectionFeatureMapperTest {
                     .type(TypeEnum.FEATURE)
                     .properties(RoadSectionPropertiesJson.builder()
                             .accessible(true)
+                            .matched(false)
                             .build())
                     .build());
         }
-
     }
 
     @ParameterizedTest
@@ -156,9 +156,7 @@ class RoadSectionFeatureMapperTest {
                             .matched(true)
                             .build())
                     .build());
-
         }
-
     }
 
     @ParameterizedTest

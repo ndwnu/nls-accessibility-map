@@ -84,7 +84,7 @@ public class RoadSectionFeatureMapper {
                 RoadSectionFeatureJson.TypeEnum.FEATURE,
                 Math.toIntExact(roadSection),
                 geoJsonLineStringMergeMapper.mapToLineStringJson(geometries),
-                new RoadSectionPropertiesJson(isRoadSectionAccessible, isMatched ? true : null));
+                new RoadSectionPropertiesJson(isRoadSectionAccessible, isMatched));
     }
 
     private static boolean mapMatched(
