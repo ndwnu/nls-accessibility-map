@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.accessibilitymap;
 
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointGeo
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.PointNodeProperties;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.AccessibilityRequest;
+import nu.ndw.nls.springboot.test.await.services.AwaitService;
+import nu.ndw.nls.springboot.test.await.services.predicates.AwaitResponseStatusOkPredicate;
 import nu.ndw.nls.springboot.test.component.driver.keycloak.KeycloakDriver;
 import nu.ndw.nls.springboot.test.component.driver.web.AbstractWebClient;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Request;
@@ -41,6 +44,8 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     private final DriverGeneralConfiguration driverGeneralConfiguration;
 
     private final KeycloakDriver keycloakDriver;
+
+    private final AwaitService awaitService;
 
     @SneakyThrows
     public Response reloadGraphHopper() {
@@ -242,6 +247,12 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @Override
     public void prepareState() {
+
+        awaitService.waitFor(
+                URI.create("http://%s:%s/api/rest/static-road-data/accessibility-map/actuator/health".formatted(getHost(), getPort())),
+                "AccessibilityApi",
+                accessibilityMapApiConfiguration.getAwaitDuration(),
+                AwaitResponseStatusOkPredicate.getInstance());
 
         keycloakDriver.createAndActivateClient(
                 ADMIN_CLIENT_ID,
