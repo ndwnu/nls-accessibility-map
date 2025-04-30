@@ -43,10 +43,15 @@ class TransportTypeMapperTest {
 
         if (vehicleType == VehicleType.UNKNOWN) {
             assertThat(catchThrowable(() -> transportTypeMapper.map(vehicleType, null)))
-                    .withFailMessage("Unknown vehicle type '%s'." .formatted(vehicleType))
+                    .withFailMessage("Unknown vehicle type '%s'.".formatted(vehicleType))
+                    .isInstanceOf(IllegalStateException.class);
+        } else if (vehicleType == VehicleType.MOTORSCOOTER) {
+            assertThat(catchThrowable(() -> transportTypeMapper.map(vehicleType, null)))
+                    .withFailMessage(("Unsupported vehicle type '%s' because we have no ability to map this to any of the "
+                            + "internal structures. We checked with W&R and the should never send this value in any situation although it "
+                            + "is supported in the API according to the spect it is never used.").formatted(vehicleType))
                     .isInstanceOf(IllegalStateException.class);
         } else {
-
             Set<TransportType> transportTypes = transportTypeMapper.map(vehicleType, null);
 
             if (Objects.isNull(vehicleType)) {
@@ -71,7 +76,7 @@ class TransportTypeMapperTest {
 
         if (vehicleCategory == VehicleCategory.UNKNOWN) {
             assertThat(catchThrowable(() -> transportTypeMapper.map(Set.of(vehicleCategory))))
-                    .withFailMessage("Unknown vehicle category '%s'." .formatted(vehicleCategory))
+                    .withFailMessage("Unknown vehicle category '%s'.".formatted(vehicleCategory))
                     .isInstanceOf(IllegalStateException.class);
         } else {
 
@@ -105,15 +110,14 @@ class TransportTypeMapperTest {
             case CAR -> Set.of(TransportType.CAR);
             case CAR_WITH_CARAVAN -> Set.of(TransportType.CARAVAN);
             case CAR_WITH_TRAILER -> Set.of(TransportType.CAR, TransportType.VEHICLE_WITH_TRAILER);
-            case LORRY  -> Set.of(TransportType.TRUCK);
+            case LORRY -> Set.of(TransportType.TRUCK);
             case VAN -> Set.of(TransportType.DELIVERY_VAN);
-            case MOPED, MOTORSCOOTER -> Set.of(TransportType.MOPED);
+            case MOPED -> Set.of(TransportType.MOPED);
             case MOTORCYCLE -> Set.of(TransportType.MOTORCYCLE);
             case VEHICLE_WITH_TRAILER -> Set.of(TransportType.VEHICLE_WITH_TRAILER);
             case ARROW_BOARD_VEHICLE, CONSTRUCTION_OR_MAINTENANCE_VEHICLE, CRASH_DAMPENING_VEHICLE, MOBILE_VARIABLE_MESSAGE_SIGN_VEHICLE,
                  MOBILE_LANE_SIGNALING_VEHICLE -> Set.of();
-            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle type '%s'." .formatted(vehicleType));
+            default -> throw new IllegalStateException("Supported vehicle type '%s'.".formatted(vehicleType));
         };
     }
-
 }
