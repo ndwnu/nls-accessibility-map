@@ -8,7 +8,8 @@
       "coordinates" : [ [ 1.0, 1.0 ], [ 5.0, 1.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -18,7 +19,8 @@
       "coordinates" : [ [ 5.0, 1.0 ], [ 1.0, 1.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -28,7 +30,8 @@
       "coordinates" : [ [ 5.0, 1.0 ], [ 10.0, 1.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -38,7 +41,8 @@
       "coordinates" : [ [ 10.0, 1.0 ], [ 5.0, 1.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -48,7 +52,8 @@
       "coordinates" : [ [ 10.0, 1.0 ], [ 10.0, 10.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -58,7 +63,8 @@
       "coordinates" : [ [ 10.0, 10.0 ], [ 10.0, 1.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -68,7 +74,8 @@
       "coordinates" : [ [ 10.0, 10.0 ], [ 5.0, 10.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -78,7 +85,8 @@
       "coordinates" : [ [ 5.0, 10.0 ], [ 10.0, 10.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -88,7 +96,8 @@
       "coordinates" : [ [ 5.0, 10.0 ], [ 1.0, 10.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -98,7 +107,8 @@
       "coordinates" : [ [ 1.0, 10.0 ], [ 5.0, 10.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -108,7 +118,8 @@
       "coordinates" : [ [ 1.0, 10.0 ], [ 1.0, 1.9000954 ], [ 1.0, 1.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -118,7 +129,8 @@
       "coordinates" : [ [ 1.0, 1.0 ], [ 1.0, 1.9000954 ], [ 1.0, 10.0 ] ]
     },
     "properties" : {
-      "accessible" : false
+      "accessible" : false,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -128,7 +140,8 @@
       "coordinates" : [ [ 4.0, 5.0 ], [ 4.1000128, 4.6999616 ], [ 4.9000101, 2.2999696 ], [ 5.0, 2.0 ] ]
     },
     "properties" : {
-      "accessible" : false
+      "accessible" : false,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -138,7 +151,8 @@
       "coordinates" : [ [ 5.0, 2.0 ], [ 4.9000101, 2.2999696 ], [ 4.1000128, 4.6999616 ], [ 4.0, 5.0 ] ]
     },
     "properties" : {
-      "accessible" : false
+      "accessible" : false,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -148,7 +162,8 @@
       "coordinates" : [ [ 5.0, 2.0 ], [ 7.0, 2.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -158,7 +173,8 @@
       "coordinates" : [ [ 7.0, 2.0 ], [ 5.0, 2.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -179,7 +195,8 @@
       "coordinates" : [ [ 7.0, 8.0 ], [ 7.0, 2.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -189,7 +206,8 @@
       "coordinates" : [ [ 7.0, 8.0 ], [ 5.0, 8.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -199,7 +217,8 @@
       "coordinates" : [ [ 5.0, 8.0 ], [ 7.0, 8.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -209,7 +228,8 @@
       "coordinates" : [ [ 5.0, 8.0 ], [ 4.7999605, 7.3998814 ], [ 4.1999641, 5.5998923 ], [ 4.0, 5.0 ] ]
     },
     "properties" : {
-      "accessible" : false
+      "accessible" : false,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -219,7 +239,8 @@
       "coordinates" : [ [ 4.0, 5.0 ], [ 4.1999641, 5.5998923 ], [ 4.7999605, 7.3998814 ], [ 5.0, 8.0 ] ]
     },
     "properties" : {
-      "accessible" : false
+      "accessible" : false,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -229,7 +250,8 @@
       "coordinates" : [ [ 5.0, 2.0 ], [ 5.0, 1.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -239,7 +261,8 @@
       "coordinates" : [ [ 5.0, 1.0 ], [ 5.0, 2.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -249,7 +272,8 @@
       "coordinates" : [ [ 5.0, 10.0 ], [ 5.0, 9.0000271 ], [ 5.0, 8.0 ] ]
     },
     "properties" : {
-      "accessible" : false
+      "accessible" : false,
+      "matched" : false
     }
   }, {
     "type" : "Feature",
@@ -259,7 +283,8 @@
       "coordinates" : [ [ 5.0, 8.0 ], [ 5.0, 9.0000271 ], [ 5.0, 10.0 ] ]
     },
     "properties" : {
-      "accessible" : true
+      "accessible" : true,
+      "matched" : false
     }
   } ]
 }
