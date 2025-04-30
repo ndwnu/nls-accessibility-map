@@ -53,11 +53,15 @@ public class TransportTypeMapper {
             case CAR_WITH_TRAILER -> Set.of(TransportType.CAR, TransportType.VEHICLE_WITH_TRAILER);
             case LORRY -> Set.of(TransportType.TRUCK);
             case VAN -> Set.of(TransportType.DELIVERY_VAN);
-            case MOPED, MOTORSCOOTER -> Set.of(TransportType.MOPED);
+            case MOPED -> Set.of(TransportType.MOPED);
             case MOTORCYCLE -> Set.of(TransportType.MOTORCYCLE);
             case VEHICLE_WITH_TRAILER -> Set.of(TransportType.VEHICLE_WITH_TRAILER);
             case ARROW_BOARD_VEHICLE, CONSTRUCTION_OR_MAINTENANCE_VEHICLE, CRASH_DAMPENING_VEHICLE, MOBILE_VARIABLE_MESSAGE_SIGN_VEHICLE,
                  MOBILE_LANE_SIGNALING_VEHICLE -> Set.of();
+            case MOTORSCOOTER ->
+                    throw new IllegalStateException(("Unsupported vehicle type '%s' because we have no ability to map this to any of the "
+                            + "internal structures. We checked with W&R and the should never send this value in any situation although it "
+                            + "is supported in the API according to the spect it is never used.") .formatted(vehicleType));
             case UNKNOWN -> throw new IllegalStateException("Unknown vehicle type '%s'." .formatted(vehicleType));
         };
     }
