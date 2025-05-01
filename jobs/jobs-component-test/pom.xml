@@ -245,6 +245,17 @@
                                     </arguments>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>init-component-test</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <commandlineArgs>../../scripts/prepare-files-component-test.sh ../../</commandlineArgs>
+                                </configuration>
+                            </execution>
                             <!-- Make sure that this folder is read write by all for the build pipeline to allow docker
                                  user 1000 to write on the volume mount. -->
                             <execution>
@@ -284,17 +295,6 @@
                                 <configuration>
                                     <executable>bash</executable>
                                     <commandlineArgs>../../scripts/rabbit-isready.sh</commandlineArgs>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>init-component-test</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>bash</executable>
-                                    <commandlineArgs>../../scripts/prepare-files-component-test.sh ../../</commandlineArgs>
                                 </configuration>
                             </execution>
                             <execution>
