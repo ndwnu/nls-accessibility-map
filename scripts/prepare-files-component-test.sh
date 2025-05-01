@@ -18,6 +18,7 @@ if [[ ! -e accessibility_latest ]]; then
   mkdir accessibility_latest
   cd accessibility_latest
   cp -R ../../../scripts/graphhopper-empty/* .
+  chmod 777 *
   echo "Setup empty graphhopper"
 fi
 
