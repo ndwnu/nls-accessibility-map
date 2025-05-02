@@ -3,9 +3,9 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.re
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson.TypeEnum;
@@ -13,10 +13,10 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropert
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.locationtech.jts.geom.LineString;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,13 +26,16 @@ class RoadSectionFeatureMapperTest {
 
     private static final long ROAD_SECTION_ID = 123L;
 
-    @Mock
-    private GeoJsonLineStringMergeMapper geoJsonLineStringMergeMapper;
-
     private RoadSectionFeatureMapper roadSectionFeatureMapper;
 
     @Mock
-    private LineStringJson lineStringJson;
+    private GeoJsonLineStringMergeMapper geoJsonLineStringMergeMapper;
+
+    @Mock
+    private LineStringJson lineStringJsonForward;
+
+    @Mock
+    private LineStringJson lineStringJsonBackward;
 
     @Mock
     private RoadSection roadSection;
@@ -44,7 +47,7 @@ class RoadSectionFeatureMapperTest {
     private LineString forwardGeometry;
 
     @Mock
-    private CandidateMatch candidateMatch;
+    private CandidateMatch startPoint;
 
     @BeforeEach
     void setUp() {
@@ -52,172 +55,175 @@ class RoadSectionFeatureMapperTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideFilterValues")
-    void map_withForwardAccessibleAndFilters(boolean startPointRequested, Boolean accessible) {
+    @CsvSource(nullValues = "null", textBlock = """
+            true,   true
+            false,  true
+            true,   false
+            false,  false
+            true,   null
+            false,  null
+            """)
+    void map(boolean includePropertyMatched, Boolean filterOutWithAccessibility) {
+
         when(roadSection.hasForwardSegments()).thenReturn(true);
         when(roadSection.isForwardAccessible()).thenReturn(true);
-        if (!Boolean.FALSE.equals(accessible) || startPointRequested) {
-            when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
-        }
-        if (!Boolean.FALSE.equals(accessible)) {
-            when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
-            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry)))
-                    .thenReturn(lineStringJson);
-        }
-
-        List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
-                roadSection,
-                startPointRequested,  // startPointRequested
-                candidateMatch,
-                accessible   // accessible
-        );
-        if (Boolean.FALSE.equals(accessible)) {
-            assertThat(result).isEmpty();
-        } else {
-            assertThat(result).hasSize(1);
-            assertThat(result.getFirst()).isEqualTo(RoadSectionFeatureJson
-                    .builder()
-                    .id((int) ROAD_SECTION_ID)
-                    .geometry(lineStringJson)
-                    .type(TypeEnum.FEATURE)
-                    .properties(RoadSectionPropertiesJson.builder()
-                            .accessible(true)
-                            .matched(false)
-                            .build())
-                    .build());
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideFilterValues")
-    void map_withBackwardAccessibleAndFilters(boolean startPointRequested, Boolean accessible) {
         when(roadSection.hasBackwardSegments()).thenReturn(true);
         when(roadSection.isBackwardAccessible()).thenReturn(true);
-        if (!Boolean.FALSE.equals(accessible) || startPointRequested) {
+
+        if (Objects.isNull(filterOutWithAccessibility) || filterOutWithAccessibility) {
             when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         }
-        if (!Boolean.FALSE.equals(accessible)) {
+
+        if (!Boolean.FALSE.equals(filterOutWithAccessibility)) {
+            when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
+            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry))).thenReturn(lineStringJsonForward);
             when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
-            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry)))
-                    .thenReturn(lineStringJson);
+            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry))).thenReturn(lineStringJsonBackward);
         }
 
         List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
                 roadSection,
-                startPointRequested,
-                candidateMatch,
-                accessible
+                includePropertyMatched,
+                startPoint,
+                filterOutWithAccessibility
         );
-        if (Boolean.FALSE.equals(accessible)) {
+
+        if (Boolean.FALSE.equals(filterOutWithAccessibility)) {
             assertThat(result).isEmpty();
         } else {
-            assertThat(result).hasSize(1);
-            assertThat(result.getFirst()).isEqualTo(RoadSectionFeatureJson
-                    .builder()
-                    .id((int) -ROAD_SECTION_ID)
-                    .geometry(lineStringJson)
-                    .type(TypeEnum.FEATURE)
-                    .properties(RoadSectionPropertiesJson.builder()
-                            .accessible(true)
-                            .matched(false)
-                            .build())
-                    .build());
+            Boolean matched = !includePropertyMatched ? null : false;
+
+            assertThat(result).containsExactlyInAnyOrder(
+                    buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, matched),
+                    buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, matched)
+            );
         }
     }
 
     @ParameterizedTest
-    @MethodSource("provideMatchedValues")
-    void map_forwardWithMatched(boolean startPointRequested, Boolean matched) {
-        when(roadSection.hasForwardSegments()).thenReturn(true);
-        if (Boolean.TRUE.equals(matched) && startPointRequested) {
-            when(candidateMatch.getMatchedLinkId())
-                    .thenReturn((int) ROAD_SECTION_ID);
+    @CsvSource(nullValues = "null", textBlock = """
+            true,   true,   true,   true
+            false,  true,   true,   true
+            true,   true,   false,   true
+            false,  true,   false,   true
+            """)
+    void map_validatingForwardAndBackwardSegmentsAreCreatedCorrectly(boolean hasForwardSegment, boolean forwardAccessible,
+            boolean hasBackwardSegment, boolean backwardAccessible) {
+
+        when(roadSection.hasForwardSegments()).thenReturn(hasForwardSegment);
+        when(roadSection.hasBackwardSegments()).thenReturn(hasBackwardSegment);
+
+        if (hasForwardSegment || hasBackwardSegment) {
             when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
+        }
+
+        if (hasForwardSegment) {
+            when(roadSection.isForwardAccessible()).thenReturn(forwardAccessible);
             when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
-            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry)))
-                    .thenReturn(lineStringJson);
+            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry))).thenReturn(lineStringJsonForward);
         }
 
-        List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
-                roadSection,
-                startPointRequested,
-                Objects.isNull(matched) ? null : candidateMatch,
-                true   // accessible
-        );
-        if (Boolean.TRUE.equals(matched) && startPointRequested) {
-            assertThat(result).hasSize(1);
-            assertThat(result.getFirst()).isEqualTo(RoadSectionFeatureJson
-                    .builder()
-                    .id((int) ROAD_SECTION_ID)
-                    .geometry(lineStringJson)
-                    .type(TypeEnum.FEATURE)
-                    .properties(RoadSectionPropertiesJson.builder()
-                            .accessible(false)
-                            .matched(true)
-                            .build())
-                    .build());
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideMatchedValues")
-    void map_backwardWithMatched(boolean startPointRequested, Boolean matched) {
-        when(roadSection.hasBackwardSegments()).thenReturn(true);
-        if (Boolean.TRUE.equals(matched) && startPointRequested) {
-            when(candidateMatch.getMatchedLinkId())
-                    .thenReturn((int) ROAD_SECTION_ID);
-            when(candidateMatch.isReversed())
-                    .thenReturn(true);
-            when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
+        if (hasBackwardSegment) {
+            when(roadSection.isBackwardAccessible()).thenReturn(backwardAccessible);
             when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
-            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry)))
-                    .thenReturn(lineStringJson);
+            when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry))).thenReturn(lineStringJsonBackward);
         }
 
         List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
                 roadSection,
-                startPointRequested,
-                Objects.isNull(matched) ? null : candidateMatch,
-                true   // accessible
+                true,
+                startPoint,
+                null
         );
-        if (Boolean.TRUE.equals(matched) && startPointRequested) {
-            assertThat(result).hasSize(1);
-            assertThat(result.getFirst()).isEqualTo(RoadSectionFeatureJson
-                    .builder()
-                    .id((int) -ROAD_SECTION_ID)
-                    .geometry(lineStringJson)
-                    .type(TypeEnum.FEATURE)
-                    .properties(RoadSectionPropertiesJson.builder()
-                            .accessible(false)
-                            .matched(true)
-                            .build())
-                    .build());
 
+        ArrayList<RoadSectionFeatureJson> expectedRoadSectionFeatures = new ArrayList<>();
+        if (hasForwardSegment) {
+            expectedRoadSectionFeatures.add(
+                    buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, forwardAccessible, false));
         }
 
+        if (hasBackwardSegment) {
+            expectedRoadSectionFeatures.add(
+                    buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, backwardAccessible, false));
+        }
+
+        assertThat(result).containsExactlyInAnyOrderElementsOf(expectedRoadSectionFeatures);
     }
 
-    private static Stream<Arguments> provideFilterValues() {
-        return Stream.of(
-                Arguments.of(true, true),
-                Arguments.of(true, false),
-                Arguments.of(false, true),
-                Arguments.of(false, false),
-                Arguments.of(true, null),
-                Arguments.of(false, null)
+    @Test
+    void map_matchedSegments() {
 
+        when(roadSection.hasForwardSegments()).thenReturn(true);
+        when(roadSection.isForwardAccessible()).thenReturn(true);
+        when(roadSection.hasBackwardSegments()).thenReturn(true);
+        when(roadSection.isBackwardAccessible()).thenReturn(true);
+
+        when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
+
+        when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
+        when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry))).thenReturn(lineStringJsonForward);
+        when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
+        when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry))).thenReturn(lineStringJsonBackward);
+
+        when(startPoint.getMatchedLinkId()).thenReturn((int) ROAD_SECTION_ID);
+
+        List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
+                roadSection,
+                true,
+                startPoint,
+                true
+        );
+
+        assertThat(result).containsExactlyInAnyOrder(
+                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, true),
+                buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, false)
         );
     }
 
-    private static Stream<Arguments> provideMatchedValues() {
-        return Stream.of(
-                Arguments.of(true, true),
-                Arguments.of(true, false),
-                Arguments.of(false, true),
-                Arguments.of(false, false),
-                Arguments.of(true, null),
-                Arguments.of(false, null)
+    @Test
+    void map_noStartSegment() {
 
+        when(roadSection.hasForwardSegments()).thenReturn(true);
+        when(roadSection.isForwardAccessible()).thenReturn(true);
+        when(roadSection.hasBackwardSegments()).thenReturn(true);
+        when(roadSection.isBackwardAccessible()).thenReturn(true);
+
+        when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
+
+        when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
+        when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry))).thenReturn(lineStringJsonForward);
+        when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
+        when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry))).thenReturn(lineStringJsonBackward);
+
+        List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
+                roadSection,
+                true,
+                null,
+                true
+        );
+
+        assertThat(result).containsExactlyInAnyOrder(
+                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, false),
+                buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, false)
         );
     }
+
+    private RoadSectionFeatureJson buildRoadSectionFeature(
+            long roadSectionId,
+            LineStringJson geometry,
+            boolean accessible,
+            Boolean matched) {
+
+        return RoadSectionFeatureJson
+                .builder()
+                .id((int) roadSectionId)
+                .geometry(geometry)
+                .type(TypeEnum.FEATURE)
+                .properties(RoadSectionPropertiesJson.builder()
+                        .accessible(accessible)
+                        .matched(matched)
+                        .build())
+                .build();
+    }
+
 }
