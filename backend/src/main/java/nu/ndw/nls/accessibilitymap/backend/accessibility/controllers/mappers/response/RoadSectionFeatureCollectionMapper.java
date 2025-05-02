@@ -8,7 +8,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
-import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,14 +19,14 @@ public class RoadSectionFeatureCollectionMapper {
     public RoadSectionFeatureCollectionJson map(
             Accessibility accessibility,
             boolean startPointHasBeenRequested,
-            @Nullable CandidateMatch startPoint,
+            @Nullable Long matchedStartPointRoadSectionId,
             @Nullable Boolean filterOutWithAccessibility) {
 
         List<RoadSectionFeatureJson> features = accessibility.combinedAccessibility().stream()
                 .map(roadSection -> roadSectionFeatureMapper.map(
                         roadSection,
                         startPointHasBeenRequested,
-                        startPoint,
+                        matchedStartPointRoadSectionId,
                         filterOutWithAccessibility))
                 .flatMap(Collection::stream)
                 .toList();

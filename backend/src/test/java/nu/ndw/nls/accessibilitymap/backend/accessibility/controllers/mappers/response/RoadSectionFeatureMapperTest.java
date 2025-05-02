@@ -10,7 +10,6 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeature
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
-import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,9 +44,6 @@ class RoadSectionFeatureMapperTest {
     @Mock
     private LineString forwardGeometry;
 
-    @Mock
-    private CandidateMatch startPoint;
-
     @BeforeEach
     void setUp() {
         roadSectionFeatureMapper = new RoadSectionFeatureMapper(geoJsonLineStringMergeMapper);
@@ -81,7 +77,7 @@ class RoadSectionFeatureMapperTest {
         List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
                 roadSection,
                 includePropertyMatched,
-                startPoint,
+                Long.MAX_VALUE,
                 filterOutWithAccessibility
         );
 
@@ -91,8 +87,8 @@ class RoadSectionFeatureMapperTest {
             Boolean matched = !includePropertyMatched ? null : false;
 
             assertThat(result).containsExactlyInAnyOrder(
-                    buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, matched),
-                    buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, matched)
+                    buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, matched),
+                    buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, matched)
             );
         }
     }
@@ -134,19 +130,19 @@ class RoadSectionFeatureMapperTest {
         List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
                 roadSection,
                 true,
-                startPoint,
+                ROAD_SECTION_ID,
                 null
         );
 
         ArrayList<RoadSectionFeatureJson> expectedRoadSectionFeatures = new ArrayList<>();
         if (hasForwardSegment) {
             expectedRoadSectionFeatures.add(
-                    buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, false));
+                    buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true));
         }
 
         if (hasBackwardSegment) {
             expectedRoadSectionFeatures.add(
-                    buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, false));
+                    buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true));
         }
 
         assertThat(result).containsExactlyInAnyOrderElementsOf(expectedRoadSectionFeatures);
@@ -167,18 +163,16 @@ class RoadSectionFeatureMapperTest {
         when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
         when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry))).thenReturn(lineStringJsonBackward);
 
-        when(startPoint.getMatchedLinkId()).thenReturn((int) ROAD_SECTION_ID);
-
         List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
                 roadSection,
                 true,
-                startPoint,
+                ROAD_SECTION_ID,
                 true
         );
 
         assertThat(result).containsExactlyInAnyOrder(
-                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, true),
-                buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, false)
+                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true),
+                buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true)
         );
     }
 
@@ -194,18 +188,19 @@ class RoadSectionFeatureMapperTest {
 
         when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
         when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry))).thenReturn(lineStringJsonForward);
-
-        when(startPoint.getMatchedLinkId()).thenReturn((int) ROAD_SECTION_ID);
+        when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
+        when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry))).thenReturn(lineStringJsonBackward);
 
         List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
                 roadSection,
                 true,
-                startPoint,
+                ROAD_SECTION_ID,
                 false
         );
 
         assertThat(result).containsExactlyInAnyOrder(
-                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, true)
+                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true),
+                buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true)
         );
     }
 
@@ -232,15 +227,14 @@ class RoadSectionFeatureMapperTest {
         );
 
         assertThat(result).containsExactlyInAnyOrder(
-                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, false),
-                buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, false)
+                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, false),
+                buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, false)
         );
     }
 
     private RoadSectionFeatureJson buildRoadSectionFeature(
             long roadSectionId,
             LineStringJson geometry,
-            boolean accessible,
             Boolean matched) {
 
         return RoadSectionFeatureJson
@@ -249,7 +243,7 @@ class RoadSectionFeatureMapperTest {
                 .geometry(geometry)
                 .type(TypeEnum.FEATURE)
                 .properties(RoadSectionPropertiesJson.builder()
-                        .accessible(accessible)
+                        .accessible(true)
                         .matched(matched)
                         .build())
                 .build();

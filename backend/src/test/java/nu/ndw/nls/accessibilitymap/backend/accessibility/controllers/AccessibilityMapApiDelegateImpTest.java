@@ -244,7 +244,7 @@ class AccessibilityMapApiDelegateImpTest {
         when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
 
         when(roadSectionFeatureCollectionMapper
-                .map(accessibility, true, startPoint, true))
+                .map(accessibility, true, (long) REQUESTED_ROAD_SECTION_ID, true))
                 .thenReturn(roadSectionFeatureCollectionJson);
 
         ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
@@ -286,7 +286,7 @@ class AccessibilityMapApiDelegateImpTest {
         when(roadSectionFeatureCollectionMapper
                 .map(accessibility,
                         expectStartPoint,
-                        expectStartPoint ? startPoint : null,
+                        expectStartPoint ? (long) REQUESTED_ROAD_SECTION_ID : null,
                         true))
                 .thenReturn(roadSectionFeatureCollectionJson);
 

@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionPropertiesJson;
-import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
@@ -21,40 +20,45 @@ public class RoadSectionFeatureMapper {
     public List<RoadSectionFeatureJson> map(
             RoadSection roadSection,
             boolean includePropertyMatched,
-            @Nullable CandidateMatch startPoint,
+            @Nullable Long matchedStartPointRoadSectionId,
             Boolean filterOutWithAccessibility) {
 
         List<RoadSectionFeatureJson> features = new ArrayList<>();
 
-        boolean isRoadSectionMatchingStartPoint = isRoadSectionMatchingStartPoint(roadSection.getId(), startPoint, true);
-        if (roadSection.hasForwardSegments()) {
-            if (Objects.isNull(filterOutWithAccessibility)
-                    || filterOutWithAccessibility.equals(roadSection.isForwardAccessible())
-                    || isRoadSectionMatchingStartPoint) {
-                features.add(
-                        buildRoadSectionFeature(
-                                roadSection.getId(),
-                                roadSection.getForwardGeometries(),
-                                roadSection.isForwardAccessible(),
-                                includePropertyMatched ? isRoadSectionMatchingStartPoint : null));
-            }
+        boolean isRoadSectionMatchingStartPoint = isRoadSectionMatchingStartPoint(roadSection.getId(), matchedStartPointRoadSectionId);
+        if (roadSection.hasForwardSegments()
+            && shouldBeIncluded(roadSection.isForwardAccessible(), filterOutWithAccessibility, isRoadSectionMatchingStartPoint)) {
+            features.add(
+                    buildRoadSectionFeature(
+                            roadSection.getId(),
+                            roadSection.getForwardGeometries(),
+                            roadSection.isForwardAccessible(),
+                            includePropertyMatched ? isRoadSectionMatchingStartPoint : null));
         }
 
-        if (roadSection.hasBackwardSegments()) {
-            if (Objects.isNull(filterOutWithAccessibility)
-                    || filterOutWithAccessibility.equals(roadSection.isBackwardAccessible())) {
-                features.add(
-                        buildRoadSectionFeature(
-                                -roadSection.getId(),
-                                roadSection.getBackwardGeometries(),
-                                roadSection.isBackwardAccessible(),
-                                includePropertyMatched
-                                        ? isRoadSectionMatchingStartPoint(roadSection.getId(), startPoint, false)
-                                        : null));
-            }
+        if (roadSection.hasBackwardSegments()
+            && shouldBeIncluded(roadSection.isBackwardAccessible(), filterOutWithAccessibility, isRoadSectionMatchingStartPoint)) {
+            features.add(
+                    buildRoadSectionFeature(
+                            -roadSection.getId(),
+                            roadSection.getBackwardGeometries(),
+                            roadSection.isBackwardAccessible(),
+                            includePropertyMatched
+                                    ? isRoadSectionMatchingStartPoint
+                                    : null));
         }
 
         return features;
+    }
+
+    private static boolean shouldBeIncluded(
+            boolean isAccessible,
+            Boolean filterOutWithAccessibility,
+            boolean isRoadSectionMatchingStartPoint) {
+
+        return Objects.isNull(filterOutWithAccessibility)
+               || filterOutWithAccessibility.equals(isAccessible)
+               || isRoadSectionMatchingStartPoint;
     }
 
     private RoadSectionFeatureJson buildRoadSectionFeature(
@@ -72,14 +76,13 @@ public class RoadSectionFeatureMapper {
 
     private static boolean isRoadSectionMatchingStartPoint(
             long roadSectionId,
-            @Nullable CandidateMatch startPoint,
-            boolean forward) {
+            @Nullable Long matchedStartPointRoadSectionId) {
 
-        if (Objects.isNull(startPoint)) {
+        if (Objects.isNull(matchedStartPointRoadSectionId)) {
             return false;
         }
 
-        return roadSectionId == startPoint.getMatchedLinkId() && forward != startPoint.isReversed();
+        return roadSectionId == matchedStartPointRoadSectionId;
     }
 
 }
