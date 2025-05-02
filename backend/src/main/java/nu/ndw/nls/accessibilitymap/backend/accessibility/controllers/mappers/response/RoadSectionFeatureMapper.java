@@ -26,17 +26,17 @@ public class RoadSectionFeatureMapper {
 
         List<RoadSectionFeatureJson> features = new ArrayList<>();
 
+        boolean isRoadSectionMatchingStartPoint = isRoadSectionMatchingStartPoint(roadSection.getId(), startPoint, true);
         if (roadSection.hasForwardSegments()) {
             if (Objects.isNull(filterOutWithAccessibility)
-                    || filterOutWithAccessibility.equals(roadSection.isForwardAccessible())) {
+                    || filterOutWithAccessibility.equals(roadSection.isForwardAccessible())
+                    || isRoadSectionMatchingStartPoint) {
                 features.add(
                         buildRoadSectionFeature(
                                 roadSection.getId(),
                                 roadSection.getForwardGeometries(),
                                 roadSection.isForwardAccessible(),
-                                includePropertyMatched
-                                        ? isRoadSectionMatchingStartPoint(roadSection.getId(), startPoint, true)
-                                        : null));
+                                includePropertyMatched ? isRoadSectionMatchingStartPoint : null));
             }
         }
 

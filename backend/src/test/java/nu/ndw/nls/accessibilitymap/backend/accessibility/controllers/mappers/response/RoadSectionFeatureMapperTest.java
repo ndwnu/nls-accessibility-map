@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson.TypeEnum;
@@ -56,12 +55,12 @@ class RoadSectionFeatureMapperTest {
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
-            true,   true
-            false,  true
-            true,   false
-            false,  false
-            true,   null
-            false,  null
+            true,   true,
+            false,  true,
+            true,   false,
+            false,  false,
+            true,   null,
+            false,  null,
             """)
     void map(boolean includePropertyMatched, Boolean filterOutWithAccessibility) {
 
@@ -70,9 +69,7 @@ class RoadSectionFeatureMapperTest {
         when(roadSection.hasBackwardSegments()).thenReturn(true);
         when(roadSection.isBackwardAccessible()).thenReturn(true);
 
-        if (Objects.isNull(filterOutWithAccessibility) || filterOutWithAccessibility) {
-            when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
-        }
+        when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
 
         if (!Boolean.FALSE.equals(filterOutWithAccessibility)) {
             when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
@@ -102,13 +99,18 @@ class RoadSectionFeatureMapperTest {
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
-            true,   true,   true,   true
-            false,  true,   true,   true
-            true,   true,   false,   true
-            false,  true,   false,   true
+            true,    true,
+            false,   true,
+            true,    false,
+            false,   false,
+            true,    true,
+            false,   true,
+            true,    false,
+            false,   false,
             """)
-    void map_validatingForwardAndBackwardSegmentsAreCreatedCorrectly(boolean hasForwardSegment, boolean forwardAccessible,
-            boolean hasBackwardSegment, boolean backwardAccessible) {
+    void map_validatingForwardAndBackwardSegmentsAreCreatedCorrectly(
+            boolean hasForwardSegment,
+            boolean hasBackwardSegment) {
 
         when(roadSection.hasForwardSegments()).thenReturn(hasForwardSegment);
         when(roadSection.hasBackwardSegments()).thenReturn(hasBackwardSegment);
@@ -118,13 +120,13 @@ class RoadSectionFeatureMapperTest {
         }
 
         if (hasForwardSegment) {
-            when(roadSection.isForwardAccessible()).thenReturn(forwardAccessible);
+            when(roadSection.isForwardAccessible()).thenReturn(true);
             when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
             when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry))).thenReturn(lineStringJsonForward);
         }
 
         if (hasBackwardSegment) {
-            when(roadSection.isBackwardAccessible()).thenReturn(backwardAccessible);
+            when(roadSection.isBackwardAccessible()).thenReturn(true);
             when(roadSection.getBackwardGeometries()).thenReturn(List.of(backwardGeometry));
             when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(backwardGeometry))).thenReturn(lineStringJsonBackward);
         }
@@ -139,19 +141,19 @@ class RoadSectionFeatureMapperTest {
         ArrayList<RoadSectionFeatureJson> expectedRoadSectionFeatures = new ArrayList<>();
         if (hasForwardSegment) {
             expectedRoadSectionFeatures.add(
-                    buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, forwardAccessible, false));
+                    buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, false));
         }
 
         if (hasBackwardSegment) {
             expectedRoadSectionFeatures.add(
-                    buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, backwardAccessible, false));
+                    buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, false));
         }
 
         assertThat(result).containsExactlyInAnyOrderElementsOf(expectedRoadSectionFeatures);
     }
 
     @Test
-    void map_matchedSegments() {
+    void map_matchingStartPoint() {
 
         when(roadSection.hasForwardSegments()).thenReturn(true);
         when(roadSection.isForwardAccessible()).thenReturn(true);
@@ -177,6 +179,33 @@ class RoadSectionFeatureMapperTest {
         assertThat(result).containsExactlyInAnyOrder(
                 buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, true),
                 buildRoadSectionFeature(-ROAD_SECTION_ID, lineStringJsonBackward, true, false)
+        );
+    }
+
+    @Test
+    void map_matchingStartPoint_withFilterOutAccessibility_false() {
+
+        when(roadSection.hasForwardSegments()).thenReturn(true);
+        when(roadSection.isForwardAccessible()).thenReturn(true);
+        when(roadSection.hasBackwardSegments()).thenReturn(true);
+        when(roadSection.isBackwardAccessible()).thenReturn(true);
+
+        when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
+
+        when(roadSection.getForwardGeometries()).thenReturn(List.of(forwardGeometry));
+        when(geoJsonLineStringMergeMapper.mapToLineStringJson(List.of(forwardGeometry))).thenReturn(lineStringJsonForward);
+
+        when(startPoint.getMatchedLinkId()).thenReturn((int) ROAD_SECTION_ID);
+
+        List<RoadSectionFeatureJson> result = roadSectionFeatureMapper.map(
+                roadSection,
+                true,
+                startPoint,
+                false
+        );
+
+        assertThat(result).containsExactlyInAnyOrder(
+                buildRoadSectionFeature(ROAD_SECTION_ID, lineStringJsonForward, true, true)
         );
     }
 
