@@ -96,8 +96,13 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
         Optional<Point> requestedStartPoint = mapStartPoint(latitude, longitude);
-        CandidateMatch startPointMatchedToNetwork = requestedStartPoint
+
+        // We are ignoring the bearing because we have only a latitude and longitude so determining the road section is enough to determine
+        // a match.
+        Long matchedStartPointRoadSectionId = requestedStartPoint
                 .flatMap(point -> matchStartPoint(networkGraphHopper, point))
+                .map(CandidateMatch::getMatchedLinkId)
+                .map(Long::valueOf)
                 .orElse(null);
 
         Accessibility accessibility = calculateAccessibility(
@@ -111,7 +116,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 roadSectionFeatureCollectionMapper.map(
                         accessibility,
                         requestedStartPoint.isPresent(),
-                        startPointMatchedToNetwork,
+                        matchedStartPointRoadSectionId,
                         accessible));
     }
 

@@ -9,7 +9,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
-import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,9 +32,6 @@ class RoadSectionFeatureCollectionMapperTest {
     @Mock
     private Accessibility accessibility;
 
-    @Mock
-    private CandidateMatch startPoint;
-
     @BeforeEach
     void setUp() {
 
@@ -46,10 +42,10 @@ class RoadSectionFeatureCollectionMapperTest {
     void map() {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(roadSectionFeatureMapper.map(roadSection, true, startPoint, true))
+        when(roadSectionFeatureMapper.map(roadSection, true, 2L, true))
                 .thenReturn(List.of(roadSectionFeatureJson));
 
-        var roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(accessibility, true, startPoint, true);
+        var roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(accessibility, true, 2L, true);
 
         assertThat(roadSectionFeatureCollection).isEqualTo(
                 new RoadSectionFeatureCollectionJson()
