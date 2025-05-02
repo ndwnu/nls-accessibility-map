@@ -60,8 +60,8 @@ public class TransportTypeMapper {
                  MOBILE_LANE_SIGNALING_VEHICLE -> Set.of();
             case MOTORSCOOTER ->
                     throw new IllegalStateException(("Unsupported vehicle type '%s' because we have no ability to map this to any of the "
-                            + "internal structures. We checked with W&R and the should never send this value in any situation although it "
-                            + "is supported in the API according to the spect it is never used.") .formatted(vehicleType));
+                            + "internal structures. We checked with W&R and they should never send this value in any situation although it "
+                            + "is supported in the API according to the specs it is never used.") .formatted(vehicleType));
             case UNKNOWN -> throw new IllegalStateException("Unknown vehicle type '%s'." .formatted(vehicleType));
         };
     }
