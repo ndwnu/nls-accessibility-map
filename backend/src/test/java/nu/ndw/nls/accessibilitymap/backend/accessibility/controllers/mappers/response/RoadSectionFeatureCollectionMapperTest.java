@@ -19,9 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class RoadSectionFeatureCollectionMapperTest {
 
-    private static final boolean START_POINT_REQUESTED = true;
-
-    private static final boolean ACCESSIBLE = true;
+    private RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
 
     @Mock
     private RoadSectionFeatureMapper roadSectionFeatureMapper;
@@ -38,23 +36,20 @@ class RoadSectionFeatureCollectionMapperTest {
     @Mock
     private CandidateMatch startPoint;
 
-    private RoadSectionFeatureCollectionMapper roadSectionFeatureCollectionMapper;
-
     @BeforeEach
     void setUp() {
+
         roadSectionFeatureCollectionMapper = new RoadSectionFeatureCollectionMapper(roadSectionFeatureMapper);
     }
 
     @Test
     void map() {
+
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(roadSectionFeatureMapper.map(roadSection,
-                START_POINT_REQUESTED,
-                startPoint,
-                ACCESSIBLE))
+        when(roadSectionFeatureMapper.map(roadSection, true, startPoint, true))
                 .thenReturn(List.of(roadSectionFeatureJson));
 
-        var roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(accessibility, startPoint, ACCESSIBLE);
+        var roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(accessibility, true, startPoint, true);
 
         assertThat(roadSectionFeatureCollection).isEqualTo(
                 new RoadSectionFeatureCollectionJson()

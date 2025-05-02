@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -42,6 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.locationtech.jts.geom.Point;
 import org.mockito.Mock;
@@ -188,6 +190,10 @@ class AccessibilityMapApiDelegateImpTest {
 
         setUpFixture(emissionClassJson, fuelTypeJson);
 
+        when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
+        when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
+        when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
+
         when(accessibilityResponseMapper.map(accessibility, REQUESTED_ROAD_SECTION_ID))
                 .thenReturn(accessibilityMapResponseJson);
 
@@ -213,8 +219,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     @ParameterizedTest
     @MethodSource("provideIncorrectEmissionZoneParameters")
-    void getRoadSections_shouldThrowIncompleteArgumentsException(EmissionClassJson emissionClassJson,
-            FuelTypeJson fuelTypeJson) {
+    void getRoadSections_shouldThrowIncompleteArgumentsException(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
         assertThatThrownBy(() -> accessibilityMapApiDelegate.getRoadSections(
                 MUNICIPALITY_ID,
                 VehicleTypeJson.CAR,
@@ -231,25 +236,24 @@ class AccessibilityMapApiDelegateImpTest {
 
     @ParameterizedTest
     @MethodSource("provideCorrectEmissionZoneParameters")
-    void getRoadSections(EmissionClassJson emissionClassJson,
-            FuelTypeJson fuelTypeJson) {
+    void getRoadSections(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
         setUpFixture(emissionClassJson, fuelTypeJson);
+        when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
+        when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
+        when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
 
         when(roadSectionFeatureCollectionMapper
-                .map(accessibility, startPoint, true))
+                .map(accessibility, true, startPoint, true))
                 .thenReturn(roadSectionFeatureCollectionJson);
 
         ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
                 MUNICIPALITY_ID,
                 VehicleTypeJson.CAR,
-                VEHICLE_LENGTH,
-                VEHICLE_WIDTH,
-                VEHICLE_HEIGHT,
-                VEHICLE_WEIGHT,
-                VEHICLE_AXLE_LOAD,
-                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
-                fuelTypeJson);
+                VEHICLE_LENGTH, VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_WEIGHT, VEHICLE_AXLE_LOAD, false,
+                true,
+                REQUESTED_LATITUDE, REQUESTED_LONGITUDE,
+                emissionClassJson, fuelTypeJson);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
@@ -260,11 +264,57 @@ class AccessibilityMapApiDelegateImpTest {
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
 
+    @ParameterizedTest
+    @CsvSource(nullValues = "null", textBlock = """
+            1,      2,
+            null,   2,
+            1,      null,
+            null,   null
+            """)
+    void getRoadSections_noStartLocation(Double requestedLatitude, Double requestedLongitude) {
+
+        setUpFixture(EmissionClassJson._1, FuelTypeJson.ETHANOL);
+
+        boolean expectStartPoint = Objects.nonNull(requestedLatitude) && Objects.nonNull(requestedLongitude);
+
+        if (expectStartPoint) {
+            when(pointMapper.mapCoordinate(requestedLatitude, requestedLongitude)).thenReturn(Optional.of(requestedPoint));
+            when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
+            when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
+        }
+
+        when(roadSectionFeatureCollectionMapper
+                .map(accessibility,
+                        expectStartPoint,
+                        expectStartPoint ? startPoint : null,
+                        true))
+                .thenReturn(roadSectionFeatureCollectionJson);
+
+        ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
+                MUNICIPALITY_ID,
+                VehicleTypeJson.CAR,
+                VEHICLE_LENGTH, VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_WEIGHT, VEHICLE_AXLE_LOAD, false,
+                true,
+                requestedLatitude, requestedLongitude,
+                EmissionClassJson._1, FuelTypeJson.ETHANOL);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
+
+        assertThat(roadsSectionsWithoutAppliedRestrictions).containsExactly(missingRoadSection);
+        assertThat(roadSectionsWithAppliedRestrictions).containsExactly(missingRoadSection);
+
+        if (expectStartPoint) {
+            verify(pointValidator).validateConsistentValues(requestedLatitude, requestedLongitude);
+        }
+    }
+
     private void setUpFixture(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
         when(clockService.now()).thenReturn(timestamp);
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(accessibilityService.calculateAccessibility(eq(networkGraphHopper), eq(accessibilityRequest), any(AccessibleRoadSectionModifier.class)))
+        when(accessibilityService.calculateAccessibility(eq(networkGraphHopper), eq(accessibilityRequest),
+                any(AccessibleRoadSectionModifier.class)))
                 .thenAnswer(invocationOnMock -> {
                     invocationOnMock.getArgument(2, AccessibleRoadSectionModifier.class).modify(
                             roadsSectionsWithoutAppliedRestrictions,
@@ -289,10 +339,6 @@ class AccessibilityMapApiDelegateImpTest {
                 .build()))
                 .thenReturn(accessibilityRequest);
 
-        when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
-        when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
-        when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
-
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);
     }
 
@@ -302,7 +348,6 @@ class AccessibilityMapApiDelegateImpTest {
                 Arguments.of(null, FuelTypeJson.PETROL)
         );
     }
-
 
     static Stream<Arguments> provideCorrectEmissionZoneParameters() {
         return Stream.of(

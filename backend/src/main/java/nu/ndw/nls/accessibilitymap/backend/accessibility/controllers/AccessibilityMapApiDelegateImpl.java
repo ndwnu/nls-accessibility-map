@@ -95,7 +95,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
 
         NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
-        CandidateMatch startPoint = mapStartPoint(latitude, longitude)
+        Optional<Point> requestedStartPoint = mapStartPoint(latitude, longitude);
+        CandidateMatch startPointMatchedToNetwork = requestedStartPoint
                 .flatMap(point -> matchStartPoint(networkGraphHopper, point))
                 .orElse(null);
 
@@ -106,7 +107,12 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight, vehicleAxleLoad,
                 vehicleHasTrailer);
 
-        return ResponseEntity.ok(roadSectionFeatureCollectionMapper.map(accessibility, startPoint, accessible));
+        return ResponseEntity.ok(
+                roadSectionFeatureCollectionMapper.map(
+                        accessibility,
+                        requestedStartPoint.isPresent(),
+                        startPointMatchedToNetwork,
+                        accessible));
     }
 
     @SuppressWarnings("java:S107")
