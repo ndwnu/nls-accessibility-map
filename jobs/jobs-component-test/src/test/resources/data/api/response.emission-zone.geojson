@@ -196,7 +196,7 @@
     },
     "properties" : {
       "accessible" : true,
-      "matched" : false
+      "matched" : true
     }
   }, {
     "type" : "Feature",
