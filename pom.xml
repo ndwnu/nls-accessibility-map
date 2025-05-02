@@ -29,9 +29,9 @@
         <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
         <java.version>21</java.version>
         <exec-maven-plugin.version>3.5.0</exec-maven-plugin.version>
-        <nls-springboot.logging.version>8.4.7</nls-springboot.logging.version>
-        <nls-springboot.component-test.version>8.7.0</nls-springboot.component-test.version>
-        <nls-springboot.monitoring.version>8.4.7</nls-springboot.monitoring.version>
+        <nls-springboot.logging.version>8.4.8</nls-springboot.logging.version>
+        <nls-springboot.component-test.version>8.8.0</nls-springboot.component-test.version>
+        <nls-springboot.monitoring.version>8.4.8</nls-springboot.monitoring.version>
         <nls-springboot.test.version>9.0.0</nls-springboot.test.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -48,8 +48,8 @@
         <stream-utils.version>1.3.1</stream-utils.version>
         <swagger-annotations.version>2.2.30</swagger-annotations.version>
         <nls-events.version>5.1.12</nls-events.version>
-        <nls-nwb-data-access.version>8.0.17</nls-nwb-data-access.version>
-        <nls-springboot.version>9.1.30</nls-springboot.version>
+        <nls-nwb-data-access.version>8.0.18</nls-nwb-data-access.version>
+        <nls-springboot.version>9.1.31</nls-springboot.version>
         <nls-routing-map-matcher.version>16.0.13</nls-routing-map-matcher.version>
         <nls-geometry.version>5.0.3</nls-geometry.version>
         <nls-geojson-geometry.version>1.4.13</nls-geojson-geometry.version>
@@ -57,7 +57,7 @@
         <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
         <json-unit.version>4.1.0</json-unit.version>
         <cucumber.version>7.22.1</cucumber.version>
-        <location-data-issues.version>2.0.44</location-data-issues.version>
+        <location-data-issues.version>2.0.46</location-data-issues.version>
         <unirest-java.version>1.4.9</unirest-java.version>
         <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
         <!-- Overrides for transitive dependencies to fix vulnerabilities -->
