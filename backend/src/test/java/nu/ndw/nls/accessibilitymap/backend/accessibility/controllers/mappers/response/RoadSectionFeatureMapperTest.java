@@ -55,12 +55,12 @@ class RoadSectionFeatureMapperTest {
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
-            true,   true,
-            false,  true,
-            true,   false,
-            false,  false,
-            true,   null,
-            false,  null,
+            true,   true
+            false,  true
+            true,   false
+            false,  false
+            true,   null
+            false,  null
             """)
     void map(boolean includePropertyMatched, Boolean filterOutWithAccessibility) {
 
@@ -99,14 +99,14 @@ class RoadSectionFeatureMapperTest {
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
-            true,    true,
-            false,   true,
-            true,    false,
-            false,   false,
-            true,    true,
-            false,   true,
-            true,    false,
-            false,   false,
+            true,    true
+            false,   true
+            true,    false
+            false,   false
+            true,    true
+            false,   true
+            true,    false
+            false,   false
             """)
     void map_validatingForwardAndBackwardSegmentsAreCreatedCorrectly(
             boolean hasForwardSegment,
