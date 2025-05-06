@@ -2,20 +2,24 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.mapper.EmissionZoneMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,10 +27,16 @@ class TrafficSignRestrictionsBuilderTest {
 
     private TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
 
+    @Mock
+    private EmissionZoneMapper emissionZoneMapper;
+
+    @Mock
+    private EmissionZone emissionZone;
+
     @BeforeEach
     void setUp() {
 
-        trafficSignRestrictionsBuilder = new TrafficSignRestrictionsBuilder();
+        trafficSignRestrictionsBuilder = new TrafficSignRestrictionsBuilder(emissionZoneMapper);
     }
 
     @ParameterizedTest
@@ -171,6 +181,7 @@ class TrafficSignRestrictionsBuilderTest {
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
+                        TransportType.MOPED,
                         TransportType.MOTORCYCLE,
                         TransportType.TAXI,
                         TransportType.TRACTOR,
@@ -188,7 +199,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .vehicleLengthInCm(Maximum.builder().value(10d).build())
+                .vehicleLengthInCm(Maximum.builder().value(1_000d).build())
                 .build());
     }
 
@@ -201,7 +212,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .vehicleWidthInCm(Maximum.builder().value(10d).build())
+                .vehicleWidthInCm(Maximum.builder().value(1_000d).build())
                 .build());
     }
 
@@ -214,7 +225,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .vehicleHeightInCm(Maximum.builder().value(10d).build())
+                .vehicleHeightInCm(Maximum.builder().value(1_000d).build())
                 .build());
     }
 
@@ -227,7 +238,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .vehicleAxleLoadInKg(Maximum.builder().value(10d).build())
+                .vehicleAxleLoadInKg(Maximum.builder().value(10_000d).build())
                 .build());
     }
 
@@ -240,7 +251,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .build();
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .vehicleWeightInKg(Maximum.builder().value(10d).build())
+                .vehicleWeightInKg(Maximum.builder().value(10_000d).build())
                 .build());
     }
 
@@ -257,14 +268,30 @@ class TrafficSignRestrictionsBuilderTest {
     }
 
     @Test
+    void buildFor_c22A() {
+
+        TrafficSign trafficSign = TrafficSign.builder()
+                .trafficSignType(TrafficSignType.C22A)
+                .build();
+
+        when(emissionZoneMapper.map(trafficSign.emissionZoneId())).thenReturn(emissionZone);
+
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+                .emissionZone(emissionZone)
+                .build());
+    }
+
+    @Test
     void buildFor_c22C() {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .trafficSignType(TrafficSignType.C22C)
                 .build();
 
+        when(emissionZoneMapper.map(trafficSign.emissionZoneId())).thenReturn(emissionZone);
+
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+                .emissionZone(emissionZone)
                 .build());
     }
 }

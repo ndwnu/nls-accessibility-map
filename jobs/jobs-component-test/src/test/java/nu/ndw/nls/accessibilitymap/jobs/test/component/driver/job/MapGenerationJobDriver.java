@@ -45,10 +45,6 @@ public class MapGenerationJobDriver implements StateManagement {
                                 .value(buildCommandArguments(jobConfiguration))
                                 .build(),
                         Environment.builder()
-                                .key("GRAPHHOPPER_NETWORKNAME")
-                                .value("accessibility_latest_component_test")
-                                .build(),
-                        Environment.builder()
                                 .key("NU_NDW_NLS_ACCESSIBILITYMAP_JOBS_GENERATE_STARTLOCATIONLATITUDE")
                                 .value(String.valueOf(jobConfiguration.startNode().getLatitude()))
                                 .build(),

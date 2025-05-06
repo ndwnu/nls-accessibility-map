@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.trafficsign.command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,12 +13,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.command.dto.AnalyseProperties;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.trafficsign.service.TrafficSignAnalyserService;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +40,12 @@ import picocli.CommandLine.Command;
 class AnalyseCommandTest {
 
     private AnalyseCommand analyseCommand;
+
+    @Mock
+    private GraphHopperService graphHopperService;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private GraphhopperConfiguration graphhopperConfiguration;
@@ -58,7 +68,8 @@ class AnalyseCommandTest {
     @BeforeEach
     void setUp() {
 
-        analyseCommand = new AnalyseCommand(graphhopperConfiguration, analyserConfiguration, clockService, trafficSignAnalyserService);
+        analyseCommand = new AnalyseCommand(graphHopperService, graphhopperConfiguration, analyserConfiguration, clockService,
+                trafficSignAnalyserService);
     }
 
     @ParameterizedTest
@@ -75,6 +86,8 @@ class AnalyseCommandTest {
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
         when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
 
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+
         assertThat(new CommandLine(analyseCommand)
                 .execute("--traffic-signs=%s".formatted(trafficSignType.name()),
                         "--report-issues")
@@ -83,14 +96,18 @@ class AnalyseCommandTest {
         ArgumentCaptor<AnalyseProperties> analysePropertiesCaptor = ArgumentCaptor.forClass(
                 AnalyseProperties.class);
 
-        verify(trafficSignAnalyserService).analyse(analysePropertiesCaptor.capture());
+        verify(trafficSignAnalyserService).analyse(eq(networkGraphHopper), analysePropertiesCaptor.capture());
 
         AnalyseProperties analyseProperties = analysePropertiesCaptor.getValue();
         assertThat(analyseProperties.startTime()).isEqualTo(startTime);
-        assertThat(analyseProperties.accessibilityRequest().startLocationLatitude()).isEqualTo(2d);
-        assertThat(analyseProperties.accessibilityRequest().startLocationLongitude()).isEqualTo(3d);
-        assertThat(analyseProperties.accessibilityRequest().trafficSignTypes()).isEqualTo(Set.of(trafficSignType));
-        assertThat(analyseProperties.accessibilityRequest().searchRadiusInMeters()).isEqualTo(4d);
+
+        assertThat(analyseProperties.accessibilityRequest()).isEqualTo(AccessibilityRequest.builder()
+                .timestamp(startTime)
+                .startLocationLatitude(2d)
+                .startLocationLongitude(3d)
+                .trafficSignTypes(Set.of(trafficSignType))
+                .searchRadiusInMeters(4d)
+                .build());
         assertThat(analyseProperties.nwbVersion()).isEqualTo(123);
         assertThat(analyseProperties.reportIssues()).isTrue();
 
@@ -110,17 +127,21 @@ class AnalyseCommandTest {
         when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
         when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
 
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+
         assertThat(new CommandLine(analyseCommand)
                 .execute("--traffic-signs=%s,%s".formatted(TrafficSignType.C6.name(), TrafficSignType.C7.name()),
                         "--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
                         "--report-issues")
         ).isZero();
 
-        verify(trafficSignAnalyserService).analyse(argThat(
-                analyseProperties -> analyseProperties.accessibilityRequest().trafficSignTypes()
+        verify(trafficSignAnalyserService).analyse(
+                eq(networkGraphHopper),
+                argThat(analyseProperties -> analyseProperties.accessibilityRequest().trafficSignTypes()
                         .containsAll(List.of(TrafficSignType.C6, TrafficSignType.C7))));
-        verify(trafficSignAnalyserService).analyse(argThat(
-                analyseProperties -> analyseProperties.accessibilityRequest().trafficSignTypes().contains(TrafficSignType.C18)));
+        verify(trafficSignAnalyserService).analyse(
+                eq(networkGraphHopper),
+                argThat(analyseProperties -> analyseProperties.accessibilityRequest().trafficSignTypes().contains(TrafficSignType.C18)));
 
         loggerExtension.containsLog
                 (Level.INFO,
@@ -138,7 +159,7 @@ class AnalyseCommandTest {
                         "--report-issues")
         ).isOne();
 
-        verify(trafficSignAnalyserService, never()).analyse(any());
+        verify(trafficSignAnalyserService, never()).analyse(any(), any());
         loggerExtension.containsLog(Level.ERROR, "Could not analyse traffic signs because of:", "test exception");
     }
 

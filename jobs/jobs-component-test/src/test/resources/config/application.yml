@@ -37,12 +37,26 @@ nu:
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
+              keycloak:
+                url: "http://localhost:8000/auth"
+                realm: "ndw"
+                admin-username: "nls"
+                admin-password: "nls"
+                await:
+                  duration: PT1M
+                application-under-test:
+                  client-id: "nls-accessibility-map-api-local"
+                  roles:
+                    - "admin"
       test:
         component:
           general:
             timeZone: "Europe/Amsterdam"
             waitForDebuggerToBeConnected: false
           driver:
+            accessibility-map:
+              host: localhost
+              port: 8080
             general:
               debugFolder: ".debug/"
             maven:

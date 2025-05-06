@@ -21,6 +21,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -29,7 +30,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -45,6 +45,8 @@ class QueryGraphConfigurerTest {
     private static final String MESSAGE_NOT_ASSIGNED = "Query graph configuration summary. "
             + "Total traffic signs in request 1. "
             + "Total not assignable road sections with traffic sign 1, notAssigned {%s=[trafficSignSnap]}";
+
+    private QueryGraphConfigurer queryGraphConfigurer;
 
     @Mock
     private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
@@ -88,8 +90,12 @@ class QueryGraphConfigurerTest {
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
-    @InjectMocks
-    private QueryGraphConfigurer queryGraphConfigurer;
+
+    @BeforeEach
+    void setUp() {
+
+        queryGraphConfigurer = new QueryGraphConfigurer(edgeIteratorStateReverseExtractor);
+    }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
@@ -120,7 +126,7 @@ class QueryGraphConfigurerTest {
         when(ghPoint.getLon()).thenReturn(LON);
         when(ghPoint.getLat()).thenReturn(LAT);
 
-        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
+        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, List.of(trafficSignSnap));
 
         assertThat(edgeRestrictions.getBlockedEdges()).contains(edgeIterator.getEdgeKey());
         List<TrafficSign> trafficSigns = edgeRestrictions.getTrafficSignsByEdgeKey().get(edgeIterator.getEdgeKey());
@@ -143,7 +149,7 @@ class QueryGraphConfigurerTest {
         when(trafficSign.direction()).thenReturn(Direction.BACKWARD);
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
 
-        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
+        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, List.of(trafficSignSnap));
 
         assertThat(edgeRestrictions.getBlockedEdges()).isEmpty();
         loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(0));
@@ -171,7 +177,7 @@ class QueryGraphConfigurerTest {
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
         when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
 
-        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(trafficSignSnap));
+        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, List.of(trafficSignSnap));
 
         assertThat(edgeRestrictions.getBlockedEdges()).isEmpty();
 

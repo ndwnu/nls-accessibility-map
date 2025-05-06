@@ -9,8 +9,6 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exceptions.ResourceNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleTypeNotSupportedException;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.VehicleWeightRequiredException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.APIErrorJson;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.core.Ordered;
@@ -44,8 +42,8 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     /**
      * Bad request handler for domain exceptions
      */
-    @ExceptionHandler({VehicleTypeNotSupportedException.class, VehicleWeightRequiredException.class,
-            IncompleteArgumentsException.class})
+    @ExceptionHandler({
+            IncompleteArgumentsException.class,})
     public ResponseEntity<APIErrorJson> handleBadRequestException(RuntimeException exception) {
         APIErrorJson restError = new APIErrorJson()
                 .message(exception.getMessage());
@@ -60,7 +58,8 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     public ResponseEntity<APIErrorJson> handleMethodArgumentTypeMismatchException(
             MethodArgumentTypeMismatchException exception) {
         APIErrorJson restError = new APIErrorJson()
-                .message(exception.getMessage());
+                .message("Argument '%s' with value '%s' is not valid"
+                        .formatted(exception.getName(), exception.getValue()));
         return ResponseEntity.badRequest()
                 .body(restError);
     }

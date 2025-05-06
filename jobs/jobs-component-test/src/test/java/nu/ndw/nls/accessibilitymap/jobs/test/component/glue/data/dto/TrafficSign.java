@@ -12,6 +12,7 @@ public record TrafficSign(
         String rvvCode,
         String blackCode,
         DirectionType directionType,
-        String windowTime) {
+        String windowTime,
+        String emissionZoneId) {
 
 }

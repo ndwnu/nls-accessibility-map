@@ -1,14 +1,23 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.DataTableType;
+import io.cucumber.java.DefaultDataTableCellTransformer;
+import io.cucumber.java.DefaultDataTableEntryTransformer;
+import io.cucumber.java.DefaultParameterTransformer;
 import jakarta.validation.Valid;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
@@ -17,6 +26,8 @@ import org.apache.logging.log4j.util.Strings;
 
 @RequiredArgsConstructor
 public class DataTypeRegister {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final NetworkDataService networkDataService;
 
@@ -28,11 +39,43 @@ public class DataTypeRegister {
                 .startNodeId(Integer.parseInt(entry.get("startNodeId")))
                 .endNodeId(Integer.parseInt(entry.get("endNodeId")))
                 .fraction(Double.parseDouble(entry.get("fraction")))
-                .rvvCode(entry.get("rvvCode").toUpperCase(Locale.US))
-                .blackCode(Objects.isNull(entry.get("blackCode")) ? null : entry.get("blackCode").toUpperCase(Locale.US))
+                .rvvCode(entry.get("rvvCode"))
+                .blackCode(Objects.nonNull(entry.get("blackCode")) ? entry.get("blackCode").toUpperCase(Locale.US) : null)
                 .directionType(DirectionType.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
-                .windowTime(entry.get("windowTime"))
+                .windowTime(Objects.nonNull(entry.get("windowTime")) ? entry.get("windowTime") : null)
+                .emissionZoneId(entry.get("emissionZoneId"))
                 .build();
+    }
+
+    @DataTableType
+    public AccessibilityRequest mapAccessibilityRequest(Map<String, String> entry) {
+
+        return AccessibilityRequest.builder()
+                .municipalityId(entry.getOrDefault("municipalityId", null))
+                .startLatitude(mapDoubleValue("startLatitude", entry))
+                .startLongitude(mapDoubleValue("startLongitude", entry))
+                .vehicleLengthInMeters(mapDoubleValue("vehicleLength", entry))
+                .vehicleHeightInMeters(mapDoubleValue("vehicleHeight", entry))
+                .vehicleWidthInMeters(mapDoubleValue("vehicleWidth", entry))
+                .vehicleWeightInKg(mapDoubleValue("vehicleWeight", entry))
+                .vehicleAxleLoadInKg(mapDoubleValue("vehicleAxleLoad", entry))
+                .vehicleType(entry.containsKey("vehicleType") ? VehicleTypeJson.fromValue(entry.get("vehicleType")) : null)
+                .emissionClass(entry.containsKey("emissionClass") ? EmissionClassJson.fromValue(entry.get("emissionClass")) : null)
+                .fuelType(entry.containsKey("fuelType") ? FuelTypeJson.fromValue(entry.get("fuelType")) : null)
+                .build();
+    }
+
+    @DefaultParameterTransformer
+    @DefaultDataTableEntryTransformer
+    @DefaultDataTableCellTransformer
+    public Object transformer(Object fromValue, Type toValueType) {
+
+        return objectMapper.convertValue(fromValue, objectMapper.constructType(toValueType));
+    }
+
+    private static Double mapDoubleValue(String key, Map<String, String> entry) {
+
+        return entry.containsKey(key) ? Double.parseDouble(entry.get(key)) : null;
     }
 
     @DataTableType

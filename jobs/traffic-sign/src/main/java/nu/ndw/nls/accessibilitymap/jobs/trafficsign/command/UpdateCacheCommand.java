@@ -13,7 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.Graphho
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheReadWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.TrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.mapper.TrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
@@ -53,10 +53,11 @@ public class UpdateCacheCommand implements Callable<Integer> {
                                     .collect(Collectors.toSet()))
                             .trafficSignsByRoadSectionId().values().stream()
                             .flatMap(Collection::stream)
-                            .map(trafficSignGeoJsonDto -> trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                                    getNwbRoadSectionGeometry(trafficSignGeoJsonDto),
-                                    trafficSignGeoJsonDto,
-                                    idSupplier))
+                            .map(trafficSignGeoJsonDto ->
+                                    trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                                            getNwbRoadSectionGeometry(trafficSignGeoJsonDto),
+                                            trafficSignGeoJsonDto,
+                                            idSupplier))
                             .filter(Optional::isPresent)
                             .map(Optional::get)
                             .toList());

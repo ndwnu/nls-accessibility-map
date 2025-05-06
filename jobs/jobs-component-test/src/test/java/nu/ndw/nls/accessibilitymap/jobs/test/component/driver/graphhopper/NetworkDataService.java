@@ -62,6 +62,7 @@ public class NetworkDataService implements StateManagement {
 
         AccessibilityLinkBuilder accessibilityLinkBuilder = AccessibilityLink.builder()
                 .id(longSequenceSupplier.next())
+                .municipalityCode(1)
                 .fromNodeId(startNode.getId())
                 .toNodeId(endNode.getId())
                 .geometry(latLongLineString);

@@ -1,0 +1,43 @@
+nu:
+  ndw:
+    nls:
+      springboot:
+        messaging:
+          broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
+      accessibilitymap:
+        trafficsignclient:
+          api:
+            url: http://accessibility-wiremock-stub:8080/api/rest/static-road-data/traffic-signs/v4
+            town-codes: GM0307
+        trafficsigns:
+          emission-zone:
+            client:
+              url: http://accessibility-wiremock-stub:8080/api/area/ibbm/emission-zones/v1
+          cache:
+            fail-on-no-data-on-startup: false
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG
+graphhopper:
+  dir: graphhopper
+spring:
+  datasource:
+    url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+
+keycloak:
+  server-url: http://accessibility-wiremock-stub:8080/auth
+  client-id: nls-accessibility-map-api-service-account
+  client-secret: cfe4793c-ddf7-405a-940f-51b43800aed4
+
+feign:
+  client:
+    base-url: http://accessibility-wiremock-stub:8080/api
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: basic

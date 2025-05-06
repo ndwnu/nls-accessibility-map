@@ -12,8 +12,9 @@ public enum TransportType {
 
     PEDESTRIAN("Pedestrian"),
     BICYCLE("Bicycle"),
-    MOPED("Moped"),
+    MOPED("Moped"), //Bromfiets, Snorfiets
     MOTORCYCLE("Motorcycle"),
+    CARAVAN("Caravan"),
     CAR("Car"),
     TRUCK("Truck"),
     TRACTOR("Tractor"),
@@ -37,7 +38,7 @@ public enum TransportType {
     public static Set<TransportType> allExcept(Set<TransportType> excludingTypes) {
 
         return Stream.of(TransportType.values())
-                .filter(t -> !excludingTypes.contains(t))
+                .filter(transportType -> !excludingTypes.contains(transportType))
                 .collect(Collectors.toSet());
     }
 }

@@ -35,10 +35,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
@@ -100,38 +96,25 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>nu.ndw.nls.springboot</groupId>
+            <artifactId>test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.intuit.karate</groupId>
             <artifactId>karate-junit5</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- This dependency is used to force the build
-                    order to first build and run the graphhopper-job< module.
-                 -->
-        <dependency>
-            <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <artifactId>graphhopper-job</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- This dependency is used to force the build
-                order to first build and run the traffic-sign module.
-                this is done to ensure a traffic sign file on disk exists
-             -->
-        <dependency>
-            <groupId>nu.ndw.nls.accessibilitymap</groupId>
-            <artifactId>traffic-sign</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.keycloak</groupId>
             <artifactId>keycloak-authz-client</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>nu.ndw.nls.springboot</groupId>
-            <artifactId>test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

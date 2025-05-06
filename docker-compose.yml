@@ -37,6 +37,23 @@ services:
       - ./.tmp/graphhopper:/application/graphhopper
       - ./.tmp/trafficsigns:/application/trafficsigns
 
+  nls-accessibility-map-api-component-test:
+    build: docker/nls-accessibility-map-api
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker,component-test
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - NLS_KEYCLOAK_URL=http://nls-keycloak:8000/auth
+      - NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP=false
+    ports:
+      - "8080:8080"
+    depends_on:
+      - nls-keycloak
+    networks:
+      - nls-accessibility-map-network
+    volumes:
+      - ./.tmp/graphhopper:/application/graphhopper
+      - ./.tmp/trafficsigns:/application/trafficsigns
+
   nls-accessibility-map-graphhopper-job:
     build: docker/nls-accessibility-map-graphhopper-job
     environment:
@@ -76,7 +93,7 @@ services:
   nls-accessibility-map-traffic-sign-analyser-job:
     build: docker/nls-accessibility-map-traffic-sign-job
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=component-test
       - COMMAND=analyse
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
@@ -89,7 +106,7 @@ services:
   nls-accessibility-map-traffic-sign-update-cache-job:
     build: docker/nls-accessibility-map-traffic-sign-job
     environment:
-      - SPRING_PROFILES_ACTIVE=docker,update-cache
+      - SPRING_PROFILES_ACTIVE=component-test,update-cache
       - COMMAND=update-cache
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
     volumes:

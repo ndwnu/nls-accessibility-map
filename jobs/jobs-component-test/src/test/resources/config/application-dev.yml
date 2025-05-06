@@ -1,0 +1,12 @@
+hostSuffix: "replaced_by_pipeline"
+hostApplication: application.${hostSuffix}
+
+nu:
+  ndw:
+    nls:
+      test:
+        component:
+          driver:
+            accessibility-map:
+              host: ${hostApplication}
+              port: 80

@@ -9,7 +9,7 @@
     "roadOperatorName": "Waterschap Scheldestromen",
     "roadOperatorCode": "WS15",
     "roadOperatorType": "WaterAuthority",
-    "requestExemptionUrl": "https://scheldestromen.nl/sites/scheldestromen.nl/files/documenten/Aanvraag%2520ontheffing%2520wegen.docx"
+    "requestExemptionUrl": "https://scheldestromen.nl/sites/scheldestromen.nl/files/documenten/Aanvraag%20ontheffing%20wegen.docx"
   },
   {
     "roadOperatorName": "Waterschap Noorderzijlvest",
@@ -602,7 +602,7 @@
     "roadOperatorCode": "351",
     "roadOperatorType": "Municipality",
     "municipalityId": "GM351",
-    "requestExemptionUrl": "https://www.woudenberg.nl/over-de-gemeente/parkeren-in-woudenberg#:~:text=Ontheffing%2520blauwe%2520zone%2520Dorpsstraat%252C%2520Voorstraat,principe%2520%25C3%25A9%25C3%25A9n%2520ontheffing%2520per%2520adres."
+    "requestExemptionUrl": "https://www.woudenberg.nl/over-de-gemeente/parkeren-in-woudenberg#:~:text=Ontheffing%20blauwe%20zone%20Dorpsstraat%2C%20Voorstraat,principe%20%C3%A9%C3%A9n%20ontheffing%20per%20adres."
   },
   {
     "roadOperatorName": "Zeist",
@@ -777,7 +777,7 @@
     "roadOperatorCode": "405",
     "roadOperatorType": "Municipality",
     "municipalityId": "GM405",
-    "requestExemptionUrl": "https://www.hoorn.nl/verkeersontheffing#:~:text=Online%2520ontheffing%2520aanvragen&text=U%2520kunt%2520ontheffing%2520aanvragen%2520voor%2520een%2520korte%2520tijd%2520of%2520onbepaalde%2520tijd.&text=De%2520kosten%2520voor%2520een%2520verkeersontheffing%2520zijn%2520%25E2%2582%25AC%252013%252C60.&text=U%2520kunt%2520ook%2520ontheffing%2520aanvragen,kentekenbewijs%2520mee%2520naar%2520de%2520afspraak."
+    "requestExemptionUrl": "https://www.hoorn.nl/verkeersontheffing#:~:text=Online%20ontheffing%20aanvragen&text=U%20kunt%20ontheffing%20aanvragen%20voor%20een%20korte%20tijd%20of%20onbepaalde%20tijd.&text=De%20kosten%20voor%20een%20verkeersontheffing%20zijn%20%E2%82%AC%2013%2C60.&text=U%20kunt%20ook%20ontheffing%20aanvragen,kentekenbewijs%20mee%20naar%20de%20afspraak."
   },
   {
     "roadOperatorName": "Huizen",

@@ -48,6 +48,14 @@ nu:
               routingKey: ndw.nls.nwb.imported
               expectedEventTypes:
                 - NWB_IMPORTED_EVENT
+
+      accessibilitymap:
+        trafficsigns:
+          cache:
+            folder: "trafficsigns"
+            file-name-active-version: "active"
+            filewatcher:
+              enabled: false
 management:
   observations:
     annotations:
