@@ -9,8 +9,6 @@ graphhopper:
 spring:
   application:
     name: nls-accessibility-map-api-local
-  cache:
-    cache-names: "baseAccessibleRoadsByMunicipality"
   jackson:
     default-property-inclusion: non_null
   config:

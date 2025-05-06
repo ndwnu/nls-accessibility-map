@@ -137,9 +137,8 @@ class AccessibilityServiceTest {
     @BeforeEach
     void setUp() {
 
-        accessibilityService = new AccessibilityService(isochroneServiceFactory, networkGraphHopper,
-                trafficSignDataService, geometryFactoryWgs84, roadSectionMapper, clockService,
-                networkCacheDataService, roadSectionCombinator);
+        accessibilityService = new AccessibilityService(isochroneServiceFactory, trafficSignDataService, geometryFactoryWgs84,
+                roadSectionMapper, clockService, networkCacheDataService, roadSectionCombinator);
     }
 
     @Test
@@ -174,9 +173,7 @@ class AccessibilityServiceTest {
                 List.of(roadSectionRestriction)))
                 .thenReturn(List.of(roadSectionCombined));
 
-        Accessibility result = calculateAccessibility((roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions)
-                -> {
-        });
+        Accessibility result = calculateAccessibility(null);
 
         Accessibility expected = Accessibility
                 .builder()
@@ -217,7 +214,7 @@ class AccessibilityServiceTest {
         assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
     }
 
-    private Accessibility calculateAccessibility(AccessibleRoadSectionModifier accessibileRoadSectionModifier) {
+    private Accessibility calculateAccessibility(AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
 
         when(clockService.now())
                 .thenReturn(OffsetDateTime.MIN)
@@ -234,7 +231,7 @@ class AccessibilityServiceTest {
         mockTrafficSignData(accessibilityRequest);
         mockWeighting();
         when(networkCacheDataService.getNetworkData(MUNICIPALITY_ID, startSegmentSnap, SEARCH_DISTANCE_IN_METRES,
-                List.of(trafficSign))).thenReturn(networkData);
+                List.of(trafficSign), networkGraphHopper)).thenReturn(networkData);
         when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
         when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
@@ -251,8 +248,7 @@ class AccessibilityServiceTest {
         when(edgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
         when(isochroneService
                 .getIsochroneMatchesByMunicipalityId(
-                        argThat(new IsochroneArgumentMatcher(IsochroneArguments
-                                .builder()
+                        argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
                                 .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, edgeRestrictions.getBlockedEdges()))
                                 .municipalityId(MUNICIPALITY_ID)
                                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
@@ -266,8 +262,11 @@ class AccessibilityServiceTest {
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction)))
                 .thenReturn(new ArrayList<>(List.of(roadSectionRestriction)));
 
-        return accessibileRoadSectionModifier != null ? accessibilityService.calculateAccessibility(accessibilityRequest,
-                accessibileRoadSectionModifier) : accessibilityService.calculateAccessibility(accessibilityRequest);
+        if (Objects.nonNull(accessibleRoadSectionModifier)) {
+            return accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest, accessibleRoadSectionModifier);
+        } else {
+            return accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+        }
     }
 
     private void mockWeighting() {

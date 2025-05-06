@@ -10,16 +10,25 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
+import nu.ndw.nls.accessibilitymap.jobs.trafficsign.cache.mapper.EmissionZoneMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TrafficSignRestrictionsBuilder {
 
+    private static final int MULTIPLIER_FROM_METERS_TO_CM = 100;
+
+    private static final int MULTIPLIER_FROM_TONNE_TO_KILO_GRAM = 1000;
+
     private final Map<TrafficSignType, Restrictions> nonDynamicTrafficSigns;
 
     private final Map<TrafficSignType, Function<TrafficSign, Restrictions>> dynamicTrafficSigns;
 
-    public TrafficSignRestrictionsBuilder() {
+    private final EmissionZoneMapper emissionZoneMapper;
+
+    public TrafficSignRestrictionsBuilder(EmissionZoneMapper emissionZoneMapper) {
+
+        this.emissionZoneMapper = emissionZoneMapper;
 
         nonDynamicTrafficSigns = new EnumMap<>(TrafficSignType.class);
         nonDynamicTrafficSigns.put(TrafficSignType.C1, buildC1Restrictions());
@@ -34,7 +43,6 @@ public class TrafficSignRestrictionsBuilder {
         nonDynamicTrafficSigns.put(TrafficSignType.C11, buildC11Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C12, buildC12Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C22, buildC22Restrictions());
-        nonDynamicTrafficSigns.put(TrafficSignType.C22C, buildC22cRestrictions());
 
         dynamicTrafficSigns = new EnumMap<>(TrafficSignType.class);
         dynamicTrafficSigns.put(TrafficSignType.C17, buildC17Restrictions());
@@ -42,6 +50,8 @@ public class TrafficSignRestrictionsBuilder {
         dynamicTrafficSigns.put(TrafficSignType.C19, buildC19Restrictions());
         dynamicTrafficSigns.put(TrafficSignType.C20, buildC20Restrictions());
         dynamicTrafficSigns.put(TrafficSignType.C21, buildC21Restrictions());
+        dynamicTrafficSigns.put(TrafficSignType.C22A, buildEmissionZoneRestrictions());
+        dynamicTrafficSigns.put(TrafficSignType.C22C, buildEmissionZoneRestrictions());
     }
 
     public Restrictions buildFor(TrafficSign trafficSign) {
@@ -132,10 +142,11 @@ public class TrafficSignRestrictionsBuilder {
     private static Restrictions buildC12Restrictions() {
         return Restrictions.builder()
                 .transportTypes(Set.of(
-                        TransportType.MOTORCYCLE,
                         TransportType.BUS,
                         TransportType.CAR,
                         TransportType.DELIVERY_VAN,
+                        TransportType.MOPED,
+                        TransportType.MOTORCYCLE,
                         TransportType.TAXI,
                         TransportType.TRACTOR,
                         TransportType.TRUCK
@@ -150,7 +161,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleLengthInCm(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
                     .build();
         };
@@ -163,7 +174,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleWidthInCm(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
                     .build();
         };
@@ -176,7 +187,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleHeightInCm(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
                     .build();
         };
@@ -190,7 +201,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleAxleLoadInKg(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM)
                             .build())
                     .build();
         };
@@ -204,7 +215,7 @@ public class TrafficSignRestrictionsBuilder {
             }
             return Restrictions.builder()
                     .vehicleWeightInKg(Maximum.builder()
-                            .value(trafficSign.blackCode())
+                            .value(trafficSign.blackCode() * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM)
                             .build())
                     .build();
         };
@@ -217,10 +228,10 @@ public class TrafficSignRestrictionsBuilder {
                 .build();
     }
 
-    private static Restrictions buildC22cRestrictions() {
+    private Function<TrafficSign, Restrictions> buildEmissionZoneRestrictions() {
 
-        return Restrictions.builder()
-                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
+        return trafficSign -> Restrictions.builder()
+                .emissionZone(emissionZoneMapper.map(trafficSign.emissionZoneId()))
                 .build();
     }
 }

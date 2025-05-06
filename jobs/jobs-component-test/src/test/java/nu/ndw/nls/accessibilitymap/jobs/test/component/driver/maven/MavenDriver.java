@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.springboot.processrunner.runner.services.ProcessRunnerService;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
+import org.eclipse.sisu.PostConstruct;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -17,7 +18,7 @@ public class MavenDriver implements StateManagement {
 
     private final ProcessRunnerService processRunnerService;
 
-    @Override
+    @PostConstruct
     public void prepareState() {
 
         buildRelatedProjectToComponentTest();

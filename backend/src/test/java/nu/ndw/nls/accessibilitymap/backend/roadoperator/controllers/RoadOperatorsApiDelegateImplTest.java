@@ -5,8 +5,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson;
-import nu.ndw.nls.accessibilitymap.backend.roadoperator.controllers.dto.RoadOperator;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.mapper.RoadOperatorMapper;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.service.RoadOperatorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

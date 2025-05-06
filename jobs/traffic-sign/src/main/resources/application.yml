@@ -36,6 +36,11 @@ spring:
             client-id: ${keycloak.client-id}
             client-secret: ${keycloak.client-secret}
             provider: ndw-keycloak
+          traffic-sign-area-backend:
+            authorization-grant-type: client_credentials
+            client-id: ${keycloak.client-id}
+            client-secret: ${keycloak.client-secret}
+            provider: ndw-keycloak
         provider:
           ndw-keycloak:
             token-uri: ${keycloak.server-url}/realms/ndw/protocol/openid-connect/token
@@ -72,12 +77,28 @@ nu:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
         trafficsigns:
+          emission-zone:
+            client:
+              url: https://wegkenmerken.ndw.nu/api/area/ibbm/emission-zones/v1
+              oauth2:
+                registration-id: traffic-sign-area-backend
           cache:
             folder: "trafficsigns"
             file-name-active-version: "active"
             filewatcher:
               enabled: false
 
+resilience4j.retry:
+  instances:
+    emissionZone:
+      maxAttempts: 3
+      waitDuration: 1s
+      enableExponentialBackoff: true
+      exponentialBackoffMultiplier: 2
+      retryExceptions:
+        - feign.codec.DecodeException
+        - feign.FeignException.InternalServerError
+        - feign.RetryableException
 
 management:
   observations:

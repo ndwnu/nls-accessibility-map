@@ -50,7 +50,7 @@ class PointMatchServiceTest {
     void setUp() {
         when(singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, CAR_PROFILE.getName()))
                 .thenReturn(singlePointMapMatcher);
-        pointMatchService = new PointMatchService(singlePointMapMatcherMapMatcherFactory, networkGraphHopper);
+        pointMatchService = new PointMatchService(singlePointMapMatcherMapMatcherFactory);
     }
 
     @Test
@@ -60,7 +60,7 @@ class PointMatchServiceTest {
                 .cutoffDistance(CUTOFF_DISTANCE)
                 .build())).thenReturn(singlePointMatch);
         when(singlePointMatch.getCandidateMatches()).thenReturn(List.of(candidateMatch));
-        assertEquals(Optional.of(candidateMatch), pointMatchService.match(point));
+        assertEquals(Optional.of(candidateMatch), pointMatchService.match(networkGraphHopper, point));
     }
 
     @Test
@@ -70,6 +70,6 @@ class PointMatchServiceTest {
                 .cutoffDistance(CUTOFF_DISTANCE)
                 .build())).thenReturn(singlePointMatch);
         when(singlePointMatch.getCandidateMatches()).thenReturn(Collections.emptyList());
-        assertEquals(Optional.empty(), pointMatchService.match(point));
+        assertEquals(Optional.empty(), pointMatchService.match(networkGraphHopper, point));
     }
 }

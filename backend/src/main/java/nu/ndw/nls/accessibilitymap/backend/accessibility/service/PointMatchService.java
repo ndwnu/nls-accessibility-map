@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.service;
 import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.routingmapmatcher.domain.MapMatcherFactory;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointLocation;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch;
@@ -13,21 +14,18 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PointMatchService {
 
     private static final int CUTOFF_DISTANCE = 150;
 
-    private final SinglePointMapMatcher singlePointMapMatcher;
+    private final MapMatcherFactory<SinglePointMapMatcher> singlePointMapMatcherMapMatcherFactory;
 
-    public PointMatchService(
-            MapMatcherFactory<SinglePointMapMatcher> singlePointMapMatcherMapMatcherFactory,
-            NetworkGraphHopper networkGraphHopper
-    ) {
-        this.singlePointMapMatcher = singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, CAR_PROFILE.getName());
-    }
+    public Optional<CandidateMatch> match(NetworkGraphHopper networkGraphHopper, Point point) {
+        
+        var singlePointMapMatcher = singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, CAR_PROFILE.getName());
 
-    public Optional<CandidateMatch> match(Point point) {
-        SinglePointMatch singlePointMatch = this.singlePointMapMatcher.match(SinglePointLocation.builder()
+        SinglePointMatch singlePointMatch = singlePointMapMatcher.match(SinglePointLocation.builder()
                 .point(point)
                 .cutoffDistance(CUTOFF_DISTANCE)
                 .build());

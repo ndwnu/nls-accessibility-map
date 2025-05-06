@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 
@@ -17,9 +18,11 @@ public record Restrictions(
         Maximum vehicleHeightInCm,
         Maximum vehicleWidthInCm,
         Maximum vehicleWeightInKg,
-        Maximum vehicleAxleLoadInKg) {
+        Maximum vehicleAxleLoadInKg,
+        EmissionZone emissionZone) {
 
     public boolean hasActiveRestrictions(AccessibilityRequest accessibilityRequest) {
+
         return !getActiveRestrictions(accessibilityRequest).isEmpty();
     }
 
@@ -36,6 +39,13 @@ public record Restrictions(
 
     private List<Predicate<AccessibilityRequest>> getActiveRestrictions(AccessibilityRequest accessibilityRequest) {
         List<Predicate<AccessibilityRequest>> activeRestrictions = new ArrayList<>();
+
+        if (Objects.nonNull(emissionZone)
+                && emissionZone.isActive(accessibilityRequest.timestamp())
+                && Objects.nonNull(accessibilityRequest.fuelTypes())
+                && Objects.nonNull(accessibilityRequest.emissionClasses())) {
+            activeRestrictions.add(buildEmissionRestriction());
+        }
 
         if (Objects.nonNull(transportTypes) && Objects.nonNull(accessibilityRequest.transportTypes())) {
             activeRestrictions.add(containsTransportType());
@@ -62,6 +72,24 @@ public record Restrictions(
         }
 
         return activeRestrictions;
+    }
+
+    private Predicate<AccessibilityRequest> buildEmissionRestriction() {
+        return accessibilityRequest -> {
+
+            if (emissionZone.isRelevant(
+                    accessibilityRequest.vehicleWeightInKg(),
+                    accessibilityRequest.fuelTypes(),
+                    accessibilityRequest.transportTypes())) {
+
+                return !emissionZone.isExempt(
+                        accessibilityRequest.timestamp(),
+                        accessibilityRequest.vehicleWeightInKg(),
+                        accessibilityRequest.emissionClasses(),
+                        accessibilityRequest.transportTypes());
+            }
+            return false;
+        };
     }
 
     private Predicate<AccessibilityRequest> isExceedingVehicleLength() {

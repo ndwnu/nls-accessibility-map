@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,9 +15,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,12 +54,18 @@ class TrafficSignDataServiceTest {
     @Mock
     private NetworkCacheDataService networkCacheDataService;
 
+    @Mock
+    private GraphHopperService graphHopperService;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
+
     @BeforeEach
     void setUp() {
 
         trafficSignDataService = new TrafficSignDataService(
                 trafficSignCacheReadWriter,
-                List.of(trafficSignRelevancy1, trafficSignRelevancy2), networkCacheDataService);
+                List.of(trafficSignRelevancy1, trafficSignRelevancy2), networkCacheDataService, graphHopperService);
     }
 
     @Test
@@ -96,7 +105,7 @@ class TrafficSignDataServiceTest {
 
     @Test
     void getTrafficSigns() {
-
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
 
         assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
@@ -110,7 +119,7 @@ class TrafficSignDataServiceTest {
         List<TrafficSign> cachedTrafficSigns = trafficSignDataService.getTrafficSigns();
 
         verify(trafficSignCacheReadWriter).read();
-        verify(networkCacheDataService).create(argThat(t -> t.equals(trafficSigns)));
+        verify(networkCacheDataService).create(argThat(t -> t.equals(trafficSigns)), eq(networkGraphHopper));
         assertThat(cachedTrafficSigns).isEqualTo(trafficSigns);
     }
 

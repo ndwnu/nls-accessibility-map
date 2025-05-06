@@ -1,33 +1,47 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class RestrictionsTest {
 
-    private Restrictions restrictions;
-
     private AccessibilityRequest accessibilityRequest;
+
+    private OffsetDateTime timestamp;
+
+    @Mock
+    private EmissionZone emissionZone;
 
     @BeforeEach
     void setUp() {
 
+        timestamp = OffsetDateTime.parse("2022-03-11T09:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         accessibilityRequest = AccessibilityRequest.builder().build();
     }
 
     @Test
     void hasActiveRestrictions() {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .transportTypes(TransportType.allExcept())
                 .build();
 
@@ -37,7 +51,7 @@ class RestrictionsTest {
     @Test
     void hasActiveRestrictions_noRestrictions() {
 
-        restrictions = Restrictions.builder().build();
+        Restrictions restrictions = Restrictions.builder().build();
 
         assertThat(restrictions.hasActiveRestrictions(accessibilityRequest)).isFalse();
     }
@@ -45,13 +59,14 @@ class RestrictionsTest {
     @Test
     void isRestrictive_combinationTest() {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .transportTypes(Set.of(TransportType.TRUCK))
                 .vehicleLengthInCm(Maximum.builder().value(10d).build())
                 .vehicleWidthInCm(Maximum.builder().value(20d).build())
                 .vehicleHeightInCm(Maximum.builder().value(30d).build())
                 .vehicleWeightInKg(Maximum.builder().value(40d).build())
                 .vehicleAxleLoadInKg(Maximum.builder().value(50d).build())
+                .emissionZone(emissionZone)
                 .build();
 
         assertThat(restrictions.isRestrictive(accessibilityRequest
@@ -77,7 +92,7 @@ class RestrictionsTest {
     @EnumSource(TransportType.class)
     void isRestrictive_transportType_isRestrictive(TransportType transportType) {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .transportTypes(Set.of(transportType))
                 .build();
 
@@ -88,7 +103,7 @@ class RestrictionsTest {
     @EnumSource(TransportType.class)
     void isRestrictive_transportType_notRestrictive(TransportType transportType) {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .transportTypes(TransportType.allExcept(transportType))
                 .build();
 
@@ -107,7 +122,7 @@ class RestrictionsTest {
             boolean accessibilityRequestHasTransportTypes,
             boolean expectedResult) {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .transportTypes(restrictionHasTransportTypes ? TransportType.allExcept() : null)
                 .build();
 
@@ -129,7 +144,7 @@ class RestrictionsTest {
             Double vehicleLengthToTestFor,
             boolean expectedResult) {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .vehicleLengthInCm(Maximum.builder().value(vehicleLength).build())
                 .build();
 
@@ -150,7 +165,7 @@ class RestrictionsTest {
             Double vehicleHeightToTestFor,
             boolean expectedResult) {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .vehicleHeightInCm(Maximum.builder()
                         .value(vehicleHeight)
                         .build())
@@ -173,7 +188,7 @@ class RestrictionsTest {
             Double vehicleWidthToTestFor,
             boolean expectedResult) {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .vehicleWidthInCm(Maximum.builder()
                         .value(vehicleWidth)
                         .build())
@@ -195,7 +210,7 @@ class RestrictionsTest {
             Double vehicleWeightToTestFor,
             boolean expectedResult) {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .vehicleWeightInKg(Maximum.builder()
                         .value(vehicleWeight)
                         .build())
@@ -218,7 +233,7 @@ class RestrictionsTest {
             Double vehicleAxleLoadToTestFor,
             boolean expectedResult) {
 
-        restrictions = Restrictions.builder()
+        Restrictions restrictions = Restrictions.builder()
                 .vehicleAxleLoadInKg(Maximum.builder()
                         .value(vehicleAxleLoad)
                         .build())
@@ -226,5 +241,146 @@ class RestrictionsTest {
 
         assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleAxleLoadInKg(vehicleAxleLoadToTestFor))).isEqualTo(
                 expectedResult);
+    }
+
+    @Test
+    void isRestrictive_emissionZone_restrictive() {
+
+        accessibilityRequest = accessibilityRequest
+                .withVehicleWeightInKg(2d)
+                .withTransportTypes(Set.of(TransportType.CAR))
+                .withTimestamp(timestamp)
+                .withFuelTypes(Set.of(FuelType.DIESEL))
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
+
+        when(emissionZone.isActive(timestamp)).thenReturn(true);
+        when(emissionZone.isRelevant(
+                accessibilityRequest.vehicleWeightInKg(),
+                accessibilityRequest.fuelTypes(),
+                accessibilityRequest.transportTypes())
+        ).thenReturn(true);
+        when(emissionZone.isExempt(
+                timestamp,
+                accessibilityRequest.vehicleWeightInKg(),
+                accessibilityRequest.emissionClasses(),
+                accessibilityRequest.transportTypes())
+        ).thenReturn(false);
+
+        Restrictions restrictions = Restrictions.builder()
+                .emissionZone(emissionZone)
+                .build();
+
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isTrue();
+    }
+
+    @Test
+    void isRestrictive_emissionZone_isExempt() {
+
+        accessibilityRequest = accessibilityRequest
+                .withVehicleWeightInKg(2d)
+                .withTransportTypes(Set.of(TransportType.CAR))
+                .withTimestamp(timestamp)
+                .withFuelTypes(Set.of(FuelType.DIESEL))
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
+
+        when(emissionZone.isActive(timestamp)).thenReturn(true);
+        when(emissionZone.isRelevant(
+                accessibilityRequest.vehicleWeightInKg(),
+                accessibilityRequest.fuelTypes(),
+                accessibilityRequest.transportTypes())
+        ).thenReturn(true);
+        when(emissionZone.isExempt(
+                timestamp,
+                accessibilityRequest.vehicleWeightInKg(),
+                accessibilityRequest.emissionClasses(),
+                accessibilityRequest.transportTypes())
+        ).thenReturn(true);
+
+        Restrictions restrictions = Restrictions.builder()
+                .emissionZone(emissionZone)
+                .build();
+
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+    }
+
+    @Test
+    void isRestrictive_emissionZone_notRelevant() {
+
+        accessibilityRequest = accessibilityRequest
+                .withVehicleWeightInKg(2d)
+                .withTransportTypes(Set.of(TransportType.CAR))
+                .withTimestamp(timestamp)
+                .withFuelTypes(Set.of(FuelType.DIESEL))
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
+
+        when(emissionZone.isActive(timestamp)).thenReturn(true);
+        when(emissionZone.isRelevant(
+                accessibilityRequest.vehicleWeightInKg(),
+                accessibilityRequest.fuelTypes(),
+                accessibilityRequest.transportTypes())
+        ).thenReturn(false);
+
+        Restrictions restrictions = Restrictions.builder()
+                .emissionZone(emissionZone)
+                .build();
+
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+    }
+
+    @Test
+    void isRestrictive_emissionZone_notActive() {
+
+        accessibilityRequest = accessibilityRequest
+                .withVehicleWeightInKg(2d)
+                .withTransportTypes(Set.of(TransportType.CAR))
+                .withTimestamp(timestamp)
+                .withFuelTypes(Set.of(FuelType.DIESEL))
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
+
+        when(emissionZone.isActive(timestamp)).thenReturn(false);
+
+        Restrictions restrictions = Restrictions.builder()
+                .emissionZone(emissionZone)
+                .build();
+
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+    }
+
+    @Test
+    void isRestrictive_emissionZone_requestHasNoFuelTypes_shouldIgnoreEmissionZones() {
+
+        accessibilityRequest = accessibilityRequest
+                .withVehicleWeightInKg(2d)
+                .withTransportTypes(Set.of(TransportType.CAR))
+                .withTimestamp(timestamp)
+                .withFuelTypes(null)
+                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
+
+        when(emissionZone.isActive(timestamp)).thenReturn(true);
+
+        Restrictions restrictions = Restrictions.builder()
+                .emissionZone(emissionZone)
+                .build();
+
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+    }
+
+    @Test
+    void isRestrictive_emissionZone_requestHasNoEmissionClasses_shouldIgnoreEmissionZones() {
+
+        accessibilityRequest = accessibilityRequest
+                .withVehicleWeightInKg(2d)
+                .withTransportTypes(Set.of(TransportType.CAR))
+                .withTimestamp(timestamp)
+                .withFuelTypes(Set.of(FuelType.DIESEL))
+                .withEmissionClasses(null);
+
+        when(emissionZone.isActive(timestamp)).thenReturn(true);
+
+        Restrictions restrictions = Restrictions.builder()
+                .emissionZone(emissionZone)
+                .build();
+
+        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 }

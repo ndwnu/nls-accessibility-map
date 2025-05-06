@@ -19,13 +19,14 @@ public enum TrafficSignType {
     C10("C10"),
     C11("C11"),
     C12("C12"),
-    C22C("C22c"),
     C17("C17"),
     C18("C18"),
     C19("C19"),
     C20("C20"),
     C21("C21"),
-    C22("C22");
+    C22("C22"),
+    C22A("C22a"),
+    C22C("C22c");
 
     private final String rvvCode;
 

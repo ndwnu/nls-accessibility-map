@@ -39,12 +39,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccessibilityService {
 
-    private static final AccessibleRoadSectionModifier NO_MODIFICATIONS = (a, b) -> {
+    public static final AccessibleRoadSectionModifier NO_MODIFICATIONS = (a, b) -> {
     };
 
     private final IsochroneServiceFactory isochroneServiceFactory;
-
-    private final NetworkGraphHopper networkGraphHopper;
 
     private final TrafficSignDataService trafficSignDataService;
 
@@ -58,12 +56,13 @@ public class AccessibilityService {
 
     private final RoadSectionCombinator roadSectionCombinator;
 
-    public Accessibility calculateAccessibility(AccessibilityRequest accessibilityRequest) {
-        return calculateAccessibility(accessibilityRequest, NO_MODIFICATIONS);
+    public Accessibility calculateAccessibility(NetworkGraphHopper networkGraphHopper, AccessibilityRequest accessibilityRequest) {
+        return calculateAccessibility(networkGraphHopper, accessibilityRequest, NO_MODIFICATIONS);
     }
 
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(
+            NetworkGraphHopper networkGraphHopper,
             AccessibilityRequest accessibilityRequest,
             AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
 
@@ -72,7 +71,9 @@ public class AccessibilityService {
         List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
         NetworkData networkData = networkCacheDataService.getNetworkData(accessibilityRequest.municipalityId(),
                 startSegment,
-                accessibilityRequest.searchRadiusInMeters(), trafficSigns);
+                accessibilityRequest.searchRadiusInMeters(),
+                trafficSigns,
+                networkGraphHopper);
 
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
@@ -85,7 +86,7 @@ public class AccessibilityService {
                         isochroneService,
                         networkData.queryGraph(),
                         startSegment,
-                        buildWeightingWithRestrictions(networkData.edgeRestrictions().getBlockedEdges()));
+                        buildWeightingWithRestrictions(networkGraphHopper, networkData.edgeRestrictions().getBlockedEdges()));
 
         accessibleRoadSectionModifier.modify(
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
@@ -121,7 +122,7 @@ public class AccessibilityService {
                         startSegment));
     }
 
-    private Weighting buildWeightingWithRestrictions(Set<Integer> blockedEdges) {
+    private Weighting buildWeightingWithRestrictions(NetworkGraphHopper networkGraphHopper, Set<Integer> blockedEdges) {
 
         return new RestrictionWeightingAdapter(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()), blockedEdges);
     }

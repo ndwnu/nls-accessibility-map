@@ -1,0 +1,10 @@
+- name: "Groningen"
+  start-coordinate-longitude: 10 #node 4
+  start-coordinate-latitude: 10
+  search-distance-in-metres: 500000000
+  municipality-id: "GM0001"
+  bounds:
+    longitude-from: 0
+    latitude-from: 0
+    longitude-to: 11
+    latitude-to: 11

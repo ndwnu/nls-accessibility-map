@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
@@ -25,6 +26,8 @@ import picocli.CommandLine.Option;
 @Command(name = "analyse")
 @RequiredArgsConstructor
 public class AnalyseCommand implements Callable<Integer> {
+
+    private final GraphHopperService graphHopperService;
 
     private final GraphhopperConfiguration graphhopperConfiguration;
 
@@ -59,6 +62,7 @@ public class AnalyseCommand implements Callable<Integer> {
                 AnalyseProperties analyseProperties = AnalyseProperties.builder()
                         .startTime(startTime)
                         .accessibilityRequest(AccessibilityRequest.builder()
+                                .timestamp(startTime)
                                 .trafficSignTypes(trafficSignTypes)
                                 .startLocationLatitude(analyserConfiguration.startLocationLatitude())
                                 .startLocationLongitude(analyserConfiguration.startLocationLongitude())
@@ -71,7 +75,7 @@ public class AnalyseCommand implements Callable<Integer> {
                 log.info("Analysing traffic signs: %s".formatted(trafficSignTypes.stream()
                         .sorted()
                         .collect(Collectors.toCollection(LinkedHashSet::new))));
-                trafficSignAnalyserService.analyse(analyseProperties);
+                trafficSignAnalyserService.analyse(graphHopperService.getNetworkGraphHopper(), analyseProperties);
             }
 
             return 0;
