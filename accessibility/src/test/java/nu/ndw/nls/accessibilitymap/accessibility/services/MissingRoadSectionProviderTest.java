@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Collection;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
@@ -92,15 +93,15 @@ class MissingRoadSectionProviderTest {
                         .build()
         ));
 
-        List<RoadSection> missingRoadSections = missingRoadSectionProvider.get(123, List.of(roadSectionExisting), isAccessible);
+        Collection<RoadSection> missingRoadSections = missingRoadSectionProvider.get(123, List.of(roadSectionExisting), isAccessible);
 
         assertThat(missingRoadSections).hasSize(1);
 
-        RoadSection roadSection = missingRoadSections.get(0);
+        RoadSection roadSection = missingRoadSections.stream().toList().getFirst();
         assertThat(roadSection.getId()).isEqualTo(45648L);
         assertThat(roadSection.getRoadSectionFragments()).hasSize(1);
 
-        RoadSectionFragment roadSectionFragment = roadSection.getRoadSectionFragments().get(0);
+        RoadSectionFragment roadSectionFragment = roadSection.getRoadSectionFragments().getFirst();
         assertThat(roadSectionFragment.getId()).isEqualTo(2);
         assertThat(roadSectionFragment.getRoadSection()).isEqualTo(roadSection);
 

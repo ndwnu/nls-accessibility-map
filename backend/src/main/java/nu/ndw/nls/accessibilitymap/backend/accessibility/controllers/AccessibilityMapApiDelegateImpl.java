@@ -1,14 +1,10 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionModifier;
-import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
@@ -55,8 +51,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     private final AccessibilityRequestMapper accessibilityRequestMapper;
 
     private final AccessibilityService accessibilityService;
-
-    private final MissingRoadSectionProvider missingRoadSectionProvider;
 
     private final ClockService clockService;
 
@@ -139,22 +133,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(clockService.now(), municipality, requestArguments);
 
-        return accessibilityService.calculateAccessibility(
-                networkGraphHopper,
-                accessibilityRequest,
-                addMissingRoadSectionsForMunicipality(municipality));
-    }
-
-    private AccessibleRoadSectionModifier addMissingRoadSectionsForMunicipality(Municipality municipality) {
-
-        return (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions) -> {
-            List<RoadSection> missingRoadSections = missingRoadSectionProvider.get(
-                    municipality.municipalityIdAsInteger(),
-                    roadsSectionsWithoutAppliedRestrictions,
-                    false);
-            roadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
-            roadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
-        };
+        return accessibilityService.calculateAccessibility(networkGraphHopper,accessibilityRequest);
     }
 
     /**

@@ -23,7 +23,6 @@ public class AccessibilityRequestMapper {
 
     private final FuelTypeMapper fuelTypeMapper;
 
-
     @Valid
     public AccessibilityRequest mapToAccessibilityRequest(
             OffsetDateTime timestamp,
@@ -33,6 +32,7 @@ public class AccessibilityRequestMapper {
         return AccessibilityRequest.builder()
                 .timestamp(timestamp)
                 .municipalityId(municipality.municipalityIdAsInteger())
+                .addMissingRoadsSectionsFromNwb(true)
                 .boundingBox(BBox.fromPoints(
                         municipality.bounds().latitudeFrom(),
                         municipality.bounds().longitudeFrom(),

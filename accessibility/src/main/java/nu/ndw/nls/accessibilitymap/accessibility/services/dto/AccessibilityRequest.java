@@ -22,6 +22,7 @@ public record AccessibilityRequest(
         @NotNull OffsetDateTime timestamp,
         BBox boundingBox,
         Integer municipalityId,
+        boolean addMissingRoadsSectionsFromNwb,
         @NotNull Double searchRadiusInMeters,
         @NotNull Double startLocationLatitude,
         @NotNull Double startLocationLongitude,
