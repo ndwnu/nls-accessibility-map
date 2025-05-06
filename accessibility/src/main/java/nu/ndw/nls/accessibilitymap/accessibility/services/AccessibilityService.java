@@ -8,17 +8,13 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
-import java.time.OffsetDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
@@ -39,9 +35,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccessibilityService {
 
-    public static final AccessibleRoadSectionModifier NO_MODIFICATIONS = (a, b) -> {
-    };
-
     private final IsochroneServiceFactory isochroneServiceFactory;
 
     private final TrafficSignDataService trafficSignDataService;
@@ -56,31 +49,28 @@ public class AccessibilityService {
 
     private final RoadSectionCombinator roadSectionCombinator;
 
-    public Accessibility calculateAccessibility(NetworkGraphHopper networkGraphHopper, AccessibilityRequest accessibilityRequest) {
-        return calculateAccessibility(networkGraphHopper, accessibilityRequest, NO_MODIFICATIONS);
-    }
+    private final MissingRoadSectionProvider missingRoadSectionProvider;
 
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(
             NetworkGraphHopper networkGraphHopper,
-            AccessibilityRequest accessibilityRequest,
-            AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
+            AccessibilityRequest accessibilityRequest) {
 
-        Point startPoint = createPoint(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude());
-        Snap startSegment = networkGraphHopper.getLocationIndex().findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
-        List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
-        NetworkData networkData = networkCacheDataService.getNetworkData(accessibilityRequest.municipalityId(),
+        var startPoint = createPoint(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude());
+        var startSegment = networkGraphHopper.getLocationIndex().findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
+        var trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
+        var networkData = networkCacheDataService.getNetworkData(accessibilityRequest.municipalityId(),
                 startSegment,
                 accessibilityRequest.searchRadiusInMeters(),
                 trafficSigns,
                 networkGraphHopper);
 
-        IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
+        var isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
-        OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
-        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = networkData.baseAccessibleRoads();
+        var startTimeCalculatingAccessibility = clockService.now();
+        var accessibleRoadsSectionsWithoutAppliedRestrictions = networkData.baseAccessibleRoads();
 
-        Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions =
+        var accessibleRoadSectionsWithAppliedRestrictions =
                 getRoadSections(
                         accessibilityRequest,
                         isochroneService,
@@ -88,11 +78,17 @@ public class AccessibilityService {
                         startSegment,
                         buildWeightingWithRestrictions(networkGraphHopper, networkData.edgeRestrictions().getBlockedEdges()));
 
-        accessibleRoadSectionModifier.modify(
-                accessibleRoadsSectionsWithoutAppliedRestrictions,
-                accessibleRoadSectionsWithAppliedRestrictions);
+        if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
+            var missingRoadSections = missingRoadSectionProvider.get(
+                    accessibilityRequest.municipalityId(),
+                    accessibleRoadsSectionsWithoutAppliedRestrictions,
+                    false);
 
-        Accessibility accessibility = Accessibility.builder()
+            accessibleRoadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
+            accessibleRoadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
+        }
+
+        var accessibility = Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
                 .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
                 .combinedAccessibility(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(

@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
@@ -86,7 +85,6 @@ class AccessibilityServiceTest {
     @Mock
     private ClockService clockService;
 
-
     @Mock
     private TrafficSign trafficSign;
 
@@ -118,6 +116,9 @@ class AccessibilityServiceTest {
     private RoadSection roadSectionCombined;
 
     @Mock
+    private RoadSection missingRoadSection;
+
+    @Mock
     private IsochroneMatch isochroneMatchRestriction;
 
     @Mock
@@ -128,97 +129,29 @@ class AccessibilityServiceTest {
 
     @Mock
     private NetworkCacheDataService networkCacheDataService;
+
     @Captor
     private ArgumentCaptor<Coordinate> coordinateArgumentCaptor;
 
     private AccessibilityService accessibilityService;
 
+    @Mock
+    private MissingRoadSectionProvider missingRoadSectionProvider;
 
     @BeforeEach
     void setUp() {
 
         accessibilityService = new AccessibilityService(isochroneServiceFactory, trafficSignDataService, geometryFactoryWgs84,
-                roadSectionMapper, clockService, networkCacheDataService, roadSectionCombinator);
+                roadSectionMapper, clockService, networkCacheDataService, roadSectionCombinator, missingRoadSectionProvider);
     }
 
     @Test
-    void calculateAccessibility_witNoOpsModifier() {
+    void calculateAccessibility() {
 
         when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
                 List.of(roadSectionNoRestriction),
                 List.of(roadSectionRestriction)))
                 .thenReturn(List.of(roadSectionCombined));
-
-        Accessibility result = calculateAccessibility(null);
-
-        Accessibility expected = Accessibility
-                .builder()
-                .combinedAccessibility(List.of(roadSectionCombined))
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
-                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .build();
-
-        assertThat(result).isEqualTo(expected);
-        Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
-        assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
-        assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
-    }
-
-
-    @Test
-    void calculateAccessibility_withoutModifier() {
-
-        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                List.of(roadSectionNoRestriction),
-                List.of(roadSectionRestriction)))
-                .thenReturn(List.of(roadSectionCombined));
-
-        Accessibility result = calculateAccessibility(null);
-
-        Accessibility expected = Accessibility
-                .builder()
-                .combinedAccessibility(List.of(roadSectionCombined))
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
-                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .build();
-
-        assertThat(result).isEqualTo(expected);
-        Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
-        assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
-        assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
-    }
-
-    @Test
-    void calculateAccessibility_withModifier() {
-
-        RoadSection newRoadSection = mock(RoadSection.class);
-
-        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                List.of(roadSectionNoRestriction, newRoadSection),
-                List.of(roadSectionRestriction)))
-                .thenReturn(new ArrayList<>(List.of(roadSectionCombined)));
-
-        Accessibility result = calculateAccessibility(
-                (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions)
-                        -> roadsSectionsWithoutAppliedRestrictions.add(newRoadSection));
-
-        Accessibility expected = Accessibility.builder()
-                .combinedAccessibility(List.of(roadSectionCombined))
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction, newRoadSection))
-                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .build();
-
-        assertThat(result).isEqualTo(expected);
-        Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
-        assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
-        assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
-    }
-
-    private Accessibility calculateAccessibility(AccessibleRoadSectionModifier accessibleRoadSectionModifier) {
-
-        when(clockService.now())
-                .thenReturn(OffsetDateTime.MIN)
-                .thenReturn(OffsetDateTime.MIN.plusMinutes(1).plusNanos(1000));
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .startLocationLatitude(START_LOCATION_LATITUDE)
@@ -228,19 +161,87 @@ class AccessibilityServiceTest {
                 .transportTypes(Set.of(TransportType.CAR))
                 .build();
 
-        mockTrafficSignData(accessibilityRequest);
-        mockWeighting();
-        when(networkCacheDataService.getNetworkData(MUNICIPALITY_ID, startSegmentSnap, SEARCH_DISTANCE_IN_METRES,
-                List.of(trafficSign), networkGraphHopper)).thenReturn(networkData);
+        prepareMocks(accessibilityRequest);
+        Accessibility result = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+
+        Accessibility expected = Accessibility
+                .builder()
+                .combinedAccessibility(List.of(roadSectionCombined))
+                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
+                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
+                .build();
+
+        assertThat(result).isEqualTo(expected);
+        Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
+        assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
+        assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
+    }
+
+    @Test
+    void calculateAccessibility_addMissingRoadSectionsFromNwb() {
+
+        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+                List.of(roadSectionNoRestriction, missingRoadSection),
+                List.of(roadSectionRestriction, missingRoadSection)))
+                .thenReturn(List.of(roadSectionCombined, missingRoadSection));
+
+        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
+                .addMissingRoadsSectionsFromNwb(true)
+                .startLocationLatitude(START_LOCATION_LATITUDE)
+                .startLocationLongitude(START_LOCATION_LONGITUDE)
+                .municipalityId(MUNICIPALITY_ID)
+                .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
+                .transportTypes(Set.of(TransportType.CAR))
+                .build();
+
+        prepareMocks(accessibilityRequest);
+
+        when(missingRoadSectionProvider.get(MUNICIPALITY_ID, List.of(roadSectionNoRestriction), false))
+                .thenReturn(List.of(missingRoadSection));
+
+        Accessibility result = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+
+        Accessibility expected = Accessibility
+                .builder()
+                .combinedAccessibility(List.of(roadSectionCombined, missingRoadSection))
+                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction, missingRoadSection))
+                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction, missingRoadSection))
+                .build();
+
+        assertThat(result).isEqualTo(expected);
+        Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
+        assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
+        assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
+    }
+
+    private void prepareMocks(AccessibilityRequest accessibilityRequest) {
+
+        when(clockService.now()).thenReturn(OffsetDateTime.MIN);
+
         when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
         when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
-        when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
-        when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
         when(locationIndexTree.findClosest(
                 START_LOCATION_LATITUDE,
                 START_LOCATION_LONGITUDE,
                 EdgeFilter.ALL_EDGES))
                 .thenReturn(startSegmentSnap);
+
+        when(trafficSignDataService.findAllBy(accessibilityRequest)).thenReturn(List.of(trafficSign));
+
+        when(networkCacheDataService.getNetworkData(
+                MUNICIPALITY_ID,
+                startSegmentSnap,
+                SEARCH_DISTANCE_IN_METRES,
+                List.of(trafficSign),
+                networkGraphHopper)
+        ).thenReturn(networkData);
+
+        when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
+        when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
+        when(networkGraphHopper.createWeighting(
+                eq(NetworkConstants.CAR_PROFILE),
+                argThat(new PMapArgumentMatcher(new PMap())))
+        ).thenReturn(weightingNoRestrictions);
 
         when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture())).thenReturn(startPoint);
         when(networkData.queryGraph()).thenReturn(queryGraph);
@@ -261,22 +262,6 @@ class AccessibilityServiceTest {
                 .thenReturn(new ArrayList<>(List.of(roadSectionNoRestriction)));
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction)))
                 .thenReturn(new ArrayList<>(List.of(roadSectionRestriction)));
-
-        if (Objects.nonNull(accessibleRoadSectionModifier)) {
-            return accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest, accessibleRoadSectionModifier);
-        } else {
-            return accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
-        }
-    }
-
-    private void mockWeighting() {
-
-        when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
-                weightingNoRestrictions);
-    }
-
-    private void mockTrafficSignData(AccessibilityRequest accessibilityRequest) {
-        when(trafficSignDataService.findAllBy(accessibilityRequest)).thenReturn(List.of(trafficSign));
     }
 
     @Test
@@ -314,13 +299,13 @@ class AccessibilityServiceTest {
                 return false;
             }
             return Objects.equals(expected.municipalityId(), actual.municipalityId()) &&
-                    expected.searchDistanceInMetres() == actual.searchDistanceInMetres() &&
-                    weightingEquals(expected.weighting(), actual.weighting());
+                   expected.searchDistanceInMetres() == actual.searchDistanceInMetres() &&
+                   weightingEquals(expected.weighting(), actual.weighting());
         }
 
         private boolean weightingEquals(Weighting expectedWeighting, Weighting actualWeighting) {
             if (expected.weighting() instanceof RestrictionWeightingAdapter expectedWeightingAdapter
-                    && actualWeighting instanceof RestrictionWeightingAdapter actualWeightingAdapter) {
+                && actualWeighting instanceof RestrictionWeightingAdapter actualWeightingAdapter) {
                 return Objects.equals(
                         expectedWeightingAdapter.getBlockedEdges(),
                         actualWeightingAdapter.getBlockedEdges());

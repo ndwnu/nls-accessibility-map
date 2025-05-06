@@ -27,37 +27,33 @@ public class MissingRoadSectionProvider {
 
     private final GraphhopperMetaData graphhopperMetaData;
 
-    public List<RoadSection> get(
-            int municipalityId,
-            Collection<RoadSection> roadsSectionsWithoutAppliedRestrictions,
+    public Collection<RoadSection> get(
+            Integer municipalityId,
+            Collection<RoadSection> knownRoadSections,
             boolean missingRoadsSectionAreAccessible) {
 
-        return calculateMissingRoadSections(municipalityId, roadsSectionsWithoutAppliedRestrictions, missingRoadsSectionAreAccessible);
+        return calculateMissingRoadSections(municipalityId, knownRoadSections, missingRoadsSectionAreAccessible);
     }
 
     private List<RoadSection> calculateMissingRoadSections(
-            int municipalityId,
-            Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
+            Integer municipalityId,
+            Collection<RoadSection> knownRoadSections,
             boolean isAccessible) {
 
-        List<AccessibilityNwbRoadSection> municipalityRoadSections = accessibilityRoadSectionsService.getRoadSectionsByMunicipalityId(
-                graphhopperMetaData.nwbVersion(),
-                municipalityId);
+        var roadSections = getAllRoadSections(municipalityId);
 
-        var roadSectionsById = accessibleRoadsSectionsWithoutAppliedRestrictions.stream()
+        var roadSectionsById = knownRoadSections.stream()
                 .collect(Collectors.groupingBy(RoadSection::getId));
 
-        Map<Long, List<AccessibilityNwbRoadSection>> allNwbRoadSectionById = municipalityRoadSections.stream()
+        Map<Long, List<AccessibilityNwbRoadSection>> allNwbRoadSectionById = roadSections.stream()
                 .collect(Collectors.groupingBy(AccessibilityNwbRoadSection::getRoadSectionId));
 
-        SetView<Long> missingBlockedRoadSectionIds = Sets.difference(allNwbRoadSectionById.keySet(), roadSectionsById.keySet());
+        SetView<Long> missingRoadSectionIds = Sets.difference(allNwbRoadSectionById.keySet(), roadSectionsById.keySet());
 
-        newRoadSectionFragmentIdSupplier(accessibleRoadsSectionsWithoutAppliedRestrictions);
+        var roadSectionFragmentIdSupplier = newRoadSectionFragmentIdSupplier(knownRoadSections);
+        var directionIdSupplier = newDirectionIdSupplier(knownRoadSections);
 
-        var roadSectionFragmentIdSupplier = newRoadSectionFragmentIdSupplier(accessibleRoadsSectionsWithoutAppliedRestrictions);
-        var directionIdSupplier = newDirectionIdSupplier(accessibleRoadsSectionsWithoutAppliedRestrictions);
-
-        return missingBlockedRoadSectionIds.stream()
+        return missingRoadSectionIds.stream()
                 .map(allNwbRoadSectionById::get)
                 .filter(Objects::nonNull)
                 .flatMap(List::stream)
@@ -88,6 +84,16 @@ public class MissingRoadSectionProvider {
                     return roadSection;
                 })
                 .toList();
+    }
+
+    private List<AccessibilityNwbRoadSection> getAllRoadSections(Integer municipalityId) {
+        if (Objects.isNull(municipalityId)) {
+            return accessibilityRoadSectionsService.getRoadSections(graphhopperMetaData.nwbVersion());
+        } else {
+            return accessibilityRoadSectionsService.getRoadSectionsByMunicipalityId(
+                    graphhopperMetaData.nwbVersion(),
+                    municipalityId);
+        }
     }
 
     private static IntegerSequenceSupplier newRoadSectionFragmentIdSupplier(

@@ -104,6 +104,7 @@ class AccessibilityRequestMapperTest {
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
+                .addMissingRoadsSectionsFromNwb(true)
                 .boundingBox(BBox.fromPoints(DEFAULT_LATITUDE_COORDINATE, DEFAULT_LONGITUDE_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
                 .transportTypes(Set.of(TransportType.CAR))
                 .vehicleHeightInCm((double) DEFAULT_VEHICLE_HEIGHT * 100)
@@ -155,6 +156,7 @@ class AccessibilityRequestMapperTest {
                 .startLocationLongitude(DEFAULT_LONGITUDE_COORDINATE)
                 .startLocationLatitude(DEFAULT_LATITUDE_COORDINATE)
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
+                .addMissingRoadsSectionsFromNwb(true)
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
                 .build());
     }
