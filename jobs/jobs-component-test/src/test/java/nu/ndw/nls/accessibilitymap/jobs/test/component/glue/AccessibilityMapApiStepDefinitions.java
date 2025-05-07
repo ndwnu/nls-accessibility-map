@@ -66,7 +66,10 @@ public class AccessibilityMapApiStepDefinitions {
     }
 
     @Then("we expect the following blocked roadSections with matched roadSection with id {int} and is forward accessible {word} and backward accessible {word}")
-    public void weExpectTheFollowingBlockedRoadSections(int matchedRoadSectionId, String forwardAccessible, String backwardAccessible,
+    public void weExpectTheFollowingBlockedRoadSections(
+            int matchedRoadSectionId,
+            String forwardAccessible,
+            String backwardAccessible,
             List<BlockedRoadSection> blockedRoadSections) throws JsonProcessingException {
 
         Response response = accessibilityMapApiClient.getCache()
@@ -91,7 +94,6 @@ public class AccessibilityMapApiStepDefinitions {
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .inPath("$.inaccessibleRoadSections")
                 .isEqualTo(objectMapper.writeValueAsString(blockedRoadSections));
-
     }
 
     @Then("we expect geojson to match {word}")
