@@ -36,7 +36,6 @@ public class TrafficSignRestrictionsBuilder {
         nonDynamicTrafficSigns.put(TrafficSignType.C7, buildC7Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7A, buildC7aRestrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C7B, buildC7bRestrictions());
-        nonDynamicTrafficSigns.put(TrafficSignType.C7C, buildC7cRestrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C8, buildC8Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C9, buildC9Restrictions());
         nonDynamicTrafficSigns.put(TrafficSignType.C10, buildC10Restrictions());
@@ -118,12 +117,6 @@ public class TrafficSignRestrictionsBuilder {
     private static Restrictions buildC7bRestrictions() {
         return Restrictions.builder()
                 .transportTypes(Set.of(TransportType.BUS, TransportType.TRUCK))
-                .build();
-    }
-
-    private static Restrictions buildC7cRestrictions() {
-        return Restrictions.builder()
-                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
                 .build();
     }
 
