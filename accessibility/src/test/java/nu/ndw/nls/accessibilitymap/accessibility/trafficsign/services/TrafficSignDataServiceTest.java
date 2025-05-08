@@ -14,11 +14,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance.TrafficSignRelevancy;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.exclude.TrafficSignExclusion;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.restrictive.TrafficSignRestriction;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,10 +47,16 @@ class TrafficSignDataServiceTest {
     private TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
     @Mock
-    private TrafficSignRelevancy trafficSignRelevancy1;
+    private TrafficSignRestriction trafficSignRestriction1;
 
     @Mock
-    private TrafficSignRelevancy trafficSignRelevancy2;
+    private TrafficSignRestriction trafficSignRestriction2;
+
+    @Mock
+    private TrafficSignExclusion trafficSignExclusion1;
+
+    @Mock
+    private TrafficSignExclusion trafficSignExclusion2;
 
     @Mock
     private NetworkCacheDataService networkCacheDataService;
@@ -65,7 +72,10 @@ class TrafficSignDataServiceTest {
 
         trafficSignDataService = new TrafficSignDataService(
                 trafficSignCacheReadWriter,
-                List.of(trafficSignRelevancy1, trafficSignRelevancy2), networkCacheDataService, graphHopperService);
+                List.of(trafficSignRestriction1, trafficSignRestriction2),
+                List.of(trafficSignExclusion1, trafficSignExclusion2),
+                networkCacheDataService,
+                graphHopperService);
     }
 
     @Test
@@ -81,8 +91,21 @@ class TrafficSignDataServiceTest {
     void findAllBy() {
 
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
-        when(trafficSignRelevancy1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
-        when(trafficSignRelevancy2.test(trafficSign1, accessibilityRequest)).thenReturn(true);
+        when(trafficSignRestriction1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
+        when(trafficSignRestriction1.test(trafficSign2, accessibilityRequest)).thenReturn(true);
+
+        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
+
+        trafficSignDataService.init();
+        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).containsExactly(trafficSign1, trafficSign2);
+    }
+
+    @Test
+    void findAllBy_notAllRestrictionsAreRestrictive() {
+
+        when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
+        when(trafficSignRestriction1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
+        when(trafficSignRestriction1.test(trafficSign2, accessibilityRequest)).thenReturn(false);
 
         assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
 
@@ -91,16 +114,19 @@ class TrafficSignDataServiceTest {
     }
 
     @Test
-    void findAllBy_notAllRelevantCriteriaSatisfied() {
+    void findAllBy_excludedTrafficSign() {
 
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
-        when(trafficSignRelevancy1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
-        when(trafficSignRelevancy2.test(trafficSign1, accessibilityRequest)).thenReturn(false);
+        when(trafficSignExclusion1.test(trafficSign1, accessibilityRequest)).thenReturn(false);
+        when(trafficSignExclusion2.test(trafficSign1, accessibilityRequest)).thenReturn(false);
+        when(trafficSignExclusion1.test(trafficSign1, accessibilityRequest)).thenReturn(false);
+        when(trafficSignExclusion2.test(trafficSign2, accessibilityRequest)).thenReturn(true);
+        when(trafficSignRestriction1.test(trafficSign1, accessibilityRequest)).thenReturn(true);
 
         assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
 
         trafficSignDataService.init();
-        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
+        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).containsExactly(trafficSign1);
     }
 
     @Test
