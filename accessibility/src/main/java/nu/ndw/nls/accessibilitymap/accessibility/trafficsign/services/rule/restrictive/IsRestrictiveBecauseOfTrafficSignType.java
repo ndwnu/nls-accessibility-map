@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance;
+package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.restrictive;
 
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
@@ -6,14 +6,15 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityReque
 import org.springframework.stereotype.Component;
 
 @Component
-public class IsWithinBoundingBox implements TrafficSignRelevancy {
+public class IsRestrictiveBecauseOfTrafficSignType implements TrafficSignRestriction {
 
     @Override
     public boolean test(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-        if (Objects.isNull(accessibilityRequest.boundingBox())) {
-            return true; // continue
+
+        if (Objects.isNull(accessibilityRequest.trafficSignTypes())) {
+            return false;
         }
 
-        return accessibilityRequest.boundingBox().contains(trafficSign.latitude(), trafficSign.longitude());
+        return accessibilityRequest.trafficSignTypes().contains(trafficSign.trafficSignType());
     }
 }

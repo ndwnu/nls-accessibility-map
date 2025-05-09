@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance;
+package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.exclude;
 
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
@@ -7,17 +7,18 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IsOnlyRelevantIfTextSignOfTypeNotDetected implements TrafficSignRelevancy {
+public class ExcludeTrafficSignsWithTextSignTypes implements TrafficSignExclusion {
 
     @Override
     public boolean test(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
+
         if (Objects.isNull(accessibilityRequest.excludeTrafficSignTextSignTypes())) {
-            return true; // continue
+            return false;
         }
 
         return trafficSign.textSigns().stream()
                 .map(TextSign::type)
                 .filter(Objects::nonNull)
-                .noneMatch(accessibilityRequest.excludeTrafficSignTextSignTypes()::contains);
+                .anyMatch(accessibilityRequest.excludeTrafficSignTextSignTypes()::contains);
     }
 }

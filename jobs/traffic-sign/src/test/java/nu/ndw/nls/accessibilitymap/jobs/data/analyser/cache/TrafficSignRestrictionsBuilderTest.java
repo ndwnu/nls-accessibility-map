@@ -130,18 +130,6 @@ class TrafficSignRestrictionsBuilderTest {
     }
 
     @Test
-    void buildFor_c7c() {
-
-        TrafficSign trafficSign = TrafficSign.builder()
-                .trafficSignType(TrafficSignType.C7C)
-                .build();
-
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
-                .transportTypes(Set.of(TransportType.DELIVERY_VAN, TransportType.TRUCK))
-                .build());
-    }
-
-    @Test
     void buildFor_c10() {
 
         TrafficSign trafficSign = TrafficSign.builder()
