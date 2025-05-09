@@ -136,7 +136,7 @@
                             <resources>
                                 <resource>
                                     <directory>
-                                        ../../specification/src/main/resources/nu/ndw/nls/accessibilitymap/specification
+                                        ../specification/src/main/resources/nu/ndw/nls/accessibilitymap/specification
                                     </directory>
                                     <filtering>false</filtering>
                                 </resource>
@@ -253,7 +253,7 @@
                                 </goals>
                                 <configuration>
                                     <executable>bash</executable>
-                                    <commandlineArgs>../../scripts/prepare-files-component-test.sh ../../</commandlineArgs>
+                                    <commandlineArgs>../scripts/prepare-files-component-test.sh ../</commandlineArgs>
                                 </configuration>
                             </execution>
                             <!-- Make sure that this folder is read write by all for the build pipeline to allow docker
@@ -268,9 +268,9 @@
                                     <arguments>
                                         <argument>-R</argument>
                                         <argument>777</argument>
-                                        <argument>../../.tmp/map-generation-destination</argument>
-                                        <argument>../../.tmp/graphhopper</argument>
-                                        <argument>../../.tmp/trafficsigns</argument>
+                                        <argument>../.tmp/map-generation-destination</argument>
+                                        <argument>../.tmp/graphhopper</argument>
+                                        <argument>../.tmp/trafficsigns</argument>
                                     </arguments>
                                     <executable>chmod</executable>
                                 </configuration>
@@ -284,7 +284,7 @@
                                 </goals>
                                 <configuration>
                                     <executable>bash</executable>
-                                    <commandlineArgs>../../scripts/pg-isready.sh</commandlineArgs>
+                                    <commandlineArgs>../scripts/pg-isready.sh</commandlineArgs>
                                 </configuration>
                             </execution>
                             <execution>
@@ -295,7 +295,7 @@
                                 </goals>
                                 <configuration>
                                     <executable>bash</executable>
-                                    <commandlineArgs>../../scripts/rabbit-isready.sh</commandlineArgs>
+                                    <commandlineArgs>../scripts/rabbit-isready.sh</commandlineArgs>
                                 </configuration>
                             </execution>
                             <execution>
