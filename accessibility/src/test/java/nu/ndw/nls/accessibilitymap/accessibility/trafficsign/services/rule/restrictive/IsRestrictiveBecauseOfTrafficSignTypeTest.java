@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance;
+package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.restrictive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,9 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Component;
 
-class HasRelevantTrafficSignTypeTest {
+class IsRestrictiveBecauseOfTrafficSignTypeTest {
 
-    private HasRelevantTrafficSignType hasRelevantTrafficSignType;
+    private IsRestrictiveBecauseOfTrafficSignType isRestrictiveBecauseOfTrafficSignType;
 
     private TrafficSign trafficSign;
 
@@ -24,7 +24,7 @@ class HasRelevantTrafficSignTypeTest {
                 .trafficSignType(TrafficSignType.C6)
                 .build();
 
-        hasRelevantTrafficSignType = new HasRelevantTrafficSignType();
+        isRestrictiveBecauseOfTrafficSignType = new IsRestrictiveBecauseOfTrafficSignType();
     }
 
     @Test
@@ -34,7 +34,7 @@ class HasRelevantTrafficSignTypeTest {
                 .trafficSignTypes(Set.of(TrafficSignType.C6))
                 .build();
 
-        assertThat(hasRelevantTrafficSignType.test(trafficSign, accessibilityRequest)).isTrue();
+        assertThat(isRestrictiveBecauseOfTrafficSignType.test(trafficSign, accessibilityRequest)).isTrue();
     }
 
     @Test
@@ -44,7 +44,7 @@ class HasRelevantTrafficSignTypeTest {
                 .trafficSignTypes(Set.of(TrafficSignType.C7))
                 .build();
 
-        assertThat(hasRelevantTrafficSignType.test(trafficSign, accessibilityRequest)).isFalse();
+        assertThat(isRestrictiveBecauseOfTrafficSignType.test(trafficSign, accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -52,14 +52,14 @@ class HasRelevantTrafficSignTypeTest {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder().build();
 
-        assertThat(hasRelevantTrafficSignType.test(trafficSign, accessibilityRequest)).isTrue();
+        assertThat(isRestrictiveBecauseOfTrafficSignType.test(trafficSign, accessibilityRequest)).isFalse();
     }
 
     @Test
     void class_configurationAnnotation() {
 
         AnnotationUtil.classContainsAnnotation(
-                hasRelevantTrafficSignType.getClass(),
+                isRestrictiveBecauseOfTrafficSignType.getClass(),
                 Component.class,
                 annotation -> assertThat(annotation).isNotNull()
         );
@@ -68,6 +68,6 @@ class HasRelevantTrafficSignTypeTest {
     @Test
     void implementsTrafficSignRelevancyInterface() {
 
-        assertThat(hasRelevantTrafficSignType).isInstanceOf(TrafficSignRelevancy.class);
+        assertThat(isRestrictiveBecauseOfTrafficSignType).isInstanceOf(TrafficSignRestriction.class);
     }
 }

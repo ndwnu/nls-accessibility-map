@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance;
+package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.restrictive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -18,9 +18,9 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.springframework.stereotype.Component;
 
-class IsOnlyRelevantIfTextSignOfTypeNotDetectedTest {
+class IsRestrictiveBecauseOfTrafficSignTextSignTypeTest {
 
-    private IsOnlyRelevantIfTextSignOfTypeNotDetected isOnlyRelevantIfTextSignOfTypeDetected;
+    private IsRestrictiveBecauseOfTrafficSignTextSignType isRestrictiveBecauseOfTrafficSignTextSignType;
 
     private TrafficSign trafficSign;
 
@@ -33,7 +33,7 @@ class IsOnlyRelevantIfTextSignOfTypeNotDetectedTest {
                         .build()))
                 .build();
 
-        isOnlyRelevantIfTextSignOfTypeDetected = new IsOnlyRelevantIfTextSignOfTypeNotDetected();
+        isRestrictiveBecauseOfTrafficSignTextSignType = new IsRestrictiveBecauseOfTrafficSignTextSignType();
     }
 
     @ParameterizedTest
@@ -41,10 +41,10 @@ class IsOnlyRelevantIfTextSignOfTypeNotDetectedTest {
     void test(TextSignType textSignType) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeTrafficSignTextSignTypes(Set.of(textSignType))
+                .trafficSignTextSignTypes(Set.of(textSignType))
                 .build();
 
-        assertThat(isOnlyRelevantIfTextSignOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
+        assertThat(isRestrictiveBecauseOfTrafficSignTextSignType.test(trafficSign, accessibilityRequest)).isFalse();
     }
 
     @ParameterizedTest
@@ -52,10 +52,10 @@ class IsOnlyRelevantIfTextSignOfTypeNotDetectedTest {
     void test_notRelevant(TextSignType textSignType) {
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeTrafficSignTextSignTypes(Set.of(textSignType))
+                .trafficSignTextSignTypes(Set.of(textSignType))
                 .build();
 
-        assertThat(isOnlyRelevantIfTextSignOfTypeDetected.test(trafficSign, accessibilityRequest)).isFalse();
+        assertThat(isRestrictiveBecauseOfTrafficSignTextSignType.test(trafficSign, accessibilityRequest)).isTrue();
     }
 
     @Test
@@ -67,26 +67,26 @@ class IsOnlyRelevantIfTextSignOfTypeNotDetectedTest {
                 .build();
 
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .excludeTrafficSignTextSignTypes(Set.of(TextSignType.TIME_PERIOD))
+                .trafficSignTextSignTypes(Set.of(TextSignType.TIME_PERIOD))
                 .build();
 
-        assertThat(isOnlyRelevantIfTextSignOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
+        assertThat(isRestrictiveBecauseOfTrafficSignTextSignType.test(trafficSign, accessibilityRequest)).isFalse();
     }
 
     @Test
     void test_isRelevant_accessibilityRequest_missingExcludeTextSignTypes() {
 
         AccessibilityRequest accessibilityRequest = mock(AccessibilityRequest.class);
-        when(accessibilityRequest.excludeTrafficSignTextSignTypes()).thenReturn(null);
+        when(accessibilityRequest.trafficSignTextSignTypes()).thenReturn(null);
 
-        assertThat(isOnlyRelevantIfTextSignOfTypeDetected.test(trafficSign, accessibilityRequest)).isTrue();
+        assertThat(isRestrictiveBecauseOfTrafficSignTextSignType.test(trafficSign, accessibilityRequest)).isFalse();
     }
 
     @Test
     void class_configurationAnnotation() {
 
         AnnotationUtil.classContainsAnnotation(
-                isOnlyRelevantIfTextSignOfTypeDetected.getClass(),
+                isRestrictiveBecauseOfTrafficSignTextSignType.getClass(),
                 Component.class,
                 annotation -> assertThat(annotation).isNotNull()
         );
@@ -95,6 +95,6 @@ class IsOnlyRelevantIfTextSignOfTypeNotDetectedTest {
     @Test
     void implementsTrafficSignRelevancyInterface() {
 
-        assertThat(isOnlyRelevantIfTextSignOfTypeDetected).isInstanceOf(TrafficSignRelevancy.class);
+        assertThat(isRestrictiveBecauseOfTrafficSignTextSignType).isInstanceOf(TrafficSignRestriction.class);
     }
 }

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.relevance;
+package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.restrictive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -15,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Component;
 
 @ExtendWith(MockitoExtension.class)
-class HasRelevantRestrictionsTest {
+class IsRestrictiveBecauseOfTrafficSignRestrictionsTest {
 
-    private HasRelevantRestrictions hasRelevantRestrictions;
+    private IsRestrictiveBecauseOfTrafficSignRestrictions isRestrictiveBecauseOfTrafficSignRestrictions;
 
     private TrafficSign trafficSign;
 
@@ -34,7 +34,7 @@ class HasRelevantRestrictionsTest {
                 .restrictions(restrictions)
                 .build();
 
-        hasRelevantRestrictions = new HasRelevantRestrictions();
+        isRestrictiveBecauseOfTrafficSignRestrictions = new IsRestrictiveBecauseOfTrafficSignRestrictions();
     }
 
     @Test
@@ -43,7 +43,7 @@ class HasRelevantRestrictionsTest {
         when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(true);
         when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(true);
 
-        assertThat(hasRelevantRestrictions.test(trafficSign, accessibilityRequest)).isTrue();
+        assertThat(isRestrictiveBecauseOfTrafficSignRestrictions.test(trafficSign, accessibilityRequest)).isTrue();
     }
 
     @Test
@@ -52,7 +52,7 @@ class HasRelevantRestrictionsTest {
         when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(true);
         when(restrictions.isRestrictive(accessibilityRequest)).thenReturn(false);
 
-        assertThat(hasRelevantRestrictions.test(trafficSign, accessibilityRequest)).isFalse();
+        assertThat(isRestrictiveBecauseOfTrafficSignRestrictions.test(trafficSign, accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -60,14 +60,14 @@ class HasRelevantRestrictionsTest {
 
         when(restrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(false);
 
-        assertThat(hasRelevantRestrictions.test(trafficSign, accessibilityRequest)).isTrue();
+        assertThat(isRestrictiveBecauseOfTrafficSignRestrictions.test(trafficSign, accessibilityRequest)).isFalse();
     }
 
     @Test
     void class_configurationAnnotation() {
 
         AnnotationUtil.classContainsAnnotation(
-                hasRelevantRestrictions.getClass(),
+                isRestrictiveBecauseOfTrafficSignRestrictions.getClass(),
                 Component.class,
                 annotation -> assertThat(annotation).isNotNull()
         );
@@ -76,6 +76,6 @@ class HasRelevantRestrictionsTest {
     @Test
     void implementsTrafficSignRelevancyInterface() {
 
-        assertThat(hasRelevantRestrictions).isInstanceOf(TrafficSignRelevancy.class);
+        assertThat(isRestrictiveBecauseOfTrafficSignRestrictions).isInstanceOf(TrafficSignRestriction.class);
     }
 }
