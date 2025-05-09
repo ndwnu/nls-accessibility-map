@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>nu.ndw.nls.accessibilitymap</groupId>
-        <artifactId>jobs</artifactId>
+        <artifactId>parent</artifactId>
         <version>5.0.21-SNAPSHOT</version>
     </parent>
     <artifactId>component-test</artifactId>
