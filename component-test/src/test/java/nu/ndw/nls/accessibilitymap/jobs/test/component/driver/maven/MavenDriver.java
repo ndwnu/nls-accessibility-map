@@ -22,6 +22,8 @@ public class MavenDriver implements StateManagement {
 
     private final ProcessRunnerService processRunnerService;
 
+    private boolean haveRelatedProjectsBeenBuilt = false;
+
     @PostConstruct
     public void prepareState() {
 
@@ -29,6 +31,10 @@ public class MavenDriver implements StateManagement {
     }
 
     private void buildRelatedProjectToComponentTest() {
+
+        if (haveRelatedProjectsBeenBuilt) {
+            return;
+        }
 
         int exitCode = processRunnerService.run(
                 new File(mavenConfiguration.getRootPomRelativePath()).toPath(),
@@ -43,6 +49,8 @@ public class MavenDriver implements StateManagement {
         assertThat(exitCode)
                 .withFailMessage("Failed to build related project to component test. Check logs for details.")
                 .isZero();
+
+        haveRelatedProjectsBeenBuilt = true;
     }
 
     @Override
