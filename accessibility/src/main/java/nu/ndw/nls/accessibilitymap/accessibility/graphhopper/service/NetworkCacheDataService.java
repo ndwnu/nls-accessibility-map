@@ -86,11 +86,17 @@ public class NetworkCacheDataService {
         }
     }
 
-    public NetworkData getNetworkData(Integer municipalityId, Snap snap, double searchRadiusInMeters, List<TrafficSign> trafficSigns,
+    public NetworkData getNetworkData(
+            Integer municipalityId,
+            Snap snap,
+            double searchRadiusInMeters,
+            List<TrafficSign> trafficSigns,
             NetworkGraphHopper networkGraphHopper) {
+
         if (queryGraph == null || trafficSignSnaps == null) {
             throw new IllegalStateException("NetworkData is not initialised. Call create() before calling getNetworkData().");
         }
+
         dataLock.lock();
         try {
             List<TrafficSignSnap> snappedTrafficSigns = getTrafficSignSnaps(trafficSigns.stream().map(TrafficSign::externalId).toList());

@@ -1,0 +1,7 @@
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficsigns:
+          cache:
+            fail-on-no-data-on-startup: false

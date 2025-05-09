@@ -40,6 +40,8 @@ spec:
             env:
               - name: COMMAND
                 value: createOrUpdateNetwork
+              - name: SPRING_PROFILES_ACTIVE
+                value: {{ .Values.environment }}
               - name: GRAPHHOPPER_NETWORKNAME
                 value: "accessibility_latest"
               {{- /*

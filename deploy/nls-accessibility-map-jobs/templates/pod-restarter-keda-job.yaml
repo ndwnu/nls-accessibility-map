@@ -39,6 +39,8 @@ spec:
             env:
               - name: COMMAND
                 value: restartPod
+              - name: SPRING_PROFILES_ACTIVE
+                value: {{ .Values.environment }}
               {{- /*
               Added as env variable so the dd init container appends the settings instead of an overwrite
               Application uses about 64MB Heap memory and up to 105MB non-heap. Using Xmx instead of MaxRAMPercentage=70, because

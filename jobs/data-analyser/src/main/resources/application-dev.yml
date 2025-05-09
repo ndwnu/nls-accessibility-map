@@ -1,0 +1,45 @@
+graphhopper:
+  dir: .tmp/graphhopper
+
+management:
+  datadog:
+    metrics:
+      export:
+        enabled: false
+nu:
+  ndw:
+    nls:
+      springboot:
+        messaging:
+          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
+      accessibilitymap:
+        trafficsignclient:
+          api:
+            url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
+        trafficsigns:
+          cache:
+            folder: "./.tmp/trafficsigns/"
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-traffic-sign-jobs&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+  cloud:
+    openfeign:
+      micrometer:
+        enabled: false
+
+keycloak:
+  server-url: http://localhost:8000/auth
+  client-id: nls-accessibility-map-api-service-account
+  client-secret: cfe4793c-ddf7-405a-940f-51b43800aed4
+
+feign:
+  client:
+    base-url: http://localhost:8080/api

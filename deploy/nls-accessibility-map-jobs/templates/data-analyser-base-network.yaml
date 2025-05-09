@@ -1,0 +1,88 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: {{ .Values.baseNetworkAnalyser.name }}
+  labels:
+    tags.datadoghq.com/service: {{ .Values.baseNetworkAnalyser.name }}
+    tags.datadoghq.com/env: {{ $.Values.environment }}
+    tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
+spec:
+  jobTargetRef:
+    activeDeadlineSeconds: 86400 # Maximum execution time before terminating, includes retries
+    backoffLimit: 0
+    template:
+      metadata:
+        annotations:
+          ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .Values.baseNetworkAnalyser.name }}"}]'
+          admission.datadoghq.com/java-lib.version: "{{ $.Values.datadog.agent.version }}"
+        labels:
+          app: {{ .Values.baseNetworkAnalyser.name }}
+          environment: {{ $.Values.environment }}
+          admission.datadoghq.com/enabled: "true"
+          tags.datadoghq.com/service: {{ .Values.baseNetworkAnalyser.name }}
+          tags.datadoghq.com/env: {{ $.Values.environment }}
+          tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
+      spec:
+        containers:
+          - name: {{ .Values.baseNetworkAnalyser.name }}
+            resources:
+              limits:
+                memory: {{ .Values.baseNetworkAnalyser.memory }}
+              requests:
+                memory: {{ .Values.baseNetworkAnalyser.memory }}
+            image: ndwnls.azurecr.io/nls-accessibility-map-data-analyser-job:{{ $.Chart.AppVersion }}
+            imagePullPolicy: Always
+            envFrom:
+              - configMapRef:
+                  name: nls-accessibility-map-jobs-config
+            env:
+              - name: COMMAND
+                value: {{ .Values.baseNetworkAnalyser.command }}
+              - name: SPRING_PROFILES_ACTIVE
+                value: job-base-network,{{ .Values.environment }}
+              - name: NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP
+                value: "false"
+              {{- /*
+              Added as env variable so the dd init container appends the settings instead of an overwrite
+              */}}
+              - name: JAVA_TOOL_OPTIONS
+                value: -XX:MaxRAMPercentage=70 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
+            volumeMounts:
+              - mountPath: /application/config
+                name: nls-accessibility-map-jobs-secrets
+                readOnly: true
+              - mountPath: /application/heapdumps
+                name: nls-accessibility-map-jobs-heapdump-volume
+                subPath: {{ .Values.baseNetworkAnalyser.name }}
+              - mountPath: /application/graphhopper
+                name: nls-accessibility-map-data-analyser-job-volume
+              - mountPath: /application/trafficsigns
+                name: nls-accessibility-map-traffic-sign-cache
+        volumes:
+          - name: nls-accessibility-map-jobs-secrets
+            csi:
+              driver: secrets-store.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: nls-accessibility-map-jobs-spc
+          - name: nls-accessibility-map-jobs-heapdump-volume
+            persistentVolumeClaim:
+              claimName: heapdump-pvc-claim
+          - name: nls-accessibility-map-data-analyser-job-volume
+            persistentVolumeClaim:
+              claimName: nls-accessibility-map-api-pvc
+          - name: nls-accessibility-map-traffic-sign-cache
+            persistentVolumeClaim:
+              claimName: nls-accessibility-map-traffic-sign-cache
+        restartPolicy: Never
+  pollingInterval: 60 # Default 30 seconds
+  successfulJobsHistoryLimit: 2 # Default 100
+  maxReplicaCount: 1 # Default 100
+  triggers:
+    - type: rabbitmq
+      metadata:
+        queueName: nls_accessibility_map_api_routing_network_updated
+        mode: QueueLength
+        value: '1' # Tells Keda how many queue messages a single instance processes (default 20)
+      authenticationRef:
+        name: nls-accessibility-map-api-pod-restarter-trigger-auth

@@ -24,10 +24,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityReque
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
-import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -38,8 +35,6 @@ public class AccessibilityService {
     private final IsochroneServiceFactory isochroneServiceFactory;
 
     private final TrafficSignDataService trafficSignDataService;
-
-    private final GeometryFactoryWgs84 geometryFactoryWgs84;
 
     private final RoadSectionMapper roadSectionMapper;
 
@@ -56,10 +51,14 @@ public class AccessibilityService {
             NetworkGraphHopper networkGraphHopper,
             AccessibilityRequest accessibilityRequest) {
 
-        var startPoint = createPoint(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude());
-        var startSegment = networkGraphHopper.getLocationIndex().findClosest(startPoint.getY(), startPoint.getX(), EdgeFilter.ALL_EDGES);
+        var startSegment = networkGraphHopper.getLocationIndex()
+                .findClosest(
+                        accessibilityRequest.startLocationLatitude(),
+                        accessibilityRequest.startLocationLongitude(),
+                        EdgeFilter.ALL_EDGES);
         var trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
-        var networkData = networkCacheDataService.getNetworkData(accessibilityRequest.municipalityId(),
+        var networkData = networkCacheDataService.getNetworkData(
+                accessibilityRequest.municipalityId(),
                 startSegment,
                 accessibilityRequest.searchRadiusInMeters(),
                 trafficSigns,
@@ -122,10 +121,4 @@ public class AccessibilityService {
 
         return new RestrictionWeightingAdapter(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()), blockedEdges);
     }
-
-    private Point createPoint(double latitude, double longitude) {
-
-        return geometryFactoryWgs84.createPoint(new Coordinate(longitude, latitude));
-    }
-
 }
