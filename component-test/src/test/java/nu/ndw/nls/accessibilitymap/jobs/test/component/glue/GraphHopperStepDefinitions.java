@@ -58,8 +58,8 @@ public class GraphHopperStepDefinitions {
                     .roadOperatorType("Municipality")
                     .geometry(networkDataService.createRijksdriehoekLineString(geometryFactoryWgs84.createLineString(
                             new Coordinate[]{
-                                    new Coordinate(1000, 1001),
-                                    new Coordinate(1001, 1001)
+                                    new Coordinate(50, 51),
+                                    new Coordinate(51, 51)
                             }
                     )))
                     .build());
