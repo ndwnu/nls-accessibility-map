@@ -9,11 +9,11 @@
     <artifactId>jobs</artifactId>
     <version>5.0.17-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>nls-accessibility-map-jobs</name>
+    <name>NLS Accessibility Map Jobs</name>
     <modules>
         <module>graphhopper</module>
         <module>mapgenerator</module>
         <module>traffic-sign</module>
-        <module>jobs-component-test</module>
+        <module>data-analyser</module>
     </modules>
 </project>

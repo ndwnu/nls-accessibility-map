@@ -37,6 +37,8 @@ spec:
           env:
             - name: COMMAND
               value: configureRabbitMQ
+            - name: SPRING_PROFILES_ACTIVE
+              value: {{ .Values.environment }}
             {{- /*
             Added as env variable so the dd init container appends the settings instead of an overwrite
             */}}

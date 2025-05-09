@@ -23,6 +23,7 @@
         <module>trafficsignclient</module>
         <module>jobs</module>
         <module>backend</module>
+        <module>component-test</module>
     </modules>
     <properties>
         <java.version>21</java.version>

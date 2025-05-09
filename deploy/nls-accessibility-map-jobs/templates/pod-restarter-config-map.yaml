@@ -13,4 +13,3 @@ data:
   RABBITMQ_QUEUE: 'nls_accessibility_map_api_routing_network_updated'
   RABBITMQ_ROUTINGKEYS_0_: 'ndw.nls.accessibility.routing.network.updated'
   SPRING_MAIN_BANNER_MODE: 'OFF'
-  SPRING_PROFILES_ACTIVE: {{ .Values.environment }}

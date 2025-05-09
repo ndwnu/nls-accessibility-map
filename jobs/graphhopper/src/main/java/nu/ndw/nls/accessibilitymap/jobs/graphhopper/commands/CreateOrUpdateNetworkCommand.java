@@ -23,8 +23,7 @@ public class CreateOrUpdateNetworkCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-
-        return messageService.receive(NlsEventType.NWB_IMPORTED_EVENT, this::start).getResult();
+        return messageService.receive(NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED, this::start).getResult();
     }
 
     private Integer start(NlsEvent nlsEvent) {

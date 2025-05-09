@@ -33,7 +33,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityReque
 import nu.ndw.nls.accessibilitymap.accessibility.services.mappers.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
-import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -42,11 +41,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Point;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -74,9 +69,6 @@ class AccessibilityServiceTest {
     private TrafficSignDataService trafficSignDataService;
 
     @Mock
-    private GeometryFactoryWgs84 geometryFactoryWgs84;
-
-    @Mock
     private RoadSectionMapper roadSectionMapper;
 
     @Mock
@@ -93,9 +85,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private Snap startSegmentSnap;
-
-    @Mock
-    private Point startPoint;
 
     @Mock
     private LocationIndexTree locationIndexTree;
@@ -130,9 +119,6 @@ class AccessibilityServiceTest {
     @Mock
     private NetworkCacheDataService networkCacheDataService;
 
-    @Captor
-    private ArgumentCaptor<Coordinate> coordinateArgumentCaptor;
-
     private AccessibilityService accessibilityService;
 
     @Mock
@@ -141,7 +127,7 @@ class AccessibilityServiceTest {
     @BeforeEach
     void setUp() {
 
-        accessibilityService = new AccessibilityService(isochroneServiceFactory, trafficSignDataService, geometryFactoryWgs84,
+        accessibilityService = new AccessibilityService(isochroneServiceFactory, trafficSignDataService,
                 roadSectionMapper, clockService, networkCacheDataService, roadSectionCombinator, missingRoadSectionProvider);
     }
 
@@ -172,9 +158,6 @@ class AccessibilityServiceTest {
                 .build();
 
         assertThat(result).isEqualTo(expected);
-        Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
-        assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
-        assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
     }
 
     @Test
@@ -209,17 +192,12 @@ class AccessibilityServiceTest {
                 .build();
 
         assertThat(result).isEqualTo(expected);
-        Coordinate startCoordinate = coordinateArgumentCaptor.getValue();
-        assertThat(startCoordinate.getX()).isEqualTo(START_LOCATION_LONGITUDE);
-        assertThat(startCoordinate.getY()).isEqualTo(START_LOCATION_LATITUDE);
     }
 
     private void prepareMocks(AccessibilityRequest accessibilityRequest) {
 
         when(clockService.now()).thenReturn(OffsetDateTime.MIN);
 
-        when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
-        when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
         when(locationIndexTree.findClosest(
                 START_LOCATION_LATITUDE,
                 START_LOCATION_LONGITUDE,
@@ -243,7 +221,6 @@ class AccessibilityServiceTest {
                 argThat(new PMapArgumentMatcher(new PMap())))
         ).thenReturn(weightingNoRestrictions);
 
-        when(geometryFactoryWgs84.createPoint(coordinateArgumentCaptor.capture())).thenReturn(startPoint);
         when(networkData.queryGraph()).thenReturn(queryGraph);
         when(networkData.edgeRestrictions()).thenReturn(edgeRestrictions);
         when(edgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
@@ -280,7 +257,7 @@ class AccessibilityServiceTest {
 
         @Override
         public boolean matches(PMap actual) {
-            // Mockito initializes with null value
+            // Mockito initializes with a null value
             if (actual == null) {
                 return false;
             }
@@ -294,7 +271,7 @@ class AccessibilityServiceTest {
 
         @Override
         public boolean matches(IsochroneArguments actual) {
-            // Mockito initializes with null value
+            // Mockito initializes with a null value
             if (actual == null) {
                 return false;
             }

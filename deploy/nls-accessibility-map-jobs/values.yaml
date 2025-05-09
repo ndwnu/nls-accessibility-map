@@ -31,9 +31,14 @@ mapGenerator:
       memory: 16Gi
       schedule: "10 4 * * *"
 
-trafficSignAnalyser:
+baseNetworkAnalyser:
+  name: nls-accessibility-map-base-network-analyser-job
+  command: analyse-base-network --report-issues=true
+  memory: 2Gi
+
+asymmetricTrafficSignAnalyser:
   name: nls-accessibility-map-traffic-sign-analyser-job
-  command: analyse --report-issues=true --traffic-signs=C6,C12 --traffic-signs=C17 --traffic-signs=C18 --traffic-signs=C19 --traffic-signs=C20 --traffic-signs=C21
+  command: analyse-asymmetric-traffic-signs --report-issues=true --traffic-signs=C6,C12 --traffic-signs=C17 --traffic-signs=C18 --traffic-signs=C19 --traffic-signs=C20 --traffic-signs=C21
   memory: 12Gi
 
 trafficSignCacheUpdater:

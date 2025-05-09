@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.baseNetworkAnalyser.name }}-rabbitmq-init
+  labels:
+    tags.datadoghq.com/service: {{ .Values.baseNetworkAnalyser.name }}-rabbitmq-init
+    tags.datadoghq.com/env: {{ $.Values.environment }}
+    tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+spec:
+  ttlSecondsAfterFinished: 604800
+  backoffLimit: 3
+  template:
+    metadata:
+      annotations:
+        ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .Values.baseNetworkAnalyser.name }}-rabbitmq-init"}]'
+        admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
+      labels:
+        app: {{ .Values.baseNetworkAnalyser.name }}-rabbitmq-init
+        environment: {{ $.Values.environment }}
+        admission.datadoghq.com/enabled: "true"
+        tags.datadoghq.com/service: {{ .Values.baseNetworkAnalyser.name }}-rabbitmq-init
+        tags.datadoghq.com/env: {{ $.Values.environment }}
+        tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+    spec:
+      containers:
+        - name: {{ .Values.baseNetworkAnalyser.name }}
+          resources:
+            limits:
+              memory: 1024Mi
+            requests:
+              memory: 1024Mi
+          image: ndwnls.azurecr.io/nls-accessibility-map-data-analyser-job:{{ $.Chart.AppVersion }}
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nls-accessibility-map-jobs-config
+          env:
+            - name: COMMAND
+              value: configureRabbitMQ
+            - name: SPRING_PROFILES_ACTIVE
+              value: configure-rabbit-mq,{{ .Values.environment }}
+            {{- /*
+            Added as env variable so the dd init container appends the settings instead of an overwrite
+            */}}
+            - name: JAVA_TOOL_OPTIONS
+              value: -XX:MaxRAMPercentage=70 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
+          volumeMounts:
+            - mountPath: /application/config
+              name: {{ .Values.baseNetworkAnalyser.name }}-secrets
+              readOnly: true
+            - mountPath: /application/heapdumps
+              name: {{ .Values.baseNetworkAnalyser.name }}-heapdump
+              subPath: {{ .Values.baseNetworkAnalyser.name }}
+            - mountPath: /application/graphhopper
+              name: {{ .Values.baseNetworkAnalyser.name }}-graphhopper
+      restartPolicy: Never
+      volumes:
+        - name: {{ .Values.baseNetworkAnalyser.name }}-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: nls-accessibility-map-jobs-spc
+        - name: {{ .Values.baseNetworkAnalyser.name }}-heapdump
+          persistentVolumeClaim:
+            claimName: heapdump-pvc-claim
+        - name: {{ .Values.baseNetworkAnalyser.name }}-graphhopper
+          persistentVolumeClaim:
+            claimName: nls-accessibility-map-api-pvc
