@@ -62,7 +62,8 @@ public class EmissionZoneMapper {
                 .build();
     }
 
-    private Set<EmissionZoneExemption> mapExemptions(nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.dto.EmissionZone emissionZone) {
+    private Set<EmissionZoneExemption> mapExemptions(
+            nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.dto.EmissionZone emissionZone) {
 
         if (Objects.isNull(emissionZone.exemptions())) {
             return Set.of();
