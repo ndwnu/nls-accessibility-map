@@ -17,17 +17,17 @@ mapGenerator:
       schedule: "40 3 * * *"
     generateGeoJsonRvvC7B:
       name: nls-accessibility-map-generate-rvv-c7b-cron-job
-      command: generate --export-name==C7B --traffic-sign=C7B --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
+      command: generate --export-name=C7B --traffic-sign=C7B --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
       memory: 18Gi
       schedule: "50 3 * * *"
     generateGeoJsonRvvC12:
       name: nls-accessibility-map-generate-rvv-c12-cron-job
-      command: generate --export-name==C12 --traffic-sign=C12 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
+      command: generate --export-name=C12 --traffic-sign=C12 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
       memory: 18Gi
       schedule: "0 4 * * *"
     generateGeoJsonRvvC22C:
       name: nls-accessibility-map-generate-rvv-c22c-cron-job
-      command: generate --export-name==C22C --traffic-sign=C22C --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
+      command: generate --export-name=C22C --traffic-sign=C22C --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON
       memory: 18Gi
       schedule: "10 4 * * *"
 
