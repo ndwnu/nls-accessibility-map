@@ -6,9 +6,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
@@ -127,6 +129,9 @@ class AccessibilityMapApiDelegateImpTest {
     @Mock
     private OffsetDateTime timestamp;
 
+    @Mock
+    private Collection<RoadSection> roadSections;
+
     @BeforeEach
     void setup() {
 
@@ -208,9 +213,10 @@ class AccessibilityMapApiDelegateImpTest {
         when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
         when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
         when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
+        when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
-                .map(accessibility, true, (long) REQUESTED_ROAD_SECTION_ID, true))
+                .map(roadSections, true, (long) REQUESTED_ROAD_SECTION_ID, true))
                 .thenReturn(roadSectionFeatureCollectionJson);
 
         ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
@@ -245,9 +251,10 @@ class AccessibilityMapApiDelegateImpTest {
             when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
             when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
         }
+        when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
-                .map(accessibility,
+                .map(roadSections,
                         expectStartPoint,
                         expectStartPoint ? (long) REQUESTED_ROAD_SECTION_ID : null,
                         true))
