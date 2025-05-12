@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
+import nu.ndw.nls.accessibilitymap.accessibility.service.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueMapper;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;

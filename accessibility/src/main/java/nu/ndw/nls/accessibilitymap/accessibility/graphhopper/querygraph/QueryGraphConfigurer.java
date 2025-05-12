@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.slf4j.event.Level;

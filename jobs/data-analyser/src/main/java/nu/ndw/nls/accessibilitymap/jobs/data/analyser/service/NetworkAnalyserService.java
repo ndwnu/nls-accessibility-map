@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
+import nu.ndw.nls.accessibilitymap.accessibility.service.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueMapper;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
