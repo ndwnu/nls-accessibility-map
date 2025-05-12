@@ -49,7 +49,7 @@ spec:
               name: nls-accessibility-map-api-secrets
               readOnly: true
             - mountPath: /application/heapdumps
-              name: nls-accessibility-map-jobs-heapdump-volume
+              name: nls-accessibility-map-heapdump
               subPath: nls-accessibility-map-graphhopper-job-rabbitmq-init
             - mountPath: /application/graphhopper
               name: nls-accessibility-map-graphhopper-job-rabbitmq-init-volume
@@ -61,7 +61,7 @@ spec:
             readOnly: true
             volumeAttributes:
               secretProviderClass: nls-accessibility-map-jobs-spc
-        - name: nls-accessibility-map-jobs-heapdump-volume
+        - name: nls-accessibility-map-heapdump
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
         - name: nls-accessibility-map-graphhopper-job-rabbitmq-init-volume
