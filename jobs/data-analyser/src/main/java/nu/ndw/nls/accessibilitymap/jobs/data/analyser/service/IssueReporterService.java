@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@SuppressWarnings("java:S1694")
 public abstract class IssueReporterService {
 
     private final IssueApiClient issueApiClient;

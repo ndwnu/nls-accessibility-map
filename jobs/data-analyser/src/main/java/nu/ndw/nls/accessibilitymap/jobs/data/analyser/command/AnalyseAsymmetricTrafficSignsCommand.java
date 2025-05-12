@@ -58,7 +58,7 @@ public class AnalyseAsymmetricTrafficSignsCommand implements Callable<Integer> {
                         .map(TrafficSignType::valueOf)
                         .collect(Collectors.toSet());
 
-                AnalyseAsymmetricTrafficSignsConfiguration analyseAsymmetricTrafficSignsConfiguration = AnalyseAsymmetricTrafficSignsConfiguration.builder()
+                var analyseAsymmetricTrafficSignsConfiguration = AnalyseAsymmetricTrafficSignsConfiguration.builder()
                         .startTime(startTime)
                         .accessibilityRequest(AccessibilityRequest.builder()
                                 .timestamp(startTime)
