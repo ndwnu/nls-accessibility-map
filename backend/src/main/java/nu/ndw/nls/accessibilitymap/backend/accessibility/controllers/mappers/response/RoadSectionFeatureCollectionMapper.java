@@ -4,7 +4,7 @@ import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
@@ -17,12 +17,12 @@ public class RoadSectionFeatureCollectionMapper {
     private final RoadSectionFeatureMapper roadSectionFeatureMapper;
 
     public RoadSectionFeatureCollectionJson map(
-            Accessibility accessibility,
+            Collection<RoadSection> roadSections,
             boolean startPointHasBeenRequested,
             @Nullable Long matchedStartPointRoadSectionId,
             @Nullable Boolean filterOutWithAccessibility) {
 
-        List<RoadSectionFeatureJson> features = accessibility.combinedAccessibility().stream()
+        List<RoadSectionFeatureJson> features = roadSections.stream()
                 .map(roadSection -> roadSectionFeatureMapper.map(
                         roadSection,
                         startPointHasBeenRequested,

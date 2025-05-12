@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureJson;
@@ -29,9 +28,6 @@ class RoadSectionFeatureCollectionMapperTest {
     @Mock
     private RoadSection roadSection;
 
-    @Mock
-    private Accessibility accessibility;
-
     @BeforeEach
     void setUp() {
 
@@ -41,11 +37,10 @@ class RoadSectionFeatureCollectionMapperTest {
     @Test
     void map() {
 
-        when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSectionFeatureMapper.map(roadSection, true, 2L, true))
                 .thenReturn(List.of(roadSectionFeatureJson));
 
-        var roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(accessibility, true, 2L, true);
+        var roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(List.of(roadSection), true, 2L, true);
 
         assertThat(roadSectionFeatureCollection).isEqualTo(
                 new RoadSectionFeatureCollectionJson()

@@ -108,7 +108,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         return ResponseEntity.ok(
                 roadSectionFeatureCollectionMapper.map(
-                        accessibility,
+                        accessibility.combinedAccessibility(),
                         requestedStartPoint.isPresent(),
                         matchedStartPointRoadSectionId,
                         accessible));
