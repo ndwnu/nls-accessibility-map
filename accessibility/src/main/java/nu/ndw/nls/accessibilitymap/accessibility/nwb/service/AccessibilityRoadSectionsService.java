@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.mappers.AccessibilityNwbRoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.mapper.AccessibilityNwbRoadSectionMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,17 +30,17 @@ public class AccessibilityRoadSectionsService {
     public List<AccessibilityNwbRoadSection> getRoadSections(int nwbVersion) {
         return municipalityIdToRoadSections.computeIfAbsent(
                 getCacheKey(nwbVersion, null),
-                missedCacheKey -> createRoadSectionMap(nwbVersion, null));
+                missedCacheKey -> getRoadSections(nwbVersion, null));
     }
 
     @Transactional
     public List<AccessibilityNwbRoadSection> getRoadSectionsByMunicipalityId(int nwbVersion, int municipalityId) {
         return municipalityIdToRoadSections.computeIfAbsent(
                 getCacheKey(nwbVersion, municipalityId),
-                missedCacheKey -> createRoadSectionMap(nwbVersion, municipalityId));
+                missedCacheKey -> getRoadSections(nwbVersion, municipalityId));
     }
 
-    private List<AccessibilityNwbRoadSection> createRoadSectionMap(int nwbVersion, Integer municipalityId) {
+    private List<AccessibilityNwbRoadSection> getRoadSections(int nwbVersion, Integer municipalityId) {
         try (Stream<NwbRoadSectionDto> roadSections = nwbRoadSectionService.findLazyCar(
                 nwbVersion,
                 Objects.nonNull(municipalityId) ? Collections.singleton(municipalityId) : Collections.emptySet())) {

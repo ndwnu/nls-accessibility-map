@@ -7,7 +7,7 @@ import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.storage.BaseGraph;
 import com.graphhopper.storage.index.Snap;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

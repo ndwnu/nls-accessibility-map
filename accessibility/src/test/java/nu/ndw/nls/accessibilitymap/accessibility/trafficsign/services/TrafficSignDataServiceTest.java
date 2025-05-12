@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.exclude.TrafficSignExclusion;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.restrictive.TrafficSignRestriction;
