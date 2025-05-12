@@ -52,7 +52,7 @@ spec:
                   name: nls-accessibility-map-jobs-secrets
                   readOnly: true
                 - mountPath: /application/heapdumps
-                  name: nls-accessibility-map-jobs-heapdump-volume
+                  name: nls-accessibility-map-heapdump
                   subPath: {{ $.Chart.Name }}
                 - mountPath: /application/maps
                   name: maps-volume
@@ -67,7 +67,7 @@ spec:
                 readOnly: true
                 volumeAttributes:
                   secretProviderClass: nls-accessibility-map-jobs-spc
-            - name: nls-accessibility-map-jobs-heapdump-volume
+            - name: nls-accessibility-map-heapdump
               persistentVolumeClaim:
                 claimName: heapdump-pvc-claim
             - name: maps-volume

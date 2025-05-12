@@ -54,7 +54,7 @@ spec:
                 name: nls-accessibility-map-graphhopper-jobs-secrets
                 readOnly: true
               - mountPath: /application/heapdumps
-                name: nls-accessibility-map-jobs-heapdump-volume
+                name: nls-accessibility-map-heapdump
                 subPath: {{ .Values.graphhopper.name }}
               - mountPath: /application/graphhopper
                 name: nls-accessibility-map-jobs-volume
@@ -68,7 +68,7 @@ spec:
           - name: nls-accessibility-map-jobs-volume
             persistentVolumeClaim:
               claimName: nls-accessibility-map-api-pvc
-          - name: nls-accessibility-map-jobs-heapdump-volume
+          - name: nls-accessibility-map-heapdump
             persistentVolumeClaim:
               claimName: heapdump-pvc-claim
         restartPolicy: Never
