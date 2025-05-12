@@ -33,7 +33,8 @@ mapGenerator:
 
 baseNetworkAnalyser:
   name: nls-accessibility-map-base-network-analyser-job
-  command: analyse-base-network --report-issues=true
+  # report-issues can be set to true when https://dev.azure.com/ndwnu/NLS/_workitems/edit/94107 has been completed
+  command: analyse-base-network --report-issues=false
   memory: 2Gi
 
 asymmetricTrafficSignAnalyser:
