@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

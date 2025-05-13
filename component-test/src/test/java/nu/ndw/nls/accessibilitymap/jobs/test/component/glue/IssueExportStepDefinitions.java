@@ -1,0 +1,41 @@
+package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.issue.IssueDriver;
+import nu.ndw.nls.springboot.test.component.cucumber.StepArgumentParser;
+
+@Slf4j
+@RequiredArgsConstructor
+public class IssueExportStepDefinitions {
+
+    private final IssueDriver issueDriver;
+
+    @Given("with issues sent to issue api")
+    public void issueApi() {
+        issueDriver.stubIssueApiRequest();
+    }
+
+    @Then("we expect the following issues to be reported")
+    public void expectCreatedIssues(List<String> issueFiles) {
+
+        issueFiles.forEach(issueDriver::verifyIssueCreated);
+
+        issueDriver.verifyNumberOfCreatedIssues(issueFiles.size());
+    }
+
+    @Then("we expect the report to be marked as completed for group {word}")
+    public void reportCompleteForGroup(String reporterReportGroupId) {
+
+        issueDriver.verifyReportComplete(reporterReportGroupId);
+    }
+
+    @Then("we expect the report to be marked as completed for trafficSignTypes {string}")
+    public void reportCompleteForTrafficSigns(String trafficSignTypes) {
+
+        issueDriver.verifyReportComplete(StepArgumentParser.parseStringAsSet(trafficSignTypes));
+    }
+}

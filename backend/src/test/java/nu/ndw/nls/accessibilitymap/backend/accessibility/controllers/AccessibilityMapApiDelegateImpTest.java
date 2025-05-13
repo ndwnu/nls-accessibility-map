@@ -2,41 +2,35 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionModifier;
-import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.AccessibilityRequestMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.AccessibilityResponseMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.PointMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.RoadSectionFeatureCollectionMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.validators.PointValidator;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request.AccessibilityRequestMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.AccessibilityResponseMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.PointMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.RoadSectionFeatureCollectionMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.validator.PointValidator;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.service.PointMatchService;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
+import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
+import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,9 +112,6 @@ class AccessibilityMapApiDelegateImpTest {
     @Mock
     private AccessibilityService accessibilityService;
 
-    @Mock
-    private MissingRoadSectionProvider missingRoadSectionProvider;
-
     private AccessibilityMapApiDelegateImpl accessibilityMapApiDelegate;
 
     @Mock
@@ -133,23 +124,16 @@ class AccessibilityMapApiDelegateImpTest {
     private Accessibility accessibility;
 
     @Mock
-    private RoadSection missingRoadSection;
-
-    @Mock
     private ClockService clockService;
 
     @Mock
     private OffsetDateTime timestamp;
 
-    private Collection<RoadSection> roadsSectionsWithoutAppliedRestrictions;
-
-    private Collection<RoadSection> roadSectionsWithAppliedRestrictions;
+    @Mock
+    private Collection<RoadSection> roadSections;
 
     @BeforeEach
     void setup() {
-
-        roadsSectionsWithoutAppliedRestrictions = new ArrayList<>();
-        roadSectionsWithAppliedRestrictions = new ArrayList<>();
 
         accessibilityMapApiDelegate = new AccessibilityMapApiDelegateImpl(pointValidator,
                 pointMapper,
@@ -160,7 +144,6 @@ class AccessibilityMapApiDelegateImpTest {
                 municipalityService,
                 accessibilityRequestMapper,
                 accessibilityService,
-                missingRoadSectionProvider,
                 clockService);
     }
 
@@ -199,20 +182,12 @@ class AccessibilityMapApiDelegateImpTest {
 
         ResponseEntity<AccessibilityMapResponseJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(
                 MUNICIPALITY_ID,
-                VehicleTypeJson.CAR,
-                VEHICLE_LENGTH,
-                VEHICLE_WIDTH,
-                VEHICLE_HEIGHT,
-                VEHICLE_WEIGHT,
-                VEHICLE_AXLE_LOAD,
-                false, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
-                fuelTypeJson);
+                VehicleTypeJson.CAR, VEHICLE_LENGTH, VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_WEIGHT, VEHICLE_AXLE_LOAD, false,
+                REQUESTED_LATITUDE, REQUESTED_LONGITUDE,
+                emissionClassJson, fuelTypeJson);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(accessibilityMapResponseJson);
-
-        assertThat(roadsSectionsWithoutAppliedRestrictions).containsExactly(missingRoadSection);
-        assertThat(roadSectionsWithAppliedRestrictions).containsExactly(missingRoadSection);
 
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
@@ -222,14 +197,10 @@ class AccessibilityMapApiDelegateImpTest {
     void getRoadSections_shouldThrowIncompleteArgumentsException(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
         assertThatThrownBy(() -> accessibilityMapApiDelegate.getRoadSections(
                 MUNICIPALITY_ID,
-                VehicleTypeJson.CAR,
-                VEHICLE_LENGTH,
-                VEHICLE_WIDTH,
-                VEHICLE_HEIGHT,
-                VEHICLE_WEIGHT,
-                VEHICLE_AXLE_LOAD,
-                false, true, REQUESTED_LATITUDE, REQUESTED_LONGITUDE, emissionClassJson,
-                fuelTypeJson))
+                VehicleTypeJson.CAR, VEHICLE_LENGTH, VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_WEIGHT, VEHICLE_AXLE_LOAD, false,
+                true,
+                REQUESTED_LATITUDE, REQUESTED_LONGITUDE,
+                emissionClassJson, fuelTypeJson))
                 .isExactlyInstanceOf(IncompleteArgumentsException.class)
                 .hasMessageContaining(ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE);
     }
@@ -242,9 +213,10 @@ class AccessibilityMapApiDelegateImpTest {
         when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
         when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
         when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
+        when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
-                .map(accessibility, true, (long) REQUESTED_ROAD_SECTION_ID, true))
+                .map(roadSections, true, (long) REQUESTED_ROAD_SECTION_ID, true))
                 .thenReturn(roadSectionFeatureCollectionJson);
 
         ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
@@ -257,9 +229,6 @@ class AccessibilityMapApiDelegateImpTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
-
-        assertThat(roadsSectionsWithoutAppliedRestrictions).containsExactly(missingRoadSection);
-        assertThat(roadSectionsWithAppliedRestrictions).containsExactly(missingRoadSection);
 
         verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
     }
@@ -282,9 +251,10 @@ class AccessibilityMapApiDelegateImpTest {
             when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
             when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
         }
+        when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
-                .map(accessibility,
+                .map(roadSections,
                         expectStartPoint,
                         expectStartPoint ? (long) REQUESTED_ROAD_SECTION_ID : null,
                         true))
@@ -301,9 +271,6 @@ class AccessibilityMapApiDelegateImpTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
 
-        assertThat(roadsSectionsWithoutAppliedRestrictions).containsExactly(missingRoadSection);
-        assertThat(roadSectionsWithAppliedRestrictions).containsExactly(missingRoadSection);
-
         if (expectStartPoint) {
             verify(pointValidator).validateConsistentValues(requestedLatitude, requestedLongitude);
         }
@@ -313,30 +280,22 @@ class AccessibilityMapApiDelegateImpTest {
 
         when(clockService.now()).thenReturn(timestamp);
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(accessibilityService.calculateAccessibility(eq(networkGraphHopper), eq(accessibilityRequest),
-                any(AccessibleRoadSectionModifier.class)))
-                .thenAnswer(invocationOnMock -> {
-                    invocationOnMock.getArgument(2, AccessibleRoadSectionModifier.class).modify(
-                            roadsSectionsWithoutAppliedRestrictions,
-                            roadSectionsWithAppliedRestrictions
-                    );
-                    return accessibility;
-                });
-        when(missingRoadSectionProvider.get(MUNICIPALITY_ID_INTEGER, roadsSectionsWithoutAppliedRestrictions, false))
-                .thenReturn(List.of(missingRoadSection));
-        when(municipality.municipalityIdAsInteger()).thenReturn(MUNICIPALITY_ID_INTEGER);
+        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
 
-        when(accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, VehicleArguments.builder()
-                .vehicleType(VehicleTypeJson.CAR)
-                .vehicleHeight(VEHICLE_HEIGHT)
-                .vehicleLength(VEHICLE_LENGTH)
-                .vehicleWeight(VEHICLE_WEIGHT)
-                .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
-                .vehicleWidth(VEHICLE_WIDTH)
-                .vehicleHasTrailer(false)
-                .emissionClass(emissionClassJson)
-                .fuelType(fuelTypeJson)
-                .build()))
+        when(accessibilityRequestMapper.mapToAccessibilityRequest(
+                timestamp,
+                municipality,
+                VehicleArguments.builder()
+                        .vehicleType(VehicleTypeJson.CAR)
+                        .vehicleHeight(VEHICLE_HEIGHT)
+                        .vehicleLength(VEHICLE_LENGTH)
+                        .vehicleWeight(VEHICLE_WEIGHT)
+                        .vehicleAxleLoad(VEHICLE_AXLE_LOAD)
+                        .vehicleWidth(VEHICLE_WIDTH)
+                        .vehicleHasTrailer(false)
+                        .emissionClass(emissionClassJson)
+                        .fuelType(fuelTypeJson)
+                        .build()))
                 .thenReturn(accessibilityRequest);
 
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);

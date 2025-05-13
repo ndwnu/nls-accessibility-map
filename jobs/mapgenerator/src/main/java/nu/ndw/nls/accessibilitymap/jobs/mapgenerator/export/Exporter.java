@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export;
 
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 
 public interface Exporter {

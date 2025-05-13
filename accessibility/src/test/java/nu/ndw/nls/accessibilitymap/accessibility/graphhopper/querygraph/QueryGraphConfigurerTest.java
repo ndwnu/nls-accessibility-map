@@ -19,7 +19,7 @@ import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

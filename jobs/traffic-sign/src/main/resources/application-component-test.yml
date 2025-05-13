@@ -1,9 +1,6 @@
 nu:
   ndw:
     nls:
-      springboot:
-        messaging:
-          broker-uri: amqp://guest:guest@nls-rabbitmq:5672?heartbeat=300
       accessibilitymap:
         trafficsignclient:
           api:

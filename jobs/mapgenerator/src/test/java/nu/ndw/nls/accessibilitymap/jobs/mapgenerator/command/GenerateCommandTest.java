@@ -10,7 +10,7 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;

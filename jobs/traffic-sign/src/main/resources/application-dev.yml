@@ -6,9 +6,6 @@ management:
 nu:
   ndw:
     nls:
-      springboot:
-        messaging:
-          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
       accessibilitymap:
         trafficsignclient:
           api:
