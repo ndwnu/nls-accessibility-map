@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueMapper;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueBuilder;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.ReportApiClient;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -24,18 +24,18 @@ public class NetworkAnalyserService extends IssueReporterService {
 
     private final MissingRoadSectionProvider missingRoadSectionProvider;
 
-    private final IssueMapper issueMapper;
+    private final IssueBuilder issueBuilder;
 
     public NetworkAnalyserService(
             IssueApiClient issueApiClient,
             ReportApiClient reportApiClient,
             NetworkCacheDataService networkCacheDataService,
             MissingRoadSectionProvider missingRoadSectionProvider,
-            IssueMapper issueMapper) {
+            IssueBuilder issueBuilder) {
 
         super(issueApiClient, reportApiClient);
 
-        this.issueMapper = issueMapper;
+        this.issueBuilder = issueBuilder;
         this.missingRoadSectionProvider = missingRoadSectionProvider;
         this.networkCacheDataService = networkCacheDataService;
     }
@@ -65,7 +65,7 @@ public class NetworkAnalyserService extends IssueReporterService {
 
         var issueReportId = "Nwb-%s-%s".formatted(analyseNetworkConfiguration.nwbVersion(), UUID.randomUUID());
         var issues = missingRoadSections.stream()
-                .map(missingRoadSection -> issueMapper.mapUnroutableNetworkIssue(
+                .map(missingRoadSection -> issueBuilder.buildUnroutableNetworkIssue(
                         missingRoadSection,
                         analyseNetworkConfiguration.nwbVersion(),
                         issueReportId,

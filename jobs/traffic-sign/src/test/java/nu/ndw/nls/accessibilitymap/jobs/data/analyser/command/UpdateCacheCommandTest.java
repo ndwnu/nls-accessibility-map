@@ -19,7 +19,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheReadWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.TrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.TrafficSignBuilder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
@@ -54,7 +54,7 @@ class UpdateCacheCommandTest {
     private TrafficSignService trafficSignService;
 
     @Mock
-    private TrafficSignMapper trafficSignMapper;
+    private TrafficSignBuilder trafficSignBuilder;
 
     @Mock
     private TrafficSignData trafficSignData;
@@ -102,7 +102,7 @@ class UpdateCacheCommandTest {
     void setUp() {
 
         updateCacheCommand = new UpdateCacheCommand(
-                trafficSignCacheReadWriter, trafficSignService, trafficSignMapper,
+                trafficSignCacheReadWriter, trafficSignService, trafficSignBuilder,
                 roadSectionService, graphhopperMetaData);
     }
 
@@ -165,7 +165,7 @@ class UpdateCacheCommandTest {
 
     private void mockMapperCalls(TrafficSignGeoJsonDto trafficSignGeoJsonDto, TrafficSign trafficSign) {
 
-        when(trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        when(trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 eq(lineString),
                 eq(trafficSignGeoJsonDto),
                 any(IntegerSequenceSupplier.class))

@@ -22,9 +22,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class IssueMapperTest {
+class IssueBuilderTest {
 
-    private IssueMapper mapper;
+    private IssueBuilder issueBuilder;
 
     @Mock
     private DirectionalSegment directionalSegment;
@@ -37,15 +37,15 @@ class IssueMapperTest {
 
     @BeforeEach
     void setup() {
-        mapper = new IssueMapper();
+        issueBuilder = new IssueBuilder();
     }
 
     @Test
-    void mapUnroutableNetworkIssue() {
+    void buildUnroutableNetworkIssue() {
 
         when(roadSection.getId()).thenReturn(234L);
 
-        var issue = mapper.mapUnroutableNetworkIssue(roadSection, 123, "reportId", "reportGroupId");
+        var issue = issueBuilder.buildUnroutableNetworkIssue(roadSection, 123, "reportId", "reportGroupId");
 
         assertThat(issue).usingRecursiveComparison()
                 .isEqualTo(CreateIssueJson
@@ -73,13 +73,13 @@ class IssueMapperTest {
     }
 
     @Test
-    void mapToTrafficSignIssue() {
+    void buildTrafficSignIssue() {
 
         when(directionalSegment.getTrafficSigns()).thenReturn(List.of(trafficSign));
         when(trafficSign.externalId()).thenReturn("id");
         when(directionalSegment.getRoadSectionId()).thenReturn(1L);
 
-        var issue = mapper.mapToTrafficSignIssue(directionalSegment, "reportId", "reportGroupId");
+        var issue = issueBuilder.buildTrafficSignIssue(directionalSegment, "reportId", "reportGroupId");
 
         assertThat(issue).usingRecursiveComparison()
                 .isEqualTo(CreateIssueJson

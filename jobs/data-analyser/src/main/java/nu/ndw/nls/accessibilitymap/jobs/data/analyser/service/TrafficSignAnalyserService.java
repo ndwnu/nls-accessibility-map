@@ -11,7 +11,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseAsymmetricTrafficSignsConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueMapper;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueBuilder;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.ReportApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
@@ -24,17 +24,17 @@ public class TrafficSignAnalyserService extends IssueReporterService {
 
     private final AccessibilityService accessibilityService;
 
-    private final IssueMapper issueMapper;
+    private final IssueBuilder issueBuilder;
 
     public TrafficSignAnalyserService(
             IssueApiClient issueApiClient,
             ReportApiClient reportApiClient,
             AccessibilityService accessibilityService,
-            IssueMapper issueMapper) {
+            IssueBuilder issueBuilder) {
 
         super(issueApiClient, reportApiClient);
         this.accessibilityService = accessibilityService;
-        this.issueMapper = issueMapper;
+        this.issueBuilder = issueBuilder;
     }
 
     public void analyse(
@@ -67,7 +67,7 @@ public class TrafficSignAnalyserService extends IssueReporterService {
                 .filter(RoadSectionFragment::isPartiallyAccessible)
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(DirectionalSegment::hasTrafficSigns)
-                .map(directionalSegment -> issueMapper.mapToTrafficSignIssue(directionalSegment, issueReportId, issueReportGroupId))
+                .map(directionalSegment -> issueBuilder.buildTrafficSignIssue(directionalSegment, issueReportId, issueReportGroupId))
                 .toList();
 
         logAndReportIssues(issues, analyseAsymmetricTrafficSignsConfiguration.reportIssues(), issueReportId, issueReportGroupId);

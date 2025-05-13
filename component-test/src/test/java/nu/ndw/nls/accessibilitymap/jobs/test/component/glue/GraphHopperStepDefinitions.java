@@ -48,7 +48,7 @@ public class GraphHopperStepDefinitions {
         buildSimpleNetwork().buildNwbDatabaseNetwork();
     }
 
-    @Given("NWB road sections")
+    @Given("NWB unroutable road sections")
     public void graphHopperNetworkWithRoads(List<NwbRoadSection> nwbRoadSections) {
         nwbRoadSections.forEach(nwbRoadSection -> {
             roadSectionRepository.save(RoadSection.builder()

@@ -18,11 +18,11 @@ import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.IssueTyp
 import org.springframework.stereotype.Component;
 
 @Component
-public class IssueMapper {
+public class IssueBuilder {
 
     private static final String DATA_LINK_RECORD_TYPE_ROAD_SECTION = "RoadSection";
 
-    public CreateIssueJson mapUnroutableNetworkIssue(RoadSection roadSection, int nwbVersion, String reportId, String reportGroupId) {
+    public CreateIssueJson buildUnroutableNetworkIssue(RoadSection roadSection, int nwbVersion, String reportId, String reportGroupId) {
 
         return CreateIssueJson.builder()
                 .type(IssueTypeJson.UNREACHABLE_NETWORK_SEGMENT)
@@ -45,10 +45,10 @@ public class IssueMapper {
                 .build();
     }
 
-    public CreateIssueJson mapToTrafficSignIssue(DirectionalSegment directionalSegment, String reportId, String reportGroupId) {
+    public CreateIssueJson buildTrafficSignIssue(DirectionalSegment directionalSegment, String reportId, String reportGroupId) {
         List<DataLinkRecordJson> recordsList = directionalSegment.getTrafficSigns()
                 .stream()
-                .map(IssueMapper::mapTrafficSign)
+                .map(IssueBuilder::mapTrafficSign)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         recordsList.add(DataLinkRecordJson.builder()

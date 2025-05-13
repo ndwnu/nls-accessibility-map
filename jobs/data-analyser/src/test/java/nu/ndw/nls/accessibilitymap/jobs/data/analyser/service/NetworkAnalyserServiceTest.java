@@ -18,7 +18,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueMapper;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueBuilder;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.ReportApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
@@ -49,7 +49,7 @@ class NetworkAnalyserServiceTest {
     private MissingRoadSectionProvider missingRoadSectionProvider;
 
     @Mock
-    private IssueMapper issueMapper;
+    private IssueBuilder issueBuilder;
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
@@ -93,7 +93,7 @@ class NetworkAnalyserServiceTest {
                 reportApiClient,
                 networkCacheDataService,
                 missingRoadSectionProvider,
-                issueMapper);
+                issueBuilder);
     }
 
     @Test
@@ -118,7 +118,7 @@ class NetworkAnalyserServiceTest {
 
         when(missingRoadSectionProvider.get(null, List.of(roadSectionNoRestriction), false))
                 .thenReturn(List.of(missingRoadSection));
-        when(issueMapper.mapUnroutableNetworkIssue(
+        when(issueBuilder.buildUnroutableNetworkIssue(
                 eq(missingRoadSection),
                 eq(analyseNetworkConfiguration.nwbVersion()),
                 argThat(reportId -> {
