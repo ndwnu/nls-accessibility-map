@@ -21,14 +21,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MunicipalityFeatureMapper {
 
-    private static final String EMPTY_STRING = "";
-
     private final RoundDoubleMapper doubleMapper;
 
     public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
 
-        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION,
-                municipalities.stream().map(this::mapMunicipality).toList());
+        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION, municipalities.stream().map(this::mapMunicipality).toList());
     }
 
     private MunicipalityFeatureJson mapMunicipality(Municipality municipality) {
@@ -41,7 +38,7 @@ public class MunicipalityFeatureMapper {
                 mapStartPoint(municipality),
                 new MunicipalityPropertiesJson(
                         municipality.name(),
-                        municipality.searchDistanceInMetres().intValue(),
+                        municipality.searchDistanceInMetres(),
                         bounds,
                         municipality.dateLastCheck()));
     }
