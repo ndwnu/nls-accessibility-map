@@ -5,7 +5,7 @@ metadata:
   name: {{ .name }}
   labels:
     tags.datadoghq.com/service: {{ .name }}
-    tags.datadoghq.com/env: {{ $.Values.environment }}
+    tags.datadoghq.com/env: {{ .Values.environment }}
     tags.datadoghq.com/version: "{{ $.Chart.AppVersion }}"
 spec:
   schedule: "{{ .schedule }}"
