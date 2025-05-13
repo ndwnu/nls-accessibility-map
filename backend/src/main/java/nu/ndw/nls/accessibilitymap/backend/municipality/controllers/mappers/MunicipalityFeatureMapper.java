@@ -4,10 +4,8 @@ import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.Municipalit
 import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
 import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
 
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
@@ -37,10 +35,6 @@ public class MunicipalityFeatureMapper {
 
         List<List<Double>> bounds = mapMunicipalityBounds(municipality.bounds());
 
-        String requestExemptionUrlString = Optional.ofNullable(municipality.requestExemptionUrl())
-                .map(URL::toString)
-                .orElse(EMPTY_STRING);
-
         return new MunicipalityFeatureJson(
                 FEATURE,
                 municipality.municipalityId(),
@@ -49,7 +43,6 @@ public class MunicipalityFeatureMapper {
                         municipality.name(),
                         municipality.searchDistanceInMetres().intValue(),
                         bounds,
-                        requestExemptionUrlString,
                         municipality.dateLastCheck()));
     }
 
