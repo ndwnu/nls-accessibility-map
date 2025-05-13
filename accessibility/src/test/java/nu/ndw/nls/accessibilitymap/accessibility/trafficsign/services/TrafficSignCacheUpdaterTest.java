@@ -109,6 +109,7 @@ class TrafficSignCacheUpdaterTest {
         Awaitility.await().atMost(Duration.ofSeconds(5))
                 .until(() -> Files.exists(trafficSignCacheConfiguration.getActiveVersion().toPath()));
 
+
         trafficSignCacheUpdater.watchFileChanges();
 
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> loggerExtension.containsLog(Level.INFO,

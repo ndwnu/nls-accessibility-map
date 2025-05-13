@@ -13,4 +13,3 @@ data:
   SPRING_MAIN_BANNER_MODE: 'off'
   KEYCLOAK_CLIENT_ID: {{ .Values.keycloak.clientId }}
   FEIGN_CLIENT_BASE_URL: {{ .Values.feign.client.baseUrl }}
-  SPRING_PROFILES_ACTIVE: {{ .Values.environment }}

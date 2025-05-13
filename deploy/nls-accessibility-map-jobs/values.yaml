@@ -31,9 +31,15 @@ mapGenerator:
       memory: 18Gi
       schedule: "10 4 * * *"
 
-trafficSignAnalyser:
+baseNetworkAnalyser:
+  name: nls-accessibility-map-base-network-analyser-job
+  # report-issues can be set to true when https://dev.azure.com/ndwnu/NLS/_workitems/edit/94107 has been completed
+  command: analyse-base-network --report-issues=false
+  memory: 2Gi
+
+asymmetricTrafficSignAnalyser:
   name: nls-accessibility-map-traffic-sign-analyser-job
-  command: analyse --report-issues=true --traffic-signs=C6,C12 --traffic-signs=C17 --traffic-signs=C18 --traffic-signs=C19 --traffic-signs=C20 --traffic-signs=C21
+  command: analyse-asymmetric-traffic-signs --report-issues=true --traffic-signs=C6,C12 --traffic-signs=C17 --traffic-signs=C18 --traffic-signs=C19 --traffic-signs=C20 --traffic-signs=C21
   memory: 12Gi
 
 trafficSignCacheUpdater:

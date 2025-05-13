@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
