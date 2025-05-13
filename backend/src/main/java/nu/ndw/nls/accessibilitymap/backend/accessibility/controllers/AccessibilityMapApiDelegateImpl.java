@@ -1,24 +1,20 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibilityService;
-import nu.ndw.nls.accessibilitymap.accessibility.services.AccessibleRoadSectionModifier;
-import nu.ndw.nls.accessibilitymap.accessibility.services.MissingRoadSectionProvider;
-import nu.ndw.nls.accessibilitymap.accessibility.services.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.request.AccessibilityRequestMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.AccessibilityResponseMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.PointMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mappers.response.RoadSectionFeatureCollectionMapper;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.validators.PointValidator;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request.AccessibilityRequestMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.AccessibilityResponseMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.PointMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.RoadSectionFeatureCollectionMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.validator.PointValidator;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.service.PointMatchService;
-import nu.ndw.nls.accessibilitymap.backend.exceptions.IncompleteArgumentsException;
+import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
@@ -26,7 +22,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.municipality.services.MunicipalityService;
+import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.Point;
@@ -55,8 +51,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     private final AccessibilityRequestMapper accessibilityRequestMapper;
 
     private final AccessibilityService accessibilityService;
-
-    private final MissingRoadSectionProvider missingRoadSectionProvider;
 
     private final ClockService clockService;
 
@@ -114,7 +108,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         return ResponseEntity.ok(
                 roadSectionFeatureCollectionMapper.map(
-                        accessibility,
+                        accessibility.combinedAccessibility(),
                         requestedStartPoint.isPresent(),
                         matchedStartPointRoadSectionId,
                         accessible));
@@ -139,22 +133,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(clockService.now(), municipality, requestArguments);
 
-        return accessibilityService.calculateAccessibility(
-                networkGraphHopper,
-                accessibilityRequest,
-                addMissingRoadSectionsForMunicipality(municipality));
-    }
-
-    private AccessibleRoadSectionModifier addMissingRoadSectionsForMunicipality(Municipality municipality) {
-
-        return (roadsSectionsWithoutAppliedRestrictions, roadSectionsWithAppliedRestrictions) -> {
-            List<RoadSection> missingRoadSections = missingRoadSectionProvider.get(
-                    municipality.municipalityIdAsInteger(),
-                    roadsSectionsWithoutAppliedRestrictions,
-                    false);
-            roadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
-            roadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
-        };
+        return accessibilityService.calculateAccessibility(networkGraphHopper,accessibilityRequest);
     }
 
     /**

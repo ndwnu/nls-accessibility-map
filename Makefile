@@ -36,7 +36,6 @@ validate-helm-chart-api:
 	@sed -i "s/@docker.image.tag@/98789.98789/g" ./deploy/nls-accessibility-map-api/Chart.yaml
 	helm install \
 		--dry-run \
-		-f ./deploy/nls-accessibility-map-api/values-global.yaml \
 		-f ./deploy/nls-accessibility-map-api/values-staging.yaml \
 		--set secretProviderClass.userAssignedIdentityID='dry-run' \
 		--set secretProviderClass.tenantID='dry-run' \
@@ -48,7 +47,6 @@ validate-helm-chart-jobs:
 	@sed -i "s/@docker.image.tag@/98789.98789/g" ./deploy/nls-accessibility-map-jobs/Chart.yaml
 	helm install \
 		--dry-run \
-		-f ./deploy/nls-accessibility-map-jobs/values-global.yaml \
 		-f ./deploy/nls-accessibility-map-jobs/values-staging.yaml \
 		--set secretProviderClass.userAssignedIdentityID='dry-run' \
 		--set secretProviderClass.tenantID='dry-run' \

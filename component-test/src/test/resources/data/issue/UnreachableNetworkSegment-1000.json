@@ -1,0 +1,24 @@
+{
+  "title": "Unroutable network segment detected",
+  "description": "Road section with id '1000' is not linked to other road sections that are routable from other parts of the network and is therefore part of a isolated section.",
+  "type": "UnreachableNetworkSegment",
+  "priority": "Medium",
+  "status": "Open",
+  "reporterReportId": "${json-unit.ignore}",
+  "reporterReportGroupId": "UnreachableNetworkSegments",
+  "violations": [],
+  "dataLinks": [
+    {
+      "source": "Nwb",
+      "versions": [
+        "1"
+      ],
+      "records": [
+        {
+          "id": "1000",
+          "type": "RoadSection"
+        }
+      ]
+    }
+  ]
+}
