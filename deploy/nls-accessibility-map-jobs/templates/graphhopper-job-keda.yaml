@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.graphhopper.name }}
   labels:
     tags.datadoghq.com/service: {{ .Values.graphhopper.name }}
-    tags.datadoghq.com/env: {{ $.Values.environment }}
+    tags.datadoghq.com/env: {{ .Values.environment }}
     tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
 spec:
   jobTargetRef:
