@@ -75,7 +75,7 @@ class MunicipalityFeatureMapperTest {
 
         var propertiesJson = new MunicipalityPropertiesJson(
                 municipality.name(),
-                (int) municipality.searchDistanceInMetres(),
+                municipality.searchDistanceInMetres(),
                 List.of(boundsStart, boundsEnd),
                 dateLastCheck);
 
