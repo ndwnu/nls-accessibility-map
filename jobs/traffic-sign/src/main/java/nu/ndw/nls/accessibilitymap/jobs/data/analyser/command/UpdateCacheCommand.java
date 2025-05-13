@@ -13,7 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.Graphho
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheReadWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.TrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.TrafficSignBuilder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
@@ -33,7 +33,7 @@ public class UpdateCacheCommand implements Callable<Integer> {
 
     private final TrafficSignService trafficSignService;
 
-    private final TrafficSignMapper trafficSignMapper;
+    private final TrafficSignBuilder trafficSignBuilder;
 
     private final NwbRoadSectionCrudService roadSectionService;
 
@@ -54,7 +54,7 @@ public class UpdateCacheCommand implements Callable<Integer> {
                             .trafficSignsByRoadSectionId().values().stream()
                             .flatMap(Collection::stream)
                             .map(trafficSignGeoJsonDto ->
-                                    trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+                                    trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                                             getNwbRoadSectionGeometry(trafficSignGeoJsonDto),
                                             trafficSignGeoJsonDto,
                                             idSupplier))

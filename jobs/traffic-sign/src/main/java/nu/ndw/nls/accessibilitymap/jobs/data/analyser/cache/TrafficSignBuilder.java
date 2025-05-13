@@ -1,14 +1,7 @@
-package nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper;
-
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C17;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C18;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C19;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C20;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C21;
+package nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache;
 
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +12,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapService;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.TrafficSignRestrictionsBuilder;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
-import org.apache.logging.log4j.util.Strings;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -32,11 +24,13 @@ import org.springframework.validation.annotation.Validated;
 @Component
 @RequiredArgsConstructor
 @Validated
-public class TrafficSignMapper {
+public class TrafficSignBuilder {
 
     private final TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
 
     private final NwbRoadSectionSnapService nwbRoadSectionSnapService;
+
+    private final BlackCodeMapper blackCodeMapper;
 
     @Valid
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
@@ -71,7 +65,7 @@ public class TrafficSignMapper {
                     .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
                     .zoneCodeType(mapZoneCodeType(trafficSignGeoJsonDto))
                     .emissionZoneId(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl())
-                    .blackCode(mapToBlackCode(trafficSignGeoJsonDto, type))
+                    .blackCode(blackCodeMapper.map(trafficSignGeoJsonDto, type))
                     .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
                     .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
                     .build();
@@ -114,30 +108,4 @@ public class TrafficSignMapper {
 
         return URI.create(value);
     }
-
-    private Double mapToBlackCode(TrafficSignGeoJsonDto trafficSignGeoJsonDto, TrafficSignType type) {
-
-        String blackCode = trafficSignGeoJsonDto.getProperties().getBlackCode();
-        try {
-            return Double.parseDouble(blackCode.replace(",", "."));
-        } catch (RuntimeException exception) {
-            if (!Strings.isEmpty(blackCode)) {
-                log.warn("Unprocessable value {} for traffic sign with id {} and RVV code {} on road section {}",
-                        blackCode,
-                        trafficSignGeoJsonDto.getId(),
-                        trafficSignGeoJsonDto.getProperties().getRvvCode(),
-                        trafficSignGeoJsonDto.getProperties().getRoadSectionId(),
-                        exception);
-            }
-
-            if (List.of(C17, C18, C19, C20, C21).contains(type)) {
-                throw new IllegalStateException(
-                        "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'"
-                                .formatted(trafficSignGeoJsonDto.getId(), type),
-                        exception);
-            }
-            return null;
-        }
-    }
-
 }

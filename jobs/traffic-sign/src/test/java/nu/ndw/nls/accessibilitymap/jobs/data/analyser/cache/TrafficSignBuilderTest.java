@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper;
+package nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -16,7 +16,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapService;
 import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.TrafficSignRestrictionsBuilder;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -32,7 +32,6 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.NullSource;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
@@ -42,13 +41,13 @@ import org.springframework.stereotype.Component;
 
 @SuppressWarnings("ALL")
 @ExtendWith(MockitoExtension.class)
-class TrafficSignMapperTest {
+class TrafficSignBuilderTest {
 
     private static final double DEFAULT_X_COORDINATE = 1d;
 
     private static final double DEFAULT_Y_COORDINATE = 2d;
 
-    private TrafficSignMapper trafficSignMapper;
+    private TrafficSignBuilder trafficSignBuilder;
 
     private TrafficSignGeoJsonDto trafficSignGeoJsonDto;
 
@@ -56,6 +55,9 @@ class TrafficSignMapperTest {
 
     @Mock
     private NwbRoadSectionSnapService nwbRoadSectionSnapService;
+
+    @Mock
+    private BlackCodeMapper blackCodeMapper;
 
     @Mock
     private List<TextSign> textSigns;
@@ -96,13 +98,14 @@ class TrafficSignMapperTest {
                         .build())
                 .geometry(new Point(3d, 4d))
                 .build();
-        trafficSignMapper = new TrafficSignMapper(trafficSignRestrictionsBuilder, nwbRoadSectionSnapService);
+        trafficSignBuilder = new TrafficSignBuilder(trafficSignRestrictionsBuilder, nwbRoadSectionSnapService, blackCodeMapper);
     }
 
     @ParameterizedTest
     @EnumSource(value = TrafficSignType.class)
     void mapFromTrafficSignGeoJsonDto(TrafficSignType trafficSignType) {
 
+        when(blackCodeMapper.map(trafficSignGeoJsonDto, trafficSignType)).thenReturn(4.1d);
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign -> trafficSign.trafficSignType() == trafficSignType)))
                 .thenReturn(restrictions);
 
@@ -110,7 +113,7 @@ class TrafficSignMapperTest {
 
         trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
 
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -124,7 +127,7 @@ class TrafficSignMapperTest {
 
         TrafficSignType trafficSignType = TrafficSignType.C1;
 
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -144,7 +147,7 @@ class TrafficSignMapperTest {
         TrafficSignType trafficSignType = TrafficSignType.C1;
         trafficSignGeoJsonDto.getProperties().setFraction(null);
 
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -159,71 +162,6 @@ class TrafficSignMapperTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = TrafficSignType.class, mode = Mode.INCLUDE, names = {"C17", "C18", "C19", "C20", "C21"})
-    void mapFromTrafficSignGeoJsonDto_blackCode_required_null(TrafficSignType trafficSignType) {
-
-        trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
-        trafficSignGeoJsonDto.getProperties().setBlackCode(null);
-
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                integerSequenceSupplier);
-
-        assertThat(trafficSign).isEmpty();
-
-        loggerExtension.containsLog(
-                Level.WARN,
-                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
-                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
-                "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'".formatted(
-                        trafficSignGeoJsonDto.getId(), trafficSignType));
-
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = TrafficSignType.class, mode = Mode.INCLUDE, names = {"C17", "C18", "C19", "C20", "C21"})
-    void mapFromTrafficSignGeoJsonDto_blackCode_required_invalid(TrafficSignType trafficSignType) {
-
-        trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
-        trafficSignGeoJsonDto.getProperties().setBlackCode("invalid");
-
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                integerSequenceSupplier);
-
-        assertThat(trafficSign).isEmpty();
-
-        loggerExtension.containsLog(
-                Level.WARN,
-                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
-                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
-                "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'".formatted(
-                        trafficSignGeoJsonDto.getId(), trafficSignType));
-    }
-
-    @Test
-    void mapFromTrafficSignGeoJsonDto_invalidBlackCode() {
-
-        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
-                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-        ).thenReturn(restrictions);
-
-        trafficSignGeoJsonDto.getProperties().setBlackCode("invalid");
-        setupFixtureForNwbSnap();
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                integerSequenceSupplier);
-
-        validateTrafficSign(trafficSign.get());
-        loggerExtension.containsLog(Level.WARN,
-                "Unprocessable value invalid for traffic sign with id %s and RVV code C6 on road section 1".formatted(
-                        trafficSignGeoJsonDto.getId()));
-    }
-
-    @ParameterizedTest
     @CsvSource(textBlock = """
             ZE, END
             ZB, START
@@ -232,13 +170,15 @@ class TrafficSignMapperTest {
             """)
     void mapFromTrafficSignGeoJsonDto_allZoneCodeTypes(String zoneCodeString, String expectedZoneCodeType) {
 
+        when(blackCodeMapper.map(trafficSignGeoJsonDto, TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+                .thenReturn(4.1d);
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                 trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
         ).thenReturn(restrictions);
 
         trafficSignGeoJsonDto.getProperties().setZoneCode(zoneCodeString);
         setupFixtureForNwbSnap();
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -252,7 +192,7 @@ class TrafficSignMapperTest {
 
         trafficSignGeoJsonDto.getProperties().setZoneCode("invalid");
 
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -268,6 +208,8 @@ class TrafficSignMapperTest {
     @Test
     void mapFromTrafficSignGeoJsonDto_invalidZoneCodeType_null() {
 
+        when(blackCodeMapper.map(trafficSignGeoJsonDto, TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+                .thenReturn(4.1d);
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                 trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
         ).thenReturn(restrictions);
@@ -275,7 +217,7 @@ class TrafficSignMapperTest {
         trafficSignGeoJsonDto.getProperties().setZoneCode(null);
         setupFixtureForNwbSnap();
 
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -289,6 +231,8 @@ class TrafficSignMapperTest {
     void mapFromTrafficSignGeoJsonDto_allDirections(DirectionType directionType) {
 
         if (directionType != DirectionType.BOTH) {
+            when(blackCodeMapper.map(trafficSignGeoJsonDto, TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
+                    .thenReturn(4.1d);
             setupFixtureForNwbSnap();
             when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                     trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
@@ -297,7 +241,7 @@ class TrafficSignMapperTest {
 
         trafficSignGeoJsonDto.getProperties().setDrivingDirection(directionType);
 
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -324,7 +268,7 @@ class TrafficSignMapperTest {
 
         trafficSignGeoJsonDto.getProperties().setImageUrl(imageUrl);
         setupFixtureForNwbSnap();
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
+        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
                 trafficSignGeoJsonDto,
                 integerSequenceSupplier);
@@ -332,29 +276,11 @@ class TrafficSignMapperTest {
         assertThat(trafficSign.get().iconUri()).isNull();
     }
 
-    @ParameterizedTest
-    @NullSource
-    void mapFromTrafficSignGeoJsonDto_blackCode_null(String blackCode) {
-
-        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
-                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-        ).thenReturn(restrictions);
-        setupFixtureForNwbSnap();
-        trafficSignGeoJsonDto.getProperties().setBlackCode(blackCode);
-
-        Optional<TrafficSign> trafficSign = trafficSignMapper.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                integerSequenceSupplier);
-
-        assertThat(trafficSign.get().blackCode()).isNull();
-    }
-
     @Test
     void class_configurationAnnotation() {
 
         AnnotationUtil.classContainsAnnotation(
-                trafficSignMapper.getClass(),
+                trafficSignBuilder.getClass(),
                 Component.class,
                 annotation -> assertThat(annotation).isNotNull()
         );
