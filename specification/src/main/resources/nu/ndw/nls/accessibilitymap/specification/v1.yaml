@@ -513,7 +513,6 @@ components:
         - name
         - searchDistance
         - bounds
-        - requestExemptionUrl
         - dateLastCheck
       properties:
         name:
@@ -527,10 +526,6 @@ components:
           example: 50000
         bounds:
           $ref: '#/components/schemas/BoundingBox'
-        requestExemptionUrl:
-          type: string
-          description: URL to request an exemption
-          example: 'https://loket.digitaal.utrecht.nl/nl/products/ontheffing-voertuig'
         dateLastCheck:
           type: string
           format: date

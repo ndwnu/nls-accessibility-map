@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
 import jakarta.validation.Valid;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -25,14 +23,13 @@ class MunicipalityTest extends ValidationTest {
     private Municipality municipality;
 
     @BeforeEach
-    void setUp() throws MalformedURLException {
+    void setUp() {
         municipality = Municipality.builder()
                 .name("name")
                 .startCoordinateLatitude(2D)
                 .startCoordinateLongitude(3D)
                 .searchDistanceInMetres(4)
                 .municipalityId("ABC123")
-                .requestExemptionUrl(URI.create("https://example.com").toURL())
                 .bounds(new MunicipalityBoundingBox(11D, 12D, 13D, 14D))
                 .dateLastCheck(LocalDate.MAX)
                 .build();

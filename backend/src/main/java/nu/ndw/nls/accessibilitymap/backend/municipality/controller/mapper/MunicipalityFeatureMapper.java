@@ -4,10 +4,8 @@ import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.Municipalit
 import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
 import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
 
-import java.net.URL;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
@@ -23,23 +21,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MunicipalityFeatureMapper {
 
-    private static final String EMPTY_STRING = "";
-
     private final RoundDoubleMapper doubleMapper;
 
     public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
 
-        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION,
-                municipalities.stream().map(this::mapMunicipality).toList());
+        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION, municipalities.stream().map(this::mapMunicipality).toList());
     }
 
     private MunicipalityFeatureJson mapMunicipality(Municipality municipality) {
 
         List<List<Double>> bounds = mapMunicipalityBounds(municipality.bounds());
-
-        String requestExemptionUrlString = Optional.ofNullable(municipality.requestExemptionUrl())
-                .map(URL::toString)
-                .orElse(EMPTY_STRING);
 
         return new MunicipalityFeatureJson(
                 FEATURE,
@@ -47,9 +38,8 @@ public class MunicipalityFeatureMapper {
                 mapStartPoint(municipality),
                 new MunicipalityPropertiesJson(
                         municipality.name(),
-                        municipality.searchDistanceInMetres().intValue(),
+                        municipality.searchDistanceInMetres(),
                         bounds,
-                        requestExemptionUrlString,
                         municipality.dateLastCheck()));
     }
 
