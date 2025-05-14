@@ -5,8 +5,6 @@ import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.Municipalit
 import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
@@ -31,24 +29,18 @@ class MunicipalityFeatureMapperTest {
 
     private MunicipalityFeatureMapper municipalityFeatureMapper;
 
-
     private Municipality municipality;
 
     @BeforeEach
     void setup() {
         municipalityFeatureMapper = new MunicipalityFeatureMapper(new RoundDoubleMapper());
 
-        try {
-            municipality = new Municipality(52.0d, 5d,
-                    50000,
-                    MUNICIPALITY_ID,
-                    "GM0307",
-                    URI.create("http://iets-met-vergunningen.nl").toURL(),
-                    new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2),
-                    LocalDate.parse("2024-07-11"));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        municipality = new Municipality(52.0d, 5d,
+                50000,
+                MUNICIPALITY_ID,
+                "GM0307",
+                new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2),
+                LocalDate.parse("2024-07-11"));
     }
 
     @Test
@@ -83,9 +75,8 @@ class MunicipalityFeatureMapperTest {
 
         var propertiesJson = new MunicipalityPropertiesJson(
                 municipality.name(),
-                (int) municipality.searchDistanceInMetres(),
+                municipality.searchDistanceInMetres(),
                 List.of(boundsStart, boundsEnd),
-                municipality.requestExemptionUrl().toString(),
                 dateLastCheck);
 
         var featureJson = new MunicipalityFeatureJson(
