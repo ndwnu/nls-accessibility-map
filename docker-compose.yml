@@ -1,6 +1,6 @@
 services:
   nls-keycloak:
-    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:25.0.6
+    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.1.4
     command: start-dev --import-realm
     hostname: nls-keycloak
     environment:
