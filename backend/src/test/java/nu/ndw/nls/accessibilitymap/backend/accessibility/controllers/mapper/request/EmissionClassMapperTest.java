@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.req
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
@@ -31,14 +32,20 @@ class EmissionClassMapperTest {
 
         Set<EmissionClass> result = emissionClassMapper.mapEmissionClass(emissionClassJson);
 
-        EmissionClass expectedEmissionClass = switch (emissionClassJson){
-            case _1 -> EmissionClass.EURO_1;
-            case _2 -> EmissionClass.EURO_2;
-            case _3 -> EmissionClass.EURO_3;
-            case _4 -> EmissionClass.EURO_4;
-            case _5 -> EmissionClass.EURO_5;
-            case _6 -> EmissionClass.EURO_6;
+        EmissionClass expectedEmissionClass = switch (emissionClassJson) {
+            case ZERO -> null;
+            case EURO_1 -> EmissionClass.EURO_1;
+            case EURO_2 -> EmissionClass.EURO_2;
+            case EURO_3 -> EmissionClass.EURO_3;
+            case EURO_4 -> EmissionClass.EURO_4;
+            case EURO_5 -> EmissionClass.EURO_5;
+            case EURO_6 -> EmissionClass.EURO_6;
         };
-        assertThat(result).containsExactly(expectedEmissionClass);
+
+        if (Objects.isNull(expectedEmissionClass)) {
+            assertThat(result).isEmpty();
+        } else {
+            assertThat(result).containsExactly(expectedEmissionClass);
+        }
     }
 }

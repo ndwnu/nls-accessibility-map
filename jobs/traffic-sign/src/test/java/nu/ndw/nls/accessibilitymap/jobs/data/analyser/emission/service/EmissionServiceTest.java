@@ -12,11 +12,16 @@ import java.util.List;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.client.EmissionZoneClient;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.dto.EmissionZone;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.dto.FuelType;
+import nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.dto.Restriction;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -49,14 +54,33 @@ class EmissionServiceTest {
         emissionService = new EmissionService(emissionZoneClient);
     }
 
-    @Test
-    void findAll() {
+    @ParameterizedTest
+    @EnumSource(value = FuelType.class, mode = Mode.EXCLUDE, names = {"ALL", "BATTERY"})
+    void findAll(FuelType fuelType) {
 
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(fuelType)
+                .build());
         when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
 
         List<EmissionZone> emissionZones = emissionService.findAll();
 
         assertThat(emissionZones).containsExactly(emissionZone);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = FuelType.class, mode = Mode.INCLUDE, names = {"ALL", "BATTERY"})
+    void findAll_invalidEmissionZone(FuelType fuelType) {
+
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(fuelType)
+                .build());
+        when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
+
+        List<EmissionZone> emissionZones = emissionService.findAll();
+
+        assertThat(emissionZones).isEmpty();
+        containsLogErrorFuelType();
     }
 
     @Test
@@ -110,9 +134,13 @@ class EmissionServiceTest {
         loggerExtension.containsLog(Level.WARN, "Error while retrieving emission. Retrying at a later moment.", "message");
     }
 
-    @Test
-    void findAll_cached() {
+    @ParameterizedTest
+    @EnumSource(value = FuelType.class, mode = Mode.EXCLUDE, names = {"ALL", "BATTERY"})
+    void findAll_cached(FuelType fuelType) {
 
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(fuelType)
+                .build());
         when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
 
         emissionService.findAll();
@@ -122,9 +150,13 @@ class EmissionServiceTest {
         verify(emissionZoneClient).findAll();
     }
 
-    @Test
-    void findById() {
+    @ParameterizedTest
+    @EnumSource(value = FuelType.class, mode = Mode.EXCLUDE, names = {"ALL", "BATTERY"})
+    void findById(FuelType fuelType) {
 
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(fuelType)
+                .build());
         when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
         when(emissionZone.id()).thenReturn("id");
 
@@ -133,14 +165,43 @@ class EmissionServiceTest {
         assertThat(emissionZones).contains(emissionZone);
     }
 
+    @ParameterizedTest
+    @EnumSource(value = FuelType.class, mode = Mode.INCLUDE, names = {"ALL", "BATTERY"})
+    void findById_invalidEmissionZone(FuelType fuelType) {
+
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(fuelType)
+                .build());
+        when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
+
+        Optional<EmissionZone> emissionZones = emissionService.findById("id");
+
+        assertThat(emissionZones).isEmpty();
+        containsLogErrorFuelType();
+    }
+
     @Test
     void findById_notFound() {
 
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(FuelType.DIESEL)
+                .build());
         when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
         when(emissionZone.id()).thenReturn("id");
 
         Optional<EmissionZone> emissionZones = emissionService.findById("otherId");
 
         assertThat(emissionZones).isEmpty();
+    }
+
+    private void containsLogErrorFuelType() {
+        loggerExtension.containsLog(Level.ERROR,
+                "Fuel type is BATTERY and ALL are not a supported type. This is technically supported in the api specifications"
+                + " from the Emission zone api but it can never be used because there is no exemption available for vehicle types with a"
+                + " zero emission classification in the emission zone api in field"
+                + " `euVehicleCategoryAndEmissionClassificationRestrictionExemptions`. If this does occur than we should contact W&R and"
+                + " Edwin van Wilgenburg about why this is now suddenly possible in the data. We where guaranteed that this combination"
+                + " would never be used as a solution that the exemptions could never support a zero emission classification. For this"
+                + " reason this emission zone will be considered invalid and can not be used.");
     }
 }
