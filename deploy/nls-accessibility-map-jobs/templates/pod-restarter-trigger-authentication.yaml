@@ -3,7 +3,10 @@ kind: TriggerAuthentication
 metadata:
   name: nls-accessibility-map-api-pod-restarter-trigger-auth
 spec:
-  secretTargetRef:
-    - parameter: host
-      name: nls-keda-secret
-      key: broker_url
+  azureKeyVault:
+    podIdentity:
+      provider: azure-workload
+    secrets:
+      - parameter: host
+        name: nls-rabbitMQ-uri
+    vaultUri: {{ .Values.keyVault.url }}
