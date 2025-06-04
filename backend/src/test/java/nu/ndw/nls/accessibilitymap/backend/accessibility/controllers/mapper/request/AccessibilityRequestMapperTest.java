@@ -82,7 +82,7 @@ class AccessibilityRequestMapperTest {
         when(vehicleArguments.vehicleLength()).thenReturn(DEFAULT_VEHICLE_LENGTH);
         when(vehicleArguments.vehicleWidth()).thenReturn(DEFAULT_VEHICLE_WIDTH);
         when(vehicleArguments.vehicleWeight()).thenReturn(DEFAULT_VEHICLE_WEIGHT);
-        when(vehicleArguments.emissionClass()).thenReturn(EmissionClassJson._1);
+        when(vehicleArguments.emissionClass()).thenReturn(EmissionClassJson.EURO_1);
         when(vehicleArguments.fuelType()).thenReturn(FuelTypeJson.PETROL);
 
         when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
@@ -97,7 +97,7 @@ class AccessibilityRequestMapperTest {
         when(municipalityBoundingBox.latitudeTo()).thenReturn(MAX_LATITUDE);
 
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
-        when(emissionClassMapper.mapEmissionClass(EmissionClassJson._1)).thenReturn(Set.of(EmissionClass.EURO_1));
+        when(emissionClassMapper.mapEmissionClass(EmissionClassJson.EURO_1)).thenReturn(Set.of(EmissionClass.EURO_1));
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
 
         var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments);

@@ -56,7 +56,7 @@ class TrafficSignRestrictionsBuilderTest {
         TrafficSign trafficSign = TrafficSign.builder().build();
 
         assertThat(catchThrowable(() -> trafficSignRestrictionsBuilder.buildFor(trafficSign)))
-                .withFailMessage("Traffic sign type null is not supported")
+                .hasMessage("Traffic sign type null is not supported")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

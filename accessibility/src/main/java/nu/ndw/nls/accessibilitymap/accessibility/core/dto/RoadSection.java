@@ -82,7 +82,7 @@ public final class RoadSection {
     public List<LineString> getBackwardGeometries() {
 
         if (!hasBackwardSegments()) {
-            throw new IllegalStateException("no backward geometry found for road section %s".formatted(id));
+            throw new IllegalStateException("No backward geometry found for road section %s".formatted(id));
         }
 
         return roadSectionFragments.stream()

@@ -15,12 +15,16 @@ public class EmissionClassMapper {
             return null;
         } else {
             return switch (emissionClassJson) {
-                case _1 -> Set.of(EmissionClass.EURO_1);
-                case _2 -> Set.of(EmissionClass.EURO_2);
-                case _3 -> Set.of(EmissionClass.EURO_3);
-                case _4 -> Set.of(EmissionClass.EURO_4);
-                case _5 -> Set.of(EmissionClass.EURO_5);
-                case _6 -> Set.of(EmissionClass.EURO_6);
+                // Should not have any impact because there is no official zero emission class in the official definitions.
+                // Zero can never be used in the emission zone data set we get from W&R, therefore, we should not use it.
+                // See also EmissionService::isValid in the job/traffic-sign module for a more detailed explanation.
+                case ZERO -> Set.of();
+                case EURO_1 -> Set.of(EmissionClass.EURO_1);
+                case EURO_2 -> Set.of(EmissionClass.EURO_2);
+                case EURO_3 -> Set.of(EmissionClass.EURO_3);
+                case EURO_4 -> Set.of(EmissionClass.EURO_4);
+                case EURO_5 -> Set.of(EmissionClass.EURO_5);
+                case EURO_6 -> Set.of(EmissionClass.EURO_6);
             };
         }
     }
