@@ -43,11 +43,11 @@ class TransportTypeMapperTest {
 
         if (vehicleType == VehicleType.UNKNOWN) {
             assertThat(catchThrowable(() -> transportTypeMapper.map(vehicleType, null)))
-                    .withFailMessage("Unknown vehicle type '%s'.".formatted(vehicleType))
+                    .hasMessage("Unknown vehicle type '%s'.".formatted(vehicleType))
                     .isInstanceOf(IllegalStateException.class);
         } else if (vehicleType == VehicleType.MOTORSCOOTER) {
             assertThat(catchThrowable(() -> transportTypeMapper.map(vehicleType, null)))
-                    .withFailMessage(("Unsupported vehicle type '%s' because we have no ability to map this to any of the "
+                    .hasMessage(("Unsupported vehicle type '%s' because we have no ability to map this to any of the "
                             + "internal structures. We checked with W&R and they should never send this value in any situation although it "
                             + "is supported in the API according to the specs it is never used.").formatted(vehicleType))
                     .isInstanceOf(IllegalStateException.class);
@@ -76,7 +76,7 @@ class TransportTypeMapperTest {
 
         if (vehicleCategory == VehicleCategory.UNKNOWN) {
             assertThat(catchThrowable(() -> transportTypeMapper.map(Set.of(vehicleCategory))))
-                    .withFailMessage("Unknown vehicle category '%s'.".formatted(vehicleCategory))
+                    .hasMessage("Unknown vehicle category '%s'.".formatted(vehicleCategory))
                     .isInstanceOf(IllegalStateException.class);
         } else {
 

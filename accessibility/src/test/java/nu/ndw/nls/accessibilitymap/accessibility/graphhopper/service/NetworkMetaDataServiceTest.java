@@ -45,7 +45,7 @@ class NetworkMetaDataServiceTest {
         when(graphHopperNetworkSettingsBuilder.getMetaDataPath()).thenReturn(Path.of(FILE_DOES_NOT_EXIST));
 
         assertThat(catchThrowable(() -> networkMetaDataService.loadMetaData()))
-                .withFailMessage("Could not load meta-data from file path: file-does-not-exist")
+                .hasMessage("Could not load meta-data from file path: file-does-not-exist")
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -69,7 +69,7 @@ class NetworkMetaDataServiceTest {
                 .thenReturn(tempDirectory);
 
         assertThat(catchThrowable(() -> networkMetaDataService.saveMetaData(new GraphhopperMetaData(20241231))))
-                .withFailMessage("Could not write meta-data to file path: " + tempDirectory)
+                .hasMessage("Could not write meta-data to file path: " + tempDirectory)
                 .isInstanceOf(IllegalStateException.class);
     }
 }

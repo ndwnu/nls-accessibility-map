@@ -83,7 +83,7 @@ class TrafficSignDataServiceTest {
 
         when(trafficSignCacheReadWriter.read()).thenThrow(new RuntimeException("test exception"));
         assertThat(catchThrowable(() -> trafficSignDataService.init()))
-                .withFailMessage("test exception")
+                .hasMessage("test exception")
                 .isInstanceOf(RuntimeException.class);
     }
 

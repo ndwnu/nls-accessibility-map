@@ -262,6 +262,7 @@ class RoadSectionTest extends ValidationTest {
 
     @Test
     void getForwardGeometries_noForwardSegment() {
+
         roadSection = roadSection.withRoadSectionFragments(List.of(
                         roadSectionFragment
                                 .withForwardSegment(null)
@@ -270,7 +271,7 @@ class RoadSectionTest extends ValidationTest {
         );
 
         assertThat(catchThrowable(() -> roadSection.getForwardGeometries()))
-                .withFailMessage("No forward geometry found for road section %s".formatted(roadSection.getId()))
+                .hasMessage("No forward geometry found for road section %s".formatted(roadSection.getId()))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -297,7 +298,7 @@ class RoadSectionTest extends ValidationTest {
         );
 
         assertThat(catchThrowable(() -> roadSection.getBackwardGeometries()))
-                .withFailMessage("No backward geometry found for road section %s".formatted(roadSection.getId()))
+                .hasMessage("No backward geometry found for road section %s".formatted(roadSection.getId()))
                 .isInstanceOf(IllegalStateException.class);
     }
 
