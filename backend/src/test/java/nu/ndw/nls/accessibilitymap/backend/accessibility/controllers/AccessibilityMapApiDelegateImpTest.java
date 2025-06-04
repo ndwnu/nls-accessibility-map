@@ -242,7 +242,7 @@ class AccessibilityMapApiDelegateImpTest {
             """)
     void getRoadSections_noStartLocation(Double requestedLatitude, Double requestedLongitude) {
 
-        setUpFixture(EmissionClassJson._1, FuelTypeJson.ETHANOL);
+        setUpFixture(EmissionClassJson.EURO_1, FuelTypeJson.ETHANOL);
 
         boolean expectStartPoint = Objects.nonNull(requestedLatitude) && Objects.nonNull(requestedLongitude);
 
@@ -266,7 +266,7 @@ class AccessibilityMapApiDelegateImpTest {
                 VEHICLE_LENGTH, VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_WEIGHT, VEHICLE_AXLE_LOAD, false,
                 true,
                 requestedLatitude, requestedLongitude,
-                EmissionClassJson._1, FuelTypeJson.ETHANOL);
+                EmissionClassJson.EURO_1, FuelTypeJson.ETHANOL);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
@@ -303,14 +303,14 @@ class AccessibilityMapApiDelegateImpTest {
 
     static Stream<Arguments> provideIncorrectEmissionZoneParameters() {
         return Stream.of(
-                Arguments.of(EmissionClassJson._5, null),
+                Arguments.of(EmissionClassJson.EURO_5, null),
                 Arguments.of(null, FuelTypeJson.PETROL)
         );
     }
 
     static Stream<Arguments> provideCorrectEmissionZoneParameters() {
         return Stream.of(
-                Arguments.of(EmissionClassJson._5, FuelTypeJson.PETROL),
+                Arguments.of(EmissionClassJson.EURO_5, FuelTypeJson.PETROL),
                 Arguments.of(null, null)
         );
     }

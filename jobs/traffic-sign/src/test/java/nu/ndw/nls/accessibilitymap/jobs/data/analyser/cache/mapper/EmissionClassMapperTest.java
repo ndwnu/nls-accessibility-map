@@ -29,7 +29,7 @@ class EmissionClassMapperTest {
 
         if (euroClassification == EuroClassification.UNKNOWN) {
             assertThat(catchThrowable(() -> emissionClassMapper.map(Set.of(euroClassification))))
-                    .withFailMessage("Unknown euro classification '%s'." .formatted(euroClassification))
+                    .hasMessage("Euro classification '%s' is not supported." .formatted(euroClassification))
                     .isInstanceOf(IllegalStateException.class);
         } else {
             EmissionClass expectedEuroClassification = mapEmissionClass(euroClassification);

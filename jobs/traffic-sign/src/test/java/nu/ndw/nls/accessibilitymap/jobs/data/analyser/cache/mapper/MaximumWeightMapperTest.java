@@ -57,7 +57,7 @@ class MaximumWeightMapperTest {
 
         if (vehicleCategory == VehicleCategory.UNKNOWN) {
             assertThat(catchThrowable(() -> maximumWeightMapper.map(Set.of(vehicleCategory))))
-                    .withFailMessage("Unknown vehicle category '%s'." .formatted(vehicleCategory))
+                    .hasMessage("Unknown vehicle category '%s'." .formatted(vehicleCategory))
                     .isInstanceOf(IllegalStateException.class);
         } else {
             Double expectedMaxWeight = maxWeight(vehicleCategory);

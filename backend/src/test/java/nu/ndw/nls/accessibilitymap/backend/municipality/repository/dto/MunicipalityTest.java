@@ -116,7 +116,7 @@ class MunicipalityTest extends ValidationTest {
 
         if (Objects.isNull(expectedResult)) {
             assertThat(catchThrowable(municipality::municipalityIdAsInteger))
-                    .withFailMessage("Incorrect municipalityId %s".formatted(municipalityId))
+                    .hasMessage("Incorrect municipalityId %s".formatted(municipalityId))
                     .isInstanceOf(IllegalStateException.class);
         } else {
             assertThat(municipality.municipalityIdAsInteger()).isEqualTo(expectedResult);
