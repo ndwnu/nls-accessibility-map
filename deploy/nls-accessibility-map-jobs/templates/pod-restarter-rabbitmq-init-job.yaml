@@ -26,9 +26,9 @@ spec:
         - name: nls-pod-restarter
           resources:
             limits:
-              memory: 256Mi
+              memory: 512Mi
             requests:
-              memory: 256Mi
+              memory: 512Mi
           image: ndwnls.azurecr.io/nls-pod-restarter:{{ .Values.podRestarterVersion }}
           imagePullPolicy: Always
           envFrom:
