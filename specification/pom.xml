@@ -2,49 +2,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>nu.ndw.nls.accessibilitymap</groupId>
-        <artifactId>parent</artifactId>
-        <version>5.0.41-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>specification</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>nu.ndw.nls.accessibilitymap</groupId>
+    <artifactId>parent</artifactId>
     <version>5.0.41-SNAPSHOT</version>
-    <name>NLS Accessibility Map Open API specification</name>
+  </parent>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-open-api-geojson-geometry-config</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
+  <artifactId>specification</artifactId>
+  <version>5.0.41-SNAPSHOT</version>
+  <name>NLS Accessibility Map Open API specification</name>
 
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>nu.ndw.nls.geojson.geometry</groupId>
-                                    <artifactId>specification</artifactId>
-                                    <version>${nls-geojson-geometry.version}</version>
-                                    <outputDirectory>${project.basedir}/src/main/resources/nu/ndw/nls/accessibilitymap/specification/</outputDirectory>
-                                    <includes>
-                                        **/geojson-geometry.yaml
-                                    </includes>
-                                    <fileMappers>
-                                        <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper"/>
-                                    </fileMappers>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-open-api-geojson-geometry-config</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>nu.ndw.nls.geojson.geometry</groupId>
+                  <artifactId>specification</artifactId>
+                  <version>${nls-geojson-geometry.version}</version>
+                  <outputDirectory>${project.basedir}/src/main/resources/nu/ndw/nls/accessibilitymap/specification/</outputDirectory>
+                  <includes>
+                    **/geojson-geometry.yaml
+                  </includes>
+                  <fileMappers>
+                    <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FlattenFileMapper"/>
+                  </fileMappers>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
