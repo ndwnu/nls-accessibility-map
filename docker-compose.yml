@@ -141,7 +141,7 @@ services:
       - nls-accessibility-map-network
 
   nls-postgres:
-    image: ndwnls.azurecr.io/nls-postgres-it-container:20241128.6
+    image: ndwnls.azurecr.io/nls-postgres-it-container:20250722.2
     ports:
       - "5432:5432"
     environment:
@@ -154,7 +154,7 @@ services:
       - nls-accessibility-map-network
 
   nls-rabbitmq:
-    image: ndwnls.azurecr.io/docker.io/library/rabbitmq:4.0.7-management-alpine
+    image: ndwnls.azurecr.io/docker.io/library/rabbitmq:4.0.9-management-alpine
     hostname: nls-rabbitmq
     user: rabbitmq
     ports:
