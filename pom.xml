@@ -49,7 +49,7 @@
     <nls-events.version>5.1.23</nls-events.version>
     <nls-nwb-data-access.version>9.2.3</nls-nwb-data-access.version>
     <nls-springboot.version>9.2.9</nls-springboot.version>
-    <nls-routing-map-matcher.version>17.0.3</nls-routing-map-matcher.version>
+    <nls-routing-map-matcher.version>18.0.5</nls-routing-map-matcher.version>
     <nls-geometry.version>5.0.8</nls-geometry.version>
     <nls-geojson-geometry.version>1.4.22</nls-geojson-geometry.version>
     <jackson-geojson.version>1.14</jackson-geojson.version>
