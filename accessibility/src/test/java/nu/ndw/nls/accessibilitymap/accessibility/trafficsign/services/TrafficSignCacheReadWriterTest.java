@@ -37,7 +37,6 @@ import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -214,7 +213,6 @@ class TrafficSignCacheReadWriterTest {
     }
 
     @Test
-    @Disabled
     void write_replaceSymLink() throws IOException {
 
         File activeFile = trafficSignCacheConfiguration.getActiveVersion();
