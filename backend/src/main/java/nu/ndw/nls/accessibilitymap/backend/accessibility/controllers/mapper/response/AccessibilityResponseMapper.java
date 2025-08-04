@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MatchedRoadSectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
 import org.springframework.stereotype.Component;
 
@@ -21,9 +22,9 @@ public class AccessibilityResponseMapper {
                 .map(AccessibilityResponseMapper::mapToRoadSection)
                 .toList();
 
-        RoadSectionJson matchedRoadSection = Optional.ofNullable(requestedRoadSectionId)
+        MatchedRoadSectionJson matchedRoadSection = Optional.ofNullable(requestedRoadSectionId)
                 .flatMap(roadSectionId -> findRoadSectionById(accessibility.combinedAccessibility(), (long) roadSectionId))
-                .map(AccessibilityResponseMapper::mapToRoadSection)
+                .map(AccessibilityResponseMapper::mapToMatchedRoadSection)
                 .orElse(null);
 
         return new AccessibilityMapResponseJson()
@@ -39,6 +40,15 @@ public class AccessibilityResponseMapper {
 
     private static RoadSectionJson mapToRoadSection(RoadSection roadSection) {
         return RoadSectionJson
+                .builder()
+                .roadSectionId(Math.toIntExact(roadSection.getId()))
+                .forwardAccessible(roadSection.hasForwardSegments() ? roadSection.isForwardAccessible() : null)
+                .backwardAccessible(roadSection.hasBackwardSegments() ? roadSection.isBackwardAccessible() : null)
+                .build();
+    }
+
+    private static MatchedRoadSectionJson mapToMatchedRoadSection(RoadSection roadSection) {
+        return MatchedRoadSectionJson
                 .builder()
                 .roadSectionId(Math.toIntExact(roadSection.getId()))
                 .forwardAccessible(roadSection.hasForwardSegments() ? roadSection.isForwardAccessible() : null)

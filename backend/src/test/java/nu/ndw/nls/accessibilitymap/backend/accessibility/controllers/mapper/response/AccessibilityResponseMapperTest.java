@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MatchedRoadSectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,10 +53,15 @@ class AccessibilityResponseMapperTest {
                 .backwardAccessible(true)
                 .forwardAccessible(true)
                 .build();
+        final MatchedRoadSectionJson expectedMatchedRoadSectionJson = MatchedRoadSectionJson.builder()
+                .roadSectionId((int) ROAD_SECTION_ID)
+                .backwardAccessible(true)
+                .forwardAccessible(true)
+                .build();
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
                 .inaccessibleRoadSections(List.of(expectedRoadSection))
-                .matchedRoadSection(expectedRoadSection)
+                .matchedRoadSection(expectedMatchedRoadSectionJson)
                 .build());
 
     }
@@ -73,10 +79,14 @@ class AccessibilityResponseMapperTest {
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .backwardAccessible(true)
                 .build();
+        final MatchedRoadSectionJson expectedMatchedRoadSectionJson = MatchedRoadSectionJson.builder()
+                .roadSectionId((int) ROAD_SECTION_ID)
+                .backwardAccessible(true)
+                .build();
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
                 .inaccessibleRoadSections(List.of(expectedRoadSection))
-                .matchedRoadSection(expectedRoadSection)
+                .matchedRoadSection(expectedMatchedRoadSectionJson)
                 .build());
 
     }
@@ -95,10 +105,15 @@ class AccessibilityResponseMapperTest {
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .forwardAccessible(true)
                 .build();
+        final MatchedRoadSectionJson expectedMatchedRoadSectionJson = MatchedRoadSectionJson.builder()
+                .roadSectionId((int) ROAD_SECTION_ID)
+                .forwardAccessible(true)
+                .build();
+
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
                 .inaccessibleRoadSections(List.of(expectedRoadSection))
-                .matchedRoadSection(expectedRoadSection)
+                .matchedRoadSection(expectedMatchedRoadSectionJson)
                 .build());
 
     }
@@ -113,11 +128,12 @@ class AccessibilityResponseMapperTest {
         when(roadSection.isForwardAccessible()).thenReturn(true);
         when(roadSection.hasBackwardSegments()).thenReturn(false);
         AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility,
-                roadSectionId.isEmpty() ? null : roadSectionId.get());
+                roadSectionId.orElse(null));
         final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .forwardAccessible(true)
                 .build();
+
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
                 .inaccessibleRoadSections(List.of(expectedRoadSection))
