@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
+import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,7 +28,7 @@ public class AccessibilityRequestMapper {
     public AccessibilityRequest mapToAccessibilityRequest(
             OffsetDateTime timestamp,
             Municipality municipality,
-            VehicleArguments vehicleArguments) {
+            VehicleArguments vehicleArguments, Point endPoint) {
 
         return AccessibilityRequest.builder()
                 .timestamp(timestamp)
@@ -42,6 +43,8 @@ public class AccessibilityRequestMapper {
                 .searchRadiusInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
                 .startLocationLatitude(municipality.startCoordinateLatitude())
                 .startLocationLongitude(municipality.startCoordinateLongitude())
+                .endLocationLatitude(endPoint != null ? endPoint.getY() : null)
+                .endLocationLongitude(endPoint != null ? endPoint.getX() : null)
                 .vehicleHeightInCm(mapToDouble(vehicleArguments.vehicleHeight(), MULTIPLIER_FROM_METERS_TO_CM))
                 .vehicleLengthInCm(mapToDouble(vehicleArguments.vehicleLength(), MULTIPLIER_FROM_METERS_TO_CM))
                 .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth(), MULTIPLIER_FROM_METERS_TO_CM))
