@@ -7,11 +7,13 @@ import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
@@ -66,7 +68,6 @@ class AccessibilityMapApiDelegateImpTest {
 
     private static final double REQUESTED_LATITUDE = 222;
 
-    private static final int MUNICIPALITY_ID_INTEGER = 123;
 
     private static final String ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE = "If one of the environmental zone parameters is set, the other must be set as well.";
 
@@ -131,6 +132,8 @@ class AccessibilityMapApiDelegateImpTest {
 
     @Mock
     private Collection<RoadSection> roadSections;
+    @Mock
+    private AccessibilityReasonService accessibilityReasonService;
 
     @BeforeEach
     void setup() {
@@ -144,7 +147,7 @@ class AccessibilityMapApiDelegateImpTest {
                 municipalityService,
                 accessibilityRequestMapper,
                 accessibilityService,
-                clockService);
+                clockService, accessibilityReasonService);
     }
 
     @ParameterizedTest
@@ -177,7 +180,7 @@ class AccessibilityMapApiDelegateImpTest {
         when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
         when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
 
-        when(accessibilityResponseMapper.map(accessibility, REQUESTED_ROAD_SECTION_ID))
+        when(accessibilityResponseMapper.map(accessibility, REQUESTED_ROAD_SECTION_ID, Collections.emptyList()))
                 .thenReturn(accessibilityMapResponseJson);
 
         ResponseEntity<AccessibilityMapResponseJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(
@@ -295,7 +298,7 @@ class AccessibilityMapApiDelegateImpTest {
                         .vehicleHasTrailer(false)
                         .emissionClass(emissionClassJson)
                         .fuelType(fuelTypeJson)
-                        .build()))
+                        .build(), null))
                 .thenReturn(accessibilityRequest);
 
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);

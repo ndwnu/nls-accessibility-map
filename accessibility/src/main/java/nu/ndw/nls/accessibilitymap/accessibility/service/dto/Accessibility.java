@@ -10,4 +10,15 @@ public record Accessibility(
         Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions,
         Collection<RoadSection> combinedAccessibility) {
 
+    public boolean matchedRoadSectionIsAccessible(int roadSectionId) {
+        return combinedAccessibility.stream()
+                .filter(rs -> rs.getId() == roadSectionId)
+                .findFirst()
+                .map(roadSection -> roadSection.isBackwardAccessible() &&
+                        roadSection.isForwardAccessible())
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                "The road section with id " + roadSectionId + " does not exist."));
+
+    }
 }

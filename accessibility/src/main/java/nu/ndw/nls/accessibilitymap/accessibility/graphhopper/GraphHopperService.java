@@ -1,5 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
+import com.graphhopper.routing.ch.PrepareContractionHierarchies;
+import com.graphhopper.storage.CHConfig;
+import com.graphhopper.storage.RoutingCHGraph;
+import com.graphhopper.storage.RoutingCHGraphImpl;
+import com.graphhopper.util.PMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +30,7 @@ public class GraphHopperService {
     private final GraphHopperNetworkService graphHopperNetworkService;
 
     private NetworkGraphHopper networkGraphHopper;
+    private RoutingCHGraph chGraph;
 
     public synchronized NetworkGraphHopper getNetworkGraphHopper() {
 
@@ -43,6 +49,7 @@ public class GraphHopperService {
             OffsetDateTime start = OffsetDateTime.now();
 
             networkGraphHopper = graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
+            createChGraph();
             log.info("GraphHopper network loaded from disk in {}ms", Duration.between(start, OffsetDateTime.now()).toMillis());
         } catch (IOException | GraphHopperNotImportedException exception) {
             RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
@@ -50,4 +57,21 @@ public class GraphHopperService {
                     .formatted(routingNetworkSettings.getGraphhopperRootPath().toAbsolutePath()), exception);
         }
     }
+
+    public synchronized RoutingCHGraph getCHGraph() {
+        if (Objects.isNull(chGraph)) {
+            createNetworkGraphHopper();
+        }
+        return chGraph;
+    }
+
+    private void createChGraph() {
+        CHConfig chConfig = CHConfig.nodeBased(NetworkConstants.CAR_PROFILE.getName() + "_ch",
+                networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()));
+        networkGraphHopper.getBaseGraph().freeze();
+        PrepareContractionHierarchies pch = PrepareContractionHierarchies.fromGraph(networkGraphHopper.getBaseGraph(), chConfig);
+        PrepareContractionHierarchies.Result pchRes = pch.doWork();
+        chGraph = RoutingCHGraphImpl.fromGraph(networkGraphHopper.getBaseGraph(), pchRes.getCHStorage(), pchRes.getCHConfig());
+    }
+
 }

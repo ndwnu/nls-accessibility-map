@@ -26,6 +26,8 @@ public record AccessibilityRequest(
         @NotNull Double searchRadiusInMeters,
         @NotNull Double startLocationLatitude,
         @NotNull Double startLocationLongitude,
+        Double endLocationLatitude,
+        Double endLocationLongitude,
         Double vehicleLengthInCm,
         Double vehicleHeightInCm,
         Double vehicleWidthInCm,
@@ -55,5 +57,10 @@ public record AccessibilityRequest(
         } else {
             return Set.of(ZoneCodeType.END);
         }
+    }
+
+    public boolean hasEndLocation() {
+        return Objects.nonNull(endLocationLatitude)
+                && Objects.nonNull(endLocationLongitude);
     }
 }

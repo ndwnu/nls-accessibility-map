@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.res
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -26,7 +27,8 @@ class AccessibilityResponseMapperTest {
     private static final long ROAD_SECTION_ID = 123L;
 
     private AccessibilityResponseMapper accessibilityResponseMapper;
-
+    @Mock
+    private AccessibilityReasonsJsonMapper accessibilityReasonsJsonMapper;
     @Mock
     private Accessibility accessibility;
 
@@ -35,7 +37,7 @@ class AccessibilityResponseMapperTest {
 
     @BeforeEach
     void setup() {
-        accessibilityResponseMapper = new AccessibilityResponseMapper();
+        accessibilityResponseMapper = new AccessibilityResponseMapper(accessibilityReasonsJsonMapper);
     }
 
     @Test
@@ -47,7 +49,8 @@ class AccessibilityResponseMapperTest {
         when(roadSection.hasForwardSegments()).thenReturn(true);
         when(roadSection.isForwardAccessible()).thenReturn(true);
         when(roadSection.isBackwardAccessible()).thenReturn(true);
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID);
+        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID,
+                Collections.emptyList());
         final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .backwardAccessible(true)
@@ -74,7 +77,8 @@ class AccessibilityResponseMapperTest {
         when(roadSection.hasForwardSegments()).thenReturn(false);
         when(roadSection.hasBackwardSegments()).thenReturn(true);
         when(roadSection.isBackwardAccessible()).thenReturn(true);
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID);
+        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID,
+                Collections.emptyList());
         final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .backwardAccessible(true)
@@ -100,7 +104,8 @@ class AccessibilityResponseMapperTest {
         when(roadSection.isForwardAccessible()).thenReturn(true);
         when(roadSection.hasBackwardSegments()).thenReturn(false);
 
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID);
+        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID,
+                Collections.emptyList());
         final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .forwardAccessible(true)
@@ -128,7 +133,7 @@ class AccessibilityResponseMapperTest {
         when(roadSection.isForwardAccessible()).thenReturn(true);
         when(roadSection.hasBackwardSegments()).thenReturn(false);
         AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility,
-                roadSectionId.orElse(null));
+                roadSectionId.orElse(null), Collections.emptyList());
         final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .forwardAccessible(true)
@@ -145,7 +150,7 @@ class AccessibilityResponseMapperTest {
     void map_emptyResult() {
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(false);
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, null);
+        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, null, Collections.emptyList());
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
                 .inaccessibleRoadSections(List.of())
