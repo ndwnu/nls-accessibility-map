@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.3</version>
+    <version>3.5.4</version>
   </parent>
   <groupId>nu.ndw.nls.accessibilitymap</groupId>
   <artifactId>parent</artifactId>
@@ -28,9 +28,9 @@
   <properties>
     <java.version>21</java.version>
     <exec-maven-plugin.version>3.5.1</exec-maven-plugin.version>
-    <nls-springboot.logging.version>8.4.8</nls-springboot.logging.version>
+    <nls-springboot.logging.version>8.4.9</nls-springboot.logging.version>
     <nls-springboot.component-test.version>8.8.4</nls-springboot.component-test.version>
-    <nls-springboot.monitoring.version>8.4.11</nls-springboot.monitoring.version>
+    <nls-springboot.monitoring.version>8.4.13</nls-springboot.monitoring.version>
     <nls-springboot.test.version>9.0.0</nls-springboot.test.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -45,18 +45,18 @@
     <spring-cloud-contract-wiremock.version>4.3.0</spring-cloud-contract-wiremock.version>
     <springdoc.version>2.8.9</springdoc.version>
     <stream-utils.version>1.3.1</stream-utils.version>
-    <swagger-annotations.version>2.2.34</swagger-annotations.version>
-    <nls-events.version>5.1.23</nls-events.version>
-    <nls-nwb-data-access.version>9.2.3</nls-nwb-data-access.version>
-    <nls-springboot.version>9.2.9</nls-springboot.version>
-    <nls-routing-map-matcher.version>18.0.5</nls-routing-map-matcher.version>
-    <nls-geometry.version>5.0.8</nls-geometry.version>
-    <nls-geojson-geometry.version>1.4.22</nls-geojson-geometry.version>
+    <swagger-annotations.version>2.2.35</swagger-annotations.version>
+    <nls-events.version>5.2.1</nls-events.version>
+    <nls-nwb-data-access.version>9.3.0</nls-nwb-data-access.version>
+    <nls-springboot.version>9.2.15</nls-springboot.version>
+    <nls-routing-map-matcher.version>18.0.6</nls-routing-map-matcher.version>
+    <nls-geometry.version>5.0.10</nls-geometry.version>
+    <nls-geojson-geometry.version>1.4.25</nls-geojson-geometry.version>
     <jackson-geojson.version>1.14</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>4.1.1</json-unit.version>
-    <cucumber.version>7.26.0</cucumber.version>
-    <location-data-issues.version>2.2.15</location-data-issues.version>
+    <cucumber.version>7.27.0</cucumber.version>
+    <location-data-issues.version>2.2.24</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
@@ -64,7 +64,7 @@
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-24970 -->
     <netty.version>4.1.118.Final</netty.version>
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2024-57699 -->
-    <json-smart.version>2.5.2</json-smart.version>
+    <json-smart.version>2.6.0</json-smart.version>
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-48976 -->
     <commons-fileupload.version>1.6.0</commons-fileupload.version>
 
