@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.configuration.GraphHopperProperties;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.configuration.GraphHopperRoutingProperties;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings.RoutingNetworkSettingsBuilder;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(GraphHopperProperties.class)
+@EnableConfigurationProperties({GraphHopperProperties.class, GraphHopperRoutingProperties.class})
 public class GraphHopperNetworkSettingsBuilder {
 
     private final GraphHopperProperties graphHopperProperties;

@@ -1,46 +1,72 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import com.google.common.base.Stopwatch;
+import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.routing.Path;
+import com.graphhopper.routing.RoutingAlgorithm;
+import com.graphhopper.routing.RoutingAlgorithmFactory;
 import com.graphhopper.routing.querygraph.QueryGraph;
-import com.graphhopper.routing.querygraph.QueryRoutingCHGraph;
 import com.graphhopper.routing.util.EdgeFilter;
-import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
+import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.routing.AccessibilityReasonEdgeVisitor;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.routing.AlternativeRouteWithPathAwareCost;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.AlgorithmOptionsFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.RoutePoints;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.AccessibilityReasonsMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class responsible for calculating and retrieving accessibility reasons
+ * based on specific accessibility requests.
+ * <p>
+ * This service uses various components such as traffic sign data, mapping services,
+ * and routing algorithms to analyse accessibility-related obstacles and provide detailed
+ * reasons for accessibility issues in a given route or area.
+ * <p>
+ * Responsibilities of this service include:
+ * - Querying traffic signs applicable to a given accessibility request.
+ * - Mapping traffic sign data to relevant segments of a network graph.
+ * - Calculating routes and accessing alternative paths using routing algorithms.
+ * - Correlating route paths and traffic signs to deduce accessibility reasons.
+ */
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class AccessibilityReasonService {
 
     private final AccessibilityReasonsMapper accessibilityReasonsMapper;
     private final GraphHopperService graphHopperService;
     private final TrafficSignSnapMapper trafficSignSnapMapper;
-    private final QueryGraphConfigurer queryGraphConfigurer;
-    private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
     private final TrafficSignDataService trafficSignDataService;
+    private final RoutingAlgorithmFactory routingAlgorithmFactory;
+    private final AlgorithmOptionsFactory algorithmOptionsFactory;
+    private final PathsToReasonsMapper pathsToReasonsMapper;
 
+    /**
+     * Calculates accessibility reasons for a given accessibility request.
+     * <p>
+     * This method identifies and evaluates traffic signs blocking accessibility
+     * within the specified route points and generates corresponding accessibility reasons.
+     *
+     * @param accessibilityRequest the accessibility request containing details
+     * such as start location, end location, and filter criteria to retrieve blocking traffic signs.
+     * @return a list of lists containing identified accessibility reasons. Each list corresponds
+     * to a set of reasons associated with a particular section or segment of the route.
+     */
     public List<List<AccessibilityReason>> getReasons(AccessibilityRequest accessibilityRequest) {
         log.debug("Calculating accessibility reasons for request: {}", accessibilityRequest);
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -64,57 +90,24 @@ public class AccessibilityReasonService {
         Stopwatch stopwatch = Stopwatch.createStarted();
         List<TrafficSignSnap> trafficSignSnaps = trafficSignSnapMapper.map(blockingTrafficSigns, networkGraphHopper);
         log.debug("Mapping traffic snaps signs took: {} ms", stopwatch.elapsed().toMillis());
-
-        List<Snap> snapList = new ArrayList<>();
         Snap startSegment = getStartSegment(routePoints, networkGraphHopper);
         Snap endSegment = getEndSegment(routePoints, networkGraphHopper);
-        snapList.add(startSegment);
-        snapList.add(endSegment);
-        snapList.addAll(trafficSignSnaps.stream().map(TrafficSignSnap::getSnap).toList());
-        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snapList);
-        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, networkGraphHopper.getEncodingManager(),
-                trafficSignSnaps);
+        QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), startSegment, endSegment);
         stopwatch.reset().start();
         log.debug("Calculating alternative routes");
         stopwatch.reset().start();
-        final PMap pMap = createRoutingConfiguration();
-        AlternativeRouteWithPathAwareCost router = new AlternativeRouteWithPathAwareCost(
-                new QueryRoutingCHGraph(graphHopperService.getCHGraph(), queryGraph),
-                pMap, edgeRestrictions);
-        List<Path> alternatives = router.calcPaths(startSegment.getClosestNode(), endSegment.getClosestNode());
-        AccessibilityReasons accessibilityReasons = accessibilityReasonsMapper.mapToAoAccessibilityReasons(blockingTrafficSigns);
-        log.debug("Calculating alternative routes took: {} ms", stopwatch.elapsed().toMillis());
-        return alternatives.stream()
-                .map(path -> {
-                    AccessibilityReasonEdgeVisitor edgeVisitor = new AccessibilityReasonEdgeVisitor(accessibilityReasons,
-                            networkGraphHopper.getEncodingManager(), edgeIteratorStateReverseExtractor);
-                    path.forEveryEdge(edgeVisitor);
-                    return edgeVisitor.getAccessibilityReasonList();
-                }).toList();
+        Weighting weighting = queryGraph.wrapWeighting(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()));
+        AccessibilityReasons accessibilityReasons = accessibilityReasonsMapper.mapToAoAccessibilityReasons(
+                trafficSignSnaps.stream().map(TrafficSignSnap::getTrafficSign).toList());
+        AlgorithmOptions algorithmOptions = algorithmOptionsFactory.createAlgorithmOptions();
+        RoutingAlgorithm router = routingAlgorithmFactory.createAlgo(queryGraph, weighting,
+                algorithmOptions);
+        List<Path> routes = router.calcPaths(startSegment.getClosestNode(), endSegment.getClosestNode());
+        log.debug("Calculating routes took: {} ms", stopwatch.elapsed().toMillis());
+        return pathsToReasonsMapper.mapRoutesToReasons(routes, accessibilityReasons, networkGraphHopper);
 
     }
 
-
-    private static PMap createRoutingConfiguration() {
-        PMap pMap = new PMap();
-        pMap.putObject("alternative_route.max_weight_factor", 4.0);
-        pMap.putObject("alternative_route.max_share_factor", 0.25);
-        pMap.putObject("alternative_route.local_optimality_factor", 0.25);
-        pMap.putObject("alternative_route.max_paths", 100);
-        return pMap;
-    }
-
-//    private boolean routeIsAccessible(NetworkGraphHopper networkGraphHopper, QueryGraph queryGraph, Set<Integer> blockedEdges,
-//            Snap startSegment, Snap endSegment) {
-//
-//        Weighting weighting = buildWeightingWithRestrictions(networkGraphHopper, blockedEdges);
-//        Dijkstra dijkstra = new Dijkstra(
-//                queryGraph,
-//                weighting,
-//                TraversalMode.EDGE_BASED);
-//        Path route = dijkstra.calcPath(startSegment.getClosestNode(), endSegment.getClosestNode());
-//        return route.isFound();
-//    }
 
     private static Snap getEndSegment(RoutePoints routePoints, NetworkGraphHopper networkGraphHopper) {
         return networkGraphHopper.getLocationIndex()

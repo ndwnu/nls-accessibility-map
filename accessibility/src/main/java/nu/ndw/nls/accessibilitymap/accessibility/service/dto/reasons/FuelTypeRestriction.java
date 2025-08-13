@@ -13,9 +13,11 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType.UNKNOW
 import java.util.List;
 import java.util.Set;
 import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
+import org.apache.commons.collections4.CollectionUtils;
 
-@Builder
+@SuperBuilder(toBuilder = true)
 public class FuelTypeRestriction extends AccessibilityRestriction<Set<FuelType>> {
 
     private static List<FuelType> FUEL_TYPES = List.of(ELECTRIC, HYDROGEN,
@@ -39,10 +41,8 @@ public class FuelTypeRestriction extends AccessibilityRestriction<Set<FuelType>>
     }
 
     @Override
-    public boolean isMoreRestrictiveThan(AccessibilityRestriction<Set<FuelType>> other) {
+    public boolean isEqual(AccessibilityRestriction<Set<FuelType>> other) {
         ensureSameType(other);
-        int sumIndex = getValue().stream().mapToInt(FUEL_TYPES::indexOf).sum();
-        int otherSumIndex = other.getValue().stream().mapToInt(FUEL_TYPES::indexOf).sum();
-        return sumIndex < otherSumIndex;
+       return CollectionUtils.isEqualCollection(getValue(), other.getValue());
     }
 }

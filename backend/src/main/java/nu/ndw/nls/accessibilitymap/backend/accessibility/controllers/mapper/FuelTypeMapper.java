@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request;
+package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper;
 
 import com.google.common.base.Enums;
 import java.util.Objects;
