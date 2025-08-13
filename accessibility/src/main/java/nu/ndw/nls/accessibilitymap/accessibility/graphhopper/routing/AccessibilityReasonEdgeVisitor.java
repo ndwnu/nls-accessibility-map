@@ -26,20 +26,20 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.AccessibilityRes
 /**
  * This class implements the {@link EdgeVisitor} interface, enabling the processing of edges in a graph
  * to determine the most restrictive accessibility reasons based on defined accessibility restrictions.
- * It utilizes a structured approach to classify and analyze restrictions based on their types, compiling
+ * It uses a structured approach to classify and analyse restrictions based on their types, compiling
  * a consolidated list of reasons after all edges have been processed.
- *
+ * <p>
  * The {@code AccessibilityReasonEdgeVisitor} works with various components, including an encoding manager,
- * a reverse edge extractor, and a collection of reducers for specific restriction types, to produce
+ * a reverse-edge extractor, and a collection of reducers for specific restriction types, to produce
  * a comprehensive analysis of accessibility limitations in a transportation graph.
- *
+ * <p>
  * The class operates in three main stages:
  * - During edge iteration, it evaluates accessibility reasons for each road section and direction,
  *   categorising them by restriction type.
  * - Upon completion of edge processing, a list of the most restrictive accessibility reasons is compiled.
  * - It relies on reducers to handle specific types of accessibility restrictions to determine the most
  *   restrictive reasons from the collected data.
- *
+ * <p>
  * This class is designed for private instantiation via a static factory method to ensure proper initialisation
  * of all required dependencies.
  */
@@ -57,7 +57,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
     private final Map<RestrictionType, List<AccessibilityRestriction>> reasonsByRestriction = new HashMap<>();
 
     /**
-     * Processes the next edge in the iteration. For a given edge, checks for accessibility restrictions
+     * Processes the next edge in the iteration. For a given edge, check for accessibility restrictions
      * associated with the road section and direction. Merges the restrictions into a structured map
      * grouped by their restriction types.
      *
@@ -82,7 +82,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
     }
 
     /**
-     * Finalizes the process of analyzing accessibility restrictions by computing a list of
+     * Finalises the process of analysing accessibility restrictions by computing a list of
      * accessibility reasons based on the gathered restriction data.
      * <p>
      * This method processes the `reasonsByRestriction` map, which groups accessibility restrictions
@@ -112,7 +112,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
      * exception will be thrown.
      *
      * @param restrictionType the type of restriction being evaluated. This defines the category of
-     *                         accessibility limitations being analyzed.
+     *                         accessibility limitations being analysed.
      *
      * @param restrictionsByType a list of accessibility restrictions of the specified type. These
      *                            restrictions will be processed to determine the most restrictive
