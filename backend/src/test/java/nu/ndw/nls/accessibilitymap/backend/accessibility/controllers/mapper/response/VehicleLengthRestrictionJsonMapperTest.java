@@ -11,7 +11,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RestrictionConditi
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RestrictionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RestrictionUnitSymbolJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleWeightRestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleLengthRestrictionJson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,36 +19,36 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class VehicleWeightRestrictionJsonMapperTest {
+class VehicleLengthRestrictionJsonMapperTest {
 
-    private static final BigDecimal TONS = new BigDecimal("1.00");
-    private static final double KILOGRAMS = 1000D;
+    private static final BigDecimal METERS = new BigDecimal("1.00");
+    private static final double CENTIMETERS = 100D;
 
     @Mock
     private MaximumRestriction maximumRestriction;
 
     @InjectMocks
-    private VehicleWeightRestrictionJsonMapper mapper;
+    private VehicleLengthRestrictionJsonMapper mapper;
 
     @Test
     void mapToRestrictionJson() {
-        when(maximumRestriction.getValue()).thenReturn(Maximum.builder().value(KILOGRAMS).build());
+        when(maximumRestriction.getValue()).thenReturn(Maximum.builder().value(CENTIMETERS).build());
         RestrictionJson actual = mapper.mapToRestrictionJson(maximumRestriction);
 
-        assertThat(actual).isInstanceOf(VehicleWeightRestrictionJson.class);
+        assertThat(actual).isInstanceOf(VehicleLengthRestrictionJson.class);
         assertThat(actual).isEqualTo(getExpected());
     }
 
-    private VehicleWeightRestrictionJson getExpected() {
-        return new VehicleWeightRestrictionJson()
-                .type(TypeEnum.VEHICLE_WEIGHT_RESTRICTION)
-                .value(TONS)
-                .condition(RestrictionConditionJson.EQUALS)
-                .unitSymbol(RestrictionUnitSymbolJson.TONS);
+    private VehicleLengthRestrictionJson getExpected() {
+        return new VehicleLengthRestrictionJson()
+                .type(TypeEnum.VEHICLE_LENGTH_RESTRICTION)
+                .value(METERS)
+                .condition(RestrictionConditionJson.GREATER_THAN_OR_EQUALS)
+                .unitSymbol(RestrictionUnitSymbolJson.METRE);
     }
 
     @Test
     void mapperForType() {
-        assertThat(mapper.mapperForType()).isEqualTo(RestrictionType.VEHICLE_WEIGHT);
+        assertThat(mapper.mapperForType()).isEqualTo(RestrictionType.VEHICLE_LENGTH);
     }
 }

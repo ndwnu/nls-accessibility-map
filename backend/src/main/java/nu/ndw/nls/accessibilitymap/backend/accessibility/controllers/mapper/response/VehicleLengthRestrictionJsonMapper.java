@@ -18,7 +18,7 @@ public class VehicleLengthRestrictionJsonMapper extends AccessibilityRestriction
     public RestrictionJson mapToRestrictionJson(MaximumRestriction maximumRestriction) {
         return new VehicleLengthRestrictionJson()
                 .type(TypeEnum.VEHICLE_LENGTH_RESTRICTION)
-                .condition(RestrictionConditionJson.EQUALS)
+                .condition(RestrictionConditionJson.GREATER_THAN_OR_EQUALS)
                 .unitSymbol(RestrictionUnitSymbolJson.METRE)
                 .value(DecimalValueMapper.mapToValue(maximumRestriction.getValue().value(), CM_TO_METRES));
     }

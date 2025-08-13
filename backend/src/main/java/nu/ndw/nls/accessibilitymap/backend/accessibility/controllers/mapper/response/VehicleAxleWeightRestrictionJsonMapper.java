@@ -18,7 +18,7 @@ public class VehicleAxleWeightRestrictionJsonMapper extends AccessibilityRestric
     public RestrictionJson mapToRestrictionJson(MaximumRestriction maximumRestriction) {
         return new VehicleAxleWeightRestrictionJson()
                 .type(TypeEnum.VEHICLE_AXLE_WEIGHT_RESTRICTION)
-                .condition(RestrictionConditionJson.EQUALS)
+                .condition(RestrictionConditionJson.GREATER_THAN_OR_EQUALS)
                 .unitSymbol(RestrictionUnitSymbolJson.TONS)
                 .value(DecimalValueMapper.mapToValue(maximumRestriction.getValue().value(), KILOGRAMS_TO_TONS));
     }
