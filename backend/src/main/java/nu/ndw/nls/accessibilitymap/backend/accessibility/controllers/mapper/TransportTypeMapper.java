@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request;
+package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.VEHICLE_WITH_TRAILER;
 import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson.BUS;

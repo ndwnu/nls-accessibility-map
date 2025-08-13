@@ -72,10 +72,13 @@ public class AccessibilityReasonsMapper {
         if (!RESTRICTION_MAPPERS.containsKey(trafficSign.trafficSignType())) {
             throw new IllegalArgumentException("Traffic sign type " + trafficSign.trafficSignType() + " is not supported");
         }
-        return AccessibilityReason.builder()
+        List<AccessibilityRestriction> restrictions = RESTRICTION_MAPPERS.get(trafficSign.trafficSignType()).apply(trafficSign);
+        AccessibilityReason reason = AccessibilityReason.builder()
                 .trafficSign(trafficSign)
-                .restrictions(RESTRICTION_MAPPERS.get(trafficSign.trafficSignType()).apply(trafficSign))
+                .restrictions(restrictions)
                 .build();
+        restrictions.forEach(r -> r.setAccessibilityReason(reason));
+        return reason.withRestrictions(restrictions);
     }
 
 

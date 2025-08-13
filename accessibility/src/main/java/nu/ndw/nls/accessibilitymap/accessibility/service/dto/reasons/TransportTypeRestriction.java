@@ -16,9 +16,11 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.T
 import java.util.List;
 import java.util.Set;
 import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import org.apache.commons.collections4.CollectionUtils;
 
-@Builder
+@SuperBuilder(toBuilder = true)
 public class TransportTypeRestriction extends AccessibilityRestriction<Set<TransportType>> {
 
     private static final List<TransportType> TRANSPORT_TYPES = List.of(PEDESTRIAN,
@@ -51,15 +53,8 @@ public class TransportTypeRestriction extends AccessibilityRestriction<Set<Trans
     }
 
     @Override
-    public boolean isMoreRestrictiveThan(AccessibilityRestriction<Set<TransportType>> other) {
+    public boolean isEqual(AccessibilityRestriction<Set<TransportType>> other) {
         ensureSameType(other);
-        return getValue().size() > other.getValue().size();
-
-        //        if (other.getValue().size() > getValue().size()) {
-//            return false;
-//        }
-//        int sumIndex = getValue().stream().mapToInt(TRANSPORT_TYPES::indexOf).sum();
-//        int otherSumIndex = other.getValue().stream().mapToInt(TRANSPORT_TYPES::indexOf).sum();
-//        return sumIndex < otherSumIndex;
+        return CollectionUtils.isEqualCollection(getValue(), other.getValue());
     }
 }

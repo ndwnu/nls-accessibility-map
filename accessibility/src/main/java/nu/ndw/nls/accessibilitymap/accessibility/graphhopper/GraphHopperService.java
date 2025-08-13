@@ -49,7 +49,7 @@ public class GraphHopperService {
             OffsetDateTime start = OffsetDateTime.now();
 
             networkGraphHopper = graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
-            createChGraph();
+           // createChGraph();
             log.info("GraphHopper network loaded from disk in {}ms", Duration.between(start, OffsetDateTime.now()).toMillis());
         } catch (IOException | GraphHopperNotImportedException exception) {
             RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();

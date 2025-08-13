@@ -1,9 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons;
 
-import lombok.Builder;
+import java.util.Objects;
+import lombok.experimental.SuperBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 
-@Builder
+@SuperBuilder(toBuilder = true)
 public class MaximumRestriction extends AccessibilityRestriction<Maximum> {
 
 
@@ -22,8 +23,8 @@ public class MaximumRestriction extends AccessibilityRestriction<Maximum> {
     }
 
     @Override
-    public boolean isMoreRestrictiveThan(AccessibilityRestriction<Maximum> other) {
+    public boolean isEqual(AccessibilityRestriction<Maximum> other) {
         ensureSameType(other);
-        return !value.isExceeding(other.getValue().value(), false);
+        return Objects.equals(getValue().value(), other.getValue().value());
     }
 }

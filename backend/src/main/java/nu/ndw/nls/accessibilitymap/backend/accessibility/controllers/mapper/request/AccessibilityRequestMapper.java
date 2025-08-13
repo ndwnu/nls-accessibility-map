@@ -6,6 +6,8 @@ import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Component;

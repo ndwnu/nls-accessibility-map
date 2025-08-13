@@ -1,5 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+@SuperBuilder(toBuilder = true)
 public abstract class AccessibilityRestriction<VALUE_TYPE> {
 
     public enum RestrictionType {
@@ -11,13 +16,15 @@ public abstract class AccessibilityRestriction<VALUE_TYPE> {
         FUEL_TYPE,
         VEHICLE_TYPE
     }
-
+    @Setter
+    @Getter
+    private AccessibilityReason accessibilityReason;
 
     public abstract RestrictionType getTypeOfRestriction();
 
     public abstract VALUE_TYPE getValue();
 
-    public abstract boolean isMoreRestrictiveThan(AccessibilityRestriction<VALUE_TYPE> other);
+    public abstract boolean isEqual(AccessibilityRestriction<VALUE_TYPE> other);
 
     protected void ensureSameType(AccessibilityRestriction<VALUE_TYPE> other) {
         if (!getTypeOfRestriction().equals(other.getTypeOfRestriction())) {

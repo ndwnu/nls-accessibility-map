@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
