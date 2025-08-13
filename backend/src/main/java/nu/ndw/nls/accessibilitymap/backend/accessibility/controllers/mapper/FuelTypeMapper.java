@@ -21,4 +21,10 @@ public class FuelTypeMapper {
                     .orElseThrow(() -> new IllegalArgumentException("Invalid fuel type: %s".formatted(fuelTypeJson.name())));
         }
     }
+
+    public FuelTypeJson mapFuelTypeJson(FuelType fuelType) {
+        return Enums.getIfPresent(FuelTypeJson.class, fuelType.name())
+                .toJavaUtil().orElseThrow(() ->
+                        new IllegalArgumentException("Invalid fuel type: %s".formatted(fuelType.name())));
+    }
 }

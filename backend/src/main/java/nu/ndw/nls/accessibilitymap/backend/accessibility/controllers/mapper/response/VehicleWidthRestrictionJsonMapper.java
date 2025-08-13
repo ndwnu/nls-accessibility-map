@@ -20,16 +20,9 @@ public class VehicleWidthRestrictionJsonMapper extends AccessibilityRestrictionJ
     public RestrictionJson mapToRestrictionJson(MaximumRestriction accessibilityRestriction) {
         return new VehicleWidthRestrictionJson()
                 .type(TypeEnum.VEHICLE_WIDTH_RESTRICTION)
-                .value(mapToValue(accessibilityRestriction))
+                .value(DecimalValueMapper.mapToValue(accessibilityRestriction.getValue().value(), CM_TO_METRES))
                 .condition(RestrictionConditionJson.GREATER_THAN_OR_EQUALS)
                 .unitSymbol(RestrictionUnitSymbolJson.METRE);
-    }
-
-    private static BigDecimal mapToValue(MaximumRestriction accessibilityRestriction) {
-        return BigDecimal.valueOf(accessibilityRestriction
-                        .getValue().value())
-                .movePointLeft(CM_TO_METRES)
-                .setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override

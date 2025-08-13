@@ -9,8 +9,10 @@ import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleType
 import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson.TRUCK;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
@@ -33,6 +35,10 @@ public class TransportTypeMapper {
             TRACTOR, TransportType.TRACTOR
     );
 
+    private static final Map<TransportType, VehicleTypeJson> transportTypeToVehicleTypeMap = vehicleTypeToTransportTypeMap.entrySet()
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+
     /**
      * Maps the provided {@link VehicleArguments} to a set of {@link TransportType}. It determines the transport types based on the given
      * vehicle type and whether the vehicle has a trailer or not.
@@ -50,5 +56,12 @@ public class TransportTypeMapper {
             transportTypes.add(vehicleTypeToTransportTypeMap.get(vehicleArguments.vehicleType()));
         }
         return transportTypes;
+    }
+
+    public List<VehicleTypeJson> mapTransportTypeToJson(Set<TransportType> transportTypeSet) {
+        return transportTypeSet.stream()
+                .filter(transportTypeToVehicleTypeMap::containsKey)
+                .map(transportTypeToVehicleTypeMap::get)
+                .toList();
     }
 }
