@@ -60,6 +60,7 @@ class AccessibilityResponseMapperTest {
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .backwardAccessible(true)
                 .forwardAccessible(true)
+                .reasons(List.of())
                 .build();
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
@@ -86,6 +87,7 @@ class AccessibilityResponseMapperTest {
         final MatchedRoadSectionJson expectedMatchedRoadSectionJson = MatchedRoadSectionJson.builder()
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .backwardAccessible(true)
+                .reasons(List.of())
                 .build();
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
@@ -113,6 +115,7 @@ class AccessibilityResponseMapperTest {
         final MatchedRoadSectionJson expectedMatchedRoadSectionJson = MatchedRoadSectionJson.builder()
                 .roadSectionId((int) ROAD_SECTION_ID)
                 .forwardAccessible(true)
+                .reasons(List.of())
                 .build();
 
         assertThat(result).isEqualTo(AccessibilityMapResponseJson

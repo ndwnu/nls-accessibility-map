@@ -55,6 +55,11 @@
       "backwardAccessible": false
     },
     {
+      "roadSectionId": 309326149,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 309327043,
       "forwardAccessible": false,
       "backwardAccessible": false
@@ -68,6 +73,10 @@
       "roadSectionId": 309329051,
       "forwardAccessible": false,
       "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310325024,
+      "forwardAccessible": false
     },
     {
       "roadSectionId": 310325038,
@@ -302,6 +311,19 @@
       "backwardAccessible": false
     },
     {
+      "roadSectionId": 600980773,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600980774,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600980775,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 600980862,
       "forwardAccessible": false,
       "backwardAccessible": false
@@ -329,6 +351,21 @@
       "forwardAccessible": false
     },
     {
+      "roadSectionId": 601183277,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 601183278,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 601183280,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 601184997,
       "forwardAccessible": false
     },
@@ -343,8 +380,31 @@
     }
   ],
   "matchedRoadSection": {
-    "roadSectionId": 308326115,
-    "forwardAccessible": true,
-    "backwardAccessible": true
+    "reasons": [
+      [
+        {
+          "trafficSignId": "b67d4611-b6b5-410d-a2aa-098a266de032",
+          "trafficSignType": "C12",
+          "restrictions": [
+            {
+              "type": "VehicleTypeRestriction",
+              "unitSymbol": "enum",
+              "condition": "equals",
+              "values": [
+                "bus",
+                "car",
+                "light_commercial_vehicle",
+                "motorcycle",
+                "tractor",
+                "truck"
+              ]
+            }
+          ]
+        }
+      ]
+    ],
+    "roadSectionId": 307324006,
+    "forwardAccessible": false,
+    "backwardAccessible": false
   }
 }

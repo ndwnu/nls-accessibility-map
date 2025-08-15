@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,6 +42,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -174,7 +176,7 @@ class AccessibilityMapApiDelegateImpTest {
     @MethodSource("provideCorrectEmissionZoneParameters")
     void getInaccessibleRoadSections(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
-        setUpFixture(emissionClassJson, fuelTypeJson);
+        setUpFixture(emissionClassJson, fuelTypeJson, true);
 
         when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
         when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
@@ -212,7 +214,7 @@ class AccessibilityMapApiDelegateImpTest {
     @MethodSource("provideCorrectEmissionZoneParameters")
     void getRoadSections(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
-        setUpFixture(emissionClassJson, fuelTypeJson);
+        setUpFixture(emissionClassJson, fuelTypeJson, true);
         when(pointMapper.mapCoordinate(REQUESTED_LATITUDE, REQUESTED_LONGITUDE)).thenReturn(Optional.of(requestedPoint));
         when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
         when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
@@ -244,10 +246,8 @@ class AccessibilityMapApiDelegateImpTest {
             null,   null
             """)
     void getRoadSections_noStartLocation(Double requestedLatitude, Double requestedLongitude) {
-
-        setUpFixture(EmissionClassJson.EURO_1, FuelTypeJson.ETHANOL);
-
         boolean expectStartPoint = Objects.nonNull(requestedLatitude) && Objects.nonNull(requestedLongitude);
+        setUpFixture(EmissionClassJson.EURO_1, FuelTypeJson.ETHANOL, expectStartPoint);
 
         if (expectStartPoint) {
             when(pointMapper.mapCoordinate(requestedLatitude, requestedLongitude)).thenReturn(Optional.of(requestedPoint));
@@ -279,8 +279,7 @@ class AccessibilityMapApiDelegateImpTest {
         }
     }
 
-    private void setUpFixture(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
-
+    private void setUpFixture(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson, boolean expectPoint) {
         when(clockService.now()).thenReturn(timestamp);
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
@@ -298,7 +297,7 @@ class AccessibilityMapApiDelegateImpTest {
                         .vehicleHasTrailer(false)
                         .emissionClass(emissionClassJson)
                         .fuelType(fuelTypeJson)
-                        .build(), null))
+                        .build(), expectPoint ? requestedPoint : null))
                 .thenReturn(accessibilityRequest);
 
         when(municipalityService.getMunicipalityById(MUNICIPALITY_ID)).thenReturn(municipality);
