@@ -5,23 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.FuelTypeRestriction;
 import org.springframework.stereotype.Component;
 
 /**
- * The FuelTypeRestrictionReducer class is a concrete implementation of the
- * AccessibilityRestrictionReducer abstract class for FuelTypeRestriction objects.
- * It is responsible for reducing a list of FuelTypeRestriction objects into their
- * corresponding AccessibilityReasons by filtering out duplicates based on their properties.
- * This ensures only unique fuel type restrictions contribute to the accessibility reasons list.
+ * The FuelTypeRestrictionReducer class is a concrete implementation of the AccessibilityRestrictionReducer abstract class for
+ * FuelTypeRestriction objects. It is responsible for reducing a list of FuelTypeRestriction objects into their corresponding
+ * AccessibilityReasons by filtering out duplicates based on their properties. This ensures only unique fuel type restrictions contribute to
+ * the accessibility reasons list.
  */
 @Component
 public class FuelTypeRestrictionReducer extends AccessibilityRestrictionReducer<FuelTypeRestriction> {
 
     /**
-     * Reduces a given list of FuelTypeRestriction objects by filtering out any duplicates
-     * based on their properties and returns a corresponding list of AccessibilityReason objects.
+     * Reduces a given list of FuelTypeRestriction objects by filtering out any duplicates based on their properties and returns a
+     * corresponding list of AccessibilityReason objects.
      *
      * @param restrictions a list of FuelTypeRestriction objects to be reduced for unique restrictions
      * @return a list of AccessibilityReason objects derived from the unique FuelTypeRestriction objects
@@ -39,7 +37,9 @@ public class FuelTypeRestrictionReducer extends AccessibilityRestrictionReducer<
                     .ifPresent(f -> uniqueFuelTypeRestrictions.add(fuelTypeRestriction));
         }
         return uniqueFuelTypeRestrictions.stream()
-                .map(AccessibilityRestriction::getAccessibilityReason)
+                // create a new reason for each unique restriction
+                .map(r -> r.getAccessibilityReason()
+                        .withRestrictions(List.of(r)))
                 .toList();
     }
 

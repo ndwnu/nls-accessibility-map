@@ -24,13 +24,13 @@ public class AccessibilityReasonsJsonMapper {
                 .collect(Collectors.toMap(AccessibilityRestrictionJsonMapper::mapperForType, Function.identity()));
     }
 
-    List<List<ReasonJson>> mapToReasonJson(List<List<AccessibilityReason>> reasons) {
+    public List<List<ReasonJson>> mapToReasonJson(List<List<AccessibilityReason>> reasons) {
 
         return reasons.stream()
                 .map(reasonsList -> reasonsList.stream()
                         .map(reason -> new ReasonJson()
-                                .trafficSignId(UUID.fromString(reason.trafficSign().externalId()))
-                                .trafficSignType(TrafficSignTypeJson.valueOf(reason.trafficSign().trafficSignType().getRvvCode()))
+                                .trafficSignId(UUID.fromString(reason.externalId()))
+                                .trafficSignType(TrafficSignTypeJson.valueOf(reason.trafficSignType().getRvvCode()))
                                 .restrictions(mapToRestrictionsJson(reason.restrictions()))
                         ).toList())
                 .toList();
