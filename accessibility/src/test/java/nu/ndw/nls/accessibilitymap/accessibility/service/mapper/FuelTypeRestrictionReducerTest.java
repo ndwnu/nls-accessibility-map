@@ -21,9 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class FuelTypeRestrictionReducerTest {
 
-
     private FuelTypeRestrictionReducer fuelTypeRestrictionReducer;
-
 
     @BeforeEach
     void setUp() {
@@ -37,7 +35,6 @@ class FuelTypeRestrictionReducerTest {
                 .builder()
                 .value(Set.of(TransportType.CAR))
                 .build();
-
         FuelTypeRestriction fuelTypeRestriction1 = createFuelTypeRestriction(Set.of(FuelType.ELECTRIC));
         FuelTypeRestriction fuelTypeRestriction2 = createFuelTypeRestriction(Set.of(FuelType.DIESEL));
         AccessibilityReason accessibilityReason1 = createAccessibilityReason(List.of(transportTypeRestriction1, fuelTypeRestriction1));
@@ -55,7 +52,7 @@ class FuelTypeRestrictionReducerTest {
     }
 
     @Test
-    public void reduceRestrictions_not_unique() {
+    public void reduceRestrictions_notUnique() {
         FuelTypeRestriction fuelTypeRestriction1 = createFuelTypeRestriction(Set.of(FuelType.DIESEL));
         FuelTypeRestriction fuelTypeRestriction2 = createFuelTypeRestriction(Set.of(FuelType.DIESEL));
         AccessibilityReason accessibilityReason1 = createAccessibilityReason(List.of(fuelTypeRestriction1));
