@@ -53,7 +53,10 @@ public class TransportTypeRestrictionReducer extends AccessibilityRestrictionRed
                     .ifPresent(t -> uniqueTransportTypeRestrictions.add(fuelTypeRestriction));
         }
         return uniqueTransportTypeRestrictions.stream()
-                .map(AccessibilityRestriction::getAccessibilityReason)
+                // create a new reason for each unique restriction
+                .map(r-> r.getAccessibilityReason()
+                        .withRestrictions(List.of(r)))
+
                 .toList();
     }
 

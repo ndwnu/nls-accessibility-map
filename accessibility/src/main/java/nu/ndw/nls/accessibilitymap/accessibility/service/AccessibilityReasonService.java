@@ -30,18 +30,14 @@ import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
 /**
- * Service class responsible for calculating and retrieving accessibility reasons
- * based on specific accessibility requests.
+ * Service class responsible for calculating and retrieving accessibility reasons based on specific accessibility requests.
  * <p>
- * This service uses various components such as traffic sign data, mapping services,
- * and routing algorithms to analyse accessibility-related obstacles and provide detailed
- * reasons for accessibility issues in a given route or area.
+ * This service uses various components such as traffic sign data, mapping services, and routing algorithms to analyse accessibility-related
+ * obstacles and provide detailed reasons for accessibility issues in a given route or area.
  * <p>
- * Responsibilities of this service include:
- * - Querying traffic signs applicable to a given accessibility request.
- * - Mapping traffic sign data to relevant segments of a network graph.
- * - Calculating routes and accessing alternative paths using routing algorithms.
- * - Correlating route paths and traffic signs to deduce accessibility reasons.
+ * Responsibilities of this service include: - Querying traffic signs applicable to a given accessibility request. - Mapping traffic sign
+ * data to relevant segments of a network graph. - Calculating routes and accessing alternative paths using routing algorithms. -
+ * Correlating route paths and traffic signs to deduce accessibility reasons.
  */
 @Service
 @Slf4j
@@ -59,13 +55,13 @@ public class AccessibilityReasonService {
     /**
      * Calculates accessibility reasons for a given accessibility request.
      * <p>
-     * This method identifies and evaluates traffic signs blocking accessibility
-     * within the specified route points and generates corresponding accessibility reasons.
+     * This method identifies and evaluates traffic signs blocking accessibility within the specified route points and generates
+     * corresponding accessibility reasons.
      *
-     * @param accessibilityRequest the accessibility request containing details
-     * such as start location, end location, and filter criteria to retrieve blocking traffic signs.
-     * @return a list of lists containing identified accessibility reasons. Each list corresponds
-     * to a set of reasons associated with a particular section or segment of the route.
+     * @param accessibilityRequest the accessibility request containing details such as start location, end location, and filter criteria to
+     *                             retrieve blocking traffic signs.
+     * @return a list of lists containing identified accessibility reasons. Each list corresponds to a set of reasons associated with a
+     * particular section or segment of the route.
      */
     public List<List<AccessibilityReason>> getReasons(AccessibilityRequest accessibilityRequest) {
         log.debug("Calculating accessibility reasons for request: {}", accessibilityRequest);
@@ -102,9 +98,15 @@ public class AccessibilityReasonService {
         AlgorithmOptions algorithmOptions = algorithmOptionsFactory.createAlgorithmOptions();
         RoutingAlgorithm router = routingAlgorithmFactory.createAlgo(queryGraph, weighting,
                 algorithmOptions);
-        List<Path> routes = router.calcPaths(startSegment.getClosestNode(), endSegment.getClosestNode());
+        List<Path> routes = router.calcPaths(startSegment.getClosestNode(), endSegment.getClosestNode()).stream()
+                .filter(Path::isFound)
+                .toList();
         log.debug("Calculating routes took: {} ms", stopwatch.elapsed().toMillis());
-        return pathsToReasonsMapper.mapRoutesToReasons(routes, accessibilityReasons, networkGraphHopper);
+        if (routes.isEmpty()) {
+            log.warn("No routes found for request: {}", routePoints);
+            return List.of();
+        }
+        return pathsToReasonsMapper.mapRoutesToReasons(routes, accessibilityReasons, networkGraphHopper.getEncodingManager());
 
     }
 

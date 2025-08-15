@@ -20,13 +20,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @SuperBuilder(toBuilder = true)
 public class FuelTypeRestriction extends AccessibilityRestriction<Set<FuelType>> {
 
-    private static List<FuelType> FUEL_TYPES = List.of(ELECTRIC, HYDROGEN,
-            ETHANOL,
-            COMPRESSED_NATURAL_GAS,
-            LIQUEFIED_PETROLEUM_GAS,
-            LIQUEFIED_NATURAL_GAS,
-            PETROL,
-            DIESEL, UNKNOWN);
+
     private final Set<FuelType> value;
 
 

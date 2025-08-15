@@ -13,8 +13,8 @@ public class AccessibilityReasons {
 
     private AccessibilityReasons(List<AccessibilityReason> reasons) {
         this.reasonsByRoadSectionId = reasons.stream()
-                .collect(groupingBy(r -> r.trafficSign().roadSectionId(),
-                        groupingBy(r -> r.trafficSign().direction())));
+                .collect(groupingBy(AccessibilityReason::roadSectionId,
+                        groupingBy(AccessibilityReason::direction)));
     }
 
     public List<AccessibilityReason> getReasonsByRoadSectionAndDirection(int roadSectionId, Direction direction) {

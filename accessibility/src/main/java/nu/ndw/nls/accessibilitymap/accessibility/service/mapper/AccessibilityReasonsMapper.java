@@ -74,7 +74,10 @@ public class AccessibilityReasonsMapper {
         }
         List<AccessibilityRestriction> restrictions = RESTRICTION_MAPPERS.get(trafficSign.trafficSignType()).apply(trafficSign);
         AccessibilityReason reason = AccessibilityReason.builder()
-                .trafficSign(trafficSign)
+                .externalId(trafficSign.externalId())
+                .direction(trafficSign.direction())
+                .trafficSignType(trafficSign.trafficSignType())
+                .roadSectionId(trafficSign.roadSectionId())
                 .restrictions(restrictions)
                 .build();
         restrictions.forEach(r -> r.setAccessibilityReason(reason));
