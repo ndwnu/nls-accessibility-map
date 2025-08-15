@@ -1,7 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.MaximumRestriction;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RestrictionConditionJson;
