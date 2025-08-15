@@ -62,7 +62,7 @@
     <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-24970 -->
-    <netty.version>4.1.118.Final</netty.version>
+    <netty.version>4.2.4.Final</netty.version>
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2024-57699 -->
     <json-smart.version>2.6.0</json-smart.version>
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-48976 -->
