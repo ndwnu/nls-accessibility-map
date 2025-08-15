@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.res
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.TransportTypeRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.TransportTypeMapper;
