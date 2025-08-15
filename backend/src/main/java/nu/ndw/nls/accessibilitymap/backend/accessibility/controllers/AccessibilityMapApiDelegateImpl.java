@@ -70,8 +70,9 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
 
+        Optional<Point> requestedEndPoint = mapEndpoint(latitude, longitude);
         NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
-        Integer requestedRoadSectionId = mapEndpoint(latitude, longitude)
+        Integer requestedRoadSectionId = requestedEndPoint
                 .flatMap(point -> matchStartPoint(networkGraphHopper, point))
                 .map(CandidateMatch::getMatchedLinkId)
                 .orElse(null);
@@ -83,8 +84,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHasTrailer, emissionClass, fuelType);
 
         AccessibilityRequest accessibilityRequest = mapToAccessibilityRequest(municipalityId, requestArguments,
-                mapEndpoint(latitude, longitude)
-                        .orElse(null));
+                requestedEndPoint.orElse(null));
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
         List<List<AccessibilityReason>> reasons =
@@ -122,8 +122,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHasTrailer, emissionClass, fuelType);
 
         AccessibilityRequest accessibilityRequest = mapToAccessibilityRequest(municipalityId, requestArguments,
-                mapEndpoint(latitude, longitude)
-                        .orElse(null));
+                requestedStartPoint.orElse(null));
+
         Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
         return ResponseEntity.ok(
                 roadSectionFeatureCollectionMapper.map(

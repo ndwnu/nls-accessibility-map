@@ -83,6 +83,8 @@ public class AccessibilityService {
                     accessibleRoadsSectionsWithoutAppliedRestrictions,
                     false);
 
+
+            // missingRoadSections.stream().map(RoadSection::getId).filter(r->r==601185121).toList()
             accessibleRoadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
             accessibleRoadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
         }

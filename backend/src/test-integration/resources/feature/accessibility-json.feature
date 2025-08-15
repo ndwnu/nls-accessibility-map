@@ -30,14 +30,14 @@ Feature: Inaccessible road sections JSON endpoint
   Scenario: accessibility map request with latitude and longitude specified should return 200
     Given path '/v1/municipalities/GM0307/road-sections'
     And param vehicleType = 'truck'
-    And param vehicleLength = 5
+    And param vehicleLength = 10
     And param vehicleWidth = 3
-    And param vehicleHeight = 2
-    And param vehicleWeight = 4
-    And param vehicleAxleLoad = 3
+    And param vehicleHeight = 3.5
+    And param vehicleWeight = 60
+    And param vehicleAxleLoad = 12
     And param vehicleHasTrailer = false
-    And param latitude = 52.15551237
-    And param longitude = 5.37886419
+    And param latitude = 52.14927097
+    And param longitude = 5.36546852
     And method GET
     Then status 200
     And match response == okResponseWithMatchedRoadSection
