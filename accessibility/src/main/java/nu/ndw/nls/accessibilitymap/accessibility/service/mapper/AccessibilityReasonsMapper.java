@@ -87,7 +87,7 @@ public class AccessibilityReasonsMapper {
 
     private static List<AccessibilityRestriction> mapVehicleHeight(TrafficSign trafficSign) {
         return List.of(MaximumRestriction.builder()
-                .value(trafficSign.restrictions().vehicleWeightInKg())
+                .value(trafficSign.restrictions().vehicleHeightInCm())
                 .restrictionType(RestrictionType.VEHICLE_HEIGHT)
                 .build());
     }
