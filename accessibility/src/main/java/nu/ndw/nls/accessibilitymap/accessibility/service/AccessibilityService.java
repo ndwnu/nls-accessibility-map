@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
@@ -9,18 +10,25 @@ import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
@@ -46,20 +54,22 @@ public class AccessibilityService {
 
     private final MissingRoadSectionProvider missingRoadSectionProvider;
 
+    private final AccessibilityReasonService accessibilityReasonService;
+
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(
             NetworkGraphHopper networkGraphHopper,
             AccessibilityRequest accessibilityRequest) {
 
-        var startSegment = networkGraphHopper.getLocationIndex()
-                .findClosest(
-                        accessibilityRequest.startLocationLatitude(),
-                        accessibilityRequest.startLocationLongitude(),
-                        EdgeFilter.ALL_EDGES);
+        var from = findSnap(
+                networkGraphHopper,
+                accessibilityRequest.startLocationLatitude(),
+                accessibilityRequest.startLocationLongitude());
+
         var trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
         var networkData = networkCacheDataService.getNetworkData(
                 accessibilityRequest.municipalityId(),
-                startSegment,
+                from,
                 accessibilityRequest.searchRadiusInMeters(),
                 trafficSigns,
                 networkGraphHopper);
@@ -74,7 +84,7 @@ public class AccessibilityService {
                         accessibilityRequest,
                         isochroneService,
                         networkData.queryGraph(),
-                        startSegment,
+                        from,
                         buildWeightingWithRestrictions(networkGraphHopper, networkData.edgeRestrictions().getBlockedEdges()));
 
         if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
@@ -83,23 +93,86 @@ public class AccessibilityService {
                     accessibleRoadsSectionsWithoutAppliedRestrictions,
                     false);
 
-
-            // missingRoadSections.stream().map(RoadSection::getId).filter(r->r==601185121).toList()
             accessibleRoadsSectionsWithoutAppliedRestrictions.addAll(missingRoadSections);
             accessibleRoadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
         }
 
-        var accessibility = Accessibility.builder()
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
-                .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
-                .combinedAccessibility(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                        accessibleRoadsSectionsWithoutAppliedRestrictions, accessibleRoadSectionsWithAppliedRestrictions))
-                .build();
+        var accessibility = buildAccessibility(
+                accessibilityRequest,
+                accessibleRoadsSectionsWithoutAppliedRestrictions,
+                accessibleRoadSectionsWithAppliedRestrictions,
+                networkData,
+                trafficSigns);
 
         log.info("Accessibility calculation done. It took: %s ms"
                 .formatted(MILLIS.between(startTimeCalculatingAccessibility, clockService.now())));
         return accessibility;
     }
+
+    private Accessibility buildAccessibility(
+            AccessibilityRequest accessibilityRequest,
+            Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
+            Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions,
+            NetworkData networkData,
+            List<TrafficSign> trafficSigns) {
+
+        var combinedRestrictions = roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+                accessibleRoadsSectionsWithoutAppliedRestrictions,
+                accessibleRoadSectionsWithAppliedRestrictions);
+
+        var toRoadSection = findDestinationRoadSection(
+                accessibilityRequest,
+                networkData.networkGraphHopper(),
+                combinedRestrictions);
+
+        var reasons = calculateReasons(accessibilityRequest, networkData, toRoadSection, trafficSigns);
+
+        return Accessibility.builder()
+                .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
+                .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
+                .combinedAccessibility(combinedRestrictions)
+                .toRoadSection(toRoadSection.orElse(null))
+                .reasons(reasons)
+                .build();
+    }
+
+    @SuppressWarnings("java:S3553")
+    private List<List<AccessibilityReason>> calculateReasons(
+            AccessibilityRequest accessibilityRequest,
+            NetworkData networkData, Optional<RoadSection> toRoadSection,
+            List<TrafficSign> trafficSigns) {
+
+        return toRoadSection
+                .filter(RoadSection::isRestrictedInAnyDirection)
+                .map(roadSection -> accessibilityReasonService.calculateReasons(accessibilityRequest, networkData, trafficSigns))
+                .orElse(Collections.emptyList());
+    }
+
+    private static Snap findSnap(NetworkGraphHopper networkGraphHopper, Double latitude, Double longitude) {
+
+        return networkGraphHopper.getLocationIndex().findClosest(latitude, longitude, EdgeFilter.ALL_EDGES);
+    }
+
+    private Optional<RoadSection> findDestinationRoadSection(
+            AccessibilityRequest accessibilityRequest,
+            NetworkGraphHopper networkGraphHopper,
+            Collection<RoadSection> combinedRoadSections) {
+
+        if(Objects.isNull(accessibilityRequest.endLocationLatitude()) || Objects.isNull(accessibilityRequest.endLocationLongitude())) {
+            return Optional.empty();
+        }
+
+        var destinationSnap = findSnap(
+                networkGraphHopper,
+                accessibilityRequest.endLocationLatitude(),
+                accessibilityRequest.endLocationLongitude());
+
+        var roadSectionId = destinationSnap.getClosestEdge().get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+        return combinedRoadSections.stream()
+                .filter(roadSection -> roadSection.getId() == roadSectionId)
+                .findFirst();
+    }
+
 
     private Collection<RoadSection> getRoadSections(
             AccessibilityRequest accessibilityRequest,
