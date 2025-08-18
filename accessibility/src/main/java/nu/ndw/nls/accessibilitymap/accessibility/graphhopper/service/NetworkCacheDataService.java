@@ -70,6 +70,7 @@ public class NetworkCacheDataService {
     private Collection<RoadSection> allBaseAccessibility;
 
     public void create(TrafficSigns trafficSigns, NetworkGraphHopper networkGraphHopper) {
+
         List<TrafficSignSnap> trafficSignSnapList = trafficSignSnapMapper.map(trafficSigns, networkGraphHopper);
         Map<String, TrafficSignSnap> newTrafficSignSnaps = trafficSignSnapList.stream()
                 .collect(Collectors.toMap(t -> t.getTrafficSign().externalId(),
@@ -103,6 +104,7 @@ public class NetworkCacheDataService {
             EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(getQueryGraph(),
                     networkGraphHopper.getEncodingManager(), snappedTrafficSigns);
             return NetworkData.builder()
+                    .networkGraphHopper(networkGraphHopper)
                     .edgeRestrictions(edgeRestrictions)
                     .queryGraph(getQueryGraph())
                     .baseAccessibleRoads(
@@ -115,6 +117,7 @@ public class NetworkCacheDataService {
     }
 
     private List<TrafficSignSnap> getTrafficSignSnaps(List<String> trafficSignsIds) {
+
         return trafficSignsIds.stream()
                 .filter(trafficSignSnaps::containsKey)
                 .map(trafficSignSnaps::get)
@@ -171,6 +174,7 @@ public class NetworkCacheDataService {
 
     private Collection<RoadSection> calculateBaseAccessibility(Integer municipalityId, Snap snappedPoint, double searchRadiusInMeters,
             NetworkGraphHopper networkGraphHopper) {
+
         IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
         return roadSectionMapper.mapToRoadSections(
                 isochroneService.getIsochroneMatchesByMunicipalityId(

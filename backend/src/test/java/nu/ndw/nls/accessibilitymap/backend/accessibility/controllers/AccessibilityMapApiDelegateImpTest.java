@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -180,8 +179,7 @@ class AccessibilityMapApiDelegateImpTest {
         when(pointMatchService.match(networkGraphHopper, requestedPoint)).thenReturn(Optional.of(startPoint));
         when(startPoint.getMatchedLinkId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
 
-        when(accessibilityResponseMapper.map(accessibility, REQUESTED_ROAD_SECTION_ID, Collections.emptyList()))
-                .thenReturn(accessibilityMapResponseJson);
+        when(accessibilityResponseMapper.map(accessibility)).thenReturn(accessibilityMapResponseJson);
 
         ResponseEntity<AccessibilityMapResponseJson> response = accessibilityMapApiDelegate.getInaccessibleRoadSections(
                 MUNICIPALITY_ID,

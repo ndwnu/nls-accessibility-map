@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -18,17 +17,15 @@ public class AccessibilityResponseMapper {
 
     private final AccessibilityReasonsJsonMapper accessibilityReasonsJsonMapper;
 
-    public AccessibilityMapResponseJson map(Accessibility accessibility, Integer requestedRoadSectionId,
-            List<List<AccessibilityReason>> reasons) {
+    public AccessibilityMapResponseJson map(Accessibility accessibility) {
 
         List<RoadSectionJson> inaccessibleRoadSections = accessibility.combinedAccessibility().stream()
                 .filter(RoadSection::isRestrictedInAnyDirection)
                 .map(AccessibilityResponseMapper::mapToRoadSection)
                 .toList();
 
-        MatchedRoadSectionJson matchedRoadSection = Optional.ofNullable(requestedRoadSectionId)
-                .flatMap(roadSectionId -> findRoadSectionById(accessibility.combinedAccessibility(), (long) roadSectionId))
-                .map(roadSection -> mapToMatchedRoadSection(roadSection, reasons))
+        MatchedRoadSectionJson matchedRoadSection = Optional.ofNullable(accessibility.toRoadSection())
+                .map(roadSection -> mapToMatchedRoadSection(roadSection, accessibility.reasons()))
                 .orElse(null);
 
         return new AccessibilityMapResponseJson()
@@ -36,13 +33,8 @@ public class AccessibilityResponseMapper {
                 .matchedRoadSection(matchedRoadSection);
     }
 
-    private Optional<RoadSection> findRoadSectionById(Collection<RoadSection> roadSections, Long roadSectionId) {
-        return roadSections.stream()
-                .filter(roadSection -> roadSection.getId().equals(roadSectionId))
-                .findFirst();
-    }
-
     private static RoadSectionJson mapToRoadSection(RoadSection roadSection) {
+
         return RoadSectionJson
                 .builder()
                 .roadSectionId(Math.toIntExact(roadSection.getId()))
@@ -52,6 +44,7 @@ public class AccessibilityResponseMapper {
     }
 
     private MatchedRoadSectionJson mapToMatchedRoadSection(RoadSection roadSection, List<List<AccessibilityReason>> reasons) {
+
         return MatchedRoadSectionJson
                 .builder()
                 .roadSectionId(Math.toIntExact(roadSection.getId()))
@@ -60,5 +53,4 @@ public class AccessibilityResponseMapper {
                 .reasons(accessibilityReasonsJsonMapper.mapToReasonJson(reasons))
                 .build();
     }
-
 }

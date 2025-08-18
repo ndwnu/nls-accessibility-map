@@ -1,7 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +8,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityReasonServ
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request.AccessibilityRequestMapper;
@@ -72,10 +69,6 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
         Optional<Point> requestedEndPoint = mapEndpoint(latitude, longitude);
         NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
-        Integer requestedRoadSectionId = requestedEndPoint
-                .flatMap(point -> matchStartPoint(networkGraphHopper, point))
-                .map(CandidateMatch::getMatchedLinkId)
-                .orElse(null);
 
         VehicleArguments requestArguments = new VehicleArguments(
                 vehicleType,
@@ -87,12 +80,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 requestedEndPoint.orElse(null));
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
-        List<List<AccessibilityReason>> reasons =
-                requestedRoadSectionId == null || accessibility.matchedRoadSectionIsAccessible(requestedRoadSectionId)
-                        ? Collections.emptyList()
-                        : accessibilityReasonService.getReasons(accessibilityRequest);
 
-        return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility, requestedRoadSectionId, reasons));
+        return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility));
     }
 
     @Override
@@ -134,6 +123,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     }
 
     private AccessibilityRequest mapToAccessibilityRequest(String municipalityId, VehicleArguments vehicleArguments, Point endPoint) {
+
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
         return accessibilityRequestMapper.mapToAccessibilityRequest(clockService.now(), municipality, vehicleArguments, endPoint);
     }
