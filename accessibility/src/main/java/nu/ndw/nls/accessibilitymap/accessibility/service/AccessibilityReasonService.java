@@ -5,6 +5,7 @@ import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.routing.Path;
 import com.graphhopper.routing.RoutingAlgorithm;
 import com.graphhopper.routing.RoutingAlgorithmFactory;
+import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
@@ -62,9 +63,10 @@ public class AccessibilityReasonService {
         Snap startSegment = getStartSegment(accessibilityRequest, networkData.networkGraphHopper());
         Snap endSegment = getEndSegment(accessibilityRequest, networkData.networkGraphHopper());
 
+        QueryGraph queryGraph = QueryGraph.create(networkData.networkGraphHopper().getBaseGraph(), startSegment, endSegment);
         Weighting weighting = networkData.networkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
         AlgorithmOptions algorithmOptions = algorithmOptionsFactory.createAlgorithmOptions();
-        RoutingAlgorithm router = routingAlgorithmFactory.createAlgo(networkData.queryGraph(), weighting, algorithmOptions);
+        RoutingAlgorithm router = routingAlgorithmFactory.createAlgo(queryGraph, weighting, algorithmOptions);
         List<Path> routes = router.calcPaths(startSegment.getClosestNode(), endSegment.getClosestNode()).stream()
                 .filter(Path::isFound)
                 .toList();

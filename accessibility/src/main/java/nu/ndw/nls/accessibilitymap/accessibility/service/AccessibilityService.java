@@ -29,16 +29,23 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.Restricti
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.PointMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
+import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class AccessibilityService {
+
+    private final PointMatchService pointMatchService;
+
+    private final PointMapper pointMapper;
 
     private final IsochroneServiceFactory isochroneServiceFactory;
 
@@ -59,12 +66,19 @@ public class AccessibilityService {
     @Timed(description = "Time spent calculating accessibility")
     public Accessibility calculateAccessibility(
             NetworkGraphHopper networkGraphHopper,
-            AccessibilityRequest accessibilityRequest) {
+            AccessibilityRequest accessibilityRequest) throws AccessibilityException {
 
         var from = findSnap(
                 networkGraphHopper,
                 accessibilityRequest.startLocationLatitude(),
                 accessibilityRequest.startLocationLongitude());
+
+        if (Objects.isNull(from)) {
+            throw new AccessibilityException("Could not find a snap point for start location (%s, %s).".formatted(
+                    accessibilityRequest.startLocationLatitude(),
+                    accessibilityRequest.startLocationLongitude()
+            ));
+        }
 
         var trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
         var networkData = networkCacheDataService.getNetworkData(
@@ -148,9 +162,16 @@ public class AccessibilityService {
                 .orElse(Collections.emptyList());
     }
 
-    private static Snap findSnap(NetworkGraphHopper networkGraphHopper, Double latitude, Double longitude) {
+    private Snap findSnap(NetworkGraphHopper networkGraphHopper, Double latitude, Double longitude) {
 
-        return networkGraphHopper.getLocationIndex().findClosest(latitude, longitude, EdgeFilter.ALL_EDGES);
+        return pointMapper.mapCoordinate(latitude, longitude)
+                .flatMap(point -> pointMatchService.match(networkGraphHopper, point)
+                        .map(CandidateMatch::getSnappedPoint)
+                        .filter(Geometry::isValid)
+                        .map(snappedPoint -> networkGraphHopper.getLocationIndex().findClosest(
+                                snappedPoint.getY(),
+                                snappedPoint.getX(),
+                                EdgeFilter.ALL_EDGES))).orElse(null);
     }
 
     private Optional<RoadSection> findDestinationRoadSection(
@@ -158,7 +179,7 @@ public class AccessibilityService {
             NetworkGraphHopper networkGraphHopper,
             Collection<RoadSection> combinedRoadSections) {
 
-        if(Objects.isNull(accessibilityRequest.endLocationLatitude()) || Objects.isNull(accessibilityRequest.endLocationLongitude())) {
+        if (!accessibilityRequest.hasEndLocation()) {
             return Optional.empty();
         }
 
@@ -167,12 +188,19 @@ public class AccessibilityService {
                 accessibilityRequest.endLocationLatitude(),
                 accessibilityRequest.endLocationLongitude());
 
+        if (Objects.isNull(destinationSnap)) {
+            log.error("Could not find a snap point for end location (%s, %s).".formatted(
+                    accessibilityRequest.endLocationLatitude(),
+                    accessibilityRequest.endLocationLongitude()
+            ));
+            return Optional.empty();
+        }
+
         var roadSectionId = destinationSnap.getClosestEdge().get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
         return combinedRoadSections.stream()
                 .filter(roadSection -> roadSection.getId() == roadSectionId)
                 .findFirst();
     }
-
 
     private Collection<RoadSection> getRoadSections(
             AccessibilityRequest accessibilityRequest,

@@ -107,7 +107,7 @@ class AccessibilityRequestTest extends ValidationTest {
 
         accessibilityRequest = accessibilityRequest
                 .withEndLocationLatitude(latitude ? 1D : null)
-                .withEndLocationLongitude(longitude ? 1D : null);
+                .withEndLocationLongitude(longitude ? 2D : null);
         assertThat(accessibilityRequest.hasEndLocation()).isEqualTo(latitude && longitude);
     }
 
