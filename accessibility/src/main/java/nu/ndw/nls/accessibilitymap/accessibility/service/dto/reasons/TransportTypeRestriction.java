@@ -23,23 +23,6 @@ import org.apache.commons.collections4.CollectionUtils;
 @SuperBuilder(toBuilder = true)
 public class TransportTypeRestriction extends AccessibilityRestriction<Set<TransportType>> {
 
-    private static final List<TransportType> TRANSPORT_TYPES = List.of(PEDESTRIAN,
-            BICYCLE,
-            RIDERS,
-            CONDUCTORS,
-            MOPED,
-            MOTORCYCLE,
-            CAR,
-            TAXI,
-            DELIVERY_VAN,
-            BUS,
-            TRACTOR,
-            TRUCK
-    );
-//    VEHICLE_WITH_TRAILER,
-    //   TRAM,   CARAVAN,
-//    VEHICLE_WITH_DANGEROUS_SUPPLIES
-
     private final Set<TransportType> value;
 
     @Override
