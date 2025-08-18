@@ -7,7 +7,7 @@ import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 
 
-public class AccessibilityReasons {
+public final class AccessibilityReasons {
 
     private final Map<Integer, Map<Direction, List<AccessibilityReason>>> reasonsByRoadSectionId;
 

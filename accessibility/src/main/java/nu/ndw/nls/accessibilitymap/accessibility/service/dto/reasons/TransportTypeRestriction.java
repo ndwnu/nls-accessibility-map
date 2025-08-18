@@ -1,21 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.BICYCLE;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.BUS;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.CAR;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.CONDUCTORS;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.DELIVERY_VAN;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.MOPED;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.MOTORCYCLE;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.PEDESTRIAN;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.RIDERS;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.TAXI;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.TRACTOR;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.TRUCK;
-
-import java.util.List;
 import java.util.Set;
-import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import org.apache.commons.collections4.CollectionUtils;

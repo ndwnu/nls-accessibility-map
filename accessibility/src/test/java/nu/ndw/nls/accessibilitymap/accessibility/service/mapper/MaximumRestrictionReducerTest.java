@@ -51,8 +51,8 @@ class MaximumRestrictionReducerTest {
 
        assertThatThrownBy( ()->maximumRestrictionReducer.reduceRestrictions(
                List.of(maximumRestriction1, maximumRestriction2)))
-               .isInstanceOf(IllegalArgumentException.class)
-               .withFailMessage("Cannot reduce restrictions of different types");
+               .withFailMessage("Cannot reduce restrictions of different types")
+               .isInstanceOf(IllegalArgumentException.class);
     }
 
     public AccessibilityReason createAccessibilityReason(List<AccessibilityRestriction> restrictions) {

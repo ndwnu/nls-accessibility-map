@@ -25,6 +25,7 @@ class FuelTypeRestrictionReducerTest {
 
     @BeforeEach
     void setUp() {
+
         fuelTypeRestrictionReducer = new FuelTypeRestrictionReducer();
     }
 
@@ -52,7 +53,8 @@ class FuelTypeRestrictionReducerTest {
     }
 
     @Test
-    public void reduceRestrictions_notUnique() {
+    void reduceRestrictions_notUnique() {
+
         FuelTypeRestriction fuelTypeRestriction1 = createFuelTypeRestriction(Set.of(FuelType.DIESEL));
         FuelTypeRestriction fuelTypeRestriction2 = createFuelTypeRestriction(Set.of(FuelType.DIESEL));
         AccessibilityReason accessibilityReason1 = createAccessibilityReason(List.of(fuelTypeRestriction1));
@@ -67,12 +69,14 @@ class FuelTypeRestrictionReducerTest {
     }
 
     public AccessibilityReason createAccessibilityReason(List<AccessibilityRestriction> restrictions) {
+
         return AccessibilityReason.builder()
                 .restrictions(restrictions)
                 .build();
     }
 
     public FuelTypeRestriction createFuelTypeRestriction(Set<FuelType> fuelTypes) {
+
         return FuelTypeRestriction.builder()
                 .value(fuelTypes)
                 .build();
@@ -81,6 +85,7 @@ class FuelTypeRestrictionReducerTest {
 
     @Test
     void getType() {
+
         assertThat(fuelTypeRestrictionReducer.getType())
                 .isEqualTo(FuelTypeRestriction.class);
     }
