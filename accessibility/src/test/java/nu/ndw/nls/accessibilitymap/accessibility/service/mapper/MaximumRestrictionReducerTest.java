@@ -53,6 +53,7 @@ class MaximumRestrictionReducerTest {
 
        assertThatThrownBy( ()->maximumRestrictionReducer.reduceRestrictions(
                List.of(maximumRestriction1, maximumRestriction2)))
+               .withFailMessage("Cannot reduce restrictions of different types")
                .isInstanceOf(IllegalArgumentException.class)
                .hasMessage("All restrictions must be of the same type");
     }

@@ -140,6 +140,7 @@ class NetworkCacheDataServiceTest {
         NetworkData networkData = networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns,
                 networkGraphHopper);
         NetworkData expectedNetworkData = NetworkData.builder()
+                .networkGraphHopper(networkGraphHopper)
                 .queryGraph(queryGraph)
                 .edgeRestrictions(edgeRestrictions)
                 .baseAccessibleRoads(List.of(clonedRoadSection))
@@ -169,6 +170,7 @@ class NetworkCacheDataServiceTest {
                 networkGraphHopper);
 
         NetworkData expectedNetworkData = NetworkData.builder()
+                .networkGraphHopper(networkGraphHopper)
                 .queryGraph(queryGraph)
                 .edgeRestrictions(edgeRestrictions)
                 .baseAccessibleRoads(List.of(clonedRoadSection))
@@ -199,6 +201,7 @@ class NetworkCacheDataServiceTest {
         NetworkData networkData = networkCacheDataService.getNetworkData(MUNICIPALITY_ID, snap, SEARCH_RADIUS_IN_METERS, trafficSigns,
                 networkGraphHopper);
         NetworkData expectedNetworkData = NetworkData.builder()
+                .networkGraphHopper(networkGraphHopper)
                 .queryGraph(queryGraph)
                 .edgeRestrictions(edgeRestrictions)
                 .baseAccessibleRoads(List.of(clonedRoadSection))

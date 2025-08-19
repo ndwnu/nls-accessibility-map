@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.accessibility.service;
+package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
