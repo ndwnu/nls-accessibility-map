@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 /**
  * Service class responsible for calculating and retrieving accessibility reasons based on specific accessibility requests.
  * <p>
- * This service uses various components such as traffic sign data, mapping services, and routing algorithms to analyze accessibility-related
+ * This service uses various components such as traffic sign data, mapping services, and routing algorithms to analyse accessibility-related
  * obstacles and provide detailed reasons for accessibility issues in a given route or area.
  * <p>
  * Responsibilities of this service include: - Querying traffic signs applicable to a given accessibility request. - Mapping traffic sign

@@ -42,8 +42,9 @@ class VehicleTypeRestrictionJsonMapperTest {
         when(transportTypeMapper.mapTransportTypeToJson(Set.of(transportType))).thenReturn(List.of(vehicleTypeJson));
         RestrictionJson actual = mapper.mapToRestrictionJson(transportTypeRestriction);
 
-        assertThat(actual).isInstanceOf(VehicleTypeRestrictionJson.class);
-        assertThat(actual).isEqualTo(getExpected());
+        assertThat(actual)
+                .isInstanceOf(VehicleTypeRestrictionJson.class)
+                .isEqualTo(getExpected());
     }
 
     private VehicleTypeRestrictionJson getExpected() {

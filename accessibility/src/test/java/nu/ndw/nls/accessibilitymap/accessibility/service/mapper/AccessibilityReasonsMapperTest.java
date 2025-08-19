@@ -32,30 +32,40 @@ class AccessibilityReasonsMapperTest {
 
 
     private static final String EXTERNAL_ID = "id";
+
     private static final int ROAD_SECTION_ID = 1;
+
     private static final double VEHICLE_LENGTH_CM = 10d;
+
     private static final double VEHICLE_WIDTH_CM = 20D;
+
     private static final double VEHICLE_HEIGHT_CM = 30D;
+
     private static final double MAXIMUM_AXLE_LOAD = 40D;
+
     private static final double VEHICLE_WEIGHT = 3D;
+
     private AccessibilityReasonsMapper mapper;
 
     @BeforeEach
     void setUp() {
+
         mapper = new AccessibilityReasonsMapper();
     }
 
     @ParameterizedTest
     @MethodSource("provideReasons")
     void mapToAoAccessibilityReasons(TrafficSign trafficSign, AccessibilityReason expectedReason) {
+
         AccessibilityReasons expected = mapper.mapToAoAccessibilityReasons(List.of(trafficSign));
         assertThat(expected)
                 .usingRecursiveComparison()
                 .ignoringFields("accessibilityReason")
-                .isEqualTo(AccessibilityReasons.of(List.of(expectedReason)));
+                .isEqualTo(new AccessibilityReasons(List.of(expectedReason)));
     }
 
     private static Stream<Arguments> provideReasons() {
+
         return Stream.of(
                 Arguments.of(createTrafficSign(Restrictions.builder()
                                 .transportTypes(Set.of(TransportType.CAR))
@@ -261,6 +271,7 @@ class AccessibilityReasonsMapperTest {
     }
 
     private static TrafficSign createTrafficSign(Restrictions restrictions, TrafficSignType trafficSignType) {
+
         return TrafficSign.builder()
                 .direction(Direction.FORWARD)
                 .externalId(EXTERNAL_ID)
@@ -270,15 +281,18 @@ class AccessibilityReasonsMapperTest {
                 .build();
     }
 
-    private static AccessibilityReason createAccessibilityReason(List<AccessibilityRestriction> restrictions,
+    private static AccessibilityReason createAccessibilityReason(
+            List<AccessibilityRestriction> restrictions,
             TrafficSignType trafficSignType) {
+
         AccessibilityReason reason = AccessibilityReason.builder()
                 .trafficSignType(trafficSignType)
                 .direction(Direction.FORWARD)
-                .externalId(EXTERNAL_ID)
+                .trafficSignExternalId(EXTERNAL_ID)
                 .roadSectionId(ROAD_SECTION_ID)
                 .restrictions(restrictions)
                 .build();
+
         restrictions.forEach(r -> r.setAccessibilityReason(reason));
         return reason;
     }

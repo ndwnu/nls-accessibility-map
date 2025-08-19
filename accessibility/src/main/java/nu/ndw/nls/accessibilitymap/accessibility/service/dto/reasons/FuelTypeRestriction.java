@@ -8,9 +8,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @SuperBuilder(toBuilder = true)
 public class FuelTypeRestriction extends AccessibilityRestriction<Set<FuelType>> {
 
-
     private final Set<FuelType> value;
-
 
     @Override
     public RestrictionType getTypeOfRestriction() {
@@ -28,6 +26,7 @@ public class FuelTypeRestriction extends AccessibilityRestriction<Set<FuelType>>
     public boolean isEqual(AccessibilityRestriction<Set<FuelType>> other) {
 
         ensureSameType(other);
+
         return CollectionUtils.isEqualCollection(getValue(), other.getValue());
     }
 }
