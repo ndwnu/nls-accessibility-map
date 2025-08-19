@@ -81,20 +81,19 @@ public class AccessibilityReasonService {
     }
 
     private List<List<AccessibilityReason>> getReasons(List<TrafficSign> blockingTrafficSigns, RoutePoints routePoints) {
-
         NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
         Stopwatch stopwatch = Stopwatch.createStarted();
         List<TrafficSignSnap> trafficSignSnaps = trafficSignSnapMapper.map(blockingTrafficSigns, networkGraphHopper);
         log.debug("Mapping traffic snaps signs took: {} ms", stopwatch.elapsed().toMillis());
+
         Snap startSegment = getStartSegment(routePoints, networkGraphHopper);
         Snap endSegment = getEndSegment(routePoints, networkGraphHopper);
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), startSegment, endSegment);
         stopwatch.reset().start();
         log.debug("Calculating alternative routes");
+
         stopwatch.reset().start();
         Weighting weighting = queryGraph.wrapWeighting(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()));
-        AccessibilityReasons accessibilityReasons = accessibilityReasonsMapper.mapToAoAccessibilityReasons(
-                trafficSignSnaps.stream().map(TrafficSignSnap::getTrafficSign).toList());
         AlgorithmOptions algorithmOptions = algorithmOptionsFactory.createAlgorithmOptions();
         RoutingAlgorithm router = routingAlgorithmFactory.createAlgo(queryGraph, weighting,
                 algorithmOptions);
@@ -102,10 +101,15 @@ public class AccessibilityReasonService {
                 .filter(Path::isFound)
                 .toList();
         log.debug("Calculating routes took: {} ms", stopwatch.elapsed().toMillis());
+
         if (routes.isEmpty()) {
             log.warn("No routes found for request: {}", routePoints);
             return List.of();
         }
+
+        AccessibilityReasons accessibilityReasons = accessibilityReasonsMapper.mapToAoAccessibilityReasons(
+                trafficSignSnaps.stream().map(TrafficSignSnap::getTrafficSign).toList());
+
         return pathsToReasonsMapper.mapRoutesToReasons(routes, accessibilityReasons, networkGraphHopper.getEncodingManager());
 
     }
