@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * the accessibility reasons list.
  */
 @Component
-public class FuelTypeRestrictionReducer extends AccessibilityRestrictionReducer<FuelTypeRestriction> {
+public class FuelTypeRestrictionReducer implements AccessibilityRestrictionReducer<FuelTypeRestriction> {
 
     /**
      * Reduces a given list of FuelTypeRestriction objects by filtering out any duplicates based on their properties and returns a

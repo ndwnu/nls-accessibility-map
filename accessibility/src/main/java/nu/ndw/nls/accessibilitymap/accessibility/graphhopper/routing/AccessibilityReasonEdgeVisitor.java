@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,13 +42,17 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.AccessibilityRes
  * dependencies.
  */
 @Slf4j
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
 
     private final AccessibilityReasons accessibilityReasons;
+
     private final EncodingManager encodingManager;
+
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
     private final Map<Class<? extends AccessibilityRestriction>, AccessibilityRestrictionReducer> accessibilityRestrictionReducers;
+
     @Getter
     private List<AccessibilityReason> accessibilityReasonList = new ArrayList<>();
 
@@ -65,6 +68,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
      */
     @Override
     public void next(EdgeIteratorState edgeIteratorState, int index, int prevEdgeId) {
+
         int linkId = getLinkId(encodingManager, edgeIteratorState);
         Direction direction = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState) ? Direction.BACKWARD : Direction.FORWARD;
         if (accessibilityReasons.hasReasons(linkId, direction)) {
@@ -76,7 +80,6 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
                         return one;
                     }));
         }
-
     }
 
     /**
@@ -91,6 +94,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
      */
     @Override
     public void finish() {
+
         accessibilityReasonList = reasonsByRestriction.entrySet()
                 .stream()
                 .map(e -> getMostRestrictive(e.getKey(), e.getValue()))
@@ -111,6 +115,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
      */
     private List<AccessibilityReason> getMostRestrictive(RestrictionType restrictionType,
             List<AccessibilityRestriction> restrictionsByType) {
+
         AccessibilityRestriction accessibilityRestriction = restrictionsByType.getFirst();
         if (accessibilityRestrictionReducers.containsKey(accessibilityRestriction.getClass())) {
             return applyRestrictionReduction(restrictionsByType, accessibilityRestriction).stream()
@@ -123,6 +128,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
     }
 
     private static Collector<AccessibilityReason, ?, Map<String, AccessibilityReason>> mergeDuplicates() {
+
         return Collectors.toMap(AccessibilityReason::externalId,
                 r -> r.toBuilder().build(),
                 (left, right) -> {
@@ -132,8 +138,10 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
         );
     }
 
-    private List<AccessibilityReason> applyRestrictionReduction(List<AccessibilityRestriction> restrictionsByType,
+    private List<AccessibilityReason> applyRestrictionReduction(
+            List<AccessibilityRestriction> restrictionsByType,
             AccessibilityRestriction accessibilityRestriction) {
+
         return accessibilityRestrictionReducers.get(accessibilityRestriction.getClass())
                 .reduceRestrictions(restrictionsByType);
     }
@@ -141,12 +149,5 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
     private int getLinkId(EncodingManager encodingManager, EdgeIteratorState edge) {
 
         return edge.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-    }
-
-    public static AccessibilityReasonEdgeVisitor of(AccessibilityReasons accessibilityReasons,
-            EncodingManager encodingManager, EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor,
-            Map<Class<? extends AccessibilityRestriction>, AccessibilityRestrictionReducer> accessibilityRestrictionReducers) {
-        return new AccessibilityReasonEdgeVisitor(accessibilityReasons, encodingManager, edgeIteratorStateReverseExtractor,
-                accessibilityRestrictionReducers);
     }
 }

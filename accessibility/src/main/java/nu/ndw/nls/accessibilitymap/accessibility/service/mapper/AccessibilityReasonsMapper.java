@@ -60,15 +60,15 @@ public class AccessibilityReasonsMapper {
             entry(C22C, AccessibilityReasonsMapper::mapEmissionZoneRestrictions)
     );
 
-
     public AccessibilityReasons mapToAoAccessibilityReasons(List<TrafficSign> trafficSigns) {
+
         return AccessibilityReasons.of(trafficSigns.stream()
                 .map(this::mapTrafficSignToAccessibilityReason)
                 .toList());
     }
 
-
     private AccessibilityReason mapTrafficSignToAccessibilityReason(TrafficSign trafficSign) {
+
         if (!RESTRICTION_MAPPERS.containsKey(trafficSign.trafficSignType())) {
             throw new IllegalArgumentException("Traffic sign type " + trafficSign.trafficSignType() + " is not supported");
         }
@@ -84,8 +84,8 @@ public class AccessibilityReasonsMapper {
         return reason.withRestrictions(restrictions);
     }
 
-
     private static List<AccessibilityRestriction> mapVehicleHeight(TrafficSign trafficSign) {
+
         return List.of(MaximumRestriction.builder()
                 .value(trafficSign.restrictions().vehicleHeightInCm())
                 .restrictionType(RestrictionType.VEHICLE_HEIGHT)
@@ -93,6 +93,7 @@ public class AccessibilityReasonsMapper {
     }
 
     private static List<AccessibilityRestriction> mapVehicleWidth(TrafficSign trafficSign) {
+
         return List.of(MaximumRestriction.builder()
                 .value(trafficSign.restrictions().vehicleWidthInCm())
                 .restrictionType(RestrictionType.VEHICLE_WIDTH)
@@ -100,6 +101,7 @@ public class AccessibilityReasonsMapper {
     }
 
     private static List<AccessibilityRestriction> mapVehicleLength(TrafficSign trafficSign) {
+
         return List.of(MaximumRestriction.builder()
                 .value(trafficSign.restrictions().vehicleLengthInCm())
                 .restrictionType(RestrictionType.VEHICLE_LENGTH)
@@ -107,6 +109,7 @@ public class AccessibilityReasonsMapper {
     }
 
     private static List<AccessibilityRestriction> mapVehicleAxleLoad(TrafficSign trafficSign) {
+
         return List.of(MaximumRestriction.builder()
                 .value(trafficSign.restrictions().vehicleAxleLoadInKg())
                 .restrictionType(RestrictionType.VEHICLE_AXLE_LOAD)
@@ -114,6 +117,7 @@ public class AccessibilityReasonsMapper {
     }
 
     private static List<AccessibilityRestriction> mapVehicleWeight(TrafficSign trafficSign) {
+
         return List.of(MaximumRestriction.builder()
                 .value(trafficSign.restrictions().vehicleWeightInKg())
                 .restrictionType(RestrictionType.VEHICLE_WEIGHT)
@@ -122,12 +126,14 @@ public class AccessibilityReasonsMapper {
 
 
     private static List<AccessibilityRestriction> mapTransportTypes(TrafficSign trafficSign) {
+
         return List.of(TransportTypeRestriction.builder()
                 .value(trafficSign.restrictions().transportTypes())
                 .build());
     }
 
     private static List<AccessibilityRestriction> mapEmissionZoneRestrictions(TrafficSign trafficSign) {
+
         EmissionZoneRestriction restriction = trafficSign.restrictions().emissionZone().restriction();
         List<AccessibilityRestriction> accessibilityRestrictions = new ArrayList<>();
 

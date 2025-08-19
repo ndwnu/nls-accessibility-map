@@ -13,9 +13,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.Accessibili
  * @param <TYPE> a specific type that extends the {@link AccessibilityRestriction} class. This type
  *               represents the kind of accessibility restriction handled by the reducer.
  */
-public abstract class AccessibilityRestrictionReducer<TYPE extends AccessibilityRestriction> {
+public interface AccessibilityRestrictionReducer<TYPE extends AccessibilityRestriction> {
 
-    public abstract List<AccessibilityReason> reduceRestrictions(List<TYPE> restrictions);
+    List<AccessibilityReason> reduceRestrictions(List<TYPE> restrictions);
 
-    public abstract Class<TYPE> getType();
+    Class<TYPE> getType();
 }
