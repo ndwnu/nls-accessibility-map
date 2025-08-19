@@ -35,8 +35,9 @@ class VehicleAxleWeightRestrictionJsonMapperTest {
         when(maximumRestriction.getValue()).thenReturn(Maximum.builder().value(KILOGRAMS).build());
         RestrictionJson actual = mapper.mapToRestrictionJson(maximumRestriction);
 
-        assertThat(actual).isInstanceOf(VehicleAxleWeightRestrictionJson.class);
-        assertThat(actual).isEqualTo(getExpected());
+        assertThat(actual)
+                .isInstanceOf(VehicleAxleWeightRestrictionJson.class)
+                .isEqualTo(getExpected());
     }
 
     private VehicleAxleWeightRestrictionJson getExpected() {
