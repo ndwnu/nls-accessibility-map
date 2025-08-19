@@ -6,12 +6,6 @@ server:
 graphhopper:
   dir: /application/graphhopper
   network-name: accessibility_latest
-  routing:
-    algorithm: "dijkstrabi"
-    ch-disable: true
-    traversal-mode: NODE_BASED
-    hints:
-      pass_through: true
 spring:
   application:
     name: nls-accessibility-map-api-local
