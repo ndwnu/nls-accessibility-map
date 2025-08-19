@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response;
+package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
