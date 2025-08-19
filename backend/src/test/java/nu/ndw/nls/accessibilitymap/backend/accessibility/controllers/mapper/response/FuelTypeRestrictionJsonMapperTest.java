@@ -44,7 +44,7 @@ class FuelTypeRestrictionJsonMapperTest {
 
         assertThat(actual)
                 .isInstanceOf(FuelTypeRestrictionJson.class)
-                .isEqualTo(getExpected());;
+                .isEqualTo(getExpected());
     }
 
     private FuelTypeRestrictionJson getExpected() {
