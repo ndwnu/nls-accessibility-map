@@ -113,7 +113,8 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
      * @return a list of the most restrictive accessibility reasons, reduced and grouped by traffic sign
      * @throws IllegalArgumentException if the restriction type is unknown or unsupported
      */
-    private List<AccessibilityReason> getMostRestrictive(RestrictionType restrictionType,
+    private List<AccessibilityReason> getMostRestrictive(
+            RestrictionType restrictionType,
             List<AccessibilityRestriction> restrictionsByType) {
 
         AccessibilityRestriction accessibilityRestriction = restrictionsByType.getFirst();
@@ -129,8 +130,9 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
 
     private static Collector<AccessibilityReason, ?, Map<String, AccessibilityReason>> mergeDuplicates() {
 
-        return Collectors.toMap(AccessibilityReason::trafficSignExternalId,
-                r -> r.toBuilder().build(),
+        return Collectors.toMap(
+                AccessibilityReason::trafficSignExternalId,
+                accessibilityReason -> accessibilityReason.toBuilder().build(),
                 (left, right) -> {
                     left.mergeRestrictions(right.restrictions());
                     return left;
