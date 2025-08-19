@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.reducer.AccessibilityRestrictionReducer;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
@@ -32,13 +34,18 @@ public class PathsToReasonsMapper {
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
+    private final AccessibilityReasonEdgeVisitorFactory accessibilityReasonEdgeVisitorFactory;
+
+    @Getter(AccessLevel.PROTECTED)
     private final Map<Class<? extends AccessibilityRestriction>, AccessibilityRestrictionReducer> accessibilityRestrictionReducerMap;
 
     public PathsToReasonsMapper(
             EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor,
+            AccessibilityReasonEdgeVisitorFactory accessibilityReasonEdgeVisitorFactory,
             List<AccessibilityRestrictionReducer<? extends AccessibilityRestriction<?>>> accessibilityRestrictionReducers) {
 
         this.edgeIteratorStateReverseExtractor = edgeIteratorStateReverseExtractor;
+        this.accessibilityReasonEdgeVisitorFactory = accessibilityReasonEdgeVisitorFactory;
         this.accessibilityRestrictionReducerMap = accessibilityRestrictionReducers.stream()
                 .collect(Collectors.toMap(AccessibilityRestrictionReducer::getType,
                         Function.identity()));
@@ -84,7 +91,7 @@ public class PathsToReasonsMapper {
             EncodingManager encodingManager,
             Path path) {
 
-        AccessibilityReasonEdgeVisitor edgeVisitor = new AccessibilityReasonEdgeVisitor(
+        AccessibilityReasonEdgeVisitor edgeVisitor = accessibilityReasonEdgeVisitorFactory.create(
                 accessibilityReasons,
                 encodingManager,
                 edgeIteratorStateReverseExtractor,

@@ -21,9 +21,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.AccessibilityReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.PathsToReasonsMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -46,10 +44,7 @@ public class AccessibilityReasonService {
 
     private final AccessibilityReasonsMapper accessibilityReasonsMapper;
 
-    private final TrafficSignSnapMapper trafficSignSnapMapper;
-
     private final RoutingAlgorithmFactory routingAlgorithmFactory;
-
 
     private final PathsToReasonsMapper pathsToReasonsMapper;
 
@@ -76,9 +71,7 @@ public class AccessibilityReasonService {
             return List.of();
         }
 
-        List<TrafficSignSnap> trafficSignSnaps = trafficSignSnapMapper.map(trafficSigns, networkData.networkGraphHopper());
-        AccessibilityReasons accessibilityReasons = accessibilityReasonsMapper.mapToAoAccessibilityReasons(
-                trafficSignSnaps.stream().map(TrafficSignSnap::getTrafficSign).toList());
+        AccessibilityReasons accessibilityReasons = accessibilityReasonsMapper.mapToAoAccessibilityReasons(trafficSigns);
 
         var reasons = pathsToReasonsMapper.mapRoutesToReasons(
                 routes,
