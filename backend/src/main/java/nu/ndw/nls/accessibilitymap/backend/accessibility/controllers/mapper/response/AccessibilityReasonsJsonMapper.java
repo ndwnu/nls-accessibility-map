@@ -29,7 +29,7 @@ public class AccessibilityReasonsJsonMapper {
         return reasons.stream()
                 .map(reasonsList -> reasonsList.stream()
                         .map(reason -> new ReasonJson()
-                                .trafficSignId(UUID.fromString(reason.externalId()))
+                                .trafficSignId(UUID.fromString(reason.trafficSignExternalId()))
                                 .trafficSignType(TrafficSignTypeJson.valueOf(reason.trafficSignType().getRvvCode()))
                                 .restrictions(mapToRestrictionsJson(reason.restrictions()))
                         ).toList())

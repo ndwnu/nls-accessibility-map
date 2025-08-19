@@ -48,7 +48,7 @@ class AccessibilityReasonsJsonMapperTest {
 
     @Test
     void mapToReasonJson_ok() {
-        when(accessibilityReasonA.externalId()).thenReturn(UUID);
+        when(accessibilityReasonA.trafficSignExternalId()).thenReturn(UUID);
         when(accessibilityReasonA.trafficSignType()).thenReturn(TRAFFIC_SIGN_TYPE);
         when(accessibilityReasonA.restrictions()).thenReturn(List.of(fuelTypeRestriction));
 

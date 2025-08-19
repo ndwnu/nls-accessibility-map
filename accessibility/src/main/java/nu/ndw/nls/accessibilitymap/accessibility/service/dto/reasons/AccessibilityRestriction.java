@@ -16,6 +16,7 @@ public abstract class AccessibilityRestriction<VALUE_TYPE> {
         FUEL_TYPE,
         VEHICLE_TYPE
     }
+
     @Setter
     @Getter
     private AccessibilityReason accessibilityReason;

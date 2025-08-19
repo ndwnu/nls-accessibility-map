@@ -75,7 +75,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
             accessibilityReasons.getReasonsByRoadSectionAndDirection(linkId, direction).stream()
                     .flatMap(reasons -> reasons.restrictions().stream())
                     .collect(groupingBy(AccessibilityRestriction::getTypeOfRestriction))
-                    .forEach((type, restriction) -> reasonsByRestriction.merge(type, restriction, (one, two) -> {
+                    .forEach((type, restrictions) -> reasonsByRestriction.merge(type, restrictions, (one, two) -> {
                         one.addAll(two);
                         return one;
                     }));
@@ -129,7 +129,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
 
     private static Collector<AccessibilityReason, ?, Map<String, AccessibilityReason>> mergeDuplicates() {
 
-        return Collectors.toMap(AccessibilityReason::externalId,
+        return Collectors.toMap(AccessibilityReason::trafficSignExternalId,
                 r -> r.toBuilder().build(),
                 (left, right) -> {
                     left.mergeRestrictions(right.restrictions());
@@ -146,8 +146,8 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
                 .reduceRestrictions(restrictionsByType);
     }
 
-    private int getLinkId(EncodingManager encodingManager, EdgeIteratorState edge) {
+    private int getLinkId(EncodingManager encodingManager, EdgeIteratorState edgeIteratorState) {
 
-        return edge.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
+        return edgeIteratorState.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
     }
 }
