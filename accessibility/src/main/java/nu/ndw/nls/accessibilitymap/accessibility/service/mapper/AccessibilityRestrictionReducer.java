@@ -5,17 +5,15 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.Accessibili
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
 
 /**
- * The AccessibilityRestrictionReducer is an abstract generic class designed for reducing a set of
- * accessibility restrictions into a list of their corresponding accessibility reasons.
- * This class is meant to be extended by specific implementations for different types of
- * accessibility restrictions.
+ * An interface for reducing a collection of accessibility restrictions into a consolidated form.
+ * The primary purpose of this interface is to process a list of specific types of accessibility restrictions
+ * and transform it into a list of corresponding accessibility reasons with reduced or deduplicated restrictions.
  *
- * @param <TYPE> a specific type that extends the {@link AccessibilityRestriction} class. This type
- *               represents the kind of accessibility restriction handled by the reducer.
+ * @param <TYPE> the specific subtype of {@link AccessibilityRestriction} that this reducer handles
  */
-public abstract class AccessibilityRestrictionReducer<TYPE extends AccessibilityRestriction> {
+public interface AccessibilityRestrictionReducer<TYPE extends AccessibilityRestriction> {
 
-    public abstract List<AccessibilityReason> reduceRestrictions(List<TYPE> restrictions);
+    List<AccessibilityReason> reduceRestrictions(List<TYPE> restrictions);
 
-    public abstract Class<TYPE> getType();
+    Class<TYPE> getType();
 }

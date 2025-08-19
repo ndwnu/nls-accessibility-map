@@ -24,8 +24,8 @@ public class FuelTypeRestriction extends AccessibilityRestriction<Set<FuelType>>
 
     @Override
     public boolean isEqual(AccessibilityRestriction<Set<FuelType>> other) {
-       ensureSameType(other);
+        ensureSameType(other);
 
-       return CollectionUtils.isEqualCollection(getValue(), other.getValue());
+        return CollectionUtils.isEqualCollection(getValue(), other.getValue());
     }
 }
