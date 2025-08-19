@@ -27,7 +27,7 @@ public abstract class AccessibilityRestriction<VALUE_TYPE> {
     public abstract boolean isEqual(AccessibilityRestriction<VALUE_TYPE> other);
 
     protected void ensureSameType(AccessibilityRestriction<VALUE_TYPE> other) {
-        if (!getTypeOfRestriction().equals(other.getTypeOfRestriction())) {
+        if (getTypeOfRestriction() != other.getTypeOfRestriction()) {
             throw new IllegalArgumentException("Cannot compare accessibility restrictions of different types");
         }
     }
