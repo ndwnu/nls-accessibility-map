@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
