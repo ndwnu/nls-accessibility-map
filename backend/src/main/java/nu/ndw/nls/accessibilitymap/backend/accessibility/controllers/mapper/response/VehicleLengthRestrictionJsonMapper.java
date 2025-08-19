@@ -10,7 +10,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleLengthRestr
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehicleLengthRestrictionJsonMapper extends AccessibilityRestrictionJsonMapper<MaximumRestriction> {
+public class VehicleLengthRestrictionJsonMapper implements AccessibilityRestrictionJsonMapper<MaximumRestriction> {
 
     private static final int CM_TO_METRES = 2;
 

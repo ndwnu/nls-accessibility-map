@@ -41,6 +41,13 @@ class FuelTypeMapperTest {
         assertThat(result).isNull();
     }
 
+    @Test
+    void mapFuelType_shouldThrowInvalidFuelTypeException() {
+        assertThatThrownBy(() -> fuelTypeMapper.mapFuelTypeJson(FuelType.UNKNOWN))
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Invalid fuel type: UNKNOWN");
+    }
+
     @ParameterizedTest
     @EnumSource(FuelTypeJson.class)
     void mapFuelType_AllSupportedFuelTypeJsonValues(FuelTypeJson fuelTypeJson) {

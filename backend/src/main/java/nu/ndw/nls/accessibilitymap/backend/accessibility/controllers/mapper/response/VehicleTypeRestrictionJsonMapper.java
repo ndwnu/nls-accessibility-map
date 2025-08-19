@@ -14,7 +14,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeRestric
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehicleTypeRestrictionJsonMapper extends AccessibilityRestrictionJsonMapper<TransportTypeRestriction> {
+public class VehicleTypeRestrictionJsonMapper implements AccessibilityRestrictionJsonMapper<TransportTypeRestriction> {
 
     private final TransportTypeMapper transportTypeMapper;
 
