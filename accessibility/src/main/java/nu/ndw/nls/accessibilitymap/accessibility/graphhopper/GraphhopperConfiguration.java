@@ -25,15 +25,19 @@ public class GraphhopperConfiguration {
 
     @Bean
     public GraphhopperMetaData getMetaData() {
+
         return networkMetaDataService.loadMetaData();
     }
 
     @Bean
     public EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor() {
+
         return new EdgeIteratorStateReverseExtractor();
     }
+
     @Bean
-    public RoutingAlgorithmFactory algorithmFactory(){
+    public RoutingAlgorithmFactory algorithmFactory() {
+
         return new RoutingAlgorithmFactorySimple();
     }
 }
