@@ -7,11 +7,15 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 
 @Builder(toBuilder = true)
-public record AccessibilityReason(String externalId, Direction direction, TrafficSignType trafficSignType, Integer roadSectionId,
-                                  @With List<AccessibilityRestriction> restrictions) {
-
+public record AccessibilityReason(
+        String trafficSignExternalId,
+        Direction direction,
+        TrafficSignType trafficSignType,
+        Integer roadSectionId,
+        @With List<AccessibilityRestriction> restrictions) {
 
     public void mergeRestrictions(List<AccessibilityRestriction> restrictions) {
+
         this.restrictions.addAll(restrictions);
     }
 }
