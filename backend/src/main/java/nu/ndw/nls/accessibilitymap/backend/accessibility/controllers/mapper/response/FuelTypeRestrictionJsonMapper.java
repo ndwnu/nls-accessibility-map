@@ -11,7 +11,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RestrictionUnitSym
 import org.springframework.stereotype.Component;
 
 @Component
-public class FuelTypeRestrictionJsonMapper extends AccessibilityRestrictionJsonMapper<FuelTypeRestriction> {
+public class FuelTypeRestrictionJsonMapper implements AccessibilityRestrictionJsonMapper<FuelTypeRestriction> {
 
     private final FuelTypeMapper fuelTypeMapper;
 
