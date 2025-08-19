@@ -30,9 +30,11 @@ class MaximumRestrictionReducerTest {
         MaximumRestriction maximumRestriction3 = createMaximumRestriction(3D, RestrictionType.VEHICLE_AXLE_LOAD);
         AccessibilityReason accessibilityReason1 = createAccessibilityReason(List.of(maximumRestriction1, maximumRestriction3));
         AccessibilityReason accessibilityReason2 = createAccessibilityReason(List.of(maximumRestriction2));
+
         maximumRestriction1.setAccessibilityReason(accessibilityReason1);
         maximumRestriction2.setAccessibilityReason(accessibilityReason2);
         maximumRestriction3.setAccessibilityReason(accessibilityReason1);
+
         List<AccessibilityReason> result = maximumRestrictionReducer.reduceRestrictions(
                 List.of(maximumRestriction1, maximumRestriction2));
         assertThat(result).satisfiesExactly(item1 -> assertThat(item1.restrictions()).containsExactlyInAnyOrder(maximumRestriction1));
@@ -52,7 +54,8 @@ class MaximumRestrictionReducerTest {
        assertThatThrownBy( ()->maximumRestrictionReducer.reduceRestrictions(
                List.of(maximumRestriction1, maximumRestriction2)))
                .withFailMessage("Cannot reduce restrictions of different types")
-               .isInstanceOf(IllegalArgumentException.class);
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage("All restrictions must be of the same type");
     }
 
     public AccessibilityReason createAccessibilityReason(List<AccessibilityRestriction> restrictions) {

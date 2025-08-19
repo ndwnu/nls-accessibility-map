@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * restriction that has the smallest value.
  */
 @Component
-public class MaximumRestrictionReducer extends AccessibilityRestrictionReducer<MaximumRestriction> {
+public class MaximumRestrictionReducer implements AccessibilityRestrictionReducer<MaximumRestriction> {
 
     /**
      * Reduces a list of {@link MaximumRestriction} instances into a list of {@link AccessibilityReason} objects.

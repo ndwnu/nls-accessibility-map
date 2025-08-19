@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  * - Provides the type of restriction it works with, which is {@link TransportTypeRestriction}.
  */
 @Component
-public class TransportTypeRestrictionReducer extends AccessibilityRestrictionReducer<TransportTypeRestriction> {
+public class TransportTypeRestrictionReducer implements AccessibilityRestrictionReducer<TransportTypeRestriction> {
 
     /**
      * Processes a list of {@link TransportTypeRestriction} objects, removes duplicates

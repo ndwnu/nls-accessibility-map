@@ -10,7 +10,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleWeightRestr
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehicleWeightRestrictionJsonMapper extends AccessibilityRestrictionJsonMapper<MaximumRestriction> {
+public class VehicleWeightRestrictionJsonMapper implements AccessibilityRestrictionJsonMapper<MaximumRestriction> {
 
     private static final int KILOGRAMS_TO_TONS = 3;
 

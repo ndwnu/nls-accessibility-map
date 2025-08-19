@@ -36,7 +36,7 @@ public class PathsToReasonsMapper {
 
     public PathsToReasonsMapper(
             EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor,
-            List<AccessibilityRestrictionReducer<? extends AccessibilityRestriction>> accessibilityRestrictionReducers) {
+            List<AccessibilityRestrictionReducer<? extends AccessibilityRestriction<?>>> accessibilityRestrictionReducers) {
 
         this.edgeIteratorStateReverseExtractor = edgeIteratorStateReverseExtractor;
         this.accessibilityRestrictionReducerMap = accessibilityRestrictionReducers.stream()
@@ -84,12 +84,11 @@ public class PathsToReasonsMapper {
             EncodingManager encodingManager,
             Path path) {
 
-        AccessibilityReasonEdgeVisitor edgeVisitor = AccessibilityReasonEdgeVisitor.of(
+        AccessibilityReasonEdgeVisitor edgeVisitor = new AccessibilityReasonEdgeVisitor(
                 accessibilityReasons,
                 encodingManager,
                 edgeIteratorStateReverseExtractor,
                 accessibilityRestrictionReducerMap);
-
         path.forEveryEdge(edgeVisitor);
         return edgeVisitor.getAccessibilityReasonList();
     }
