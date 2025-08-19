@@ -35,8 +35,9 @@ class VehicleWidthRestrictionJsonMapperTest {
         when(maximumRestriction.getValue()).thenReturn(Maximum.builder().value(CENTIMETERS).build());
         RestrictionJson actual = mapper.mapToRestrictionJson(maximumRestriction);
 
-        assertThat(actual).isInstanceOf(VehicleWidthRestrictionJson.class);
-        assertThat(actual).isEqualTo(getExpected());
+        assertThat(actual)
+                .isInstanceOf(VehicleWidthRestrictionJson.class)
+                .isEqualTo(getExpected());
     }
 
     private VehicleWidthRestrictionJson getExpected() {
