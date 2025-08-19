@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.service;
 
 import static com.graphhopper.routing.util.TraversalMode.NODE_BASED;
 
@@ -19,13 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.AccessibilityReasonsMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.PathsToReasonsMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
-import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.AccessibilityReasonsMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.PathsToReasonsMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.TrafficSignSnapMapper;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.routing;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
 
 import static java.util.stream.Collectors.groupingBy;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
@@ -18,11 +18,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.reducer.AccessibilityRestrictionReducer;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.AccessibilityRestrictionReducer;
 
 /**
  * This class implements the {@link EdgeVisitor} interface, enabling the processing of edges in a graph to determine the most restrictive
