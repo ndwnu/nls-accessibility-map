@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.reducer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

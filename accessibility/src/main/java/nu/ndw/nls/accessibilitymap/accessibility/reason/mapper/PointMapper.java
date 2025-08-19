@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
 
 import java.util.Objects;
 import java.util.Optional;

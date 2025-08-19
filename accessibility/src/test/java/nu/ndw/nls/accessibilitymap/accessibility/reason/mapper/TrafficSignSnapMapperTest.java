@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
 
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;

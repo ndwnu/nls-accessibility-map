@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
 
 import static java.util.Map.entry;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C1;

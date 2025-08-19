@@ -29,9 +29,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGra
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
-import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.RoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;

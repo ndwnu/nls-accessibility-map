@@ -25,6 +25,8 @@ class PointMatchServiceTest {
 
     private static final int CUTOFF_DISTANCE = 150;
 
+    private PointMatchService pointMatchService;
+
     @Mock
     private MapMatcherFactory<SinglePointMapMatcher> singlePointMapMatcherMapMatcherFactory;
 
@@ -43,7 +45,6 @@ class PointMatchServiceTest {
     @Mock
     private CandidateMatch candidateMatch;
 
-    private PointMatchService pointMatchService;
 
     @BeforeEach
     void setUp() {

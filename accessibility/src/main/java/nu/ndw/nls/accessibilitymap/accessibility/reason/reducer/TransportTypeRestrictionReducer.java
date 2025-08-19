@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.reducer;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

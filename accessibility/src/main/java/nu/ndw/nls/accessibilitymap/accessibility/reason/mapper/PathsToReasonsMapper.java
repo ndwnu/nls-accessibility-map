@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
 
 import com.graphhopper.routing.Path;
 import com.graphhopper.routing.util.EncodingManager;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.routing.AccessibilityReasonEdgeVisitor;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.reducer.AccessibilityRestrictionReducer;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
