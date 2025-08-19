@@ -42,8 +42,9 @@ class FuelTypeRestrictionJsonMapperTest {
         when(fuelTypeMapper.mapFuelTypeJson(fuelType)).thenReturn(fuelTypeJson);
         RestrictionJson actual = mapper.mapToRestrictionJson(fuelTypeRestriction);
 
-        assertThat(actual).isInstanceOf(FuelTypeRestrictionJson.class);
-        assertThat(actual).isEqualTo(getExpected());
+        assertThat(actual)
+                .isInstanceOf(FuelTypeRestrictionJson.class)
+                .isEqualTo(getExpected());;
     }
 
     private FuelTypeRestrictionJson getExpected() {
