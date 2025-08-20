@@ -210,6 +210,33 @@ class AccessibilityMapApiDelegateImpTest {
     }
 
     @ParameterizedTest
+    @MethodSource("provideCorrectEmissionZoneParameters")
+    void getRoadSections_noEndRoadSectionFound(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
+
+        setUpFixture(emissionClassJson, fuelTypeJson);
+        when(accessibilityRequest.hasEndLocation()).thenReturn(true);
+        when(accessibility.toRoadSection()).thenReturn(null);
+        when(accessibility.combinedAccessibility()).thenReturn(roadSections);
+
+        when(roadSectionFeatureCollectionMapper
+                .map(roadSections, true, null, true))
+                .thenReturn(roadSectionFeatureCollectionJson);
+
+        ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
+                MUNICIPALITY_ID,
+                VehicleTypeJson.CAR,
+                VEHICLE_LENGTH, VEHICLE_WIDTH, VEHICLE_HEIGHT, VEHICLE_WEIGHT, VEHICLE_AXLE_LOAD, false,
+                true,
+                REQUESTED_LATITUDE, REQUESTED_LONGITUDE,
+                emissionClassJson, fuelTypeJson);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo(roadSectionFeatureCollectionJson);
+
+        verify(pointValidator).validateConsistentValues(REQUESTED_LATITUDE, REQUESTED_LONGITUDE);
+    }
+
+    @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
             true, true,
             false, true,
