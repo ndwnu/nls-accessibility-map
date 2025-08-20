@@ -411,7 +411,7 @@ components:
 
     Reason:
       type: object
-      description: Reason why something is inaccessible
+      description: Reason why the road section is inaccessible
       required:
         - type
         - unitSymbol
@@ -428,7 +428,7 @@ components:
 
     Restriction:
       type: object
-      description: Restriction on a particular route causing it to be blocking
+      description: Restriction on a particular route making it inaccessible
       required:
         - reasonType
         - unitSymbol
@@ -567,24 +567,24 @@ components:
       example: "79a56dfa-7a59-4bcc-aee5-918fe7064474"
     TrafficSignType:
       enum:
-        - "c1"
-        - "c6"
-        - "c7"
-        - "c7a"
-        - "c7b"
-        - "c8"
-        - "c9"
-        - "c10"
-        - "c11"
-        - "c12"
-        - "c17"
-        - "c18"
-        - "c19"
-        - "c20"
-        - "c21"
-        - "c22"
-        - "c22a"
-        - "c22c"
+        - "C1"
+        - "C6"
+        - "C7"
+        - "C7a"
+        - "C7b"
+        - "C8"
+        - "C9"
+        - "C10"
+        - "C11"
+        - "C12"
+        - "C17"
+        - "C18"
+        - "C19"
+        - "C20"
+        - "C21"
+        - "C22"
+        - "C22a"
+        - "C22c"
         - "unknown"
       type: "string"
       default: "unknown"
