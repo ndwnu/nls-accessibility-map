@@ -51,12 +51,12 @@
     <nls-springboot.version>9.2.16</nls-springboot.version>
     <nls-routing-map-matcher.version>18.0.6</nls-routing-map-matcher.version>
     <nls-geometry.version>5.0.10</nls-geometry.version>
-    <nls-geojson-geometry.version>1.4.25</nls-geojson-geometry.version>
+    <nls-geojson-geometry.version>1.4.26</nls-geojson-geometry.version>
     <jackson-geojson.version>1.14</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>4.1.1</json-unit.version>
     <cucumber.version>7.27.2</cucumber.version>
-    <location-data-issues.version>2.2.25</location-data-issues.version>
+    <location-data-issues.version>2.2.26</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
