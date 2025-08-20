@@ -20,7 +20,8 @@ public class AccessibilityReasonsJsonMapper {
     private final Map<RestrictionType, AccessibilityRestrictionJsonMapper> restrictionMapperMap;
 
     public AccessibilityReasonsJsonMapper(List<AccessibilityRestrictionJsonMapper> restrictionMapperList) {
-        this.restrictionMapperMap = restrictionMapperList.stream()
+
+        restrictionMapperMap = restrictionMapperList.stream()
                 .collect(Collectors.toMap(AccessibilityRestrictionJsonMapper::mapperForType, Function.identity()));
     }
 
@@ -30,16 +31,19 @@ public class AccessibilityReasonsJsonMapper {
                 .map(reasonsList -> reasonsList.stream()
                         .map(reason -> new ReasonJson()
                                 .trafficSignId(UUID.fromString(reason.trafficSignExternalId()))
-                                .trafficSignType(TrafficSignTypeJson.valueOf(reason.trafficSignType().getRvvCode()))
+                                .trafficSignType(TrafficSignTypeJson.fromValue(reason.trafficSignType().getRvvCode()))
                                 .restrictions(mapToRestrictionsJson(reason.restrictions()))
                         ).toList())
                 .toList();
     }
 
     private List<RestrictionJson> mapToRestrictionsJson(List<AccessibilityRestriction> accessibilityRestrictions) {
+
         return accessibilityRestrictions.stream()
-                .map(r -> restrictionMapperMap.containsKey(r.getTypeOfRestriction()) ? restrictionMapperMap.get(r.getTypeOfRestriction())
-                        .mapToRestrictionJson(r) : null)
+                .map(restriction ->
+                        restrictionMapperMap.containsKey(restriction.getTypeOfRestriction())
+                                ? restrictionMapperMap.get(restriction.getTypeOfRestriction()).mapToRestrictionJson(restriction)
+                                : null)
                 .filter(Objects::nonNull).toList();
     }
 }
