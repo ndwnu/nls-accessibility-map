@@ -85,6 +85,7 @@ public class AccessibilityReasonsMapper {
         return reason.withRestrictions(restrictions);
     }
 
+    @SuppressWarnings("java:S3740")
     private static List<AccessibilityRestriction> mapVehicleHeight(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
@@ -93,6 +94,7 @@ public class AccessibilityReasonsMapper {
                 .build());
     }
 
+    @SuppressWarnings("java:S3740")
     private static List<AccessibilityRestriction> mapVehicleWidth(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
@@ -101,6 +103,7 @@ public class AccessibilityReasonsMapper {
                 .build());
     }
 
+    @SuppressWarnings("java:S3740")
     private static List<AccessibilityRestriction> mapVehicleLength(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
@@ -109,6 +112,7 @@ public class AccessibilityReasonsMapper {
                 .build());
     }
 
+    @SuppressWarnings("java:S3740")
     private static List<AccessibilityRestriction> mapVehicleAxleLoad(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
@@ -117,6 +121,7 @@ public class AccessibilityReasonsMapper {
                 .build());
     }
 
+    @SuppressWarnings("java:S3740")
     private static List<AccessibilityRestriction> mapVehicleWeight(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
@@ -125,7 +130,7 @@ public class AccessibilityReasonsMapper {
                 .build());
     }
 
-
+    @SuppressWarnings("java:S3740")
     private static List<AccessibilityRestriction> mapTransportTypes(TrafficSign trafficSign) {
 
         return List.of(TransportTypeRestriction.builder()
@@ -133,6 +138,7 @@ public class AccessibilityReasonsMapper {
                 .build());
     }
 
+    @SuppressWarnings("java:S3740")
     private static List<AccessibilityRestriction> mapEmissionZoneRestrictions(TrafficSign trafficSign) {
 
         EmissionZoneRestriction restriction = trafficSign.restrictions().emissionZone().restriction();
@@ -145,17 +151,13 @@ public class AccessibilityReasonsMapper {
                     .build());
         }
 
-        if (Objects.nonNull(restriction.fuelTypes())) {
-            accessibilityRestrictions.add(FuelTypeRestriction.builder()
-                    .value(restriction.fuelTypes())
-                    .build());
-        }
+        accessibilityRestrictions.add(FuelTypeRestriction.builder()
+                .value(restriction.fuelTypes())
+                .build());
 
-        if (Objects.nonNull(restriction.transportTypes())) {
-            accessibilityRestrictions.add(TransportTypeRestriction.builder()
-                    .value(restriction.transportTypes())
-                    .build());
-        }
+        accessibilityRestrictions.add(TransportTypeRestriction.builder()
+                .value(restriction.transportTypes())
+                .build());
         return accessibilityRestrictions;
     }
 }

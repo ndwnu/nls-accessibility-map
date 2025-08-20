@@ -12,8 +12,10 @@ public record AccessibilityReason(
         Direction direction,
         TrafficSignType trafficSignType,
         Integer roadSectionId,
+        @SuppressWarnings("java:S3740")
         @With List<AccessibilityRestriction> restrictions) {
 
+    @SuppressWarnings("java:S3740")
     public void mergeRestrictions(List<AccessibilityRestriction> restrictions) {
 
         this.restrictions.addAll(restrictions);

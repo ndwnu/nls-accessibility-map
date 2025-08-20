@@ -48,6 +48,7 @@ public class AccessibilityReasonService {
 
     private final PathsToReasonsMapper pathsToReasonsMapper;
 
+    @SuppressWarnings("java:S1941")
     public List<List<AccessibilityReason>> calculateReasons(
             AccessibilityRequest accessibilityRequest,
             NetworkData networkData,

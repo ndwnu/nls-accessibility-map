@@ -41,6 +41,7 @@ public class TransportTypeRestrictionReducer implements AccessibilityRestriction
      *         in the input list
      */
     @Override
+    @SuppressWarnings("java:S3740")
     public List<AccessibilityReason> reduceRestrictions(List<TransportTypeRestriction> restrictions) {
         Queue<TransportTypeRestriction> queue = new ArrayDeque(restrictions);
         List<TransportTypeRestriction> uniqueTransportTypeRestrictions = new ArrayList<>();

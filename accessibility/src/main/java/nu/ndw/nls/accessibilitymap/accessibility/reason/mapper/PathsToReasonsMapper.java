@@ -37,6 +37,7 @@ public class PathsToReasonsMapper {
     private final AccessibilityReasonEdgeVisitorFactory accessibilityReasonEdgeVisitorFactory;
 
     @Getter(AccessLevel.PROTECTED)
+    @SuppressWarnings("java:S3740")
     private final Map<Class<? extends AccessibilityRestriction>, AccessibilityRestrictionReducer> accessibilityRestrictionReducerMap;
 
     public PathsToReasonsMapper(

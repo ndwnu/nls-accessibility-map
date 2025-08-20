@@ -51,11 +51,13 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
+    @SuppressWarnings({"java:S3740", "java:S6411"})
     private final Map<Class<? extends AccessibilityRestriction>, AccessibilityRestrictionReducer> accessibilityRestrictionReducers;
 
     @Getter
     private List<AccessibilityReason> accessibilityReasonList = new ArrayList<>();
 
+    @SuppressWarnings("java:S3740")
     private final Map<RestrictionType, List<AccessibilityRestriction>> reasonsByRestriction = new HashMap<>();
 
     /**
@@ -113,11 +115,12 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
      * @return a list of the most restrictive accessibility reasons, reduced and grouped by traffic sign
      * @throws IllegalArgumentException if the restriction type is unknown or unsupported
      */
+    @SuppressWarnings("java:S3740")
     private List<AccessibilityReason> getMostRestrictive(
             RestrictionType restrictionType,
             List<AccessibilityRestriction> restrictionsByType) {
 
-        AccessibilityRestriction accessibilityRestriction = restrictionsByType.getFirst();
+        AccessibilityRestriction<?> accessibilityRestriction = restrictionsByType.getFirst();
         if (accessibilityRestrictionReducers.containsKey(accessibilityRestriction.getClass())) {
             return applyRestrictionReduction(restrictionsByType, accessibilityRestriction).stream()
                     .collect(mergeDuplicates()).values()
@@ -140,6 +143,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
         );
     }
 
+    @SuppressWarnings("java:S3740")
     private List<AccessibilityReason> applyRestrictionReduction(
             List<AccessibilityRestriction> restrictionsByType,
             AccessibilityRestriction accessibilityRestriction) {
