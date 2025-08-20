@@ -25,6 +25,7 @@ public class FuelTypeRestrictionReducer implements AccessibilityRestrictionReduc
      * @return a list of AccessibilityReason objects derived from the unique FuelTypeRestriction objects
      */
     @Override
+    @SuppressWarnings("java:S3740")
     public List<AccessibilityReason> reduceRestrictions(List<FuelTypeRestriction> restrictions) {
         Queue<FuelTypeRestriction> queue = new ArrayDeque(restrictions);
         List<FuelTypeRestriction> uniqueFuelTypeRestrictions = new ArrayList<>();

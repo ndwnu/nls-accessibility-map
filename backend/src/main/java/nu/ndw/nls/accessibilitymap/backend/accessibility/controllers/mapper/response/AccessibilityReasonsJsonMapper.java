@@ -17,8 +17,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AccessibilityReasonsJsonMapper {
 
+    @SuppressWarnings("java:S3740")
     private final Map<RestrictionType, AccessibilityRestrictionJsonMapper> restrictionMapperMap;
 
+    @SuppressWarnings("java:S3740")
     public AccessibilityReasonsJsonMapper(List<AccessibilityRestrictionJsonMapper> restrictionMapperList) {
 
         restrictionMapperMap = restrictionMapperList.stream()
@@ -37,6 +39,7 @@ public class AccessibilityReasonsJsonMapper {
                 .toList();
     }
 
+    @SuppressWarnings("java:S3740")
     private List<RestrictionJson> mapToRestrictionsJson(List<AccessibilityRestriction> accessibilityRestrictions) {
 
         return accessibilityRestrictions.stream()

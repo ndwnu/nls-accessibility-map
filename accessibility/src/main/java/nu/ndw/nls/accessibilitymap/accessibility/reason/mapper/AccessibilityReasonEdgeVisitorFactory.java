@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AccessibilityReasonEdgeVisitorFactory {
 
+    @SuppressWarnings("java:S3740")
     public AccessibilityReasonEdgeVisitor create(
             AccessibilityReasons accessibilityReasons,
             EncodingManager encodingManager,
