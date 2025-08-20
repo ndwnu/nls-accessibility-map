@@ -18,8 +18,9 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RestrictionJson.Ty
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RestrictionUnitSymbolJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.TrafficSignTypeJson;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -27,12 +28,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityReasonsJsonMapperTest {
 
     private static final String UUID = "4feeabc3-19ad-459f-9b8e-37116c22c512";
+
     private static final TrafficSignType TRAFFIC_SIGN_TYPE = TrafficSignType.C1;
 
     @Mock
     private AccessibilityReason accessibilityReasonA;
+
     @Mock
     private FuelTypeRestriction fuelTypeRestriction;
+
     @Mock
     private FuelTypeRestrictionJsonMapper fuelTypeRestrictionJsonMapper;
 
@@ -40,16 +44,18 @@ class AccessibilityReasonsJsonMapperTest {
 
     @BeforeEach
     void setup() {
+
         when(fuelTypeRestrictionJsonMapper.mapperForType()).thenReturn(RestrictionType.FUEL_TYPE);
 
         mapper = new AccessibilityReasonsJsonMapper(List.of(fuelTypeRestrictionJsonMapper));
     }
 
+    @ParameterizedTest
+    @EnumSource(TrafficSignType.class)
+    void mapToReasonJson_ok(TrafficSignType trafficSignType) {
 
-    @Test
-    void mapToReasonJson_ok() {
         when(accessibilityReasonA.trafficSignExternalId()).thenReturn(UUID);
-        when(accessibilityReasonA.trafficSignType()).thenReturn(TRAFFIC_SIGN_TYPE);
+        when(accessibilityReasonA.trafficSignType()).thenReturn(trafficSignType);
         when(accessibilityReasonA.restrictions()).thenReturn(List.of(fuelTypeRestriction));
 
         when(fuelTypeRestriction.getTypeOfRestriction()).thenReturn(AccessibilityRestriction.RestrictionType.FUEL_TYPE);
@@ -65,9 +71,9 @@ class AccessibilityReasonsJsonMapperTest {
         List<List<AccessibilityReason>> accessibilityReasons = List.of(List.of(accessibilityReasonA));
 
         ReasonJson expected = new ReasonJson()
-                                      .trafficSignId(java.util.UUID.fromString(UUID))
-                                      .trafficSignType(TrafficSignTypeJson.C1)
-                                      .restrictions(List.of(fuelTypeRestrictionJson));
+                .trafficSignId(java.util.UUID.fromString(UUID))
+                .trafficSignType(TrafficSignTypeJson.fromValue(trafficSignType.getRvvCode()))
+                .restrictions(List.of(fuelTypeRestrictionJson));
         List<List<ReasonJson>> expectedList = List.of(List.of(expected));
 
         List<List<ReasonJson>> actual = mapper.mapToReasonJson(accessibilityReasons);
