@@ -29,7 +29,7 @@ class AccessibilityReasonsJsonMapperTest {
 
     private static final String UUID = "4feeabc3-19ad-459f-9b8e-37116c22c512";
 
-    private static final TrafficSignType TRAFFIC_SIGN_TYPE = TrafficSignType.C1;
+    private AccessibilityReasonsJsonMapper mapper;
 
     @Mock
     private AccessibilityReason accessibilityReasonA;
@@ -39,8 +39,6 @@ class AccessibilityReasonsJsonMapperTest {
 
     @Mock
     private FuelTypeRestrictionJsonMapper fuelTypeRestrictionJsonMapper;
-
-    private AccessibilityReasonsJsonMapper mapper;
 
     @BeforeEach
     void setup() {
