@@ -57,7 +57,7 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
     @Getter
     private List<AccessibilityReason> accessibilityReasonList = new ArrayList<>();
 
-    @SuppressWarnings("java:S3740")
+    @SuppressWarnings({"java:S3740", "java:S1640"})
     private final Map<RestrictionType, List<AccessibilityRestriction>> reasonsByRestriction = new HashMap<>();
 
     /**
