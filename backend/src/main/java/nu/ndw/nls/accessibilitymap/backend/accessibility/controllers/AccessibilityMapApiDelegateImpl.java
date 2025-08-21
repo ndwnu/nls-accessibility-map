@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +10,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.EmissionZoneExemption;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Exemptions;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.AccessibilityResponseMapper;
@@ -17,6 +21,7 @@ import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsExceptio
 import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.AccessibilityMapApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
@@ -51,54 +56,72 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude,
-            EmissionClassJson emissionClass,
-            FuelTypeJson fuelType) {
+            EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> exemptionsEmissionZoneIds,
+            List<EmissionZoneTypeJson> exemptionsEmissionZoneTypes) {
 
-        pointValidator.validateConsistentValues(latitude, longitude);
-
-        ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
+        AccessibilityRequest accessibilityRequest = buildAndValidateAccessibilityRequest(
+                municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
+                vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, exemptionsEmissionZoneIds,
+                exemptionsEmissionZoneTypes, latitude, longitude);
 
         NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
-
-        VehicleArguments requestArguments = new VehicleArguments(
-                vehicleType,
-                vehicleLength, vehicleWidth, vehicleHeight,
-                vehicleWeight, vehicleAxleLoad,
-                vehicleHasTrailer, emissionClass, fuelType);
-
-        AccessibilityRequest accessibilityRequest = mapToAccessibilityRequest(
-                municipalityId,
-                requestArguments,
-                latitude,
-                longitude);
 
         Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
 
         return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility));
     }
 
+    private AccessibilityRequest buildAndValidateAccessibilityRequest(
+            String municipalityId, VehicleTypeJson vehicleType, Float vehicleLength,
+            Float vehicleWidth, Float vehicleHeight, Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer,
+            EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> exemptionsEmissionZoneIds,
+            List<EmissionZoneTypeJson> exemptionsEmissionZoneTypes,
+            Double endPointLatitude, Double endPointLongitude) {
+
+        pointValidator.validateConsistentValues(endPointLatitude, endPointLongitude);
+
+        ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelTypes);
+
+        VehicleArguments vehicleArguments = new VehicleArguments(
+                vehicleType,
+                vehicleLength, vehicleWidth, vehicleHeight,
+                vehicleWeight, vehicleAxleLoad,
+                vehicleHasTrailer, emissionClass, fuelTypes);
+
+        Exemptions exemptions = Exemptions.builder()
+                .emissionZone(EmissionZoneExemption.builder()
+                        .ids(new HashSet<>(exemptionsEmissionZoneIds))
+                        .types(new HashSet<>(exemptionsEmissionZoneTypes))
+                        .build())
+                .build();
+
+        Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
+
+        return accessibilityRequestMapper.mapToAccessibilityRequest(
+                clockService.now(),
+                municipality,
+                vehicleArguments,
+                exemptions,
+                endPointLatitude,
+                endPointLongitude);
+    }
+
     @Override
     public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
-            Double longitude, EmissionClassJson emissionClass,
-            FuelTypeJson fuelType) {
+            Double longitude, EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> exemptionsEmissionZoneIds,
+            List<EmissionZoneTypeJson> exemptionsEmissionZoneTypes) {
 
-        pointValidator.validateConsistentValues(latitude, longitude);
-
-        ensureEnvironmentalZoneParameterConsistency(emissionClass, fuelType);
+        var accessibilityRequest = buildAndValidateAccessibilityRequest(
+                municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
+                vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, exemptionsEmissionZoneIds,
+                exemptionsEmissionZoneTypes, latitude, longitude);
 
         NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
 
-        VehicleArguments requestArguments = new VehicleArguments(
-                vehicleType,
-                vehicleLength, vehicleWidth, vehicleHeight,
-                vehicleWeight, vehicleAxleLoad,
-                vehicleHasTrailer, emissionClass, fuelType);
-
-        AccessibilityRequest accessibilityRequest = mapToAccessibilityRequest(municipalityId, requestArguments, latitude, longitude);
-
         Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+
         return ResponseEntity.ok(
                 roadSectionFeatureCollectionMapper.map(
                         accessibility.combinedAccessibility(),
@@ -107,34 +130,19 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                         accessible));
     }
 
-    private AccessibilityRequest mapToAccessibilityRequest(
-            String municipalityId,
-            VehicleArguments vehicleArguments,
-            Double endPointLatitude,
-            Double endPointLongitude) {
-
-        Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
-
-        return accessibilityRequestMapper.mapToAccessibilityRequest(
-                clockService.now(),
-                municipality,
-                vehicleArguments,
-                endPointLatitude,
-                endPointLongitude);
-    }
-
-
     /**
      * Ensures that the parameters related to environmental zone restrictions are consistent. If one of the parameters is set and the other
      * is not, an exception is thrown.
      *
      * @param emissionClass the emission class information. Can be null, but if it is null, the fuelType must also be null.
-     * @param fuelType      the fuel type information. Can be null, but if it is null, the emissionClass must also be null.
+     * @param fuelTypes     the fuel types information. Can be null, but if it is null, the emissionClass must also be null.
      * @throws IncompleteArgumentsException if only one of the parameters is set while the other is not.
      */
-    private void ensureEnvironmentalZoneParameterConsistency(EmissionClassJson emissionClass, FuelTypeJson fuelType) {
+    @SuppressWarnings("java:S1067")
+    private void ensureEnvironmentalZoneParameterConsistency(EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes) {
 
-        if ((emissionClass == null && fuelType != null) || (fuelType == null && emissionClass != null)) {
+        if ((emissionClass == null && fuelTypes != null && !fuelTypes.isEmpty())
+                || ((fuelTypes == null || fuelTypes.isEmpty()) && emissionClass != null)) {
             throw new IncompleteArgumentsException("If one of the environmental zone parameters is set, the other must be set as well.");
         }
     }

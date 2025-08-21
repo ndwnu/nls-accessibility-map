@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.FeatureCollection;
@@ -113,11 +114,11 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
-        var startPoint = buildGeoJsonStartPoint(accessibilityRequest.startLatitude(), accessibilityRequest.startLongitude());
+        var endpoint = buildGeoJsonEndPoint(accessibilityRequest.endLatitude(), accessibilityRequest.endLongitude());
 
         fileService.writeDataToFile(
-                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson".formatted(request.id())).toFile(),
-                JsonMapper.builder().build().writeValueAsString(startPoint));
+                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
+                JsonMapper.builder().build().writeValueAsString(endpoint));
 
         getCache().getRequests().add(request);
         try {
@@ -152,11 +153,11 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
-        var startPoint = buildGeoJsonStartPoint(accessibilityRequest.startLatitude(), accessibilityRequest.startLongitude());
+        var endpoint = buildGeoJsonEndPoint(accessibilityRequest.endLatitude(), accessibilityRequest.endLongitude());
 
         fileService.writeDataToFile(
-                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-startpoint.geojson".formatted(request.id())).toFile(),
-                JsonMapper.builder().build().writeValueAsString(startPoint));
+                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
+                JsonMapper.builder().build().writeValueAsString(endpoint));
 
         getCache().getRequests().add(request);
         try {
@@ -195,14 +196,14 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     private MultiValueMap<String, String> buildQueryParameters(AccessibilityRequest accessibilityRequest) {
 
         Map<String, List<String>> queryParameters = new HashMap<>();
-        queryParameters.put("latitude", List.of(accessibilityRequest.startLatitude() + ""));
-        queryParameters.put("longitude", List.of(accessibilityRequest.startLongitude() + ""));
+        queryParameters.put("latitude", List.of(accessibilityRequest.endLatitude() + ""));
+        queryParameters.put("longitude", List.of(accessibilityRequest.endLongitude() + ""));
 
         if (Objects.nonNull(accessibilityRequest.vehicleType())) {
             queryParameters.put("vehicleType", List.of(accessibilityRequest.vehicleType().getValue()));
         }
-        if (Objects.nonNull(accessibilityRequest.fuelType())) {
-            queryParameters.put("fuelType", List.of(accessibilityRequest.fuelType().getValue()));
+        if (Objects.nonNull(accessibilityRequest.fuelTypes())) {
+            queryParameters.put("fuelTypes", accessibilityRequest.fuelTypes().stream().map(FuelTypeJson::getValue).toList());
         }
         if (Objects.nonNull(accessibilityRequest.emissionClass())) {
             queryParameters.put("emissionClass", List.of(accessibilityRequest.emissionClass().getValue()));
@@ -230,17 +231,17 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     @NotNull
-    private static FeatureCollection buildGeoJsonStartPoint(double startLatitude, double startLongitude) {
+    private static FeatureCollection buildGeoJsonEndPoint(double endLatitude, double endLongitude) {
 
         return FeatureCollection.builder()
                 .features(List.of(
                         Feature.builder()
                                 .id(1)
                                 .geometry(PointGeometry.builder()
-                                        .coordinates(List.of(startLongitude, startLatitude))
+                                        .coordinates(List.of(endLongitude, endLatitude))
                                         .build())
                                 .properties(PointNodeProperties.builder()
-                                        .name("startPoint")
+                                        .name("endpoint")
                                         .build())
                                 .build()
                 ))
