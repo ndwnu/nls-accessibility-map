@@ -151,13 +151,18 @@ public class AccessibilityReasonsMapper {
                     .build());
         }
 
-        accessibilityRestrictions.add(FuelTypeRestriction.builder()
-                .value(restriction.fuelTypes())
-                .build());
+        if(!restriction.fuelTypes().isEmpty()) {
+            accessibilityRestrictions.add(FuelTypeRestriction.builder()
+                    .value(restriction.fuelTypes())
+                    .build());
+        }
 
-        accessibilityRestrictions.add(TransportTypeRestriction.builder()
-                .value(restriction.transportTypes())
-                .build());
+        if(!restriction.transportTypes().isEmpty()) {
+            accessibilityRestrictions.add(TransportTypeRestriction.builder()
+                    .value(restriction.transportTypes())
+                    .build());
+        }
+
         return accessibilityRestrictions;
     }
 }
