@@ -28,19 +28,26 @@ public class AccessibilityRoadSectionsService {
 
     @Transactional
     public List<AccessibilityNwbRoadSection> getRoadSections(int nwbVersion) {
-        return municipalityIdToRoadSections.computeIfAbsent(
-                getCacheKey(nwbVersion, null),
-                missedCacheKey -> getRoadSections(nwbVersion, null));
+
+        synchronized (municipalityIdToRoadSections) {
+            return municipalityIdToRoadSections.computeIfAbsent(
+                    getCacheKey(nwbVersion, null),
+                    missedCacheKey -> getRoadSections(nwbVersion, null));
+        }
     }
 
     @Transactional
     public List<AccessibilityNwbRoadSection> getRoadSectionsByMunicipalityId(int nwbVersion, int municipalityId) {
-        return municipalityIdToRoadSections.computeIfAbsent(
-                getCacheKey(nwbVersion, municipalityId),
-                missedCacheKey -> getRoadSections(nwbVersion, municipalityId));
+
+        synchronized (municipalityIdToRoadSections) {
+            return municipalityIdToRoadSections.computeIfAbsent(
+                    getCacheKey(nwbVersion, municipalityId),
+                    missedCacheKey -> getRoadSections(nwbVersion, municipalityId));
+        }
     }
 
     private List<AccessibilityNwbRoadSection> getRoadSections(int nwbVersion, Integer municipalityId) {
+
         try (Stream<NwbRoadSectionDto> roadSections = nwbRoadSectionService.findLazyCar(
                 nwbVersion,
                 Objects.nonNull(municipalityId) ? Collections.singleton(municipalityId) : Collections.emptySet())) {
@@ -50,6 +57,7 @@ public class AccessibilityRoadSectionsService {
     }
 
     private String getCacheKey(int nwbVersion, Integer municipalityId) {
+
         return nwbVersion + "-" + municipalityId;
     }
 }
