@@ -26,6 +26,8 @@ public class EmissionZoneMapper {
 
     private final FuelTypeMapper fuelTypeMapper;
 
+    private final EmissionZoneTypeMapper emissionZoneTypeMapper;
+
     private final TransportTypeMapper transportTypeMapper;
 
     @Valid
@@ -36,6 +38,8 @@ public class EmissionZoneMapper {
                 .map(emissionZone -> {
                     try {
                         return EmissionZone.builder()
+                                .id(emissionZone.id())
+                                .type(emissionZoneTypeMapper.map(emissionZone.type()))
                                 .startTime(emissionZone.startTime())
                                 .endTime(Objects.nonNull(emissionZone.endTime()) ? emissionZone.endTime() : OffsetDateTime.MAX)
                                 .exemptions(mapExemptions(emissionZone))
@@ -82,6 +86,7 @@ public class EmissionZoneMapper {
     }
 
     private Double mapToDouble(Integer value) {
+
         if (Objects.isNull(value)) {
             return null;
         }

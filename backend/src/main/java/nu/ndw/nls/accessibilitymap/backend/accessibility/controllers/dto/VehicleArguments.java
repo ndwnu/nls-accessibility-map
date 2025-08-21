@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto;
 
+import java.util.List;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
@@ -15,6 +16,6 @@ public record VehicleArguments(
         Float vehicleAxleLoad,
         Boolean vehicleHasTrailer,
         EmissionClassJson emissionClass,
-        FuelTypeJson fuelType) {
+        List<FuelTypeJson> fuelTypes) {
 
 }
