@@ -40,6 +40,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AccessibilityReasonsMapper {
 
+    @SuppressWarnings("java:S3740")
     private static final Map<TrafficSignType, Function<TrafficSign, List<AccessibilityRestriction>>> RESTRICTION_MAPPERS = Map.ofEntries(
             entry(C1, AccessibilityReasonsMapper::mapTransportTypes),
             entry(C6, AccessibilityReasonsMapper::mapTransportTypes),
@@ -68,6 +69,7 @@ public class AccessibilityReasonsMapper {
                 .toList());
     }
 
+    @SuppressWarnings("java:S3740")
     private AccessibilityReason mapTrafficSignToAccessibilityReason(TrafficSign trafficSign) {
 
         if (!RESTRICTION_MAPPERS.containsKey(trafficSign.trafficSignType())) {
