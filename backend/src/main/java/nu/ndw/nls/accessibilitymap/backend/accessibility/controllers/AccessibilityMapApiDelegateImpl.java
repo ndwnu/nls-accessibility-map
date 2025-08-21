@@ -71,6 +71,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility));
     }
 
+    @SuppressWarnings("java:S107")
     private AccessibilityRequest buildAndValidateAccessibilityRequest(
             String municipalityId, VehicleTypeJson vehicleType, Float vehicleLength,
             Float vehicleWidth, Float vehicleHeight, Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer,
