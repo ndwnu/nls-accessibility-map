@@ -9,7 +9,7 @@ import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
@@ -57,8 +57,8 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
     @Getter
     private List<AccessibilityReason> accessibilityReasonList = new ArrayList<>();
 
-    @SuppressWarnings({"java:S3740", "java:S1640"})
-    private final Map<RestrictionType, List<AccessibilityRestriction>> reasonsByRestriction = new HashMap<>();
+    @SuppressWarnings("java:S3740")
+    private final Map<RestrictionType, List<AccessibilityRestriction>> reasonsByRestriction = new EnumMap<>(RestrictionType.class);
 
     /**
      * Processes the next edge in the iteration. For a given edge, check for accessibility restrictions associated with the road section and
