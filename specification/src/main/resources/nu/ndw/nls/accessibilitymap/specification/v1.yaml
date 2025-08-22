@@ -28,8 +28,8 @@ paths:
         - $ref: '#/components/parameters/LongitudeParam'
         - $ref: '#/components/parameters/EmissionClassParam'
         - $ref: '#/components/parameters/FuelTypesParam'
-        - $ref: '#/components/parameters/exemptionsEmissionZoneIdsParam'
-        - $ref: '#/components/parameters/exemptionsEmissionZoneTypesParam'
+        - $ref: '#/components/parameters/excludeEmissionZoneIdsParam'
+        - $ref: '#/components/parameters/excludeEmissionZoneTypesParam'
 
       responses:
         '200':
@@ -77,8 +77,8 @@ paths:
         - $ref: '#/components/parameters/LongitudeParam'
         - $ref: '#/components/parameters/EmissionClassParam'
         - $ref: '#/components/parameters/FuelTypesParam'
-        - $ref: '#/components/parameters/exemptionsEmissionZoneIdsParam'
-        - $ref: '#/components/parameters/exemptionsEmissionZoneTypesParam'
+        - $ref: '#/components/parameters/excludeEmissionZoneIdsParam'
+        - $ref: '#/components/parameters/excludeEmissionZoneTypesParam'
       responses:
         '200':
           description: OK
@@ -174,10 +174,10 @@ components:
         example: 5.2
         minimum: 0.0
         maximum: 22.0
-    exemptionsEmissionZoneTypesParam:
+    excludeEmissionZoneTypesParam:
       in: query
-      name: exemptions.emissionZone.types
-      description: exempts an emission zone with id
+      name: excludeEmissionZoneTypes
+      description: Excludes the emission zone with types from the accessibility calculation
       required: false
       schema:
         type: "array"
@@ -185,10 +185,10 @@ components:
         minItems: 0
         items:
           $ref: '#/components/schemas/EmissionZoneType'
-    exemptionsEmissionZoneIdsParam:
+    excludeEmissionZoneIdsParam:
       in: query
-      name: exemptions.emissionZone.ids
-      description: exempts an emission zone with id
+      name: excludeEmissionZoneIds
+      description: Excludes the emission zone with ids from the accessibility calculation
       required: false
       schema:
         type: "array"

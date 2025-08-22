@@ -41,8 +41,8 @@ public record AccessibilityRequest(
         Set<TextSignType> trafficSignTextSignTypes,
         Set<TextSignType> excludeTrafficSignTextSignTypes,
         Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes,
-        Set<String> excludeEmissionZoneIds,
-        Set<EmissionZoneType> excludeEmissionZoneTypes) {
+        Set<String> excludeRestrictionsWithEmissionZoneIds,
+        Set<EmissionZoneType> excludeRestrictionsWithEmissionZoneTypes) {
 
     public Set<TextSignType> excludeTrafficSignTextSignTypes() {
 

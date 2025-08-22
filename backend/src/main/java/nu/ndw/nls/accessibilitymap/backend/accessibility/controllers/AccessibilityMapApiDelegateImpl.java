@@ -10,8 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.EmissionZoneExemption;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Exemptions;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.AccessibilityResponseMapper;
@@ -56,13 +55,13 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
             VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
             Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude,
-            EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> exemptionsEmissionZoneIds,
-            List<EmissionZoneTypeJson> exemptionsEmissionZoneTypes) {
+            EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> excludeEmissionZoneIds,
+            List<EmissionZoneTypeJson> excludeEmissionZoneTypes) {
 
         AccessibilityRequest accessibilityRequest = buildAndValidateAccessibilityRequest(
                 municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
-                vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, exemptionsEmissionZoneIds,
-                exemptionsEmissionZoneTypes, latitude, longitude);
+                vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
+                excludeEmissionZoneTypes, latitude, longitude);
 
         NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
 
@@ -71,12 +70,36 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
         return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility));
     }
 
+    @Override
+    public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(String municipalityId,
+            VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
+            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
+            Double longitude, EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> excludeEmissionZoneIds,
+            List<EmissionZoneTypeJson> excludeEmissionZoneTypes) {
+
+        var accessibilityRequest = buildAndValidateAccessibilityRequest(
+                municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
+                vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
+                excludeEmissionZoneTypes, latitude, longitude);
+
+        NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
+
+        Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+
+        return ResponseEntity.ok(
+                roadSectionFeatureCollectionMapper.map(
+                        accessibility.combinedAccessibility(),
+                        accessibilityRequest.hasEndLocation(),
+                        Objects.nonNull(accessibility.toRoadSection()) ? accessibility.toRoadSection().getId() : null,
+                        accessible));
+    }
+
     @SuppressWarnings("java:S107")
     private AccessibilityRequest buildAndValidateAccessibilityRequest(
             String municipalityId, VehicleTypeJson vehicleType, Float vehicleLength,
             Float vehicleWidth, Float vehicleHeight, Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer,
-            EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> exemptionsEmissionZoneIds,
-            List<EmissionZoneTypeJson> exemptionsEmissionZoneTypes,
+            EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> excludeEmissionZoneIds,
+            List<EmissionZoneTypeJson> excludeEmissionZoneTypes,
             Double endPointLatitude, Double endPointLongitude) {
 
         pointValidator.validateConsistentValues(endPointLatitude, endPointLongitude);
@@ -89,11 +112,9 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleWeight, vehicleAxleLoad,
                 vehicleHasTrailer, emissionClass, fuelTypes);
 
-        Exemptions exemptions = Exemptions.builder()
-                .emissionZone(EmissionZoneExemption.builder()
-                        .ids(new HashSet<>(exemptionsEmissionZoneIds))
-                        .types(new HashSet<>(exemptionsEmissionZoneTypes))
-                        .build())
+        Excludes excludes = Excludes.builder()
+                .emissionZoneIds(Objects.nonNull(excludeEmissionZoneIds) ? new HashSet<>(excludeEmissionZoneIds): null)
+                .emissionZoneTypes(Objects.nonNull(excludeEmissionZoneTypes) ? new HashSet<>(excludeEmissionZoneTypes): null)
                 .build();
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
@@ -102,33 +123,9 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 clockService.now(),
                 municipality,
                 vehicleArguments,
-                exemptions,
+                excludes,
                 endPointLatitude,
                 endPointLongitude);
-    }
-
-    @Override
-    public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(String municipalityId,
-            VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
-            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
-            Double longitude, EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> exemptionsEmissionZoneIds,
-            List<EmissionZoneTypeJson> exemptionsEmissionZoneTypes) {
-
-        var accessibilityRequest = buildAndValidateAccessibilityRequest(
-                municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
-                vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, exemptionsEmissionZoneIds,
-                exemptionsEmissionZoneTypes, latitude, longitude);
-
-        NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
-
-        Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
-
-        return ResponseEntity.ok(
-                roadSectionFeatureCollectionMapper.map(
-                        accessibility.combinedAccessibility(),
-                        accessibilityRequest.hasEndLocation(),
-                        Objects.nonNull(accessibility.toRoadSection()) ? accessibility.toRoadSection().getId() : null,
-                        accessible));
     }
 
     /**

@@ -12,7 +12,8 @@ import org.springframework.validation.annotation.Validated;
 @With
 @Validated
 public record EmissionZone(
-        @NotNull @JsonProperty("trafficRegulationOrderId") String id,
+        @NotNull String id,
+        @NotNull String trafficRegulationOrderId,
         @NotNull @JsonProperty("emissionZoneType") EmissionZoneType type,
         @NotNull OffsetDateTime startTime,
         OffsetDateTime endTime,

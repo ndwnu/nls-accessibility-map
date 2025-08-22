@@ -56,7 +56,7 @@ public class DataTypeRegister {
                 .blackCode(Objects.nonNull(entry.get("blackCode")) ? entry.get("blackCode").toUpperCase(Locale.US) : null)
                 .directionType(DirectionType.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(Objects.nonNull(entry.get("windowTime")) ? entry.get("windowTime") : null)
-                .emissionZoneId(entry.get("emissionZoneId"))
+                .regulationOrderId(entry.get("regulationOrderId"))
                 .build();
     }
 
@@ -77,11 +77,11 @@ public class DataTypeRegister {
                 .fuelTypes(entry.containsKey("fuelTypes") && Objects.nonNull(entry.get("fuelTypes"))
                         ? Arrays.stream(entry.get("fuelTypes").split(",")).map(FuelTypeJson::fromValue).toList()
                         : null)
-                .exemptionEmissionZoneIds(entry.containsKey("exemptionEmissionZoneIds") && Objects.nonNull(entry.get("exemptionEmissionZoneIds"))
-                        ? Arrays.stream(entry.get("exemptionEmissionZoneIds").split(",")).toList()
+                .excludeRestrictionsWithEmissionZoneIds(entry.containsKey("excludeRestrictionsWithEmissionZoneIds") && Objects.nonNull(entry.get("excludeRestrictionsWithEmissionZoneIds"))
+                        ? Arrays.stream(entry.get("excludeRestrictionsWithEmissionZoneIds").split(",")).toList()
                         : null)
-                .exemptionEmissionZoneTypes(entry.containsKey("exemptionEmissionZoneTypes") && Objects.nonNull(entry.get("exemptionEmissionZoneTypes"))
-                        ? Arrays.stream(entry.get("exemptionEmissionZoneTypes").split(",")).map(EmissionZoneTypeJson::fromValue).toList()
+                .excludeRestrictionsWithEmissionZoneTypes(entry.containsKey("excludeRestrictionsWithEmissionZoneTypes") && Objects.nonNull(entry.get("excludeRestrictionsWithEmissionZoneTypes"))
+                        ? Arrays.stream(entry.get("excludeRestrictionsWithEmissionZoneTypes").split(",")).map(EmissionZoneTypeJson::fromValue).toList()
                         : null)
                 .build();
     }

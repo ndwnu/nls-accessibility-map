@@ -5,8 +5,8 @@ import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 
 @Builder
-public record EmissionZoneExemption(
-        Set<String> ids,
-        Set<EmissionZoneTypeJson> types) {
+public record Excludes(
+        Set<String> emissionZoneIds,
+        Set<EmissionZoneTypeJson> emissionZoneTypes) {
 
 }

@@ -12,10 +12,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.EmissionZoneExemption;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Exemptions;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.EmissionZoneTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
@@ -97,11 +95,9 @@ class AccessibilityRequestMapperTest {
                 .fuelTypes(List.of(FuelTypeJson.PETROL))
                 .build();
 
-        var exemptions = Exemptions.builder()
-                .emissionZone(EmissionZoneExemption.builder()
-                        .ids(Set.of("id1"))
-                        .types(Set.of(EmissionZoneTypeJson.LOW_EMISSION_ZONE))
-                        .build())
+        var exemptions = Excludes.builder()
+                .emissionZoneIds(Set.of("id1"))
+                .emissionZoneTypes(Set.of(EmissionZoneTypeJson.LOW_EMISSION_ZONE))
                 .build();
 
         when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
@@ -144,8 +140,8 @@ class AccessibilityRequestMapperTest {
                 .emissionClasses(Set.of(EmissionClass.EURO_1))
                 .fuelTypes(Set.of(FuelType.PETROL))
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
-                .excludeEmissionZoneIds(Set.of("id1"))
-                .excludeEmissionZoneTypes(Set.of(EmissionZoneType.LOW))
+                .excludeRestrictionsWithEmissionZoneIds(Set.of("id1"))
+                .excludeRestrictionsWithEmissionZoneTypes(Set.of(EmissionZoneType.LOW))
                 .build());
     }
 
@@ -153,9 +149,7 @@ class AccessibilityRequestMapperTest {
     void mapToAccessibilityRequest_handlesNullValuesGracefully() {
 
         VehicleArguments vehicleArguments = VehicleArguments.builder().build();
-        Exemptions exemptions = Exemptions.builder()
-                .emissionZone(EmissionZoneExemption.builder().build())
-                .build();
+        Excludes excludes = Excludes.builder().build();
 
         when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
         when(municipality.searchDistanceInMetres()).thenReturn((int) DEFAULT_SEARCH_DISTANCE);
@@ -172,7 +166,7 @@ class AccessibilityRequestMapperTest {
         when(emissionClassMapper.mapEmissionClass(null)).thenReturn(null);
 
         var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments,
-                exemptions, null, null);
+                excludes, null, null);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
