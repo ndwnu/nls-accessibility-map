@@ -115,7 +115,6 @@ public class AccessibilityMapApiStepDefinitions {
                         Boolean.parseBoolean(forwardAccessible),
                         Boolean.parseBoolean(backwardAccessible),
                         reasons
-
                 ));
 
         assertThatJson(response.body())

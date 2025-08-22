@@ -18,8 +18,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.EmissionZoneExemption;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Exemptions;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response.AccessibilityResponseMapper;
@@ -314,11 +313,9 @@ class AccessibilityMapApiDelegateImpTest {
                         .emissionClass(emissionClassJson)
                         .fuelTypes(fuelTypesJson)
                         .build(),
-                Exemptions.builder()
-                        .emissionZone(EmissionZoneExemption.builder()
-                                .ids(Set.of("id1"))
-                                .types(Set.of(EmissionZoneTypeJson.LOW_EMISSION_ZONE))
-                                .build())
+                Excludes.builder()
+                        .emissionZoneIds(Set.of("id1"))
+                        .emissionZoneTypes(Set.of(EmissionZoneTypeJson.LOW_EMISSION_ZONE))
                         .build(),
                 REQUESTED_LATITUDE,
                 REQUESTED_LONGITUDE))

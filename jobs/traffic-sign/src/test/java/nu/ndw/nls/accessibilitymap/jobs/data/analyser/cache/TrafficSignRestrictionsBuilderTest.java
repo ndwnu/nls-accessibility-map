@@ -262,7 +262,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C22A)
                 .build();
 
-        when(emissionZoneMapper.map(trafficSign.emissionZoneId())).thenReturn(emissionZone);
+        when(emissionZoneMapper.map(trafficSign.trafficRegulationOrderId())).thenReturn(emissionZone);
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
                 .emissionZone(emissionZone)
@@ -276,7 +276,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C22C)
                 .build();
 
-        when(emissionZoneMapper.map(trafficSign.emissionZoneId())).thenReturn(emissionZone);
+        when(emissionZoneMapper.map(trafficSign.trafficRegulationOrderId())).thenReturn(emissionZone);
 
         assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
                 .emissionZone(emissionZone)

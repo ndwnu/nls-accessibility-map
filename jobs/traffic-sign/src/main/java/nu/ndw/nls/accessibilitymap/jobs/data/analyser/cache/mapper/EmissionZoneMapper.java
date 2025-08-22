@@ -31,9 +31,9 @@ public class EmissionZoneMapper {
     private final TransportTypeMapper transportTypeMapper;
 
     @Valid
-    public EmissionZone map(String emissionZoneId) {
+    public EmissionZone map(String trafficRegulationOrderId) {
 
-        return emissionService.findById(emissionZoneId)
+        return emissionService.findByTrafficRegulationOrderId(trafficRegulationOrderId)
                 .filter(nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.dto.EmissionZone::isActive)
                 .map(emissionZone -> {
                     try {
@@ -46,7 +46,9 @@ public class EmissionZoneMapper {
                                 .restriction(mapRestriction(emissionZone))
                                 .build();
                     } catch (RuntimeException exception) {
-                        log.error("Emission zone with id '{}' is incomplete and will be skipped.", emissionZoneId, exception);
+                        log.error("Emission zone with trafficRegulationOrderId '{}' is incomplete and will be skipped.",
+                                trafficRegulationOrderId,
+                                exception);
                         return null;
                     }
                 })

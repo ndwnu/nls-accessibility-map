@@ -38,6 +38,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class EmissionZoneMapperTest {
 
     private static final String EMISSION_ZONE_ID = "emissionZoneId";
+    private static final String TRAFFIC_REGULATION_ORDER_ID = "orderId";
 
     private EmissionZoneMapper emissionZoneMapper;
 
@@ -69,6 +70,7 @@ class EmissionZoneMapperTest {
 
         emissionZoneDto = nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.dto.EmissionZone.builder()
                 .id(EMISSION_ZONE_ID)
+                .trafficRegulationOrderId(TRAFFIC_REGULATION_ORDER_ID)
                 .type(EmissionZoneType.LOW_EMISSION_ZONE)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .endTime(OffsetDateTime.parse("2022-03-11T10:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
@@ -95,7 +97,7 @@ class EmissionZoneMapperTest {
     @Test
     void map() {
 
-        when(emissionService.findById(EMISSION_ZONE_ID)).thenReturn(Optional.of(emissionZoneDto));
+        when(emissionService.findByTrafficRegulationOrderId(TRAFFIC_REGULATION_ORDER_ID)).thenReturn(Optional.of(emissionZoneDto));
 
         when(maximumWeightMapper.map(emissionZoneDto.exemptions().getFirst().vehicleCategories(), 2D)).thenReturn(
                 Maximum.builder().value(2D).build());
@@ -109,7 +111,7 @@ class EmissionZoneMapperTest {
         when(emissionZoneTypeMapper.map(emissionZoneDto.type())).thenReturn(
                 nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType.LOW);
 
-        EmissionZone emissionZone = emissionZoneMapper.map(EMISSION_ZONE_ID);
+        EmissionZone emissionZone = emissionZoneMapper.map(TRAFFIC_REGULATION_ORDER_ID);
 
         validate(emissionZone);
     }
@@ -141,14 +143,14 @@ class EmissionZoneMapperTest {
     @Test
     void map_unexpectedErrorOccurred() {
 
-        when(emissionService.findById(EMISSION_ZONE_ID)).thenReturn(Optional.of(emissionZoneDto));
+        when(emissionService.findByTrafficRegulationOrderId(TRAFFIC_REGULATION_ORDER_ID)).thenReturn(Optional.of(emissionZoneDto));
 
         when(maximumWeightMapper.map(any(), any())).thenThrow(new RuntimeException("Unexpected error occurred"));
-        assertThat(emissionZoneMapper.map(EMISSION_ZONE_ID)).isNull();
+        assertThat(emissionZoneMapper.map(TRAFFIC_REGULATION_ORDER_ID)).isNull();
 
         loggerExtension.containsLog(
                 Level.ERROR,
-                "Emission zone with id '%s' is incomplete and will be skipped.".formatted(EMISSION_ZONE_ID),
+                "Emission zone with trafficRegulationOrderId '%s' is incomplete and will be skipped.".formatted(TRAFFIC_REGULATION_ORDER_ID),
                 "Unexpected error occurred");
     }
 
@@ -157,14 +159,14 @@ class EmissionZoneMapperTest {
 
         emissionZoneDto = emissionZoneDto.withExemptions(null);
 
-        when(emissionService.findById(EMISSION_ZONE_ID)).thenReturn(Optional.of(emissionZoneDto));
+        when(emissionService.findByTrafficRegulationOrderId(TRAFFIC_REGULATION_ORDER_ID)).thenReturn(Optional.of(emissionZoneDto));
 
         when(maximumWeightMapper.map(emissionZoneDto.restriction().vehicleCategories())).thenReturn(Maximum.builder().value(3D).build());
         when(fuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
         when(transportTypeMapper.map(emissionZoneDto.restriction().vehicleType(),
                 emissionZoneDto.restriction().vehicleCategories())).thenReturn(Set.of(TransportType.BUS));
 
-        EmissionZone emissionZone = emissionZoneMapper.map(EMISSION_ZONE_ID);
+        EmissionZone emissionZone = emissionZoneMapper.map(TRAFFIC_REGULATION_ORDER_ID);
 
         assertThat(emissionZone.startTime()).isEqualTo(emissionZoneDto.startTime());
         assertThat(emissionZone.endTime()).isEqualTo(emissionZoneDto.endTime());
@@ -184,7 +186,7 @@ class EmissionZoneMapperTest {
 
         emissionZoneDto = emissionZoneDto.withExemptions(List.of(emissionZoneDto.exemptions().getFirst().withVehicleWeightInKg(null)));
 
-        when(emissionService.findById(EMISSION_ZONE_ID)).thenReturn(Optional.of(emissionZoneDto));
+        when(emissionService.findByTrafficRegulationOrderId(TRAFFIC_REGULATION_ORDER_ID)).thenReturn(Optional.of(emissionZoneDto));
 
         when(maximumWeightMapper.map(emissionZoneDto.exemptions().getFirst().vehicleCategories(), null)).thenReturn(
                 Maximum.builder().value(2D).build());
@@ -198,7 +200,7 @@ class EmissionZoneMapperTest {
         when(emissionZoneTypeMapper.map(emissionZoneDto.type())).thenReturn(
                 nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType.LOW);
 
-        EmissionZone emissionZone = emissionZoneMapper.map(EMISSION_ZONE_ID);
+        EmissionZone emissionZone = emissionZoneMapper.map(TRAFFIC_REGULATION_ORDER_ID);
 
         validate(emissionZone);
     }

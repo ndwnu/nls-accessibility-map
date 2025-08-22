@@ -9,9 +9,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Exemptions;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.EmissionZoneTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
@@ -38,7 +37,7 @@ public class AccessibilityRequestMapper {
             OffsetDateTime timestamp,
             Municipality municipality,
             VehicleArguments vehicleArguments,
-            @Valid Exemptions exemptions,
+            Excludes excludes,
             Double endPointLatitude,
             Double endPointLongitude) {
 
@@ -70,23 +69,23 @@ public class AccessibilityRequestMapper {
                                         .collect(Collectors.toSet()))
                 .emissionClasses(emissionClassMapper.mapEmissionClass(vehicleArguments.emissionClass()))
                 .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))
-                .excludeEmissionZoneIds(mapEmissionZoneIds(exemptions))
-                .excludeEmissionZoneTypes(mapEmissionZoneTypes(exemptions))
+                .excludeRestrictionsWithEmissionZoneIds(mapEmissionZoneIds(excludes))
+                .excludeRestrictionsWithEmissionZoneTypes(mapEmissionZoneTypes(excludes))
                 .build();
     }
 
-    private static Set<String> mapEmissionZoneIds(Exemptions exemptions) {
+    private static Set<String> mapEmissionZoneIds(Excludes excludes) {
 
-        return Objects.isNull(exemptions) || Objects.isNull(exemptions.emissionZone().ids())
+        return Objects.isNull(excludes)
                 ? null
-                : exemptions.emissionZone().ids();
+                : excludes.emissionZoneIds();
     }
 
-    private Set<EmissionZoneType> mapEmissionZoneTypes(Exemptions exemptions) {
+    private Set<EmissionZoneType> mapEmissionZoneTypes(Excludes excludes) {
 
-        return Objects.isNull(exemptions) || Objects.isNull(exemptions.emissionZone().types())
+        return Objects.isNull(excludes) || Objects.isNull(excludes.emissionZoneTypes())
                 ? null
-                : exemptions.emissionZone().types().stream()
+                : excludes.emissionZoneTypes().stream()
                         .map(emissionZoneTypeMapper::mapEmissionZoneType)
                         .collect(Collectors.toSet());
     }

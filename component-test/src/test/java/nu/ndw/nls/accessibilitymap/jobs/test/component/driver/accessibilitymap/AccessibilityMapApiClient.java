@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
@@ -225,6 +226,13 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         }
         if (Objects.nonNull(accessibilityRequest.vehicleAxleLoadInKg())) {
             queryParameters.put("vehicleHasTrailer", List.of(accessibilityRequest.vehicleHasTrailer() + ""));
+        }
+        if (Objects.nonNull(accessibilityRequest.excludeRestrictionsWithEmissionZoneIds())) {
+            queryParameters.put("excludeEmissionZoneIds", accessibilityRequest.excludeRestrictionsWithEmissionZoneIds());
+        }
+        if (Objects.nonNull(accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes())) {
+            queryParameters.put("excludeEmissionZoneTypes", accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes().stream().
+                    map(EmissionZoneTypeJson::getValue).toList());
         }
 
         return MultiValueMap.fromMultiValue(queryParameters);

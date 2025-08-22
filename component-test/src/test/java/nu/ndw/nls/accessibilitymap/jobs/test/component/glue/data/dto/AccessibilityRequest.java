@@ -21,8 +21,8 @@ public record AccessibilityRequest(
         Double vehicleWeightInKg,
         Double vehicleAxleLoadInKg,
         List<FuelTypeJson> fuelTypes,
-        List<String> exemptionEmissionZoneIds,
-        List<EmissionZoneTypeJson> exemptionEmissionZoneTypes,
+        List<String> excludeRestrictionsWithEmissionZoneIds,
+        List<EmissionZoneTypeJson> excludeRestrictionsWithEmissionZoneTypes,
         EmissionClassJson emissionClass,
         VehicleTypeJson vehicleType,
         boolean vehicleHasTrailer) {
