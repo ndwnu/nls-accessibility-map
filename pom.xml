@@ -43,7 +43,7 @@
     <picocli.version>4.7.7</picocli.version>
     <spring-cloud.version>2025.0.0</spring-cloud.version>
     <spring-cloud-contract-wiremock.version>4.3.0</spring-cloud-contract-wiremock.version>
-    <springdoc.version>2.8.10</springdoc.version>
+    <springdoc.version>2.8.11</springdoc.version>
     <stream-utils.version>1.3.1</stream-utils.version>
     <swagger-annotations.version>2.2.36</swagger-annotations.version>
     <nls-events.version>5.2.2</nls-events.version>
@@ -51,12 +51,12 @@
     <nls-springboot.version>9.2.18</nls-springboot.version>
     <nls-routing-map-matcher.version>18.0.7</nls-routing-map-matcher.version>
     <nls-geometry.version>5.0.11</nls-geometry.version>
-    <nls-geojson-geometry.version>1.4.27</nls-geojson-geometry.version>
+    <nls-geojson-geometry.version>1.4.28</nls-geojson-geometry.version>
     <jackson-geojson.version>1.14</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>4.1.1</json-unit.version>
     <cucumber.version>7.27.2</cucumber.version>
-    <location-data-issues.version>2.2.29</location-data-issues.version>
+    <location-data-issues.version>2.2.30</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
