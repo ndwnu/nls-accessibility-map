@@ -12,7 +12,6 @@ import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +73,7 @@ public class AccessibilityService {
                 accessibilityRequest.startLocationLatitude(),
                 accessibilityRequest.startLocationLongitude());
 
-        if (Objects.isNull(from)) {
+        if (from.isEmpty()) {
             throw new AccessibilityException("Could not find a snap point for start location (%s, %s).".formatted(
                     accessibilityRequest.startLocationLatitude(),
                     accessibilityRequest.startLocationLongitude()
@@ -84,7 +83,7 @@ public class AccessibilityService {
         var trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
         var networkData = networkCacheDataService.getNetworkData(
                 accessibilityRequest.municipalityId(),
-                from,
+                from.get(),
                 accessibilityRequest.searchRadiusInMeters(),
                 trafficSigns,
                 networkGraphHopper);
@@ -99,7 +98,7 @@ public class AccessibilityService {
                         accessibilityRequest,
                         isochroneService,
                         networkData.queryGraph(),
-                        from,
+                        from.get(),
                         buildWeightingWithRestrictions(networkGraphHopper, networkData.edgeRestrictions().getBlockedEdges()));
 
         if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
@@ -162,7 +161,7 @@ public class AccessibilityService {
                 .orElse(Collections.emptyList());
     }
 
-    private Snap findSnap(NetworkGraphHopper networkGraphHopper, Double latitude, Double longitude) {
+    private Optional<Snap> findSnap(NetworkGraphHopper networkGraphHopper, Double latitude, Double longitude) {
 
         return pointMapper.mapCoordinate(latitude, longitude)
                 .flatMap(point -> pointMatchService.match(networkGraphHopper, point)
@@ -171,7 +170,7 @@ public class AccessibilityService {
                         .map(snappedPoint -> networkGraphHopper.getLocationIndex().findClosest(
                                 snappedPoint.getY(),
                                 snappedPoint.getX(),
-                                EdgeFilter.ALL_EDGES))).orElse(null);
+                                EdgeFilter.ALL_EDGES)));
     }
 
     private Optional<RoadSection> findDestinationRoadSection(
@@ -188,7 +187,7 @@ public class AccessibilityService {
                 accessibilityRequest.endLocationLatitude(),
                 accessibilityRequest.endLocationLongitude());
 
-        if (Objects.isNull(destinationSnap)) {
+        if (destinationSnap.isEmpty()) {
             log.error("Could not find a snap point for end location (%s, %s).".formatted(
                     accessibilityRequest.endLocationLatitude(),
                     accessibilityRequest.endLocationLongitude()
@@ -196,7 +195,8 @@ public class AccessibilityService {
             return Optional.empty();
         }
 
-        var roadSectionId = destinationSnap.getClosestEdge().get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+        var roadSectionId = destinationSnap.get()
+                .getClosestEdge().get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
         return combinedRoadSections.stream()
                 .filter(roadSection -> roadSection.getId() == roadSectionId)
                 .findFirst();
