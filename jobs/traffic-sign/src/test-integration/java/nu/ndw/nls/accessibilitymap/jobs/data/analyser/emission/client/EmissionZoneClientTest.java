@@ -186,7 +186,8 @@ class EmissionZoneClientTest {
     private static void validateResponse(List<EmissionZone> emissionZones) {
 
         EmissionZone emissionZone = emissionZones.getFirst();
-        assertThat(emissionZone.id()).isEqualTo("stcrt-2017-72736");
+        assertThat(emissionZone.id()).isEqualTo("NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47");
+        assertThat(emissionZone.trafficRegulationOrderId()).isEqualTo("stcrt-2017-72736");
         assertThat(emissionZone.type()).isEqualTo(EmissionZoneType.LOW_EMISSION_ZONE);
         assertThat(emissionZone.status()).isEqualTo(EmissionZoneStatus.ACTIVE);
         assertThat(emissionZone.startTime())
