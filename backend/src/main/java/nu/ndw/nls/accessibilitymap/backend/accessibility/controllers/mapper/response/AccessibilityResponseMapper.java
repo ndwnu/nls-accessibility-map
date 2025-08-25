@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.response;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
@@ -24,7 +23,7 @@ public class AccessibilityResponseMapper {
                 .map(AccessibilityResponseMapper::mapToRoadSection)
                 .toList();
 
-        MatchedRoadSectionJson matchedRoadSection = Optional.ofNullable(accessibility.toRoadSection())
+        MatchedRoadSectionJson matchedRoadSection = accessibility.toRoadSection()
                 .map(roadSection -> mapToMatchedRoadSection(roadSection, accessibility.reasons()))
                 .orElse(null);
 
