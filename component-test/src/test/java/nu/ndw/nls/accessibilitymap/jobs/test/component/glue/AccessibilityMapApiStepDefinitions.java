@@ -82,7 +82,8 @@ public class AccessibilityMapApiStepDefinitions {
                         {
                             "roadSectionId" : %s,
                             "forwardAccessible" : %s,
-                            "backwardAccessible" : %s
+                            "backwardAccessible" : %s,
+                            "reasons": []
                           }
                         """.formatted(
                         matchedRoadSectionId,

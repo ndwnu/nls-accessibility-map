@@ -5,17 +5,17 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MatchedRoadSectionJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.ReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionJson;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -27,121 +27,112 @@ class AccessibilityResponseMapperTest {
     private AccessibilityResponseMapper accessibilityResponseMapper;
 
     @Mock
+    private AccessibilityReasonsJsonMapper accessibilityReasonsJsonMapper;
+
+    @Mock
     private Accessibility accessibility;
 
     @Mock
     private RoadSection roadSection;
 
+    @Mock
+    private List<List<AccessibilityReason>> reasons;
+
+    @Mock
+    private List<List<ReasonJson>> reasonsJson;
+
     @BeforeEach
     void setup() {
-        accessibilityResponseMapper = new AccessibilityResponseMapper();
-    }
 
-    @Test
-    void map() {
-        when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
-        when(roadSection.hasBackwardSegments()).thenReturn(true);
-        when(roadSection.hasForwardSegments()).thenReturn(true);
-        when(roadSection.isForwardAccessible()).thenReturn(true);
-        when(roadSection.isBackwardAccessible()).thenReturn(true);
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID);
-        final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
-                .roadSectionId((int) ROAD_SECTION_ID)
-                .backwardAccessible(true)
-                .forwardAccessible(true)
-                .build();
-        assertThat(result).isEqualTo(AccessibilityMapResponseJson
-                .builder()
-                .inaccessibleRoadSections(List.of(expectedRoadSection))
-                .matchedRoadSection(expectedRoadSection)
-                .build());
-
-    }
-
-    @Test
-    void map_nullAccessibilityForward() {
-        when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
-        when(roadSection.hasForwardSegments()).thenReturn(false);
-        when(roadSection.hasBackwardSegments()).thenReturn(true);
-        when(roadSection.isBackwardAccessible()).thenReturn(true);
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID);
-        final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
-                .roadSectionId((int) ROAD_SECTION_ID)
-                .backwardAccessible(true)
-                .build();
-        assertThat(result).isEqualTo(AccessibilityMapResponseJson
-                .builder()
-                .inaccessibleRoadSections(List.of(expectedRoadSection))
-                .matchedRoadSection(expectedRoadSection)
-                .build());
-
-    }
-
-    @Test
-    void map_nullAccessibilityBackward() {
-        when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
-        when(roadSection.hasForwardSegments()).thenReturn(true);
-        when(roadSection.isForwardAccessible()).thenReturn(true);
-        when(roadSection.hasBackwardSegments()).thenReturn(false);
-
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, (int) ROAD_SECTION_ID);
-        final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
-                .roadSectionId((int) ROAD_SECTION_ID)
-                .forwardAccessible(true)
-                .build();
-        assertThat(result).isEqualTo(AccessibilityMapResponseJson
-                .builder()
-                .inaccessibleRoadSections(List.of(expectedRoadSection))
-                .matchedRoadSection(expectedRoadSection)
-                .build());
-
+        accessibilityResponseMapper = new AccessibilityResponseMapper(accessibilityReasonsJsonMapper);
     }
 
     @ParameterizedTest
-    @MethodSource("provideRoadSectionValues")
-    void map_noMatchedRoadSection(Optional<Integer> roadSectionId) {
+    @CsvSource(textBlock = """
+            false, false,
+            true, true,
+            true, false,
+            false, true,
+            """)
+    void map(boolean isForwardAccessible, boolean isBackwardAccessible) {
+
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
+        when(accessibility.toRoadSection()).thenReturn(Optional.of(roadSection));
+        when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
+        when(roadSection.hasBackwardSegments()).thenReturn(true);
         when(roadSection.hasForwardSegments()).thenReturn(true);
-        when(roadSection.isForwardAccessible()).thenReturn(true);
-        when(roadSection.hasBackwardSegments()).thenReturn(false);
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility,
-                roadSectionId.isEmpty() ? null : roadSectionId.get());
+        when(roadSection.isForwardAccessible()).thenReturn(isForwardAccessible);
+        when(roadSection.isBackwardAccessible()).thenReturn(isBackwardAccessible);
+        when(accessibilityReasonsJsonMapper.mapToReasonJson(reasons)).thenReturn(reasonsJson);
+
+        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility);
+
         final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
                 .roadSectionId((int) ROAD_SECTION_ID)
-                .forwardAccessible(true)
+                .forwardAccessible(isForwardAccessible)
+                .backwardAccessible(isBackwardAccessible)
                 .build();
+
+        final MatchedRoadSectionJson expectedMatchedRoadSectionJson = MatchedRoadSectionJson.builder()
+                .roadSectionId((int) ROAD_SECTION_ID)
+                .forwardAccessible(isForwardAccessible)
+                .backwardAccessible(isBackwardAccessible)
+                .reasons(reasonsJson)
+                .build();
+
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
                 .inaccessibleRoadSections(List.of(expectedRoadSection))
+                .matchedRoadSection(expectedMatchedRoadSectionJson)
                 .build());
-
     }
 
-    @Test
-    void map_emptyResult() {
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            false, false,
+            true, true,
+            true, false,
+            false, true,
+            """)
+    void map_missingDirectionalSegments(boolean forwardDirectionalSegmentMissing, boolean backwardDirectionalSegmentMissing) {
+
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(false);
-        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility, null);
+        when(accessibility.toRoadSection()).thenReturn(Optional.of(roadSection));
+        when(accessibility.reasons()).thenReturn(reasons);
+        when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
+        when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
+        if (!forwardDirectionalSegmentMissing) {
+            when(roadSection.hasForwardSegments()).thenReturn(true);
+            when(roadSection.isForwardAccessible()).thenReturn(true);
+        }
+        if (!backwardDirectionalSegmentMissing) {
+            when(roadSection.hasBackwardSegments()).thenReturn(true);
+            when(roadSection.isBackwardAccessible()).thenReturn(true);
+        }
+        when(accessibilityReasonsJsonMapper.mapToReasonJson(reasons)).thenReturn(reasonsJson);
+
+        AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility);
+
+        final RoadSectionJson expectedRoadSection = RoadSectionJson.builder()
+                .roadSectionId((int) ROAD_SECTION_ID)
+                .forwardAccessible(forwardDirectionalSegmentMissing ? null : true)
+                .backwardAccessible(backwardDirectionalSegmentMissing ? null : true)
+                .build();
+
+        final MatchedRoadSectionJson expectedMatchedRoadSectionJson = MatchedRoadSectionJson.builder()
+                .roadSectionId((int) ROAD_SECTION_ID)
+                .forwardAccessible(forwardDirectionalSegmentMissing ? null : true)
+                .backwardAccessible(backwardDirectionalSegmentMissing ? null : true)
+                .reasons(reasonsJson)
+                .build();
+
         assertThat(result).isEqualTo(AccessibilityMapResponseJson
                 .builder()
-                .inaccessibleRoadSections(List.of())
+                .inaccessibleRoadSections(List.of(expectedRoadSection))
+                .matchedRoadSection(expectedMatchedRoadSectionJson)
                 .build());
 
-    }
-
-    private static Stream<Arguments> provideRoadSectionValues() {
-        return Stream.of(
-                Arguments.of(Optional.of(456)),
-                Arguments.of(Optional.empty())
-
-        );
     }
 }

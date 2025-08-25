@@ -11,6 +11,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
@@ -100,7 +102,7 @@ class AccessibilityRequestMapperTest {
         when(emissionClassMapper.mapEmissionClass(EmissionClassJson.EURO_1)).thenReturn(Set.of(EmissionClass.EURO_1));
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
 
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments);
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments, null, null);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
@@ -147,7 +149,7 @@ class AccessibilityRequestMapperTest {
         when(fuelTypeMapper.mapFuelType(null)).thenReturn(null);
         when(emissionClassMapper.mapEmissionClass(null)).thenReturn(null);
 
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments);
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments, null, null);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
