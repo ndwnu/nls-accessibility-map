@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.dto;
 
-import jakarta.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
