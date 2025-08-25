@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
+import com.graphhopper.routing.RoutingAlgorithmFactory;
+import com.graphhopper.routing.RoutingAlgorithmFactorySimple;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +25,19 @@ public class GraphhopperConfiguration {
 
     @Bean
     public GraphhopperMetaData getMetaData() {
+
         return networkMetaDataService.loadMetaData();
     }
 
     @Bean
     public EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor() {
+
         return new EdgeIteratorStateReverseExtractor();
     }
 
+    @Bean
+    public RoutingAlgorithmFactory algorithmFactory() {
+
+        return new RoutingAlgorithmFactorySimple();
+    }
 }

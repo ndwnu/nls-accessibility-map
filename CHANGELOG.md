@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+## [5.1.0] 2025-04-15
+### Added
+- destination accessibility reasons in the api response
 
 ## [5.0.0] 2025-04-15
 The project has been completely refactored and contains breaking behaviours in the algorithm of the backend api. The project now supports 

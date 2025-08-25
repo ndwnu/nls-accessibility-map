@@ -15,20 +15,23 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableConfigurationProperties(GraphHopperProperties.class)
+@EnableConfigurationProperties({GraphHopperProperties.class})
 public class GraphHopperNetworkSettingsBuilder {
 
     private final GraphHopperProperties graphHopperProperties;
 
     public Path getLatestPath() {
+
         return graphHopperProperties.getLatestPath();
     }
 
     public Path getMetaDataPath() {
+
         return graphHopperProperties.getMetaDataPath();
     }
 
     public RoutingNetworkSettings<AccessibilityLink> defaultNetworkSettings() {
+
         return defaultNetworkSettingsBuilder().build();
     }
 
@@ -44,6 +47,7 @@ public class GraphHopperNetworkSettingsBuilder {
     }
 
     private RoutingNetworkSettingsBuilder<AccessibilityLink> defaultNetworkSettingsBuilder() {
+
         return RoutingNetworkSettings
                 .builder(AccessibilityLink.class)
                 .indexed(true)
@@ -53,6 +57,7 @@ public class GraphHopperNetworkSettingsBuilder {
     }
 
     public boolean publishEvents() {
+
         return graphHopperProperties.isPublishEvents();
     }
 

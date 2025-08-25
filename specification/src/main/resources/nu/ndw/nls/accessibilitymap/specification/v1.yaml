@@ -17,7 +17,7 @@ paths:
       operationId: getInaccessibleRoadSections
       parameters:
         - $ref: '#/components/parameters/MunicipalityIdPathParam'
-        - $ref: '#/components/parameters/VehicleType'
+        - $ref: '#/components/parameters/VehicleTypeParam'
         - $ref: '#/components/parameters/VehicleLengthParam'
         - $ref: '#/components/parameters/VehicleWidthParam'
         - $ref: '#/components/parameters/VehicleHeightParam'
@@ -62,7 +62,7 @@ paths:
       operationId: getRoadSections
       parameters:
         - $ref: '#/components/parameters/MunicipalityIdPathParam'
-        - $ref: '#/components/parameters/VehicleType'
+        - $ref: '#/components/parameters/VehicleTypeParam'
         - $ref: '#/components/parameters/VehicleLengthParam'
         - $ref: '#/components/parameters/VehicleWidthParam'
         - $ref: '#/components/parameters/VehicleHeightParam'
@@ -151,7 +151,7 @@ components:
         type: string
         example: GM0344
         pattern: ^(GM)(?=\d{4}$)\d*[1-9]\d*
-    VehicleType:
+    VehicleTypeParam:
       in: query
       name: vehicleType
       description: The type of vehicle
@@ -364,7 +364,8 @@ components:
             $ref: '#/components/schemas/RoadSection'
           description: List of inaccessible road sections
         matchedRoadSection:
-          $ref: '#/components/schemas/RoadSection'
+          $ref: '#/components/schemas/MatchedRoadSection'
+
       example:
         - roadSectionId: 312865
           forwardAccessible: false
@@ -396,6 +397,199 @@ components:
         forwardAccessible: true
         backwardAccessible: false
 
+    MatchedRoadSection:
+      allOf:
+        - $ref: "#/components/schemas/RoadSection"
+        - type: object
+      properties:
+        reasons:
+          type: array
+          items:
+            type: array
+            items:
+              $ref: '#/components/schemas/Reason'
+
+    Reason:
+      type: object
+      description: Reason why the road section is inaccessible
+      required:
+        - type
+        - unitSymbol
+        - condition
+      properties:
+        trafficSignId:
+          $ref: '#/components/schemas/TrafficSignId'
+        trafficSignType:
+          $ref: '#/components/schemas/TrafficSignType'
+        restrictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Restriction"
+
+    Restriction:
+      type: object
+      description: Restriction on a particular route making it inaccessible
+      required:
+        - reasonType
+        - unitSymbol
+        - condition
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+          enum:
+            - VehicleLengthRestriction
+            - VehicleHeightRestriction
+            - VehicleWidthRestriction
+            - VehicleAxleWeightRestriction
+            - VehicleWeightRestriction
+            - FuelTypeRestriction
+            - VehicleTypeRestriction
+          description: "The restriction type."
+        unitSymbol:
+          $ref: '#/components/schemas/RestrictionUnitSymbol'
+        condition:
+          $ref: '#/components/schemas/RestrictionCondition'
+
+    RestrictionUnitSymbol:
+      enum:
+        - "tons"
+        - "metre"
+        - "enum"
+        - "unknown"
+      type: "string"
+      example: "metre"
+      default: "unknown"
+      description: "The unit symbol is the symbol used to represent a value."
+
+    RestrictionCondition:
+      enum:
+        - "equals"
+        - "greater_than_or_equals"
+        - "unknown"
+      type: "string"
+      default: "unknown"
+      example: "greater_than_or_equals"
+      description: "The reason condition"
+
+    VehicleLengthRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    VehicleAxleWeightRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    VehicleWeightRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    VehicleWidthRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    VehicleHeightRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    FuelTypeRestriction:
+      type: object
+      required:
+        - values
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            values:
+              type: array
+              items:
+                $ref: '#/components/schemas/FuelType'
+      example:
+        - type: "FuelTypeRestriction"
+          unitSymbol: "enum"
+          condition: "equals"
+          values:
+            - petrol
+            - electric
+
+    VehicleTypeRestriction:
+      type: object
+      required:
+        - values
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            values:
+              type: array
+              items:
+                $ref: '#/components/schemas/VehicleType'
+      example:
+        - type: "VehicleTypeRestriction"
+          unitSymbol: "enum"
+          condition: "equals"
+          values:
+            - car
+            - light_commercial_vehicle
+            -
+    TrafficSignId:
+      type: "string"
+      format: "uuid"
+      example: "79a56dfa-7a59-4bcc-aee5-918fe7064474"
+    TrafficSignType:
+      enum:
+        - "C1"
+        - "C6"
+        - "C7"
+        - "C7a"
+        - "C7b"
+        - "C8"
+        - "C9"
+        - "C10"
+        - "C11"
+        - "C12"
+        - "C17"
+        - "C18"
+        - "C19"
+        - "C20"
+        - "C21"
+        - "C22"
+        - "C22a"
+        - "C22c"
+        - "unknown"
+      type: "string"
+      default: "unknown"
+      example: "c1"
+      description: "Traffic sign type"
     FeatureCollection:
       type: object
       description: GeoJSON feature collection
