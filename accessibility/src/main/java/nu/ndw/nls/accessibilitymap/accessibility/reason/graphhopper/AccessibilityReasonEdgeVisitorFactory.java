@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;

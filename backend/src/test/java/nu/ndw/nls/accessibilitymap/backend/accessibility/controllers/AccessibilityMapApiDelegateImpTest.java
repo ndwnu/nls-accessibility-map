@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
@@ -152,7 +153,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     @ParameterizedTest
     @MethodSource("provideCorrectEmissionZoneParameters")
-    void getInaccessibleRoadSections(EmissionClassJson emissionClassJson, List<FuelTypeJson> fuelTypesJson) {
+    void getInaccessibleRoadSections(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
 
         setUpFixture(emissionClassJson, fuelTypesJson);
 
@@ -192,7 +193,7 @@ class AccessibilityMapApiDelegateImpTest {
 
         setUpFixture(emissionClassJson, fuelTypesJson);
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-        when(accessibility.toRoadSection()).thenReturn(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build());
+        when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build()));
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
@@ -220,7 +221,7 @@ class AccessibilityMapApiDelegateImpTest {
 
         setUpFixture(emissionClassJson, fuelTypesJson);
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-        when(accessibility.toRoadSection()).thenReturn(null);
+        when(accessibility.toRoadSection()).thenReturn(Optional.empty());
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
@@ -257,7 +258,7 @@ class AccessibilityMapApiDelegateImpTest {
             setUpFixture(EmissionClassJson.EURO_1, List.of(FuelTypeJson.ETHANOL));
             when(accessibilityRequest.hasEndLocation()).thenReturn(true);
             when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-            when(accessibility.toRoadSection()).thenReturn(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build());
+            when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build()));
             when(accessibility.combinedAccessibility()).thenReturn(roadSections);
             when(roadSectionFeatureCollectionMapper.map(roadSections, true, REQUESTED_ROAD_SECTION_ID, true))
                     .thenReturn(roadSectionFeatureCollectionJson);

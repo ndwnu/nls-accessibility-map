@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper;
 
 import static java.util.stream.Collectors.groupingBy;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
