@@ -227,7 +227,7 @@ class AccessibilityServiceTest {
                 .combinedAccessibility(List.of(roadSectionCombined, roadSectionCombinedEnd))
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
                 .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .toRoadSection(roadSectionCombinedEnd)
+                .toRoadSection(Optional.of(roadSectionCombinedEnd))
                 .reasons(accessibilityReasons)
                 .build();
 
@@ -286,7 +286,7 @@ class AccessibilityServiceTest {
                 .combinedAccessibility(List.of(roadSectionCombined, roadSectionCombinedEnd))
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
                 .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .toRoadSection(null)
+                .toRoadSection(Optional.empty())
                 .reasons(Collections.emptyList())
                 .build();
 
@@ -320,7 +320,7 @@ class AccessibilityServiceTest {
                 .combinedAccessibility(List.of(roadSectionCombined, roadSectionCombinedEnd))
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
                 .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .toRoadSection(null)
+                .toRoadSection(Optional.empty())
                 .reasons(Collections.emptyList())
                 .build();
 
@@ -359,7 +359,7 @@ class AccessibilityServiceTest {
                 .combinedAccessibility(List.of(roadSectionCombined, missingRoadSection, roadSectionCombinedEnd))
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction, missingRoadSection))
                 .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction, missingRoadSection))
-                .toRoadSection(roadSectionCombinedEnd)
+                .toRoadSection(Optional.of(roadSectionCombinedEnd))
                 .reasons(accessibilityReasons)
                 .build();
 
