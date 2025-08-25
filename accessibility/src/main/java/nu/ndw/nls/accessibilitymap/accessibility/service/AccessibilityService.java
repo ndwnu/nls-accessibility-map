@@ -119,8 +119,7 @@ public class AccessibilityService {
                 networkData,
                 trafficSigns);
 
-        log.info("Accessibility calculation done. It took: %s ms"
-                .formatted(MILLIS.between(startTimeCalculatingAccessibility, clockService.now())));
+        log.info("Accessibility calculation done. It took: {} ms", MILLIS.between(startTimeCalculatingAccessibility, clockService.now()));
         return accessibility;
     }
 
@@ -146,7 +145,7 @@ public class AccessibilityService {
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
                 .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
                 .combinedAccessibility(combinedRestrictions)
-                .toRoadSection(toRoadSection.orElse(null))
+                .toRoadSection(toRoadSection)
                 .reasons(reasons)
                 .build();
     }

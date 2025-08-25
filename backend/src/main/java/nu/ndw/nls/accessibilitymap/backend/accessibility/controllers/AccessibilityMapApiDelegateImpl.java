@@ -1,8 +1,8 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
@@ -103,7 +103,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 roadSectionFeatureCollectionMapper.map(
                         accessibility.combinedAccessibility(),
                         accessibilityRequest.hasEndLocation(),
-                        Objects.nonNull(accessibility.toRoadSection()) ? accessibility.toRoadSection().getId() : null,
+                        accessibility.toRoadSection().map(RoadSection::getId).orElse(null),
                         accessible));
     }
 

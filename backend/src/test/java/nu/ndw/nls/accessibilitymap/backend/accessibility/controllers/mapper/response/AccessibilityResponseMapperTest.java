@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
@@ -56,7 +57,7 @@ class AccessibilityResponseMapperTest {
     void map(boolean isForwardAccessible, boolean isBackwardAccessible) {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(accessibility.toRoadSection()).thenReturn(roadSection);
+        when(accessibility.toRoadSection()).thenReturn(Optional.of(roadSection));
         when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
@@ -98,7 +99,7 @@ class AccessibilityResponseMapperTest {
     void map_missingDirectionalSegments(boolean forwardDirectionalSegmentMissing, boolean backwardDirectionalSegmentMissing) {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(accessibility.toRoadSection()).thenReturn(roadSection);
+        when(accessibility.toRoadSection()).thenReturn(Optional.of(roadSection));
         when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);

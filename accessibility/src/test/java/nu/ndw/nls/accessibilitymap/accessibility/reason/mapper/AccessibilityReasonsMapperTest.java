@@ -72,8 +72,8 @@ class AccessibilityReasonsMapperTest {
     @MethodSource("provideReasons")
     void mapToAoAccessibilityReasons(TrafficSign trafficSign, AccessibilityReason expectedReason) {
 
-        AccessibilityReasons expected = mapper.mapToAoAccessibilityReasons(List.of(trafficSign));
-        assertThat(expected)
+        AccessibilityReasons actual = mapper.mapToAoAccessibilityReasons(List.of(trafficSign));
+        assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("accessibilityReason")
                 .isEqualTo(new AccessibilityReasons(List.of(expectedReason)));
