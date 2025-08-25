@@ -111,7 +111,7 @@ Feature: Road sections GeoJSON endpoint
   Scenario: accessibility map with incorrect fuel type should return 400
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
     And param vehicleType = 'car'
-    And param fuelType = 'incorrect'
+    And param fuelTypes = 'incorrect'
     And method GET
     Then status 400
     And match response == badRequestIncorrectFuelType
@@ -127,7 +127,7 @@ Feature: Road sections GeoJSON endpoint
   Scenario: accessibility map with fuel type set, but emission class missing should return 400
     Given path '/v1/municipalities/GM0307/road-sections.geojson'
     And param vehicleType = 'car'
-    And param fuelType = 'petrol'
+    And param fuelTypes = 'petrol'
     And method GET
     Then status 400
     And match response == badRequestIncorrectEmissionZoneParameters
