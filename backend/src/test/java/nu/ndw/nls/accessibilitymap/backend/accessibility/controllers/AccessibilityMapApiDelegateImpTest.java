@@ -10,8 +10,8 @@ import static org.mockito.Mockito.when;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
@@ -153,7 +153,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     @ParameterizedTest
     @MethodSource("provideCorrectEmissionZoneParameters")
-    void getInaccessibleRoadSections(EmissionClassJson emissionClassJson, FuelTypeJson fuelTypeJson) {
+    void getInaccessibleRoadSections(EmissionClassJson emissionClassJson, List<FuelTypeJson> fuelTypesJson) {
 
         setUpFixture(emissionClassJson, fuelTypesJson);
 
