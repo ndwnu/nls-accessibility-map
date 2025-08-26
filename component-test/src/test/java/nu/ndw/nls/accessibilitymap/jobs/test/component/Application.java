@@ -9,10 +9,8 @@ import nu.ndw.nls.springboot.test.component.driver.wiremock.EnableWireMockDriver
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories
 @Import({RoutingMapMatcherConfiguration.class, MessagingConfig.class})
 @EnableKeycloakDriver
 @EnableMavenDriver
