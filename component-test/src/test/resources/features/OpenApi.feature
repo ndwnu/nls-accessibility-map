@@ -2,7 +2,7 @@ Feature: Open API Interface
 
 	Scenario: validate / redirection
 		When /api/rest/static-road-data/accessibility-map/api-docs is requested by GET
-		Then I expect to be redirected to /api/rest/static-road-data/accessibility-map/swagger-ui/index.html
+      Then I expect a 200 response with body openApi/index.html
 
 	Scenario: validate open api documentation page is working
 		When /api/rest/static-road-data/accessibility-map/swagger-ui/index.html is requested by GET
