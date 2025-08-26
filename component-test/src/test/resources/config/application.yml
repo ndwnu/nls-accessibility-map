@@ -57,15 +57,19 @@ nu:
                   client-id: "nls-accessibility-map-api-local"
                   roles:
                     - "admin"
+      accessibilitymap:
+        test:
+          acceptance:
+            driver:
+              accessibility-map:
+                host: localhost
+                port: 8080
       test:
         component:
           general:
             timeZone: "Europe/Amsterdam"
             waitForDebuggerToBeConnected: false
           driver:
-            accessibility-map:
-              host: localhost
-              port: 8080
             general:
               debugFolder: ".debug/"
             graph-hopper:

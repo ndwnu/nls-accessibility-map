@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.RoadSection;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.entity.nwbRoadSectionPrimaryKey;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.database.repository.RoadSectionRepository;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.GraphHopperDriver;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.NetworkDataService;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.graphhopper.dto.Link;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.NwbRoadSection;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.RoadSection;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.nwbRoadSectionPrimaryKey;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.repository.RoadSectionRepository;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.dto.Link;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -64,7 +64,6 @@ public class GraphHopperStepDefinitions {
                     )))
                     .build());
         });
-
     }
 
     @Then("written graphhopper on disk should be comparable with network")
