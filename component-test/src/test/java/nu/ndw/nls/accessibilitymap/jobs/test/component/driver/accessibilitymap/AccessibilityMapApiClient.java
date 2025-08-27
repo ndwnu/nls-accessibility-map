@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.data.geojson.dto.FeatureCollection;
@@ -25,13 +28,11 @@ import nu.ndw.nls.springboot.test.component.driver.web.AbstractWebClient;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Request;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Component
 @RequiredArgsConstructor
@@ -52,66 +53,54 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     private boolean apiIsStarted = false;
 
     @SneakyThrows
-    public Response reloadGraphHopper() {
+    public Response<Void, Void> reloadGraphHopper() {
 
         validateApiIsStarted();
-        Request request = Request.builder()
+
+        Request<Void> request = Request.<Void>builder()
                 .id("reloadGraphHopper")
+                .method(HttpMethod.PUT)
                 .path("/api/rest/static-road-data/accessibility-map/management/graph-hopper/reload")
-                .method(HttpMethod.PUT)
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
+                ))
                 .build();
 
-        getCache().getRequests().add(request);
-
-        try {
-            ResponseEntity<String> response = WebClient.create(getEndpoint() + request.path())
-                    .method(request.method())
-                    .header(HttpHeaders.AUTHORIZATION, keycloakDriver.getClientById(ADMIN_CLIENT_ID).obtainBearerToken())
-                    .retrieve()
-                    .toEntity(String.class)
-                    .block();
-
-            return cacheResponse(response, request);
-        } catch (WebClientResponseException exception) {
-            return cacheErrorResponse(exception, request);
-        }
+        return request(request, new ParameterizedTypeReference<>() {
+        });
     }
 
     @SneakyThrows
-    public Response reloadTrafficSigns() {
+    public Response<Void, Void> reloadTrafficSigns() {
 
         validateApiIsStarted();
-        Request request = Request.builder()
+
+        Request<Void> request = Request.<Void>builder()
                 .id("reloadTrafficSigns")
-                .path("/api/rest/static-road-data/accessibility-map/management/traffic-sign/reload")
                 .method(HttpMethod.PUT)
+                .path("/api/rest/static-road-data/accessibility-map/management/traffic-sign/reload")
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
+                ))
                 .build();
 
-        getCache().getRequests().add(request);
-
-        try {
-            ResponseEntity<String> response = WebClient.create(getEndpoint() + request.path())
-                    .method(request.method())
-                    .header(HttpHeaders.AUTHORIZATION, keycloakDriver.getClientById(ADMIN_CLIENT_ID).obtainBearerToken())
-                    .retrieve()
-                    .toEntity(String.class)
-                    .block();
-
-            return cacheResponse(response, request);
-        } catch (WebClientResponseException exception) {
-            return cacheErrorResponse(exception, request);
-        }
+        return request(request, new ParameterizedTypeReference<>() {
+        });
     }
 
     @SneakyThrows
-    public Response getAccessibilityForMunicipality(AccessibilityRequest accessibilityRequest) {
+    public Response<Void, AccessibilityMapResponseJson> getAccessibilityForMunicipality(AccessibilityRequest accessibilityRequest) {
 
         validateApiIsStarted();
-        Request request = Request.builder()
+
+        Request<Void> request = Request.<Void>builder()
                 .id("getAccessibilityForMunicipality")
+                .method(HttpMethod.GET)
                 .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections".formatted(
                         accessibilityRequest.municipalityId()))
-                .method(HttpMethod.GET)
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
+                ))
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
@@ -121,36 +110,33 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
                 JsonMapper.builder().build().writeValueAsString(endpoint));
 
-        getCache().getRequests().add(request);
-        try {
-            ResponseEntity<String> response = WebClient.create()
-                    .get().uri(uriBuilder -> uriBuilder
-                            .scheme("http")
-                            .host(getHost())
-                            .port(getPort())
-                            .path(request.path())
-                            .queryParams(request.queryParameters())
-                            .build()
-                    )
-                    .retrieve()
-                    .toEntity(String.class)
-                    .block();
+        return request(request, new ParameterizedTypeReference<>() {
+        });
+    }
 
-            return cacheResponse(response, request);
-        } catch (WebClientResponseException exception) {
-            return cacheErrorResponse(exception, request);
-        }
+    public Response<Void, AccessibilityMapResponseJson> getLastResponseForGetAccessibilityForMunicipality() {
+
+        return responseWebCache().findResponsesByFilter(response ->
+                                response.request().id().equals("getAccessibilityForMunicipality")
+                                        && response.request().method().equals(HttpMethod.GET),
+                        Void.class, AccessibilityMapResponseJson.class)
+                .getLast();
     }
 
     @SneakyThrows
-    public Response getAccessibilityGeoJsonForMunicipality(AccessibilityRequest accessibilityRequest) {
+    public Response<Void, RoadSectionFeatureCollectionJson> getAccessibilityGeoJsonForMunicipality(
+            AccessibilityRequest accessibilityRequest) {
 
         validateApiIsStarted();
-        Request request = Request.builder()
-                .id("getAccessibilityForMunicipality")
+
+        Request<Void> request = Request.<Void>builder()
+                .id("getAccessibilityGeoJsonForMunicipality")
+                .method(HttpMethod.GET)
                 .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson".formatted(
                         accessibilityRequest.municipalityId()))
-                .method(HttpMethod.GET)
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
+                ))
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
@@ -160,25 +146,44 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
                 JsonMapper.builder().build().writeValueAsString(endpoint));
 
-        getCache().getRequests().add(request);
-        try {
-            ResponseEntity<String> response = WebClient.create()
-                    .get().uri(uriBuilder -> uriBuilder
-                            .scheme("http")
-                            .host(getHost())
-                            .port(getPort())
-                            .path(request.path())
-                            .queryParams(request.queryParameters())
-                            .build()
-                    )
-                    .retrieve()
-                    .toEntity(String.class)
-                    .block();
+        return request(request, new ParameterizedTypeReference<>() {
+        });
+    }
 
-            return cacheResponse(response, request);
-        } catch (WebClientResponseException exception) {
-            return cacheErrorResponse(exception, request);
-        }
+    public Response<Void, RoadSectionFeatureCollectionJson> getLastResponseForGetAccessibilityGeoJsonForMunicipality() {
+
+        return responseWebCache().findResponsesByFilter(response ->
+                                response.request().id().equals("getAccessibilityGeoJsonForMunicipality")
+                                        && response.request().method().equals(HttpMethod.GET),
+                        Void.class, RoadSectionFeatureCollectionJson.class)
+                .getLast();
+    }
+
+    @SneakyThrows
+    public Response<Void, String> genericRequest(String path, String method) {
+
+        validateApiIsStarted();
+
+        Request<Void> request = Request.<Void>builder()
+                .id("genericRequest")
+                .method(HttpMethod.valueOf(method.toUpperCase(Locale.ROOT)))
+                .path(path)
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
+                ))
+                .build();
+
+        return request(request, new ParameterizedTypeReference<>() {
+        });
+    }
+
+    public Response<Void, String> getLastResponseForGenericRequest() {
+
+        return responseWebCache().findResponsesByFilter(response ->
+                                response.request().id().equals("genericRequest")
+                                        && response.request().method().equals(HttpMethod.GET),
+                        Void.class, String.class)
+                .getLast();
     }
 
     private void validateApiIsStarted() {
