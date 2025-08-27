@@ -16,6 +16,8 @@ import org.springframework.validation.annotation.Validated;
 @Builder
 @With
 public record EmissionZone(
+        @NotNull String id,
+        @NotNull EmissionZoneType type,
         @NotNull OffsetDateTime startTime,
         @NotNull OffsetDateTime endTime,
         @NotNull @Valid Set<EmissionZoneExemption> exemptions,

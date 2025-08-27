@@ -54,15 +54,15 @@ public class TrafficSignCacheStepDefinitions {
             TrafficSign trafficSignExpected) {
 
         Restrictions actualRestrictions = cachedTrafficSign.restrictions();
-        if (Objects.nonNull(trafficSignExpected.emissionZoneId())
-                && (Objects.isNull(cachedTrafficSign.emissionZoneId()) || Objects.isNull(actualRestrictions.emissionZone()))) {
+        if (Objects.nonNull(trafficSignExpected.regulationOrderId())
+                && (Objects.isNull(cachedTrafficSign.trafficRegulationOrderId()) || Objects.isNull(actualRestrictions.emissionZone()))) {
             fail("Traffic sign with id '%s' has an emission zone, but the cache is missing an emission restriction."
                     .formatted(cachedTrafficSign.externalId()));
             return false;
         }
 
-        if (Objects.isNull(trafficSignExpected.emissionZoneId())) {
-            if ((Objects.nonNull(cachedTrafficSign.emissionZoneId()) || Objects.nonNull(actualRestrictions.emissionZone()))) {
+        if (Objects.isNull(trafficSignExpected.regulationOrderId())) {
+            if ((Objects.nonNull(cachedTrafficSign.trafficRegulationOrderId()) || Objects.nonNull(actualRestrictions.emissionZone()))) {
                 fail("Traffic sign with id '%s' has no emission zone, but the cache has an unexpected emission restriction."
                         .formatted(cachedTrafficSign.externalId()));
                 return false;
@@ -70,10 +70,10 @@ public class TrafficSignCacheStepDefinitions {
             return true;
         }
 
-        String emissionZoneJsonExpected = switch (cachedTrafficSign.emissionZoneId()) {
+        String emissionZoneJsonExpected = switch (cachedTrafficSign.trafficRegulationOrderId()) {
             case "zone-low" -> testDataProvider.readFromFile("trafficSignCache", "expected-emissionZoneLow.json");
             case "zone-zero" -> testDataProvider.readFromFile("trafficSignCache", "expected-emissionZoneZero.json");
-            default -> fail("Unexpected emission zone id '%s' for traffic sign id '%s'".formatted(cachedTrafficSign.emissionZoneId(), cachedTrafficSign.externalId()));
+            default -> fail("Unexpected emission zone id '%s' for traffic sign id '%s'".formatted(cachedTrafficSign.trafficRegulationOrderId(), cachedTrafficSign.externalId()));
         };
 
         try {

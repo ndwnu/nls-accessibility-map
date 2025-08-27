@@ -194,14 +194,59 @@ class EmissionServiceTest {
         assertThat(emissionZones).isEmpty();
     }
 
+    @ParameterizedTest
+    @EnumSource(value = FuelType.class, mode = Mode.EXCLUDE, names = {"ALL", "BATTERY"})
+    void findByTrafficRegulationOrderId(FuelType fuelType) {
+
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(fuelType)
+                .build());
+        when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
+        when(emissionZone.trafficRegulationOrderId()).thenReturn("trafficRegulationOrderId");
+
+        Optional<EmissionZone> emissionZones = emissionService.findByTrafficRegulationOrderId("trafficRegulationOrderId");
+
+        assertThat(emissionZones).contains(emissionZone);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = FuelType.class, mode = Mode.INCLUDE, names = {"ALL", "BATTERY"})
+    void findByTrafficRegulationOrderId_invalidEmissionZone(FuelType fuelType) {
+
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(fuelType)
+                .build());
+        when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
+
+        Optional<EmissionZone> emissionZones = emissionService.findByTrafficRegulationOrderId("trafficRegulationOrderId");
+
+        assertThat(emissionZones).isEmpty();
+        containsLogErrorFuelType();
+    }
+
+    @Test
+    void findByTrafficRegulationOrderId_notFound() {
+
+        when(emissionZone.restriction()).thenReturn(Restriction.builder()
+                .fuelType(FuelType.DIESEL)
+                .build());
+        when(emissionZoneClient.findAll()).thenReturn(List.of(emissionZone));
+        when(emissionZone.trafficRegulationOrderId()).thenReturn("trafficRegulationOrderId");
+
+        Optional<EmissionZone> emissionZones = emissionService.findByTrafficRegulationOrderId("otherId");
+
+        assertThat(emissionZones).isEmpty();
+    }
+
     private void containsLogErrorFuelType() {
+
         loggerExtension.containsLog(Level.ERROR,
                 "Fuel type is BATTERY and ALL are not a supported type. This is technically supported in the api specifications"
-                + " from the Emission zone api but it can never be used because there is no exemption available for vehicle types with a"
-                + " zero emission classification in the emission zone api in field"
-                + " `euVehicleCategoryAndEmissionClassificationRestrictionExemptions`. If this does occur than we should contact W&R and"
-                + " Edwin van Wilgenburg about why this is now suddenly possible in the data. We where guaranteed that this combination"
-                + " would never be used as a solution that the exemptions could never support a zero emission classification. For this"
-                + " reason this emission zone will be considered invalid and can not be used.");
+                        + " from the Emission zone api but it can never be used because there is no exemption available for vehicle types with a"
+                        + " zero emission classification in the emission zone api in field"
+                        + " `euVehicleCategoryAndEmissionClassificationRestrictionExemptions`. If this does occur than we should contact W&R and"
+                        + " Edwin van Wilgenburg about why this is now suddenly possible in the data. We where guaranteed that this combination"
+                        + " would never be used as a solution that the exemptions could never support a zero emission classification. For this"
+                        + " reason this emission zone will be considered invalid and can not be used.");
     }
 }

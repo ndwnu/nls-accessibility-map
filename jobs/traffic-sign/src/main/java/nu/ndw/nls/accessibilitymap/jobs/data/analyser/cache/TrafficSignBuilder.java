@@ -64,7 +64,7 @@ public class TrafficSignBuilder {
                     .iconUri(createUri(trafficSignGeoJsonDto.getProperties().getImageUrl()))
                     .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
                     .zoneCodeType(mapZoneCodeType(trafficSignGeoJsonDto))
-                    .emissionZoneId(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl())
+                    .trafficRegulationOrderId(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl())
                     .blackCode(blackCodeMapper.map(trafficSignGeoJsonDto, type))
                     .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
                     .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
