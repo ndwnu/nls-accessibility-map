@@ -26,23 +26,29 @@ public class EmissionZoneMapper {
 
     private final FuelTypeMapper fuelTypeMapper;
 
+    private final EmissionZoneTypeMapper emissionZoneTypeMapper;
+
     private final TransportTypeMapper transportTypeMapper;
 
     @Valid
-    public EmissionZone map(String emissionZoneId) {
+    public EmissionZone map(String trafficRegulationOrderId) {
 
-        return emissionService.findById(emissionZoneId)
+        return emissionService.findByTrafficRegulationOrderId(trafficRegulationOrderId)
                 .filter(nu.ndw.nls.accessibilitymap.jobs.data.analyser.emission.dto.EmissionZone::isActive)
                 .map(emissionZone -> {
                     try {
                         return EmissionZone.builder()
+                                .id(emissionZone.id())
+                                .type(emissionZoneTypeMapper.map(emissionZone.type()))
                                 .startTime(emissionZone.startTime())
                                 .endTime(Objects.nonNull(emissionZone.endTime()) ? emissionZone.endTime() : OffsetDateTime.MAX)
                                 .exemptions(mapExemptions(emissionZone))
                                 .restriction(mapRestriction(emissionZone))
                                 .build();
                     } catch (RuntimeException exception) {
-                        log.error("Emission zone with id '{}' is incomplete and will be skipped.", emissionZoneId, exception);
+                        log.error("Emission zone with trafficRegulationOrderId '{}' is incomplete and will be skipped.",
+                                trafficRegulationOrderId,
+                                exception);
                         return null;
                     }
                 })
@@ -82,6 +88,7 @@ public class EmissionZoneMapper {
     }
 
     private Double mapToDouble(Integer value) {
+
         if (Objects.isNull(value)) {
             return null;
         }

@@ -48,6 +48,8 @@ class EmissionZoneTest extends ValidationTest {
     void setUp() {
 
         emissionZone = EmissionZone.builder()
+                .id("id")
+                .type(EmissionZoneType.LOW)
                 .startTime(OffsetDateTime.MIN)
                 .endTime(OffsetDateTime.MAX)
                 .exemptions(Set.of(EmissionZoneExemption.builder()
@@ -150,6 +152,20 @@ class EmissionZoneTest extends ValidationTest {
     void validate() {
 
         validate(emissionZone, List.of(), List.of());
+    }
+
+    @Test
+    void validate_id_null() {
+
+        emissionZone = emissionZone.withId(null);
+        validate(emissionZone, List.of("id"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_type_null() {
+
+        emissionZone = emissionZone.withType(null);
+        validate(emissionZone, List.of("type"), List.of("must not be null"));
     }
 
     @Test

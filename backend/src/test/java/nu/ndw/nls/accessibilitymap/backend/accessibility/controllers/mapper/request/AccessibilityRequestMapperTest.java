@@ -5,15 +5,19 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.shapes.BBox;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
@@ -57,10 +61,10 @@ class AccessibilityRequestMapperTest {
     private FuelTypeMapper fuelTypeMapper;
 
     @Mock
-    private EmissionClassMapper emissionClassMapper;
+    private EmissionZoneTypeMapper emissionZoneTypeMapper;
 
     @Mock
-    private VehicleArguments vehicleArguments;
+    private EmissionClassMapper emissionClassMapper;
 
     @Mock
     private Municipality municipality;
@@ -73,19 +77,28 @@ class AccessibilityRequestMapperTest {
 
     @BeforeEach
     void setUp() {
-        accessibilityRequestMapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassMapper, fuelTypeMapper);
+
+        accessibilityRequestMapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassMapper, fuelTypeMapper,
+                emissionZoneTypeMapper);
     }
 
     @Test
     void mapToAccessibilityRequest_mapsFieldsCorrectly() {
 
-        when(vehicleArguments.vehicleAxleLoad()).thenReturn(DEFAULT_VEHICLE_AXLE_LOAD);
-        when(vehicleArguments.vehicleHeight()).thenReturn(DEFAULT_VEHICLE_HEIGHT);
-        when(vehicleArguments.vehicleLength()).thenReturn(DEFAULT_VEHICLE_LENGTH);
-        when(vehicleArguments.vehicleWidth()).thenReturn(DEFAULT_VEHICLE_WIDTH);
-        when(vehicleArguments.vehicleWeight()).thenReturn(DEFAULT_VEHICLE_WEIGHT);
-        when(vehicleArguments.emissionClass()).thenReturn(EmissionClassJson.EURO_1);
-        when(vehicleArguments.fuelType()).thenReturn(FuelTypeJson.PETROL);
+        VehicleArguments vehicleArguments = VehicleArguments.builder()
+                .vehicleAxleLoad(DEFAULT_VEHICLE_AXLE_LOAD)
+                .vehicleHeight(DEFAULT_VEHICLE_HEIGHT)
+                .vehicleLength(DEFAULT_VEHICLE_LENGTH)
+                .vehicleWidth(DEFAULT_VEHICLE_WIDTH)
+                .vehicleWeight(DEFAULT_VEHICLE_WEIGHT)
+                .emissionClass(EmissionClassJson.EURO_1)
+                .fuelTypes(List.of(FuelTypeJson.PETROL))
+                .build();
+
+        var exemptions = Excludes.builder()
+                .emissionZoneIds(Set.of("id1"))
+                .emissionZoneTypes(Set.of(EmissionZoneTypeJson.LOW_EMISSION_ZONE))
+                .build();
 
         when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
         when(municipality.searchDistanceInMetres()).thenReturn((int) DEFAULT_SEARCH_DISTANCE);
@@ -100,9 +113,16 @@ class AccessibilityRequestMapperTest {
 
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
         when(emissionClassMapper.mapEmissionClass(EmissionClassJson.EURO_1)).thenReturn(Set.of(EmissionClass.EURO_1));
-        when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(Set.of(FuelType.PETROL));
+        when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(FuelType.PETROL);
+        when(emissionZoneTypeMapper.mapEmissionZoneType(EmissionZoneTypeJson.LOW_EMISSION_ZONE)).thenReturn(EmissionZoneType.LOW);
 
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments, null, null);
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(
+                timestamp,
+                municipality,
+                vehicleArguments,
+                exemptions,
+                null,
+                null);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
@@ -120,19 +140,16 @@ class AccessibilityRequestMapperTest {
                 .emissionClasses(Set.of(EmissionClass.EURO_1))
                 .fuelTypes(Set.of(FuelType.PETROL))
                 .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
+                .excludeRestrictionsWithEmissionZoneIds(Set.of("id1"))
+                .excludeRestrictionsWithEmissionZoneTypes(Set.of(EmissionZoneType.LOW))
                 .build());
     }
 
     @Test
     void mapToAccessibilityRequest_handlesNullValuesGracefully() {
 
-        when(vehicleArguments.vehicleAxleLoad()).thenReturn(null);
-        when(vehicleArguments.vehicleHeight()).thenReturn(null);
-        when(vehicleArguments.vehicleLength()).thenReturn(null);
-        when(vehicleArguments.vehicleWidth()).thenReturn(null);
-        when(vehicleArguments.vehicleWeight()).thenReturn(null);
-        when(vehicleArguments.emissionClass()).thenReturn(null);
-        when(vehicleArguments.fuelType()).thenReturn(null);
+        VehicleArguments vehicleArguments = VehicleArguments.builder().build();
+        Excludes excludes = Excludes.builder().build();
 
         when(municipality.municipalityIdAsInteger()).thenReturn(DEFAULT_MUNICIPALITY_ID);
         when(municipality.searchDistanceInMetres()).thenReturn((int) DEFAULT_SEARCH_DISTANCE);
@@ -146,10 +163,10 @@ class AccessibilityRequestMapperTest {
         when(municipalityBoundingBox.latitudeTo()).thenReturn(MAX_LATITUDE);
 
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
-        when(fuelTypeMapper.mapFuelType(null)).thenReturn(null);
         when(emissionClassMapper.mapEmissionClass(null)).thenReturn(null);
 
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments, null, null);
+        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments,
+                excludes, null, null);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
