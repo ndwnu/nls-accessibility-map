@@ -25,6 +25,7 @@ class EmissionZoneTest extends ValidationTest {
 
         emissionZone = EmissionZone.builder()
                 .id("id")
+                .trafficRegulationOrderId("trafficRegulationOrderId")
                 .type(EmissionZoneType.LOW_EMISSION_ZONE)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .endTime(OffsetDateTime.parse("2022-03-11T10:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
@@ -74,6 +75,13 @@ class EmissionZoneTest extends ValidationTest {
 
         emissionZone = emissionZone.withId(null);
         validate(emissionZone, List.of("id"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_trafficRegulationOrderId_null() {
+
+        emissionZone = emissionZone.withTrafficRegulationOrderId(null);
+        validate(emissionZone, List.of("trafficRegulationOrderId"), List.of("must not be null"));
     }
 
     @Test

@@ -50,6 +50,13 @@ public class EmissionService {
                 .findFirst();
     }
 
+    public Optional<EmissionZone> findByTrafficRegulationOrderId(String trafficRegulationOrderId) {
+
+        return findAll().stream()
+                .filter(emissionZone -> emissionZone.trafficRegulationOrderId().equals(trafficRegulationOrderId))
+                .findFirst();
+    }
+
     private boolean isValid(EmissionZone emissionZone) {
         if (emissionZone.restriction().fuelType() == FuelType.BATTERY
             || emissionZone.restriction().fuelType() == FuelType.ALL) {

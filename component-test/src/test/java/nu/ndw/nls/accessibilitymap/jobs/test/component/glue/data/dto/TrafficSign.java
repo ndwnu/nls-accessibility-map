@@ -13,6 +13,6 @@ public record TrafficSign(
         String blackCode,
         DirectionType directionType,
         String windowTime,
-        String emissionZoneId) {
+        String regulationOrderId) {
 
 }

@@ -3,8 +3,13 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.req
 import com.graphhopper.util.shapes.BBox;
 import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.TransportTypeMapper;
@@ -25,11 +30,14 @@ public class AccessibilityRequestMapper {
 
     private final FuelTypeMapper fuelTypeMapper;
 
+    private final EmissionZoneTypeMapper emissionZoneTypeMapper;
+
     @Valid
     public AccessibilityRequest mapToAccessibilityRequest(
             OffsetDateTime timestamp,
             Municipality municipality,
             VehicleArguments vehicleArguments,
+            Excludes excludes,
             Double endPointLatitude,
             Double endPointLongitude) {
 
@@ -53,13 +61,37 @@ public class AccessibilityRequestMapper {
                 .vehicleWidthInCm(mapToDouble(vehicleArguments.vehicleWidth(), MULTIPLIER_FROM_METERS_TO_CM))
                 .vehicleWeightInKg(mapToDouble(vehicleArguments.vehicleWeight(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
                 .vehicleAxleLoadInKg(mapToDouble(vehicleArguments.vehicleAxleLoad(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
-                .fuelTypes(fuelTypeMapper.mapFuelType(vehicleArguments.fuelType()))
+                .fuelTypes(
+                        Objects.isNull(vehicleArguments.fuelTypes())
+                                ? null
+                                : vehicleArguments.fuelTypes().stream()
+                                        .map(fuelTypeMapper::mapFuelType)
+                                        .collect(Collectors.toSet()))
                 .emissionClasses(emissionClassMapper.mapEmissionClass(vehicleArguments.emissionClass()))
                 .transportTypes(transportTypeMapper.mapToTransportType(vehicleArguments))
+                .excludeRestrictionsWithEmissionZoneIds(mapEmissionZoneIds(excludes))
+                .excludeRestrictionsWithEmissionZoneTypes(mapEmissionZoneTypes(excludes))
                 .build();
     }
 
+    private static Set<String> mapEmissionZoneIds(Excludes excludes) {
+
+        return Objects.isNull(excludes)
+                ? null
+                : excludes.emissionZoneIds();
+    }
+
+    private Set<EmissionZoneType> mapEmissionZoneTypes(Excludes excludes) {
+
+        return Objects.isNull(excludes) || Objects.isNull(excludes.emissionZoneTypes())
+                ? null
+                : excludes.emissionZoneTypes().stream()
+                        .map(emissionZoneTypeMapper::mapEmissionZoneType)
+                        .collect(Collectors.toSet());
+    }
+
     private static Double mapToDouble(Float value, int multiplier) {
+
         return value != null ? (Double.valueOf(value) * multiplier) : null;
     }
 }

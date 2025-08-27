@@ -10,6 +10,7 @@ import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
@@ -39,7 +40,9 @@ public record AccessibilityRequest(
         Set<TrafficSignType> trafficSignTypes,
         Set<TextSignType> trafficSignTextSignTypes,
         Set<TextSignType> excludeTrafficSignTextSignTypes,
-        Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes) {
+        Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes,
+        Set<String> excludeRestrictionsWithEmissionZoneIds,
+        Set<EmissionZoneType> excludeRestrictionsWithEmissionZoneTypes) {
 
     public Set<TextSignType> excludeTrafficSignTextSignTypes() {
 

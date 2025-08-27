@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
@@ -36,7 +35,7 @@ class FuelTypeMapperTest {
     @Test
     void mapFuelType_shouldReturnNullWhenMappingNullFuelTypeJson() {
 
-        Set<FuelType> result = fuelTypeMapper.mapFuelType(null);
+        FuelType result = fuelTypeMapper.mapFuelType(null);
 
         assertThat(result).isNull();
     }
@@ -52,8 +51,8 @@ class FuelTypeMapperTest {
     @EnumSource(FuelTypeJson.class)
     void mapFuelType_AllSupportedFuelTypeJsonValues(FuelTypeJson fuelTypeJson) {
 
-        Set<FuelType> result = fuelTypeMapper.mapFuelType(fuelTypeJson);
+        FuelType result = fuelTypeMapper.mapFuelType(fuelTypeJson);
 
-        assertThat(result).containsExactly((FuelType.valueOf(fuelTypeJson.name())));
+        assertThat(result).isEqualTo((FuelType.valueOf(fuelTypeJson.name())));
     }
 }
