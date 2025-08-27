@@ -15,7 +15,6 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.configuration.
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
 import nu.ndw.nls.springboot.test.component.driver.docker.dto.Environment;
-import nu.ndw.nls.springboot.test.component.driver.docker.dto.Mode;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +37,6 @@ public class MapGenerationJobDriver implements StateManagement {
         lastJobExecution = jobConfiguration;
         dockerDriver.startServiceAndWaitToBeFinished(
                 "nls-accessibility-map-generator-jobs",
-                generalConfiguration.isWaitForDebuggerToBeConnected() ? Mode.DEBUG : Mode.NORMAL,
                 List.of(
                         Environment.builder()
                                 .key("COMMAND")

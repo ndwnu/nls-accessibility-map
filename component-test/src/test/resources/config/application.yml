@@ -36,6 +36,13 @@ nu:
             driver:
               docker:
                 compose-file: "../docker-compose.yml"
+              maven:
+                rootPomRelativePath: "../"
+                modulesUnderTest:
+                  - "jobs/graphhopper"
+                  - "jobs/mapgenerator"
+                  - "jobs/traffic-sign"
+                  - "jobs/data-analyser"
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
@@ -61,13 +68,6 @@ nu:
               port: 8080
             general:
               debugFolder: ".debug/"
-            maven:
-              rootPomRelativePath: "../"
-              modulesUnderTest:
-                - "jobs/graphhopper"
-                - "jobs/mapgenerator"
-                - "jobs/traffic-sign"
-                - "jobs/data-analyser"
             graph-hopper:
               location-on-disk: "../.tmp/graphhopper"
             traffic-sign-cache:
