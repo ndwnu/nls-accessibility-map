@@ -9,6 +9,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Option;
@@ -61,7 +62,8 @@ public class AccessibilityMapApiStepDefinitions {
         var response = accessibilityMapApiClient.getAccessibilityGeoJsonForMunicipality(accessibilityRequest);
 
         assertThat(response.containsError())
-                .withFailMessage("Failed to get accessibility geojson for municipality. Error: %s with body: %s", response.error(),
+                .withFailMessage("Failed to get accessibility geojson for municipality. Error: %s with body: %s",
+                        response.error(),
                         response.body())
                 .isFalse();
     }
@@ -73,21 +75,43 @@ public class AccessibilityMapApiStepDefinitions {
             String backwardAccessible,
             List<BlockedRoadSection> blockedRoadSections) throws JsonProcessingException {
 
+        weExpectTheFollowingBlockedRoadSectionsWithReasons(
+                matchedRoadSectionId,
+                forwardAccessible,
+                backwardAccessible,
+                null,
+                blockedRoadSections);
+    }
+
+    @Then("we expect the following blocked roadSections with matched roadSection with id {int} and is forward accessible {word} and backward accessible {word} with reasons {word}")
+    public void weExpectTheFollowingBlockedRoadSectionsWithReasons(
+            int matchedRoadSectionId,
+            String forwardAccessible,
+            String backwardAccessible,
+            String reasonsFile,
+            List<BlockedRoadSection> blockedRoadSections) throws JsonProcessingException {
+
         var response = accessibilityMapApiClient.getLastResponseForGetAccessibilityForMunicipality();
 
+        String reasons = Objects.isNull(reasonsFile)
+                ? "[]"
+                : testDataProvider.readFromFile("api/InaccessibleReasons", reasonsFile + ".json");
+
         assertThatJson(response.body())
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .inPath("$.matchedRoadSection")
                 .isEqualTo("""
                         {
                             "roadSectionId" : %s,
                             "forwardAccessible" : %s,
                             "backwardAccessible" : %s,
-                            "reasons": []
-                          }
+                            "reasons": %s
+                        }
                         """.formatted(
                         matchedRoadSectionId,
                         Boolean.parseBoolean(forwardAccessible),
-                        Boolean.parseBoolean(backwardAccessible)
+                        Boolean.parseBoolean(backwardAccessible),
+                        reasons
                 ));
 
         assertThatJson(response.body())

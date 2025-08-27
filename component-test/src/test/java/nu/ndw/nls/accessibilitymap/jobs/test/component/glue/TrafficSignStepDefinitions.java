@@ -66,7 +66,7 @@ public class TrafficSignStepDefinitions {
                         .rvvCode(trafficSign.rvvCode())
                         .drivingDirection(trafficSign.directionType())
                         .roadSectionId(link.getAccessibilityLink().getId())
-                        .trafficOrderUrl(trafficSign.emissionZoneId())
+                        .trafficOrderUrl(trafficSign.regulationOrderId())
                         .textSigns(List.of(
                                 TextSign.builder()
                                         .type(TextSignType.TIME_PERIOD)
