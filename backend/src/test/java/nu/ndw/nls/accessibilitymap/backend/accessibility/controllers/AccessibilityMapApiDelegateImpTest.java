@@ -135,6 +135,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     @ParameterizedTest
     @MethodSource("provideIncorrectEmissionZoneParameters")
+    @SuppressWarnings("java:S5778")
     void getInaccessibleRoadSections_shouldThrowIncompleteArgumentsException(
             EmissionClassJson emissionClassJson,
             List<FuelTypeJson> fuelTypesJson) {
@@ -174,6 +175,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     @ParameterizedTest
     @MethodSource("provideIncorrectEmissionZoneParameters")
+    @SuppressWarnings("java:S5778")
     void getRoadSections_shouldThrowIncompleteArgumentsException(EmissionClassJson emissionClassJson, List<FuelTypeJson> fuelTypesJson) {
 
         assertThatThrownBy(() -> accessibilityMapApiDelegate.getRoadSections(
