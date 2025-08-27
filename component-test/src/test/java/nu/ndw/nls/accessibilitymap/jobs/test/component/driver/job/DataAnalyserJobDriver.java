@@ -4,12 +4,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.core.configuration.GeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BaseNetworkAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
 import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
 import nu.ndw.nls.springboot.test.component.driver.docker.dto.Environment;
-import nu.ndw.nls.springboot.test.component.driver.docker.dto.Mode;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +15,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DataAnalyserJobDriver implements StateManagement {
 
-    private final GeneralConfiguration generalConfiguration;
-
     private final DockerDriver dockerDriver;
 
     public void runBaseNetworkAnalysisJob(BaseNetworkAnalyserJobConfiguration jobConfiguration) {
 
         dockerDriver.startServiceAndWaitToBeFinished(
                 "nls-accessibility-map-base-network-analyser-job",
-                generalConfiguration.isWaitForDebuggerToBeConnected() ? Mode.DEBUG : Mode.NORMAL,
                 List.of(
                         Environment.builder()
                                 .key("COMMAND")
@@ -43,15 +38,15 @@ public class DataAnalyserJobDriver implements StateManagement {
     }
 
     private String buildBaseNetworkAnalysisCommand(BaseNetworkAnalyserJobConfiguration jobConfiguration) {
+
         return "analyse-base-network "
-               + (jobConfiguration.reportIssues() ? " --report-issues" : "");
+                + (jobConfiguration.reportIssues() ? " --report-issues" : "");
     }
 
     public void runTrafficSignAnalysisJob(TrafficSignAnalyserJobConfiguration jobConfiguration) {
 
         dockerDriver.startServiceAndWaitToBeFinished(
                 "nls-accessibility-map-traffic-sign-analyser-job",
-                generalConfiguration.isWaitForDebuggerToBeConnected() ? Mode.DEBUG : Mode.NORMAL,
                 List.of(
                         Environment.builder()
                                 .key("COMMAND")
@@ -69,9 +64,10 @@ public class DataAnalyserJobDriver implements StateManagement {
     }
 
     private String buildAnalyseAsymmetricTrafficSignsCommand(TrafficSignAnalyserJobConfiguration jobConfiguration) {
+
         return "analyse-asymmetric-traffic-signs "
-               + createRepeatableArguments(jobConfiguration.trafficSignGroups())
-               + (jobConfiguration.reportIssues() ? " --report-issues" : "");
+                + createRepeatableArguments(jobConfiguration.trafficSignGroups())
+                + (jobConfiguration.reportIssues() ? " --report-issues" : "");
     }
 
     private static String createRepeatableArguments(List<Set<String>> trafficSignGroups) {
@@ -83,13 +79,13 @@ public class DataAnalyserJobDriver implements StateManagement {
 
     @Override
     public void clearState() {
-
+        // no clean-up needed.
     }
 
     public void runJobConfigureRabbitMQ() {
+
         dockerDriver.startServiceAndWaitToBeFinished(
                 "nls-accessibility-map-data-analyser-configure-rabbitmq",
-                Mode.NORMAL,
                 List.of());
     }
 }

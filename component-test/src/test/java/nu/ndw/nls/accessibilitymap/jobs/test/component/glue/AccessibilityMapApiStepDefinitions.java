@@ -15,7 +15,6 @@ import net.javacrumbs.jsonunit.core.Option;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.accessibilitymap.AccessibilityMapApiClient;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoadSection;
-import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 
 @Slf4j
@@ -31,7 +30,7 @@ public class AccessibilityMapApiStepDefinitions {
     @And("graphHopper data is reloaded")
     public void graphhopperDataIsReloaded() {
 
-        Response response = accessibilityMapApiClient.reloadGraphHopper();
+        var response = accessibilityMapApiClient.reloadGraphHopper();
         assertThat(response.containsError())
                 .withFailMessage("Reloading graphhopper failed. %s", response.error())
                 .isFalse();
@@ -40,7 +39,7 @@ public class AccessibilityMapApiStepDefinitions {
     @And("traffic signs data is reloaded")
     public void trafficSignsDataIsReloaded() {
 
-        Response response = accessibilityMapApiClient.reloadTrafficSigns();
+        var response = accessibilityMapApiClient.reloadTrafficSigns();
         assertThat(response.containsError())
                 .withFailMessage("Reloading traffic signs failed. %s", response.error())
                 .isFalse();
@@ -49,19 +48,21 @@ public class AccessibilityMapApiStepDefinitions {
     @When("request accessibility for")
     public void requestAccessibilityFor(AccessibilityRequest accessibilityRequest) {
 
-        Response response = accessibilityMapApiClient.getAccessibilityForMunicipality(accessibilityRequest);
+        var response = accessibilityMapApiClient.getAccessibilityForMunicipality(accessibilityRequest);
 
         assertThat(response.containsError())
                 .withFailMessage("Failed to get accessibility for municipality. Error: %s with body: %s", response.error(), response.body())
                 .isFalse();
     }
+
     @When("request accessibility geojson for")
     public void requestAccessibilityGeoJsonFor(AccessibilityRequest accessibilityRequest) {
 
-        Response response = accessibilityMapApiClient.getAccessibilityGeoJsonForMunicipality(accessibilityRequest);
+        var response = accessibilityMapApiClient.getAccessibilityGeoJsonForMunicipality(accessibilityRequest);
 
         assertThat(response.containsError())
-                .withFailMessage("Failed to get accessibility geojson for municipality. Error: %s with body: %s", response.error(), response.body())
+                .withFailMessage("Failed to get accessibility geojson for municipality. Error: %s with body: %s", response.error(),
+                        response.body())
                 .isFalse();
     }
 
@@ -72,9 +73,7 @@ public class AccessibilityMapApiStepDefinitions {
             String backwardAccessible,
             List<BlockedRoadSection> blockedRoadSections) throws JsonProcessingException {
 
-        Response response = accessibilityMapApiClient.getCache()
-                .findResponsesByRequestId(List.of("getAccessibilityForMunicipality"))
-                .getLast();
+        var response = accessibilityMapApiClient.getLastResponseForGetAccessibilityForMunicipality();
 
         assertThatJson(response.body())
                 .inPath("$.matchedRoadSection")
@@ -100,9 +99,7 @@ public class AccessibilityMapApiStepDefinitions {
     @Then("we expect geojson to match {word}")
     public void weExpectGeojsonToMatchResponseAccessibilityGeojson(String expectedResponseFile) {
 
-        Response response = accessibilityMapApiClient.getCache()
-                .findResponsesByRequestId(List.of("getAccessibilityForMunicipality"))
-                .getLast();
+        var response = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJsonForMunicipality();
 
         assertThatJson(response.body())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
