@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver;
 
+import jakarta.validation.constraints.NotNull;
 import java.nio.file.Path;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,9 +11,10 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "nu.ndw.nls.test.component.driver.general")
+@ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.test.acceptance.driver.general")
 @Validated
 public class DriverGeneralConfiguration {
 
+    @NotNull
     private Path debugFolder;
 }

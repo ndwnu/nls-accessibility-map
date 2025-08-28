@@ -1,74 +1,194 @@
 package nu.ndw.nls.accessibilitymap.test.performance.simulation.roadsections;
 
-import static io.gatling.javaapi.core.CoreDsl.StringBody;
 import static io.gatling.javaapi.core.CoreDsl.exec;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.PopulationBuilder;
+import io.gatling.javaapi.http.HttpProtocolBuilder;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
-import nu.ndw.nls.accessibilitymap.test.performance.simulation.AbstractSimulation;
-import nu.ndw.nls.springboot.test.component.driver.keycloak.KeycloakDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperTestDataService;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.job.TrafficSignJobDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignTestDataService;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
 import nu.ndw.nls.springboot.test.component.state.StateManager;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
 public class RoadSectionsSimulation extends AbstractSimulation {
 
-    public RoadSectionsSimulation(
-            KeycloakDriver keycloakDriver,
-            StateManager stateManager,
-            ObjectMapper objectMapper,
-            AccessibilityMapApiClient accessibilityMapApiClient) {
+    private final GraphHopperTestDataService graphHopperTestDataService;
 
-        super(keycloakDriver, stateManager, objectMapper, accessibilityMapApiClient);
+    private final TrafficSignDriver trafficSignDriver;
+
+    private final TrafficSignTestDataService trafficSignTestDataService;
+
+    private final TrafficSignJobDriver trafficSignJobDriver;
+
+    private final StateManager stateManager;
+
+    private final AccessibilityMapApiClient accessibilityMapApiClient;
+
+    public RoadSectionsSimulation(
+            StateManager stateManager,
+            AccessibilityMapApiClient accessibilityMapApiClient,
+            GraphHopperTestDataService graphHopperTestDataService,
+            TrafficSignDriver trafficSignDriver,
+            TrafficSignTestDataService trafficSignTestDataService,
+            TrafficSignJobDriver trafficSignJobDriver) {
+
+        super(RoadSectionsSimulationConfiguration.class);
+
+        this.stateManager = stateManager;
+        this.graphHopperTestDataService = graphHopperTestDataService;
+        this.trafficSignDriver = trafficSignDriver;
+        this.trafficSignTestDataService = trafficSignTestDataService;
+        this.trafficSignJobDriver = trafficSignJobDriver;
+        this.accessibilityMapApiClient = accessibilityMapApiClient;
     }
 
     @Override
     public void before() {
 
         super.before();
+        stateManager.beforeScenario();
 
-        getKeycloakDriver().createAndActivateClient("myClient", Set.of("issue:read", "issue:write"));
+        setupGraphHopperNetwork();
+        setupTrafficSigns();
+    }
+
+    @Override
+    public void after() {
+
+        super.after();
+        stateManager.afterScenario();
+    }
+
+    private void setupGraphHopperNetwork() {
+
+        graphHopperTestDataService.buildSimpleNetwork().buildNetwork();
+        graphhopperDataIsReloaded();
+    }
+
+    private void setupTrafficSigns() {
+
+        RoadSectionsSimulationConfiguration roadSectionsSimulationConfiguration = this.getSimulationSpecificConfiguration();
+        List<TrafficSignGeoJsonDto> trafficSigns = Stream.generate(
+                        () -> trafficSignTestDataService.createTrafficSignGeoJsonDto(TrafficSign.builder()
+                                .id(UUID.randomUUID().toString())
+                                .startNodeId(5)
+                                .endNodeId(11)
+                                .fraction(0.5)
+                                .rvvCode(TrafficSignType.C12.getRvvCode())
+                                .directionType(DirectionType.FORTH)
+                                .build()))
+                .limit(roadSectionsSimulationConfiguration.numberOfTrafficSigns())
+                .toList();
+        trafficSignDriver.stubTrafficSignRequest(trafficSigns);
+        trafficSignJobDriver.runTrafficSignUpdateCacheJob();
+        trafficSignsDataIsReloaded();
     }
 
     public List<PopulationBuilder> getSimulations() {
 
+        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
+                .municipalityId("GM0001")
+                .endLatitude(3D)
+                .endLongitude(7D)
+                .vehicleType(VehicleTypeJson.TRUCK)
+                .fuelTypes(List.of(FuelTypeJson.DIESEL))
+                .emissionClass(EmissionClassJson.EURO_3)
+                .vehicleWidthInMeters(2D)
+                .build();
+
         return List.of(
-                scenario("Scenario:")
+                scenario("InaccessibleRoadSections-Json")
                         .group(getSimulationName()).on(
-                                searchIssues()
+                                InaccessibleRoadSectionsJson(accessibilityRequest)
+                        )
+                        .injectOpen(getSimulationBehaviour())
+                        .protocols(List.of(getHttpProtocol())),
+
+                scenario("InaccessibleRoadSections-GeoJson")
+                        .group(getSimulationName()).on(
+                                InaccessibleRoadSectionsGeoJson(accessibilityRequest)
                         )
                         .injectOpen(getSimulationBehaviour())
                         .protocols(List.of(getHttpProtocol()))
         );
     }
 
-    private ChainBuilder searchIssues() {
+    private HttpProtocolBuilder getHttpProtocol() {
 
-        return exec(http("Section")
-                .post("/api/rest/static-road-data/location-data-issues/v1/issues/search")
-                .body(StringBody(convertToJsonBody(new Object())))
+        return http
+                .baseUrl(accessibilityMapApiClient.getEndpoint())
+                .acceptHeader(MediaType.APPLICATION_JSON_VALUE)
+                .contentTypeHeader(MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    private ChainBuilder InaccessibleRoadSectionsJson(AccessibilityRequest accessibilityRequest) {
+
+        var queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
+
+        return exec(http("InaccessibleRoadSections-Json")
+                .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections"
+                        .formatted(accessibilityRequest.municipalityId()))
+                .queryParamMap(queryParams.entrySet().stream()
+                        .collect(java.util.stream.Collectors.toMap(
+                                Map.Entry::getKey,
+                                entry -> (Object) entry.getValue())))
                 .check(status().is(HttpStatus.OK.value()))
         );
     }
 
-    private String convertToJsonBody(Object object) {
+    private ChainBuilder InaccessibleRoadSectionsGeoJson(AccessibilityRequest accessibilityRequest) {
 
-        try {
-            return getObjectMapper().writeValueAsString(object);
-        } catch (JsonProcessingException exception) {
-            throw new RuntimeException(exception);
-        }
+        var queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
+
+        return exec(http("InaccessibleRoadSections-GeoJson")
+                .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson"
+                        .formatted(accessibilityRequest.municipalityId()))
+                .queryParamMap(queryParams.entrySet().stream()
+                        .collect(java.util.stream.Collectors.toMap(
+                                Map.Entry::getKey,
+                                entry -> (Object) entry.getValue())))
+                .check(status().is(HttpStatus.OK.value()))
+        );
     }
 
+    private void graphhopperDataIsReloaded() {
+
+        var response = accessibilityMapApiClient.reloadGraphHopper();
+        assertThat(response.containsError())
+                .withFailMessage("Reloading graphhopper failed. %s", response.error())
+                .isFalse();
+    }
+
+    private void trafficSignsDataIsReloaded() {
+
+        var response = accessibilityMapApiClient.reloadTrafficSigns();
+        assertThat(response.containsError())
+                .withFailMessage("Reloading traffic signs failed. %s", response.error())
+                .isFalse();
+    }
 }

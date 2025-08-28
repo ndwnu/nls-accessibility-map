@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -24,7 +24,6 @@
     <module>jobs</module>
     <module>backend</module>
     <module>acceptance-test</module>
-    <module>component-test</module>
   </modules>
   <properties>
     <java.version>21</java.version>
@@ -33,6 +32,7 @@
     <nls-springboot.component-test.version>11.2.0</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>8.4.14</nls-springboot.monitoring.version>
     <nls-springboot.test.version>9.0.0</nls-springboot.test.version>
+    <nls-springboot.gatling-test.version>1.0.5-SNAPSHOT</nls-springboot.gatling-test.version>
     <gatling.version>3.11.5</gatling.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -270,6 +270,12 @@
         <groupId>nu.ndw.nls.springboot</groupId>
         <artifactId>component-test</artifactId>
         <version>${nls-springboot.component-test.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>nu.ndw.nls.springboot</groupId>
+        <artifactId>gatling-test</artifactId>
+        <version>${nls-springboot.gatling-test.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
