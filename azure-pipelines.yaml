@@ -89,11 +89,11 @@ extends:
         repository: nls-accessibility-map-data-analyser-job
         push: true
     componentTests:
-      - name: "All"
+      - name: "all"
         module: "component-test"
         additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/performance-test"
     performanceTests:
-      - name: "All"
+      - name: "all"
         module: "acceptance-test/performance-test"
         additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/component-test"
     deployment:
