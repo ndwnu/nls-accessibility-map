@@ -6,8 +6,8 @@
     <artifactId>acceptance-test</artifactId>
     <version>5.1.4-SNAPSHOT</version>
   </parent>
-  <artifactId>performance-test</artifactId>
-  <name>NLS Accessibility Map - Performance test</name>
+  <artifactId>component-test</artifactId>
+  <name>NLS Accessibility Map - Component test</name>
 
   <properties>
     <maven.test.skip>true</maven.test.skip>
@@ -21,8 +21,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>nu.ndw</groupId>
+      <artifactId>nls-events</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
-      <artifactId>gatling-test</artifactId>
+      <artifactId>messaging</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -31,12 +36,17 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-amqp</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <profiles>
 
     <profile>
-      <id>performance-test</id>
+      <id>component-test</id>
       <properties>
         <maven.test.skip>false</maven.test.skip>
       </properties>
@@ -77,20 +87,21 @@
                     <argument>--build</argument>
                     <argument>-d</argument>
                     <argument>nls-postgres</argument>
+                    <argument>nls-rabbitmq</argument>
                     <argument>nls-keycloak</argument>
                     <argument>accessibility-wiremock-stub</argument>
                   </arguments>
                 </configuration>
               </execution>
               <execution>
-                <id>init-performance-test</id>
+                <id>init-component-test</id>
                 <phase>pre-integration-test</phase>
                 <goals>
                   <goal>exec</goal>
                 </goals>
                 <configuration>
                   <executable>bash</executable>
-                  <commandlineArgs>../../scripts/prepare-files-component-test.sh ../../</commandlineArgs>
+                  <commandlineArgs>../scripts/prepare-files-component-test.sh ../</commandlineArgs>
                 </configuration>
               </execution>
               <!-- Make sure that this folder is read write by all for the build pipeline to allow docker
@@ -105,8 +116,9 @@
                   <arguments>
                     <argument>-R</argument>
                     <argument>777</argument>
-                    <argument>../../.tmp/graphhopper</argument>
-                    <argument>../../.tmp/trafficsigns</argument>
+                    <argument>../.tmp/map-generation-destination</argument>
+                    <argument>../.tmp/graphhopper</argument>
+                    <argument>../.tmp/trafficsigns</argument>
                   </arguments>
                   <executable>chmod</executable>
                 </configuration>
@@ -120,7 +132,18 @@
                 </goals>
                 <configuration>
                   <executable>bash</executable>
-                  <commandlineArgs>../../scripts/pg-isready.sh</commandlineArgs>
+                  <commandlineArgs>../scripts/pg-isready.sh</commandlineArgs>
+                </configuration>
+              </execution>
+              <execution>
+                <id>wait-for-rabbitmq</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>bash</executable>
+                  <commandlineArgs>../scripts/rabbit-isready.sh</commandlineArgs>
                 </configuration>
               </execution>
               <execution>

@@ -10,9 +10,9 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.Feature;
@@ -55,8 +55,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     @SneakyThrows
     public Response<Void, Void> reloadGraphHopper() {
 
-        validateApiIsStarted();
-
         Request<Void> request = Request.<Void>builder()
                 .id("reloadGraphHopper")
                 .method(HttpMethod.PUT)
@@ -73,8 +71,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     @SneakyThrows
     public Response<Void, Void> reloadTrafficSigns() {
 
-        validateApiIsStarted();
-
         Request<Void> request = Request.<Void>builder()
                 .id("reloadTrafficSigns")
                 .method(HttpMethod.PUT)
@@ -90,8 +86,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @SneakyThrows
     public Response<Void, AccessibilityMapResponseJson> getAccessibilityForMunicipality(AccessibilityRequest accessibilityRequest) {
-
-        validateApiIsStarted();
 
         Request<Void> request = Request.<Void>builder()
                 .id("getAccessibilityForMunicipality")
@@ -127,8 +121,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     public Response<Void, RoadSectionFeatureCollectionJson> getAccessibilityGeoJsonForMunicipality(
             AccessibilityRequest accessibilityRequest) {
 
-        validateApiIsStarted();
-
         Request<Void> request = Request.<Void>builder()
                 .id("getAccessibilityGeoJsonForMunicipality")
                 .method(HttpMethod.GET)
@@ -162,8 +154,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     @SneakyThrows
     public Response<Void, String> genericRequest(String path, String method) {
 
-        validateApiIsStarted();
-
         Request<Void> request = Request.<Void>builder()
                 .id("genericRequest")
                 .method(HttpMethod.valueOf(method.toUpperCase(Locale.ROOT)))
@@ -186,20 +176,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .getLast();
     }
 
-    private void validateApiIsStarted() {
-
-        if (!apiIsStarted) {
-            awaitService.waitFor(
-                    URI.create("http://%s:%s/api/rest/static-road-data/accessibility-map/actuator/health".formatted(getHost(), getPort())),
-                    "AccessibilityApi",
-                    accessibilityMapApiConfiguration.getAwaitDuration(),
-                    AwaitResponseStatusOkPredicate.getInstance());
-
-            apiIsStarted = true;
-        }
-    }
-
-    private MultiValueMap<String, String> buildQueryParameters(AccessibilityRequest accessibilityRequest) {
+    public static MultiValueMap<String, String> buildQueryParameters(AccessibilityRequest accessibilityRequest) {
 
         Map<String, List<String>> queryParameters = new HashMap<>();
         queryParameters.put("latitude", List.of(accessibilityRequest.endLatitude() + ""));
@@ -281,6 +258,8 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     @Override
     public void prepareState() {
 
+        validateApiIsStarted();
+
         keycloakDriver.createAndActivateClient(
                 ADMIN_CLIENT_ID,
                 Set.of("admin"));
@@ -288,7 +267,24 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @Override
     public void clearState() {
+
+        validateApiIsStarted();
+
         //KeycloakDriver will handle cleanup of the admin client.
         super.clearState();
     }
+
+    private void validateApiIsStarted() {
+
+        if (!apiIsStarted) {
+            awaitService.waitFor(
+                    URI.create("http://%s:%s/api/rest/static-road-data/accessibility-map/actuator/health".formatted(getHost(), getPort())),
+                    "AccessibilityApi",
+                    accessibilityMapApiConfiguration.getAwaitDuration(),
+                    AwaitResponseStatusOkPredicate.getInstance());
+
+            apiIsStarted = true;
+        }
+    }
+
 }

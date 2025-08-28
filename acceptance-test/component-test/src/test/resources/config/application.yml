@@ -4,7 +4,7 @@ hostDatabase: ${host}
 
 spring:
   application:
-    name: nls-accessibility-map-generator-jobs-performance-test
+    name: nls-accessibility-map-generator-jobs-component-test
   datasource:
     url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps
@@ -35,7 +35,14 @@ nu:
           component:
             driver:
               docker:
-                compose-file: "../../docker-compose.yml"
+                compose-file: "../docker-compose.yml"
+              maven:
+                rootPomRelativePath: "../"
+                modulesUnderTest:
+                  - "jobs/graphhopper"
+                  - "jobs/mapgenerator"
+                  - "jobs/traffic-sign"
+                  - "jobs/data-analyser"
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
@@ -50,44 +57,24 @@ nu:
                   client-id: "nls-accessibility-map-api-local"
                   roles:
                     - "admin"
-        gatling:
-          test:
-            simulations:
-              - name: "RoadSections"
-                configuration:
-                  simulation-class: "nu.ndw.nls.accessibilitymap.test.performance.simulation.roadsections.RoadSectionsSimulation"
-                  ramp-up-time: "PT5S"
-                  concurrent-users: 50
-                  simulation-specific-configuration:
-                    numberOfTrafficSigns: 1800
-                assertions:
-                  scenario-duration-95th-percentile: "PT0.75S"
-                  successful-run-percentage: 100.0
-                  sections:
-                    - name: "InaccessibleRoadSections-Json"
-                      response-time-95th-percentile: "PT0.75S"
-                    - name: "InaccessibleRoadSections-GeoJson"
-                      response-time-95th-percentile: "PT0.75S"
-
       accessibilitymap:
         test:
           acceptance:
             driver:
               general:
-                debug-folder: ".debug/"
+                debugFolder: ".debug/"
               accessibility-map:
                 host: localhost
                 port: 8080
               graph-hopper:
-                location-on-disk: "../../.tmp/graphhopper"
+                location-on-disk: "../.tmp/graphhopper"
               traffic-sign:
-                location-on-disk: "../../.tmp/trafficsigns"
+                location-on-disk: "../.tmp/trafficsigns"
                 file-name-active-version: "active"
       test:
         component:
+          general:
+            waitForDebuggerToBeConnected: false
           driver:
-            maven:
-              rootPomRelativePath: "../../"
-              modulesUnderTest:
-                - "jobs/graphhopper"
-                - "jobs/traffic-sign"
+            map-generation-job:
+              location-on-disk: "../.tmp/map-generation-destination"

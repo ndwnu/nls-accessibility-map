@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper;
 
-import jakarta.annotation.Nonnull;
+import jakarta.validation.constraints.NotNull;
 import java.nio.file.Path;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +11,11 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "nu.ndw.nls.test.component.driver.graph-hopper")
+@ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.test.acceptance.driver.graph-hopper")
 @Validated
 public class GraphHopperConfiguration {
 
-    @Nonnull
+    @NotNull
     private Path locationOnDisk;
 
 }
