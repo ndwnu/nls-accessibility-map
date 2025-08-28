@@ -83,6 +83,7 @@ public class NetworkDataService implements StateManagement {
     }
 
     public LineString createRijksdriehoekLineString(LineString latLongLineString) {
+
         return geometryFactoryRijksdriehoek.createLineString(
                 new Coordinate[]{
                         crsTransformer.transformFromWgs84ToRdNew(latLongLineString).getCoordinates()[0],
@@ -118,7 +119,8 @@ public class NetworkDataService implements StateManagement {
 
         List<Link> commonLinks = firstNode.getCommonLinks(secondNode);
         if (commonLinks.size() != 1) {
-            fail("There should be only one link between two nodes. We found %s. So that means your network data is not matching your expectations."
+            fail(("There should be only one link between two nodes. We found %s. So that means your network data is "
+                    + "not matching your expectations.")
                     .formatted(commonLinks.size()));
         }
 

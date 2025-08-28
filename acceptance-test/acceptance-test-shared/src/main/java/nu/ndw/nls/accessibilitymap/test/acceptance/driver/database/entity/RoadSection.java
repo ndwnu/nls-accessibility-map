@@ -20,7 +20,7 @@ import org.locationtech.jts.geom.LineString;
 public class RoadSection {
 
     @EmbeddedId
-    private nwbRoadSectionPrimaryKey primaryKey;
+    private NwbRoadSectionPrimaryKey primaryKey;
 
     private long junctionIdFrom;
 

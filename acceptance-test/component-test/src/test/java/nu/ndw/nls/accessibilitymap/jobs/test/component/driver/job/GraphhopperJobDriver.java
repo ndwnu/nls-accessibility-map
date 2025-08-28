@@ -34,5 +34,6 @@ public class GraphhopperJobDriver implements StateManagement {
     @Override
     public void clearState() {
 
+        // No state to clear.
     }
 }

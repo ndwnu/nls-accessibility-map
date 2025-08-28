@@ -32,5 +32,6 @@ public class TrafficSignJobDriver implements StateManagement {
     @Override
     public void clearState() {
 
+        // No state to clear.
     }
 }

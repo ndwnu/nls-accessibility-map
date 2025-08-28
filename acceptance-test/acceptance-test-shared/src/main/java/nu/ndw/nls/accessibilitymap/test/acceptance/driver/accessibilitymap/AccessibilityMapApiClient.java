@@ -50,7 +50,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     private final AwaitService awaitService;
 
-    private boolean apiIsStarted = false;
+    private boolean apiIsStarted;
 
     @SneakyThrows
     public Response<Void, Void> reloadGraphHopper() {
@@ -111,7 +111,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     public Response<Void, AccessibilityMapResponseJson> getLastResponseForGetAccessibilityForMunicipality() {
 
         return responseWebCache().findResponsesByFilter(response ->
-                                response.request().id().equals("getAccessibilityForMunicipality")
+                                "getAccessibilityForMunicipality".equals(response.request().id())
                                         && response.request().method().equals(HttpMethod.GET),
                         Void.class, AccessibilityMapResponseJson.class)
                 .getLast();
@@ -145,7 +145,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     public Response<Void, RoadSectionFeatureCollectionJson> getLastResponseForGetAccessibilityGeoJsonForMunicipality() {
 
         return responseWebCache().findResponsesByFilter(response ->
-                                response.request().id().equals("getAccessibilityGeoJsonForMunicipality")
+                                "getAccessibilityGeoJsonForMunicipality".equals(response.request().id())
                                         && response.request().method().equals(HttpMethod.GET),
                         Void.class, RoadSectionFeatureCollectionJson.class)
                 .getLast();
@@ -170,7 +170,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     public Response<Void, String> getLastResponseForGenericRequest() {
 
         return responseWebCache().findResponsesByFilter(response ->
-                                response.request().id().equals("genericRequest")
+                                "genericRequest".equals(response.request().id())
                                         && response.request().method().equals(HttpMethod.GET),
                         Void.class, String.class)
                 .getLast();
@@ -270,7 +270,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
         validateApiIsStarted();
 
-        //KeycloakDriver will handle cleanup of the admin client.
+        //KeycloakDriver will handle clean-up of the admin client.
         super.clearState();
     }
 
