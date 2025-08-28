@@ -36,9 +36,6 @@ nu:
             driver:
               docker:
                 compose-file: "../../docker-compose.yml"
-              wiremock:
-                host: ${hostWireMock}
-                port: 8888
               keycloak:
                 url: "http://localhost:8000/auth"
                 realm: "ndw"
@@ -50,6 +47,13 @@ nu:
                   client-id: "nls-accessibility-map-api-local"
                   roles:
                     - "admin"
+              maven:
+                rootPomRelativePath: "../../"
+                modulesUnderTest:
+                  - "jobs/traffic-sign"
+              wiremock:
+                host: ${hostWireMock}
+                port: 8888
         gatling:
           test:
             simulations:
@@ -83,11 +87,3 @@ nu:
               traffic-sign:
                 location-on-disk: "../../.tmp/trafficsigns"
                 file-name-active-version: "active"
-      test:
-        component:
-          driver:
-            maven:
-              rootPomRelativePath: "../../"
-              modulesUnderTest:
-                - "jobs/graphhopper"
-                - "jobs/traffic-sign"
