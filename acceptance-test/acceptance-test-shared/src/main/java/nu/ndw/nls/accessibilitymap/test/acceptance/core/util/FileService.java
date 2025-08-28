@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.test.acceptance.core.util;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -19,7 +20,7 @@ public class FileService {
         try {
             FileUtils.writeStringToFile(file, data, StandardCharsets.UTF_8.toString());
 
-        } catch (Exception exception) {
+        } catch (IOException exception) {
             log.error("Failed to write file.", exception);
             fail(exception.getMessage());
         }
@@ -33,7 +34,7 @@ public class FileService {
                     new File("./%s/%s.%s".formatted(folder, file, extension)),
                     StandardCharsets.UTF_8.toString());
 
-        } catch (Exception exception) {
+        } catch (IOException exception) {
             log.error("Failed to load file.", exception);
             fail(exception.getMessage());
             return null;
@@ -48,7 +49,7 @@ public class FileService {
                     ResourceUtils.getFile("classpath:data/%s/%s.%s".formatted(folder, file, extension)),
                     StandardCharsets.UTF_8.toString());
 
-        } catch (Exception exception) {
+        } catch (IOException exception) {
             log.error("Failed to load file.", exception);
             fail(exception.getMessage());
             return null;
