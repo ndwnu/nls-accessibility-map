@@ -26,6 +26,7 @@ public class TrafficSignTestDataService {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
+    @SuppressWarnings("java:S109")
     public TrafficSignGeoJsonDto createTrafficSignGeoJsonDto(TrafficSign trafficSign) {
 
         Link link = networkDataService.findLinkBetweenNodes(trafficSign.startNodeId(), trafficSign.endNodeId());

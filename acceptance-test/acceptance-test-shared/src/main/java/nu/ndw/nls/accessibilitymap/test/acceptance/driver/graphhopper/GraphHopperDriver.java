@@ -43,9 +43,9 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.LineStringPr
 import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.PointGeometry;
 import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.PointNodeProperties;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.NwbRoadSectionPrimaryKey;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.RoadSection;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.Version;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.nwbRoadSectionPrimaryKey;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.repository.RoadSectionRepository;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.repository.VersionRepository;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.dto.Link;
@@ -159,7 +159,7 @@ public class GraphHopperDriver {
 
         networkDataService.getLinks()
                 .forEach(link -> roadSectionRepository.save(RoadSection.builder()
-                        .primaryKey(new nwbRoadSectionPrimaryKey(1, link.getAccessibilityLink().getId()))
+                        .primaryKey(new NwbRoadSectionPrimaryKey(1, link.getAccessibilityLink().getId()))
                         .junctionIdFrom(link.getAccessibilityLink().getFromNodeId())
                         .junctionIdTo(link.getAccessibilityLink().getToNodeId())
                         .roadOperatorType("Municipality")
@@ -247,17 +247,18 @@ public class GraphHopperDriver {
         }
     }
 
+    @SuppressWarnings("java:S1142")
     private List<Direction> mapDirections(DirectionalDto<Boolean> accessibility) {
 
         if (accessibility.isEqualForBothDirections()) {
             return List.of(Direction.FORWARD, Direction.BACKWARD);
         }
 
-        if (accessibility.forward()) {
+        if (Boolean.TRUE.equals(accessibility.forward())) {
             return List.of(Direction.FORWARD);
         }
 
-        if (accessibility.reverse()) {
+        if (Boolean.TRUE.equals(accessibility.reverse())) {
             return List.of(Direction.FORWARD);
         }
 

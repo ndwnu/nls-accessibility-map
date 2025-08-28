@@ -28,6 +28,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.Traffi
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
+import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.state.StateManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -148,7 +149,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private ChainBuilder InaccessibleRoadSectionsJson(AccessibilityRequest accessibilityRequest) {
 
-        var queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
+        Map<String, String> queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
 
         return exec(http("InaccessibleRoadSections-Json")
                 .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections"
@@ -163,7 +164,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private ChainBuilder InaccessibleRoadSectionsGeoJson(AccessibilityRequest accessibilityRequest) {
 
-        var queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
+        Map<String, String> queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
 
         return exec(http("InaccessibleRoadSections-GeoJson")
                 .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson"
@@ -178,7 +179,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private void graphhopperDataIsReloaded() {
 
-        var response = accessibilityMapApiClient.reloadGraphHopper();
+        Response<Void, Void> response = accessibilityMapApiClient.reloadGraphHopper();
         assertThat(response.containsError())
                 .withFailMessage("Reloading graphhopper failed. %s", response.error())
                 .isFalse();
@@ -186,7 +187,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private void trafficSignsDataIsReloaded() {
 
-        var response = accessibilityMapApiClient.reloadTrafficSigns();
+        Response<Void, Void> response = accessibilityMapApiClient.reloadTrafficSigns();
         assertThat(response.containsError())
                 .withFailMessage("Reloading traffic signs failed. %s", response.error())
                 .isFalse();

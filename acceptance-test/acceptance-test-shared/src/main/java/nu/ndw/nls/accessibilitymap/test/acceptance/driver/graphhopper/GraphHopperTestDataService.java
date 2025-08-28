@@ -9,6 +9,7 @@ public class GraphHopperTestDataService {
 
     private final GraphHopperDriver graphHopperDriver;
 
+    @SuppressWarnings("java:S109")
     public GraphHopperDriver buildSimpleNetwork() {
 
         /*

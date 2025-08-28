@@ -21,13 +21,12 @@ public class RabbitMQMessageDriver implements StateManagement {
     private final MessageService messageService;
 
     public void publishEvent(NlsEvent nlsEvent) {
+
         messageService.publish(nlsEvent);
     }
 
     @Override
     public void clearState() {
-
-//        log.info("Purging messages on queue: " + messagingProperties.getQueueName());
-//        amqpAdmin.(messagingProperties.getQueueName());
+        // No state to clear.
     }
 }
