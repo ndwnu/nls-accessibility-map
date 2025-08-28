@@ -35,9 +35,9 @@ nu:
           component:
             driver:
               docker:
-                compose-file: "../docker-compose.yml"
+                compose-file: "../../docker-compose.yml"
               maven:
-                rootPomRelativePath: "../"
+                rootPomRelativePath: "../../"
                 modulesUnderTest:
                   - "jobs/graphhopper"
                   - "jobs/mapgenerator"
@@ -67,9 +67,9 @@ nu:
                 host: localhost
                 port: 8080
               graph-hopper:
-                location-on-disk: "../.tmp/graphhopper"
+                location-on-disk: "../../.tmp/graphhopper"
               traffic-sign:
-                location-on-disk: "../.tmp/trafficsigns"
+                location-on-disk: "../../.tmp/trafficsigns"
                 file-name-active-version: "active"
       test:
         component:
@@ -77,4 +77,4 @@ nu:
             waitForDebuggerToBeConnected: false
           driver:
             map-generation-job:
-              location-on-disk: "../.tmp/map-generation-destination"
+              location-on-disk: "../../.tmp/map-generation-destination"

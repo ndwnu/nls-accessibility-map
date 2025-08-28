@@ -15,7 +15,7 @@ Feature: Api
       | 3           | 4         | 0.9      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000008 |
     When run TrafficSignUpdateCache
     And traffic signs data is reloaded
-    When request accessibility     for
+    When request accessibility for
       | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | excludeEmissionZoneIds | excludeEmissionZoneTypes |
       | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            |                        |                          |
     Then we expect the following blocked roadSections with matched roadSection with id 9 and is forward accessible true and backward accessible true
