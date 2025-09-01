@@ -12,6 +12,7 @@ import io.gatling.javaapi.http.HttpProtocolBuilder;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
@@ -155,7 +156,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections"
                         .formatted(accessibilityRequest.municipalityId()))
                 .queryParamMap(queryParams.entrySet().stream()
-                        .collect(java.util.stream.Collectors.toMap(
+                        .collect(Collectors.toMap(
                                 Map.Entry::getKey,
                                 entry -> (Object) entry.getValue())))
                 .check(status().is(HttpStatus.OK.value()))
@@ -170,7 +171,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson"
                         .formatted(accessibilityRequest.municipalityId()))
                 .queryParamMap(queryParams.entrySet().stream()
-                        .collect(java.util.stream.Collectors.toMap(
+                        .collect(Collectors.toMap(
                                 Map.Entry::getKey,
                                 entry -> (Object) entry.getValue())))
                 .check(status().is(HttpStatus.OK.value()))
