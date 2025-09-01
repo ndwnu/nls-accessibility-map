@@ -1,0 +1,80 @@
+host: "localhost"
+hostWireMock: ${host}
+hostDatabase: ${host}
+
+spring:
+  application:
+    name: nls-accessibility-map-generator-jobs-component-test
+  datasource:
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-init-sql: SELECT 1;
+      idle-timeout: 60000
+      max-lifetime: 120000
+      minimum-idle: 1
+      auto-commit: false
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+nu:
+  ndw:
+    nls:
+      springboot:
+        messaging:
+          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
+          publish:
+            - routingKey: ndw.nls.nwb.imported
+              expectedEventType: NWB_IMPORTED_EVENT
+            - routingKey: ndw.nls.accessibility.routing.network.updated
+              expectedEventType: ACCESSIBILITY_ROUTING_NETWORK_UPDATED
+        test:
+          component:
+            driver:
+              docker:
+                compose-file: "../../docker-compose.yml"
+              keycloak:
+                url: "http://localhost:8000/auth"
+                realm: "ndw"
+                admin-username: "nls"
+                admin-password: "nls"
+                await:
+                  duration: PT1M
+                application-under-test:
+                  client-id: "nls-accessibility-map-api-local"
+                  roles:
+                    - "admin"
+              maven:
+                rootPomRelativePath: "../../"
+                modulesUnderTest:
+                  - "jobs/graphhopper"
+                  - "jobs/mapgenerator"
+                  - "jobs/traffic-sign"
+                  - "jobs/data-analyser"
+              wiremock:
+                host: ${hostWireMock}
+                port: 8888
+      accessibilitymap:
+        test:
+          acceptance:
+            driver:
+              general:
+                debugFolder: ".debug/"
+              accessibility-map:
+                host: localhost
+                port: 8080
+              graph-hopper:
+                location-on-disk: "../../.tmp/graphhopper"
+              traffic-sign:
+                location-on-disk: "../../.tmp/trafficsigns"
+                file-name-active-version: "active"
+      test:
+        component:
+          general:
+            waitForDebuggerToBeConnected: false
+          driver:
+            map-generation-job:
+              location-on-disk: "../../.tmp/map-generation-destination"
