@@ -29,6 +29,9 @@ parameters:
   - name: skipComponentTesting
     type: boolean
     default: false
+  - name: skipPerformanceTesting
+    type: boolean
+    default: false
   - name: forceDeployment
     type: boolean
     default: false
@@ -46,14 +49,14 @@ extends:
     skipTests: ${{ parameters.skipTests }}
     skipSecurityScanning: ${{ parameters.skipSecurityScanning }}
     skipComponentTesting: ${{ parameters.skipComponentTesting }}
-    skipPerformanceTesting: true
+    skipPerformanceTesting:  ${{ parameters.skipPerformanceTesting }}
     skipDocker: ${{ parameters.skipDocker }}
     skipDeployment: ${{ parameters.skipDeployment }}
     forceDeployment: ${{ parameters.forceDeployment }}
     cleanupNamespaces: ${{ parameters.cleanupNamespaces }}
     mavenDeployToNdwShared: true
     jdkVersion: 1.21
-    sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**'
+    sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**,acceptance-test/acceptance-test-shared/**'
     sonarOptionalExclusions: '**/generated/**,**/StreamingJsonBodyExtractor.*'
     mavenAdditionalBuildOptions: '-Pregression-test'
     pushToGitHub: true
@@ -89,9 +92,13 @@ extends:
         repository: nls-accessibility-map-data-analyser-job
         push: true
     componentTests:
-      - name: "jobs"
-        module: "jobs/jobs-component-test"
-        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign"
+      - name: "all"
+        module: "component-test"
+        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/performance-test"
+    performanceTests:
+      - name: "all"
+        module: "acceptance-test/performance-test"
+        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/component-test"
     deployment:
       environments:
         - name: "staging"
