@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -38,7 +38,7 @@ public class GeoJsonRoadSectionWriter extends AbstractGeoJsonWriter {
 
     @Override
     protected FeatureCollection prepareGeoJsonFeatureCollection(Accessibility accessibility,
-            ExportProperties exportProperties, LongSequenceSupplier idSequenceSupplier) {
+            ExportProperties exportProperties, AtomicLong idSequenceSupplier) {
 
         return FeatureCollection
                 .builder()
@@ -54,7 +54,7 @@ public class GeoJsonRoadSectionWriter extends AbstractGeoJsonWriter {
 
     private List<Feature> createFeatures(
             RoadSection roadSection,
-            LongSequenceSupplier idSequenceSupplier,
+            AtomicLong idSequenceSupplier,
             GenerateConfiguration generateConfiguration) {
 
         return roadSection.getRoadSectionFragments().stream()

@@ -16,18 +16,18 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
-import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.LongSequenceSupplier;
-import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.Feature;
-import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.FeatureCollection;
-import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.PointGeometry;
 import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.PointTrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonFeatureCollectionDto;
+import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Feature;
+import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.FeatureCollection;
+import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.PointGeometry;
+import nu.ndw.nls.springboot.test.util.file.FileService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,6 +45,7 @@ public class TrafficSignDriver {
 
     @SuppressWarnings("java:S3658")
     public void stubTrafficSignRequest(List<TrafficSignGeoJsonDto> trafficSigns) {
+
         try {
             writeTrafficSignsGeoJsonToDisk(trafficSigns);
             StringValuePattern[] stringValuePatterns = Arrays.stream(TrafficSignType.values())
@@ -75,11 +76,11 @@ public class TrafficSignDriver {
     @SuppressWarnings("java:S3658")
     private void writeTrafficSignsGeoJsonToDisk(List<TrafficSignGeoJsonDto> trafficSigns) {
 
-        LongSequenceSupplier idSupplier = new LongSequenceSupplier();
+        AtomicLong idSupplier = new AtomicLong(1);
         FeatureCollection featureCollection = FeatureCollection.builder()
                 .features(trafficSigns.stream()
                         .map(trafficSign -> Feature.builder()
-                                .id(idSupplier.next())
+                                .id(idSupplier.getAndIncrement())
                                 .geometry(PointGeometry.builder()
                                         .coordinates(List.of(
                                                 trafficSign.getGeometry().getCoordinates()

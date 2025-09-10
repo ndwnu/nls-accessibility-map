@@ -11,13 +11,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
@@ -57,12 +57,12 @@ class FeatureBuilderTest {
 
     private DirectionalSegment directionalSegmentForward;
 
-    private LongSequenceSupplier idSequenceSupplier;
+    private AtomicLong idSequenceSupplier;
 
     @BeforeEach
     void setUp() {
 
-        idSequenceSupplier = new LongSequenceSupplier();
+        idSequenceSupplier = new AtomicLong(1);
 
         featureBuilder = new FeatureBuilder(jtsLineStringJsonMapper, fractionAndDistanceCalculator);
     }
@@ -333,7 +333,7 @@ class FeatureBuilderTest {
             boolean expectedTrafficSignPoint)
             throws JsonProcessingException {
 
-        LongSequenceSupplier featureIdSupplier = new LongSequenceSupplier();
+        AtomicLong featureIdSupplier = new AtomicLong(1);
         String roadSegmentFeature = """
                 {
                    "id":%s,
@@ -351,7 +351,7 @@ class FeatureBuilderTest {
                 }
                 """
                 .formatted(
-                        expectedRoadSection ? featureIdSupplier.next() : 0,
+                        expectedRoadSection ? featureIdSupplier.getAndIncrement() : 0,
                         expectedRoadSectionToBeAccessible);
 
         String trafficSignLineStringFeature = """
@@ -375,7 +375,7 @@ class FeatureBuilderTest {
                 }
                 """
                 .formatted(
-                        expectedTrafficSignLineString ? featureIdSupplier.next() : 0,
+                        expectedTrafficSignLineString ? featureIdSupplier.getAndIncrement() : 0,
                         expectedTrafficSignToBeAccessible);
 
         String trafficSignPointFeature = """
@@ -399,7 +399,7 @@ class FeatureBuilderTest {
                 }
                 """
                 .formatted(
-                        expectedTrafficSignPoint ? featureIdSupplier.next() : 0,
+                        expectedTrafficSignPoint ? featureIdSupplier.getAndIncrement() : 0,
                         expectedTrafficSignToBeAccessible);
 
         List<String> expectedFeatures = new ArrayList<>();

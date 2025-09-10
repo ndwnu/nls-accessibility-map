@@ -22,10 +22,10 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -130,7 +130,6 @@ class AbstractGeoJsonWriterTest {
                     "Started writing geojson to temp file: %s".formatted(exportTmpFilePath));
             loggerExtension.containsLog(Level.DEBUG,
                     "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
-
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }
@@ -194,12 +193,13 @@ class AbstractGeoJsonWriterTest {
 
         @Override
         public boolean isEnabled(Set<ExportType> exportTypes) {
+
             return exportTypes.contains(ExportType.LINE_STRING_GEO_JSON);
         }
 
         @Override
         protected FeatureCollection prepareGeoJsonFeatureCollection(Accessibility accessibility,
-                ExportProperties exportProperties, LongSequenceSupplier idSequenceSupplier) {
+                ExportProperties exportProperties, AtomicLong idSequenceSupplier) {
 
             assertThat(accessibility).isEqualTo(this.accessibility);
             assertThat(exportProperties).isEqualTo(this.exportProperties);
@@ -216,6 +216,7 @@ class AbstractGeoJsonWriterTest {
     }
 
     private ExportProperties buildExportProperties(boolean includeOnlyTimeWindowedSigns) {
+
         return ExportProperties.builder()
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder()
@@ -228,5 +229,4 @@ class AbstractGeoJsonWriterTest {
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
                 .build();
     }
-
 }
