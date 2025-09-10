@@ -6,12 +6,12 @@ import io.cucumber.java.en.Then;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
-import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
+import nu.ndw.nls.springboot.test.util.file.FileService;
 
 @RequiredArgsConstructor
 public class GeoJsonStepDefinitions {
 
-    private final FileService testDataProvider;
+    private final FileService fileService;
 
     private final MapGenerationJobDriver mapGenerationJobDriver;
 
@@ -20,7 +20,7 @@ public class GeoJsonStepDefinitions {
     public void geojson() {
 
         String actualResult = mapGenerationJobDriver.getLastGeneratedGeoJson();
-        String expectedResult = testDataProvider.readTestDataFromFile("geojson", "EmptyFeatureCollection", "geojson");
+        String expectedResult = fileService.readTestDataFromFile("geojson", "EmptyFeatureCollection", "geojson");
 
         assertThatJson(actualResult).isEqualTo(expectedResult);
     }
@@ -31,7 +31,7 @@ public class GeoJsonStepDefinitions {
         String actualResult = (fileName.toLowerCase(Locale.US).endsWith("polygon")
                 ? mapGenerationJobDriver.getLastGeneratedPolygonGeoJson()
                 : mapGenerationJobDriver.getLastGeneratedGeoJson());
-        String expectedResult = testDataProvider.readTestDataFromFile("geojson", fileName, "geojson");
+        String expectedResult = fileService.readTestDataFromFile("geojson", fileName, "geojson");
 
         assertThatJson(actualResult).isEqualTo(expectedResult);
     }

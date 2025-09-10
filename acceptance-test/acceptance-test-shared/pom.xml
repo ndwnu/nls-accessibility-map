@@ -28,6 +28,14 @@
       <artifactId>accessibility</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
+    <dependency>
+      <groupId>nu.ndw.nls.springboot.test.graph</groupId>
+      <artifactId>graph-hopper-exporter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>nu.ndw.nls.springboot.test.graph</groupId>
+      <artifactId>database-nwb-exporter</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>

@@ -13,12 +13,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheReadWriter;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.TrafficSignBuilder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -168,7 +168,7 @@ class UpdateCacheCommandTest {
         when(trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 eq(lineString),
                 eq(trafficSignGeoJsonDto),
-                any(IntegerSequenceSupplier.class))
+                any(AtomicInteger.class))
         ).thenReturn(Optional.ofNullable(trafficSign));
     }
 }

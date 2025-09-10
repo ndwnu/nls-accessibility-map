@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job;
 
+import java.io.File;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -11,10 +12,10 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.configuration.MapGenerationJobDriverConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
-import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
 import nu.ndw.nls.springboot.test.component.driver.docker.dto.Environment;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
+import nu.ndw.nls.springboot.test.util.file.FileService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -51,10 +52,10 @@ public class MapGenerationJobDriver implements StateManagement {
                                 .key("NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNCLIENT_API_TOWNCODES")
                                 .value("TEST")
                                 .build()));
-
     }
 
     public String buildCommandArguments(MapGeneratorJobConfiguration jobConfiguration) {
+
         return "generate "
                 + "--export-name=%s ".formatted(jobConfiguration.exportName())
                 + createRepeatableArguments(jobConfiguration.trafficSignTypes(), jobConfiguration.exportTypes())
@@ -77,29 +78,23 @@ public class MapGenerationJobDriver implements StateManagement {
     public String getLastGeneratedGeoJson() {
 
         return fileService.readDataFromFile(
-                "%s/v1/windowTimes/%s/geojson".formatted(
+                new File("%s/v1/windowTimes/%s/geojson/%s%s.geojson".formatted(
                         mapGenerationJobDriverConfiguration.getLocationOnDisk(),
-                        DateTimeFormatter.ofPattern("yyyyMMdd").format(OffsetDateTime.now())
-                ),
-                "%s%s".formatted(
+                        DateTimeFormatter.ofPattern("yyyyMMdd").format(OffsetDateTime.now()),
                         lastJobExecution.exportName().toLowerCase(Locale.US),
                         lastJobExecution.includeOnlyWindowSigns() ? "WindowTimeSegments" : "")
-                ,
-                "geojson");
+                ));
     }
 
     public String getLastGeneratedPolygonGeoJson() {
 
         return fileService.readDataFromFile(
-                "%s/v1/windowTimes/%s/geojson".formatted(
+                new File("%s/v1/windowTimes/%s/geojson/%s%s-polygon.geojson".formatted(
                         mapGenerationJobDriverConfiguration.getLocationOnDisk(),
-                        DateTimeFormatter.ofPattern("yyyyMMdd").format(OffsetDateTime.now())
-                ),
-                "%s%s-polygon".formatted(
+                        DateTimeFormatter.ofPattern("yyyyMMdd").format(OffsetDateTime.now()),
                         lastJobExecution.exportName().toLowerCase(Locale.US),
                         lastJobExecution.includeOnlyWindowSigns() ? "WindowTimeSegments" : "")
-                ,
-                "geojson");
+                ));
     }
 
     @Override
