@@ -17,6 +17,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeature
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
+import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
 import nu.ndw.nls.springboot.test.await.services.AwaitService;
 import nu.ndw.nls.springboot.test.await.services.predicates.AwaitResponseStatusOkPredicate;
 import nu.ndw.nls.springboot.test.component.driver.keycloak.KeycloakDriver;
@@ -25,9 +26,10 @@ import nu.ndw.nls.springboot.test.component.driver.web.dto.Request;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Feature;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.FeatureCollection;
-import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.PointGeometry;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.PointNodeGraphProperties;
 import org.jetbrains.annotations.NotNull;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -51,6 +53,10 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     private final AwaitService awaitService;
 
     private boolean apiIsStarted;
+
+    private final JtsPointJsonMapper jtsPointJsonMapper;
+
+    private final GeometryFactory geometryFactory = new GeometryFactory();
 
     @SneakyThrows
     public Response<Void, Void> reloadGraphHopper() {
@@ -119,7 +125,8 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @SneakyThrows
     public Response<Void, RoadSectionFeatureCollectionJson> getAccessibilityGeoJsonForMunicipality(
-            AccessibilityRequest accessibilityRequest) {
+            AccessibilityRequest accessibilityRequest
+    ) {
 
         Request<Void> request = Request.<Void>builder()
                 .id("getAccessibilityGeoJsonForMunicipality")
@@ -221,15 +228,13 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     @NotNull
-    private static FeatureCollection buildGeoJsonEndPoint(double endLatitude, double endLongitude) {
+    private FeatureCollection buildGeoJsonEndPoint(double endLatitude, double endLongitude) {
 
         return FeatureCollection.builder()
                 .features(List.of(
                         Feature.builder()
                                 .id(1)
-                                .geometry(PointGeometry.builder()
-                                        .coordinates(List.of(endLongitude, endLatitude))
-                                        .build())
+                                .geometry(jtsPointJsonMapper.map(geometryFactory.createPoint(new Coordinate(endLongitude, endLatitude))))
                                 .properties(PointNodeGraphProperties.builder()
                                         .name("endpoint")
                                         .build())
