@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +25,11 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 public class TrafficSignCacheConfiguration {
 
+    @Default
     private boolean failOnNoDataOnStartup = true;
+
+    @Default
+    private boolean watchForUpdates = true;
 
     @NotNull
     private Path folder;
