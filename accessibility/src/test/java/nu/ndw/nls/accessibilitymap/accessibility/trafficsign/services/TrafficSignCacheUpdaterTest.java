@@ -40,6 +40,7 @@ class TrafficSignCacheUpdaterTest {
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
+
     @Mock
     private GraphHopperService graphHopperService;
 
@@ -52,7 +53,6 @@ class TrafficSignCacheUpdaterTest {
 
     @BeforeEach
     void setUp() throws IOException {
-
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
 
         trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
@@ -66,7 +66,6 @@ class TrafficSignCacheUpdaterTest {
 
     @AfterEach
     void tearDown() throws IOException {
-
         trafficSignCacheUpdater.destroy();
         FileUtils.deleteDirectory(testDir.toFile());
     }
@@ -74,7 +73,6 @@ class TrafficSignCacheUpdaterTest {
     @Test
     @SuppressWarnings("java:S2925")
     void watchFileChanges_fileChanges() throws IOException {
-
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
@@ -99,8 +97,18 @@ class TrafficSignCacheUpdaterTest {
 
     @Test
     @SuppressWarnings("java:S2925")
-    void watchFileChanges_failedToUpdateData() throws IOException {
+    void watchFileChanges_notWatchingForChanges() throws IOException {
 
+        trafficSignCacheConfiguration.setWatchForUpdates(false);
+
+        trafficSignCacheUpdater.watchFileChanges();
+
+        assertThat(trafficSignCacheUpdater.fileWatcherThread).isNull();
+    }
+
+    @Test
+    @SuppressWarnings("java:S2925")
+    void watchFileChanges_failedToUpdateData() throws IOException {
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         doThrow(new RuntimeException("some error")).when(trafficSignDataService).updateTrafficSignData(networkGraphHopper);
 
@@ -108,7 +116,6 @@ class TrafficSignCacheUpdaterTest {
         Files.createFile(trafficSignCacheConfiguration.getActiveVersion().toPath());
         Awaitility.await().atMost(Duration.ofSeconds(5))
                 .until(() -> Files.exists(trafficSignCacheConfiguration.getActiveVersion().toPath()));
-
 
         trafficSignCacheUpdater.watchFileChanges();
 
@@ -129,7 +136,6 @@ class TrafficSignCacheUpdaterTest {
 
     @Test
     void updateCache() {
-
         trafficSignCacheUpdater.updateCache(networkGraphHopper);
 
         verify(trafficSignDataService).updateTrafficSignData(networkGraphHopper);
@@ -140,7 +146,6 @@ class TrafficSignCacheUpdaterTest {
 
     @Test
     void destroy() throws IOException {
-
         trafficSignCacheUpdater.watchFileChanges();
         trafficSignCacheUpdater.destroy();
 
@@ -149,7 +154,6 @@ class TrafficSignCacheUpdaterTest {
 
     @Test
     void destroy_withoutInitialisation() {
-
         trafficSignCacheUpdater.destroy();
 
         assertThat(trafficSignCacheUpdater.fileWatcherThread).isNull();
