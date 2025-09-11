@@ -25,9 +25,11 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.PointTraffic
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonFeatureCollectionDto;
+import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Feature;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.FeatureCollection;
-import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.PointGeometry;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,6 +44,10 @@ public class TrafficSignDriver {
     private final FileService fileService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final JtsPointJsonMapper jtsPointJsonMapper;
+
+    private final GeometryFactory geometryFactory = new GeometryFactory();
 
     @SuppressWarnings("java:S3658")
     public void stubTrafficSignRequest(List<TrafficSignGeoJsonDto> trafficSigns) {
@@ -81,14 +87,12 @@ public class TrafficSignDriver {
                 .features(trafficSigns.stream()
                         .map(trafficSign -> Feature.builder()
                                 .id(idSupplier.getAndIncrement())
-                                .geometry(PointGeometry.builder()
-                                        .coordinates(List.of(
-                                                trafficSign.getGeometry().getCoordinates()
-                                                        .getLongitude(),
-                                                trafficSign.getGeometry().getCoordinates()
-                                                        .getLatitude()
-                                        ))
-                                        .build())
+                                .geometry(jtsPointJsonMapper.map(geometryFactory.createPoint(new Coordinate(
+                                        trafficSign.getGeometry().getCoordinates()
+                                                .getLongitude(),
+                                        trafficSign.getGeometry().getCoordinates()
+                                                .getLatitude()
+                                ))))
                                 .properties(PointTrafficSignProperties.builder()
                                         .trafficSignId(trafficSign.getId())
                                         .roadSectionId(trafficSign.getProperties().getRoadSectionId())
