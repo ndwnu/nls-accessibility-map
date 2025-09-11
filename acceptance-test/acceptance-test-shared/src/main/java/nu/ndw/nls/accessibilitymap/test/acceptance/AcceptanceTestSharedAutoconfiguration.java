@@ -5,7 +5,6 @@ import nu.ndw.nls.springboot.test.component.driver.docker.EnableDockerDriver;
 import nu.ndw.nls.springboot.test.component.driver.keycloak.EnableKeycloakDriver;
 import nu.ndw.nls.springboot.test.component.driver.maven.EnableMavenDriver;
 import nu.ndw.nls.springboot.test.component.driver.wiremock.EnableWireMockDriver;
-import nu.ndw.nls.springboot.test.util.file.EnableFileUtils;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableDockerDriver
 @EnableWireMockDriver
 @EnableMavenDriver
-@EnableFileUtils
 @Import(RoutingMapMatcherConfiguration.class)
 public class AcceptanceTestSharedAutoconfiguration {
 

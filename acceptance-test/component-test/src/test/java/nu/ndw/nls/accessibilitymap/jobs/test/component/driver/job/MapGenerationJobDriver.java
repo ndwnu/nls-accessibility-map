@@ -12,10 +12,10 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.configuration.MapGenerationJobDriverConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
+import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
 import nu.ndw.nls.springboot.test.component.driver.docker.dto.Environment;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
-import nu.ndw.nls.springboot.test.util.file.FileService;
 import org.springframework.stereotype.Component;
 
 @Component
