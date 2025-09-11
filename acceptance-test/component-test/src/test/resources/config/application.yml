@@ -73,8 +73,6 @@ nu:
                 file-name-active-version: "active"
       test:
         component:
-          general:
-            waitForDebuggerToBeConnected: false
           driver:
             map-generation-job:
               location-on-disk: "../../.tmp/map-generation-destination"

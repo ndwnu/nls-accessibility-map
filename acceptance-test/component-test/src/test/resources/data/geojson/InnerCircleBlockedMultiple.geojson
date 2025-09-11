@@ -420,52 +420,6 @@
         "coordinates": [
           [
             5.0,
-            10.0
-          ],
-          [
-            5.0,
-            9.0000271
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "nwbRoadSectionId": 13,
-        "accessible": true,
-        "direction": "FORWARD",
-        "roadSectionFragmentId": 15
-      },
-      "type": "Feature"
-    },
-    {
-      "id": 20,
-      "geometry": {
-        "coordinates": [
-          [
-            5.0,
-            9.0000271
-          ],
-          [
-            5.0,
-            10.0
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "nwbRoadSectionId": 13,
-        "accessible": true,
-        "direction": "BACKWARD",
-        "roadSectionFragmentId": 15
-      },
-      "type": "Feature"
-    },
-    {
-      "id": 21,
-      "geometry": {
-        "coordinates": [
-          [
-            5.0,
             9.0000271
           ],
           [
@@ -484,7 +438,7 @@
       "type": "Feature"
     },
     {
-      "id": 22,
+      "id": 20,
       "geometry": {
         "coordinates": [
           [
@@ -497,6 +451,52 @@
           ]
         ],
         "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
+        "accessible": false,
+        "direction": "FORWARD",
+        "trafficSignType": "C12",
+        "windowTimes": "window 1",
+        "trafficSign": true
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 21,
+      "geometry": {
+        "coordinates": [
+          [
+            5.0,
+            9.0000271
+          ],
+          [
+            5.0,
+            9.0000181
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "trafficSignId": "00000000-0000-4000-0000-000000000003",
+        "accessible": false,
+        "direction": "FORWARD",
+        "trafficSignType": "C7",
+        "windowTimes": "window 3",
+        "trafficSign": true
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 22,
+      "geometry": {
+        "coordinates": [
+          5.0,
+          9.0000271
+        ],
+        "type": "Point"
       },
       "properties": {
         "nwbRoadSectionId": 13,
@@ -513,16 +513,10 @@
       "id": 23,
       "geometry": {
         "coordinates": [
-          [
-            5.0,
-            9.0000271
-          ],
-          [
-            5.0,
-            9.0000181
-          ]
+          5.0,
+          9.0000271
         ],
-        "type": "LineString"
+        "type": "Point"
       },
       "properties": {
         "nwbRoadSectionId": 13,
@@ -537,46 +531,6 @@
     },
     {
       "id": 24,
-      "geometry": {
-        "coordinates": [
-          5.0,
-          9.0000271
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000001",
-        "accessible": false,
-        "direction": "FORWARD",
-        "trafficSignType": "C12",
-        "windowTimes": "window 1",
-        "trafficSign": true
-      },
-      "type": "Feature"
-    },
-    {
-      "id": 25,
-      "geometry": {
-        "coordinates": [
-          5.0,
-          9.0000271
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000003",
-        "accessible": false,
-        "direction": "FORWARD",
-        "trafficSignType": "C7",
-        "windowTimes": "window 3",
-        "trafficSign": true
-      },
-      "type": "Feature"
-    },
-    {
-      "id": 26,
       "geometry": {
         "coordinates": [
           [
@@ -595,6 +549,52 @@
         "accessible": false,
         "direction": "BACKWARD",
         "roadSectionFragmentId": 16
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 25,
+      "geometry": {
+        "coordinates": [
+          [
+            5.0,
+            10.0
+          ],
+          [
+            5.0,
+            9.0000271
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "accessible": true,
+        "direction": "FORWARD",
+        "roadSectionFragmentId": 15
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 26,
+      "geometry": {
+        "coordinates": [
+          [
+            5.0,
+            9.0000271
+          ],
+          [
+            5.0,
+            10.0
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "accessible": true,
+        "direction": "BACKWARD",
+        "roadSectionFragmentId": 15
       },
       "type": "Feature"
     }
