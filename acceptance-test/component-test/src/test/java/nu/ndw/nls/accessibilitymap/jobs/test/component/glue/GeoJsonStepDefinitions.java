@@ -6,7 +6,7 @@ import io.cucumber.java.en.Then;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
-import nu.ndw.nls.springboot.test.util.file.FileService;
+import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 
 @RequiredArgsConstructor
 public class GeoJsonStepDefinitions {

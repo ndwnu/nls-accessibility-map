@@ -31,10 +31,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityRea
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import nu.ndw.nls.springboot.core.time.ClockService;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.stereotype.Component;
 
