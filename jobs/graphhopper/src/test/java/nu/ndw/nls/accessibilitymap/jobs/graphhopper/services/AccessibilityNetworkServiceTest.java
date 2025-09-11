@@ -19,12 +19,12 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkS
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
+import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.apache.commons.io.FileUtils;

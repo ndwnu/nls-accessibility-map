@@ -31,7 +31,7 @@
     <nls-springboot.logging.version>8.4.10</nls-springboot.logging.version>
     <nls-springboot.component-test.version>11.2.1</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>8.4.14</nls-springboot.monitoring.version>
-    <nls-springboot.test.version>9.0.0-SNAPSHOT</nls-springboot.test.version>
+    <nls-springboot.test.version>9.0.0</nls-springboot.test.version>
     <nls-springboot.gatling-test.version>1.1.0</nls-springboot.gatling-test.version>
     <gatling.version>3.11.5</gatling.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -54,7 +54,7 @@
     <nls-routing-map-matcher.version>18.0.7</nls-routing-map-matcher.version>
     <nls-geometry.version>5.0.11</nls-geometry.version>
     <nls-geojson-geometry.version>1.4.28</nls-geojson-geometry.version>
-    <nls-springboot.test.graph.version>0.0.1-SNAPSHOT</nls-springboot.test.graph.version>
+    <nls-springboot.test.graph.version>1.0.0-SNAPSHOT</nls-springboot.test.graph.version>
     <jackson-geojson.version>1.14</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>4.1.1</json-unit.version>

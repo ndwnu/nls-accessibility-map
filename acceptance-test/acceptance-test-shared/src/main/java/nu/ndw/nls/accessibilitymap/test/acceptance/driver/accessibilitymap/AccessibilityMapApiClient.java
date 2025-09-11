@@ -14,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapRe
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.springboot.test.await.services.AwaitService;
@@ -26,7 +27,6 @@ import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Feature;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.FeatureCollection;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.PointGeometry;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.PointNodeGraphProperties;
-import nu.ndw.nls.springboot.test.util.file.FileService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
