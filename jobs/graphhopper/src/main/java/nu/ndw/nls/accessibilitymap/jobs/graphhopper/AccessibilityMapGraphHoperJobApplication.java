@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Import;
 
 @Import({MessagingConfig.class})
 @SpringBootApplication
-public class AccessibilityMapGraphhoperJobApplication {
+public class AccessibilityMapGraphHoperJobApplication {
 
     public static void main(String[] args) {
-        System.exit(SpringApplication.exit(SpringApplication.run(AccessibilityMapGraphhoperJobApplication.class, args)));
+        System.exit(SpringApplication.exit(SpringApplication.run(AccessibilityMapGraphHoperJobApplication.class, args)));
     }
 }
