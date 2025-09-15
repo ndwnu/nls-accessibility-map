@@ -25,6 +25,8 @@ import nu.ndw.nls.springboot.test.graph.exporter.graphhopper.service.dto.GraphHo
 import nu.ndw.nls.springboot.test.graph.exporter.graphhopper.service.geojson.GraphHopperGeoJsonNetworkExporter;
 import nu.ndw.nls.springboot.test.graph.exporter.graphhopper.service.geojson.dto.GraphHopperGeoJsonExporterSettings;
 import nu.ndw.nls.springboot.test.graph.service.GraphDataBuilder;
+import nu.ndw.nls.springboot.test.graph.service.GraphGeneratorService;
+import nu.ndw.nls.springboot.test.graph.service.dto.GenerateSpecification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,6 +49,8 @@ public class GraphHopperDriver {
     private final GraphHopperGeoJsonNetworkExporter graphHopperGeoJsonNetworkExporter;
 
     private final GraphDataBuilder graphDataBuilder = new GraphDataBuilder();
+
+    private final GraphGeneratorService graphGeneratorService;
 
     @Getter
     private Graph lastBuiltGraph;
@@ -111,5 +115,10 @@ public class GraphHopperDriver {
         } catch (IOException exception) {
             fail(exception);
         }
+    }
+
+    public Graph generate(GenerateSpecification generateSpecification) {
+        lastBuiltGraph = graphGeneratorService.generate(generateSpecification);
+        return lastBuiltGraph;
     }
 }

@@ -97,7 +97,7 @@ public class AccessibilityMapApiStepDefinitions {
                 ? "[]"
                 : testDataProvider.readFromFile("api/InaccessibleReasons", reasonsFile + ".json");
 
-        assertThatJson(response.body())
+        assertThatJson(response.bodyAsString())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .inPath("$.matchedRoadSection")
                 .isEqualTo("""
