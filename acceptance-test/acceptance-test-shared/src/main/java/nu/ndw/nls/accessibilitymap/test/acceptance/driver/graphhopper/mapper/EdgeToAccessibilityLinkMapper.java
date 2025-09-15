@@ -1,8 +1,11 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.mapper;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EdgeToAccessibilityLinkMapper {
 
     public static AccessibilityLink buildFromEdge(nu.ndw.nls.springboot.test.graph.dto.Edge edge) {

@@ -11,6 +11,7 @@ import io.gatling.javaapi.core.PopulationBuilder;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,6 +32,9 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.state.StateManager;
+import nu.ndw.nls.springboot.test.graph.dto.Edge;
+import nu.ndw.nls.springboot.test.graph.dto.Graph;
+import nu.ndw.nls.springboot.test.graph.service.dto.GenerateSpecification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -51,13 +55,15 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private final AccessibilityMapApiClient accessibilityMapApiClient;
 
-    public RoadSectionsSimulation(
-            StateManager stateManager,
+    private Graph graph;
+
+    public RoadSectionsSimulation(StateManager stateManager,
             AccessibilityMapApiClient accessibilityMapApiClient,
             GraphHopperTestDataService graphHopperTestDataService,
             TrafficSignDriver trafficSignDriver,
             TrafficSignTestDataService trafficSignTestDataService,
-            TrafficSignJobDriver trafficSignJobDriver) {
+            TrafficSignJobDriver trafficSignJobDriver
+    ) {
 
         super(RoadSectionsSimulationConfiguration.class);
 
@@ -87,32 +93,39 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     }
 
     private void setupGraphHopperNetwork() {
+        RoadSectionsSimulationConfiguration roadSectionsSimulationConfiguration = this.getSimulationSpecificConfiguration();
+        graph = graphHopperTestDataService.generate(GenerateSpecification.builder()
+                .numberOfNodes(roadSectionsSimulationConfiguration.numberOfGraphNodes())
+                .build());
 
-        graphHopperTestDataService.buildSimpleNetwork().buildNetwork();
         graphhopperDataIsReloaded();
     }
 
     private void setupTrafficSigns() {
+        Random randomGenerator = new Random(Long.MAX_VALUE);
 
         RoadSectionsSimulationConfiguration roadSectionsSimulationConfiguration = this.getSimulationSpecificConfiguration();
         List<TrafficSignGeoJsonDto> trafficSigns = Stream.generate(
-                        () -> trafficSignTestDataService.createTrafficSignGeoJsonDto(TrafficSign.builder()
-                                .id(UUID.randomUUID().toString())
-                                .startNodeId(5)
-                                .endNodeId(11)
-                                .fraction(0.5)
-                                .rvvCode(TrafficSignType.C12.getRvvCode())
-                                .directionType(DirectionType.FORTH)
-                                .build()))
+                        () -> {
+                            Edge edge = graph.getEdges().get(randomGenerator.nextInt(0, graph.getEdges().size()));
+                            return trafficSignTestDataService.createTrafficSignGeoJsonDto(TrafficSign.builder()
+                                    .id(UUID.randomUUID().toString())
+                                    .startNodeId(edge.getFromNode().getId().intValue())
+                                    .endNodeId(edge.getToNode().getId().intValue())
+                                    .fraction(0.5)
+                                    .rvvCode(TrafficSignType.C12.getRvvCode())
+                                    .directionType(DirectionType.FORTH)
+                                    .build());
+                        })
                 .limit(roadSectionsSimulationConfiguration.numberOfTrafficSigns())
                 .toList();
+
         trafficSignDriver.stubTrafficSignRequest(trafficSigns);
         trafficSignJobDriver.runTrafficSignUpdateCacheJob();
         trafficSignsDataIsReloaded();
     }
 
     public List<PopulationBuilder> getSimulations() {
-
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .municipalityId("GM0001")
                 .endLatitude(3D)
@@ -141,7 +154,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     }
 
     private HttpProtocolBuilder getHttpProtocol() {
-
         return http
                 .baseUrl(accessibilityMapApiClient.getEndpoint())
                 .acceptHeader(MediaType.APPLICATION_JSON_VALUE)
@@ -149,7 +161,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     }
 
     private ChainBuilder InaccessibleRoadSectionsJson(AccessibilityRequest accessibilityRequest) {
-
         Map<String, String> queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
 
         return exec(http("InaccessibleRoadSections-Json")
@@ -164,7 +175,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     }
 
     private ChainBuilder InaccessibleRoadSectionsGeoJson(AccessibilityRequest accessibilityRequest) {
-
         Map<String, String> queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
 
         return exec(http("InaccessibleRoadSections-GeoJson")
@@ -179,7 +189,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     }
 
     private void graphhopperDataIsReloaded() {
-
         Response<Void, Void> response = accessibilityMapApiClient.reloadGraphHopper();
         assertThat(response.containsError())
                 .withFailMessage("Reloading graphhopper failed. %s", response.error())
@@ -187,7 +196,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     }
 
     private void trafficSignsDataIsReloaded() {
-
         Response<Void, Void> response = accessibilityMapApiClient.reloadTrafficSigns();
         assertThat(response.containsError())
                 .withFailMessage("Reloading traffic signs failed. %s", response.error())
