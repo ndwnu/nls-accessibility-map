@@ -32,12 +32,16 @@ public class TrafficSignCacheUpdater {
     protected Thread fileWatcherThread;
 
     /**
-     * When the application starts it will start to watch for file changes of the current active traffic sign cache. Normally we would use a
-     * File watcher but as it turns out that is not reliable on azure.
+     * When the application starts, it will start to watch for file changes of the current active traffic sign cache. Normally we would use
+     * a File watcher, but as it turns out, that is not reliable on azure.
      */
     @EventListener(ApplicationStartedEvent.class)
     @SuppressWarnings({"java:S1166", "java:S2142", "java:S134"})
     public void watchFileChanges() throws IOException {
+        if (!trafficSignCacheConfiguration.isWatchForUpdates()) {
+            return;
+        }
+
         Files.createDirectories(trafficSignCacheConfiguration.getFolder());
 
         fileWatcherThread = new Thread(() -> {

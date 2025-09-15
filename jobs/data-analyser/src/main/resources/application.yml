@@ -77,8 +77,7 @@ nu:
           cache:
             folder: "trafficsigns"
             file-name-active-version: "active"
-            filewatcher:
-              enabled: false
+            watch-for-updates: false
 
 management:
   observations:

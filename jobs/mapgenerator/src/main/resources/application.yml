@@ -65,6 +65,7 @@ nu:
           cache:
             folder: "trafficsigns"
             file-name-active-version: "active"
+            watch-for-updates: false
 
       springboot:
         messaging:
