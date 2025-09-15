@@ -40,13 +40,13 @@ public class GraphHopperDriver {
 
     private final GraphHopperNetworkService graphHopperNetworkService;
 
-    private final GraphDataBuilder graphDataBuilder;
-
     private final GraphHopperExporter graphHopperExporter;
 
     private final NwbDatabaseExporter nwbDatabaseExporter;
 
     private final GraphHopperGeoJsonNetworkExporter graphHopperGeoJsonNetworkExporter;
+
+    private final GraphDataBuilder graphDataBuilder = new GraphDataBuilder();
 
     @Getter
     private Graph lastBuiltGraph;

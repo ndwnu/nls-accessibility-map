@@ -83,7 +83,7 @@ class TrafficSignBuilderTest {
     @BeforeEach
     void setUp() {
 
-        idSequenceSupplier = new AtomicInteger();
+        idSequenceSupplier = new AtomicInteger(1);
         trafficSignGeoJsonDto = TrafficSignGeoJsonDto.builder()
                 .id(UUID.randomUUID())
                 .properties(TrafficSignPropertiesDto.builder()
