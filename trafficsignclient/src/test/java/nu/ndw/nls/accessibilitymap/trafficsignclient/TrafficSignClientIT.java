@@ -23,18 +23,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
+import org.wiremock.spring.EnableWireMock;
 
 @Slf4j
 @SpringBootTest(classes = TrafficSignClientIT.ConfigureFeignTests.class)
 @EnableConfigurationProperties
 @EnableAutoConfiguration
-@AutoConfigureWireMock(port = 0)
+@EnableWireMock
 @TestPropertySource(properties = {
         "nu..ndw.nls.accessibilitymap.trafficsignclient.api.url: http://localhost:${wiremock.server.port}/api/rest/static-road-data/traffic-signs/v4",
         "nu..ndw.nls.accessibilitymap.trafficsignclient.api.town-codes: GM0307"

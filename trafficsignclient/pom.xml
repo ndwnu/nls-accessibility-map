@@ -39,6 +39,10 @@
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>component-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>test</artifactId>
     </dependency>
     <dependency>
@@ -54,11 +58,7 @@
       <artifactId>reactor-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-wiremock</artifactId>
-      <scope>test</scope>
-    </dependency>
+
   </dependencies>
   <build>
     <defaultGoal>clean verify</defaultGoal>
