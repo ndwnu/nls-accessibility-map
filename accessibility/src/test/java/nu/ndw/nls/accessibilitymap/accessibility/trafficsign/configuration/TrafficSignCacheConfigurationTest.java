@@ -29,6 +29,7 @@ class TrafficSignCacheConfigurationTest extends ValidationTest {
     void initValue() {
         trafficSignCacheConfiguration = new TrafficSignCacheConfiguration();
         assertThat(trafficSignCacheConfiguration.isFailOnNoDataOnStartup()).isTrue();
+        assertThat(trafficSignCacheConfiguration.isWatchForUpdates()).isTrue();
     }
 
     @Test
