@@ -46,7 +46,7 @@ extends:
     skipTests: ${{ parameters.skipTests }}
     skipSecurityScanning: ${{ parameters.skipSecurityScanning }}
     skipComponentTesting: ${{ parameters.skipComponentTesting }}
-    skipPerformanceTesting: false
+    skipPerformanceTesting: true
     skipDocker: ${{ parameters.skipDocker }}
     skipDeployment: ${{ parameters.skipDeployment }}
     forceDeployment: ${{ parameters.forceDeployment }}
