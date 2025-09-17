@@ -43,7 +43,11 @@
       <artifactId>component-test</artifactId>
       <scope>compile</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.wiremock.integrations</groupId>
+      <artifactId>wiremock-spring-boot</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>test</artifactId>
