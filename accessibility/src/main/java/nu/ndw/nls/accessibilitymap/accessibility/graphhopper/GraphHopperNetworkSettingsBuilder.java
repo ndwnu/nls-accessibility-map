@@ -25,9 +25,9 @@ public class GraphHopperNetworkSettingsBuilder {
         return graphHopperProperties.getLatestPath();
     }
 
-    public Path getMetaDataPath() {
+    public Path getMetadataPath() {
 
-        return graphHopperProperties.getMetaDataPath();
+        return graphHopperProperties.getMetadataPath();
     }
 
     public RoutingNetworkSettings<AccessibilityLink> defaultNetworkSettings() {

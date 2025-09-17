@@ -27,7 +27,7 @@ class GraphHopperNetworkSettingsBuilderTest {
 
     private static final Path GRAPHHOPPER_FULL_PATH = Path.of("base_path", NETWORK_NAME);
 
-    private static final Path EXPECTED_META_DATA_PATH = Path.of("base_path/accessibility_latest/accessibility_meta_data.json");
+    private static final Path EXPECTED_METADATA_PATH = Path.of("base_path/accessibility_latest/accessibility_metadata.json");
 
     private GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder;
 
@@ -64,10 +64,10 @@ class GraphHopperNetworkSettingsBuilderTest {
     }
 
     @Test
-    void getMetaDataPath() {
+    void getMetadataPath() {
 
-        when(graphHopperProperties.getMetaDataPath()).thenReturn(EXPECTED_META_DATA_PATH);
-        assertThat(graphHopperNetworkSettingsBuilder.getMetaDataPath()).isEqualTo(EXPECTED_META_DATA_PATH);
+        when(graphHopperProperties.getMetadataPath()).thenReturn(EXPECTED_METADATA_PATH);
+        assertThat(graphHopperNetworkSettingsBuilder.getMetadataPath()).isEqualTo(EXPECTED_METADATA_PATH);
     }
 
     @Test

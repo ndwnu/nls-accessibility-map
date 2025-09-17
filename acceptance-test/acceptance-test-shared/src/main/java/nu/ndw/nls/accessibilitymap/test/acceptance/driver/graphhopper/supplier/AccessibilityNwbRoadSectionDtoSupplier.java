@@ -11,7 +11,7 @@ public class AccessibilityNwbRoadSectionDtoSupplier extends NwbRoadSectionDtoSup
     @Override
     public NwbRoadSectionDto create(Edge edge, NwbVersionDto nwbVersionDto) {
 
-        var nwbRoadSectionDto = super.create(edge, nwbVersionDto);
+        NwbRoadSectionDto nwbRoadSectionDto = super.create(edge, nwbVersionDto);
 
         return nwbRoadSectionDto
                 .withMunicipalityId(1)

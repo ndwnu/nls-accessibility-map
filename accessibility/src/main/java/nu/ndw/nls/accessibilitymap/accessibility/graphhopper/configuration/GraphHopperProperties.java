@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @RequiredArgsConstructor
 public class GraphHopperProperties {
 
-    private static final String ACCESSIBILITY_META_DATA_JSON = "accessibility_meta_data.json";
+    private static final String ACCESSIBILITY_METADATA_JSON = "accessibility_metadata.json";
 
     Path dir;
 
@@ -22,7 +22,7 @@ public class GraphHopperProperties {
         return getDir().resolve(getNetworkName());
     }
 
-    public Path getMetaDataPath() {
-        return getLatestPath().resolve(ACCESSIBILITY_META_DATA_JSON);
+    public Path getMetadataPath() {
+        return getLatestPath().resolve(ACCESSIBILITY_METADATA_JSON);
     }
 }

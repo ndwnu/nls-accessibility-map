@@ -15,6 +15,6 @@ import org.springframework.context.annotation.Import;
 @Import({GraphhopperWriteConfiguration.class, NwbConfiguration.class, TrafficSignClientConfiguration.class,
         NlsSpringBootCoreAutoConfiguration.class, MessagingConfig.class, DatadogConfiguration.class})
 @MessagingRequiredConfiguration(receive = {}, publish = {NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED})
-public class AccessibilityMapGraphHoperJobConfiguration {
+public class AccessibilityMapGraphHopperJobConfiguration {
 
 }

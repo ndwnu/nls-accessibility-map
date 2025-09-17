@@ -15,7 +15,7 @@ import picocli.CommandLine;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AccessibilityMapGraphHoperJobCommandLineRunner implements CommandLineRunner, ExitCodeGenerator {
+public class AccessibilityMapGraphHopperJobCommandLineRunner implements CommandLineRunner, ExitCodeGenerator {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME
             .withZone(ZoneId.from(ZoneOffset.UTC));
