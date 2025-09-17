@@ -95,7 +95,7 @@ public class GraphHopperDriver {
                 .linkSupplier(EdgeToAccessibilityLinkMapper::buildFromEdge)
                 .networkFolderName(VERSION)
                 .profiles(List.of(CAR_PROFILE))
-                .metadataFileName("accessibility_meta_data.json")
+                .metadataFileName("accessibility_metadata.json")
                 .build();
         try {
             graphHopperExporter.export(lastBuiltGraph, graphHopperSettings);
