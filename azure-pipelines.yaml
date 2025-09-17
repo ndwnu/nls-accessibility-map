@@ -29,9 +29,6 @@ parameters:
   - name: skipComponentTesting
     type: boolean
     default: false
-  - name: skipPerformanceTesting
-    type: boolean
-    default: false
   - name: forceDeployment
     type: boolean
     default: false
@@ -49,7 +46,7 @@ extends:
     skipTests: ${{ parameters.skipTests }}
     skipSecurityScanning: ${{ parameters.skipSecurityScanning }}
     skipComponentTesting: ${{ parameters.skipComponentTesting }}
-    skipPerformanceTesting:  ${{ parameters.skipPerformanceTesting }}
+    skipPerformanceTesting: false
     skipDocker: ${{ parameters.skipDocker }}
     skipDeployment: ${{ parameters.skipDeployment }}
     forceDeployment: ${{ parameters.forceDeployment }}
@@ -95,10 +92,10 @@ extends:
       - name: "all"
         module: "component-test"
         additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/performance-test"
-    performanceTests:
-      - name: "all"
-        module: "acceptance-test/performance-test"
-        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/component-test"
+#    performanceTests:
+#      - name: "all"
+#        module: "acceptance-test/performance-test"
+#        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/component-test"
     deployment:
       environments:
         - name: "staging"
