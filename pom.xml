@@ -60,6 +60,7 @@
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
+    <wiremock-spring-boot.version>3.10.6</wiremock-spring-boot.version>
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-24970 -->
     <netty.version>4.2.4.Final</netty.version>
@@ -321,6 +322,12 @@
         <groupId>io.gatling.highcharts</groupId>
         <artifactId>gatling-charts-highcharts</artifactId>
         <version>${gatling.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.wiremock.integrations</groupId>
+        <artifactId>wiremock-spring-boot</artifactId>
+        <version>${wiremock-spring-boot.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
