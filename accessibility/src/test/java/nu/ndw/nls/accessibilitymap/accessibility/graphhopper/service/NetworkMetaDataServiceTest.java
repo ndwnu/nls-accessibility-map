@@ -36,13 +36,13 @@ class NetworkMetaDataServiceTest {
 
     @Test
     void loadMetaData() {
-        when(graphHopperNetworkSettingsBuilder.getMetaDataPath()).thenReturn(Path.of(EXPECT_FILE_PATH_STRING));
+        when(graphHopperNetworkSettingsBuilder.getMetadataPath()).thenReturn(Path.of(EXPECT_FILE_PATH_STRING));
         assertThat(networkMetaDataService.loadMetaData()).isEqualTo(new GraphhopperMetaData(20241231));
     }
 
     @Test
     void loadMetaData_fail_ioexception() {
-        when(graphHopperNetworkSettingsBuilder.getMetaDataPath()).thenReturn(Path.of(FILE_DOES_NOT_EXIST));
+        when(graphHopperNetworkSettingsBuilder.getMetadataPath()).thenReturn(Path.of(FILE_DOES_NOT_EXIST));
 
         assertThat(catchThrowable(() -> networkMetaDataService.loadMetaData()))
                 .hasMessage("Could not load meta-data from file path: file-does-not-exist")
@@ -53,7 +53,7 @@ class NetworkMetaDataServiceTest {
     @SneakyThrows
     void saveMetaData() {
         Path tempFile = Files.createTempFile("meta-data", ".json");
-        when(graphHopperNetworkSettingsBuilder.getMetaDataPath()).thenReturn(tempFile);
+        when(graphHopperNetworkSettingsBuilder.getMetadataPath()).thenReturn(tempFile);
 
         networkMetaDataService.saveMetaData(new GraphhopperMetaData(20241231));
         assertThat(Files.exists(tempFile)).isTrue();
@@ -65,7 +65,7 @@ class NetworkMetaDataServiceTest {
     void saveMetaData_fail_ioexception() {
 
         Path tempDirectory = Files.createTempDirectory(TMP_DIRECTORY_IS_NOT_A_WRITEABLE_FILE);
-        when(graphHopperNetworkSettingsBuilder.getMetaDataPath())
+        when(graphHopperNetworkSettingsBuilder.getMetadataPath())
                 .thenReturn(tempDirectory);
 
         assertThat(catchThrowable(() -> networkMetaDataService.saveMetaData(new GraphhopperMetaData(20241231))))

@@ -22,8 +22,10 @@ public class PointMatchService {
     private final MapMatcherFactory<SinglePointMapMatcher> singlePointMapMatcherMapMatcherFactory;
 
     public Optional<CandidateMatch> match(NetworkGraphHopper networkGraphHopper, Point point) {
-        
-        var singlePointMapMatcher = singlePointMapMatcherMapMatcherFactory.createMapMatcher(networkGraphHopper, CAR_PROFILE.getName());
+
+        SinglePointMapMatcher singlePointMapMatcher = singlePointMapMatcherMapMatcherFactory.createMapMatcher(
+                networkGraphHopper,
+                CAR_PROFILE.getName());
 
         SinglePointMatch singlePointMatch = singlePointMapMatcher.match(SinglePointLocation.builder()
                 .point(point)

@@ -63,6 +63,7 @@ nu:
                   ramp-up-time: "PT5S"
                   concurrent-users: 50
                   simulation-specific-configuration:
+                    numberOfGraphNodes: 1000
                     numberOfTrafficSigns: 1800
                 assertions:
                   scenario-duration-95th-percentile: "PT0.75S"
@@ -87,3 +88,7 @@ nu:
               traffic-sign:
                 location-on-disk: "../../.tmp/trafficsigns"
                 file-name-active-version: "active"
+
+logging:
+  level:
+    nu.ndw.nls.springboot.test.graph.route: WARN

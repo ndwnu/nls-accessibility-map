@@ -7,6 +7,7 @@ import io.cucumber.java.en.When;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
+import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class HttpStepDefinitions {
     @Then("I expect a {int} response with body {word}")
     public void expectBody(int expectedStatusCode, String bodyFileLocation) {
 
-        var response = accessibilityMapApiClient.getLastResponseForGenericRequest();
+        Response<Void, String> response = accessibilityMapApiClient.getLastResponseForGenericRequest();
 
         assertThat(response.status().value()).isEqualTo(expectedStatusCode);
         assertThat(response.body()).hasToString(testDataProvider.readFromFile(bodyFileLocation));

@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.LineStringGeometry;
@@ -34,7 +34,7 @@ public class FeatureBuilder {
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     public List<Feature> createTrafficSigns(DirectionalSegment directionalSegment,
-            LongSequenceSupplier idSequenceSupplier,
+            AtomicLong idSequenceSupplier,
             GenerateConfiguration generateConfiguration) {
         List<Feature> features = new ArrayList<>();
         addTrafficSigns(directionalSegment, idSequenceSupplier, generateConfiguration, features);
@@ -44,7 +44,7 @@ public class FeatureBuilder {
 
     public List<Feature> createLineStringsAndTrafficSigns(
             DirectionalSegment directionalSegment,
-            LongSequenceSupplier idSequenceSupplier,
+            AtomicLong idSequenceSupplier,
             GenerateConfiguration generateConfiguration) {
 
         List<Feature> features = new ArrayList<>();
@@ -57,12 +57,12 @@ public class FeatureBuilder {
 
     public Feature createPolygon(
             Geometry polygonGeometry,
-            LongSequenceSupplier idSequenceSupplier,
+            AtomicLong idSequenceSupplier,
             List<TrafficSign> relevantTrafficSigns,
             Set<Long> relevantRoadSectionIds) {
 
         return Feature.builder()
-                .id(idSequenceSupplier.next())
+                .id(idSequenceSupplier.getAndIncrement())
                 .geometry(PolygonGeometry.builder()
                         .coordinates(List.of(convertToListOfCoordinates(polygonGeometry.getCoordinates())))
                         .build())
@@ -82,7 +82,7 @@ public class FeatureBuilder {
 
     private void addTrafficSigns(
             DirectionalSegment directionalSegment,
-            LongSequenceSupplier idSequenceSupplier,
+            AtomicLong idSequenceSupplier,
             GenerateConfiguration generateConfiguration,
             List<Feature> features) {
 
@@ -105,7 +105,7 @@ public class FeatureBuilder {
 
     private void addRoadSections(
             DirectionalSegment directionalSegment,
-            LongSequenceSupplier idSequenceSupplier,
+            AtomicLong idSequenceSupplier,
             GenerateConfiguration generateConfiguration,
             List<Feature> features) {
 
@@ -136,14 +136,14 @@ public class FeatureBuilder {
     }
 
     private List<Feature> buildTrafficSignsAsPoint(
-            LongSequenceSupplier geoJsonIdSequenceSupplier,
+            AtomicLong geoJsonIdSequenceSupplier,
             List<TrafficSign> trafficSigns,
             DirectionalSegment directionalSegment) {
 
         LineStringJson directionSegmentLineStringJson = jtsLineStringJsonMapper.map(
                 directionalSegment.getLineString());
         return trafficSigns.stream().map(trafficSign -> Feature.builder()
-                .id(geoJsonIdSequenceSupplier.next())
+                .id(geoJsonIdSequenceSupplier.getAndIncrement())
                 .geometry(PointGeometry
                         .builder()
                         .coordinates(directionSegmentLineStringJson.getCoordinates().getFirst())
@@ -153,13 +153,13 @@ public class FeatureBuilder {
     }
 
     private List<Feature> buildTrafficSignsAsLineString(
-            LongSequenceSupplier geoJsonIdSequenceSupplier,
+            AtomicLong geoJsonIdSequenceSupplier,
             List<TrafficSign> trafficSigns,
             DirectionalSegment directionalSegment,
             int trafficSignLineStringDistanceInMeters) {
         return trafficSigns.stream()
                 .map(trafficSign -> Feature.builder()
-                        .id(geoJsonIdSequenceSupplier.next())
+                        .id(geoJsonIdSequenceSupplier.getAndIncrement())
                         .geometry(LineStringGeometry
                                 .builder()
                                 .coordinates(jtsLineStringJsonMapper.map(
@@ -193,11 +193,11 @@ public class FeatureBuilder {
 
     private Feature buildRoadSection(
             DirectionalSegment directionalSegment,
-            LongSequenceSupplier geoJsonIdSequenceSupplier,
+            AtomicLong geoJsonIdSequenceSupplier,
             boolean overrideAccessibilityAsAccessible) {
 
         return Feature.builder()
-                .id(geoJsonIdSequenceSupplier.next())
+                .id(geoJsonIdSequenceSupplier.getAndIncrement())
                 .geometry(LineStringGeometry
                         .builder()
                         .coordinates(jtsLineStringJsonMapper.map(directionalSegment.getLineString()).getCoordinates())

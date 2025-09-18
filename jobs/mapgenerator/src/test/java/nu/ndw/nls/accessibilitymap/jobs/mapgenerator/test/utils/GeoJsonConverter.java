@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.FeatureCollection;
@@ -30,15 +30,15 @@ public class GeoJsonConverter {
 
         return geoJsonObjectMapper.writeValueAsString(
                 FeatureCollection.builder()
-                        .features(createFeatures(multiPolygon, new LongSequenceSupplier(), roadSectionFragments))
+                        .features(createFeatures(multiPolygon, roadSectionFragments))
                         .build());
     }
 
     private static List<Feature> createFeatures(
             MultiPolygon multiPolygon,
-            LongSequenceSupplier idSequenceSupplier,
             List<RoadSectionFragment> allRelevantRoadSectionFragments) {
 
+        AtomicLong idSequenceSupplier = new AtomicLong(1);
         FeatureBuilder featureBuilder = new FeatureBuilder(null, null);
 
         return IntStream.range(0, multiPolygon.getNumGeometries())

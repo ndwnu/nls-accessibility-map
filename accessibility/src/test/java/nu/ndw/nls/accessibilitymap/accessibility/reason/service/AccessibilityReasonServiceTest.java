@@ -163,7 +163,9 @@ class AccessibilityReasonServiceTest {
         when(accessibilityReasonsMapper.mapToAoAccessibilityReasons(trafficSigns)).thenReturn(accessibilityReasons);
         when(pathsToReasonsMapper.mapRoutesToReasons(routes, accessibilityReasons, encodingManager)).thenReturn(accessibilityReasonsList);
 
-        var result = accessibilityReasonService.calculateReasons(accessibilityRequest, networkData, trafficSigns);
+        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest,
+                networkData,
+                trafficSigns);
 
         assertThat(result).isEqualTo(accessibilityReasonsList);
     }
@@ -206,7 +208,9 @@ class AccessibilityReasonServiceTest {
         when(routeRoutingAlgorithm.calcPaths(1, 2)).thenReturn(routes);
         when(path.isFound()).thenReturn(false);
 
-        var result = accessibilityReasonService.calculateReasons(accessibilityRequest, networkData, trafficSigns);
+        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest,
+                networkData,
+                trafficSigns);
 
         assertThat(result).isEmpty();
         loggerExtension.containsLog(Level.WARN, "No routes found for request: %s".formatted(accessibilityRequest));

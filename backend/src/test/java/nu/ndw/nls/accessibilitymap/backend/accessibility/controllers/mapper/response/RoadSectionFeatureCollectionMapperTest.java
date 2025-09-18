@@ -40,7 +40,10 @@ class RoadSectionFeatureCollectionMapperTest {
         when(roadSectionFeatureMapper.map(roadSection, true, 2L, true))
                 .thenReturn(List.of(roadSectionFeatureJson));
 
-        var roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(List.of(roadSection), true, 2L, true);
+        RoadSectionFeatureCollectionJson roadSectionFeatureCollection = roadSectionFeatureCollectionMapper.map(List.of(roadSection),
+                true,
+                2L,
+                true);
 
         assertThat(roadSectionFeatureCollection).isEqualTo(
                 new RoadSectionFeatureCollectionJson()

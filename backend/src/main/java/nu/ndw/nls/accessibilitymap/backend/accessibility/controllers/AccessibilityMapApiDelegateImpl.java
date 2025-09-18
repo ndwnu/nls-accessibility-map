@@ -1,16 +1,15 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.request.AccessibilityRequestMapper;
@@ -28,6 +27,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -78,7 +78,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             Double longitude, EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> excludeEmissionZoneIds,
             List<EmissionZoneTypeJson> excludeEmissionZoneTypes) {
 
-        var accessibilityRequest = buildAndValidateAccessibilityRequest(
+        AccessibilityRequest accessibilityRequest = buildAndValidateAccessibilityRequest(
                 municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
                 vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
                 excludeEmissionZoneTypes, latitude, longitude);

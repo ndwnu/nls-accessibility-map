@@ -9,6 +9,7 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -31,10 +32,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityRea
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.time.ClockService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import nu.ndw.nls.springboot.core.time.ClockService;
 import org.locationtech.jts.geom.Geometry;
 import org.springframework.stereotype.Component;
 
@@ -68,7 +69,7 @@ public class AccessibilityService {
             NetworkGraphHopper networkGraphHopper,
             AccessibilityRequest accessibilityRequest) throws AccessibilityException {
 
-        var from = findSnap(
+        Optional<Snap> from = findSnap(
                 networkGraphHopper,
                 accessibilityRequest.startLocationLatitude(),
                 accessibilityRequest.startLocationLongitude());
@@ -80,29 +81,28 @@ public class AccessibilityService {
             ));
         }
 
-        var trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
-        var networkData = networkCacheDataService.getNetworkData(
+        List<TrafficSign> trafficSigns = trafficSignDataService.findAllBy(accessibilityRequest);
+        NetworkData networkData = networkCacheDataService.getNetworkData(
                 accessibilityRequest.municipalityId(),
                 from.get(),
                 accessibilityRequest.searchRadiusInMeters(),
                 trafficSigns,
                 networkGraphHopper);
 
-        var isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
+        IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
 
-        var startTimeCalculatingAccessibility = clockService.now();
-        var accessibleRoadsSectionsWithoutAppliedRestrictions = networkData.baseAccessibleRoads();
+        OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
+        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = networkData.baseAccessibleRoads();
 
-        var accessibleRoadSectionsWithAppliedRestrictions =
-                getRoadSections(
-                        accessibilityRequest,
-                        isochroneService,
-                        networkData.queryGraph(),
-                        from.get(),
-                        buildWeightingWithRestrictions(networkGraphHopper, networkData.edgeRestrictions().getBlockedEdges()));
+        Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions = getRoadSections(
+                accessibilityRequest,
+                isochroneService,
+                networkData.queryGraph(),
+                from.get(),
+                buildWeightingWithRestrictions(networkGraphHopper, networkData.edgeRestrictions().getBlockedEdges()));
 
         if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
-            var missingRoadSections = missingRoadSectionProvider.get(
+            Collection<RoadSection> missingRoadSections = missingRoadSectionProvider.get(
                     accessibilityRequest.municipalityId(),
                     accessibleRoadsSectionsWithoutAppliedRestrictions,
                     false);
@@ -111,7 +111,7 @@ public class AccessibilityService {
             accessibleRoadSectionsWithAppliedRestrictions.addAll(missingRoadSections);
         }
 
-        var accessibility = buildAccessibility(
+        Accessibility accessibility = buildAccessibility(
                 accessibilityRequest,
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                 accessibleRoadSectionsWithAppliedRestrictions,
@@ -129,16 +129,16 @@ public class AccessibilityService {
             NetworkData networkData,
             List<TrafficSign> trafficSigns) {
 
-        var combinedRestrictions = roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+        Collection<RoadSection> combinedRestrictions = roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                 accessibleRoadSectionsWithAppliedRestrictions);
 
-        var toRoadSection = findDestinationRoadSection(
+        Optional<RoadSection> toRoadSection = findDestinationRoadSection(
                 accessibilityRequest,
                 networkData.networkGraphHopper(),
                 combinedRestrictions);
 
-        var reasons = calculateReasons(accessibilityRequest, networkData, toRoadSection, trafficSigns);
+        List<List<AccessibilityReason>> reasons = calculateReasons(accessibilityRequest, networkData, toRoadSection, trafficSigns);
 
         return Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
@@ -182,7 +182,7 @@ public class AccessibilityService {
             return Optional.empty();
         }
 
-        var destinationSnap = findSnap(
+        Optional<Snap> destinationSnap = findSnap(
                 networkGraphHopper,
                 accessibilityRequest.endLocationLatitude(),
                 accessibilityRequest.endLocationLongitude());
@@ -195,7 +195,7 @@ public class AccessibilityService {
             return Optional.empty();
         }
 
-        var roadSectionId = destinationSnap.get()
+        int roadSectionId = destinationSnap.get()
                 .getClosestEdge().get(networkGraphHopper.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
         return combinedRoadSections.stream()
                 .filter(roadSection -> roadSection.getId() == roadSectionId)

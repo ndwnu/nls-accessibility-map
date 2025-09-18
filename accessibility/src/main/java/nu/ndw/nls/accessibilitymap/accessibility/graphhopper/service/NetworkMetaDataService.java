@@ -17,7 +17,7 @@ public class NetworkMetaDataService {
     private final GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder;
 
     public GraphhopperMetaData loadMetaData() {
-        Path latestPath = graphHopperNetworkSettingsBuilder.getMetaDataPath();
+        Path latestPath = graphHopperNetworkSettingsBuilder.getMetadataPath();
         try {
             return objectMapper.readValue(latestPath.toFile(), GraphhopperMetaData.class);
         } catch (IOException e) {
@@ -26,7 +26,7 @@ public class NetworkMetaDataService {
     }
 
     public void saveMetaData(GraphhopperMetaData graphhopperMetaData) {
-        Path latestPath = graphHopperNetworkSettingsBuilder.getMetaDataPath();
+        Path latestPath = graphHopperNetworkSettingsBuilder.getMetadataPath();
         try {
             objectMapper.writeValue(latestPath.toFile(), graphhopperMetaData);
         } catch (IOException e) {

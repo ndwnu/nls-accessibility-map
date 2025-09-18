@@ -15,8 +15,8 @@ public class TransportTypeMapper {
 
     public Set<TransportType> map(VehicleType vehicleType, Set<VehicleCategory> vehicleCategories) {
 
-        var transportTypes = mapVehicleType(vehicleType);
-        var transportTypesFromCategories = map(vehicleCategories);
+        Set<TransportType> transportTypes = mapVehicleType(vehicleType);
+        Set<TransportType> transportTypesFromCategories = map(vehicleCategories);
 
         return Stream.concat(transportTypes.stream(), transportTypesFromCategories.stream()).collect(Collectors.toSet());
     }

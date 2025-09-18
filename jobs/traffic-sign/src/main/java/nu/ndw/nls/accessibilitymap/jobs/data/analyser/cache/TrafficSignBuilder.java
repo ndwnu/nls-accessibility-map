@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
@@ -11,7 +12,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapService;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
@@ -36,7 +36,7 @@ public class TrafficSignBuilder {
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
             LineString nwbRoadSectionGeometry,
             TrafficSignGeoJsonDto trafficSignGeoJsonDto,
-            IntegerSequenceSupplier integerSequenceSupplier) {
+            AtomicInteger idSequenceSupplier) {
 
         try {
             if (Objects.isNull(nwbRoadSectionGeometry)) {
@@ -53,7 +53,7 @@ public class TrafficSignBuilder {
 
             TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode());
             TrafficSign trafficSign = TrafficSign.builder()
-                    .id(integerSequenceSupplier.next())
+                    .id(idSequenceSupplier.getAndIncrement())
                     .externalId(trafficSignGeoJsonDto.getId().toString())
                     .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
                     .trafficSignType(type)
@@ -79,6 +79,7 @@ public class TrafficSignBuilder {
     }
 
     private static ZoneCodeType mapZoneCodeType(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
+
         if (Objects.isNull(trafficSignGeoJsonDto.getProperties().getZoneCode())) {
             return null;
         }
@@ -93,6 +94,7 @@ public class TrafficSignBuilder {
     }
 
     private static Direction createDirection(DirectionType drivingDirection) {
+
         return switch (drivingDirection) {
             case FORTH -> Direction.FORWARD;
             case BACK -> Direction.BACKWARD;
@@ -102,6 +104,7 @@ public class TrafficSignBuilder {
     }
 
     private static URI createUri(String value) {
+
         if (Objects.isNull(value)) {
             return null;
         }

@@ -39,9 +39,9 @@ class GraphHopperPropertiesTest {
     }
 
     @Test
-    void getMetaDataPath() {
+    void getMetadataPath() {
 
-        assertThat(graphHopperProperties.getMetaDataPath()).isEqualTo(
-                testDir.resolve("dir").resolve("network_name").resolve("accessibility_meta_data.json"));
+        assertThat(graphHopperProperties.getMetadataPath()).isEqualTo(
+                testDir.resolve("dir").resolve("network_name").resolve("accessibility_metadata.json"));
     }
 }

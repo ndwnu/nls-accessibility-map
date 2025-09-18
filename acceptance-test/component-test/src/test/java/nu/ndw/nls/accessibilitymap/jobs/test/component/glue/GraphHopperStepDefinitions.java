@@ -18,12 +18,13 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.RoadSe
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.repository.RoadSectionRepository;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperTestDataService;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.NetworkDataService;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.dto.Link;
+import nu.ndw.nls.geometry.crs.CrsTransformer;
+import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,7 +32,9 @@ public class GraphHopperStepDefinitions {
 
     private final GraphHopperDriver graphHopperDriver;
 
-    private final NetworkDataService networkDataService;
+    private final GeometryFactoryRijksdriehoek geometryFactoryRijksdriehoek;
+
+    private final CrsTransformer crsTransformer;
 
     private final RoadSectionRepository roadSectionRepository;
 
@@ -48,7 +51,7 @@ public class GraphHopperStepDefinitions {
     @Given("a simpel nwb network")
     public void prepareNwbDatabaseNetwork() {
 
-        graphHopperTestDataService.buildSimpleNetwork().buildNwbDatabaseNetwork();
+        graphHopperTestDataService.buildSimpleNetwork().buildNetwork();
     }
 
     @Given("NWB unroutable road sections")
@@ -60,7 +63,7 @@ public class GraphHopperStepDefinitions {
                     .junctionIdFrom(nwbRoadSection.junctionIdFrom())
                     .junctionIdTo(nwbRoadSection.junctionIdTo())
                     .roadOperatorType("Municipality")
-                    .geometry(networkDataService.createRijksdriehoekLineString(geometryFactoryWgs84.createLineString(
+                    .geometry(createRijksdriehoekLineString(geometryFactoryWgs84.createLineString(
                             new Coordinate[]{
                                     new Coordinate(50, 51),
                                     new Coordinate(51, 51)
@@ -88,15 +91,22 @@ public class GraphHopperStepDefinitions {
             }
         }
 
-        assertThat(networkDataService.getLinks().stream()
-                .map(Link::getAccessibilityLink)
-                .allMatch(link ->
-                        roadsDetected.contains(link.getFromNodeId() + "-" + link.getToNodeId())
-                                && roadsDetected.contains(link.getToNodeId() + "-" + link.getFromNodeId())))
+        assertThat(graphHopperDriver.getLastBuiltGraph().getEdges().stream()
+                .allMatch(edge ->
+                        roadsDetected.contains(edge.getFromNode().getId() + "-" + edge.getToNode().getId())
+                                && roadsDetected.contains(edge.getToNode().getId() + "-" + edge.getFromNode().getId())))
                 .withFailMessage("Not all roads were detected. Detected roads: %s".formatted(roadsDetected))
                 .isTrue();
         assertThat(network.getBaseGraph().getNodes()).isEqualTo(11);
     }
 
+    public LineString createRijksdriehoekLineString(LineString latLongLineString) {
 
+        return geometryFactoryRijksdriehoek.createLineString(
+                new Coordinate[]{
+                        crsTransformer.transformFromWgs84ToRdNew(latLongLineString).getCoordinates()[0],
+                        crsTransformer.transformFromWgs84ToRdNew(latLongLineString).getCoordinates()[1]
+                }
+        );
+    }
 }
