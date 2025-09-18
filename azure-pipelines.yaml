@@ -93,7 +93,7 @@ extends:
         push: true
     componentTests:
       - name: "all"
-        module: "component-test"
+        module: "acceptance-test/component-test"
         additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/performance-test"
 #    performanceTests:
 #      - name: "all"
