@@ -27,7 +27,7 @@ class GraphHopperNetworkSettingsBuilderTest {
 
     private static final Path GRAPHHOPPER_FULL_PATH = Path.of("base_path", NETWORK_NAME);
 
-    private static final Path EXPECTED_META_DATA_PATH = Path.of("base_path/accessibility_latest/accessibility_meta_data.json");
+    private static final Path EXPECTED_METADATA_PATH = Path.of("base_path/accessibility_latest/accessibility_metadata.json");
 
     private GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder;
 
@@ -64,10 +64,10 @@ class GraphHopperNetworkSettingsBuilderTest {
     }
 
     @Test
-    void getMetaDataPath() {
+    void getMetadataPath() {
 
-        when(graphHopperProperties.getMetaDataPath()).thenReturn(EXPECTED_META_DATA_PATH);
-        assertThat(graphHopperNetworkSettingsBuilder.getMetaDataPath()).isEqualTo(EXPECTED_META_DATA_PATH);
+        when(graphHopperProperties.getMetadataPath()).thenReturn(EXPECTED_METADATA_PATH);
+        assertThat(graphHopperNetworkSettingsBuilder.getMetadataPath()).isEqualTo(EXPECTED_METADATA_PATH);
     }
 
     @Test
@@ -76,7 +76,7 @@ class GraphHopperNetworkSettingsBuilderTest {
         when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
         when(graphHopperProperties.getNetworkName()).thenReturn(NETWORK_NAME);
 
-        var accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
+        RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
 
         assertEquals(RoutingNetworkSettings
                 .builder(AccessibilityLink.class)
@@ -94,7 +94,7 @@ class GraphHopperNetworkSettingsBuilderTest {
         when(graphHopperProperties.getNetworkName()).thenReturn(NETWORK_NAME);
         when(accessibilityLinks.iterator()).thenReturn(accessibilityLinksIterator);
 
-        var accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.networkSettingsWithData(
+        RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.networkSettingsWithData(
                 accessibilityLinks,
                 trafficSignData);
 

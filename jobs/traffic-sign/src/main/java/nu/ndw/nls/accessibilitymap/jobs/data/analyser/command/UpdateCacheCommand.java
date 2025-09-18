@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheReadWriter;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.IntegerSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.TrafficSignBuilder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
@@ -45,7 +45,7 @@ public class UpdateCacheCommand implements Callable<Integer> {
         try {
             log.info("Updating traffic signs");
 
-            IntegerSequenceSupplier idSupplier = new IntegerSequenceSupplier();
+            AtomicInteger idSupplier = new AtomicInteger();
 
             TrafficSigns trafficSigns = new TrafficSigns(
                     trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
@@ -71,6 +71,7 @@ public class UpdateCacheCommand implements Callable<Integer> {
     }
 
     private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
+
         if (Objects.isNull(trafficSignGeoJsonDto.getProperties().getRoadSectionId())) {
             return null;
         }

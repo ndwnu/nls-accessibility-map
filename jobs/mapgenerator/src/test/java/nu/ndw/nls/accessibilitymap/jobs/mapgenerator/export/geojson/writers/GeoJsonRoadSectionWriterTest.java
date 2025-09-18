@@ -23,6 +23,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -30,7 +31,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -108,7 +108,6 @@ class GeoJsonRoadSectionWriterTest {
                                 .build()
                 ))
                 .build();
-
     }
 
     @ParameterizedTest
@@ -255,7 +254,7 @@ class GeoJsonRoadSectionWriterTest {
 
         when(featureBuilder.createLineStringsAndTrafficSigns(
                 eq(directionalSegmentForward1),
-                any(LongSequenceSupplier.class),
+                any(AtomicLong.class),
                 eq(generateConfiguration))
         ).thenReturn(
                 simpleFeatures
@@ -293,6 +292,7 @@ class GeoJsonRoadSectionWriterTest {
 
     @Test
     void isEnabled() {
+
         GeoJsonObjectMapperFactory geoJsonObjectMapperFactory = mock(GeoJsonObjectMapperFactory.class);
         GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
                 fileService,
@@ -304,6 +304,7 @@ class GeoJsonRoadSectionWriterTest {
     }
 
     private ExportProperties buildExportProperties(boolean includeOnlyTimeWindowedSigns) {
+
         return ExportProperties.builder()
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder()

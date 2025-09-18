@@ -374,52 +374,6 @@
         "coordinates": [
           [
             5.0,
-            10.0
-          ],
-          [
-            5.0,
-            9.0000271
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "nwbRoadSectionId": 13,
-        "accessible": true,
-        "direction": "FORWARD",
-        "roadSectionFragmentId": 13
-      },
-      "type": "Feature"
-    },
-    {
-      "id": 18,
-      "geometry": {
-        "coordinates": [
-          [
-            5.0,
-            9.0000271
-          ],
-          [
-            5.0,
-            10.0
-          ]
-        ],
-        "type": "LineString"
-      },
-      "properties": {
-        "nwbRoadSectionId": 13,
-        "accessible": true,
-        "direction": "BACKWARD",
-        "roadSectionFragmentId": 13
-      },
-      "type": "Feature"
-    },
-    {
-      "id": 19,
-      "geometry": {
-        "coordinates": [
-          [
-            5.0,
             9.0000271
           ],
           [
@@ -438,7 +392,7 @@
       "type": "Feature"
     },
     {
-      "id": 20,
+      "id": 18,
       "geometry": {
         "coordinates": [
           [
@@ -464,7 +418,7 @@
       "type": "Feature"
     },
     {
-      "id": 21,
+      "id": 19,
       "geometry": {
         "coordinates": [
           5.0,
@@ -484,7 +438,7 @@
       "type": "Feature"
     },
     {
-      "id": 22,
+      "id": 20,
       "geometry": {
         "coordinates": [
           [
@@ -503,6 +457,52 @@
         "accessible": false,
         "direction": "BACKWARD",
         "roadSectionFragmentId": 14
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 21,
+      "geometry": {
+        "coordinates": [
+          [
+            5.0,
+            10.0
+          ],
+          [
+            5.0,
+            9.0000271
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "accessible": true,
+        "direction": "FORWARD",
+        "roadSectionFragmentId": 13
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 22,
+      "geometry": {
+        "coordinates": [
+          [
+            5.0,
+            9.0000271
+          ],
+          [
+            5.0,
+            10.0
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "accessible": true,
+        "direction": "BACKWARD",
+        "roadSectionFragmentId": 13
       },
       "type": "Feature"
     }

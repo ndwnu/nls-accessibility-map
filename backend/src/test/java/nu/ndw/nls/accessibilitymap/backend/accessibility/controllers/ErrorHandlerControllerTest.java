@@ -60,7 +60,7 @@ class ErrorHandlerControllerTest {
 
     @Test
     void handleBadRequestException() {
-        var exception = new IncompleteArgumentsException("IncompleteArgumentsException");
+        IncompleteArgumentsException exception = new IncompleteArgumentsException("IncompleteArgumentsException");
         ResponseEntity<APIErrorJson> response = errorHandlerController.handleBadRequestException(
                 new IncompleteArgumentsException("IncompleteArgumentsException"));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -127,5 +127,4 @@ class ErrorHandlerControllerTest {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getMessage()).isEqualTo("'" + path + "' " + MESSAGE);
     }
-
 }

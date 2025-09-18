@@ -11,7 +11,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 @RequiredArgsConstructor
 public class GeoJsonStepDefinitions {
 
-    private final FileService testDataProvider;
+    private final FileService fileService;
 
     private final MapGenerationJobDriver mapGenerationJobDriver;
 
@@ -20,7 +20,7 @@ public class GeoJsonStepDefinitions {
     public void geojson() {
 
         String actualResult = mapGenerationJobDriver.getLastGeneratedGeoJson();
-        String expectedResult = testDataProvider.readTestDataFromFile("geojson", "EmptyFeatureCollection", "geojson");
+        String expectedResult = fileService.readTestDataFromFile("geojson", "EmptyFeatureCollection", "geojson");
 
         assertThatJson(actualResult).isEqualTo(expectedResult);
     }
@@ -31,7 +31,7 @@ public class GeoJsonStepDefinitions {
         String actualResult = (fileName.toLowerCase(Locale.US).endsWith("polygon")
                 ? mapGenerationJobDriver.getLastGeneratedPolygonGeoJson()
                 : mapGenerationJobDriver.getLastGeneratedGeoJson());
-        String expectedResult = testDataProvider.readTestDataFromFile("geojson", fileName, "geojson");
+        String expectedResult = fileService.readTestDataFromFile("geojson", fileName, "geojson");
 
         assertThatJson(actualResult).isEqualTo(expectedResult);
     }

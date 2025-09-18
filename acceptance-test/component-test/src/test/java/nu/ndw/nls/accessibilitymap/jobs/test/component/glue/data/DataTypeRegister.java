@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data;
 
+import static org.assertj.core.api.Fail.fail;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
@@ -11,6 +13,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
@@ -22,9 +25,10 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoad
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
+import nu.ndw.nls.springboot.test.graph.dto.Node;
 import org.apache.logging.log4j.util.Strings;
 
 @RequiredArgsConstructor
@@ -32,7 +36,7 @@ public class DataTypeRegister {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final NetworkDataService networkDataService;
+    private final GraphHopperDriver graphHopperDriver;
 
     @DataTableType
     public @Valid BlockedRoadSection mapBlockedRoadSection(Map<String, String> entry) {
@@ -77,11 +81,14 @@ public class DataTypeRegister {
                 .fuelTypes(entry.containsKey("fuelTypes") && Objects.nonNull(entry.get("fuelTypes"))
                         ? Arrays.stream(entry.get("fuelTypes").split(",")).map(FuelTypeJson::fromValue).toList()
                         : null)
-                .excludeRestrictionsWithEmissionZoneIds(entry.containsKey("excludeRestrictionsWithEmissionZoneIds") && Objects.nonNull(entry.get("excludeRestrictionsWithEmissionZoneIds"))
+                .excludeRestrictionsWithEmissionZoneIds(entry.containsKey("excludeRestrictionsWithEmissionZoneIds") && Objects.nonNull(
+                        entry.get("excludeRestrictionsWithEmissionZoneIds"))
                         ? Arrays.stream(entry.get("excludeRestrictionsWithEmissionZoneIds").split(",")).toList()
                         : null)
-                .excludeRestrictionsWithEmissionZoneTypes(entry.containsKey("excludeRestrictionsWithEmissionZoneTypes") && Objects.nonNull(entry.get("excludeRestrictionsWithEmissionZoneTypes"))
-                        ? Arrays.stream(entry.get("excludeRestrictionsWithEmissionZoneTypes").split(",")).map(EmissionZoneTypeJson::fromValue).toList()
+                .excludeRestrictionsWithEmissionZoneTypes(entry.containsKey("excludeRestrictionsWithEmissionZoneTypes") && Objects.nonNull(
+                        entry.get("excludeRestrictionsWithEmissionZoneTypes"))
+                        ? Arrays.stream(entry.get("excludeRestrictionsWithEmissionZoneTypes").split(","))
+                        .map(EmissionZoneTypeJson::fromValue).toList()
                         : null)
                 .build();
     }
@@ -102,8 +109,13 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid TrafficSignAnalyserJobConfiguration mapTrafficSignAnalyserJobConfiguration(Map<String, String> entry) {
 
+        Optional<Node> node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
+        if (node.isEmpty()) {
+            fail("Node with id " + entry.get("startNodeId") + " does not exist.");
+        }
+
         return TrafficSignAnalyserJobConfiguration.builder()
-                .startNode(networkDataService.findNodeById(Long.parseLong(entry.get("startNodeId"))))
+                .startNode(node.get())
                 .trafficSignGroups(
                         Arrays.stream(entry.get("trafficSignGroups").split(":"))
                                 .map(trafficSigns -> Arrays.stream(trafficSigns.split(","))
@@ -118,8 +130,13 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid BaseNetworkAnalyserJobConfiguration mapBaseNetworkAnalyserJobConfiguration(Map<String, String> entry) {
 
+        Optional<Node> node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
+        if (node.isEmpty()) {
+            fail("Node with id " + entry.get("startNodeId") + " does not exist.");
+        }
+
         return BaseNetworkAnalyserJobConfiguration.builder()
-                .startNode(networkDataService.findNodeById(Long.parseLong(entry.get("startNodeId"))))
+                .startNode(node.get())
                 .reportIssues(
                         Strings.isNotEmpty(entry.get("reportIssues")) && Boolean.parseBoolean(entry.get("reportIssues")))
                 .build();
@@ -128,9 +145,14 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid MapGeneratorJobConfiguration mapMapGeneratorJobConfiguration(Map<String, String> entry) {
 
+        Optional<Node> node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
+        if (node.isEmpty()) {
+            fail("Node with id " + entry.get("startNodeId") + " does not exist.");
+        }
+
         return MapGeneratorJobConfiguration.builder()
                 .exportName(entry.get("exportName"))
-                .startNode(networkDataService.findNodeById(Long.parseLong(entry.get("startNodeId"))))
+                .startNode(node.get())
                 .exportTypes(Arrays.stream(entry.get("exportTypes").split(",")).collect(Collectors.toSet()))
                 .trafficSignTypes(Arrays.stream(entry.get("trafficSignTypes").split(",")).collect(Collectors.toSet()))
                 .includeOnlyWindowSigns(

@@ -41,7 +41,10 @@ class AbstractYamlRepositoryTest {
 
         when(environment.getActiveProfiles()).thenReturn(new String[]{"profile3"});
 
-        var abstractYamlRepository = new AbstractYamlRepository<>(environment, DataCollection.class, "AbstractYamlRepositoryTest-valid") {
+        AbstractYamlRepository<DataCollection> abstractYamlRepository = new AbstractYamlRepository<>(
+                environment,
+                DataCollection.class,
+                "AbstractYamlRepositoryTest-valid") {
         };
 
         assertThat(abstractYamlRepository.getData()).isEqualTo(List.of(

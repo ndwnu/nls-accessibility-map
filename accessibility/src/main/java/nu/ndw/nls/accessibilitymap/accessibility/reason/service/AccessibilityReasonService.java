@@ -74,7 +74,7 @@ public class AccessibilityReasonService {
 
         AccessibilityReasons accessibilityReasons = accessibilityReasonsMapper.mapToAoAccessibilityReasons(trafficSigns);
 
-        var reasons = pathsToReasonsMapper.mapRoutesToReasons(
+        List<List<AccessibilityReason>> reasons = pathsToReasonsMapper.mapRoutesToReasons(
                 routes,
                 accessibilityReasons,
                 networkData.networkGraphHopper().getEncodingManager());

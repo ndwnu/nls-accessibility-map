@@ -65,10 +65,10 @@ class AccessibilityReasonEdgeVisitorTest {
     @EnumSource(value = Direction.class, names = {"FORWARD", "BACKWARD"})
     void calculateRestrictions(Direction direction) {
 
-        var reason1 = createReason("100", TrafficSignType.C18, 1, direction, RestrictionType.VEHICLE_WIDTH, 10D);
-        var reason2 = createReason("101", TrafficSignType.C18, 1, direction, RestrictionType.VEHICLE_WIDTH, 3D);
-        var reason3 = createReason("102", TrafficSignType.C17, 1, direction, RestrictionType.VEHICLE_LENGTH, 4D);
-        var reason4 = createReason("103", TrafficSignType.C18, 2, direction, RestrictionType.VEHICLE_WIDTH, 5D);
+        AccessibilityReason reason1 = createReason("100", TrafficSignType.C18, 1, direction, RestrictionType.VEHICLE_WIDTH, 10D);
+        AccessibilityReason reason2 = createReason("101", TrafficSignType.C18, 1, direction, RestrictionType.VEHICLE_WIDTH, 3D);
+        AccessibilityReason reason3 = createReason("102", TrafficSignType.C17, 1, direction, RestrictionType.VEHICLE_LENGTH, 4D);
+        AccessibilityReason reason4 = createReason("103", TrafficSignType.C18, 2, direction, RestrictionType.VEHICLE_WIDTH, 5D);
 
         accessibilityReasons = new AccessibilityReasons(List.of(reason1, reason2, reason3, reason4));
         accessibilityReasonEdgeVisitor = new AccessibilityReasonEdgeVisitor(
@@ -99,11 +99,10 @@ class AccessibilityReasonEdgeVisitorTest {
         assertReason(reasons.get(1), reason3);
     }
 
-
     @Test
     void calculateRestrictions_noReasonForDirection() {
 
-        var reason1 = createReason("100", TrafficSignType.C18, 1, Direction.FORWARD, RestrictionType.VEHICLE_WIDTH, 10D);
+        AccessibilityReason reason1 = createReason("100", TrafficSignType.C18, 1, Direction.FORWARD, RestrictionType.VEHICLE_WIDTH, 10D);
 
         accessibilityReasons = new AccessibilityReasons(List.of(reason1));
         accessibilityReasonEdgeVisitor = new AccessibilityReasonEdgeVisitor(
@@ -124,7 +123,7 @@ class AccessibilityReasonEdgeVisitorTest {
     @Test
     void calculateRestrictions_noReasonForRoadSectionId() {
 
-        var reason1 = createReason("100", TrafficSignType.C18, 1, Direction.FORWARD, RestrictionType.VEHICLE_WIDTH, 10D);
+        AccessibilityReason reason1 = createReason("100", TrafficSignType.C18, 1, Direction.FORWARD, RestrictionType.VEHICLE_WIDTH, 10D);
 
         accessibilityReasons = new AccessibilityReasons(List.of(reason1));
         accessibilityReasonEdgeVisitor = new AccessibilityReasonEdgeVisitor(
@@ -145,7 +144,7 @@ class AccessibilityReasonEdgeVisitorTest {
     @Test
     void calculateRestrictions_unknownRestrictionType() {
 
-        var reason1 = AccessibilityReason.builder()
+        AccessibilityReason reason1 = AccessibilityReason.builder()
                 .direction(Direction.FORWARD)
                 .trafficSignExternalId("100")
                 .trafficSignType(TrafficSignType.C18)
@@ -191,9 +190,10 @@ class AccessibilityReasonEdgeVisitorTest {
             int roadSectionId,
             Direction direction,
             RestrictionType restrictionType,
-            double restrictionValue) {
+            double restrictionValue
+    ) {
 
-        var accessibilityReason = AccessibilityReason.builder()
+        AccessibilityReason accessibilityReason = AccessibilityReason.builder()
                 .direction(direction)
                 .trafficSignExternalId(trafficSignExternalId)
                 .trafficSignType(trafficSignType)

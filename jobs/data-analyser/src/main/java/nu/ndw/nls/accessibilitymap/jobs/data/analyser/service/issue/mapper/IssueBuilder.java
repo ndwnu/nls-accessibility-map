@@ -62,7 +62,7 @@ public class IssueBuilder {
                 .records(recordsList)
                 .build();
 
-        final var title = "Asymmetric traffic sign placement";
+        String title = "Asymmetric traffic sign placement";
         return CreateIssueJson.builder()
                 .type(IssueTypeJson.MISSING)
                 .title(title)

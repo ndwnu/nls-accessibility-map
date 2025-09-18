@@ -27,13 +27,12 @@ public class FileService {
     }
 
     @SuppressWarnings("java:S3658")
-    public String readDataFromFile(String folder, String file, String extension) {
+    public String readDataFromFile(File file) {
 
         try {
             return FileUtils.readFileToString(
-                    new File("./%s/%s.%s".formatted(folder, file, extension)),
+                    file,
                     StandardCharsets.UTF_8.toString());
-
         } catch (IOException exception) {
             log.error("Failed to load file.", exception);
             fail(exception.getMessage());

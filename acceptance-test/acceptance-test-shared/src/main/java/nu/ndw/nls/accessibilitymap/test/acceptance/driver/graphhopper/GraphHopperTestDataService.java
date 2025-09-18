@@ -1,10 +1,14 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.springboot.test.graph.dto.Graph;
+import nu.ndw.nls.springboot.test.graph.service.dto.GenerateSpecification;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GraphHopperTestDataService {
 
     private final GraphHopperDriver graphHopperDriver;
@@ -46,5 +50,9 @@ public class GraphHopperTestDataService {
 
                 //Circle connections
                 .createRoad(8, 2).createRoad(5, 11);
+    }
+
+    public Graph generate(GenerateSpecification generateSpecification) {
+        return graphHopperDriver.generate(generateSpecification);
     }
 }

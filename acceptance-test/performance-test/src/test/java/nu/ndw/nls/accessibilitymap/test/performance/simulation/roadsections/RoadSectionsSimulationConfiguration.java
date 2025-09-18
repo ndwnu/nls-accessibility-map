@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 public record RoadSectionsSimulationConfiguration(
+        @NotNull Integer numberOfGraphNodes,
         @NotNull Integer numberOfTrafficSigns) {
 
 }

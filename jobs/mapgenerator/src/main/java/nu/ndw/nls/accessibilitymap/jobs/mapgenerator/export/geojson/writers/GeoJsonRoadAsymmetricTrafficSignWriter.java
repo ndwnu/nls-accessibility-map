@@ -2,11 +2,11 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.writers;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.utils.LongSequenceSupplier;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -31,12 +31,15 @@ public class GeoJsonRoadAsymmetricTrafficSignWriter extends AbstractGeoJsonWrite
 
     @Override
     public boolean isEnabled(Set<ExportType> exportTypes) {
+
         return exportTypes.contains(ExportType.ASYMMETRIC_TRAFFIC_SIGNS_GEO_JSON);
     }
 
     @Override
-    protected FeatureCollection prepareGeoJsonFeatureCollection(Accessibility accessibility,
-            ExportProperties exportProperties, LongSequenceSupplier idSequenceSupplier) {
+    protected FeatureCollection prepareGeoJsonFeatureCollection(
+            Accessibility accessibility,
+            ExportProperties exportProperties,
+            AtomicLong idSequenceSupplier) {
 
         return FeatureCollection
                 .builder()

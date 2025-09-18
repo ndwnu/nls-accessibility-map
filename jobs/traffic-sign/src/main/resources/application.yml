@@ -65,7 +65,7 @@ nu:
           analyse:
             start-location-latitude: 52.12096528507054
             start-location-longitude: 5.334845116067081
-            search-radius-in-meters: 1_000_000
+            search-radius-in-meters: 1_000_000_000
         trafficsignclient:
           api:
             url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
