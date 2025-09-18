@@ -45,7 +45,7 @@ public class AnalyseBaseNetworkCommand implements Callable<Integer> {
     private Integer start(NlsEvent nlsEvent) {
 
         try {
-            var analyseNetworkConfiguration = AnalyseNetworkConfiguration.builder()
+            AnalyseNetworkConfiguration analyseNetworkConfiguration = AnalyseNetworkConfiguration.builder()
                     .startLocationLatitude(analyserConfiguration.startLocationLatitude())
                     .startLocationLongitude(analyserConfiguration.startLocationLongitude())
                     .searchRadiusInMeters(analyserConfiguration.searchRadiusInMeters())

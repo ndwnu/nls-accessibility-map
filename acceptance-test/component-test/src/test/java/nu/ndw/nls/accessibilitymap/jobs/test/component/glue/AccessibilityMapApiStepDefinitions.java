@@ -13,9 +13,12 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Option;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoadSection;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
+import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 
 @Slf4j
@@ -31,7 +34,7 @@ public class AccessibilityMapApiStepDefinitions {
     @And("graphHopper data is reloaded")
     public void graphhopperDataIsReloaded() {
 
-        var response = accessibilityMapApiClient.reloadGraphHopper();
+        Response<Void, Void> response = accessibilityMapApiClient.reloadGraphHopper();
         assertThat(response.containsError())
                 .withFailMessage("Reloading graphhopper failed. %s", response.error())
                 .isFalse();
@@ -40,7 +43,7 @@ public class AccessibilityMapApiStepDefinitions {
     @And("traffic signs data is reloaded")
     public void trafficSignsDataIsReloaded() {
 
-        var response = accessibilityMapApiClient.reloadTrafficSigns();
+        Response<Void, Void> response = accessibilityMapApiClient.reloadTrafficSigns();
         assertThat(response.containsError())
                 .withFailMessage("Reloading traffic signs failed. %s", response.error())
                 .isFalse();
@@ -49,7 +52,8 @@ public class AccessibilityMapApiStepDefinitions {
     @When("request accessibility for")
     public void requestAccessibilityFor(AccessibilityRequest accessibilityRequest) {
 
-        var response = accessibilityMapApiClient.getAccessibilityForMunicipality(accessibilityRequest);
+        Response<Void, AccessibilityMapResponseJson> response = accessibilityMapApiClient.getAccessibilityForMunicipality(
+                accessibilityRequest);
 
         assertThat(response.containsError())
                 .withFailMessage("Failed to get accessibility for municipality. Error: %s with body: %s", response.error(), response.body())
@@ -59,7 +63,8 @@ public class AccessibilityMapApiStepDefinitions {
     @When("request accessibility geojson for")
     public void requestAccessibilityGeoJsonFor(AccessibilityRequest accessibilityRequest) {
 
-        var response = accessibilityMapApiClient.getAccessibilityGeoJsonForMunicipality(accessibilityRequest);
+        Response<Void, RoadSectionFeatureCollectionJson> response = accessibilityMapApiClient.getAccessibilityGeoJsonForMunicipality(
+                accessibilityRequest);
 
         assertThat(response.containsError())
                 .withFailMessage("Failed to get accessibility geojson for municipality. Error: %s with body: %s",
@@ -73,7 +78,8 @@ public class AccessibilityMapApiStepDefinitions {
             int matchedRoadSectionId,
             String forwardAccessible,
             String backwardAccessible,
-            List<BlockedRoadSection> blockedRoadSections) throws JsonProcessingException {
+            List<BlockedRoadSection> blockedRoadSections
+    ) throws JsonProcessingException {
 
         weExpectTheFollowingBlockedRoadSectionsWithReasons(
                 matchedRoadSectionId,
@@ -89,9 +95,10 @@ public class AccessibilityMapApiStepDefinitions {
             String forwardAccessible,
             String backwardAccessible,
             String reasonsFile,
-            List<BlockedRoadSection> blockedRoadSections) throws JsonProcessingException {
+            List<BlockedRoadSection> blockedRoadSections
+    ) throws JsonProcessingException {
 
-        var response = accessibilityMapApiClient.getLastResponseForGetAccessibilityForMunicipality();
+        Response<Void, AccessibilityMapResponseJson> response = accessibilityMapApiClient.getLastResponseForGetAccessibilityForMunicipality();
 
         String reasons = Objects.isNull(reasonsFile)
                 ? "[]"
@@ -123,7 +130,7 @@ public class AccessibilityMapApiStepDefinitions {
     @Then("we expect geojson to match {word}")
     public void weExpectGeojsonToMatchResponseAccessibilityGeojson(String expectedResponseFile) {
 
-        var response = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJsonForMunicipality();
+        Response<Void, RoadSectionFeatureCollectionJson> response = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJsonForMunicipality();
 
         assertThatJson(response.body())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)

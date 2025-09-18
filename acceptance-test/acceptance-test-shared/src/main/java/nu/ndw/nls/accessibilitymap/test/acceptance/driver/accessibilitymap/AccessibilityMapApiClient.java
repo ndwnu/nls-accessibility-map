@@ -104,7 +104,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
-        var endpoint = buildGeoJsonEndPoint(accessibilityRequest.endLatitude(), accessibilityRequest.endLongitude());
+        FeatureCollection endpoint = buildGeoJsonEndPoint(accessibilityRequest.endLatitude(), accessibilityRequest.endLongitude());
 
         fileService.writeDataToFile(
                 driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
@@ -139,7 +139,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
-        var endpoint = buildGeoJsonEndPoint(accessibilityRequest.endLatitude(), accessibilityRequest.endLongitude());
+        FeatureCollection endpoint = buildGeoJsonEndPoint(accessibilityRequest.endLatitude(), accessibilityRequest.endLongitude());
 
         fileService.writeDataToFile(
                 driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),

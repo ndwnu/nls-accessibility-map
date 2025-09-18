@@ -76,7 +76,10 @@ class PathsToReasonsMapperTest {
                 .thenReturn(accessibilityReasonEdgeVisitor);
         when(accessibilityReasonEdgeVisitor.getAccessibilityReasonList()).thenReturn(accessibilityReasonsList);
 
-        var result = pathsToReasonsMapper.mapRoutesToReasons(List.of(path), accessibilityReasons, encodingManager);
+        List<List<AccessibilityReason>> result = pathsToReasonsMapper.mapRoutesToReasons(
+                List.of(path),
+                accessibilityReasons,
+                encodingManager);
 
         assertThat(result).containsExactly(accessibilityReasonsList);
 

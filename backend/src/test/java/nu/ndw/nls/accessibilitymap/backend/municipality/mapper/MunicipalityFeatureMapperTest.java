@@ -67,19 +67,20 @@ class MunicipalityFeatureMapperTest {
 
     private MunicipalityFeatureCollectionJson createExpectedResult(LocalDate dateLastCheck) {
         String municipalityId = municipality.municipalityId();
-        var pointJson = new PointJson(List.of(municipality.startCoordinateLongitude(), municipality.startCoordinateLatitude()), POINT);
+        PointJson pointJson = new PointJson(List.of(municipality.startCoordinateLongitude(), municipality.startCoordinateLatitude()),
+                POINT);
 
         MunicipalityBoundingBox bounds = municipality.bounds();
         List<Double> boundsStart = List.of(bounds.longitudeFrom(), bounds.latitudeFrom());
         List<Double> boundsEnd = List.of(bounds.longitudeTo(), bounds.latitudeTo());
 
-        var propertiesJson = new MunicipalityPropertiesJson(
+        MunicipalityPropertiesJson propertiesJson = new MunicipalityPropertiesJson(
                 municipality.name(),
                 municipality.searchDistanceInMetres(),
                 List.of(boundsStart, boundsEnd),
                 dateLastCheck);
 
-        var featureJson = new MunicipalityFeatureJson(
+        MunicipalityFeatureJson featureJson = new MunicipalityFeatureJson(
                 FEATURE,
                 municipalityId,
                 pointJson,

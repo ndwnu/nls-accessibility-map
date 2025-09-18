@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.shapes.BBox;
+import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -95,7 +96,7 @@ class AccessibilityRequestMapperTest {
                 .fuelTypes(List.of(FuelTypeJson.PETROL))
                 .build();
 
-        var exemptions = Excludes.builder()
+        Excludes exemptions = Excludes.builder()
                 .emissionZoneIds(Set.of("id1"))
                 .emissionZoneTypes(Set.of(EmissionZoneTypeJson.LOW_EMISSION_ZONE))
                 .build();
@@ -116,7 +117,7 @@ class AccessibilityRequestMapperTest {
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(FuelType.PETROL);
         when(emissionZoneTypeMapper.mapEmissionZoneType(EmissionZoneTypeJson.LOW_EMISSION_ZONE)).thenReturn(EmissionZoneType.LOW);
 
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(
+        @Valid AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(
                 timestamp,
                 municipality,
                 vehicleArguments,
@@ -165,8 +166,12 @@ class AccessibilityRequestMapperTest {
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
         when(emissionClassMapper.mapEmissionClass(null)).thenReturn(null);
 
-        var accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp, municipality, vehicleArguments,
-                excludes, null, null);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp,
+                municipality,
+                vehicleArguments,
+                excludes,
+                null,
+                null);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)

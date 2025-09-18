@@ -90,7 +90,7 @@ public class GraphHopperDriver {
                         .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier())
                         .build());
 
-        var graphHopperSettings = GraphHopperExporterSettings.builder(AccessibilityLink.class)
+        GraphHopperExporterSettings<AccessibilityLink> graphHopperSettings = GraphHopperExporterSettings.builder(AccessibilityLink.class)
                 .locationOnDisk(graphHopperConfiguration.getLocationOnDisk())
                 .linkSupplier(EdgeToAccessibilityLinkMapper::buildFromEdge)
                 .networkFolderName(VERSION)

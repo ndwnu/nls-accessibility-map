@@ -2,17 +2,20 @@ package nu.ndw.nls.accessibilitymap.backend.yaml;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import lombok.Getter;
@@ -80,7 +83,7 @@ public abstract class AbstractYamlRepository<T extends List<?>> {
 
     private String getErrorMessage(Validator validator, T object, int index) {
 
-        var validationErrors = validator.validate(object.get(index));
+        Set<? extends ConstraintViolation<?>> validationErrors = validator.validate(object.get(index));
         if (!validationErrors.isEmpty()) {
             return "%s data record nr %s is invalid because: %s".formatted(
                     this.getClass().getSimpleName(),
@@ -116,7 +119,7 @@ public abstract class AbstractYamlRepository<T extends List<?>> {
 
     private Optional<String> readFile(String fileName) {
 
-        try (var inputStream = ResourceUtils.getURL("classpath:data/%s.yml".formatted(fileName)).openStream()) {
+        try (InputStream inputStream = ResourceUtils.getURL("classpath:data/%s.yml".formatted(fileName)).openStream()) {
             String fileContent = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             log.debug("Successfully loaded data from file: '{}'.", fileName);
 

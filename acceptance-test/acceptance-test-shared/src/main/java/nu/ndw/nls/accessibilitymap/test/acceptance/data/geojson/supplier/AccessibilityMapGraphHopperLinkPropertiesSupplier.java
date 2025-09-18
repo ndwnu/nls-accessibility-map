@@ -12,7 +12,7 @@ public class AccessibilityMapGraphHopperLinkPropertiesSupplier extends GraphHopp
     @Override
     public LineStringGraphHopperGraphProperties create(Edge edge, GraphHopperLinkInfo graphHopperLinkInfo) {
 
-        var lineStringGraphHopperNetworkProperties = super.create(edge, graphHopperLinkInfo);
+        LineStringGraphHopperGraphProperties lineStringGraphHopperNetworkProperties = super.create(edge, graphHopperLinkInfo);
 
         return LineStringProperties.builder()
                 .roadSectionId(lineStringGraphHopperNetworkProperties.getRoadSectionId())

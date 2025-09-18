@@ -40,7 +40,7 @@ class AccessibilityReasonEdgeVisitorFactoryTest {
     @Test
     void create() {
 
-        var accessibilityReasonEdgeVisitor = accessibilityReasonEdgeVisitorFactory.create(
+        AccessibilityReasonEdgeVisitor accessibilityReasonEdgeVisitor = accessibilityReasonEdgeVisitorFactory.create(
                 accessibilityReasons,
                 encodingManager,
                 edgeIteratorStateReverseExtractor,
