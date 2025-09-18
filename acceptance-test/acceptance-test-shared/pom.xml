@@ -45,15 +45,15 @@
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-spatial</artifactId>
     </dependency>
+
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>component-test</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-contract-wiremock</artifactId>
-      <version>${spring-cloud-contract-wiremock.version}</version>
+      <groupId>org.wiremock.integrations</groupId>
+      <artifactId>wiremock-spring-boot</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
