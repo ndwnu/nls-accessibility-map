@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
@@ -27,6 +28,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.A
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
+import nu.ndw.nls.springboot.test.graph.dto.Node;
 import org.apache.logging.log4j.util.Strings;
 
 @RequiredArgsConstructor
@@ -107,7 +109,7 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid TrafficSignAnalyserJobConfiguration mapTrafficSignAnalyserJobConfiguration(Map<String, String> entry) {
 
-        var node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
+        Optional<Node> node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
         if (node.isEmpty()) {
             fail("Node with id " + entry.get("startNodeId") + " does not exist.");
         }
@@ -128,7 +130,7 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid BaseNetworkAnalyserJobConfiguration mapBaseNetworkAnalyserJobConfiguration(Map<String, String> entry) {
 
-        var node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
+        Optional<Node> node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
         if (node.isEmpty()) {
             fail("Node with id " + entry.get("startNodeId") + " does not exist.");
         }
@@ -143,7 +145,7 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid MapGeneratorJobConfiguration mapMapGeneratorJobConfiguration(Map<String, String> entry) {
 
-        var node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
+        Optional<Node> node = graphHopperDriver.getLastBuiltGraph().findNodeById(Long.parseLong(entry.get("startNodeId")));
         if (node.isEmpty()) {
             fail("Node with id " + entry.get("startNodeId") + " does not exist.");
         }

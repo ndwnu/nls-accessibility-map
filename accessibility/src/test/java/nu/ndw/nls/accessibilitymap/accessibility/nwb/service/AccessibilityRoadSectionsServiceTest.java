@@ -71,7 +71,7 @@ class AccessibilityRoadSectionsServiceTest {
     @Test
     void getRoadSections_threadSafetyCheck() throws InterruptedException, ExecutionException, TimeoutException {
 
-        var start = new CountDownLatch(1);
+        CountDownLatch start = new CountDownLatch(1);
 
         when(nwbRoadSectionService.findLazyCar(VERSION, Collections.emptySet()))
                 .thenAnswer(
@@ -96,7 +96,7 @@ class AccessibilityRoadSectionsServiceTest {
 
             start.countDown();
 
-            for (var future : futures) {
+            for (Future<List<AccessibilityNwbRoadSection>> future : futures) {
                 List<AccessibilityNwbRoadSection> result = future.get(1, java.util.concurrent.TimeUnit.SECONDS);
                 assertThat(result).isEqualTo(List.of(accessibilityRoadSection));
             }
@@ -125,7 +125,7 @@ class AccessibilityRoadSectionsServiceTest {
     @Test
     void getRoadSectionsByMunicipalityId_threadSafetyCheck() throws InterruptedException, ExecutionException, TimeoutException {
 
-        var start = new CountDownLatch(1);
+        CountDownLatch start = new CountDownLatch(1);
 
         when(nwbRoadSectionService.findLazyCar(VERSION, Collections.singleton(MUNICIPALITY_ID)))
                 .thenAnswer(
@@ -149,7 +149,7 @@ class AccessibilityRoadSectionsServiceTest {
 
             start.countDown();
 
-            for (var future : futures) {
+            for (Future<List<AccessibilityNwbRoadSection>> future : futures) {
                 List<AccessibilityNwbRoadSection> result = future.get(2, java.util.concurrent.TimeUnit.SECONDS);
                 assertThat(result).isEqualTo(List.of(accessibilityRoadSection));
             }

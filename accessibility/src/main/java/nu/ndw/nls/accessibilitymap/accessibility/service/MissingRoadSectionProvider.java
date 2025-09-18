@@ -41,9 +41,9 @@ public class MissingRoadSectionProvider {
             Collection<RoadSection> knownRoadSections,
             boolean isAccessible) {
 
-        var roadSections = getAllRoadSections(municipalityId);
+        List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(municipalityId);
 
-        var roadSectionsById = knownRoadSections.stream()
+        Map<Long, List<RoadSection>> roadSectionsById = knownRoadSections.stream()
                 .collect(Collectors.groupingBy(RoadSection::getId));
 
         Map<Long, List<AccessibilityNwbRoadSection>> allNwbRoadSectionById = roadSections.stream()
@@ -51,18 +51,18 @@ public class MissingRoadSectionProvider {
 
         SetView<Long> missingRoadSectionIds = Sets.difference(allNwbRoadSectionById.keySet(), roadSectionsById.keySet());
 
-        var roadSectionFragmentIdSupplier = newRoadSectionFragmentIdSupplier(knownRoadSections);
-        var directionIdSupplier = newDirectionIdSupplier(knownRoadSections);
+        AtomicInteger roadSectionFragmentIdSupplier = newRoadSectionFragmentIdSupplier(knownRoadSections);
+        AtomicInteger directionIdSupplier = newDirectionIdSupplier(knownRoadSections);
 
         return missingRoadSectionIds.stream()
                 .map(allNwbRoadSectionById::get)
                 .filter(Objects::nonNull)
                 .flatMap(List::stream)
                 .map(accessibilityRoadSection -> {
-                    var roadSection = RoadSection.builder()
+                    RoadSection roadSection = RoadSection.builder()
                             .id(accessibilityRoadSection.getRoadSectionId())
                             .build();
-                    var roadSectionFragment = RoadSectionFragment.builder()
+                    RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
                             .id(roadSectionFragmentIdSupplier.getAndIncrement())
                             .roadSection(roadSection)
                             .build();

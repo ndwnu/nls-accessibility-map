@@ -76,7 +76,7 @@ class GraphHopperNetworkSettingsBuilderTest {
         when(graphHopperProperties.getDir()).thenReturn(GRAPHHOPPER_BASE_PATH);
         when(graphHopperProperties.getNetworkName()).thenReturn(NETWORK_NAME);
 
-        var accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
+        RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
 
         assertEquals(RoutingNetworkSettings
                 .builder(AccessibilityLink.class)
@@ -94,7 +94,7 @@ class GraphHopperNetworkSettingsBuilderTest {
         when(graphHopperProperties.getNetworkName()).thenReturn(NETWORK_NAME);
         when(accessibilityLinks.iterator()).thenReturn(accessibilityLinksIterator);
 
-        var accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.networkSettingsWithData(
+        RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.networkSettingsWithData(
                 accessibilityLinks,
                 trafficSignData);
 

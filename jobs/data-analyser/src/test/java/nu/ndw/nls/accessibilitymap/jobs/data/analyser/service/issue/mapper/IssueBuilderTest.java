@@ -45,7 +45,7 @@ class IssueBuilderTest {
 
         when(roadSection.getId()).thenReturn(234L);
 
-        var issue = issueBuilder.buildUnroutableNetworkIssue(roadSection, 123, "reportId", "reportGroupId");
+        CreateIssueJson issue = issueBuilder.buildUnroutableNetworkIssue(roadSection, 123, "reportId", "reportGroupId");
 
         assertThat(issue).usingRecursiveComparison()
                 .isEqualTo(CreateIssueJson
@@ -79,7 +79,7 @@ class IssueBuilderTest {
         when(trafficSign.externalId()).thenReturn("id");
         when(directionalSegment.getRoadSectionId()).thenReturn(1L);
 
-        var issue = issueBuilder.buildTrafficSignIssue(directionalSegment, "reportId", "reportGroupId");
+        CreateIssueJson issue = issueBuilder.buildTrafficSignIssue(directionalSegment, "reportId", "reportGroupId");
 
         assertThat(issue).usingRecursiveComparison()
                 .isEqualTo(CreateIssueJson

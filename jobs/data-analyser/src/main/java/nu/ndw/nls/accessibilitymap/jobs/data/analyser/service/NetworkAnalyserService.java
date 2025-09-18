@@ -1,16 +1,20 @@
 package nu.ndw.nls.accessibilitymap.jobs.data.analyser.service;
 
 import com.graphhopper.routing.util.EdgeFilter;
+import com.graphhopper.storage.index.Snap;
 import jakarta.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.MissingRoadSectionProvider;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueBuilder;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.ReportApiClient;
+import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
@@ -44,13 +48,13 @@ public class NetworkAnalyserService extends IssueReporterService {
 
         log.info("Analysing with the following properties: {}", analyseNetworkConfiguration);
 
-        var startSegment = networkGraphHopper.getLocationIndex()
+        Snap startSegment = networkGraphHopper.getLocationIndex()
                 .findClosest(
                         analyseNetworkConfiguration.startLocationLatitude(),
                         analyseNetworkConfiguration.startLocationLongitude(),
                         EdgeFilter.ALL_EDGES);
 
-        var accessibleRoadsSectionsWithoutAppliedRestrictions = networkCacheDataService.getNetworkData(
+        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = networkCacheDataService.getNetworkData(
                         null,
                         startSegment,
                         analyseNetworkConfiguration.searchRadiusInMeters(),
@@ -58,13 +62,13 @@ public class NetworkAnalyserService extends IssueReporterService {
                         networkGraphHopper)
                 .baseAccessibleRoads();
 
-        var missingRoadSections = missingRoadSectionProvider.get(
+        Collection<RoadSection> missingRoadSections = missingRoadSectionProvider.get(
                 null,
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                 false);
 
-        var issueReportId = "Nwb-%s-%s".formatted(analyseNetworkConfiguration.nwbVersion(), UUID.randomUUID());
-        var issues = missingRoadSections.stream()
+        String issueReportId = "Nwb-%s-%s".formatted(analyseNetworkConfiguration.nwbVersion(), UUID.randomUUID());
+        List<CreateIssueJson> issues = missingRoadSections.stream()
                 .map(missingRoadSection -> issueBuilder.buildUnroutableNetworkIssue(
                         missingRoadSection,
                         analyseNetworkConfiguration.nwbVersion(),

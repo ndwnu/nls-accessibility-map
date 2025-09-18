@@ -78,7 +78,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             Double longitude, EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> excludeEmissionZoneIds,
             List<EmissionZoneTypeJson> excludeEmissionZoneTypes) {
 
-        var accessibilityRequest = buildAndValidateAccessibilityRequest(
+        AccessibilityRequest accessibilityRequest = buildAndValidateAccessibilityRequest(
                 municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
                 vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
                 excludeEmissionZoneTypes, latitude, longitude);
