@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -39,10 +38,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.wiremock.spring.EnableWireMock;
 
 @SpringBootTest(classes = {EmissionZoneClientTest.FeignTestConfig.class, RetryAutoConfiguration.class, EmissionZoneOAuthConfiguration.class})
 @EnableConfigurationProperties
-@AutoConfigureWireMock(port = 0)
+@EnableWireMock
 @TestPropertySource(properties = {
         "nu.ndw.nls.accessibilitymap.trafficsigns.emission-zone.client.url=http://localhost:${wiremock.server.port}",
         "resilience4j.retry.instances.emissionZone.maxAttempts=2",
