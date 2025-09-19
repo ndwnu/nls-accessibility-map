@@ -4,6 +4,7 @@
   "type": "Missing",
   "priority": "Medium",
   "status": "Open",
+  "reportId": null,
   "reporterReportId": "${json-unit.ignore}",
   "reporterReportGroupId": "AsymmetricTrafficSignPlacement-C12",
   "violations": [],
