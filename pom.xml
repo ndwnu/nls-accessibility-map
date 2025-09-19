@@ -69,10 +69,6 @@
     <json-smart.version>2.6.0</json-smart.version>
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-48976 -->
     <commons-fileupload.version>1.6.0</commons-fileupload.version>
-
-    <!-- Downgrade because of https://issues.apache.org/jira/browse/SUREFIRE-2299, https://github.com/apache/maven-surefire/issues/834-->
-    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-    <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
   </properties>
   <distributionManagement>
     <repository>
