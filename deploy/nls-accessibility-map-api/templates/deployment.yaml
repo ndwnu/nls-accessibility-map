@@ -24,6 +24,7 @@ spec:
         tags.datadoghq.com/env: {{ .Values.environment }}
         tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
     spec:
+      serviceAccountName: workload-identity-service-account
       restartPolicy: Always
       containers:
         - name: {{ .Chart.Name }}
