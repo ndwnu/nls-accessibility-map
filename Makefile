@@ -53,3 +53,6 @@ validate-helm-chart-jobs:
 		nls-accessibility-map-jobs \
 		./deploy/nls-accessibility-map-jobs/
 	@sed -i "s/98789.98789/@docker.image.tag@/g" ./deploy/nls-accessibility-map-jobs/Chart.yaml
+
+publish-nwb-imported-event:
+	./scripts/publish-event-nwb-imported.sh
