@@ -46,8 +46,35 @@ mvn verify -P regression-test -P component-test
 For testing purposes, a staging test account has been created in Keycloak called `sa-nls-staging-test`.
 To get the password (`client-secret`) for this account, see the KeePass file in the `nls-wiki` project.
 
-## Versioning
-All modules currently have the same version.
+## Running with representative data locally
+Run the following steps to generate the required data for any real scenario exploration tests you would like to run locally
+
+### 1) Generate a Graph Hopper network with staging or production data data 
+run in the [graphhopper](jobs/graphhopper) module the `createOrUpdateNetwork` command with profiles `dev`. Make sure you override the application properties with
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:25432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
+    username: nls
+    password: <redacted>
+```
+### 2) Generate a Traffic sign cache with production data
+run in the [traffic-sign](jobs/traffic-sign) module `update-cache` command with profiles `dev,update-cache`. Make sure you override the application properties with
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:25432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
+    username: nls
+    password: <redacted>
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficsignclient:
+          api:
+            url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+```
+
 
 
 # Updating integration test data
