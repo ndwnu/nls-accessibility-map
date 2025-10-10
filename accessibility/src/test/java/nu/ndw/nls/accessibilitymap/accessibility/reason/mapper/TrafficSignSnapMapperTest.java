@@ -73,7 +73,6 @@ class TrafficSignSnapMapperTest {
 
     @Test
     void map() {
-
         setupBaseFixture();
         when(snap.isValid()).thenReturn(true);
         List<TrafficSignSnap> trafficSignSnaps = trafficSignSnapMapper.map(List.of(trafficSign), networkGraphHopper);
@@ -87,7 +86,6 @@ class TrafficSignSnapMapperTest {
 
     @Test
     void map_snap_invalid() {
-
         setupBaseFixture();
 
         when(trafficSign.externalId()).thenReturn(TRAFFIC_SIGN_ID);
@@ -96,9 +94,11 @@ class TrafficSignSnapMapperTest {
         List<TrafficSignSnap> trafficSignSnaps = trafficSignSnapMapper.map(List.of(trafficSign), networkGraphHopper);
 
         assertThat(trafficSignSnaps).isEmpty();
-        loggerExtension.containsLog(Level.WARN, ("No road section present for traffic sign id %s with "
-                + "road section id %d in nwb map on graphhopper network")
-                .formatted(TRAFFIC_SIGN_ID, ROAD_SECTION_ID));
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "No road section present for traffic sign id %s with road section id %d in nwb map on graphhopper network".formatted(
+                        TRAFFIC_SIGN_ID,
+                        ROAD_SECTION_ID));
     }
 
     private void setupBaseFixture() {
