@@ -30,7 +30,7 @@ public abstract class IssueReporterService {
 
             if (reportIssues) {
                 issueApiClient.createIssue(createIssueJson);
-                log.info("Reported traffic sign issue: {}", createIssueJson);
+                log.debug("Reported traffic sign issue: {}", createIssueJson);
             }
         });
 
