@@ -37,7 +37,6 @@ class IssueReporterServiceTest {
 
     @BeforeEach
     void setUp() {
-
         issueReporterService = new IssueReporterService(issueApiClient, reportApiClient) {
 
         };
@@ -54,7 +53,7 @@ class IssueReporterServiceTest {
                 .reporterReportId("reportId")
                 .reporterReportGroupId("reportGroupId")
                 .build());
-        loggerExtension.containsLog(Level.INFO, "Reported traffic sign issue: issue");
+        loggerExtension.containsLog(Level.DEBUG, "Reported traffic sign issue: issue");
     }
 
     @Test
