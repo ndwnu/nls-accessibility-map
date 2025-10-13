@@ -49,7 +49,7 @@ public record AccessibilityRequest(
         if (Objects.nonNull(excludeTrafficSignTextSignTypes)) {
             return excludeTrafficSignTextSignTypes;
         } else {
-            return Set.of(TextSignType.EXCLUDING, TextSignType.PRE_ANNOUNCEMENT, TextSignType.FREE_TEXT);
+            return Set.of(TextSignType.EXCLUDING, TextSignType.PRE_ANNOUNCEMENT);
         }
     }
 
