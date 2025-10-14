@@ -78,8 +78,7 @@ class AccessibilityRequestTest extends ValidationTest {
         accessibilityRequest = accessibilityRequest.withExcludeTrafficSignTextSignTypes(null);
         assertThat(accessibilityRequest.excludeTrafficSignTextSignTypes()).containsExactlyInAnyOrder(
                 TextSignType.EXCLUDING,
-                TextSignType.PRE_ANNOUNCEMENT,
-                TextSignType.FREE_TEXT);
+                TextSignType.PRE_ANNOUNCEMENT);
     }
 
     @Test
