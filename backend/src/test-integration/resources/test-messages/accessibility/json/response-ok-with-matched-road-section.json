@@ -11,11 +11,6 @@
       "backwardAccessible": true
     },
     {
-      "roadSectionId": 306324022,
-      "forwardAccessible": false,
-      "backwardAccessible": true
-    },
-    {
       "roadSectionId": 306327047,
       "forwardAccessible": true,
       "backwardAccessible": false
@@ -31,11 +26,6 @@
       "backwardAccessible": false
     },
     {
-      "roadSectionId": 307326028,
-      "forwardAccessible": false,
-      "backwardAccessible": true
-    },
-    {
       "roadSectionId": 307330036,
       "forwardAccessible": false,
       "backwardAccessible": true
@@ -43,15 +33,6 @@
     {
       "roadSectionId": 307333034,
       "forwardAccessible": true,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 308323060,
-      "forwardAccessible": false
-    },
-    {
-      "roadSectionId": 308324026,
-      "forwardAccessible": false,
       "backwardAccessible": false
     },
     {
@@ -64,11 +45,6 @@
       "forwardAccessible": false
     },
     {
-      "roadSectionId": 308327087,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
       "roadSectionId": 308330017,
       "forwardAccessible": true,
       "backwardAccessible": false
@@ -79,14 +55,38 @@
       "backwardAccessible": true
     },
     {
-      "roadSectionId": 309325030,
+      "roadSectionId": 309325069,
       "forwardAccessible": false,
       "backwardAccessible": false
     },
     {
-      "roadSectionId": 309325069,
+      "roadSectionId": 309325110,
       "forwardAccessible": false,
       "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 309325137,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 309325138,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 309326018,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 309326024,
+      "forwardAccessible": false,
+      "backwardAccessible": true
+    },
+    {
+      "roadSectionId": 309326087,
+      "forwardAccessible": false,
+      "backwardAccessible": true
     },
     {
       "roadSectionId": 309326149,
@@ -104,12 +104,7 @@
       "backwardAccessible": false
     },
     {
-      "roadSectionId": 309328008,
-      "forwardAccessible": false,
-      "backwardAccessible": true
-    },
-    {
-      "roadSectionId": 310325006,
+      "roadSectionId": 309329051,
       "forwardAccessible": false,
       "backwardAccessible": false
     },
@@ -120,6 +115,10 @@
     },
     {
       "roadSectionId": 310325018,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 310325022,
       "forwardAccessible": false
     },
     {
@@ -135,12 +134,46 @@
       "forwardAccessible": false
     },
     {
+      "roadSectionId": 310325027,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 310325038,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310325039,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 310325044,
       "forwardAccessible": false,
       "backwardAccessible": false
     },
     {
       "roadSectionId": 310325049,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310325050,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310325051,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310325055,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310325056,
       "forwardAccessible": false,
       "backwardAccessible": false
     },
@@ -153,8 +186,9 @@
       "forwardAccessible": false
     },
     {
-      "roadSectionId": 310325083,
-      "forwardAccessible": false
+      "roadSectionId": 310325069,
+      "forwardAccessible": true,
+      "backwardAccessible": false
     },
     {
       "roadSectionId": 310325095,
@@ -185,12 +219,32 @@
       "forwardAccessible": false
     },
     {
+      "roadSectionId": 310326015,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 310326025,
       "forwardAccessible": false,
       "backwardAccessible": false
     },
     {
+      "roadSectionId": 310326030,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326038,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 310326039,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326045,
       "forwardAccessible": false,
       "backwardAccessible": false
     },
@@ -205,8 +259,43 @@
       "backwardAccessible": false
     },
     {
+      "roadSectionId": 310326054,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326055,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326056,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326057,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326058,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326059,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 310326071,
       "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326072,
+      "forwardAccessible": false,
+      "backwardAccessible": false
     },
     {
       "roadSectionId": 310326077,
@@ -253,13 +342,98 @@
       "backwardAccessible": false
     },
     {
+      "roadSectionId": 310326158,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326159,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326161,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326163,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326178,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326179,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 310326180,
       "forwardAccessible": false
     },
     {
-      "roadSectionId": 310327088,
+      "roadSectionId": 310326199,
       "forwardAccessible": false,
-      "backwardAccessible": true
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326200,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326201,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326203,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326213,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310326214,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310328072,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310328073,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310328074,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310328075,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310328077,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 310329021,
+      "forwardAccessible": false,
+      "backwardAccessible": false
     },
     {
       "roadSectionId": 310337010,
@@ -267,29 +441,14 @@
       "backwardAccessible": true
     },
     {
-      "roadSectionId": 310337011,
+      "roadSectionId": 311326109,
       "forwardAccessible": false,
       "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 311327067,
-      "forwardAccessible": false,
-      "backwardAccessible": true
     },
     {
       "roadSectionId": 311333109,
       "forwardAccessible": true,
       "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 311333123,
-      "forwardAccessible": true,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 312327053,
-      "forwardAccessible": false,
-      "backwardAccessible": true
     },
     {
       "roadSectionId": 312328050,
@@ -302,8 +461,8 @@
       "backwardAccessible": true
     },
     {
-      "roadSectionId": 313326038,
-      "forwardAccessible": true,
+      "roadSectionId": 312335070,
+      "forwardAccessible": false,
       "backwardAccessible": false
     },
     {
@@ -315,8 +474,8 @@
       "forwardAccessible": false
     },
     {
-      "roadSectionId": 314335028,
-      "forwardAccessible": true,
+      "roadSectionId": 314336042,
+      "forwardAccessible": false,
       "backwardAccessible": false
     },
     {
@@ -406,13 +565,56 @@
     },
     {
       "roadSectionId": 319325003,
-      "forwardAccessible": false,
+      "forwardAccessible": true,
       "backwardAccessible": false
     },
     {
-      "roadSectionId": 321327002,
-      "forwardAccessible": false,
-      "backwardAccessible": false
+      "roadSectionId": 600136533,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600137062,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600137645,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600137872,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600137873,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600137874,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600137892,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600137893,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600137894,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600138550,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600138551,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600139033,
+      "forwardAccessible": false
     },
     {
       "roadSectionId": 600364492,
@@ -456,8 +658,7 @@
     },
     {
       "roadSectionId": 600364529,
-      "forwardAccessible": false,
-      "backwardAccessible": false
+      "forwardAccessible": false
     },
     {
       "roadSectionId": 600364530,
@@ -485,6 +686,14 @@
       "forwardAccessible": false
     },
     {
+      "roadSectionId": 600387307,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 600390059,
+      "forwardAccessible": false
+    },
+    {
       "roadSectionId": 600390197,
       "forwardAccessible": false
     },
@@ -501,37 +710,11 @@
       "forwardAccessible": false
     },
     {
-      "roadSectionId": 600443315,
-      "forwardAccessible": false,
-      "backwardAccessible": true
+      "roadSectionId": 600393932,
+      "forwardAccessible": false
     },
     {
       "roadSectionId": 600444980,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 600455670,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 600455671,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 600455673,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 600455678,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 600455679,
       "forwardAccessible": false,
       "backwardAccessible": false
     },
@@ -553,18 +736,12 @@
       "forwardAccessible": false
     },
     {
-      "roadSectionId": 600793701,
+      "roadSectionId": 600793037,
       "forwardAccessible": false
     },
     {
-      "roadSectionId": 600794628,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 600797296,
-      "forwardAccessible": false,
-      "backwardAccessible": false
+      "roadSectionId": 600793701,
+      "forwardAccessible": false
     },
     {
       "roadSectionId": 600797809,
@@ -573,11 +750,6 @@
     {
       "roadSectionId": 600797810,
       "forwardAccessible": false
-    },
-    {
-      "roadSectionId": 600797815,
-      "forwardAccessible": true,
-      "backwardAccessible": false
     },
     {
       "roadSectionId": 600798371,
@@ -615,6 +787,21 @@
       "backwardAccessible": true
     },
     {
+      "roadSectionId": 600969077,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 600969080,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 600969135,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
       "roadSectionId": 600980773,
       "forwardAccessible": false
     },
@@ -628,6 +815,15 @@
       "backwardAccessible": false
     },
     {
+      "roadSectionId": 600980862,
+      "forwardAccessible": false,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 600990624,
+      "forwardAccessible": false
+    },
+    {
       "roadSectionId": 601008374,
       "forwardAccessible": false,
       "backwardAccessible": false
@@ -635,6 +831,11 @@
     {
       "roadSectionId": 601008499,
       "forwardAccessible": true,
+      "backwardAccessible": false
+    },
+    {
+      "roadSectionId": 601009187,
+      "forwardAccessible": false,
       "backwardAccessible": false
     },
     {
@@ -717,6 +918,10 @@
       "backwardAccessible": false
     },
     {
+      "roadSectionId": 601058054,
+      "forwardAccessible": false
+    },
+    {
       "roadSectionId": 601058055,
       "forwardAccessible": false
     },
@@ -749,9 +954,13 @@
       "forwardAccessible": false
     },
     {
-      "roadSectionId": 601066893,
+      "roadSectionId": 601073533,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 601183275,
       "forwardAccessible": false,
-      "backwardAccessible": false
+      "backwardAccessible": true
     },
     {
       "roadSectionId": 601183277,
@@ -769,23 +978,16 @@
       "backwardAccessible": false
     },
     {
+      "roadSectionId": 601184997,
+      "forwardAccessible": false
+    },
+    {
+      "roadSectionId": 601185121,
+      "forwardAccessible": false
+    },
+    {
       "roadSectionId": 601191314,
       "forwardAccessible": true,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 601302848,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 601476978,
-      "forwardAccessible": false,
-      "backwardAccessible": false
-    },
-    {
-      "roadSectionId": 601476980,
-      "forwardAccessible": false,
       "backwardAccessible": false
     }
   ],
