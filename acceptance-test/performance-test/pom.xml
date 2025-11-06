@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>acceptance-test</artifactId>
-    <version>5.1.30-SNAPSHOT</version>
+    <version>5.1.31-SNAPSHOT</version>
   </parent>
   <artifactId>performance-test</artifactId>
   <name>NLS Accessibility Map - Performance test</name>
