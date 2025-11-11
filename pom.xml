@@ -61,7 +61,7 @@
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
-    <wiremock-spring-boot.version>3.10.6</wiremock-spring-boot.version>
+    <wiremock-spring-boot.version>4.0.6</wiremock-spring-boot.version>
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-24970 -->
     <netty.version>4.2.4.Final</netty.version>
