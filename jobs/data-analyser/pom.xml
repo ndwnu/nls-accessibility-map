@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>jobs</artifactId>
-    <version>5.1.32-SNAPSHOT</version>
+    <version>5.1.33-SNAPSHOT</version>
   </parent>
   <artifactId>data-analyser</artifactId>
   <name>NLS Accessibility Map data Analyser Job</name>
