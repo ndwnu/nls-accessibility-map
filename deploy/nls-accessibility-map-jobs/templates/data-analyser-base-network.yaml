@@ -81,7 +81,7 @@ spec:
   triggers:
     - type: rabbitmq
       metadata:
-        queueName: nls_accessibility_map_api_routing_network_updated
+        queueName: nls_accessibility_map_data_analyser_analyse_base_network
         mode: QueueLength
         value: '1' # Tells Keda how many queue messages a single instance processes (default 20)
       authenticationRef:
