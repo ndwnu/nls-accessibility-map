@@ -55,7 +55,7 @@
     <nls-springboot.test.graph.version>1.0.14</nls-springboot.test.graph.version>
     <jackson-geojson.version>1.14</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
-    <json-unit.version>4.1.1</json-unit.version>
+    <json-unit.version>5.0.0</json-unit.version>
     <cucumber.version>7.31.0</cucumber.version>
     <location-data-issues.version>2.2.75</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
