@@ -60,7 +60,7 @@
     <location-data-issues.version>2.2.84</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
-    <yaml-combine-maven-plugin.version>2.0.8</yaml-combine-maven-plugin.version>
+    <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
     <wiremock-spring-boot.version>4.0.8</wiremock-spring-boot.version>
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-24970 -->
