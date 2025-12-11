@@ -4,11 +4,11 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>5.1.54-SNAPSHOT</version>
+    <version>5.1.55-SNAPSHOT</version>
   </parent>
 
   <artifactId>acceptance-test</artifactId>
-  <version>5.1.54-SNAPSHOT</version>
+  <version>5.1.55-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>NLS Accessibility Map - Acceptance tests</name>
   <modules>
