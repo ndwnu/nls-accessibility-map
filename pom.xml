@@ -46,7 +46,7 @@
     <springdoc.version>2.8.14</springdoc.version>
     <stream-utils.version>1.3.1</stream-utils.version>
     <swagger-annotations.version>2.2.41</swagger-annotations.version>
-    <nls-events.version>5.4.8</nls-events.version>
+    <nls-events.version>5.5.0</nls-events.version>
     <nls-nwb-data-access.version>9.4.5</nls-nwb-data-access.version>
     <nls-springboot.version>9.3.24</nls-springboot.version>
     <nls-routing-map-matcher.version>19.0.18</nls-routing-map-matcher.version>
@@ -57,7 +57,7 @@
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>5.1.0</json-unit.version>
     <cucumber.version>7.33.0</cucumber.version>
-    <location-data-issues.version>2.2.84</location-data-issues.version>
+    <location-data-issues.version>2.2.86</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
