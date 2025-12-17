@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.validation.constraints.Null;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -14,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,9 +28,6 @@ class GenerateConfigurationTest extends ValidationTest {
                 .zone(ZoneId.of("Europe/Amsterdam"))
                 .rootExportDirectory(Path.of("tmp/tmp/"))
                 .relativeExportDirectoryPattern("'v1/windowTimes/'yyyyMMdd'/geojson/'")
-                .startLocationLatitude(30D)
-                .startLocationLongitude(10D)
-                .searchRadiusInMeters(1)
                 .addAllRoadSectionFragments(true)
                 .addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections(true)
                 .addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections(true)
@@ -65,8 +61,7 @@ class GenerateConfigurationTest extends ValidationTest {
     }
 
     @ParameterizedTest
-    @EmptySource
-    @Null
+    @NullAndEmptySource
     void validate_relativeExportDirectoryPattern_null(String relativeExportDirectoryPattern) {
 
         generateConfiguration = generateConfiguration.withRelativeExportDirectoryPattern(
@@ -75,44 +70,12 @@ class GenerateConfigurationTest extends ValidationTest {
         validate(generateConfiguration, List.of("relativeExportDirectoryPattern"), List.of("must not be blank"));
     }
 
-    @ParameterizedTest
-    @CsvSource(nullValues = "null", textBlock = """
-            0, must be greater than or equal to 1,
-            1, null
-            """)
-    void validate_searchRadiusInMeters_edgeCases(double searchRadiusInMeters, String expectedError) {
-
-        generateConfiguration = generateConfiguration.withSearchRadiusInMeters(searchRadiusInMeters);
-
-        if (Objects.nonNull(expectedError)) {
-            validate(generateConfiguration, List.of("searchRadiusInMeters"), List.of(expectedError));
-        } else {
-            validate(generateConfiguration, List.of(), List.of());
-        }
-    }
-
     @Test
     void validate_addAllRoadSectionFragments_null() {
 
         generateConfiguration = generateConfiguration.withAddAllRoadSectionFragments(null);
 
         validate(generateConfiguration, List.of("addAllRoadSectionFragments"), List.of("must not be null"));
-    }
-
-    @Test
-    void validate_startLocationLatitude_null() {
-
-        generateConfiguration = generateConfiguration.withStartLocationLatitude(null);
-
-        validate(generateConfiguration, List.of("startLocationLatitude"), List.of("must not be null"));
-    }
-
-    @Test
-    void validate_startLocationLongitude_null() {
-
-        generateConfiguration = generateConfiguration.withStartLocationLongitude(null);
-
-        validate(generateConfiguration, List.of("startLocationLongitude"), List.of("must not be null"));
     }
 
     @Test

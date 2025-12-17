@@ -24,8 +24,8 @@
       <artifactId>trafficsignclient</artifactId>
     </dependency>
     <dependency>
-      <groupId>info.picocli</groupId>
-      <artifactId>picocli-spring-boot-starter</artifactId>
+      <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>job</artifactId>
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls</groupId>

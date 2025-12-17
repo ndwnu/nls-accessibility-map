@@ -1,28 +1,6 @@
-management:
-  datadog:
-    metrics:
-      export:
-        enabled: false
+hostDatabase: localhost
+hostEventBroker: localhost
 
-  observations:
-    annotations:
-      enabled: false
-
-nu:
-  ndw:
-    nls:
-      springboot:
-        messaging:
-          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
-
-logging:
-  level:
-    root: INFO
-    nu.ndw.nls: DEBUG
 graphhopper:
   dir: .tmp/graphhopper
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
-    username: nls-maps
-    password: nls-maps
+

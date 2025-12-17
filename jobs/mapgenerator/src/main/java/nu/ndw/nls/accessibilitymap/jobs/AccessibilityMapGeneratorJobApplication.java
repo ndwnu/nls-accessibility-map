@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.jobs;
 
 import nu.ndw.nls.geojson.geometry.JtsGeoJsonMappersConfiguration;
-import org.springframework.boot.SpringApplication;
+import nu.ndw.nls.springboot.job.JobApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties
 @ConfigurationPropertiesScan
 @Import({JtsGeoJsonMappersConfiguration.class})
-public class AccessibilityMapGeneratorJobApplication {
+public class AccessibilityMapGeneratorJobApplication extends JobApplication {
 
     public static void main(String[] args) {
-        System.exit(SpringApplication.exit(SpringApplication.run(AccessibilityMapGeneratorJobApplication.class, args)));
+        run(AccessibilityMapGeneratorJobApplication.class, args);
     }
 }

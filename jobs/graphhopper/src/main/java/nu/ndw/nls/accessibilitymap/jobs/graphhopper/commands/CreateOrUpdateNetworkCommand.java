@@ -23,6 +23,7 @@ public class CreateOrUpdateNetworkCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        log.info("Creating or updating latest network");
         return messageService.receive(NlsEventType.NWB_IMPORTED_EVENT, this::start).getResult();
     }
 
