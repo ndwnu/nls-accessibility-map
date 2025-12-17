@@ -1,0 +1,43 @@
+hostSuffix: "replaced_by_pipeline"
+hostDatabase: database.${hostSuffix}
+hostEventBroker: rabbitmq.${hostSuffix}
+
+server:
+  port: 8082
+spring:
+  datasource:
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-graphhopper-job&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+  main:
+    web-application-type: servlet
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,command
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  datadog:
+    metrics:
+      export:
+        enabled: false
+  observations:
+    annotations:
+      enabled: false
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG
+
+nu:
+  ndw:
+    nls:
+      springboot:
+        messaging:
+          broker-uri: amqp://guest:guest@${hostEventBroker}:5672?heartbeat=300
+        job:
+          run-as-service: true

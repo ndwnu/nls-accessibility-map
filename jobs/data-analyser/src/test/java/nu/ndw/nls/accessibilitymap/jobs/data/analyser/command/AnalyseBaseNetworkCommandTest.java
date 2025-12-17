@@ -12,7 +12,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.NetworkAnalyserService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventType;
@@ -46,9 +45,6 @@ class AnalyseBaseNetworkCommandTest {
     private GraphhopperConfiguration graphhopperConfiguration;
 
     @Mock
-    private AnalyserConfiguration analyserConfiguration;
-
-    @Mock
     private NetworkAnalyserService networkAnalyserService;
 
     @Mock
@@ -66,7 +62,6 @@ class AnalyseBaseNetworkCommandTest {
         analyseBaseNetworkCommand = new AnalyseBaseNetworkCommand(
                 graphHopperService,
                 graphhopperConfiguration,
-                analyserConfiguration,
                 networkAnalyserService,
                 messageService);
     }
@@ -81,16 +76,16 @@ class AnalyseBaseNetworkCommandTest {
                     .build();
         });
 
-
         when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
-        when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
-        when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
-        when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
-
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
-        assertThat(new CommandLine(analyseBaseNetworkCommand).execute("--report-issues")).isZero();
+        assertThat(new CommandLine(analyseBaseNetworkCommand).execute(
+                "--start-location-latitude=2d",
+                "--start-location-longitude=3d",
+                "--search-radius-in-meters=4d",
+                "--report-issues")
+        ).isZero();
 
         verify(networkAnalyserService).analyse(
                 networkGraphHopper,
@@ -116,14 +111,15 @@ class AnalyseBaseNetworkCommandTest {
 
         when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
-        when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
-        when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
-        when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
 
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
         doThrow(new RuntimeException("test exception")).when(networkAnalyserService).analyse(any(), any());
-        assertThat(new CommandLine(analyseBaseNetworkCommand).execute("--report-issues")
+        assertThat(new CommandLine(analyseBaseNetworkCommand).execute(
+                "--start-location-latitude=2d",
+                "--start-location-longitude=3d",
+                "--search-radius-in-meters=4d",
+                "--report-issues")
         ).isOne();
 
         loggerExtension.containsLog(Level.ERROR, "Could not analyse base network because of:", "test exception");

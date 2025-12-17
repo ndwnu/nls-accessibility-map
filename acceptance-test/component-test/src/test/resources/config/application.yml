@@ -36,6 +36,75 @@ nu:
             driver:
               docker:
                 compose-file: "../../docker-compose.yml"
+              job:
+                job-configurations:
+                  DataAnalyserConfigureRabbitMQ:
+                    command: "configureRabbitMQ"
+                    run-as-service: true
+                    service-configuration:
+                      host: localhost
+                      port: 8081
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-data-analyser-configure-rabbitmq"
+                  DataAnalyserBaseNetworkAnalysis:
+                    command: "analyse-base-network"
+                    arguments:
+                      - parameter: "--search-radius-in-meters"
+                        value: "1000000000"
+                    run-as-service: true
+                    service-configuration:
+                      host: localhost
+                      port: 8081
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-base-network-analyser-job"
+                  DataAnalyserAsymmetricTrafficSignsAnalysis:
+                    command: "analyse-asymmetric-traffic-signs"
+                    arguments:
+                      - parameter: "--search-radius-in-meters"
+                        value: "1000000000"
+                      - parameter: "--update-traffic-sign-cache"
+                    run-as-service: true
+                    service-configuration:
+                      host: localhost
+                      port: 8081
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-base-network-analyser-job"
+                  GraphHopperConfigureRabbitMQ:
+                    command: "configureRabbitMQ"
+                    run-as-service: true
+                    service-configuration:
+                      host: localhost
+                      port: 8082
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-graphhopper-configure-rabbitmq"
+                  GraphHopperCreateOrUpdateNetwork:
+                    command: "createOrUpdateNetwork"
+                    run-as-service: true
+                    service-configuration:
+                      host: localhost
+                      port: 8082
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-graphhopper-job"
+                  TrafficSignUpdateCache:
+                    command: "update-cache"
+                    run-as-service: true
+                    service-configuration:
+                      host: localhost
+                      port: 8083
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-traffic-sign-update-cache-job"
+                  MapGenerator:
+                    command: "generate"
+                    arguments:
+                      - parameter: "--search-radius-in-meters"
+                        value: "1000000000"
+                      - parameter: "--update-traffic-sign-cache"
+                    run-as-service: true
+                    service-configuration:
+                      host: localhost
+                      port: 8084
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-generator-jobs"
               keycloak:
                 url: "http://localhost:8000/auth"
                 realm: "ndw"
@@ -49,11 +118,12 @@ nu:
                     - "admin"
               maven:
                 rootPomRelativePath: "../../"
-                modulesUnderTest:
-                  - "jobs/graphhopper"
-                  - "jobs/mapgenerator"
-                  - "jobs/traffic-sign"
-                  - "jobs/data-analyser"
+                modulesUnderTest: [ ]
+#                modulesUnderTest:
+#                  - "jobs/graphhopper"
+#                  - "jobs/mapgenerator"
+#                  - "jobs/traffic-sign"
+#                  - "jobs/data-analyser"
               wiremock:
                 host: ${hostWireMock}
                 port: 8888

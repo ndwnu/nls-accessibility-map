@@ -1,19 +1,14 @@
-management:
-  datadog:
-    metrics:
-      export:
-        enabled: false
+hostDatabase: localhost
+hostEventBroker: localhost
+
+graphhopper:
+  dir: .tmp/graphhopper
+
+
 nu:
   ndw:
     nls:
-      springboot:
-        messaging:
-          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
       accessibilitymap:
-        trafficsignclient:
-          api:
-            url: http://localhost:8888/api/rest/static-road-data/traffic-signs/v4
-            town-codes: GM0307
         trafficsigns:
           cache:
             folder: "./.tmp/trafficsigns/"
@@ -21,27 +16,3 @@ nu:
           generate:
             root-export-directory: .tmp/map-generation-destination
             prettyPrintJson: true
-logging:
-  level:
-    root: INFO
-    nu.ndw.nls: DEBUG
-graphhopper:
-  dir: .tmp/graphhopper
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
-    username: nls-maps
-    password: nls-maps
-  cloud:
-    openfeign:
-      micrometer:
-        enabled: false
-
-feign:
-  client:
-    base-url: http://localhost:8080/api
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: basic
