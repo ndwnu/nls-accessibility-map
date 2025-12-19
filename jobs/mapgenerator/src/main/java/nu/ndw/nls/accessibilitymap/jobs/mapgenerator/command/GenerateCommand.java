@@ -6,8 +6,10 @@ import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -32,6 +34,10 @@ public class GenerateCommand implements Callable<Integer> {
     private final GenerateConfiguration generateConfiguration;
 
     private final ClockService clockService;
+
+    private final TrafficSignCacheUpdater trafficSignCacheUpdater;
+
+    private final GraphHopperService graphHopperService;
 
     @Option(names = {"-t", "--traffic-sign"},
             description = "Traffic signs to generate the map for.",
@@ -63,8 +69,32 @@ public class GenerateCommand implements Callable<Integer> {
             defaultValue = "0.0005")
     private double polygonMaxDistanceBetweenPoints;
 
+    @Option(names = {"--start-location-latitude"},
+            description = "Start location latitude",
+            required = true)
+    private double startLocationLatitude;
+
+    @Option(names = {"--start-location-longitude"},
+            description = "Start location longitude",
+            required = true)
+    private double startLocationLongitude;
+
+    @Option(names = {"--search-radius-in-meters"},
+            description = "Search radius in meters",
+            required = true)
+    private double searchRadiusInMeters;
+
+    @Option(names = {"--update-traffic-sign-cache"},
+            description = "Whether or not to update traffic sign cache. Only useful when running in as a service mode",
+            defaultValue = "false")
+    private boolean updateTrafficSignCache;
+
     @Override
     public Integer call() {
+
+        if (updateTrafficSignCache) {
+            trafficSignCacheUpdater.updateCache(graphHopperService.getNetworkGraphHopper());
+        }
 
         try {
             if (publishEvents && trafficSignTypes.size() > 1) {
@@ -78,9 +108,9 @@ public class GenerateCommand implements Callable<Integer> {
                     .accessibilityRequest(AccessibilityRequest.builder()
                             .timestamp(startTime)
                             .trafficSignTypes(trafficSignTypes)
-                            .startLocationLatitude(generateConfiguration.startLocationLatitude())
-                            .startLocationLongitude(generateConfiguration.startLocationLongitude())
-                            .searchRadiusInMeters(generateConfiguration.searchRadiusInMeters())
+                            .startLocationLatitude(startLocationLatitude)
+                            .startLocationLongitude(startLocationLongitude)
+                            .searchRadiusInMeters(searchRadiusInMeters)
                             .trafficSignTextSignTypes(
                                     includeOnlyTimeWindowedSigns
                                             ? Set.of(TextSignType.TIME_PERIOD)

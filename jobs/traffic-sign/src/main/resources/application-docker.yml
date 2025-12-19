@@ -1,6 +1,6 @@
 hostDatabase: nls-postgres
 hostEventBroker: nls-rabbitmq
-
+hostWiremock: accessibility-wiremock-stub
 
 spring:
   main:

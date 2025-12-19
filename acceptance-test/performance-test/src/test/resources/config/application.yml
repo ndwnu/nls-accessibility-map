@@ -2,6 +2,11 @@ host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
 
+jobEndpoints:
+  trafficSign:
+    host: ${host}
+    port: 8083
+
 spring:
   application:
     name: nls-accessibility-map-generator-jobs-performance-test
@@ -36,6 +41,16 @@ nu:
             driver:
               docker:
                 compose-file: "../../docker-compose.yml"
+              job:
+                job-configurations:
+                  trafficSignUpdateCache:
+                    command: "update-cache"
+                    run-as-service: false
+                    service-configuration:
+                      host: ${jobEndpoints.trafficSign.host}
+                      port: ${jobEndpoints.trafficSign.port}
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-traffic-sign-update-cache-job"
               keycloak:
                 url: "http://localhost:8000/auth"
                 realm: "ndw"

@@ -68,11 +68,6 @@ nu:
             oauth2:
               registration-id: sa-nls-location-data-issues-api
       accessibilitymap:
-        jobs:
-          analyse:
-            start-location-latitude: 52.12096528507054
-            start-location-longitude: 5.334845116067081
-            search-radius-in-meters: 1_000_000_000
         trafficsigns:
           cache:
             folder: "trafficsigns"

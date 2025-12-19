@@ -8,14 +8,17 @@ import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services.MapGeneratorService;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,13 +52,28 @@ class GenerateCommandTest {
     @Mock
     private GraphhopperMetaData graphhopperMetaData;
 
+    @Mock
+    private TrafficSignCacheUpdater trafficSignCacheUpdater;
+
+    @Mock
+    private GraphHopperService graphHopperService;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
     @BeforeEach
     void setUp() {
 
-        generateCommand = new GenerateCommand(mapGeneratorService, graphhopperConfiguration, generateConfiguration, clockService);
+        generateCommand = new GenerateCommand(
+                mapGeneratorService,
+                graphhopperConfiguration,
+                generateConfiguration,
+                clockService,
+                trafficSignCacheUpdater,
+                graphHopperService);
     }
 
     @ParameterizedTest
@@ -68,17 +86,23 @@ class GenerateCommandTest {
         when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(generateConfiguration.startLocationLatitude()).thenReturn(1d);
-        when(generateConfiguration.startLocationLongitude()).thenReturn(2d);
-        when(generateConfiguration.searchRadiusInMeters()).thenReturn(3d);
+
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
         assertThat(new CommandLine(generateCommand)
-                .execute("--export-name=%s".formatted(trafficSignType.name()),
+                .execute(
+                        "--update-traffic-sign-cache",
+                        "--start-location-latitude=1d",
+                        "--start-location-longitude=2d",
+                        "--search-radius-in-meters=3d",
+                        "--export-name=%s".formatted(trafficSignType.name()),
                         "--traffic-sign=%s".formatted(trafficSignType.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
                         "--include-only-time-windowed-signs",
                         "--publish-events")
         ).isZero();
+
+        verify(trafficSignCacheUpdater).updateCache(networkGraphHopper);
 
         ArgumentCaptor<ExportProperties> exportPropertiesCaptor = ArgumentCaptor.forClass(
                 ExportProperties.class);
@@ -104,12 +128,13 @@ class GenerateCommandTest {
         when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(generateConfiguration.startLocationLatitude()).thenReturn(1d);
-        when(generateConfiguration.startLocationLongitude()).thenReturn(2d);
-        when(generateConfiguration.searchRadiusInMeters()).thenReturn(3d);
 
         assertThat(new CommandLine(generateCommand)
-                .execute("--export-name=%s".formatted(trafficSignType.name()),
+                .execute(
+                        "--start-location-latitude=1d",
+                        "--start-location-longitude=2d",
+                        "--search-radius-in-meters=3d",
+                        "--export-name=%s".formatted(trafficSignType.name()),
                         "--traffic-sign=%s".formatted(trafficSignType.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
                         "--publish-events")
@@ -139,12 +164,13 @@ class GenerateCommandTest {
         when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-        when(generateConfiguration.startLocationLatitude()).thenReturn(1d);
-        when(generateConfiguration.startLocationLongitude()).thenReturn(2d);
-        when(generateConfiguration.searchRadiusInMeters()).thenReturn(3d);
 
         assertThat(new CommandLine(generateCommand)
-                .execute("--export-name=%s".formatted(trafficSignType.name()),
+                .execute(
+                        "--start-location-latitude=1d",
+                        "--start-location-longitude=2d",
+                        "--search-radius-in-meters=3d",
+                        "--export-name=%s".formatted(trafficSignType.name()),
                         "--traffic-sign=%s".formatted(trafficSignType.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
                         "--include-only-time-windowed-signs")
@@ -170,7 +196,11 @@ class GenerateCommandTest {
         when(clockService.now()).thenThrow(new RuntimeException("MyException"));
 
         assertThat(new CommandLine(generateCommand)
-                .execute("--export-name=%s".formatted(TrafficSignType.C6.name()),
+                .execute(
+                        "--start-location-latitude=1d",
+                        "--start-location-longitude=2d",
+                        "--search-radius-in-meters=3d",
+                        "--export-name=%s".formatted(TrafficSignType.C6.name()),
                         "--traffic-sign=%s".formatted(TrafficSignType.C6.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
                         "--include-only-time-windowed-signs",
@@ -188,7 +218,11 @@ class GenerateCommandTest {
     void call_exceptionMultipleTrafficSigns() {
 
         assertThat(new CommandLine(generateCommand)
-                .execute("--export-name=%s".formatted(TrafficSignType.C6.name()),
+                .execute(
+                        "--start-location-latitude=1d",
+                        "--start-location-longitude=2d",
+                        "--search-radius-in-meters=3d",
+                        "--export-name=%s".formatted(TrafficSignType.C6.name()),
                         "--traffic-sign=%s".formatted(TrafficSignType.C6.name()),
                         "--traffic-sign=%s".formatted(TrafficSignType.C7.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
@@ -229,5 +263,4 @@ class GenerateCommandTest {
                 "Generating export"
         );
     }
-
 }

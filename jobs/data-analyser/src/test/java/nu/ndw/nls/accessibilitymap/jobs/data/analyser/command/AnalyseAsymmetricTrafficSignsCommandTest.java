@@ -17,8 +17,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseAsymmetricTrafficSignsConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.TrafficSignAnalyserService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
@@ -50,9 +50,6 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
     private GraphhopperConfiguration graphhopperConfiguration;
 
     @Mock
-    private AnalyserConfiguration analyserConfiguration;
-
-    @Mock
     private ClockService clockService;
 
     @Mock
@@ -60,6 +57,9 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
 
     @Mock
     private GraphhopperMetaData graphhopperMetaData;
+
+    @Mock
+    private TrafficSignCacheUpdater trafficSignCacheUpdater;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -70,9 +70,9 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
         analyseAsymmetricTrafficSignsCommand = new AnalyseAsymmetricTrafficSignsCommand(
                 graphHopperService,
                 graphhopperConfiguration,
-                analyserConfiguration,
                 clockService,
-                trafficSignAnalyserService);
+                trafficSignAnalyserService,
+                trafficSignCacheUpdater);
     }
 
     @ParameterizedTest
@@ -85,17 +85,19 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
 
-        when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
-        when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
-        when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
-
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
         assertThat(new CommandLine(analyseAsymmetricTrafficSignsCommand)
-                .execute("--traffic-signs=%s".formatted(trafficSignType.name()),
+                .execute(
+                        "--traffic-signs=%s".formatted(trafficSignType.name()),
+                        "--update-traffic-sign-cache",
+                        "--start-location-latitude=2d",
+                        "--start-location-longitude=3d",
+                        "--search-radius-in-meters=4d",
                         "--report-issues")
         ).isZero();
 
+        verify(trafficSignCacheUpdater).updateCache(networkGraphHopper);
         verify(trafficSignAnalyserService).analyse(
                 networkGraphHopper,
                 AnalyseAsymmetricTrafficSignsConfiguration.builder()
@@ -122,15 +124,15 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
 
-        when(analyserConfiguration.startLocationLatitude()).thenReturn(2d);
-        when(analyserConfiguration.startLocationLongitude()).thenReturn(3d);
-        when(analyserConfiguration.searchRadiusInMeters()).thenReturn(4d);
-
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
         assertThat(new CommandLine(analyseAsymmetricTrafficSignsCommand)
-                .execute("--traffic-signs=%s,%s".formatted(TrafficSignType.C6.name(), TrafficSignType.C7.name()),
+                .execute(
+                        "--traffic-signs=%s,%s".formatted(TrafficSignType.C6.name(), TrafficSignType.C7.name()),
                         "--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
+                        "--start-location-latitude=2d",
+                        "--start-location-longitude=3d",
+                        "--search-radius-in-meters=4d",
                         "--report-issues")
         ).isZero();
 
@@ -149,7 +151,11 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
         when(clockService.now()).thenThrow(new RuntimeException("test exception"));
 
         assertThat(new CommandLine(analyseAsymmetricTrafficSignsCommand)
-                .execute("--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
+                .execute(
+                        "--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
+                        "--start-location-latitude=2d",
+                        "--start-location-longitude=3d",
+                        "--search-radius-in-meters=4d",
                         "--report-issues")
         ).isOne();
 

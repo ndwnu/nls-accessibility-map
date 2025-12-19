@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.data.analyser.configuration.AnalyserConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.NetworkAnalyserService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventType;
@@ -25,8 +24,6 @@ public class AnalyseBaseNetworkCommand implements Callable<Integer> {
 
     private final GraphhopperConfiguration graphhopperConfiguration;
 
-    private final AnalyserConfiguration analyserConfiguration;
-
     private final NetworkAnalyserService networkAnalyserService;
 
     private final MessageService messageService;
@@ -35,6 +32,21 @@ public class AnalyseBaseNetworkCommand implements Callable<Integer> {
             description = "Whether it should report found issues",
             defaultValue = "false")
     private boolean reportIssues;
+
+    @Option(names = {"--start-location-latitude"},
+            description = "Start location latitude",
+            required = true)
+    private double startLocationLatitude;
+
+    @Option(names = {"--start-location-longitude"},
+            description = "Start location longitude",
+            required = true)
+    private double startLocationLongitude;
+
+    @Option(names = {"--search-radius-in-meters"},
+            description = "Search radius in meters",
+            required = true)
+    private double searchRadiusInMeters;
 
     @Override
     public Integer call() {
@@ -46,9 +58,9 @@ public class AnalyseBaseNetworkCommand implements Callable<Integer> {
 
         try {
             AnalyseNetworkConfiguration analyseNetworkConfiguration = AnalyseNetworkConfiguration.builder()
-                    .startLocationLatitude(analyserConfiguration.startLocationLatitude())
-                    .startLocationLongitude(analyserConfiguration.startLocationLongitude())
-                    .searchRadiusInMeters(analyserConfiguration.searchRadiusInMeters())
+                    .startLocationLatitude(startLocationLatitude)
+                    .startLocationLongitude(startLocationLongitude)
+                    .searchRadiusInMeters(searchRadiusInMeters)
                     .nwbVersion(graphhopperConfiguration.getMetaData().nwbVersion())
                     .reportIssues(reportIssues)
                     .build();

@@ -3,18 +3,16 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job;
 import java.io.File;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.configuration.MapGenerationJobDriverConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
-import nu.ndw.nls.springboot.test.component.driver.docker.DockerDriver;
-import nu.ndw.nls.springboot.test.component.driver.docker.dto.Environment;
+import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
+import nu.ndw.nls.springboot.test.component.driver.job.dto.JobArgument;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.springframework.stereotype.Component;
 
@@ -24,55 +22,69 @@ public class MapGenerationJobDriver implements StateManagement {
 
     private final MapGenerationJobDriverConfiguration mapGenerationJobDriverConfiguration;
 
-    private final DockerDriver dockerDriver;
-
     private final FileService fileService;
+
+    private final JobDriver jobDriver;
 
     private MapGeneratorJobConfiguration lastJobExecution;
 
     public void runMapGenerationJobDebugMode(MapGeneratorJobConfiguration jobConfiguration) {
 
         lastJobExecution = jobConfiguration;
-        dockerDriver.startServiceAndWaitToBeFinished(
-                "nls-accessibility-map-generator-jobs",
-                List.of(
-                        Environment.builder()
-                                .key("COMMAND")
-                                .value(buildCommandArguments(jobConfiguration))
-                                .build(),
-                        Environment.builder()
-                                .key("NU_NDW_NLS_ACCESSIBILITYMAP_JOBS_GENERATE_STARTLOCATIONLATITUDE")
-                                .value(String.valueOf(jobConfiguration.startNode().getLatitude()))
-                                .build(),
-                        Environment.builder()
-                                .key("NU_NDW_NLS_ACCESSIBILITYMAP_JOBS_GENERATE_STARTLOCATIONLONGITUDE")
-                                .value(String.valueOf(jobConfiguration.startNode().getLongitude()))
-                                .build(),
-                        Environment.builder()
-                                .key("NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNCLIENT_API_TOWNCODES")
-                                .value("TEST")
-                                .build()));
+
+        jobDriver.run(
+                "mapGenerator",
+                Stream.concat(
+                        Stream.of(
+                                JobArgument.builder()
+                                        .parameter("--start-location-latitude")
+                                        .value(String.valueOf(jobConfiguration.startNode().getLatitude()))
+                                        .build(),
+                                JobArgument.builder()
+                                        .parameter("--start-location-longitude")
+                                        .value(String.valueOf(jobConfiguration.startNode().getLongitude()))
+                                        .build()),
+                        buildArgumentsFromJobConfiguration(jobConfiguration)).toList()
+        );
     }
 
-    public String buildCommandArguments(MapGeneratorJobConfiguration jobConfiguration) {
+    private Stream<JobArgument> buildArgumentsFromJobConfiguration(MapGeneratorJobConfiguration jobConfiguration) {
+        ArrayList<JobArgument> arguments = new ArrayList<>();
+        arguments.add(JobArgument.builder()
+                .parameter("--export-name")
+                .value(jobConfiguration.exportName())
+                .build());
 
-        return "generate "
-                + "--export-name=%s ".formatted(jobConfiguration.exportName())
-                + createRepeatableArguments(jobConfiguration.trafficSignTypes(), jobConfiguration.exportTypes())
-                + (jobConfiguration.includeOnlyWindowSigns() ? " --include-only-time-windowed-signs" : "")
-                + (jobConfiguration.publishEvents() ? " --publish-events" : "")
-                + (Objects.nonNull(jobConfiguration.polygonMaxDistanceBetweenPoints())
-                ? " --polygon-max-distance-between-points=%s".formatted(jobConfiguration.polygonMaxDistanceBetweenPoints()) : "");
-    }
+        jobConfiguration.trafficSignTypes().forEach(trafficSignType -> {
+            arguments.add(JobArgument.builder()
+                    .parameter("--traffic-sign")
+                    .value(trafficSignType)
+                    .build());
+        });
 
-    private static String createRepeatableArguments(Set<String> trafficSingTypes, Set<String> exportTypes) {
+        jobConfiguration.exportTypes().forEach(exportType -> {
+            arguments.add(JobArgument.builder()
+                    .parameter("--export-type")
+                    .value(exportType)
+                    .build());
+        });
 
-        return Stream.of(exportTypes.stream()
-                                .map("--export-type=%s"::formatted),
-                        trafficSingTypes.stream()
-                                .map("--traffic-sign=%s"::formatted))
-                .flatMap(i -> i)
-                .collect(Collectors.joining(" "));
+        if (jobConfiguration.includeOnlyWindowSigns()) {
+            arguments.add(JobArgument.builder().parameter("--include-only-time-windowed-signs").build());
+        }
+
+        if (jobConfiguration.publishEvents()) {
+            arguments.add(JobArgument.builder().parameter("--publish-events").build());
+        }
+
+        if (Objects.nonNull(jobConfiguration.polygonMaxDistanceBetweenPoints())) {
+            arguments.add(JobArgument.builder()
+                    .parameter("--polygon-max-distance-between-points")
+                    .value(String.valueOf(jobConfiguration.polygonMaxDistanceBetweenPoints()))
+                    .build());
+        }
+
+        return arguments.stream();
     }
 
     public String getLastGeneratedGeoJson() {

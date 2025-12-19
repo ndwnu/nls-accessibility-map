@@ -17,17 +17,11 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.jobs.generate")
 @Validated
 public record GenerateConfiguration(
-        @NotNull Double startLocationLatitude,
-
-        @NotNull Double startLocationLongitude,
-
         @NotNull ZoneId zone,
 
         @NotNull Path rootExportDirectory,
 
         @NotBlank String relativeExportDirectoryPattern,
-
-        @Min(1) double searchRadiusInMeters,
 
         /*
          * Is mutually exclusive with:

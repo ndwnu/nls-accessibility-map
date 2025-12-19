@@ -7,7 +7,6 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.TrafficSignClientConfigurat
 import nu.ndw.nls.geojson.geometry.JtsGeoJsonMappersConfiguration;
 import nu.ndw.nls.locationdataissuesapi.client.feign.LocationDataIssuesApiClientConfiguration;
 import nu.ndw.nls.springboot.datadog.DatadogConfiguration;
-import nu.ndw.nls.springboot.messaging.MessagingConfig;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +25,6 @@ class ApplicationConfigurationTest {
                 importAnnotation -> assertThat(importAnnotation.value()).containsExactlyInAnyOrder(
                         AccessibilityConfiguration.class,
                         DatadogConfiguration.class,
-                        MessagingConfig.class,
                         TrafficSignClientConfiguration.class,
                         LocationDataIssuesApiClientConfiguration.class,
                         JtsGeoJsonMappersConfiguration.class));
