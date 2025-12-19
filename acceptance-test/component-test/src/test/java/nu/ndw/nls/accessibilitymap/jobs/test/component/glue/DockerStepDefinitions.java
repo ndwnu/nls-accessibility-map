@@ -28,7 +28,7 @@ public class DockerStepDefinitions {
     @When("run DataAnalyser RabbitMQ is configured")
     public void runDataAnalyserJobConfigureRabbitMQ() {
 
-        jobDriver.runJob("dataAnalyserConfigureRabbitMQ");
+        jobDriver.run("dataAnalyserConfigureRabbitMQ");
     }
 
     @When("run AsymmetricTrafficSignsAnalysis with configuration")
@@ -46,18 +46,18 @@ public class DockerStepDefinitions {
     @When("run TrafficSignUpdateCache")
     public void runTrafficSignAnalyser() {
 
-        jobDriver.runJob("trafficSignUpdateCache");
+        jobDriver.run("trafficSignUpdateCache");
     }
 
     @When("run GraphhopperJob createOrUpdateNetwork is executed")
     public void runGraphhopperJobCreateOrUpdateNetwork() {
 
-        jobDriver.runJob("graphHopperCreateOrUpdateNetwork");
+        jobDriver.run("graphHopperCreateOrUpdateNetwork");
     }
 
     @When("run GraphhopperJob RabbitMQ is configured")
     public void runGraphhopperJobConfigureRabbitMQ() {
 
-        jobDriver.runJob("graphHopperConfigureRabbitMQ");
+        jobDriver.run("graphHopperConfigureRabbitMQ");
     }
 }

@@ -17,7 +17,7 @@ public class DataAnalyserJobDriver implements StateManagement {
     private final JobDriver jobDriver;
 
     public void runBaseNetworkAnalysisJob(BaseNetworkAnalyserJobConfiguration jobConfiguration) {
-        jobDriver.runJob(
+        jobDriver.run(
                 "dataAnalyserBaseNetworkAnalysis",
                 Stream.concat(
                         Stream.of(
@@ -34,7 +34,7 @@ public class DataAnalyserJobDriver implements StateManagement {
     }
 
     public void runAsymmetricTrafficSignsAnalysis(TrafficSignAnalyserJobConfiguration jobConfiguration) {
-        jobDriver.runJob(
+        jobDriver.run(
                 "dataAnalyserAsymmetricTrafficSignsAnalysis",
                 Stream.concat(
                         Stream.of(

@@ -32,7 +32,7 @@ public class MapGenerationJobDriver implements StateManagement {
 
         lastJobExecution = jobConfiguration;
 
-        jobDriver.runJob(
+        jobDriver.run(
                 "mapGenerator",
                 Stream.concat(
                         Stream.of(
