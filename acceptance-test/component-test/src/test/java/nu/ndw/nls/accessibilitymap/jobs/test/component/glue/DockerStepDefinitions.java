@@ -4,11 +4,11 @@ import io.cucumber.java.en.When;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.DataAnalyserJobDriver;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.JobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BaseNetworkAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
+import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 
 @RequiredArgsConstructor
 public class DockerStepDefinitions {
@@ -28,7 +28,7 @@ public class DockerStepDefinitions {
     @When("run DataAnalyser RabbitMQ is configured")
     public void runDataAnalyserJobConfigureRabbitMQ() {
 
-        jobDriver.runJob("DataAnalyserConfigureRabbitMQ");
+        jobDriver.runJob("dataAnalyserConfigureRabbitMQ");
     }
 
     @When("run AsymmetricTrafficSignsAnalysis with configuration")
@@ -46,18 +46,18 @@ public class DockerStepDefinitions {
     @When("run TrafficSignUpdateCache")
     public void runTrafficSignAnalyser() {
 
-        jobDriver.runJob("TrafficSignUpdateCache");
+        jobDriver.runJob("trafficSignUpdateCache");
     }
 
     @When("run GraphhopperJob createOrUpdateNetwork is executed")
     public void runGraphhopperJobCreateOrUpdateNetwork() {
 
-        jobDriver.runJob("GraphHopperCreateOrUpdateNetwork");
+        jobDriver.runJob("graphHopperCreateOrUpdateNetwork");
     }
 
     @When("run GraphhopperJob RabbitMQ is configured")
     public void runGraphhopperJobConfigureRabbitMQ() {
 
-        jobDriver.runJob("GraphHopperConfigureRabbitMQ");
+        jobDriver.runJob("graphHopperConfigureRabbitMQ");
     }
 }

@@ -3,9 +3,10 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.dto.JobArgument;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BaseNetworkAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
+import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
+import nu.ndw.nls.springboot.test.component.driver.job.dto.JobArgument;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class DataAnalyserJobDriver implements StateManagement {
 
     public void runBaseNetworkAnalysisJob(BaseNetworkAnalyserJobConfiguration jobConfiguration) {
         jobDriver.runJob(
-                "DataAnalyserBaseNetworkAnalysis",
+                "dataAnalyserBaseNetworkAnalysis",
                 Stream.concat(
                         Stream.of(
                                 JobArgument.builder()
@@ -34,7 +35,7 @@ public class DataAnalyserJobDriver implements StateManagement {
 
     public void runAsymmetricTrafficSignsAnalysis(TrafficSignAnalyserJobConfiguration jobConfiguration) {
         jobDriver.runJob(
-                "DataAnalyserAsymmetricTrafficSignsAnalysis",
+                "dataAnalyserAsymmetricTrafficSignsAnalysis",
                 Stream.concat(
                         Stream.of(
                                 JobArgument.builder()

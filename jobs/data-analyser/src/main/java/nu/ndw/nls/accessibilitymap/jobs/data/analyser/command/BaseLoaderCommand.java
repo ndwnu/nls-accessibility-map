@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.data.analyser.command;
 
-import nu.ndw.nls.springboot.job.annotation.ConditionalOnRunWithCommandLineRunner;
+import nu.ndw.nls.springboot.job.annotation.ConditionalOnNotRunningAsService;
 import nu.ndw.nls.springboot.job.command.AbstractCommand;
 import nu.ndw.nls.springboot.messaging.commands.ConfigureRabbitMQCommand;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import picocli.CommandLine.IFactory;
  * That's why there's this empty container class.
  */
 @Component
-@ConditionalOnRunWithCommandLineRunner
+@ConditionalOnNotRunningAsService
 @Command(name = "jobs", subcommands = {
         AnalyseAsymmetricTrafficSignsCommand.class,
         AnalyseBaseNetworkCommand.class,
