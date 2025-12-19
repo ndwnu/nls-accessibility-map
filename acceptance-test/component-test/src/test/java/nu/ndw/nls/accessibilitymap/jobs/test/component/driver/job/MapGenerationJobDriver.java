@@ -9,9 +9,10 @@ import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.configuration.MapGenerationJobDriverConfiguration;
-import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.dto.JobArgument;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
+import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
+import nu.ndw.nls.springboot.test.component.driver.job.dto.JobArgument;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,7 @@ public class MapGenerationJobDriver implements StateManagement {
         lastJobExecution = jobConfiguration;
 
         jobDriver.runJob(
-                "MapGenerator",
+                "mapGenerator",
                 Stream.concat(
                         Stream.of(
                                 JobArgument.builder()

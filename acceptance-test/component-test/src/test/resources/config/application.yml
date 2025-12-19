@@ -2,6 +2,20 @@ host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
 
+jobEndpoints:
+  dataAnalyser:
+    host: ${host}
+    port: 8081
+  graphHopper:
+    host: ${host}
+    port: 8082
+  trafficSign:
+    host: ${host}
+    port: 8083
+  mapGenerator:
+    host: ${host}
+    port: 8084
+
 spring:
   application:
     name: nls-accessibility-map-generator-jobs-component-test
@@ -38,71 +52,71 @@ nu:
                 compose-file: "../../docker-compose.yml"
               job:
                 job-configurations:
-                  DataAnalyserConfigureRabbitMQ:
+                  dataAnalyserConfigureRabbitMQ:
                     command: "configureRabbitMQ"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
-                      host: localhost
-                      port: 8081
+                      host: ${jobEndpoints.dataAnalyser.host}
+                      port: ${jobEndpoints.dataAnalyser.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-data-analyser-configure-rabbitmq"
-                  DataAnalyserBaseNetworkAnalysis:
+                  dataAnalyserBaseNetworkAnalysis:
                     command: "analyse-base-network"
                     arguments:
                       - parameter: "--search-radius-in-meters"
                         value: "1000000000"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
-                      host: localhost
-                      port: 8081
+                      host: ${jobEndpoints.dataAnalyser.host}
+                      port: ${jobEndpoints.dataAnalyser.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-base-network-analyser-job"
-                  DataAnalyserAsymmetricTrafficSignsAnalysis:
+                  dataAnalyserAsymmetricTrafficSignsAnalysis:
                     command: "analyse-asymmetric-traffic-signs"
                     arguments:
                       - parameter: "--search-radius-in-meters"
                         value: "1000000000"
                       - parameter: "--update-traffic-sign-cache"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
-                      host: localhost
-                      port: 8081
+                      host: ${jobEndpoints.dataAnalyser.host}
+                      port: ${jobEndpoints.dataAnalyser.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-base-network-analyser-job"
-                  GraphHopperConfigureRabbitMQ:
+                  graphHopperConfigureRabbitMQ:
                     command: "configureRabbitMQ"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
-                      host: localhost
-                      port: 8082
+                      host: ${jobEndpoints.graphHopper.host}
+                      port: ${jobEndpoints.graphHopper.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-graphhopper-configure-rabbitmq"
-                  GraphHopperCreateOrUpdateNetwork:
+                  graphHopperCreateOrUpdateNetwork:
                     command: "createOrUpdateNetwork"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
-                      host: localhost
-                      port: 8082
+                      host: ${jobEndpoints.graphHopper.host}
+                      port: ${jobEndpoints.graphHopper.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-graphhopper-job"
-                  TrafficSignUpdateCache:
+                  trafficSignUpdateCache:
                     command: "update-cache"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
-                      host: localhost
-                      port: 8083
+                      host: ${jobEndpoints.trafficSign.host}
+                      port: ${jobEndpoints.trafficSign.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-traffic-sign-update-cache-job"
-                  MapGenerator:
+                  mapGenerator:
                     command: "generate"
                     arguments:
                       - parameter: "--search-radius-in-meters"
                         value: "1000000000"
                       - parameter: "--update-traffic-sign-cache"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
-                      host: localhost
-                      port: 8084
+                      host: ${jobEndpoints.mapGenerator.host}
+                      port: ${jobEndpoints.mapGenerator.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-generator-jobs"
               keycloak:
@@ -118,12 +132,11 @@ nu:
                     - "admin"
               maven:
                 rootPomRelativePath: "../../"
-                modulesUnderTest: [ ]
-#                modulesUnderTest:
-#                  - "jobs/graphhopper"
-#                  - "jobs/mapgenerator"
-#                  - "jobs/traffic-sign"
-#                  - "jobs/data-analyser"
+                modulesUnderTest:
+                  - "jobs/graphhopper"
+                  - "jobs/mapgenerator"
+                  - "jobs/traffic-sign"
+                  - "jobs/data-analyser"
               wiremock:
                 host: ${hostWireMock}
                 port: 8888

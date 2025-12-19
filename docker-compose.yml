@@ -88,7 +88,6 @@ services:
     build: docker/nls-accessibility-map-data-analyser-job
     environment:
       - SPRING_PROFILES_ACTIVE=acceptance-test,docker,job-base-network
-      - COMMAND=analyse-base-network
     volumes:
       - ./.tmp/graphhopper:/application/graphhopper
       - ./.tmp/trafficsigns:/application/trafficsigns
