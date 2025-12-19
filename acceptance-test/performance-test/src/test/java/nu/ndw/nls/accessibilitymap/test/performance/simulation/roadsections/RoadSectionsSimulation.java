@@ -29,6 +29,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.Traffi
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
+import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.state.StateManager;
 import nu.ndw.nls.springboot.test.graph.dto.Edge;
@@ -52,6 +53,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private final AccessibilityMapApiClient accessibilityMapApiClient;
 
+    private final JobDriver jobDriver;
+
     private Graph graph;
 
     public RoadSectionsSimulation(
@@ -59,7 +62,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
             AccessibilityMapApiClient accessibilityMapApiClient,
             GraphHopperTestDataService graphHopperTestDataService,
             TrafficSignDriver trafficSignDriver,
-            TrafficSignTestDataService trafficSignTestDataService
+            TrafficSignTestDataService trafficSignTestDataService,
+            JobDriver jobDriver
     ) {
 
         super(RoadSectionsSimulationConfiguration.class);
@@ -69,6 +73,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         this.trafficSignDriver = trafficSignDriver;
         this.trafficSignTestDataService = trafficSignTestDataService;
         this.accessibilityMapApiClient = accessibilityMapApiClient;
+        this.jobDriver = jobDriver;
     }
 
     @Override
@@ -117,8 +122,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .toList();
 
         trafficSignDriver.stubTrafficSignRequest(trafficSigns);
-        // TODO: add jobDriver
-//        trafficSignJobDriver.runTrafficSignUpdateCacheJob();
+        jobDriver.run("trafficSignUpdateCache");
         trafficSignsDataIsReloaded();
     }
 
