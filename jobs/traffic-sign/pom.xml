@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>jobs</artifactId>
-    <version>5.1.57-SNAPSHOT</version>
+    <version>5.1.60-SNAPSHOT</version>
   </parent>
   <artifactId>traffic-sign</artifactId>
   <name>NLS Accessibility Map Traffic Sign Analyser Job</name>
