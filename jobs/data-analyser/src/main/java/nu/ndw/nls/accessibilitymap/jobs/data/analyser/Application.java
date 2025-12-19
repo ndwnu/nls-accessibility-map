@@ -1,21 +1,10 @@
 package nu.ndw.nls.accessibilitymap.jobs.data.analyser;
 
-import nu.ndw.nls.geojson.geometry.JtsGeoJsonMappersConfiguration;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.context.annotation.Import;
+import nu.ndw.nls.springboot.job.JobApplication;
 
-@SpringBootApplication
-@EnableConfigurationProperties
-@ConfigurationPropertiesScan
-@Import({JtsGeoJsonMappersConfiguration.class})
-@EnableFeignClients
-public class Application {
+public class Application extends JobApplication {
 
     public static void main(String[] args) {
-        System.exit(SpringApplication.exit(SpringApplication.run(Application.class, args)));
+        run(Application.class, args);
     }
 }

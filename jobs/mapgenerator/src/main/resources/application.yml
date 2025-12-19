@@ -45,8 +45,6 @@ nu:
       accessibilitymap:
         jobs:
           generate:
-            start-location-latitude: 52.12096528507054
-            start-location-longitude: 5.334845116067081
             zone: "Europe/Amsterdam"
             root-export-directory: "/application/maps"
             relative-export-directory-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/'"

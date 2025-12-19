@@ -40,8 +40,6 @@ spec:
                 value: {{ .Values.baseNetworkAnalyser.command }}
               - name: SPRING_PROFILES_ACTIVE
                 value: job-base-network,{{ .Values.environment }}
-              - name: NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP
-                value: "false"
               {{- /*
               Added as env variable so the dd init container appends the settings instead of an overwrite
               */}}

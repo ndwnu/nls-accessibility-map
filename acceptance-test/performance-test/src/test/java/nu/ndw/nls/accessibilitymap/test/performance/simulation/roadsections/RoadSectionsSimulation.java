@@ -23,13 +23,13 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperTestDataService;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.job.TrafficSignJobDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignTestDataService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
+import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.state.StateManager;
 import nu.ndw.nls.springboot.test.graph.dto.Edge;
@@ -49,20 +49,21 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private final TrafficSignTestDataService trafficSignTestDataService;
 
-    private final TrafficSignJobDriver trafficSignJobDriver;
-
     private final StateManager stateManager;
 
     private final AccessibilityMapApiClient accessibilityMapApiClient;
 
+    private final JobDriver jobDriver;
+
     private Graph graph;
 
-    public RoadSectionsSimulation(StateManager stateManager,
+    public RoadSectionsSimulation(
+            StateManager stateManager,
             AccessibilityMapApiClient accessibilityMapApiClient,
             GraphHopperTestDataService graphHopperTestDataService,
             TrafficSignDriver trafficSignDriver,
             TrafficSignTestDataService trafficSignTestDataService,
-            TrafficSignJobDriver trafficSignJobDriver
+            JobDriver jobDriver
     ) {
 
         super(RoadSectionsSimulationConfiguration.class);
@@ -71,8 +72,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         this.graphHopperTestDataService = graphHopperTestDataService;
         this.trafficSignDriver = trafficSignDriver;
         this.trafficSignTestDataService = trafficSignTestDataService;
-        this.trafficSignJobDriver = trafficSignJobDriver;
         this.accessibilityMapApiClient = accessibilityMapApiClient;
+        this.jobDriver = jobDriver;
     }
 
     @Override
@@ -121,7 +122,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .toList();
 
         trafficSignDriver.stubTrafficSignRequest(trafficSigns);
-        trafficSignJobDriver.runTrafficSignUpdateCacheJob();
+        jobDriver.run("trafficSignUpdateCache");
         trafficSignsDataIsReloaded();
     }
 

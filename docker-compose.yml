@@ -57,10 +57,8 @@ services:
   nls-accessibility-map-graphhopper-job:
     build: docker/nls-accessibility-map-graphhopper-job
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
       - COMMAND=createOrUpdateNetwork
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
       - ./.tmp/graphhopper:/application/graphhopper
     networks:
@@ -69,20 +67,16 @@ services:
   nls-accessibility-map-graphhopper-configure-rabbitmq:
     build: docker/nls-accessibility-map-graphhopper-job
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
       - COMMAND=configureRabbitMQ
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     networks:
       - nls-accessibility-map-network
 
   nls-accessibility-map-generator-jobs:
     build: docker/nls-accessibility-map-generator-jobs
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
       - COMMAND=generateGeoJson
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
       - ./.tmp/graphhopper:/application/graphhopper
       - ./.tmp/trafficsigns:/application/trafficsigns
@@ -93,10 +87,7 @@ services:
   nls-accessibility-map-base-network-analyser-job:
     build: docker/nls-accessibility-map-data-analyser-job
     environment:
-      - SPRING_PROFILES_ACTIVE=component-test,job-base-network
-      - COMMAND=analyse-base-network
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker,job-base-network
     volumes:
       - ./.tmp/graphhopper:/application/graphhopper
       - ./.tmp/trafficsigns:/application/trafficsigns
@@ -106,10 +97,8 @@ services:
   nls-accessibility-map-data-analyser-configure-rabbitmq:
     build: docker/nls-accessibility-map-data-analyser-job
     environment:
-      - SPRING_PROFILES_ACTIVE=component-test,job-base-network
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker,job-base-network
       - COMMAND=configureRabbitMQ
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
     volumes:
       - ./.tmp/graphhopper:/application/graphhopper
     networks:
@@ -118,10 +107,7 @@ services:
   nls-accessibility-map-traffic-sign-analyser-job:
     build: docker/nls-accessibility-map-data-analyser-job
     environment:
-      - SPRING_PROFILES_ACTIVE=component-test
-      - COMMAND=analyse-asymmetric-traffic-signs
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
     volumes:
       - ./.tmp/graphhopper:/application/graphhopper
       - ./.tmp/trafficsigns:/application/trafficsigns
@@ -131,9 +117,8 @@ services:
   nls-accessibility-map-traffic-sign-update-cache-job:
     build: docker/nls-accessibility-map-traffic-sign-job
     environment:
-      - SPRING_PROFILES_ACTIVE=component-test,update-cache
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
       - COMMAND=update-cache
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
     volumes:
       - ./.tmp/graphhopper:/application/graphhopper
       - ./.tmp/trafficsigns:/application/trafficsigns
@@ -174,9 +159,9 @@ services:
       - ./docker/accessibility-wiremock-stub/responses:/home/wiremock/__files/responses
       - ./docker/accessibility-wiremock-stub/extensions:/var/wiremock/extensions
 
-    command: --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
+    command: --port 8888 --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
     ports:
-      - "8888:8080"
+      - "8888:8888"
     networks:
       - nls-accessibility-map-network
 

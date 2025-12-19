@@ -10,7 +10,7 @@ Feature: DataAnalyser-AsymmetricTrafficSigns
       | 6           | 1         | 1.0      | C17     | 1.9 m     | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
     And with issues sent to issue api
     When run TrafficSignUpdateCache
-    And run TrafficSignAnalyser with configuration
+    And run AsymmetricTrafficSignsAnalysis with configuration
       | startNodeId | trafficSignGroups | reportIssues |
       | 2           | C6,C17:C12        | true         |
     Then we expect the following issues to be reported
