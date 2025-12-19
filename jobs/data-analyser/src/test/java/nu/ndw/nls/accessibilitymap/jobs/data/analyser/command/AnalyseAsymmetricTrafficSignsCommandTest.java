@@ -59,7 +59,8 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
     private GraphhopperMetaData graphhopperMetaData;
 
     @Mock
-    private  TrafficSignCacheUpdater trafficSignCacheUpdater;
+    private TrafficSignCacheUpdater trafficSignCacheUpdater;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
