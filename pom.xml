@@ -52,7 +52,7 @@
     <nls-routing-map-matcher.version>19.0.21</nls-routing-map-matcher.version>
     <nls-geometry.version>5.2.1</nls-geometry.version>
     <nls-geojson-geometry.version>1.4.49</nls-geojson-geometry.version>
-    <nls-springboot.test.graph.version>1.0.31</nls-springboot.test.graph.version>
+    <nls-springboot.test.graph.version>1.0.32</nls-springboot.test.graph.version>
     <jackson-geojson.version>1.14</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>5.1.0</json-unit.version>
