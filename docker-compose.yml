@@ -139,7 +139,7 @@ services:
       - nls-accessibility-map-network
 
   nls-rabbitmq:
-    image: ndwnls.azurecr.io/docker.io/library/rabbitmq:4.0.9-management-alpine
+    image: ndwnls.azurecr.io/docker.io/library/rabbitmq:4.2.2-management-alpine
     hostname: nls-rabbitmq
     user: rabbitmq
     ports:
