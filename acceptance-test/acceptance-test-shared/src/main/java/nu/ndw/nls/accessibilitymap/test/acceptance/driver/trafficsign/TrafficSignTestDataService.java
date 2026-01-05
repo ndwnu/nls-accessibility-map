@@ -11,10 +11,11 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
+import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
+import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.springboot.test.graph.dto.Edge;
 import nu.ndw.nls.springboot.test.graph.dto.Graph;
-import org.geojson.Point;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class TrafficSignTestDataService {
         Graph graph = graphHopperDriver.getLastBuiltGraph();
         List<Edge> edges = graph.findEdgesBetweenNodes(trafficSign.startNodeId(), trafficSign.endNodeId());
 
-        if(edges.size() != 1) {
+        if (edges.size() != 1) {
             fail("There should be exactly one link between the start and end node. But there was %s"
                     .formatted(edges.size()));
         }
@@ -51,7 +52,7 @@ public class TrafficSignTestDataService {
 
         return TrafficSignGeoJsonDto.builder()
                 .id(UUID.fromString(trafficSign.id()))
-                .geometry(new Point(endCoordinate.getX(), endCoordinate.getY()))
+                .geometry(new PointJson().type(TypeEnum.POINT).coordinates(List.of(endCoordinate.x, endCoordinate.y)))
                 .properties(TrafficSignPropertiesDto.builder()
                         .fraction(trafficSign.fraction())
                         .blackCode(trafficSign.blackCode())
@@ -67,5 +68,4 @@ public class TrafficSignTestDataService {
                         .build())
                 .build();
     }
-
 }
