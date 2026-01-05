@@ -301,11 +301,7 @@
         <artifactId>routing-map-matcher-library</artifactId>
         <version>${nls-routing-map-matcher.version}</version>
       </dependency>
-      <dependency>
-        <groupId>de.grundid.opendatalab</groupId>
-        <artifactId>geojson-jackson</artifactId>
-        <version>${jackson-geojson.version}</version>
-      </dependency>
+
       <dependency>
         <groupId>com.github.jsurfer</groupId>
         <artifactId>jsurfer-jackson</artifactId>

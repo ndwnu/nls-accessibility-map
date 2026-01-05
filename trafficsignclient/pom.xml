@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
@@ -44,12 +44,12 @@
     </dependency>
 
     <dependency>
-      <groupId>nu.ndw.nls.springboot</groupId>
-      <artifactId>test</artifactId>
+      <groupId>nu.ndw.nls.geojson.geometry</groupId>
+      <artifactId>geometry-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>de.grundid.opendatalab</groupId>
-      <artifactId>geojson-jackson</artifactId>
+      <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>test</artifactId>
     </dependency>
     <dependency>
       <groupId>com.github.jsurfer</groupId>
