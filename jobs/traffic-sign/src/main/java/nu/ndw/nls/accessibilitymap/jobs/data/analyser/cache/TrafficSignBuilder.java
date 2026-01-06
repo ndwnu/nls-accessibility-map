@@ -59,8 +59,9 @@ public class TrafficSignBuilder {
                     .trafficSignType(type)
                     .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
                     .fraction(fraction)
-                    .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude())
-                    .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude())
+                    //In GeoJSON, a Point's coordinates are always [longitude, latitude] (X, Y),
+                    .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getFirst())
+                    .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLast())
                     .iconUri(createUri(trafficSignGeoJsonDto.getProperties().getImageUrl()))
                     .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
                     .zoneCodeType(mapZoneCodeType(trafficSignGeoJsonDto))
