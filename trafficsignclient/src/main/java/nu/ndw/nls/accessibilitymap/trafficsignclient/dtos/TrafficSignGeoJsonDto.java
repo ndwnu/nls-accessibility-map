@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.geojson.Point;
+import nu.ndw.nls.geojson.geometry.model.PointJson;
 
 /*
  * A GeoJSON Feature Object with custom properties
@@ -26,7 +26,8 @@ public class TrafficSignGeoJsonDto {
     private static final String TYPE = "Feature";
 
     private UUID id;
-    private Point geometry;
+
+    private PointJson geometry;
     private TrafficSignPropertiesDto properties;
 
     public String getType() {

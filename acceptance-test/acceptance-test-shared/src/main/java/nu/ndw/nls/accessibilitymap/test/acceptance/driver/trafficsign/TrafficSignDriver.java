@@ -89,9 +89,9 @@ public class TrafficSignDriver {
                                 .id(idSupplier.getAndIncrement())
                                 .geometry(jtsPointJsonMapper.map(geometryFactory.createPoint(new Coordinate(
                                         trafficSign.getGeometry().getCoordinates()
-                                                .getLongitude(),
+                                                .getFirst(),
                                         trafficSign.getGeometry().getCoordinates()
-                                                .getLatitude()
+                                                .getLast()
                                 ))))
                                 .properties(PointTrafficSignProperties.builder()
                                         .trafficSignId(trafficSign.getId())
