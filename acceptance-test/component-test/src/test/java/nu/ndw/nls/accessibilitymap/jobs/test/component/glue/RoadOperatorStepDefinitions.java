@@ -12,20 +12,20 @@ import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
-public class RoadOpertorStepDefinitions {
+public class RoadOperatorStepDefinitions {
 
     private final AccessibilityMapApiClient accessibilityMapApiClient;
 
     private final FileService fileService;
 
     @When("i request all road operators")
-    public void requestAllMunicipalities() {
+    public void requestAllRoadOperators() {
         Response<Void, String> response = accessibilityMapApiClient.getRoadOperators();
         assertThat(response.status().value()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Then("it should match {word} road operators")
-    public void verifyMunicipalities(String municipalitiesFile) {
+    public void verifyRoadOperators(String municipalitiesFile) {
         Response<Void, String> response = accessibilityMapApiClient.getLastResponseForGetRoadOperators();
         String expectedResult = fileService.readTestDataFromFile("api/roadOperators", municipalitiesFile, "json");
 
