@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson.RoadOperatorTypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import org.springframework.stereotype.Component;
 
@@ -11,20 +12,23 @@ import org.springframework.stereotype.Component;
 public class RoadOperatorMapper {
 
     public List<RoadOperatorJson> map(Collection<RoadOperator> roadOperators) {
-
         return roadOperators.stream()
                 .map(this::mapRoadOperator)
                 .toList();
     }
 
     private RoadOperatorJson mapRoadOperator(RoadOperator roadOperator) {
-
         return RoadOperatorJson.builder()
-                .roadOperatorType(roadOperator.roadOperatorType())
+                .roadOperatorType(mapRoadOperatorType(roadOperator.roadOperatorType()))
                 .roadOperatorName(roadOperator.roadOperatorName())
                 .roadOperatorCode(roadOperator.roadOperatorCode())
                 .municipalityId(roadOperator.municipalityId())
                 .requestExemptionUrl(Objects.toString(roadOperator.requestExemptionUrl(), null))
                 .build();
+    }
+
+    private RoadOperatorTypeEnum mapRoadOperatorType(
+            nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator.RoadOperatorTypeEnum roadOperatorTypeEnum) {
+        return RoadOperatorTypeEnum.fromValue(roadOperatorTypeEnum.getValue());
     }
 }

@@ -65,6 +65,8 @@ springdoc:
 openapi:
   accessibilityMapV1:
     base-path: /v1
+  accessibilityMapV2:
+    base-path: /v2
 
 logging:
   level:
