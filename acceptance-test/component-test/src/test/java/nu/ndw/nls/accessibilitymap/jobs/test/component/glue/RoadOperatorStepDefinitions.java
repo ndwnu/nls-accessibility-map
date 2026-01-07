@@ -18,9 +18,9 @@ public class RoadOperatorStepDefinitions {
 
     private final FileService fileService;
 
-    @When("i request all road operators")
-    public void requestAllRoadOperators() {
-        Response<Void, String> response = accessibilityMapApiClient.getRoadOperators();
+    @When("i request all road operators for {word}")
+    public void requestAllRoadOperators(String apiVersion) {
+        Response<Void, String> response = accessibilityMapApiClient.getRoadOperators(apiVersion);
         assertThat(response.status().value()).isEqualTo(HttpStatus.OK.value());
     }
 

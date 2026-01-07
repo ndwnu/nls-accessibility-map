@@ -13,7 +13,6 @@ import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
@@ -306,11 +305,11 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         }
     }
 
-    public Response<Void, MunicipalityFeatureCollectionJson> getMunicipalities() {
+    public Response<Void, String> getMunicipalities(String apiVersion) {
         Request<Void> request = Request.<Void>builder()
                 .id("getMunicipalities")
                 .method(HttpMethod.GET)
-                .path("api/rest/static-road-data/accessibility-map/v1/municipalities")
+                .path("api/rest/static-road-data/accessibility-map/%s/municipalities".formatted(apiVersion))
                 .headers(Map.of(
                         HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
                 ))
@@ -321,20 +320,20 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 });
     }
 
-    public Response<Void, MunicipalityFeatureCollectionJson> getLastResponseForGetMunicipalities() {
+    public Response<Void, String> getLastResponseForGetMunicipalities() {
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "getMunicipalities".equals(response.request().id())
                                 && response.request().method().equals(HttpMethod.GET),
-                        Void.class, MunicipalityFeatureCollectionJson.class)
+                        Void.class, String.class)
                 .getLast();
     }
 
-    public Response<Void, String> getRoadOperators() {
+    public Response<Void, String> getRoadOperators(String apiVersion) {
         Request<Void> request = Request.<Void>builder()
                 .id("getRoadOperators")
                 .method(HttpMethod.GET)
-                .path("api/rest/static-road-data/accessibility-map/v1/road-operators")
+                .path("api/rest/static-road-data/accessibility-map/%s/road-operators".formatted(apiVersion))
                 .headers(Map.of(
                         HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
                 ))
