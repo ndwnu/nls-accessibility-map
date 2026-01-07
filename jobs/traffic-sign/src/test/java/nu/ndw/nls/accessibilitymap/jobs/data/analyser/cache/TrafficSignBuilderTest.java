@@ -21,10 +21,11 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
+import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
+import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
-import org.geojson.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -96,7 +97,7 @@ class TrafficSignBuilderTest {
                         .zoneCode("ZE")
                         .textSigns(textSigns)
                         .build())
-                .geometry(new Point(3d, 4d))
+                .geometry(new PointJson().type(TypeEnum.POINT).coordinates(List.of(DEFAULT_X_COORDINATE, DEFAULT_Y_COORDINATE)))
                 .build();
         trafficSignBuilder = new TrafficSignBuilder(trafficSignRestrictionsBuilder, nwbRoadSectionSnapService, blackCodeMapper);
     }
@@ -292,8 +293,8 @@ class TrafficSignBuilderTest {
                 .isEqualTo(TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode()));
         assertThat(trafficSign.direction()).isEqualTo(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()));
         assertThat(trafficSign.fraction()).isEqualTo(trafficSignGeoJsonDto.getProperties().getFraction());
-        assertThat(trafficSign.latitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLatitude());
-        assertThat(trafficSign.longitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLongitude());
+        assertThat(trafficSign.latitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLast());
+        assertThat(trafficSign.longitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getFirst());
         assertThat(trafficSign.textSigns()).isEqualTo(trafficSignGeoJsonDto.getProperties().getTextSigns());
         assertThat(trafficSign.iconUri()).isEqualTo(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()));
         assertThat(trafficSign.restrictions()).isEqualTo(restrictions);
