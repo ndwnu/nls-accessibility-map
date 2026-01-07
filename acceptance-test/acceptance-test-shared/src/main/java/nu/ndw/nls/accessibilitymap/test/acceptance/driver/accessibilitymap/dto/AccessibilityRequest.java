@@ -25,6 +25,7 @@ public record AccessibilityRequest(
         List<EmissionZoneTypeJson> excludeRestrictionsWithEmissionZoneTypes,
         EmissionClassJson emissionClass,
         VehicleTypeJson vehicleType,
-        boolean vehicleHasTrailer) {
+        boolean vehicleHasTrailer,
+        Boolean accessible) {
 
 }

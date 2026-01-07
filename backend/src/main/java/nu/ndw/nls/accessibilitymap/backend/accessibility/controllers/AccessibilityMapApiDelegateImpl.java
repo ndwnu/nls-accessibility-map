@@ -27,7 +27,6 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
-import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -50,13 +49,21 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     private final AccessibilityService accessibilityService;
 
-    private final ClockService clockService;
-
     @Override
-    public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(String municipalityId,
-            VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
-            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Double latitude, Double longitude,
-            EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> excludeEmissionZoneIds,
+    public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(
+            String municipalityId,
+            VehicleTypeJson vehicleType,
+            Float vehicleLength,
+            Float vehicleWidth,
+            Float vehicleHeight,
+            Float vehicleWeight,
+            Float vehicleAxleLoad,
+            Boolean vehicleHasTrailer,
+            Double latitude,
+            Double longitude,
+            EmissionClassJson emissionClass,
+            List<FuelTypeJson> fuelTypes,
+            List<String> excludeEmissionZoneIds,
             List<EmissionZoneTypeJson> excludeEmissionZoneTypes) {
 
         AccessibilityRequest accessibilityRequest = buildAndValidateAccessibilityRequest(
@@ -72,10 +79,21 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     }
 
     @Override
-    public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(String municipalityId,
-            VehicleTypeJson vehicleType, Float vehicleLength, Float vehicleWidth, Float vehicleHeight,
-            Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer, Boolean accessible, Double latitude,
-            Double longitude, EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> excludeEmissionZoneIds,
+    public ResponseEntity<RoadSectionFeatureCollectionJson> getRoadSections(
+            String municipalityId,
+            VehicleTypeJson vehicleType,
+            Float vehicleLength,
+            Float vehicleWidth,
+            Float vehicleHeight,
+            Float vehicleWeight,
+            Float vehicleAxleLoad,
+            Boolean vehicleHasTrailer,
+            Boolean accessible,
+            Double latitude,
+            Double longitude,
+            EmissionClassJson emissionClass,
+            List<FuelTypeJson> fuelTypes,
+            List<String> excludeEmissionZoneIds,
             List<EmissionZoneTypeJson> excludeEmissionZoneTypes) {
 
         AccessibilityRequest accessibilityRequest = buildAndValidateAccessibilityRequest(
@@ -97,11 +115,20 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
 
     @SuppressWarnings("java:S107")
     private AccessibilityRequest buildAndValidateAccessibilityRequest(
-            String municipalityId, VehicleTypeJson vehicleType, Float vehicleLength,
-            Float vehicleWidth, Float vehicleHeight, Float vehicleWeight, Float vehicleAxleLoad, Boolean vehicleHasTrailer,
-            EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes, List<String> excludeEmissionZoneIds,
+            String municipalityId,
+            VehicleTypeJson vehicleType,
+            Float vehicleLength,
+            Float vehicleWidth,
+            Float vehicleHeight,
+            Float vehicleWeight,
+            Float vehicleAxleLoad,
+            Boolean vehicleHasTrailer,
+            EmissionClassJson emissionClass,
+            List<FuelTypeJson> fuelTypes,
+            List<String> excludeEmissionZoneIds,
             List<EmissionZoneTypeJson> excludeEmissionZoneTypes,
-            Double endPointLatitude, Double endPointLongitude) {
+            Double endPointLatitude,
+            Double endPointLongitude) {
 
         pointValidator.validateConsistentValues(endPointLatitude, endPointLongitude);
 
@@ -114,14 +141,13 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleHasTrailer, emissionClass, fuelTypes);
 
         Excludes excludes = Excludes.builder()
-                .emissionZoneIds(Objects.nonNull(excludeEmissionZoneIds) ? new HashSet<>(excludeEmissionZoneIds): null)
-                .emissionZoneTypes(Objects.nonNull(excludeEmissionZoneTypes) ? new HashSet<>(excludeEmissionZoneTypes): null)
+                .emissionZoneIds(Objects.nonNull(excludeEmissionZoneIds) ? new HashSet<>(excludeEmissionZoneIds) : null)
+                .emissionZoneTypes(Objects.nonNull(excludeEmissionZoneTypes) ? new HashSet<>(excludeEmissionZoneTypes) : null)
                 .build();
 
         Municipality municipality = municipalityService.getMunicipalityById(municipalityId);
 
         return accessibilityRequestMapper.mapToAccessibilityRequest(
-                clockService.now(),
                 municipality,
                 vehicleArguments,
                 excludes,
@@ -141,7 +167,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     private void ensureEnvironmentalZoneParameterConsistency(EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes) {
 
         if ((emissionClass == null && fuelTypes != null && !fuelTypes.isEmpty())
-                || ((fuelTypes == null || fuelTypes.isEmpty()) && emissionClass != null)) {
+            || ((fuelTypes == null || fuelTypes.isEmpty()) && emissionClass != null)) {
             throw new IncompleteArgumentsException("If one of the environmental zone parameters is set, the other must be set as well.");
         }
     }

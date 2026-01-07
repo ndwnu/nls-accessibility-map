@@ -56,9 +56,8 @@ extends:
     cleanupNamespaces: ${{ parameters.cleanupNamespaces }}
     mavenDeployToNdwShared: true
     jdkVersion: 1.21
-    sonarOptionalCoverageExclusions: '**/generated/**,**/security/**,**/config/**,**/exceptions/**,acceptance-test/acceptance-test-shared/**'
-    sonarOptionalExclusions: '**/generated/**,**/StreamingJsonBodyExtractor.*'
-    mavenAdditionalBuildOptions: '-Pregression-test'
+    sonarOptionalCoverageExclusions: '**/generated/**,acceptance-test/acceptance-test-shared/**'
+    sonarOptionalExclusions: '**/generated/**'
     pushToGitHub: true
     dockerImages:
       - imageName: nls-accessibility-map-api

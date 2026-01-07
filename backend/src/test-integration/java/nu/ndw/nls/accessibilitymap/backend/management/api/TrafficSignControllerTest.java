@@ -63,7 +63,6 @@ class TrafficSignControllerTest {
                 .header("alg", "none")
                 .claim("azp", CLIENT_ID)
                 .build();
-
     }
 
     @ParameterizedTest

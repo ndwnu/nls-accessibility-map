@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.req
 
 import com.graphhopper.util.shapes.BBox;
 import jakarta.validation.Valid;
-import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.dto.Vehicle
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.controllers.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
+import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,9 +32,10 @@ public class AccessibilityRequestMapper {
 
     private final EmissionZoneTypeMapper emissionZoneTypeMapper;
 
+    private final ClockService clockService;
+
     @Valid
     public AccessibilityRequest mapToAccessibilityRequest(
-            OffsetDateTime timestamp,
             Municipality municipality,
             VehicleArguments vehicleArguments,
             Excludes excludes,
@@ -42,7 +43,7 @@ public class AccessibilityRequestMapper {
             Double endPointLongitude) {
 
         return AccessibilityRequest.builder()
-                .timestamp(timestamp)
+                .timestamp(clockService.now())
                 .municipalityId(municipality.municipalityIdAsInteger())
                 .addMissingRoadsSectionsFromNwb(true)
                 .boundingBox(BBox.fromPoints(
