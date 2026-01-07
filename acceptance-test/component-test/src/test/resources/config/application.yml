@@ -132,11 +132,11 @@ nu:
                     - "admin"
               maven:
                 rootPomRelativePath: "../../"
-                modulesUnderTest: []
-#                  - "jobs/graphhopper"
-#                  - "jobs/mapgenerator"
-#                  - "jobs/traffic-sign"
-#                  - "jobs/data-analyser"
+                modulesUnderTest:
+                  - "jobs/graphhopper"
+                  - "jobs/mapgenerator"
+                  - "jobs/traffic-sign"
+                  - "jobs/data-analyser"
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
