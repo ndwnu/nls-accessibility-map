@@ -1,4 +1,4 @@
-Feature: Api
+Feature: Accessibility
 
   Scenario: Emission zone
     Given a simple Graph Hopper network
@@ -28,6 +28,14 @@ Feature: Api
       | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth |
       | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            |
     Then we expect geojson to match response.emission-zone.geojson
+    When request accessibility geojson for
+      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | accessible|
+      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            | true     |
+    Then we expect geojson to match response.emission-zone.onlyAccessible.geojson
+    When request accessibility geojson for
+      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | accessible|
+      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            | false     |
+    Then we expect geojson to match response.emission-zone.onlyInAccessible.geojson
 
 
   Scenario: Emission zone - excludeEmissionZoneIds & excludeRestrictionsWithEmissionZoneTypes

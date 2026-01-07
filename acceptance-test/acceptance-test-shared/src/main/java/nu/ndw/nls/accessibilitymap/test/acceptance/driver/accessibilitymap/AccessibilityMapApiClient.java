@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
@@ -70,8 +71,9 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 ))
                 .build();
 
-        return request(request, new ParameterizedTypeReference<>() {
-        });
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
     }
 
     @SneakyThrows
@@ -86,8 +88,9 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 ))
                 .build();
 
-        return request(request, new ParameterizedTypeReference<>() {
-        });
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
     }
 
     @SneakyThrows
@@ -110,15 +113,17 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
                 JsonMapper.builder().build().writeValueAsString(endpoint));
 
-        return request(request, new ParameterizedTypeReference<>() {
-        });
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
     }
 
     public Response<Void, AccessibilityMapResponseJson> getLastResponseForGetAccessibilityForMunicipality() {
 
-        return responseWebCache().findResponsesByFilter(response ->
+        return responseWebCache().findResponsesByFilter(
+                        response ->
                                 "getAccessibilityForMunicipality".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.GET),
+                                && response.request().method().equals(HttpMethod.GET),
                         Void.class, AccessibilityMapResponseJson.class)
                 .getLast();
     }
@@ -145,15 +150,17 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
                 JsonMapper.builder().build().writeValueAsString(endpoint));
 
-        return request(request, new ParameterizedTypeReference<>() {
-        });
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
     }
 
     public Response<Void, RoadSectionFeatureCollectionJson> getLastResponseForGetAccessibilityGeoJsonForMunicipality() {
 
-        return responseWebCache().findResponsesByFilter(response ->
+        return responseWebCache().findResponsesByFilter(
+                        response ->
                                 "getAccessibilityGeoJsonForMunicipality".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.GET),
+                                && response.request().method().equals(HttpMethod.GET),
                         Void.class, RoadSectionFeatureCollectionJson.class)
                 .getLast();
     }
@@ -170,15 +177,17 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 ))
                 .build();
 
-        return request(request, new ParameterizedTypeReference<>() {
-        });
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
     }
 
     public Response<Void, String> getLastResponseForGenericRequest() {
 
-        return responseWebCache().findResponsesByFilter(response ->
+        return responseWebCache().findResponsesByFilter(
+                        response ->
                                 "genericRequest".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.GET),
+                                && response.request().method().equals(HttpMethod.GET),
                         Void.class, String.class)
                 .getLast();
     }
@@ -219,9 +228,14 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         if (Objects.nonNull(accessibilityRequest.excludeRestrictionsWithEmissionZoneIds())) {
             queryParameters.put("excludeEmissionZoneIds", accessibilityRequest.excludeRestrictionsWithEmissionZoneIds());
         }
+        if (Objects.nonNull(accessibilityRequest.accessible())) {
+            queryParameters.put("accessible", List.of(accessibilityRequest.accessible() + ""));
+        }
         if (Objects.nonNull(accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes())) {
-            queryParameters.put("excludeEmissionZoneTypes", accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes().stream().
-                    map(EmissionZoneTypeJson::getValue).toList());
+            queryParameters.put(
+                    "excludeEmissionZoneTypes",
+                    accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes().stream().
+                            map(EmissionZoneTypeJson::getValue).toList());
         }
 
         return MultiValueMap.fromMultiValue(queryParameters);
@@ -290,5 +304,53 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
             apiIsStarted = true;
         }
+    }
+
+    public Response<Void, MunicipalityFeatureCollectionJson> getMunicipalities() {
+        Request<Void> request = Request.<Void>builder()
+                .id("getMunicipalities")
+                .method(HttpMethod.GET)
+                .path("api/rest/static-road-data/accessibility-map/v1/municipalities")
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
+                ))
+                .build();
+
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
+    }
+
+    public Response<Void, MunicipalityFeatureCollectionJson> getLastResponseForGetMunicipalities() {
+        return responseWebCache().findResponsesByFilter(
+                        response ->
+                                "getMunicipalities".equals(response.request().id())
+                                && response.request().method().equals(HttpMethod.GET),
+                        Void.class, MunicipalityFeatureCollectionJson.class)
+                .getLast();
+    }
+
+    public Response<Void, String> getRoadOperators() {
+        Request<Void> request = Request.<Void>builder()
+                .id("getRoadOperators")
+                .method(HttpMethod.GET)
+                .path("api/rest/static-road-data/accessibility-map/v1/road-operators")
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
+                ))
+                .build();
+
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
+    }
+
+    public Response<Void, String> getLastResponseForGetRoadOperators() {
+        return responseWebCache().findResponsesByFilter(
+                        response ->
+                                "getRoadOperators".equals(response.request().id())
+                                && response.request().method().equals(HttpMethod.GET),
+                        Void.class, String.class)
+                .getLast();
     }
 }

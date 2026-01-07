@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
@@ -17,8 +17,7 @@
   <description>Accessibility Map REST API</description>
 
   <properties>
-    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.backend.generated
-    </openapi-generator.base.classpath>
+    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.backend.generated</openapi-generator.base.classpath>
   </properties>
 
   <dependencies>
@@ -108,11 +107,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.intuit.karate</groupId>
-      <artifactId>karate-junit5</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.keycloak</groupId>
       <artifactId>keycloak-authz-client</artifactId>
       <scope>test</scope>
@@ -165,7 +159,7 @@
         <executions>
           <execution>
             <id>copy-api-yml-resource</id>
-            <phase>generate-resources</phase>
+            <phase>generate-sources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -222,12 +216,64 @@
         <executions>
           <execution>
             <id>generate-open-api</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
             <configuration>
-              <!-- Package for the api side of things -->
+              <inputSpec>
+                ${project.basedir}/target/classes/static/api-docs/v1.yaml
+              </inputSpec>
+              <generatorName>spring</generatorName>
               <apiPackage>${openapi-generator.base.classpath}.api.v1</apiPackage>
-              <!-- Package for the model (or domain) side of things -->
               <modelPackage>${openapi-generator.base.classpath}.model.v1</modelPackage>
+              <configOptions>
+                <useSpringBoot3>true</useSpringBoot3>
+                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
 
+                <!-- Whether to generate the server files using the delegate pattern -->
+                <delegatePattern>true</delegatePattern>
+
+                <!-- Whether to generate only API interface stubs without the server files. -->
+                <interfaceOnly>false</interfaceOnly>
+
+                <!-- Use Optional container for optional parameters -->
+                <useOptional>false</useOptional>
+
+                <!-- Split endpoints into different classes according to tags -->
+                <useTags>true</useTags>
+                <!-- use and perform jakarta validation-->
+                <useBeanValidation>true</useBeanValidation>
+                <performBeanValidation>true</performBeanValidation>
+
+                <!--
+                  OpenAPI Jackson Nullable library
+                  https://github.com/OpenAPITools/jackson-databind-nullable
+                 -->
+                <openApiNullable>false</openApiNullable>
+
+                <additionalModelTypeAnnotations>
+                  @lombok.experimental.SuperBuilder
+                  @lombok.NoArgsConstructor
+                  @lombok.AllArgsConstructor
+                </additionalModelTypeAnnotations>
+              </configOptions>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>generate-open-api-v2</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>
+                ${project.basedir}/target/classes/static/api-docs/v2.yaml
+              </inputSpec>
+              <generatorName>spring</generatorName>
+              <apiPackage>${openapi-generator.base.classpath}.api.v2</apiPackage>
+              <modelPackage>${openapi-generator.base.classpath}.model.v2</modelPackage>
               <configOptions>
                 <useSpringBoot3>true</useSpringBoot3>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
@@ -269,177 +315,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>regression-test</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>docker-compose-down</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>down</argument>
-                    <argument>--remove-orphans</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-
-              <execution>
-                <id>docker-compose-up-infra</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>up</argument>
-                    <argument>-d</argument>
-                    <argument>nls-postgres</argument>
-                    <argument>nls-keycloak</argument>
-                    <argument>nls-rabbitmq</argument>
-                    <argument>accessibility-wiremock-stub</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>wait-for-rabbitmq</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <commandlineArgs>../scripts/rabbit-isready.sh</commandlineArgs>
-                </configuration>
-              </execution>
-              <execution>
-                <id>wait-for-database</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <commandlineArgs>../scripts/pg-isready.sh</commandlineArgs>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-run-graphhopper-configureRabbitMQ</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>run</argument>
-                    <argument>nls-accessibility-map-graphhopper-configure-rabbitmq</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>publish-event-nwb-imported</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <commandlineArgs>../scripts/publish-event-nwb-imported.sh</commandlineArgs>
-                </configuration>
-              </execution>
-              <execution>
-                <id>chmod-777-maps</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments>
-                    <argument>777</argument>
-                    <argument>../.tmp/graphhopper</argument>
-                    <argument>../.tmp/trafficsigns</argument>
-                  </arguments>
-                  <executable>chmod</executable>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-run-graphhopper-createOrUpdateNetwork</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>run</argument>
-                    <argument>--build</argument>
-                    <argument>nls-accessibility-map-graphhopper-job</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-run-traffic-sign-update-cache-job</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>run</argument>
-                    <argument>--build</argument>
-                    <argument>nls-accessibility-map-traffic-sign-update-cache-job</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-start-nls-accessibility-map-api</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>up</argument>
-                    <argument>-d</argument>
-                    <argument>--build</argument>
-                    <argument>nls-accessibility-map-api</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-stop</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>stop</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-            <configuration>
-              <arguments>
-                <argument>compose</argument>
-              </arguments>
-              <executable>docker</executable>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

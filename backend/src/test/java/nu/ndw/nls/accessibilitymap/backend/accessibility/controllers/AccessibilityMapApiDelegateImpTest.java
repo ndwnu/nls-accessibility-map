@@ -7,7 +7,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +33,6 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
-import nu.ndw.nls.springboot.core.time.ClockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -111,12 +109,6 @@ class AccessibilityMapApiDelegateImpTest {
     private Accessibility accessibility;
 
     @Mock
-    private ClockService clockService;
-
-    @Mock
-    private OffsetDateTime timestamp;
-
-    @Mock
     private Collection<RoadSection> roadSections;
 
     @BeforeEach
@@ -129,8 +121,7 @@ class AccessibilityMapApiDelegateImpTest {
                 roadSectionFeatureCollectionMapper,
                 municipalityService,
                 accessibilityRequestMapper,
-                accessibilityService,
-                clockService);
+                accessibilityService);
     }
 
     @ParameterizedTest
@@ -298,12 +289,10 @@ class AccessibilityMapApiDelegateImpTest {
 
     private void setUpFixture(EmissionClassJson emissionClassJson, List<FuelTypeJson> fuelTypesJson) {
 
-        when(clockService.now()).thenReturn(timestamp);
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibilityRequestMapper.mapToAccessibilityRequest(
-                timestamp,
                 municipality,
                 VehicleArguments.builder()
                         .vehicleType(VehicleTypeJson.CAR)
