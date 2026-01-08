@@ -12,7 +12,6 @@ spec:
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
-
       template:
         metadata:
           annotations:
