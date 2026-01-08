@@ -36,7 +36,7 @@ baseNetworkAnalyser:
   name: nls-accessibility-map-base-network-analyser-job
   # report-issues can be set to true when https://dev.azure.com/ndwnu/NLS/_workitems/edit/94107 has been completed
   command: analyse-base-network --report-issues=false --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
-  memory: 4Gi
+  memory: 5Gi
 
 asymmetricTrafficSignAnalyser:
   name: nls-accessibility-map-traffic-sign-analyser-job
