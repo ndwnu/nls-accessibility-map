@@ -64,6 +64,6 @@ public record AccessibilityRequest(
 
     public boolean hasEndLocation() {
         return Objects.nonNull(endLocationLatitude)
-                && Objects.nonNull(endLocationLongitude);
+               && Objects.nonNull(endLocationLongitude);
     }
 }

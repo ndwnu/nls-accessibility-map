@@ -21,8 +21,8 @@
     <module>specification</module>
     <module>accessibility</module>
     <module>trafficsignclient</module>
-    <module>jobs</module>
     <module>backend</module>
+    <module>jobs</module>
     <module>acceptance-test</module>
   </modules>
   <properties>
@@ -38,7 +38,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <jackson-databind-nullable.version>0.2.8</jackson-databind-nullable.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
-    <karate.version>1.4.1</karate.version>
     <keycloak-authz-client.version>26.0.7</keycloak-authz-client.version>
     <mapstruct.version>1.6.3</mapstruct.version>
     <openapi-generator-maven-plugin.version>7.18.0</openapi-generator-maven-plugin.version>
@@ -158,12 +157,6 @@
         <groupId>org.mapstruct</groupId>
         <artifactId>mapstruct</artifactId>
         <version>${mapstruct.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.intuit.karate</groupId>
-        <artifactId>karate-junit5</artifactId>
-        <version>${karate.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.keycloak</groupId>

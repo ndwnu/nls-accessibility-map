@@ -22,6 +22,7 @@ import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJs
 import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.springboot.core.time.ClockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,13 +75,20 @@ class AccessibilityRequestMapperTest {
     private MunicipalityBoundingBox municipalityBoundingBox;
 
     @Mock
+    private ClockService clockService;
+
+    @Mock
     private OffsetDateTime timestamp;
 
     @BeforeEach
     void setUp() {
 
-        accessibilityRequestMapper = new AccessibilityRequestMapper(transportTypeV2Mapper, emissionClassMapper, fuelTypeMapper,
-                emissionZoneTypeMapper);
+        accessibilityRequestMapper = new AccessibilityRequestMapper(
+                transportTypeV2Mapper,
+                emissionClassMapper,
+                fuelTypeMapper,
+                emissionZoneTypeMapper,
+                clockService);
     }
 
     @Test
@@ -117,8 +125,9 @@ class AccessibilityRequestMapperTest {
         when(fuelTypeMapper.mapFuelType(FuelTypeJson.PETROL)).thenReturn(FuelType.PETROL);
         when(emissionZoneTypeMapper.mapEmissionZoneType(EmissionZoneTypeJson.LOW_EMISSION_ZONE)).thenReturn(EmissionZoneType.LOW);
 
+        when(clockService.now()).thenReturn(timestamp);
+
         @Valid AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(
-                timestamp,
                 municipality,
                 vehicleArguments,
                 exemptions,
@@ -166,7 +175,9 @@ class AccessibilityRequestMapperTest {
         when(transportTypeV2Mapper.mapToTransportType(vehicleArguments)).thenReturn(Set.of(TransportType.CAR));
         when(emissionClassMapper.mapEmissionClass(null)).thenReturn(null);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(timestamp,
+        when(clockService.now()).thenReturn(timestamp);
+
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapper.mapToAccessibilityRequest(
                 municipality,
                 vehicleArguments,
                 excludes,

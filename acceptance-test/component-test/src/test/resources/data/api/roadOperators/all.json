@@ -1,0 +1,24 @@
+[ {
+  "roadOperatorName" : "Waterschap De Hollandse Delta",
+  "roadOperatorCode" : "WS14",
+  "roadOperatorType" : "WaterAuthority",
+  "requestExemptionUrl" : "https://www.wshd.nl/verkeersontheffingen"
+}, {
+  "roadOperatorName" : "Overige instanties",
+  "roadOperatorCode" : "OI",
+  "roadOperatorType" : "Other"
+}, {
+  "roadOperatorName" : "Het Rijk",
+  "roadOperatorCode" : "Rijk",
+  "roadOperatorType" : "State"
+}, {
+  "roadOperatorName" : "Drenthe",
+  "roadOperatorCode" : "DR",
+  "roadOperatorType" : "Province",
+  "requestExemptionUrl" : "https://www.noord-holland.nl/Loket/Producten_en_Diensten/Producten_op_alfabet/O/Ontheffing_van_verkeersregels_op_een_provinciale_weg_aanvragen_Vrijstelling_RVV_1990"
+}, {
+  "roadOperatorName" : "Midden-Groningen",
+  "roadOperatorCode" : "1952",
+  "roadOperatorType" : "Municipality",
+  "municipalityId" : "GM1952"
+} ]
