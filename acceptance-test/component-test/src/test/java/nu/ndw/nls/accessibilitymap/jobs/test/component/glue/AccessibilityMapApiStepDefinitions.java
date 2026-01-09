@@ -102,7 +102,7 @@ public class AccessibilityMapApiStepDefinitions {
 
         String reasons = Objects.isNull(reasonsFile)
                 ? "[]"
-                : testDataProvider.readFromFile("api/InaccessibleReasons", reasonsFile + ".json");
+                : testDataProvider.readFromFile("api/accessibility/InaccessibleReasons", reasonsFile + ".json");
 
         assertThatJson(response.bodyAsString())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
@@ -134,6 +134,6 @@ public class AccessibilityMapApiStepDefinitions {
 
         assertThatJson(response.body())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(testDataProvider.readFromFile("api", expectedResponseFile));
+                .isEqualTo(testDataProvider.readFromFile("api/accessibility", expectedResponseFile));
     }
 }
