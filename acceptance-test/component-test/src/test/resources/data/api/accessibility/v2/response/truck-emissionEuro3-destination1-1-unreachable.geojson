@@ -2,6 +2,36 @@
   "type" : "FeatureCollection",
   "features" : [ {
     "type" : "Feature",
+    "id" : 1,
+    "geometry" : {
+      "type" : "Point",
+      "coordinates" : [ 2.0, 1.0 ]
+    },
+    "properties" : {
+      "roadSectionId" : 1,
+      "accessible" : false,
+      "reasons" : [ [ {
+        "trafficSignId" : "00000000-0000-4000-0000-000000000004",
+        "trafficSignType" : "C22a",
+        "restrictions" : [ {
+          "type" : "VehicleWeightRestriction",
+          "unitSymbol" : "tons",
+          "condition" : "greater_than_or_equals",
+          "value" : 12.00
+        } ]
+      }, {
+        "trafficSignId" : "00000000-0000-4000-0000-000000000004",
+        "trafficSignType" : "C22a",
+        "restrictions" : [ {
+          "type" : "VehicleTypeRestriction",
+          "unitSymbol" : "enum",
+          "condition" : "equals",
+          "values" : [ "light_commercial_vehicle", "truck" ]
+        } ]
+      } ] ]
+    }
+  }, {
+    "type" : "Feature",
     "id" : 2,
     "geometry" : {
       "type" : "LineString",
@@ -407,36 +437,6 @@
       "roadSectionId" : 13,
       "accessible" : true,
       "direction" : "backward"
-    }
-  }, {
-    "type" : "Feature",
-    "id" : 1,
-    "geometry" : {
-      "type" : "Point",
-      "coordinates" : [ 2.0, 1.0 ]
-    },
-    "properties" : {
-      "roadSectionId" : 1,
-      "accessible" : false,
-      "reasons" : [ [ {
-        "trafficSignId" : "00000000-0000-4000-0000-000000000004",
-        "trafficSignType" : "C22a",
-        "restrictions" : [ {
-          "type" : "VehicleWeightRestriction",
-          "unitSymbol" : "tons",
-          "condition" : "equals",
-          "value" : 12.00
-        } ]
-      }, {
-        "trafficSignId" : "00000000-0000-4000-0000-000000000004",
-        "trafficSignType" : "C22a",
-        "restrictions" : [ {
-          "type" : "VehicleTypeRestriction",
-          "unitSymbol" : "enum",
-          "condition" : "equals",
-          "values" : [ "light_commercial_vehicle", "truck" ]
-        } ]
-      } ] ]
     }
   } ]
 }

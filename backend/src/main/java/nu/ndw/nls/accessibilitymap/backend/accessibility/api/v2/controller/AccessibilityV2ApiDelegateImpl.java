@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegate {
 
     private final GraphHopperService graphHopperService;
@@ -26,19 +28,6 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
     private final AccessibilityService accessibilityService;
 
     private final AccessibilityRequestValidator accessibilityRequestValidator;
-
-    public AccessibilityV2ApiDelegateImpl(
-            GraphHopperService graphHopperService,
-            AccessibilityResponseMapperV2 accessibilityResponseMapperV2,
-            AccessibilityRequestMapperV2 accessibilityRequestMapperV2,
-            AccessibilityService accessibilityService,
-            AccessibilityRequestValidator accessibilityRequestValidator) {
-        this.graphHopperService = graphHopperService;
-        this.accessibilityResponseMapperV2 = accessibilityResponseMapperV2;
-        this.accessibilityRequestMapperV2 = accessibilityRequestMapperV2;
-        this.accessibilityService = accessibilityService;
-        this.accessibilityRequestValidator = accessibilityRequestValidator;
-    }
 
     @Override
     public ResponseEntity<AccessibilityResponseJson> getAccessibility(AccessibilityRequestJson accessibilityRequestJson) {

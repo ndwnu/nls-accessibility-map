@@ -1,4 +1,7 @@
 server:
+  compression:
+    enabled: true
+    mime-types: application/json,application/geo+json
   max-http-request-header-size: 50KB
   servlet:
     context-path: /api/rest/static-road-data/accessibility-map
@@ -57,7 +60,12 @@ springdoc:
   api-docs:
     path: /api-docs
   swagger-ui:
-    url: /api-docs/v1.yaml
+    groups-order: DESC
+    urls:
+      - name: V2 / Latest
+        url: /api-docs/v2.yaml
+      - name: V1
+        url: /api-docs/v1.yaml
     path: /api-docs
     show-extensions: true
     show-common-extensions: true
