@@ -30,7 +30,9 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
     private final AccessibilityRequestValidator accessibilityRequestValidator;
 
     @Override
-    public ResponseEntity<AccessibilityResponseJson> getAccessibility(AccessibilityRequestJson accessibilityRequestJson) {
+    public ResponseEntity<AccessibilityResponseJson> getAccessibility(
+            AccessibilityRequestJson accessibilityRequestJson,
+            String acceptEncoding) {
 
         accessibilityRequestValidator.verify(accessibilityRequestJson);
 

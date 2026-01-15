@@ -7,7 +7,7 @@
         {
           "type": "VehicleWeightRestriction",
           "unitSymbol": "tons",
-          "condition": "equals",
+          "condition": "greater_than_or_equals",
           "value": 12.00
         }
       ]
