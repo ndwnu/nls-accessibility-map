@@ -93,12 +93,6 @@ class AccessibilityReasonsJsonMapperTest {
 
         when(transportTypeRestriction.getTypeOfRestriction()).thenReturn(VEHICLE_TYPE);
 
-        FuelTypeRestrictionJson fuelTypeRestrictionJson = new FuelTypeRestrictionJson()
-                .type(TypeEnum.FUEL_TYPE_RESTRICTION)
-                .unitSymbol(RestrictionUnitSymbolJson.ENUM)
-                .condition(RestrictionConditionJson.EQUALS)
-                .values(List.of(FuelTypeJson.DIESEL));
-
         List<List<AccessibilityReason>> accessibilityReasons = List.of(List.of(accessibilityReason));
 
         List<List<ReasonJson>> actual = accessibilityReasonsJsonMapper.mapToReasonJson(accessibilityReasons);

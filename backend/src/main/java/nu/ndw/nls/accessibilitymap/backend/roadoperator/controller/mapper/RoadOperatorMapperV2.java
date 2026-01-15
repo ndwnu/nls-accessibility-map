@@ -7,8 +7,6 @@ import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOpera
 import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson;
 import org.springframework.stereotype.Component;
 
-;
-
 @Component
 public class RoadOperatorMapperV2 {
 

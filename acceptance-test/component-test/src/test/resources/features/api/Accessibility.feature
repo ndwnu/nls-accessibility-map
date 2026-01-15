@@ -1,4 +1,4 @@
-Feature: Accessibility
+Feature: Accessibility V1
 
   Scenario: Emission zone
     Given a simple Graph Hopper network

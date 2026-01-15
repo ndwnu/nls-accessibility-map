@@ -264,18 +264,19 @@
       </plugin>
       <plugin>
         <groupId>org.openapitools</groupId>
-        <artifactId>openapi-generator-maven-plugin</artifactId><dependencies>
-        <dependency>
-          <groupId>nu.ndw.nls.springboot</groupId>
-          <artifactId>openapi</artifactId>
-          <version>${nls-springboot.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>nu.ndw.nls.accessibilitymap</groupId>
-          <artifactId>specification</artifactId>
-          <version>${project.parent.version}</version>
-        </dependency>
-      </dependencies>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>nu.ndw.nls.springboot</groupId>
+            <artifactId>openapi</artifactId>
+            <version>${nls-springboot.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>nu.ndw.nls.accessibilitymap</groupId>
+            <artifactId>specification</artifactId>
+            <version>${project.parent.version}</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <id>generate-open-api</id>

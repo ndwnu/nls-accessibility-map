@@ -20,11 +20,18 @@ class MunicipalityRepositoryTest {
     private MunicipalityRepository municipalityRepository;
 
     @Test
-    void loadFromConfigFile() {
+    void findAll() {
 
         assertThat(municipalityRepository).isNotNull();
 
         List<Municipality> municipalities = municipalityRepository.findAll();
         assertThat(municipalities).hasSize(342);
+    }
+
+    @Test
+    void findFirstById() {
+
+        assertThat(municipalityRepository.findFirstById("GM0014")).isNotEmpty();
+        assertThat(municipalityRepository.findFirstById("unknown")).isEmpty();
     }
 }

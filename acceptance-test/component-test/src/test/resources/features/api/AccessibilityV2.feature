@@ -1,4 +1,4 @@
-Feature: Accessibility
+Feature: Accessibility V2
 
   Scenario: Get - Vehicle width 2 meters - Destination reachable
     Given a simple Graph Hopper network
