@@ -93,7 +93,7 @@ nu:
                       service-name: "nls-accessibility-map-graphhopper-configure-rabbitmq"
                   graphHopperCreateOrUpdateNetwork:
                     command: "createOrUpdateNetwork"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
                       host: ${jobEndpoints.graphHopper.host}
                       port: ${jobEndpoints.graphHopper.port}
@@ -101,7 +101,7 @@ nu:
                       service-name: "nls-accessibility-map-graphhopper-job"
                   trafficSignUpdateCache:
                     command: "update-cache"
-                    run-as-service: true
+                    run-as-service: false
                     service-configuration:
                       host: ${jobEndpoints.trafficSign.host}
                       port: ${jobEndpoints.trafficSign.port}
@@ -132,12 +132,11 @@ nu:
                     - "admin"
               maven:
                 rootPomRelativePath: "../../"
-                modulesUnderTest: []
-#                modulesUnderTest:
-#                  - "jobs/graphhopper"
-#                  - "jobs/mapgenerator"
-#                  - "jobs/traffic-sign"
-#                  - "jobs/data-analyser"
+                modulesUnderTest:
+                  - "jobs/graphhopper"
+                  - "jobs/mapgenerator"
+                  - "jobs/traffic-sign"
+                  - "jobs/data-analyser"
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
