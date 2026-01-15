@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator.RoadOperatorTypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson.RoadOperatorTypeEnum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

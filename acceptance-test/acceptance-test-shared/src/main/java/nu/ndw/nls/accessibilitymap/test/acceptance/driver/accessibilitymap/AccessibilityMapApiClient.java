@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.net.URI;
 import java.util.HashMap;
@@ -7,13 +8,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionZoneTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadSectionFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationRequestJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
@@ -33,6 +37,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -58,13 +63,14 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
+    private static final String MEDIA_TYPE_GEOJSON = "application/geo+json";
+
     @SneakyThrows
     public Response<Void, Void> reloadGraphHopper() {
-
         Request<Void> request = Request.<Void>builder()
                 .id("reloadGraphHopper")
                 .method(HttpMethod.PUT)
-                .path("/api/rest/static-road-data/accessibility-map/management/graph-hopper/reload")
+                .path("api/rest/static-road-data/accessibility-map/management/graph-hopper/reload")
                 .headers(Map.of(
                         HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
                 ))
@@ -77,11 +83,10 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @SneakyThrows
     public Response<Void, Void> reloadTrafficSigns() {
-
         Request<Void> request = Request.<Void>builder()
                 .id("reloadTrafficSigns")
                 .method(HttpMethod.PUT)
-                .path("/api/rest/static-road-data/accessibility-map/management/traffic-sign/reload")
+                .path("api/rest/static-road-data/accessibility-map/management/traffic-sign/reload")
                 .headers(Map.of(
                         HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
                 ))
@@ -94,7 +99,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @SneakyThrows
     public Response<Void, AccessibilityMapResponseJson> getAccessibilityForMunicipality(AccessibilityRequest accessibilityRequest) {
-
         Request<Void> request = Request.<Void>builder()
                 .id("getAccessibilityForMunicipality")
                 .method(HttpMethod.GET)
@@ -106,11 +110,12 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
-        FeatureCollection endpoint = buildGeoJsonEndPoint(accessibilityRequest.endLatitude(), accessibilityRequest.endLongitude());
-
-        fileService.writeDataToFile(
-                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
-                JsonMapper.builder().build().writeValueAsString(endpoint));
+        debugLogDestination(
+                DestinationRequestJson.builder()
+                        .latitude(accessibilityRequest.endLatitude())
+                        .longitude(accessibilityRequest.endLongitude())
+                        .build(),
+                request);
 
         return request(
                 request, new ParameterizedTypeReference<>() {
@@ -118,7 +123,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     public Response<Void, AccessibilityMapResponseJson> getLastResponseForGetAccessibilityForMunicipality() {
-
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "getAccessibilityForMunicipality".equals(response.request().id())
@@ -128,10 +132,71 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     @SneakyThrows
+    public Response<AccessibilityRequestJson, String>
+    getAccessibility(AccessibilityRequestJson accessibilityRequestJson) {
+        Request<AccessibilityRequestJson> request = Request.<AccessibilityRequestJson>builder()
+                .id("getAccessibility")
+                .method(HttpMethod.POST)
+                .path("api/rest/static-road-data/accessibility-map/v2/accessiblility")
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken(),
+                        HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE,
+                        HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+                ))
+                .body(accessibilityRequestJson)
+                .build();
+
+        debugLogDestination(accessibilityRequestJson.getDestination(), request);
+
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
+    }
+
+    public Response<AccessibilityRequestJson, String> getLastResponseForGetAccessibility() {
+        return responseWebCache().findResponsesByFilter(
+                        response ->
+                                "getAccessibility".equals(response.request().id())
+                                && response.request().method().equals(HttpMethod.POST),
+                        AccessibilityRequestJson.class, String.class)
+                .getLast();
+    }
+
+    @SneakyThrows
+    public Response<AccessibilityRequestJson, String>
+    getAccessibilityGeoJson(AccessibilityRequestJson accessibilityRequestJson) {
+        Request<AccessibilityRequestJson> request = Request.<AccessibilityRequestJson>builder()
+                .id("getAccessibilityGeoJson")
+                .method(HttpMethod.POST)
+                .path("api/rest/static-road-data/accessibility-map/v2/accessiblility.geojson")
+                .headers(Map.of(
+                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken(),
+                        HttpHeaders.ACCEPT, MEDIA_TYPE_GEOJSON,
+                        HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
+                ))
+                .body(accessibilityRequestJson)
+                .build();
+
+        debugLogDestination(accessibilityRequestJson.getDestination(), request);
+
+        return request(
+                request, new ParameterizedTypeReference<>() {
+                });
+    }
+
+    public Response<AccessibilityRequestJson, String> getLastResponseForGetAccessibilityGeoJson() {
+        return responseWebCache().findResponsesByFilter(
+                        response ->
+                                "getAccessibilityGeoJson".equals(response.request().id())
+                                && response.request().method().equals(HttpMethod.POST),
+                        AccessibilityRequestJson.class, String.class)
+                .getLast();
+    }
+
+    @SneakyThrows
     public Response<Void, RoadSectionFeatureCollectionJson> getAccessibilityGeoJsonForMunicipality(
             AccessibilityRequest accessibilityRequest
     ) {
-
         Request<Void> request = Request.<Void>builder()
                 .id("getAccessibilityGeoJsonForMunicipality")
                 .method(HttpMethod.GET)
@@ -143,11 +208,12 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
-        FeatureCollection endpoint = buildGeoJsonEndPoint(accessibilityRequest.endLatitude(), accessibilityRequest.endLongitude());
-
-        fileService.writeDataToFile(
-                driverGeneralConfiguration.getDebugFolder().resolve("request-%s-endpoint.geojson".formatted(request.id())).toFile(),
-                JsonMapper.builder().build().writeValueAsString(endpoint));
+        debugLogDestination(
+                DestinationRequestJson.builder()
+                        .latitude(accessibilityRequest.endLatitude())
+                        .longitude(accessibilityRequest.endLongitude())
+                        .build(),
+                request);
 
         return request(
                 request, new ParameterizedTypeReference<>() {
@@ -155,7 +221,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     public Response<Void, RoadSectionFeatureCollectionJson> getLastResponseForGetAccessibilityGeoJsonForMunicipality() {
-
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "getAccessibilityGeoJsonForMunicipality".equals(response.request().id())
@@ -166,7 +231,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @SneakyThrows
     public Response<Void, String> genericRequest(String path, String method) {
-
         Request<Void> request = Request.<Void>builder()
                 .id("genericRequest")
                 .method(HttpMethod.valueOf(method.toUpperCase(Locale.ROOT)))
@@ -182,7 +246,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     public Response<Void, String> getLastResponseForGenericRequest() {
-
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "genericRequest".equals(response.request().id())
@@ -192,10 +255,10 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     public static MultiValueMap<String, String> buildQueryParameters(AccessibilityRequest accessibilityRequest) {
-
         Map<String, List<String>> queryParameters = new HashMap<>();
         queryParameters.put("latitude", List.of(accessibilityRequest.endLatitude() + ""));
         queryParameters.put("longitude", List.of(accessibilityRequest.endLongitude() + ""));
+        queryParameters.put("vehicleHasTrailer", List.of(accessibilityRequest.vehicleHasTrailer() + ""));
 
         if (Objects.nonNull(accessibilityRequest.vehicleType())) {
             queryParameters.put("vehicleType", List.of(accessibilityRequest.vehicleType().getValue()));
@@ -215,14 +278,11 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         if (Objects.nonNull(accessibilityRequest.vehicleHeightInMeters())) {
             queryParameters.put("vehicleHeight", List.of(accessibilityRequest.vehicleHeightInMeters() + ""));
         }
-        if (Objects.nonNull(accessibilityRequest.vehicleWeightInKg())) {
-            queryParameters.put("vehicleWeight", List.of(accessibilityRequest.vehicleWeightInKg() + ""));
+        if (Objects.nonNull(accessibilityRequest.vehicleWeightInTonnes())) {
+            queryParameters.put("vehicleWeight", List.of(accessibilityRequest.vehicleWeightInTonnes() + ""));
         }
-        if (Objects.nonNull(accessibilityRequest.vehicleAxleLoadInKg())) {
-            queryParameters.put("vehicleAxleLoad", List.of(accessibilityRequest.vehicleAxleLoadInKg() + ""));
-        }
-        if (Objects.nonNull(accessibilityRequest.vehicleAxleLoadInKg())) {
-            queryParameters.put("vehicleHasTrailer", List.of(accessibilityRequest.vehicleHasTrailer() + ""));
+        if (Objects.nonNull(accessibilityRequest.vehicleAxleLoadInTonnes())) {
+            queryParameters.put("vehicleAxleLoad", List.of(accessibilityRequest.vehicleAxleLoadInTonnes() + ""));
         }
         if (Objects.nonNull(accessibilityRequest.excludeRestrictionsWithEmissionZoneIds())) {
             queryParameters.put("excludeEmissionZoneIds", accessibilityRequest.excludeRestrictionsWithEmissionZoneIds());
@@ -241,41 +301,41 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     @NotNull
-    private FeatureCollection buildGeoJsonEndPoint(double endLatitude, double endLongitude) {
-
-        return FeatureCollection.builder()
+    private Optional<FeatureCollection> buildGeoJsonEndPoint(DestinationRequestJson destinationRequestJson) {
+        if (Objects.isNull(destinationRequestJson)) {
+            return Optional.empty();
+        }
+        return Optional.of(FeatureCollection.builder()
                 .features(List.of(
                         Feature.builder()
                                 .id(1)
-                                .geometry(jtsPointJsonMapper.map(geometryFactory.createPoint(new Coordinate(endLongitude, endLatitude))))
+                                .geometry(jtsPointJsonMapper.map(geometryFactory.createPoint(new Coordinate(
+                                        destinationRequestJson.getLongitude(),
+                                        destinationRequestJson.getLatitude()))))
                                 .properties(PointNodeGraphProperties.builder()
                                         .name("endpoint")
                                         .build())
                                 .build()
                 ))
-                .build();
+                .build());
     }
 
     public String getEndpoint() {
-
         return String.format("http://%s:%s", getHost(), getPort());
     }
 
     @Override
     protected int getPort() {
-
         return accessibilityMapApiConfiguration.getPort();
     }
 
     @Override
     protected String getHost() {
-
         return accessibilityMapApiConfiguration.getHost();
     }
 
     @Override
     public void prepareState() {
-
         validateApiIsStarted();
 
         keycloakDriver.createAndActivateClient(
@@ -285,7 +345,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     @Override
     public void clearState() {
-
         validateApiIsStarted();
 
         //KeycloakDriver will handle clean-up of the admin client.
@@ -293,7 +352,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     private void validateApiIsStarted() {
-
         if (!apiIsStarted) {
             awaitService.waitFor(
                     URI.create("http://%s:%s/api/rest/static-road-data/accessibility-map/actuator/health".formatted(getHost(), getPort())),
@@ -351,5 +409,20 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                                 && response.request().method().equals(HttpMethod.GET),
                         Void.class, String.class)
                 .getLast();
+    }
+
+    private void debugLogDestination(DestinationRequestJson destinationRequestJson, Request<?> request) {
+        buildGeoJsonEndPoint(destinationRequestJson)
+                .ifPresent(endpoint -> {
+                    try {
+                        fileService.writeDataToFile(
+                                driverGeneralConfiguration.getDebugFolder()
+                                        .resolve("request-%s-endpoint.geojson".formatted(request.id()))
+                                        .toFile(),
+                                JsonMapper.builder().build().writeValueAsString(endpoint));
+                    } catch (JsonProcessingException exception) {
+                        throw new RuntimeException(exception);
+                    }
+                });
     }
 }

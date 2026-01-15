@@ -1,18 +1,18 @@
 package nu.ndw.nls.accessibilitymap.backend.municipality.controller.mapper;
 
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeature.TypeEnum.FEATURE;
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeatureCollection.TypeEnum.FEATURE_COLLECTION;
+import static nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
+import static nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureJson.TypeEnum.FEATURE;
+import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.Geometry.TypeEnum;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeature;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeatureCollection;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityProperties;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.Point;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityPropertiesJson;
+import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,36 +57,34 @@ class MunicipalityFeatureMapperV2Test {
     @Test
     void mapToMunicipalitiesToGeoJson_emptyDateLastCheck() {
         Municipality municipalityWithEmptyDate = municipality.withDateLastCheck(null);
-        MunicipalityFeatureCollection expectedResult = createExpectedResult(null);
+        MunicipalityFeatureCollectionJson expectedResult = createExpectedResult(null);
 
-        MunicipalityFeatureCollection geoJSON = municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(
+        MunicipalityFeatureCollectionJson geoJSON = municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(
                 List.of(municipalityWithEmptyDate));
 
         assertEquals(expectedResult, geoJSON);
     }
 
-    private MunicipalityFeatureCollection createExpectedResult(LocalDate dateLastCheck) {
-        String municipalityId = municipality.municipalityId();
-        Point point = Point.builder()
-                .type(TypeEnum.POINT)
-                .coordinates(List.of(municipality.startCoordinateLongitude(), municipality.startCoordinateLatitude()))
-                .build();
+    private MunicipalityFeatureCollectionJson createExpectedResult(LocalDate dateLastCheck) {
+        String municipalityId = municipality.id();
+        PointJson pointJson = new PointJson(List.of(municipality.startCoordinateLongitude(), municipality.startCoordinateLatitude()),
+                POINT);
 
         MunicipalityBoundingBox bounds = municipality.bounds();
         List<Double> boundsStart = List.of(bounds.longitudeFrom(), bounds.latitudeFrom());
         List<Double> boundsEnd = List.of(bounds.longitudeTo(), bounds.latitudeTo());
 
-        MunicipalityProperties propertiesJson = new MunicipalityProperties(
+        MunicipalityPropertiesJson propertiesJson = new MunicipalityPropertiesJson(
                 municipality.name(),
                 municipality.searchDistanceInMetres(),
                 List.of(boundsStart, boundsEnd),
                 dateLastCheck);
 
-        MunicipalityFeature featureJson = new MunicipalityFeature(
+        MunicipalityFeatureJson featureJson = new MunicipalityFeatureJson(
                 FEATURE,
                 municipalityId,
-                point,
+                pointJson,
                 propertiesJson);
-        return new MunicipalityFeatureCollection(FEATURE_COLLECTION, List.of(featureJson));
+        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION, List.of(featureJson));
     }
 }

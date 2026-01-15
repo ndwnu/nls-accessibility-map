@@ -7,6 +7,7 @@ import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.controller.mapper.RoadOperatorMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.service.RoadOperatorService;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +28,7 @@ class RoadOperatorsV2ApiDelegateImplTest {
     private List<RoadOperator> roadOperators;
 
     @Mock
-    private List<nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator> mappedRoadOperators;
+    private List<RoadOperatorJson> mappedRoadOperators;
 
     private RoadOperatorsV2ApiDelegateImpl roadOperatorsApiDelegate;
 

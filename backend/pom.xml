@@ -17,7 +17,7 @@
   <description>Accessibility Map REST API</description>
 
   <properties>
-    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.backend.generated</openapi-generator.base.classpath>
+    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.generated</openapi-generator.base.classpath>
   </properties>
 
   <dependencies>
@@ -59,6 +59,10 @@
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>monitoring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>web</artifactId>
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
@@ -151,6 +155,26 @@
               </artifactItems>
             </configuration>
           </execution>
+
+          <execution>
+            <id>unpack-open-api-geojson-geometry-config</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>nu.ndw.nls.geojson.geometry</groupId>
+                  <artifactId>specification-open-api-config</artifactId>
+                  <version>${nls-geojson-geometry.version}</version>
+                  <includes>
+                    **/*.yaml
+                  </includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -211,8 +235,47 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>com.randomnoun.maven.plugins</groupId>
+        <artifactId>yaml-combine-maven-plugin</artifactId>
+        <version>${yaml-combine-maven-plugin.version}</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>yaml-combine</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>yaml-combine</goal>
+            </goals>
+            <configuration>
+              <fileset>
+                <includes>
+                  <!-- can supply multiple files here or filespecs; e.g. *.yaml -->
+                  <include>target/dependency/nu/ndw/nls/geojson/geometry/openapi/config/openapi-geojson-config.yaml</include>
+                  <include>openapi-variables.yaml</include>
+                </includes>
+                <directory>${project.basedir}</directory>
+              </fileset>
+              <outputDirectory>${project.basedir}</outputDirectory>
+              <!-- use this file as the input to the codegen goal -->
+              <finalName>open-api-config.yaml</finalName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.openapitools</groupId>
-        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <artifactId>openapi-generator-maven-plugin</artifactId><dependencies>
+        <dependency>
+          <groupId>nu.ndw.nls.springboot</groupId>
+          <artifactId>openapi</artifactId>
+          <version>${nls-springboot.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>nu.ndw.nls.accessibilitymap</groupId>
+          <artifactId>specification</artifactId>
+          <version>${project.parent.version}</version>
+        </dependency>
+      </dependencies>
         <executions>
           <execution>
             <id>generate-open-api</id>
@@ -221,12 +284,17 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>
-                ${project.basedir}/target/classes/static/api-docs/v1.yaml
-              </inputSpec>
+              <templateResourcePath>nu/ndw/nls/springboot/openapi</templateResourcePath>
+              <configurationFile>${project.basedir}/open-api-config.yaml</configurationFile>
+              <additionalProperties>removeEnumValuePrefix=true</additionalProperties>
+              <inputSpec>/nu/ndw/nls/accessibilitymap/specification/v1.yaml</inputSpec>
               <generatorName>spring</generatorName>
+              <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
               <apiPackage>${openapi-generator.base.classpath}.api.v1</apiPackage>
               <modelPackage>${openapi-generator.base.classpath}.model.v1</modelPackage>
+              <modelNameSuffix>Json</modelNameSuffix>
+              <generateApiTests>false</generateApiTests>
+              <generateModelTests>false</generateModelTests>
               <configOptions>
                 <useSpringBoot3>true</useSpringBoot3>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
@@ -267,12 +335,17 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>
-                ${project.basedir}/target/classes/static/api-docs/v2.yaml
-              </inputSpec>
+              <templateResourcePath>nu/ndw/nls/springboot/openapi</templateResourcePath>
+              <configurationFile>${project.basedir}/open-api-config.yaml</configurationFile>
+              <additionalProperties>removeEnumValuePrefix=true</additionalProperties>
+              <inputSpec>/nu/ndw/nls/accessibilitymap/specification/v2.yaml</inputSpec>
               <generatorName>spring</generatorName>
+              <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
               <apiPackage>${openapi-generator.base.classpath}.api.v2</apiPackage>
               <modelPackage>${openapi-generator.base.classpath}.model.v2</modelPackage>
+              <modelNameSuffix>Json</modelNameSuffix>
+              <generateApiTests>false</generateApiTests>
+              <generateModelTests>false</generateModelTests>
               <configOptions>
                 <useSpringBoot3>true</useSpringBoot3>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>

@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controller.mapper.MunicipalityFeatureMapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureCollectionJson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,8 +49,8 @@ class MunicipalitiesApiDelegateImplTest {
     void getMunicipalities() {
 
         when(municipalityService.findAll()).thenReturn(List.of(municipality1, municipality2));
-        when(municipality1.municipalityId()).thenReturn(MUNICIPALITY_ID);
-        when(municipality2.municipalityId()).thenReturn(MUNICIPALITY_ID_2);
+        when(municipality1.id()).thenReturn(MUNICIPALITY_ID);
+        when(municipality2.id()).thenReturn(MUNICIPALITY_ID_2);
         when(municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(List.of(municipality2, municipality1))).thenReturn(featureCollection);
 
         ResponseEntity<MunicipalityFeatureCollectionJson> response = municipalitiesApiDelegate.getMunicipalities();

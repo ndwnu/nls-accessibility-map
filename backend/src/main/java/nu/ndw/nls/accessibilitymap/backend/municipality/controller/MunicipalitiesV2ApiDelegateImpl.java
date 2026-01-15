@@ -2,11 +2,11 @@ package nu.ndw.nls.accessibilitymap.backend.municipality.controller;
 
 import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.generated.api.v2.MunicipalitiesV2ApiDelegate;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeatureCollection;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controller.mapper.MunicipalityFeatureMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
+import nu.ndw.nls.accessibilitymap.generated.api.v2.MunicipalitiesV2ApiDelegate;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureCollectionJson;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +19,11 @@ public class MunicipalitiesV2ApiDelegateImpl implements MunicipalitiesV2ApiDeleg
     private final MunicipalityService municipalityService;
 
     @Override
-    public ResponseEntity<MunicipalityFeatureCollection> getMunicipalities() {
+    public ResponseEntity<MunicipalityFeatureCollectionJson> getMunicipalities() {
 
         return ResponseEntity.ok(municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(
                 municipalityService.findAll().stream()
-                        .sorted(Comparator.comparing(Municipality::municipalityId))
+                        .sorted(Comparator.comparing(Municipality::id))
                         .toList())
         );
     }

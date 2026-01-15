@@ -16,10 +16,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionZoneTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BaseNetworkAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
@@ -74,8 +74,8 @@ public class DataTypeRegister {
                 .vehicleLengthInMeters(mapDoubleValue("vehicleLength", entry))
                 .vehicleHeightInMeters(mapDoubleValue("vehicleHeight", entry))
                 .vehicleWidthInMeters(mapDoubleValue("vehicleWidth", entry))
-                .vehicleWeightInKg(mapDoubleValue("vehicleWeight", entry))
-                .vehicleAxleLoadInKg(mapDoubleValue("vehicleAxleLoad", entry))
+                .vehicleWeightInTonnes(mapDoubleValue("vehicleWeight", entry))
+                .vehicleAxleLoadInTonnes(mapDoubleValue("vehicleAxleLoad", entry))
                 .vehicleType(entry.containsKey("vehicleType") ? VehicleTypeJson.fromValue(entry.get("vehicleType")) : null)
                 .emissionClass(entry.containsKey("emissionClass") ? EmissionClassJson.fromValue(entry.get("emissionClass")) : null)
                 .fuelTypes(entry.containsKey("fuelTypes") && Objects.nonNull(entry.get("fuelTypes"))

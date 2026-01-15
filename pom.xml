@@ -125,7 +125,6 @@
   </pluginRepositories>
   <dependencyManagement>
     <dependencies>
-
       <dependency>
         <groupId>nu.ndw.nls.springboot.test.graph</groupId>
         <artifactId>graph-hopper-exporter</artifactId>
@@ -229,6 +228,11 @@
       <dependency>
         <groupId>nu.ndw.nls.springboot</groupId>
         <artifactId>core</artifactId>
+        <version>${nls-springboot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>nu.ndw.nls.springboot</groupId>
+        <artifactId>web</artifactId>
         <version>${nls-springboot.version}</version>
       </dependency>
       <dependency>
@@ -420,111 +424,11 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>org.openapitools</groupId>
-          <artifactId>openapi-generator-maven-plugin</artifactId>
-          <version>${openapi-generator-maven-plugin.version}</version>
-          <dependencies>
-            <dependency>
-              <groupId>nu.ndw.nls.springboot</groupId>
-              <artifactId>openapi</artifactId>
-              <version>${nls-springboot.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>nu.ndw.nls.accessibilitymap</groupId>
-              <artifactId>specification</artifactId>
-              <version>${project.parent.version}</version>
-            </dependency>
-          </dependencies>
-          <executions>
-            <execution>
-              <id>generate-open-api</id>
-              <goals>
-                <goal>generate</goal>
-              </goals>
-              <configuration>
-                <templateResourcePath>nu/ndw/nls/springboot/openapi</templateResourcePath>
-                <configurationFile>open-api-config.yaml</configurationFile>
-                <additionalProperties>removeEnumValuePrefix=true</additionalProperties>
-                <!-- Location of our openapi specification file -->
-                <inputSpec>/nu/ndw/nls/accessibilitymap/specification/v1.yaml</inputSpec>
-                <!-- Type of code to generate -->
-                <generatorName>spring</generatorName>
-                <!-- Add model prefix to distinguish between jooq- and json-models -->
-                <modelNameSuffix>Json</modelNameSuffix>
-                <!--
-                  Prevent generating too much by only specifying one file.
-                  The ApiUtil is fairly harmless and is actually used in the delegate pattern.
-                  Reason to not want all the default generated files: we'd need more dependencies.
-                -->
-                <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <version>${exec-maven-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
-
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <inherited>false</inherited>
-        <executions>
-          <execution>
-            <id>unpack-open-api-geojson-geometry-config</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>nu.ndw.nls.geojson.geometry</groupId>
-                  <artifactId>specification-open-api-config</artifactId>
-                  <version>${nls-geojson-geometry.version}</version>
-                  <outputDirectory>${project.build.directory}</outputDirectory>
-                  <includes>
-                    **/*.yaml
-                  </includes>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.randomnoun.maven.plugins</groupId>
-        <artifactId>yaml-combine-maven-plugin</artifactId>
-        <version>${yaml-combine-maven-plugin.version}</version>
-        <inherited>false</inherited>
-        <executions>
-          <execution>
-            <id>yaml-combine</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>yaml-combine</goal>
-            </goals>
-            <configuration>
-              <fileset>
-                <includes>
-                  <!-- can supply multiple files here or filespecs; e.g. *.yaml -->
-                  <include>target/nu/ndw/nls/geojson/geometry/openapi/config/openapi-geojson-config.yaml</include>
-                  <include>openapi-variables.yaml</include>
-                </includes>
-                <directory>${project.basedir}</directory>
-              </fileset>
-              <outputDirectory>${project.basedir}</outputDirectory>
-              <!-- use this file as the input to the codegen goal -->
-              <finalName>open-api-config.yaml</finalName>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
 </project>

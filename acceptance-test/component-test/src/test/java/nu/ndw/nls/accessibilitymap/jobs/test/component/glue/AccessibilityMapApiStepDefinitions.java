@@ -13,8 +13,10 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Option;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.AccessibilityMapResponseJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadSectionFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadSectionFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityResponseJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoadSection;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
@@ -51,9 +53,7 @@ public class AccessibilityMapApiStepDefinitions {
 
     @When("request accessibility for")
     public void requestAccessibilityFor(AccessibilityRequest accessibilityRequest) {
-
-        Response<Void, AccessibilityMapResponseJson> response = accessibilityMapApiClient.getAccessibilityForMunicipality(
-                accessibilityRequest);
+        var response = accessibilityMapApiClient.getAccessibilityForMunicipality(accessibilityRequest);
 
         assertThat(response.containsError())
                 .withFailMessage("Failed to get accessibility for municipality. Error: %s with body: %s", response.error(), response.body())
@@ -67,7 +67,8 @@ public class AccessibilityMapApiStepDefinitions {
                 accessibilityRequest);
 
         assertThat(response.containsError())
-                .withFailMessage("Failed to get accessibility geojson for municipality. Error: %s with body: %s",
+                .withFailMessage(
+                        "Failed to get accessibility geojson for municipality. Error: %s with body: %s",
                         response.error(),
                         response.body())
                 .isFalse();
@@ -97,7 +98,6 @@ public class AccessibilityMapApiStepDefinitions {
             String reasonsFile,
             List<BlockedRoadSection> blockedRoadSections
     ) throws JsonProcessingException {
-
         Response<Void, AccessibilityMapResponseJson> response = accessibilityMapApiClient.getLastResponseForGetAccessibilityForMunicipality();
 
         String reasons = Objects.isNull(reasonsFile)
@@ -135,5 +135,62 @@ public class AccessibilityMapApiStepDefinitions {
         assertThatJson(response.body())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(testDataProvider.readFromFile("api/accessibility", expectedResponseFile));
+    }
+
+    @When("request accessibility for {word}")
+    public void requestAccessibilityForV2(String requestFile) {
+
+        var accessibilityRequest = testDataProvider.readFromFile(
+                "api/accessibility/v2/request/",
+                requestFile + ".json",
+                AccessibilityRequestJson.class);
+        var response = accessibilityMapApiClient.getAccessibility(accessibilityRequest);
+
+        assertThat(response.containsError())
+                .withFailMessage(
+                        "Failed to get accessibility. Error: %s with body: %s",
+                        response.error(),
+                        response.body())
+                .isFalse();
+    }
+
+    @Then("we expect accessibility response {word}")
+    public void expectAccessibilityResponseV2(String responseFile) {
+
+        var actualResponse = accessibilityMapApiClient.getLastResponseForGetAccessibility();
+        var expectedResponse = testDataProvider.readFromFile(
+                "api/accessibility/v2/response",
+                responseFile + ".json",
+                AccessibilityResponseJson.class);
+
+        assertThatJson(actualResponse.bodyAsString()).isEqualTo(expectedResponse);
+    }
+
+    @When("request accessibility geojson for {word}")
+    public void requestAccessibilityGeoJsonForV2(String requestFile) {
+
+        var accessibilityRequest = testDataProvider.readFromFile(
+                "api/accessibility/v2/request/",
+                requestFile + ".json",
+                AccessibilityRequestJson.class);
+        var response = accessibilityMapApiClient.getAccessibilityGeoJson(accessibilityRequest);
+
+        assertThat(response.containsError())
+                .withFailMessage(
+                        "Failed to get accessibility geojson. Error: %s with body: %s",
+                        response.error(),
+                        response.body())
+                .isFalse();
+    }
+
+    @Then("we expect accessibility geojson response {word}")
+    public void expectAccessibilityGeoJsonResponseV2(String responseFile) {
+
+        var actualResponse = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJson();
+        var expectedResponse = testDataProvider.readFromFile(
+                "api/accessibility/v2/response",
+                responseFile + ".geojson");
+
+        assertThatJson(actualResponse.bodyAsString()).isEqualTo(expectedResponse);
     }
 }

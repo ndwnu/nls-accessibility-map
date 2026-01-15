@@ -1,0 +1,786 @@
+openapi: 3.0.0
+info:
+  title: Accessibility map V2 API
+  description: >
+    Query the accessibility for vehicle characteristics within a municipality. More information available on 
+    https://docs.ndw.nu
+  version: '2'
+servers:
+  - url: /api/rest/static-road-data/accessibility-map/v2
+
+paths:
+  /accessiblility:
+    post:
+      tags:
+        - accessibilityV2
+      summary: Returns inaccessible road sections for a specified municipality as JSON
+      operationId: getAccessibility
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessibilityRequest"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessibilityResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+
+  /accessiblility.geojson:
+    post:
+      tags:
+        - accessibilityV2GeoJson
+      summary: Returns inaccessible road sections for a specified municipality as GeoJSON
+      operationId: getAccessibilityAsGeoJson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccessibilityRequest"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/AccessibilityResponseGeoJson'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+  /municipalities:
+    get:
+      tags:
+        - municipalitiesV2
+      summary: Returns all currently configured municipalities
+      operationId: getMunicipalities
+      responses:
+        '200':
+          description: OK
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/MunicipalityFeatureCollection'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+
+  /road-operators:
+    get:
+      tags:
+        - roadOperatorsV2
+      summary: Returns all currently configured road operators
+      operationId: getRoadOperators
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoadOperators'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIError'
+
+components:
+  schemas:
+    VehicleCharacteristics:
+      type: "object"
+      description: "Vehicle characteristics"
+      required:
+        - type
+      properties:
+        type:
+          $ref: '#/components/schemas/VehicleType'
+        width:
+          description: The width of the vehicle in metres
+          type: number
+          format: float
+          example: 2.0
+          minimum: 0.0
+          maximum: 3.0
+        height:
+          description: The height of the vehicle in metres
+          type: number
+          format: float
+          example: 2.5
+          minimum: 0.0
+          maximum: 4.0
+        weight:
+          description: The weight of the entire vehicle including axle load and trailers in metric tonnes
+          type: number
+          format: float
+          example: 20.0
+          minimum: 0.0
+          maximum: 60.0
+        length:
+          description: The length of the specified vehicle in metres
+          type: number
+          format: float
+          example: 5.2
+          minimum: 0.0
+          maximum: 22.0
+        axleLoad:
+          description: The axle load of the specified vehicle in metric tonnes
+          type: number
+          format: float
+          example: 4.0
+          minimum: 0.0
+          maximum: 12.0
+        hasTrailer:
+          description: Indication whether a vehicle has a trailer
+          type: boolean
+          example: false
+          default: false
+        emissionClass:
+          $ref: '#/components/schemas/EmissionClass'
+        fuelTypes:
+          type: "array"
+          description: A collection of fuel types
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/FuelType'
+    DestinationRequest:
+      type: "object"
+      description: "Destination"
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          description: latitude of the destination location
+          type: number
+          format: double
+          example: 52.1326
+        longitude:
+          description: longitude of the destination location
+          type: number
+          format: double
+          example: 5.2913
+    Exclusions:
+      type: "object"
+      description: "Exclusions"
+      properties:
+        emissionZoneTypes:
+          description: Excludes the emission zone with types from the accessibility calculation
+          type: "array"
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/EmissionZoneType'
+        emissionZoneIds:
+          type: "array"
+          description: Excludes the emission zone with ids from the accessibility calculation
+          minItems: 0
+          items:
+            type: string
+            example: NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47
+    AccessibilityRequest:
+      type: "object"
+      description: ""
+      required:
+        - municipalityId
+        - vehicle
+      properties:
+        includeAccessibleRoadSections:
+          description: Indication or not to include accessible road sections in the response
+          type: boolean
+          example: false
+          default: true
+          nullable: false
+        includeInaccessibleRoadSections:
+          description: Indication or not to include inaccessible road sections in the response
+          type: boolean
+          example: false
+          default: true
+          nullable: false
+        destination:
+          $ref: '#/components/schemas/DestinationRequest'
+        municipalityId:
+          type: string
+          example: GM0344
+          pattern: ^(GM)(?=\d{4}$)\d*[1-9]\d*
+        vehicle:
+          $ref: '#/components/schemas/VehicleCharacteristics'
+        exclusions:
+          $ref: '#/components/schemas/Exclusions'
+
+    FuelType:
+      type: string
+      example: petrol
+      description: The vehicle's fuel type
+      enum:
+        - electric
+        - diesel
+        - hydrogen
+        - liquefied_petroleum_gas
+        - compressed_natural_gas
+        - liquefied_natural_gas
+        - ethanol
+        - petrol
+
+    EmissionZoneType:
+      type: string
+      example: low_emission_zone
+      enum:
+        - zero_emission_zone
+        - low_emission_zone
+
+    EmissionClass:
+      type: string
+      example: euro_6
+      description: Vehicle's Euro emissions standard
+      enum:
+        - zero
+        - euro_1
+        - euro_2
+        - euro_3
+        - euro_4
+        - euro_5
+        - euro_6
+    VehicleType:
+      type: string
+      description: Vehicle type
+      enum:
+        - bus
+        - car
+        - light_commercial_vehicle
+        - motorcycle
+        - tractor
+        - truck
+      example: truck
+    Direction:
+      type: string
+      description: Direction of travel
+      enum:
+        - forward
+        - backward
+      example: forward
+
+    AccessibilityResponse:
+      type: object
+      description: Response object containing (in)accessible road sections
+      readOnly: true
+      properties:
+        roadSections:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoadSection'
+        destination:
+          $ref: '#/components/schemas/Destination'
+    RoadSectionId:
+      type: integer
+      format: int64
+      example: 715923
+      readOnly: true
+    Accessible:
+      type: boolean
+      description: Whether or not the road section is accessible
+      example: false
+      readOnly: true
+      nullable: false
+    RoadSection:
+      type: object
+      description: A road section.
+      required:
+        - id
+        - accessible
+        - roadSectionSegments
+      properties:
+        id:
+          $ref: '#/components/schemas/RoadSectionId'
+        roadSectionSegments:
+          type: "array"
+          description: A collection of road section segments
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/RoadSectionSegment"
+          readOnly: true
+    RoadSectionSegment:
+      type: object
+      description: a road section segment is a part of a road section in a certain direction.
+      required:
+        - direction
+        - accessible
+        - geometry
+      properties:
+        direction:
+          $ref: '#/components/schemas/Direction'
+        accessible:
+          $ref: '#/components/schemas/Accessible'
+        geometry:
+          $ref: './geojson-geometry.yaml#/components/schemas/LineString'
+    Destination:
+      type: object
+      description: If a destination is specified in the request, this object will be present in the response. Representing the destination location and why it is accessible or not.
+      required:
+        - roadSectionId
+        - accessible
+        - reasons
+      properties:
+        roadSectionId:
+          $ref: '#/components/schemas/RoadSectionId'
+        accessible:
+          $ref: '#/components/schemas/Accessible'
+        reasons:
+          type: array
+          description: Group of combined reasons why the destination is inaccessible. Each group contains a list of unique reasons. why the destination is inaccessible. Resolving one of these groups would mean the destination is accessible.
+          items:
+            type: array
+            description: A list of reasons why the destination is inaccessible.
+            items:
+              $ref: '#/components/schemas/Reason'
+    Reason:
+      type: object
+      description: Reason why the road section is inaccessible
+      required:
+        - type
+        - unitSymbol
+        - condition
+      properties:
+        trafficSignId:
+          $ref: '#/components/schemas/TrafficSignId'
+        trafficSignType:
+          $ref: '#/components/schemas/TrafficSignType'
+        restrictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Restriction"
+
+    Restriction:
+      type: object
+      description: Restriction on a particular route making it inaccessible
+      required:
+        - type
+        - unitSymbol
+        - condition
+      discriminator:
+        propertyName: type
+      properties:
+        type:
+          type: string
+          enum:
+            - VehicleLengthRestriction
+            - VehicleHeightRestriction
+            - VehicleWidthRestriction
+            - VehicleAxleWeightRestriction
+            - VehicleWeightRestriction
+            - FuelTypeRestriction
+            - VehicleTypeRestriction
+          description: "The restriction type."
+        unitSymbol:
+          $ref: '#/components/schemas/RestrictionUnitSymbol'
+        condition:
+          $ref: '#/components/schemas/RestrictionCondition'
+
+    RestrictionUnitSymbol:
+      enum:
+        - "tons"
+        - "metre"
+        - "enum"
+        - "unknown"
+      type: "string"
+      example: "metre"
+      default: "unknown"
+      description: "The unit symbol is the symbol used to represent a value."
+
+    RestrictionCondition:
+      enum:
+        - "equals"
+        - "greater_than_or_equals"
+        - "unknown"
+      type: "string"
+      default: "unknown"
+      example: "greater_than_or_equals"
+      description: "The reason condition"
+
+    VehicleLengthRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    VehicleAxleWeightRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    VehicleWeightRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    VehicleWidthRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    VehicleHeightRestriction:
+      type: object
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: number
+
+    FuelTypeRestriction:
+      type: object
+      required:
+        - values
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            values:
+              type: array
+              items:
+                $ref: '#/components/schemas/FuelType'
+      example:
+        - type: "FuelTypeRestriction"
+          unitSymbol: "enum"
+          condition: "equals"
+          values:
+            - petrol
+            - electric
+
+    VehicleTypeRestriction:
+      type: object
+      required:
+        - values
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            values:
+              type: array
+              items:
+                $ref: '#/components/schemas/VehicleType'
+      example:
+        - type: "VehicleTypeRestriction"
+          unitSymbol: "enum"
+          condition: "equals"
+          values:
+            - car
+            - light_commercial_vehicle
+            -
+    TrafficSignId:
+      type: "string"
+      format: "uuid"
+      example: "79a56dfa-7a59-4bcc-aee5-918fe7064474"
+    TrafficSignType:
+      enum:
+        - "C1"
+        - "C6"
+        - "C7"
+        - "C7a"
+        - "C7b"
+        - "C8"
+        - "C9"
+        - "C10"
+        - "C11"
+        - "C12"
+        - "C17"
+        - "C18"
+        - "C19"
+        - "C20"
+        - "C21"
+        - "C22"
+        - "C22a"
+        - "C22c"
+        - "unknown"
+      type: "string"
+      default: "unknown"
+      example: "c1"
+      description: "Traffic sign type"
+    FeatureCollection:
+      type: object
+      description: GeoJSON feature collection
+      required:
+        - type
+        - features
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.3
+      properties:
+        type:
+          type: string
+          enum:
+            - FeatureCollection
+          description: Type of the element
+          example: FeatureCollection
+        features:
+          type: array
+          items:
+            $ref: '#/components/schemas/Feature'
+    Feature:
+      type: object
+      description: GeoJSON feature
+      required:
+        - type
+        - id
+        - geometry
+      externalDocs:
+        url: https://tools.ietf.org/html/rfc7946#section-3.2
+      properties:
+        type:
+          type: string
+          enum:
+            - Feature
+          example: Feature
+        id:
+          type: object
+          description: Identifier for the feature
+          example: 217934
+        geometry:
+          $ref: './geojson-geometry.yaml#/components/schemas/Geometry'
+    AccessibilityResponseGeoJson:
+      allOf:
+        - $ref: '#/components/schemas/FeatureCollection'
+        - type: object
+          description: Road sections GeoJSON feature collection
+          required:
+            - features
+          properties:
+            features:
+              type: array
+              items:
+                anyOf:
+                  - $ref: '#/components/schemas/RoadSectionSegmentFeature'
+                  - $ref: '#/components/schemas/DestinationFeature'
+    RoadSectionSegmentFeature:
+      allOf:
+        - $ref: '#/components/schemas/Feature'
+        - type: object
+          description: GeoJSON feature that represents a part of a road section
+          required:
+            - geometry
+          properties:
+            geometry:
+              $ref: './geojson-geometry.yaml#/components/schemas/LineString'
+            properties:
+              $ref: '#/components/schemas/RoadSectionSegmentProperties'
+    RoadSectionSegmentProperties:
+      type: object
+      description: Road section GeoJSON properties
+      required:
+        - roadSectionId
+        - accessible
+      properties:
+        roadSectionId:
+          $ref: '#/components/schemas/RoadSectionId'
+        accessible:
+          $ref: '#/components/schemas/Accessible'
+        direction:
+          $ref: '#/components/schemas/Direction'
+    DestinationFeature:
+      allOf:
+        - $ref: '#/components/schemas/Feature'
+        - type: object
+          description: GeoJSON feature that represents a road section or a part of a road section
+          required:
+            - geometry
+          properties:
+            geometry:
+              $ref: './geojson-geometry.yaml#/components/schemas/Point'
+            properties:
+              $ref: '#/components/schemas/DestinationFeatureProperties'
+    DestinationFeatureProperties:
+      type: object
+      description: Road section GeoJSON properties
+      required:
+        - roadSectionId
+        - accessible
+      properties:
+        roadSectionId:
+          $ref: '#/components/schemas/RoadSectionId'
+        accessible:
+          $ref: '#/components/schemas/Accessible'
+        reasons:
+          type: array
+          description: Group of combined reasons why the destination is inaccessible. Each group contains a list of unique reasons. why the destination is inaccessible. Resolving one of these groups would mean the destination is accessible.
+          items:
+            type: array
+            description: A list of reasons why the destination is inaccessible.
+            items:
+              $ref: '#/components/schemas/Reason'
+
+    RoadOperators:
+      type: "array"
+      description: A collection of road operators
+      minItems: 0
+      items:
+        $ref: "#/components/schemas/RoadOperator"
+      readOnly: true
+    RoadOperator:
+      type: object
+      description: A road operator is someone who is responsible for the maintenance of road sections.
+      required:
+        - roadOperatorName
+        - roadOperatorType
+        - roadOperatorCode
+      properties:
+        roadOperatorName:
+          type: string
+          example: Beverwijk
+          description: The name of the road operator.
+          readOnly: true
+        roadOperatorCode:
+          type: string
+          example: 375
+          description: The code of the road operator.
+          readOnly: true
+        roadOperatorType:
+          type: string
+          example: WaterAuthority
+          description: The road operator type.
+          enum:
+            - WaterAuthority
+            - Municipality
+            - Province
+            - State
+            - Other
+          readOnly: true
+        municipalityId:
+          type: string
+          example: GM375
+          description: The municipality id of the road operator. This is only applicable of road operators of type Municipality.
+          readOnly: true
+        requestExemptionUrl:
+          type: string
+          description: URL to request an exemption.
+          example: "https://loket.digitaal.utrecht.nl/nl/products/ontheffing-voertuig"
+          readOnly: true
+
+    MunicipalityFeatureCollection:
+      allOf:
+        - $ref: '#/components/schemas/FeatureCollection'
+        - type: object
+          description: Municipalities GeoJSON feature collection
+          required:
+            - features
+          properties:
+            features:
+              type: array
+              items:
+                $ref: '#/components/schemas/MunicipalityFeature'
+    MunicipalityFeature:
+      allOf:
+        - $ref: '#/components/schemas/Feature'
+        - type: object
+          description: Municipality GeoJSON feature
+          required:
+            - geometry
+          properties:
+            id:
+              type: string
+              description: Identifier of the municipality in the municipality registry
+              example: GM0344
+            geometry:
+              $ref: './geojson-geometry.yaml#/components/schemas/Point'
+            properties:
+              $ref: '#/components/schemas/MunicipalityProperties'
+    MunicipalityProperties:
+      type: object
+      description: Municipality GeoJSON properties
+      required:
+        - name
+        - searchDistance
+        - bounds
+        - dateLastCheck
+      properties:
+        name:
+          type: string
+          description: Municipality name
+          example: Utrecht
+        searchDistance:
+          type: integer
+          format: int32
+          description: Search distance in metres
+          example: 50000
+        bounds:
+          $ref: '#/components/schemas/BoundingBox'
+        dateLastCheck:
+          type: string
+          format: date
+          description: The last validated date.
+          example: 2024-10-01
+
+    BoundingBox:
+      type: array
+      description: The bounding box of a municipality in [west-south, east-north] order
+      example: [ [ 3.9555803787437767, 51.79111331209157 ], [ 4.2393831509799735, 51.93614160776871 ] ]
+      minItems: 2
+      maxItems: 2
+      items:
+        type: array
+        items:
+          type: number
+          format: double
+
+    APIError:
+      type: object
+      description: API error response
+      properties:
+        message:
+          type: string
+          description: Error message from the API
+          example: 'Could not find road section by latitude: 52.1326 longitude: 5.2913'

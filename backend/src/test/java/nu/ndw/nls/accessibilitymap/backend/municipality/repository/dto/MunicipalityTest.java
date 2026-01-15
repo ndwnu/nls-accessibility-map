@@ -29,7 +29,7 @@ class MunicipalityTest extends ValidationTest {
                 .startCoordinateLatitude(2D)
                 .startCoordinateLongitude(3D)
                 .searchDistanceInMetres(4)
-                .municipalityId("ABC123")
+                .id("ABC123")
                 .bounds(new MunicipalityBoundingBox(11D, 12D, 13D, 14D))
                 .dateLastCheck(LocalDate.MAX)
                 .build();
@@ -84,10 +84,10 @@ class MunicipalityTest extends ValidationTest {
     @Test
     void validate_municipalityId_null() {
 
-        municipality = municipality.withMunicipalityId(null);
+        municipality = municipality.withId(null);
 
         validate(municipality,
-                List.of("municipalityId"),
+                List.of("id"),
                 List.of("must not be null"));
     }
 
@@ -108,18 +108,18 @@ class MunicipalityTest extends ValidationTest {
             ASasdfasdfDF29, 29
             1, null
             """)
-    void municipalityIdAsInteger(String municipalityId, Integer expectedResult) {
+    void idAsInteger(String municipalityId, Integer expectedResult) {
 
         Municipality municipality = Municipality.builder()
-                .municipalityId(municipalityId)
+                .id(municipalityId)
                 .build();
 
         if (Objects.isNull(expectedResult)) {
-            assertThat(catchThrowable(municipality::municipalityIdAsInteger))
-                    .hasMessage("Incorrect municipalityId %s".formatted(municipalityId))
+            assertThat(catchThrowable(municipality::idAsInteger))
+                    .hasMessage("Incorrect id %s".formatted(municipalityId))
                     .isInstanceOf(IllegalStateException.class);
         } else {
-            assertThat(municipality.municipalityIdAsInteger()).isEqualTo(expectedResult);
+            assertThat(municipality.idAsInteger()).isEqualTo(expectedResult);
         }
     }
 
