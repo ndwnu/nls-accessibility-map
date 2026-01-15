@@ -140,6 +140,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .path("api/rest/static-road-data/accessibility-map/v2/accessiblility")
                 .headers(Map.of(
                         HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken(),
+                        HttpHeaders.ACCEPT_ENCODING, "gzip",
                         HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE,
                         HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
                 ))
@@ -171,6 +172,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .path("api/rest/static-road-data/accessibility-map/v2/accessiblility.geojson")
                 .headers(Map.of(
                         HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken(),
+                        HttpHeaders.ACCEPT_ENCODING, "gzip",
                         HttpHeaders.ACCEPT, MEDIA_TYPE_GEOJSON,
                         HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
                 ))

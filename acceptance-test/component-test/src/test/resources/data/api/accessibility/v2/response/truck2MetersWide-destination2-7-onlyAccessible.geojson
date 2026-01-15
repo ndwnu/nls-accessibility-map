@@ -2,6 +2,18 @@
   "type" : "FeatureCollection",
   "features" : [ {
     "type" : "Feature",
+    "id" : 1,
+    "geometry" : {
+      "type" : "Point",
+      "coordinates" : [ 7.0, 3.0 ]
+    },
+    "properties" : {
+      "roadSectionId" : 9,
+      "accessible" : true,
+      "reasons" : [ ]
+    }
+  }, {
+    "type" : "Feature",
     "id" : 2,
     "geometry" : {
       "type" : "LineString",
@@ -347,18 +359,6 @@
       "roadSectionId" : 13,
       "accessible" : true,
       "direction" : "backward"
-    }
-  }, {
-    "type" : "Feature",
-    "id" : 1,
-    "geometry" : {
-      "type" : "Point",
-      "coordinates" : [ 7.0, 3.0 ]
-    },
-    "properties" : {
-      "roadSectionId" : 9,
-      "accessible" : true,
-      "reasons" : [ ]
     }
   } ]
 }

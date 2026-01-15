@@ -22,6 +22,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.Acces
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
+import org.springframework.http.HttpHeaders;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -140,11 +141,11 @@ public class AccessibilityMapApiStepDefinitions {
     @When("request accessibility for {word}")
     public void requestAccessibilityForV2(String requestFile) {
 
-        var accessibilityRequest = testDataProvider.readFromFile(
+        AccessibilityRequestJson accessibilityRequest = testDataProvider.readFromFile(
                 "api/accessibility/v2/request/",
                 requestFile + ".json",
                 AccessibilityRequestJson.class);
-        var response = accessibilityMapApiClient.getAccessibility(accessibilityRequest);
+        Response<AccessibilityRequestJson, String> response = accessibilityMapApiClient.getAccessibility(accessibilityRequest);
 
         assertThat(response.containsError())
                 .withFailMessage(
@@ -157,8 +158,10 @@ public class AccessibilityMapApiStepDefinitions {
     @Then("we expect accessibility response {word}")
     public void expectAccessibilityResponseV2(String responseFile) {
 
-        var actualResponse = accessibilityMapApiClient.getLastResponseForGetAccessibility();
-        var expectedResponse = testDataProvider.readFromFile(
+        Response<AccessibilityRequestJson, String> actualResponse = accessibilityMapApiClient.getLastResponseForGetAccessibility();
+        assertThat(actualResponse.headers()).containsEntry(HttpHeaders.CONTENT_ENCODING, List.of("gzip"));
+
+        AccessibilityResponseJson expectedResponse = testDataProvider.readFromFile(
                 "api/accessibility/v2/response",
                 responseFile + ".json",
                 AccessibilityResponseJson.class);
@@ -169,11 +172,11 @@ public class AccessibilityMapApiStepDefinitions {
     @When("request accessibility geojson for {word}")
     public void requestAccessibilityGeoJsonForV2(String requestFile) {
 
-        var accessibilityRequest = testDataProvider.readFromFile(
+        AccessibilityRequestJson accessibilityRequest = testDataProvider.readFromFile(
                 "api/accessibility/v2/request/",
                 requestFile + ".json",
                 AccessibilityRequestJson.class);
-        var response = accessibilityMapApiClient.getAccessibilityGeoJson(accessibilityRequest);
+        Response<AccessibilityRequestJson, String> response = accessibilityMapApiClient.getAccessibilityGeoJson(accessibilityRequest);
 
         assertThat(response.containsError())
                 .withFailMessage(
@@ -186,8 +189,10 @@ public class AccessibilityMapApiStepDefinitions {
     @Then("we expect accessibility geojson response {word}")
     public void expectAccessibilityGeoJsonResponseV2(String responseFile) {
 
-        var actualResponse = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJson();
-        var expectedResponse = testDataProvider.readFromFile(
+        Response<AccessibilityRequestJson, String> actualResponse = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJson();
+        assertThat(actualResponse.headers()).containsEntry(HttpHeaders.CONTENT_ENCODING, List.of("gzip"));
+
+        String expectedResponse = testDataProvider.readFromFile(
                 "api/accessibility/v2/response",
                 responseFile + ".geojson");
 
