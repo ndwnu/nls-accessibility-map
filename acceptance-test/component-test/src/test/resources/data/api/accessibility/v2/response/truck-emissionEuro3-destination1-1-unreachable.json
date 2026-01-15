@@ -1,0 +1,303 @@
+{
+  "roadSections" : [ {
+    "id" : 1,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 4.600000072202962, 1.0 ], [ 5.0, 1.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 1.0 ], [ 4.600000072202962, 1.0 ] ]
+      }
+    }, {
+      "direction" : "forward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.3999999358068789, 1.0 ], [ 4.600000072202962, 1.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 4.600000072202962, 1.0 ], [ 1.3999999358068789, 1.0 ] ]
+      }
+    }, {
+      "direction" : "forward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.0, 1.0 ], [ 1.3999999358068789, 1.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.3999999358068789, 1.0 ], [ 1.0, 1.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 2,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 1.0 ], [ 10.0, 1.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 10.0, 1.0 ], [ 5.0, 1.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 3,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 10.0, 1.0 ], [ 10.0, 10.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 10.0, 10.0 ], [ 10.0, 1.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 4,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 10.0, 10.0 ], [ 5.0, 10.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 10.0 ], [ 10.0, 10.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 5,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 10.0 ], [ 1.0, 10.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.0, 10.0 ], [ 5.0, 10.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 6,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.0, 10.0 ], [ 1.0, 9.100147748738113 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.0, 9.100147748738113 ], [ 1.0, 10.0 ] ]
+      }
+    }, {
+      "direction" : "forward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.0, 9.100147748738113 ], [ 1.0, 1.9000953683267154 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.0, 1.9000953683267154 ], [ 1.0, 9.100147748738113 ] ]
+      }
+    }, {
+      "direction" : "forward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.0, 1.9000953683267154 ], [ 1.0, 1.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : false,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 1.0, 1.0 ], [ 1.0, 1.9000953683267154 ] ]
+      }
+    } ]
+  }, {
+    "id" : 7,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 4.0, 5.0 ], [ 5.0, 2.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 2.0 ], [ 4.0, 5.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 8,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 2.0 ], [ 7.0, 2.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 7.0, 2.0 ], [ 5.0, 2.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 9,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 7.0, 2.0 ], [ 7.0, 8.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 7.0, 8.0 ], [ 7.0, 2.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 10,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 7.0, 8.0 ], [ 5.0, 8.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 8.0 ], [ 7.0, 8.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 11,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 8.0 ], [ 4.0, 5.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 4.0, 5.0 ], [ 5.0, 8.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 12,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 2.0 ], [ 5.0, 1.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 1.0 ], [ 5.0, 2.0 ] ]
+      }
+    } ]
+  }, {
+    "id" : 13,
+    "roadSectionSegments" : [ {
+      "direction" : "forward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 10.0 ], [ 5.0, 8.0 ] ]
+      }
+    }, {
+      "direction" : "backward",
+      "accessible" : true,
+      "geometry" : {
+        "type" : "LineString",
+        "coordinates" : [ [ 5.0, 8.0 ], [ 5.0, 10.0 ] ]
+      }
+    } ]
+  } ],
+  "destination" : {
+    "roadSectionId" : 1,
+    "accessible" : false,
+    "reasons" : [ [ {
+      "trafficSignId" : "00000000-0000-4000-0000-000000000004",
+      "trafficSignType" : "C22a",
+      "restrictions" : [ {
+        "type" : "VehicleWeightRestriction",
+        "unitSymbol" : "tons",
+        "condition" : "equals",
+        "value" : 12.00
+      } ]
+    }, {
+      "trafficSignId" : "00000000-0000-4000-0000-000000000004",
+      "trafficSignType" : "C22a",
+      "restrictions" : [ {
+        "type" : "VehicleTypeRestriction",
+        "unitSymbol" : "enum",
+        "condition" : "equals",
+        "values" : [ "light_commercial_vehicle", "truck" ]
+      } ]
+    } ] ]
+  }
+}

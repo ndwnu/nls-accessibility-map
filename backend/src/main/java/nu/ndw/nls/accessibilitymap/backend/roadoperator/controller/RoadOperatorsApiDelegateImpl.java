@@ -2,10 +2,10 @@ package nu.ndw.nls.accessibilitymap.backend.roadoperator.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.generated.api.v1.RoadOperatorsApiDelegate;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.controller.mapper.RoadOperatorMapper;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.service.RoadOperatorService;
+import nu.ndw.nls.accessibilitymap.generated.api.v1.RoadOperatorsApiDelegate;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadOperatorJson;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 

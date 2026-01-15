@@ -1,18 +1,18 @@
 package nu.ndw.nls.accessibilitymap.backend.municipality.controller.mapper;
 
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v2.Geometry.TypeEnum.POINT;
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeature.TypeEnum.FEATURE;
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeatureCollection.TypeEnum.FEATURE_COLLECTION;
+import static nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
+import static nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureJson.TypeEnum.FEATURE;
+import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
 
 import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeature;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeatureCollection;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityProperties;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.Point;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityPropertiesJson;
+import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.rounding.dto.RoundDoubleConfiguration;
 import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
 import org.springframework.stereotype.Component;
@@ -23,36 +23,33 @@ public class MunicipalityFeatureMapperV2 {
 
     private final RoundDoubleMapper doubleMapper;
 
-    public MunicipalityFeatureCollection mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
-        return new MunicipalityFeatureCollection(FEATURE_COLLECTION, municipalities.stream().map(this::mapMunicipality).toList());
+    public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
+        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION, municipalities.stream().map(this::mapMunicipality).toList());
     }
 
-    private MunicipalityFeature mapMunicipality(Municipality municipality) {
+    private MunicipalityFeatureJson mapMunicipality(Municipality municipality) {
         List<List<Double>> bounds = mapMunicipalityBounds(municipality.bounds());
 
-        return new MunicipalityFeature(
+        return new MunicipalityFeatureJson(
                 FEATURE,
-                municipality.municipalityId(),
+                municipality.id(),
                 mapStartPoint(municipality),
-                new MunicipalityProperties(
+                new MunicipalityPropertiesJson(
                         municipality.name(),
                         municipality.searchDistanceInMetres(),
                         bounds,
                         municipality.dateLastCheck()));
     }
 
-    private Point mapStartPoint(Municipality municipality) {
+    private PointJson mapStartPoint(Municipality municipality) {
         double roundedX = roundCoordinate(municipality.startCoordinateLongitude());
         double roundedY = roundCoordinate(municipality.startCoordinateLatitude());
 
         return mapPointJson(roundedX, roundedY);
     }
 
-    private static Point mapPointJson(double x, double y) {
-        return Point.builder()
-                .type(POINT)
-                .coordinates(List.of(x, y))
-                .build();
+    private static PointJson mapPointJson(double x, double y) {
+        return new PointJson(List.of(x, y), POINT);
     }
 
     private List<List<Double>> mapMunicipalityBounds(MunicipalityBoundingBox boundingBox) {

@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.MunicipalityFeatureCollection;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controller.mapper.MunicipalityFeatureMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureCollectionJson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -40,7 +40,7 @@ class MunicipalitiesV2ApiDelegateImplTest {
     private Municipality municipality2;
 
     @Mock
-    private MunicipalityFeatureCollection featureCollection;
+    private MunicipalityFeatureCollectionJson featureCollection;
 
     @InjectMocks
     private MunicipalitiesV2ApiDelegateImpl municipalitiesApiDelegate;
@@ -49,11 +49,11 @@ class MunicipalitiesV2ApiDelegateImplTest {
     void getMunicipalities() {
 
         when(municipalityService.findAll()).thenReturn(List.of(municipality1, municipality2));
-        when(municipality1.municipalityId()).thenReturn(MUNICIPALITY_ID);
-        when(municipality2.municipalityId()).thenReturn(MUNICIPALITY_ID_2);
+        when(municipality1.id()).thenReturn(MUNICIPALITY_ID);
+        when(municipality2.id()).thenReturn(MUNICIPALITY_ID_2);
         when(municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(List.of(municipality2, municipality1))).thenReturn(featureCollection);
 
-        ResponseEntity<MunicipalityFeatureCollection> response = municipalitiesApiDelegate.getMunicipalities();
+        ResponseEntity<MunicipalityFeatureCollectionJson> response = municipalitiesApiDelegate.getMunicipalities();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo(featureCollection);

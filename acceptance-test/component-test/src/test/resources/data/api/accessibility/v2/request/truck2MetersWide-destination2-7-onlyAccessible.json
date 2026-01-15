@@ -1,0 +1,16 @@
+{
+  "includeInAccessibleRoadSections": false,
+  "destination": {
+    "latitude": 3.0,
+    "longitude": 7.0
+  },
+  "municipalityId": "GM0001",
+  "vehicle": {
+    "type": "truck",
+    "width": 2.0,
+    "emissionClass": "euro_3",
+    "fuelTypes": [
+      "diesel"
+    ]
+  }
+}

@@ -3,10 +3,10 @@ package nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.Builder;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionClassJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.EmissionZoneTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionZoneTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson;
 import org.springframework.validation.annotation.Validated;
 
 @Builder
@@ -18,8 +18,8 @@ public record AccessibilityRequest(
         Double vehicleLengthInMeters,
         Double vehicleHeightInMeters,
         Double vehicleWidthInMeters,
-        Double vehicleWeightInKg,
-        Double vehicleAxleLoadInKg,
+        Double vehicleWeightInTonnes,
+        Double vehicleAxleLoadInTonnes,
         List<FuelTypeJson> fuelTypes,
         List<String> excludeRestrictionsWithEmissionZoneIds,
         List<EmissionZoneTypeJson> excludeRestrictionsWithEmissionZoneTypes,

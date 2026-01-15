@@ -1,17 +1,17 @@
 package nu.ndw.nls.accessibilitymap.backend.municipality.controller.mapper;
 
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
+import static nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
+import static nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
 import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
 
 import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.rounding.dto.RoundDoubleConfiguration;
 import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
@@ -32,7 +32,7 @@ public class MunicipalityFeatureMapper {
 
         return new MunicipalityFeatureJson(
                 FEATURE,
-                municipality.municipalityId(),
+                municipality.id(),
                 mapStartPoint(municipality),
                 new MunicipalityPropertiesJson(
                         municipality.name(),

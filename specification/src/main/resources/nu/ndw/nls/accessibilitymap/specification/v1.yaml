@@ -469,7 +469,7 @@ components:
       type: object
       description: Restriction on a particular route making it inaccessible
       required:
-        - reasonType
+        - type
         - unitSymbol
         - condition
       discriminator:

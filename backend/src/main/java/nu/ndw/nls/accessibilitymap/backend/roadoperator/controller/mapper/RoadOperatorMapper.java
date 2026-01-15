@@ -3,9 +3,9 @@ package nu.ndw.nls.accessibilitymap.backend.roadoperator.controller.mapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson.RoadOperatorTypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadOperatorJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadOperatorJson.RoadOperatorTypeEnum;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,7 +28,7 @@ public class RoadOperatorMapper {
     }
 
     private RoadOperatorTypeEnum mapRoadOperatorType(
-            nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator.RoadOperatorTypeEnum roadOperatorTypeEnum) {
+            nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson.RoadOperatorTypeEnum roadOperatorTypeEnum) {
         return RoadOperatorTypeEnum.fromValue(roadOperatorTypeEnum.getValue());
     }
 }

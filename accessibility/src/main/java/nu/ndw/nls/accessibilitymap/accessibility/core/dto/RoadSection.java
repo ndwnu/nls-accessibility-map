@@ -40,7 +40,9 @@ public final class RoadSection {
                 .anyMatch(RoadSectionFragment::isNotAccessibleFromAllSegments)
                 || roadSectionFragments.stream().anyMatch(RoadSectionFragment::isPartiallyAccessible);
     }
-
+    public boolean isAccessibleInAnyDirection() {
+        return !isRestrictedInAnyDirection();
+    }
     public boolean hasForwardSegments() {
 
         return roadSectionFragments.stream()

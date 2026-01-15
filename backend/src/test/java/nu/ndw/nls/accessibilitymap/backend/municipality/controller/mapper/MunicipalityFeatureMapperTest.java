@@ -1,17 +1,17 @@
 package nu.ndw.nls.accessibilitymap.backend.municipality.controller.mapper;
 
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
-import static nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
+import static nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureCollectionJson.TypeEnum.FEATURE_COLLECTION;
+import static nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureJson.TypeEnum.FEATURE;
 import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.POINT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureCollectionJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityFeatureJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityFeatureJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v1.MunicipalityPropertiesJson;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.rounding.mappers.RoundDoubleMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +65,7 @@ class MunicipalityFeatureMapperTest {
     }
 
     private MunicipalityFeatureCollectionJson createExpectedResult(LocalDate dateLastCheck) {
-        String municipalityId = municipality.municipalityId();
+        String municipalityId = municipality.id();
         PointJson pointJson = new PointJson(List.of(municipality.startCoordinateLongitude(), municipality.startCoordinateLatitude()),
                 POINT);
 

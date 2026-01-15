@@ -4,8 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator.RoadOperatorTypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson.RoadOperatorTypeEnum;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,11 +28,11 @@ class RoadOperatorMapperV2Test {
     }
 
     @ParameterizedTest
-    @EnumSource(nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator.RoadOperatorTypeEnum.class)
-    void map(nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator.RoadOperatorTypeEnum roadOperatorType) {
+    @EnumSource(RoadOperatorTypeEnum.class)
+    void map(RoadOperatorTypeEnum roadOperatorType) {
 
-        List<RoadOperator> roadOperators = roadOperatorMapper.map(List.of(
-                nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator.builder()
+        List<RoadOperatorJson> roadOperators = roadOperatorMapper.map(List.of(
+                RoadOperator.builder()
                         .roadOperatorCode("DR")
                         .roadOperatorType(roadOperatorType)
                         .roadOperatorName("Drenthe")
@@ -41,7 +42,7 @@ class RoadOperatorMapperV2Test {
                         .build()));
 
         assertThat(roadOperators).containsExactlyInAnyOrderElementsOf(List.of(
-                RoadOperator.builder()
+                RoadOperatorJson.builder()
                         .roadOperatorCode("DR")
                         .roadOperatorType(RoadOperatorTypeEnum.fromValue(roadOperatorType.getValue()))
                         .roadOperatorName("Drenthe")
@@ -55,17 +56,17 @@ class RoadOperatorMapperV2Test {
     @Test
     void map_requestExemptionUrl_null() {
 
-        List<RoadOperator> roadOperators = roadOperatorMapper.map(List.of(
+        List<RoadOperatorJson> roadOperators = roadOperatorMapper.map(List.of(
                 nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator.builder()
                         .roadOperatorCode("DR")
-                        .roadOperatorType(nu.ndw.nls.accessibilitymap.backend.generated.model.v2.RoadOperator.RoadOperatorTypeEnum.MUNICIPALITY)
+                        .roadOperatorType(RoadOperatorTypeEnum.MUNICIPALITY)
                         .roadOperatorName("Drenthe")
                         .municipalityId("123")
                         .requestExemptionUrl(null)
                         .build()));
 
         assertThat(roadOperators).containsExactlyInAnyOrderElementsOf(List.of(
-                RoadOperator.builder()
+                RoadOperatorJson.builder()
                         .roadOperatorCode("DR")
                         .roadOperatorType(RoadOperatorTypeEnum.MUNICIPALITY)
                         .roadOperatorName("Drenthe")

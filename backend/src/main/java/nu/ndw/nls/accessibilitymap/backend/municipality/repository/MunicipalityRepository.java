@@ -22,7 +22,7 @@ public class MunicipalityRepository extends AbstractYamlRepository<Municipalitie
     public Optional<Municipality> findFirstById(String municipalityId) {
 
         return getData().stream()
-                .filter(municipality -> municipality.municipalityId().equals(municipalityId))
+                .filter(municipality -> municipality.id().equals(municipalityId))
                 .findFirst();
     }
 
