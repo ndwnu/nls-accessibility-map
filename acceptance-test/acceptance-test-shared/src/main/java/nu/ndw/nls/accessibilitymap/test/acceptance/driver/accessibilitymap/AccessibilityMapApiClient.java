@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap;
 
+import static org.assertj.core.api.Assertions.fail;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.net.URI;
@@ -45,6 +47,8 @@ import org.springframework.util.MultiValueMap;
 @RequiredArgsConstructor
 public class AccessibilityMapApiClient extends AbstractWebClient {
 
+    private static final String MEDIA_TYPE_GEOJSON = "application/geo+json";
+
     private static final String ADMIN_CLIENT_ID = "admin-client";
 
     private final AccessibilityMapApiConfiguration accessibilityMapApiConfiguration;
@@ -62,8 +66,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     private final JtsPointJsonMapper jtsPointJsonMapper;
 
     private final GeometryFactory geometryFactory = new GeometryFactory();
-
-    private static final String MEDIA_TYPE_GEOJSON = "application/geo+json";
 
     @SneakyThrows
     public Response<Void, Void> reloadGraphHopper() {
@@ -423,7 +425,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                                         .toFile(),
                                 JsonMapper.builder().build().writeValueAsString(endpoint));
                     } catch (JsonProcessingException exception) {
-                        throw new RuntimeException(exception);
+                        fail(exception);
                     }
                 });
     }
