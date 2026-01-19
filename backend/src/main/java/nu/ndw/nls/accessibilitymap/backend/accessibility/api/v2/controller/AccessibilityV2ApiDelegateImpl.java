@@ -9,10 +9,10 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.A
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
-import nu.ndw.nls.accessibilitymap.generated.api.v2.AccessibilityV2ApiDelegate;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityResponseGeoJsonJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.api.v2.AccessibilityV2ApiDelegate;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseJson;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 

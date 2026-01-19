@@ -19,9 +19,9 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.Transport
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionClassJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionZoneTypeJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

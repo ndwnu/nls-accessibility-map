@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.request;
 
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionZoneTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson;
 import org.springframework.stereotype.Component;
 
 @Component

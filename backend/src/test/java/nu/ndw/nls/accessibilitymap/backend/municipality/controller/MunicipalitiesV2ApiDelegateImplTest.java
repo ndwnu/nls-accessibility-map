@@ -7,7 +7,7 @@ import java.util.List;
 import nu.ndw.nls.accessibilitymap.backend.municipality.controller.mapper.MunicipalityFeatureMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.MunicipalityFeatureCollectionJson;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

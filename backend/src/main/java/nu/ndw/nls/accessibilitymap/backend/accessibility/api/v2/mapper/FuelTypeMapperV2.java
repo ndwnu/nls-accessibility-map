@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper;
 import com.google.common.base.Enums;
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeJson;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

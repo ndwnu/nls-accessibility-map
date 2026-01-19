@@ -1,12 +1,12 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.VEHICLE_WITH_TRAILER;
-import static nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson.BUS;
-import static nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson.CAR;
-import static nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson.LIGHT_COMMERCIAL_VEHICLE;
-import static nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson.MOTORCYCLE;
-import static nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson.TRACTOR;
-import static nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson.TRUCK;
+import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson.BUS;
+import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson.CAR;
+import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson.LIGHT_COMMERCIAL_VEHICLE;
+import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson.MOTORCYCLE;
+import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson.TRACTOR;
+import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson.TRUCK;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
 import org.springframework.stereotype.Component;
 
 /**

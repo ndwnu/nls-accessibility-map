@@ -10,9 +10,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.Accessibili
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.response.restriction.AccessibilityRestrictionJsonMapper;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.ReasonJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.TrafficSignTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.ReasonJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.TrafficSignTypeJson;
 import org.springframework.stereotype.Component;
 
 @Component

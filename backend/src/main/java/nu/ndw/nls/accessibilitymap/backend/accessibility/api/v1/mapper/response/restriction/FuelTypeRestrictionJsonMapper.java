@@ -3,11 +3,11 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.response
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.FuelTypeRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.FuelTypeMapper;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.FuelTypeRestrictionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionConditionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionJson.TypeEnum;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionUnitSymbolJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeRestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson.TypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionUnitSymbolJson;
 import org.springframework.stereotype.Component;
 
 @Component

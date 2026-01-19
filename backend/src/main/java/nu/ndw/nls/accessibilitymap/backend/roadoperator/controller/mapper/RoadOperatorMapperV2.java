@@ -3,8 +3,8 @@ package nu.ndw.nls.accessibilitymap.backend.roadoperator.controller.mapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadOperatorJson;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson;
 import org.springframework.stereotype.Component;
 
 @Component

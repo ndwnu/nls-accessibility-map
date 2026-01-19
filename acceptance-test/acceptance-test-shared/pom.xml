@@ -10,7 +10,7 @@
   <name>NLS Accessibility Map - Acceptance test shared</name>
 
   <properties>
-    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.generated</openapi-generator.base.classpath>
+    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.backend.openapi</openapi-generator.base.classpath>
   </properties>
 
   <dependencies>

@@ -5,12 +5,12 @@ import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.TransportTypeRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.TransportTypeMapper;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionConditionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionJson.TypeEnum;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RestrictionUnitSymbolJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeRestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson.TypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionUnitSymbolJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeRestrictionJson;
 import org.springframework.stereotype.Component;
 
 @Component

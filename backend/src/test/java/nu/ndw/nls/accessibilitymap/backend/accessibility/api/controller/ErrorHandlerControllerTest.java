@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exception.MunicipalityNotFoundException;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.APIErrorJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.APIErrorJson;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.hibernate.validator.internal.engine.path.NodeImpl;
 import org.hibernate.validator.internal.engine.path.PathImpl;

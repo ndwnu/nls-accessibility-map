@@ -1,0 +1,110 @@
+{
+  "destination": {
+    "latitude": 3.0,
+    "longitude": 4.0
+  },
+  "startLocation": {
+    "latitude": 1.0,
+    "longitude": 2.0
+  },
+  "area": {
+    "type": "boundingBox",
+    "startLatitude": 1.0,
+    "startLongitude": 1.0,
+    "endLatitude": 5.0,
+    "endLongitude": 5.0
+    // ------------ OR ---------
+    "type": "municipality",
+    "id": "GM0001"
+    // ------------ OR ---------
+    "type": "circle",
+    "latitude": 1.0,
+    "longitude": 1.0,
+    "radiusInKilometres": 5.0
+    // ------------ OR ---------
+    "type": "distance",
+    "latitude": 1.0,
+    "longitude": 1.0,
+    "maxDistanceInKilometres": 5.0,
+    // ------------ OR ---------
+    "type": "time",
+    "latitude": 1.0,
+    "longitude": 1.0,
+    "maxTravelTimeInSeconds": 3600
+  },
+  "vehicle": {
+    "type": "truck",
+    "width": 2.0,
+    "emissionClass": "euro_3",
+    "fuelTypes": [
+      "diesel"
+    ]
+  },
+  "restrictions": [
+    {
+      "type": "roadSection",
+      "id": 123456,
+      "direction": "Forward",
+      "fraction": {
+        "start": 0.0,
+        "end": 1.0
+      }
+    },
+    {
+      "type": "roadSection",
+      "id": 123456,
+      "direction": "Backward",
+      "fraction": {
+        "start": 0.0,
+        "end": 1.0
+      }
+    },
+    {
+      "type": "trafficSign",
+      "latitude": 1.0,
+      "longitude": 1.0,
+      "roadSectionId": 123456,
+      "Direction": "Forward",
+      "trafficSignType": "C22a",
+      "blackCode": "2.3",
+      "trafficRegulationOrderId": "123456789"
+    },
+    {
+      "type": "restriction",
+      "latitude": 1.0,
+      "longitude": 1.0,
+      "roadSectionId": 123456,
+      "transportTypes": [
+        "Car",
+        "Truck"
+      ],
+      "vehicleLengthInCm": 200,
+      "vehicleHeightInCm": 450,
+      "vehicleWidthInCm": 200,
+      "vehicleWeightInKg": 2300,
+      "vehicleAxleLoadInKg": 200,
+      "emissionZone": {
+        "emissionZoneType": "ZERO",
+        "exemption": {
+          "startTime": "2022-01-01T00:00:00Z",
+          "endTime": "2022-01-01T00:00:00Z",
+          "emissionClasses": [
+            "EURO_4"
+          ],
+          "transportTypes": [
+            "Car"
+          ],
+          "vehicleWeightInKg": 2000
+        },
+        "restriction": {
+          "fuelTypes": [
+            "EURO_4"
+          ],
+          "transportTypes": [
+            "Car"
+          ]
+        }
+      }
+    }
+  ]
+}

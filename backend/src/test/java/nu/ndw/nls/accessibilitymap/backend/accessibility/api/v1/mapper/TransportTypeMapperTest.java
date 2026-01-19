@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.VehicleArguments;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

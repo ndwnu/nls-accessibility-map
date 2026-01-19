@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.FuelTypeRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.FuelTypeMapperV2;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.FuelTypeRestrictionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RestrictionConditionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RestrictionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RestrictionJson.TypeEnum;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RestrictionUnitSymbolJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeRestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson.TypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionUnitSymbolJson;
 import org.springframework.stereotype.Component;
 
 @Component
