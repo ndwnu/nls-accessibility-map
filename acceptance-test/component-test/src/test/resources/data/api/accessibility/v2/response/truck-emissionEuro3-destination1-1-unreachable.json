@@ -284,7 +284,7 @@
       "trafficSignId" : "00000000-0000-4000-0000-000000000004",
       "trafficSignType" : "C22a",
       "restrictions" : [ {
-        "type" : "VehicleWeightRestriction",
+        "type" : "vehicleWeightRestriction",
         "unitSymbol" : "tons",
         "condition" : "greater_than_or_equals",
         "value" : 12.00
@@ -293,7 +293,7 @@
       "trafficSignId" : "00000000-0000-4000-0000-000000000004",
       "trafficSignType" : "C22a",
       "restrictions" : [ {
-        "type" : "VehicleTypeRestriction",
+        "type" : "vehicleTypeRestriction",
         "unitSymbol" : "enum",
         "condition" : "equals",
         "values" : [ "light_commercial_vehicle", "truck" ]

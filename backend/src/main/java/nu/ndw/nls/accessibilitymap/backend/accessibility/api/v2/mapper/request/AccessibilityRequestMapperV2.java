@@ -18,6 +18,7 @@ import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityServ
 import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationRequestJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.ExclusionsJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityAreaRequestJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
 
@@ -44,47 +45,50 @@ public class AccessibilityRequestMapperV2 {
     @Valid
     public AccessibilityRequest map(AccessibilityRequestJson accessibilityRequest) {
 
-        Municipality municipality = municipalityService.getMunicipalityById(accessibilityRequest.getMunicipalityId());
-        if (Objects.isNull(municipality)) {
-            throw new ResourceNotFoundException("Municipality with id '%s' not found.".formatted(accessibilityRequest.getMunicipalityId()));
-        }
-        AccessibilityRequestBuilder builder = AccessibilityRequest.builder()
-                .timestamp(clockService.now())
-                .municipalityId(municipality.idAsInteger())
-                .addMissingRoadsSectionsFromNwb(true)
-                .boundingBox(BBox.fromPoints(
-                        municipality.bounds().latitudeFrom(),
-                        municipality.bounds().longitudeFrom(),
-                        municipality.bounds().latitudeTo(),
-                        municipality.bounds().longitudeTo()
-                ))
-                .searchRadiusInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
-                .startLocationLatitude(municipality.startCoordinateLatitude())
-                .startLocationLongitude(municipality.startCoordinateLongitude())
-                .vehicleHeightInCm(mapToDouble(accessibilityRequest.getVehicle().getHeight(), MULTIPLIER_FROM_METERS_TO_CM))
-                .vehicleLengthInCm(mapToDouble(accessibilityRequest.getVehicle().getLength(), MULTIPLIER_FROM_METERS_TO_CM))
-                .vehicleWidthInCm(mapToDouble(accessibilityRequest.getVehicle().getWidth(), MULTIPLIER_FROM_METERS_TO_CM))
-                .vehicleWeightInKg(mapToDouble(accessibilityRequest.getVehicle().getWeight(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
-                .vehicleAxleLoadInKg(mapToDouble(accessibilityRequest.getVehicle().getAxleLoad(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
-                .fuelTypes(
-                        Objects.isNull(accessibilityRequest.getVehicle().getFuelTypes())
-                                ? null
-                                : accessibilityRequest.getVehicle().getFuelTypes().stream()
-                                        .map(fuelTypeMapperV2::map)
-                                        .collect(Collectors.toSet()))
-                .emissionClasses(emissionClassMapperV2.map(accessibilityRequest.getVehicle().getEmissionClass()))
-                .transportTypes(transportTypeMapperV2.map(accessibilityRequest.getVehicle()))
-                .excludeRestrictionsWithEmissionZoneIds(mapEmissionZoneIds(accessibilityRequest.getExclusions()))
-                .excludeRestrictionsWithEmissionZoneTypes(mapEmissionZoneTypes(accessibilityRequest.getExclusions()));
+        if(accessibilityRequest.getArea() instanceof MunicipalityAreaRequestJson municipalityAreaRequestJson) {
+            Municipality municipality = municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId());
+            if (Objects.isNull(municipality)) {
+                throw new ResourceNotFoundException("Municipality with id '%s' not found.".formatted(municipalityAreaRequestJson.getId()));
+            }
+            AccessibilityRequestBuilder builder = AccessibilityRequest.builder()
+                    .timestamp(clockService.now())
+                    .municipalityId(municipality.idAsInteger())
+                    .addMissingRoadsSectionsFromNwb(true)
+                    .boundingBox(BBox.fromPoints(
+                            municipality.bounds().latitudeFrom(),
+                            municipality.bounds().longitudeFrom(),
+                            municipality.bounds().latitudeTo(),
+                            municipality.bounds().longitudeTo()
+                    ))
+                    .searchRadiusInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
+                    .startLocationLatitude(municipality.startCoordinateLatitude())
+                    .startLocationLongitude(municipality.startCoordinateLongitude())
+                    .vehicleHeightInCm(mapToDouble(accessibilityRequest.getVehicle().getHeight(), MULTIPLIER_FROM_METERS_TO_CM))
+                    .vehicleLengthInCm(mapToDouble(accessibilityRequest.getVehicle().getLength(), MULTIPLIER_FROM_METERS_TO_CM))
+                    .vehicleWidthInCm(mapToDouble(accessibilityRequest.getVehicle().getWidth(), MULTIPLIER_FROM_METERS_TO_CM))
+                    .vehicleWeightInKg(mapToDouble(accessibilityRequest.getVehicle().getWeight(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
+                    .vehicleAxleLoadInKg(mapToDouble(accessibilityRequest.getVehicle().getAxleLoad(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
+                    .fuelTypes(
+                            Objects.isNull(accessibilityRequest.getVehicle().getFuelTypes())
+                                    ? null
+                                    : accessibilityRequest.getVehicle().getFuelTypes().stream()
+                                            .map(fuelTypeMapperV2::map)
+                                            .collect(Collectors.toSet()))
+                    .emissionClasses(emissionClassMapperV2.map(accessibilityRequest.getVehicle().getEmissionClass()))
+                    .transportTypes(transportTypeMapperV2.map(accessibilityRequest.getVehicle()))
+                    .excludeRestrictionsWithEmissionZoneIds(mapEmissionZoneIds(accessibilityRequest.getExclusions()))
+                    .excludeRestrictionsWithEmissionZoneTypes(mapEmissionZoneTypes(accessibilityRequest.getExclusions()));
 
-        DestinationRequestJson destination = accessibilityRequest.getDestination();
-        if (Objects.nonNull(destination)) {
-            builder
-                    .endLocationLatitude(destination.getLatitude())
-                    .endLocationLongitude(destination.getLongitude());
+            DestinationRequestJson destination = accessibilityRequest.getDestination();
+            if (Objects.nonNull(destination)) {
+                builder
+                        .endLocationLatitude(destination.getLatitude())
+                        .endLocationLongitude(destination.getLongitude());
+            }
+            return builder.build();
         }
 
-        return builder.build();
+        throw new IllegalArgumentException("Invalid area type '%s'.".formatted(accessibilityRequest.getArea().getClass().getSimpleName()));
     }
 
     private static Set<String> mapEmissionZoneIds(ExclusionsJson exclusions) {

@@ -15,28 +15,35 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
 import nu.ndw.nls.accessibilitymap.backend.security.SecurityConfig;
 import nu.ndw.nls.accessibilitymap.generated.api.v2.AccessibilityV2ApiController;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityResponseGeoJsonJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityResponseJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationFeaturePropertiesJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.DirectionJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.EmissionZoneTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.FeatureJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityAreaRequestJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.ReasonJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.RestrictionJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.RestrictionUnitSymbolJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadSectionJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadSectionSegmentFeaturePropertiesJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadSectionSegmentJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.TrafficSignTypeJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.VehicleTypeRestrictionJson;
 import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
+import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,10 +82,13 @@ class AccessibilityV2ApiDelegateImplTest {
     private GraphHopperService graphHopperService;
 
     @MockitoBean
+    private AccessibilityRequestMapperV2 accessibilityRequestMapperV2;
+
+    @MockitoBean
     private AccessibilityResponseMapperV2 accessibilityResponseMapperV2;
 
     @MockitoBean
-    private AccessibilityRequestMapperV2 accessibilityRequestMapperV2;
+    private AccessibilityResponseGeoJsonMapperV2 accessibilityResponseGeoJsonMapperV2;
 
     @MockitoBean
     private AccessibilityService accessibilityService;
@@ -170,7 +180,10 @@ class AccessibilityV2ApiDelegateImplTest {
                                     "latitude": 1.1,
                                     "longitude": 2.2
                                   },
-                                  "municipalityId": "GM0001",
+                                  "area": {
+                                    "type": "municipality",
+                                    "id": "GM0001"
+                                  },
                                   "vehicle": {
                                     "type": "truck",
                                     "width": 3.0,
@@ -235,6 +248,151 @@ class AccessibilityV2ApiDelegateImplTest {
         }
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "200",
+            "401"
+    })
+    void getAccessibilityAsGeoJson(int expectedHttpStatusCode) throws Exception {
+
+        HttpStatus expectedHttpStatus = HttpStatus.valueOf(expectedHttpStatusCode);
+
+        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+        when(accessibilityRequestMapperV2.map(assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson)))
+                .thenReturn(accessibilityRequest);
+        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+
+        AccessibilityResponseGeoJsonJson accessibilityResponseGeoJsonJson = AccessibilityResponseGeoJsonJson.builder()
+                .features(List.of(
+                        FeatureJson.builder()
+                                .id(1)
+                                .type(FeatureJson.TypeEnum.FEATURE)
+                                .geometry(new LineStringJson(List.of(List.of(1.1D, 1.2D), List.of(2.1D, 2.2D)), TypeEnum.LINE_STRING))
+                                .properties(RoadSectionSegmentFeaturePropertiesJson.builder()
+                                        .roadSectionId(2L)
+                                        .accessible(true)
+                                        .direction(DirectionJson.BACKWARD)
+                                        .build())
+                                .build(),
+                        FeatureJson.builder()
+                                .id(3)
+                                .type(FeatureJson.TypeEnum.FEATURE)
+                                .geometry(new PointJson(List.of(3.1D, 3.2D), TypeEnum.POINT))
+                                .properties(DestinationFeaturePropertiesJson.builder()
+                                        .roadSectionId(4L)
+                                        .accessible(true)
+                                        .reasons(List.of(List.of(ReasonJson.builder()
+                                                .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
+                                                .trafficSignType(TrafficSignTypeJson.C1)
+                                                .restrictions(List.of(VehicleTypeRestrictionJson.builder()
+                                                        .type(RestrictionJson.TypeEnum.VEHICLE_TYPE_RESTRICTION)
+                                                        .unitSymbol(RestrictionUnitSymbolJson.ENUM)
+                                                        .values(List.of(VehicleTypeJson.CAR))
+                                                        .condition(RestrictionConditionJson.EQUALS)
+                                                        .build()))
+                                                .build())))
+                                        .build())
+                                .build()
+                ))
+                .build();
+        when(accessibilityResponseGeoJsonMapperV2.map(
+                assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson),
+                eq(accessibility)))
+                .thenReturn(accessibilityResponseGeoJsonJson);
+
+        ResultActions mockMvcBuilder = mockMvc
+                .perform(MockMvcRequestBuilders.post("/v2/accessiblility.geojson")
+                        .accept("application/geo+json")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with((expectedHttpStatus == HttpStatus.UNAUTHORIZED)
+                                ? SecurityMockMvcRequestPostProcessors.anonymous()
+                                : SecurityMockMvcRequestPostProcessors.jwt()
+                                        .jwt(jwt))
+                        .content("""
+                                {
+                                  "includeAccessibleRoadSections": true,
+                                  "includeInaccessibleRoadSections": true,
+                                  "destination": {
+                                    "latitude": 1.1,
+                                    "longitude": 2.2
+                                  },
+                                  "area": {
+                                    "type": "municipality",
+                                    "id": "GM0001"
+                                  },
+                                  "vehicle": {
+                                    "type": "truck",
+                                    "width": 3.0,
+                                    "height": 2.0,
+                                    "length": 5.0,
+                                    "weight": 4.0,
+                                    "axleLoad": 6.0,
+                                    "hasTrailer": true,
+                                    "emissionClass": "zero",
+                                    "fuelTypes": [
+                                      "electric",
+                                      "diesel"
+                                    ]
+                                  },
+                                  "exclusions": {
+                                     "emissionZoneTypes": ["low_emission_zone", "zero_emission_zone"],
+                                     "emissionZoneIds": ["zone1","zone2"]
+                                  }
+                                }
+                                
+                                """));
+
+        switch (expectedHttpStatus) {
+            case UNAUTHORIZED:
+                mockMvcBuilder.andExpect(status().is(HttpStatus.UNAUTHORIZED.value()));
+                break;
+            case OK:
+                mockMvcBuilder.andExpect(status().is(HttpStatus.OK.value()));
+                assertThatJson(mockMvcBuilder.andReturn().getResponse().getContentAsString())
+                        .isEqualTo("""
+                                {
+                                  "features" : [ {
+                                    "type" : "Feature",
+                                    "id" : 1,
+                                    "geometry" : {
+                                      "type" : "LineString",
+                                      "coordinates" : [ [ 1.1, 1.2 ], [ 2.1, 2.2 ] ]
+                                    },
+                                    "properties" : {
+                                      "roadSectionId" : 2,
+                                      "accessible" : true,
+                                      "direction" : "backward"
+                                    }
+                                  }, {
+                                    "type" : "Feature",
+                                    "id" : 3,
+                                    "geometry" : {
+                                      "type" : "Point",
+                                      "coordinates" : [ 3.1, 3.2 ]
+                                    },
+                                    "properties" : {
+                                      "roadSectionId" : 4,
+                                      "accessible" : true,
+                                      "reasons" : [ [ {
+                                        "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
+                                        "trafficSignType" : "C1",
+                                        "restrictions" : [ {
+                                          "type" : "VehicleTypeRestriction",
+                                          "unitSymbol" : "enum",
+                                          "condition" : "equals",
+                                          "values" : [ "car" ]
+                                        } ]
+                                      } ] ]
+                                    }
+                                  } ]
+                                }
+                                """);
+                break;
+            default:
+                fail("Status '%s' is not expected".formatted(expectedHttpStatus));
+        }
+    }
+
     private static void assertAccessibilityReqeustJson(AccessibilityRequestJson accessibilityRequestJson) {
         assertThat(accessibilityRequestJson.getVehicle().getType()).isEqualTo(VehicleTypeJson.TRUCK);
         assertThat(accessibilityRequestJson.getVehicle().getFuelTypes()).containsExactlyInAnyOrder(
@@ -253,7 +411,11 @@ class AccessibilityV2ApiDelegateImplTest {
                 EmissionZoneTypeJson.ZERO_EMISSION_ZONE);
         assertThat(accessibilityRequestJson.getExclusions().getEmissionZoneIds()).containsExactlyInAnyOrder("zone1", "zone2");
 
-        assertThat(accessibilityRequestJson.getMunicipalityId()).isEqualTo("GM0001");
+        assertThat(accessibilityRequestJson.getArea().getType()).isEqualTo("municipality");
+        assertThat(accessibilityRequestJson.getArea()).isInstanceOf(MunicipalityAreaRequestJson.class);
+        if (accessibilityRequestJson.getArea() instanceof MunicipalityAreaRequestJson municipalityAreaRequestJson) {
+            assertThat(municipalityAreaRequestJson.getId()).isEqualTo("GM0001");
+        }
 
         assertThat(accessibilityRequestJson.getDestination().getLatitude()).isEqualTo(1.1D);
         assertThat(accessibilityRequestJson.getDestination().getLongitude()).isEqualTo(2.2D);

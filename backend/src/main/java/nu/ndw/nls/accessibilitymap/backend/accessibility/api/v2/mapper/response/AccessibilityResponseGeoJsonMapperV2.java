@@ -10,15 +10,13 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.dto.AccessibilityGeoJsonResponse;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityResponseGeoJsonJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationFeatureJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationFeaturePropertiesJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationRequestJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.DirectionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadSectionSegmentFeatureJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadSectionSegmentPropertiesJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.FeatureJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadSectionSegmentFeaturePropertiesJson;
 import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
@@ -31,7 +29,7 @@ public class AccessibilityResponseGeoJsonMapperV2 {
 
     private final AccessibilityReasonsJsonMapperV2 accessibilityReasonsJsonMapperV2;
 
-    public AccessibilityGeoJsonResponse map(AccessibilityRequestJson accessibilityRequestJson, Accessibility accessibility) {
+    public AccessibilityResponseGeoJsonJson map(AccessibilityRequestJson accessibilityRequestJson, Accessibility accessibility) {
 
         AtomicInteger idGenerator = new AtomicInteger();
         var roadSectionFeatures = accessibility.combinedAccessibility().stream()
@@ -39,14 +37,14 @@ public class AccessibilityResponseGeoJsonMapperV2 {
                 .flatMap(List::stream);
         var destinationFeatures = mapDestinationFeatures(accessibilityRequestJson, accessibility, idGenerator);
 
-        return AccessibilityGeoJsonResponse.builder()
+        return AccessibilityResponseGeoJsonJson.builder()
                 .type(AccessibilityResponseGeoJsonJson.TypeEnum.FEATURE_COLLECTION)
                 .features(Stream.concat(destinationFeatures, roadSectionFeatures)
                         .toList())
                 .build();
     }
 
-    private Stream<DestinationFeatureJson> mapDestinationFeatures(
+    private Stream<FeatureJson> mapDestinationFeatures(
             AccessibilityRequestJson accessibilityRequestJson,
             Accessibility accessibility,
             AtomicInteger idGenerator) {
@@ -56,9 +54,9 @@ public class AccessibilityResponseGeoJsonMapperV2 {
         if (Objects.isNull(requestDestination) || toRoadSection.isEmpty()) {
             return Stream.empty();
         } else {
-            return Stream.of(DestinationFeatureJson.builder()
+            return Stream.of(FeatureJson.builder()
                     .id(idGenerator.incrementAndGet())
-                    .type(DestinationFeatureJson.TypeEnum.FEATURE)
+                    .type(FeatureJson.TypeEnum.FEATURE)
                     .geometry(new PointJson(List.of(requestDestination.getLongitude(), requestDestination.getLatitude()), TypeEnum.POINT))
                     .properties(DestinationFeaturePropertiesJson.builder()
                             .roadSectionId(toRoadSection.get().getId())
@@ -69,7 +67,7 @@ public class AccessibilityResponseGeoJsonMapperV2 {
         }
     }
 
-    private List<RoadSectionSegmentFeatureJson> mapToRoadSectionFeature(
+    private List<FeatureJson> mapToRoadSectionFeature(
             AccessibilityRequestJson accessibilityRequestJson,
             RoadSection roadSection,
             AtomicInteger idGenerator) {
@@ -82,17 +80,17 @@ public class AccessibilityResponseGeoJsonMapperV2 {
                 .filter(directionalSegment ->
                         (includeAccessibleRoadSections && directionalSegment.isAccessible())
                         || (includeInAccessibleRoadSections && !directionalSegment.isAccessible()))
-                .map(directionalSegment -> RoadSectionSegmentFeatureJson.builder()
+                .map(directionalSegment -> FeatureJson.builder()
                         .id(idGenerator.incrementAndGet())
-                        .type(RoadSectionSegmentFeatureJson.TypeEnum.FEATURE)
+                        .type(FeatureJson.TypeEnum.FEATURE)
                         .geometry(mapLineString(directionalSegment.getLineString()))
-                        .properties(RoadSectionSegmentPropertiesJson.builder()
+                        .properties(RoadSectionSegmentFeaturePropertiesJson.builder()
                                 .roadSectionId(roadSection.getId())
                                 .accessible(directionalSegment.isAccessible())
                                 .direction(DirectionJson.valueOf(directionalSegment.getDirection().name().toUpperCase(Locale.ROOT)))
                                 .build())
                         .build())
-                .map(RoadSectionSegmentFeatureJson.class::cast)
+                .map(FeatureJson.class::cast)
                 .toList();
     }
 

@@ -9,6 +9,7 @@
     },
     "properties" : {
       "roadSectionId" : 9,
+      "type" : "destination",
       "accessible" : true,
       "reasons" : [ ]
     }
@@ -21,6 +22,7 @@
     },
     "properties" : {
       "roadSectionId" : 6,
+      "type" : "roadSectionSegment",
       "accessible" : false,
       "direction" : "backward"
     }
@@ -33,6 +35,7 @@
     },
     "properties" : {
       "roadSectionId" : 13,
+      "type" : "roadSectionSegment",
       "accessible" : false,
       "direction" : "forward"
     }
