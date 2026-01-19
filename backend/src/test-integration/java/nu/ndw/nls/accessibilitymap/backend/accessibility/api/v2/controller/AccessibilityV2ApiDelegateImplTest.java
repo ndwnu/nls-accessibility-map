@@ -233,7 +233,7 @@ class AccessibilityV2ApiDelegateImplTest {
                                       "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
                                       "trafficSignType" : "C1",
                                       "restrictions" : [ {
-                                        "type" : "VehicleTypeRestriction",
+                                        "type" : "vehicleTypeRestriction",
                                         "unitSymbol" : "enum",
                                         "condition" : "equals",
                                         "values" : [ "car" ]
@@ -360,6 +360,7 @@ class AccessibilityV2ApiDelegateImplTest {
                                     },
                                     "properties" : {
                                       "roadSectionId" : 2,
+                                      "type": "roadSectionSegment",
                                       "accessible" : true,
                                       "direction" : "backward"
                                     }
@@ -373,11 +374,12 @@ class AccessibilityV2ApiDelegateImplTest {
                                     "properties" : {
                                       "roadSectionId" : 4,
                                       "accessible" : true,
+                                      "type": "destination",
                                       "reasons" : [ [ {
                                         "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
                                         "trafficSignType" : "C1",
                                         "restrictions" : [ {
-                                          "type" : "VehicleTypeRestriction",
+                                          "type" : "vehicleTypeRestriction",
                                           "unitSymbol" : "enum",
                                           "condition" : "equals",
                                           "values" : [ "car" ]
@@ -411,7 +413,7 @@ class AccessibilityV2ApiDelegateImplTest {
                 EmissionZoneTypeJson.ZERO_EMISSION_ZONE);
         assertThat(accessibilityRequestJson.getExclusions().getEmissionZoneIds()).containsExactlyInAnyOrder("zone1", "zone2");
 
-        assertThat(accessibilityRequestJson.getArea().getType()).isEqualTo("municipality");
+        assertThat(accessibilityRequestJson.getArea().getType()).isEqualTo(MunicipalityAreaRequestJson.TypeEnum.MUNICIPALITY);
         assertThat(accessibilityRequestJson.getArea()).isInstanceOf(MunicipalityAreaRequestJson.class);
         if (accessibilityRequestJson.getArea() instanceof MunicipalityAreaRequestJson municipalityAreaRequestJson) {
             assertThat(municipalityAreaRequestJson.getId()).isEqualTo("GM0001");
