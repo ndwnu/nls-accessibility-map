@@ -239,7 +239,7 @@ class AccessibilityResponseMapperV2Test {
                       "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
                       "trafficSignType" : "C1",
                       "restrictions" : [ {
-                        "type" : "VehicleTypeRestriction",
+                        "type" : "vehicleTypeRestriction",
                         "unitSymbol" : "enum",
                         "condition" : "equals",
                         "values" : [ "car" ]
