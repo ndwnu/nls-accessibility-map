@@ -8,7 +8,7 @@
   </parent>
   <groupId>nu.ndw.nls.accessibilitymap</groupId>
   <artifactId>parent</artifactId>
-  <version>5.1.74-SNAPSHOT</version>
+  <version>5.1.77-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>nls-accessibility-map</name>
   <description>REST API to determine accessible road sections for a given vehicle type</description>
@@ -31,14 +31,14 @@
     <nls-springboot.logging.version>8.4.16</nls-springboot.logging.version>
     <nls-springboot.component-test.version>12.4.0</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>8.4.18</nls-springboot.monitoring.version>
-    <nls-springboot.test.version>9.0.14</nls-springboot.test.version>
+    <nls-springboot.test.version>9.0.16</nls-springboot.test.version>
     <nls-springboot.gatling-test.version>1.1.0</nls-springboot.gatling-test.version>
     <gatling.version>3.14.9</gatling.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <jackson-databind-nullable.version>0.2.8</jackson-databind-nullable.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
-    <keycloak-authz-client.version>26.0.7</keycloak-authz-client.version>
+    <keycloak-authz-client.version>26.0.8</keycloak-authz-client.version>
     <mapstruct.version>1.6.3</mapstruct.version>
     <openapi-generator-maven-plugin.version>7.18.0</openapi-generator-maven-plugin.version>
     <picocli.version>4.7.7</picocli.version>
@@ -47,11 +47,11 @@
     <swagger-annotations.version>2.2.41</swagger-annotations.version>
     <nls-events.version>5.5.0</nls-events.version>
     <nls-nwb-data-access.version>9.4.8</nls-nwb-data-access.version>
-    <nls-springboot.version>9.4.4</nls-springboot.version>
-    <nls-routing-map-matcher.version>19.0.21</nls-routing-map-matcher.version>
+    <nls-springboot.version>9.4.5</nls-springboot.version>
+    <nls-routing-map-matcher.version>19.0.23</nls-routing-map-matcher.version>
     <nls-geometry.version>5.2.1</nls-geometry.version>
     <nls-geojson-geometry.version>1.4.49</nls-geojson-geometry.version>
-    <nls-springboot.test.graph.version>1.0.32</nls-springboot.test.graph.version>
+    <nls-springboot.test.graph.version>1.0.34</nls-springboot.test.graph.version>
     <jackson-geojson.version>3.0</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>5.1.0</json-unit.version>
@@ -60,7 +60,7 @@
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
-    <wiremock-spring-boot.version>4.0.8</wiremock-spring-boot.version>
+    <wiremock-spring-boot.version>4.0.9</wiremock-spring-boot.version>
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-24970 -->
     <netty.version>4.2.4.Final</netty.version>
