@@ -3,7 +3,10 @@
     "latitude": 1.0,
     "longitude": 2.0
   },
-  "municipalityId": "GM0001",
+  "area": {
+    "type": "municipality",
+    "id": "GM0001"
+  },
   "vehicle": {
     "type": "truck",
     "width": 2.0,

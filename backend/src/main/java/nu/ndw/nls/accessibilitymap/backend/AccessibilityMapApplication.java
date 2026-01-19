@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend;
 
-import nu.ndw.nls.accessibilitymap.generated.api.v2.AccessibilityV2GeoJsonApiController;
 import nu.ndw.nls.geojson.geometry.JtsGeoJsonMappersConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
@@ -25,10 +24,6 @@ import org.springframework.context.annotation.Import;
                         type = FilterType.CUSTOM,
                         classes = {AutoConfigurationExcludeFilter.class}
                 ),
-                @Filter(
-                        type = FilterType.ASSIGNABLE_TYPE,
-                        value = {AccessibilityV2GeoJsonApiController.class}
-                )
         })
 public class AccessibilityMapApplication {
 

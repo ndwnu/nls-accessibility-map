@@ -17,8 +17,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.dto.AccessibilityGeoJsonResponse;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityResponseGeoJsonJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationRequestJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.ReasonJson;
 import nu.ndw.nls.accessibilitymap.generated.model.v2.RestrictionConditionJson;
@@ -92,7 +92,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .build())
                 .build();
 
-        AccessibilityGeoJsonResponse geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -214,7 +214,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .build())
                 .build();
 
-        AccessibilityGeoJsonResponse geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -334,7 +334,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .build())
                 .build();
 
-        AccessibilityGeoJsonResponse geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -397,7 +397,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .build())
                 .build();
 
-        AccessibilityGeoJsonResponse geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -464,7 +464,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         : null)
                 .build();
 
-        AccessibilityGeoJsonResponse geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {

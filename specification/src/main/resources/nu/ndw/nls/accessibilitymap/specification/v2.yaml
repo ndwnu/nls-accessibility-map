@@ -16,7 +16,7 @@ paths:
   /accessiblility:
     post:
       tags:
-        - accessibilityV2
+        - "accessibilityV2"
       summary: "Returns accessible and inaccessible road sections as JSON. Supports gzip compression."
       operationId: "getAccessibility"
       parameters:
@@ -122,14 +122,14 @@ paths:
                     - - trafficSignId: 00000000-0000-4000-0000-000000000004
                         trafficSignType: C22a
                         restrictions:
-                          - type: VehicleWeightRestriction
+                          - type: vehicleWeightRestriction
                             unitSymbol: tons
                             condition: greater_than_or_equals
                             value: 12
                       - trafficSignId: 00000000-0000-4000-0000-000000000004
                         trafficSignType: C22a
                         restrictions:
-                          - type: VehicleTypeRestriction
+                          - type: vehicleTypeRestriction
                             unitSymbol: enum
                             condition: equals
                             values:
@@ -157,7 +157,7 @@ paths:
   /accessiblility.geojson:
     post:
       tags:
-        - "accessibilityV2GeoJson"
+        - "accessibilityV2"
       summary: "Returns accessible and inaccessible road sections as GeoJSON. Supports gzip compression."
       operationId: "getAccessibilityAsGeoJson"
       parameters:
@@ -195,14 +195,14 @@ paths:
                         - - trafficSignId: 00000000-0000-4000-0000-000000000004
                             trafficSignType: C22a
                             restrictions:
-                              - type: VehicleWeightRestriction
+                              - type: vehicleWeightRestriction
                                 unitSymbol: tons
                                 condition: greater_than_or_equals
                                 value: 12
                           - trafficSignId: 00000000-0000-4000-0000-000000000004
                             trafficSignType: C22a
                             restrictions:
-                              - type: VehicleTypeRestriction
+                              - type: vehicleTypeRestriction
                                 unitSymbol: enum
                                 condition: equals
                                 values:
@@ -493,6 +493,31 @@ components:
           type: "number"
           format: "double"
           example: 5.2913
+    AreaRequest:
+      type: "object"
+      required:
+        - type
+      discriminator:
+        propertyName: type
+        mapping:
+          municipality: "#/components/schemas/MunicipalityAreaRequest"
+      properties:
+        type:
+          type: "string"
+          enum:
+            - "municipality"
+    MunicipalityAreaRequest:
+      allOf:
+        - $ref: '#/components/schemas/AreaRequest'
+        - type: "object"
+          description: "Defines a municipality area by id"
+          required:
+            - id
+          properties:
+            id:
+              type: "string"
+              example: "GM0344"
+              pattern: ^(GM)(?=\d{4}$)\d*[1-9]\d*
     Exclusions:
       type: "object"
       description: "Exclusions"
@@ -514,7 +539,7 @@ components:
       type: "object"
       description: ""
       required:
-        - municipalityId
+        - area
         - vehicle
       properties:
         includeAccessibleRoadSections:
@@ -529,12 +554,10 @@ components:
           example: false
           default: true
           nullable: false
+        area:
+          $ref: '#/components/schemas/AreaRequest'
         destination:
           $ref: "#/components/schemas/DestinationRequest"
-        municipalityId:
-          type: "string"
-          example: "GM0344"
-          pattern: ^(GM)(?=\d{4}$)\d*[1-9]\d*
         vehicle:
           $ref: "#/components/schemas/VehicleCharacteristics"
         exclusions:
@@ -691,17 +714,28 @@ components:
         - condition
       discriminator:
         propertyName: type
+        mapping:
+          vehicleLengthRestriction: "#/components/schemas/VehicleLengthRestriction"
+          vehicleHeightRestriction: "#/components/schemas/VehicleHeightRestriction"
+          vehicleWidthRestriction: "#/components/schemas/VehicleWidthRestriction"
+          vehicleAxleWeightRestriction: "#/components/schemas/VehicleAxleWeightRestriction"
+          vehicleWeightRestriction: "#/components/schemas/VehicleWeightRestriction"
+          fuelTypeRestriction: "#/components/schemas/FuelTypeRestriction"
+          vehicleTypeRestriction: "#/components/schemas/VehicleTypeRestriction"
+          unknown: "#/components/schemas/Restriction"
       properties:
         type:
           type: "string"
           enum:
-            - "VehicleLengthRestriction"
-            - "VehicleHeightRestriction"
-            - "VehicleWidthRestriction"
-            - "VehicleAxleWeightRestriction"
-            - "VehicleWeightRestriction"
-            - "FuelTypeRestriction"
-            - "VehicleTypeRestriction"
+            - "vehicleLengthRestriction"
+            - "vehicleHeightRestriction"
+            - "vehicleWidthRestriction"
+            - "vehicleAxleWeightRestriction"
+            - "vehicleWeightRestriction"
+            - "fuelTypeRestriction"
+            - "vehicleTypeRestriction"
+            - "unknown"
+          default: "unknown"
           description: "The type of restriction."
         unitSymbol:
           $ref: "#/components/schemas/RestrictionUnitSymbol"
@@ -878,7 +912,7 @@ components:
         type:
           type: "string"
           enum:
-            - Feature
+            - "Feature"
           example: "Feature"
         id:
           type: "object"
@@ -886,6 +920,8 @@ components:
           example: 217934
         geometry:
           $ref: "./geojson-geometry.yaml#/components/schemas/Geometry"
+        properties:
+          $ref: '#/components/schemas/FeatureProperties'
     AccessibilityResponseGeoJson:
       allOf:
         - $ref: "#/components/schemas/FeatureCollection"
@@ -897,65 +933,63 @@ components:
             features:
               type: "array"
               items:
-                anyOf:
-                  - $ref: "#/components/schemas/RoadSectionSegmentFeature"
-                  - $ref: "#/components/schemas/DestinationFeature"
-    RoadSectionSegmentFeature:
-      allOf:
-        - $ref: "#/components/schemas/Feature"
-        - type: "object"
-          description: "GeoJSON feature that represents a part of a road section"
-          required:
-            - geometry
-          properties:
-            geometry:
-              $ref: "./geojson-geometry.yaml#/components/schemas/LineString"
-            properties:
-              $ref: "#/components/schemas/RoadSectionSegmentProperties"
-    RoadSectionSegmentProperties:
+                $ref: '#/components/schemas/Feature'
+
+    FeatureProperties:
       type: "object"
-      description: "Road section GeoJSON properties"
       required:
-        - roadSectionId
-        - accessible
+        - type
+      discriminator:
+        propertyName: type
+        mapping:
+          roadSectionSegment: "#/components/schemas/RoadSectionSegmentFeatureProperties"
+          destination: "#/components/schemas/DestinationFeatureProperties"
+          unknown: "#/components/schemas/FeatureProperties"
       properties:
-        roadSectionId:
-          $ref: "#/components/schemas/RoadSectionId"
-        accessible:
-          $ref: "#/components/schemas/Accessible"
-        direction:
-          $ref: "#/components/schemas/Direction"
-    DestinationFeature:
+        type:
+          type: "string"
+          enum:
+            - "roadSectionSegment"
+            - "destination"
+            - "unknown"
+          default: "unknown"
+    RoadSectionSegmentFeatureProperties:
       allOf:
-        - $ref: "#/components/schemas/Feature"
+        - $ref: '#/components/schemas/FeatureProperties'
         - type: "object"
-          description: "GeoJSON feature that represents a road section or a part of a road section"
+          description: "Road section GeoJSON properties"
           required:
-            - geometry
+            - roadSectionId
+            - accessible
+            - direction
           properties:
-            geometry:
-              $ref: "./geojson-geometry.yaml#/components/schemas/Point"
-            properties:
-              $ref: "#/components/schemas/DestinationFeatureProperties"
+            roadSectionId:
+              $ref: "#/components/schemas/RoadSectionId"
+            accessible:
+              $ref: "#/components/schemas/Accessible"
+            direction:
+              $ref: "#/components/schemas/Direction"
     DestinationFeatureProperties:
-      type: "object"
-      description: "Road section GeoJSON properties"
-      required:
-        - roadSectionId
-        - accessible
-      properties:
-        roadSectionId:
-          $ref: "#/components/schemas/RoadSectionId"
-        accessible:
-          $ref: "#/components/schemas/Accessible"
-        reasons:
-          type: "array"
-          description: "Group of combined reasons why the destination is inaccessible. Each group contains a list of unique reasons. why the destination is inaccessible. Resolving one of these groups would mean the destination is accessible."
-          items:
-            type: "array"
-            description: "A list of reasons why the destination is inaccessible."
-            items:
-              $ref: "#/components/schemas/Reason"
+      allOf:
+        - $ref: '#/components/schemas/FeatureProperties'
+        - type: "object"
+          description: "Destination GeoJSON properties"
+          required:
+            - roadSectionId
+            - accessible
+          properties:
+            roadSectionId:
+              $ref: "#/components/schemas/RoadSectionId"
+            accessible:
+              $ref: "#/components/schemas/Accessible"
+            reasons:
+              type: "array"
+              description: "Group of combined reasons why the destination is inaccessible. Each group contains a list of unique reasons. why the destination is inaccessible. Resolving one of these groups would mean the destination is accessible."
+              items:
+                type: "array"
+                description: "A list of reasons why the destination is inaccessible."
+                items:
+                  $ref: "#/components/schemas/Reason"
 
     RoadOperators:
       type: "array"
