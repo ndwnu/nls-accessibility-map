@@ -45,20 +45,20 @@ public class IsochroneService {
     public List<IsochroneMatch> getIsochroneMatchesByMunicipalityId(
             IsochroneArguments isochroneArguments,
             QueryGraph queryGraph,
-            Snap startSegment) {
-        int matchedLinkId = getLinkId(startSegment.getClosestEdge());
+            Snap start) {
+        int matchedLinkId = getLinkId(start.getClosestEdge());
         IsochroneByTimeDistanceAndWeight accessibilityPathTree = shortestPathTreeFactory
                 .createShortestPathTreeByTimeDistanceAndWeight(isochroneArguments.weighting(), queryGraph,
                         TraversalMode.EDGE_BASED, isochroneArguments.searchDistanceInMetres(), IsochroneUnit.METERS,
                         false, false, matchedLinkId);
         List<IsoLabel> isoLabels = new ArrayList<>();
-        accessibilityPathTree.search(startSegment.getClosestNode(), isoLabels::add);
+        accessibilityPathTree.search(start.getClosestNode(), isoLabels::add);
 
         return isoLabels.stream()
                 .filter(isoLabel -> isoLabel.getEdge() != ROOT_PARENT)
                 .filter(isoLabel -> filterMunicipality(queryGraph, isoLabel, isochroneArguments))
                 .map(isoLabel -> isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY,
-                        queryGraph, startSegment.getClosestEdge(), false))
+                        queryGraph, start.getClosestEdge(), false))
                 .toList();
     }
 
