@@ -2,7 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

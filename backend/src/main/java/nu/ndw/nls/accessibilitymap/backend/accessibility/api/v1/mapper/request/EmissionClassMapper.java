@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.request;
 import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -3,10 +3,10 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.EmissionClassJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.VehicleCharacteristicsJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleCharacteristicsJson;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

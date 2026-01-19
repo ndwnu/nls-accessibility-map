@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadSectionFeatureJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadSectionPropertiesJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionPropertiesJson;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 

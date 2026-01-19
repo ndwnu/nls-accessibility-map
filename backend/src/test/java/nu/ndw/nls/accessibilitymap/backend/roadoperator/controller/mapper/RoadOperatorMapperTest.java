@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadOperatorJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadOperatorJson.RoadOperatorTypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadOperatorJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson.RoadOperatorTypeEnum;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

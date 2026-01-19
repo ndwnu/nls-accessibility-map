@@ -17,7 +17,7 @@
   <description>Accessibility Map REST API</description>
 
   <properties>
-    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.generated</openapi-generator.base.classpath>
+    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.backend.openapi</openapi-generator.base.classpath>
   </properties>
 
   <dependencies>

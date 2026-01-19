@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadOperatorJson;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.controller.mapper.RoadOperatorMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.service.RoadOperatorService;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.RoadOperatorJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -19,14 +19,15 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.validator.PointV
 import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
-import nu.ndw.nls.accessibilitymap.generated.api.v1.AccessibilityMapApiDelegate;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.AccessibilityMapResponseJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionClassJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionZoneTypeJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadSectionFeatureCollectionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.api.v1.AccessibilityMapApiDelegate;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.AccessibilityMapResponseJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -166,8 +167,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     @SuppressWarnings("java:S1067")
     private void ensureEnvironmentalZoneParameterConsistency(EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes) {
 
-        if ((emissionClass == null && fuelTypes != null && !fuelTypes.isEmpty())
-            || ((fuelTypes == null || fuelTypes.isEmpty()) && emissionClass != null)) {
+        if ((Objects.isNull(emissionClass) && !CollectionUtils.isEmpty(fuelTypes))
+            || (CollectionUtils.isEmpty(fuelTypes) && Objects.nonNull(emissionClass))) {
             throw new IncompleteArgumentsException("If one of the environmental zone parameters is set, the other must be set as well.");
         }
     }

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.EmissionClassJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;

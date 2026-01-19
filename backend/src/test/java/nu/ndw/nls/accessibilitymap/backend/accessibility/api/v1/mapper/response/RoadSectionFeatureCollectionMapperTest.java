@@ -5,9 +5,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadSectionFeatureCollectionJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadSectionFeatureCollectionJson.TypeEnum;
-import nu.ndw.nls.accessibilitymap.generated.model.v1.RoadSectionFeatureJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson.TypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.VehicleCharacteristicsJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleCharacteristicsJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeJson;
 import org.springframework.stereotype.Component;
 
 @Component

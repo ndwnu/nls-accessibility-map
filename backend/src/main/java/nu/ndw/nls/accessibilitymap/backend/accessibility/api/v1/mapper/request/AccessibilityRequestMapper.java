@@ -96,6 +96,6 @@ public class AccessibilityRequestMapper {
 
     private static Double mapToDouble(Float value, int multiplier) {
 
-        return value != null ? (Double.valueOf(value) * multiplier) : null;
+        return Objects.nonNull(value) ? (Double.valueOf(value) * multiplier) : null;
     }
 }

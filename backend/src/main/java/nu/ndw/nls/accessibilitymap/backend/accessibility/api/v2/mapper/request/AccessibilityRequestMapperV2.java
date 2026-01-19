@@ -15,10 +15,10 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.Transport
 import nu.ndw.nls.accessibilitymap.backend.exception.ResourceNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.AccessibilityRequestJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.DestinationRequestJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.ExclusionsJson;
-import nu.ndw.nls.accessibilitymap.generated.model.v2.MunicipalityAreaRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ExclusionsJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.MunicipalityAreaRequestJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
 
@@ -109,6 +109,6 @@ public class AccessibilityRequestMapperV2 {
 
     private static Double mapToDouble(Float value, int multiplier) {
 
-        return value != null ? (Double.valueOf(value) * multiplier) : null;
+        return Objects.nonNull(value) ? (Double.valueOf(value) * multiplier) : null;
     }
 }
