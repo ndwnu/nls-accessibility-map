@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.controller;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.assertArg;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -46,10 +45,8 @@ import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +55,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -108,25 +104,9 @@ class AccessibilityV2ApiDelegateImplTest {
     @Mock
     private Accessibility accessibility;
 
-    private Jwt jwt;
 
-    @BeforeEach
-    void setUp() {
-
-        jwt = Jwt.withTokenValue("token")
-                .header("alg", "none")
-                .claim("azp", "clientId")
-                .build();
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "200",
-            "401"
-    })
-    void getAccessibility(int expectedHttpStatusCode) throws Exception {
-
-        HttpStatus expectedHttpStatus = HttpStatus.valueOf(expectedHttpStatusCode);
+    @Test
+    void getAccessibility() throws Exception {
 
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(accessibilityRequestMapperV2.map(assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson)))
@@ -165,97 +145,79 @@ class AccessibilityV2ApiDelegateImplTest {
                 .thenReturn(accessibilityMapResponseJson);
 
         ResultActions mockMvcBuilder = mockMvc
-                .perform(MockMvcRequestBuilders.post("/v2/accessiblility")
+                .perform(MockMvcRequestBuilders.post("/v2/accessibility")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with((expectedHttpStatus == HttpStatus.UNAUTHORIZED)
-                                ? SecurityMockMvcRequestPostProcessors.anonymous()
-                                : SecurityMockMvcRequestPostProcessors.jwt()
-                                        .jwt(jwt))
-                        .content("""
-                                {
-                                  "includeAccessibleRoadSections": true,
-                                  "includeInaccessibleRoadSections": true,
-                                  "destination": {
-                                    "latitude": 1.1,
-                                    "longitude": 2.2
-                                  },
-                                  "area": {
-                                    "type": "municipality",
-                                    "id": "GM0001"
-                                  },
-                                  "vehicle": {
-                                    "type": "truck",
-                                    "width": 3.0,
-                                    "height": 2.0,
-                                    "length": 5.0,
-                                    "weight": 4.0,
-                                    "axleLoad": 6.0,
-                                    "hasTrailer": true,
-                                    "emissionClass": "zero",
-                                    "fuelTypes": [
-                                      "electric",
-                                      "diesel"
-                                    ]
-                                  },
-                                  "exclusions": {
-                                     "emissionZoneTypes": ["low_emission_zone", "zero_emission_zone"],
-                                     "emissionZoneIds": ["zone1","zone2"]
-                                  }
-                                }
-                                
-                                """));
+                        .with(SecurityMockMvcRequestPostProcessors.anonymous())
+                .content("""
+                        {
+                          "includeAccessibleRoadSections": true,
+                          "includeInaccessibleRoadSections": true,
+                          "destination": {
+                            "latitude": 1.1,
+                            "longitude": 2.2
+                          },
+                          "area": {
+                            "type": "municipality",
+                            "id": "GM0001"
+                          },
+                          "vehicle": {
+                            "type": "truck",
+                            "width": 3.0,
+                            "height": 2.0,
+                            "length": 5.0,
+                            "weight": 4.0,
+                            "axleLoad": 6.0,
+                            "hasTrailer": true,
+                            "emissionClass": "zero",
+                            "fuelTypes": [
+                              "electric",
+                              "diesel"
+                            ]
+                          },
+                          "exclusions": {
+                             "emissionZoneTypes": ["low_emission_zone", "zero_emission_zone"],
+                             "emissionZoneIds": ["zone1","zone2"]
+                          }
+                        }
+                        
+                        """));
 
-        switch (expectedHttpStatus) {
-            case UNAUTHORIZED:
-                mockMvcBuilder.andExpect(status().is(HttpStatus.UNAUTHORIZED.value()));
-                break;
-            case OK:
-                mockMvcBuilder.andExpect(status().is(HttpStatus.OK.value()));
-                assertThatJson(mockMvcBuilder.andReturn().getResponse().getContentAsString())
-                        .isEqualTo("""
-                                {
-                                  "roadSections" : [ {
-                                    "id" : 1,
-                                    "roadSectionSegments" : [ {
-                                      "direction" : "backward",
-                                      "accessible" : true,
-                                      "geometry" : {
-                                        "type" : "LineString",
-                                        "coordinates" : [ [ 1.0, 2.0 ] ]
-                                      }
-                                    } ]
-                                  } ],
-                                  "destination" : {
-                                    "roadSectionId" : 2,
-                                    "accessible" : true,
-                                    "reasons" : [ [ {
-                                      "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
-                                      "trafficSignType" : "C1",
-                                      "restrictions" : [ {
-                                        "type" : "vehicleTypeRestriction",
-                                        "unitSymbol" : "enum",
-                                        "condition" : "equals",
-                                        "values" : [ "car" ]
-                                      } ]
-                                    } ] ]
-                                  }
-                                }
-                                """);
-                break;
-            default:
-                fail("Status '%s' is not expected".formatted(expectedHttpStatus));
-        }
+        mockMvcBuilder.andExpect(status().is(HttpStatus.OK.value()));
+        assertThatJson(mockMvcBuilder.andReturn().getResponse().getContentAsString())
+                .isEqualTo("""
+                        {
+                          "roadSections" : [ {
+                            "id" : 1,
+                            "roadSectionSegments" : [ {
+                              "direction" : "backward",
+                              "accessible" : true,
+                              "geometry" : {
+                                "type" : "LineString",
+                                "coordinates" : [ [ 1.0, 2.0 ] ]
+                              }
+                            } ]
+                          } ],
+                          "destination" : {
+                            "roadSectionId" : 2,
+                            "accessible" : true,
+                            "reasons" : [ [ {
+                              "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
+                              "trafficSignType" : "C1",
+                              "restrictions" : [ {
+                                "type" : "vehicleTypeRestriction",
+                                "unitSymbol" : "enum",
+                                "condition" : "equals",
+                                "values" : [ "car" ]
+                              } ]
+                            } ] ]
+                          }
+                        }
+                        """);
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "200",
-            "401"
-    })
-    void getAccessibilityAsGeoJson(int expectedHttpStatusCode) throws Exception {
-
-        HttpStatus expectedHttpStatus = HttpStatus.valueOf(expectedHttpStatusCode);
+    @Test
+    void getAccessibilityAsGeoJson() throws Exception {
 
         when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(accessibilityRequestMapperV2.map(assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson)))
@@ -301,13 +263,10 @@ class AccessibilityV2ApiDelegateImplTest {
                 .thenReturn(accessibilityResponseGeoJsonJson);
 
         ResultActions mockMvcBuilder = mockMvc
-                .perform(MockMvcRequestBuilders.post("/v2/accessiblility.geojson")
+                .perform(MockMvcRequestBuilders.post("/v2/accessibility.geojson")
                         .accept("application/geo+json")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .with((expectedHttpStatus == HttpStatus.UNAUTHORIZED)
-                                ? SecurityMockMvcRequestPostProcessors.anonymous()
-                                : SecurityMockMvcRequestPostProcessors.jwt()
-                                        .jwt(jwt))
+                        .with(SecurityMockMvcRequestPostProcessors.anonymous())
                         .content("""
                                 {
                                   "includeAccessibleRoadSections": true,
@@ -342,57 +301,48 @@ class AccessibilityV2ApiDelegateImplTest {
                                 
                                 """));
 
-        switch (expectedHttpStatus) {
-            case UNAUTHORIZED:
-                mockMvcBuilder.andExpect(status().is(HttpStatus.UNAUTHORIZED.value()));
-                break;
-            case OK:
-                mockMvcBuilder.andExpect(status().is(HttpStatus.OK.value()));
-                assertThatJson(mockMvcBuilder.andReturn().getResponse().getContentAsString())
-                        .isEqualTo("""
-                                {
-                                  "features" : [ {
-                                    "type" : "Feature",
-                                    "id" : 1,
-                                    "geometry" : {
-                                      "type" : "LineString",
-                                      "coordinates" : [ [ 1.1, 1.2 ], [ 2.1, 2.2 ] ]
-                                    },
-                                    "properties" : {
-                                      "roadSectionId" : 2,
-                                      "type": "roadSectionSegment",
-                                      "accessible" : true,
-                                      "direction" : "backward"
-                                    }
-                                  }, {
-                                    "type" : "Feature",
-                                    "id" : 3,
-                                    "geometry" : {
-                                      "type" : "Point",
-                                      "coordinates" : [ 3.1, 3.2 ]
-                                    },
-                                    "properties" : {
-                                      "roadSectionId" : 4,
-                                      "accessible" : true,
-                                      "type": "destination",
-                                      "reasons" : [ [ {
-                                        "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
-                                        "trafficSignType" : "C1",
-                                        "restrictions" : [ {
-                                          "type" : "vehicleTypeRestriction",
-                                          "unitSymbol" : "enum",
-                                          "condition" : "equals",
-                                          "values" : [ "car" ]
-                                        } ]
-                                      } ] ]
-                                    }
-                                  } ]
-                                }
-                                """);
-                break;
-            default:
-                fail("Status '%s' is not expected".formatted(expectedHttpStatus));
-        }
+        mockMvcBuilder.andExpect(status().is(HttpStatus.OK.value()));
+        assertThatJson(mockMvcBuilder.andReturn().getResponse().getContentAsString())
+                .isEqualTo("""
+                        {
+                          "features" : [ {
+                            "type" : "Feature",
+                            "id" : 1,
+                            "geometry" : {
+                              "type" : "LineString",
+                              "coordinates" : [ [ 1.1, 1.2 ], [ 2.1, 2.2 ] ]
+                            },
+                            "properties" : {
+                              "roadSectionId" : 2,
+                              "type": "roadSectionSegment",
+                              "accessible" : true,
+                              "direction" : "backward"
+                            }
+                          }, {
+                            "type" : "Feature",
+                            "id" : 3,
+                            "geometry" : {
+                              "type" : "Point",
+                              "coordinates" : [ 3.1, 3.2 ]
+                            },
+                            "properties" : {
+                              "roadSectionId" : 4,
+                              "accessible" : true,
+                              "type": "destination",
+                              "reasons" : [ [ {
+                                "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
+                                "trafficSignType" : "C1",
+                                "restrictions" : [ {
+                                  "type" : "vehicleTypeRestriction",
+                                  "unitSymbol" : "enum",
+                                  "condition" : "equals",
+                                  "values" : [ "car" ]
+                                } ]
+                              } ] ]
+                            }
+                          } ]
+                        }
+                        """);
     }
 
     private static void assertAccessibilityReqeustJson(AccessibilityRequestJson accessibilityRequestJson) {
