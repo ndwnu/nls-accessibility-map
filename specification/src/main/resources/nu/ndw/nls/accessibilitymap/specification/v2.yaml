@@ -27,6 +27,32 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/AccessibilityRequest"
+            example:
+              includeAccessibleRoadSections: true
+              includeInaccessibleRoadSections: true
+              destination:
+                latitude: 3
+                longitude: 4
+              area:
+                type: municipality
+                id: GM0001
+              vehicle:
+                type: truck
+                width: 2
+                height: 2.5
+                weight: 20
+                length: 5.2
+                axleLoad: 4
+                hasTrailer: false
+                emissionClass: euro_6
+                fuelTypes:
+                  - petrol
+              exclusions:
+                emissionZoneTypes:
+                  - low_emission_zone
+                emissionZoneIds:
+                  - NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47
+
       responses:
         "200":
           description: "OK"
@@ -168,6 +194,32 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/AccessibilityRequest"
+            example:
+              includeAccessibleRoadSections: true
+              includeInaccessibleRoadSections: true
+              destination:
+                latitude: 3
+                longitude: 4
+              area:
+                type: municipality
+                id: GM0001
+              vehicle:
+                type: truck
+                width: 2
+                height: 2.5
+                weight: 20
+                length: 5.2
+                axleLoad: 4
+                hasTrailer: false
+                emissionClass: euro_6
+                fuelTypes:
+                  - petrol
+              exclusions:
+                emissionZoneTypes:
+                  - low_emission_zone
+                emissionZoneIds:
+                  - NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47
+
       responses:
         "200":
           description: "OK"
@@ -191,6 +243,7 @@ paths:
                     properties:
                       roadSectionId: 1
                       accessible: false
+                      type: destination
                       reasons:
                         - - trafficSignId: 00000000-0000-4000-0000-000000000004
                             trafficSignType: C22a
@@ -219,6 +272,7 @@ paths:
                           - 1
                     properties:
                       roadSectionId: 1
+                      type: roadSectionSegment
                       accessible: false
                       direction: forward
                   - type: Feature
@@ -232,6 +286,7 @@ paths:
                           - 1
                     properties:
                       roadSectionId: 1
+                      type: roadSectionSegment
                       accessible: true
                       direction: backward
                   - type: Feature
@@ -245,6 +300,7 @@ paths:
                           - 1
                     properties:
                       roadSectionId: 1
+                      type: roadSectionSegment
                       accessible: false
                       direction: forward
                   - type: Feature
@@ -258,6 +314,7 @@ paths:
                           - 1
                     properties:
                       roadSectionId: 1
+                      type: roadSectionSegment
                       accessible: false
                       direction: backward
                   - type: Feature
@@ -271,6 +328,7 @@ paths:
                           - 1
                     properties:
                       roadSectionId: 1
+                      type: roadSectionSegment
                       accessible: false
                       direction: forward
                   - type: Feature
@@ -284,6 +342,7 @@ paths:
                           - 1
                     properties:
                       roadSectionId: 1
+                      type: roadSectionSegment
                       accessible: false
                       direction: backward
                   - type: Feature
@@ -297,6 +356,7 @@ paths:
                           - 1
                     properties:
                       roadSectionId: 2
+                      type: roadSectionSegment
                       accessible: true
                       direction: forward
                   - type: Feature
@@ -310,6 +370,7 @@ paths:
                           - 1
                     properties:
                       roadSectionId: 2
+                      type: roadSectionSegment
                       accessible: true
                       direction: backward
         "400":
