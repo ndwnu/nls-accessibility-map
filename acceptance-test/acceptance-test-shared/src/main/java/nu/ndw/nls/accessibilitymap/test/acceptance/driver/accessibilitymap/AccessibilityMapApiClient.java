@@ -106,9 +106,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .method(HttpMethod.GET)
                 .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections".formatted(
                         accessibilityRequest.municipalityId()))
-                .headers(Map.of(
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
-                ))
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
@@ -139,9 +136,8 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         Request<AccessibilityRequestJson> request = Request.<AccessibilityRequestJson>builder()
                 .id("getAccessibility")
                 .method(HttpMethod.POST)
-                .path("api/rest/static-road-data/accessibility-map/v2/accessiblility")
+                .path("api/rest/static-road-data/accessibility-map/v2/accessibility")
                 .headers(Map.of(
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken(),
                         HttpHeaders.ACCEPT_ENCODING, "gzip",
                         HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE,
                         HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
@@ -171,9 +167,8 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         Request<AccessibilityRequestJson> request = Request.<AccessibilityRequestJson>builder()
                 .id("getAccessibilityGeoJson")
                 .method(HttpMethod.POST)
-                .path("api/rest/static-road-data/accessibility-map/v2/accessiblility.geojson")
+                .path("api/rest/static-road-data/accessibility-map/v2/accessibility.geojson")
                 .headers(Map.of(
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken(),
                         HttpHeaders.ACCEPT_ENCODING, "gzip",
                         HttpHeaders.ACCEPT, MEDIA_TYPE_GEOJSON,
                         HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE
@@ -206,9 +201,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .method(HttpMethod.GET)
                 .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson".formatted(
                         accessibilityRequest.municipalityId()))
-                .headers(Map.of(
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
-                ))
                 .queryParameters(buildQueryParameters(accessibilityRequest))
                 .build();
 
@@ -239,9 +231,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .id("genericRequest")
                 .method(HttpMethod.valueOf(method.toUpperCase(Locale.ROOT)))
                 .path(path)
-                .headers(Map.of(
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
-                ))
                 .build();
 
         return request(
@@ -372,9 +361,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .id("getMunicipalities")
                 .method(HttpMethod.GET)
                 .path("api/rest/static-road-data/accessibility-map/%s/municipalities".formatted(apiVersion))
-                .headers(Map.of(
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
-                ))
                 .build();
 
         return request(
