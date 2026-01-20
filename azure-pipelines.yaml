@@ -110,7 +110,7 @@ extends:
               path: "deploy/nls-accessibility-map-jobs"
               forceDelete: true
               arguments: >-
-                --wait-for-jobs --timeout 120s
+                --wait-for-jobs --timeout 180s
         - name: "production"
           deployAfter:
             - "staging"
@@ -123,4 +123,4 @@ extends:
               path: "deploy/nls-accessibility-map-jobs"
               forceDelete: true
               arguments: >-
-                --wait-for-jobs --timeout 120s
+                --wait-for-jobs --timeout 180s
