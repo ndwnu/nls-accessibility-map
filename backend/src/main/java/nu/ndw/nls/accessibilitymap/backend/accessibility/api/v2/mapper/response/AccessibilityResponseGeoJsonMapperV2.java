@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
@@ -78,15 +79,15 @@ public class AccessibilityResponseGeoJsonMapperV2 {
         return roadSection.getRoadSectionFragments().stream()
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(directionalSegment ->
-                        (includeAccessibleRoadSections && directionalSegment.isAccessible())
-                        || (includeInAccessibleRoadSections && !directionalSegment.isAccessible()))
+                        (includeAccessibleRoadSections && isAccessible(accessibilityRequestJson, directionalSegment))
+                        || (includeInAccessibleRoadSections && !isAccessible(accessibilityRequestJson, directionalSegment)))
                 .map(directionalSegment -> FeatureJson.builder()
                         .id(idGenerator.incrementAndGet())
                         .type(FeatureJson.TypeEnum.FEATURE)
                         .geometry(mapLineString(directionalSegment.getLineString()))
                         .properties(RoadSectionSegmentFeaturePropertiesJson.builder()
                                 .roadSectionId(roadSection.getId())
-                                .accessible(directionalSegment.isAccessible())
+                                .accessible(isAccessible(accessibilityRequestJson, directionalSegment))
                                 .direction(DirectionJson.valueOf(directionalSegment.getDirection().name().toUpperCase(Locale.ROOT)))
                                 .build())
                         .build())
@@ -111,5 +112,14 @@ public class AccessibilityResponseGeoJsonMapperV2 {
                 .toList();
 
         return new LineStringJson(coordinates, TypeEnum.LINE_STRING);
+    }
+
+    public static boolean isAccessible(AccessibilityRequestJson accessibilityRequestJson, DirectionalSegment directionalSegment) {
+        if (Objects.isNull(accessibilityRequestJson.getEffectivelyAccessible())
+            || Boolean.FALSE.equals(accessibilityRequestJson.getEffectivelyAccessible())) {
+            return directionalSegment.isAccessible();
+        } else {
+            return directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment();
+        }
     }
 }

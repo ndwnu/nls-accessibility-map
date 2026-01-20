@@ -7,12 +7,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
 import nu.ndw.nls.accessibilitymap.backend.openapi.api.v2.AccessibilityV2ApiDelegate;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseJson;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +21,6 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
 
     private final GraphHopperService graphHopperService;
 
-    private final AccessibilityResponseMapperV2 accessibilityResponseMapperV2;
-
     private final AccessibilityResponseGeoJsonMapperV2 accessibilityResponseGeoJsonMapperV2;
 
     private final AccessibilityRequestMapperV2 accessibilityRequestMapperV2;
@@ -32,20 +28,6 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
     private final AccessibilityService accessibilityService;
 
     private final AccessibilityRequestValidator accessibilityRequestValidator;
-
-    @Override
-    public ResponseEntity<AccessibilityResponseJson> getAccessibility(
-            AccessibilityRequestJson accessibilityRequestJson,
-            String acceptEncoding) {
-
-        accessibilityRequestValidator.verify(accessibilityRequestJson);
-
-        Accessibility accessibility = accessibilityService.calculateAccessibility(
-                graphHopperService.getNetworkGraphHopper(),
-                accessibilityRequestMapperV2.map(accessibilityRequestJson));
-
-        return ResponseEntity.ok(accessibilityResponseMapperV2.map(accessibilityRequestJson, accessibility));
-    }
 
     @Override
     public ResponseEntity<AccessibilityResponseGeoJsonJson> getAccessibilityAsGeoJson(

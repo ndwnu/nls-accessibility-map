@@ -8,8 +8,8 @@
       "coordinates" : [ 7.0, 3.0 ]
     },
     "properties" : {
-      "roadSectionId" : 9,
       "type" : "destination",
+      "roadSectionId" : 9,
       "accessible" : true,
       "reasons" : [ ]
     }
@@ -21,8 +21,8 @@
       "coordinates" : [ [ 1.0, 1.0 ], [ 5.0, 1.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 1,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 1,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -34,8 +34,8 @@
       "coordinates" : [ [ 5.0, 1.0 ], [ 1.0, 1.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 1,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 1,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -47,8 +47,8 @@
       "coordinates" : [ [ 5.0, 1.0 ], [ 10.0, 1.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 2,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 2,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -60,8 +60,8 @@
       "coordinates" : [ [ 10.0, 1.0 ], [ 5.0, 1.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 2,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 2,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -73,8 +73,8 @@
       "coordinates" : [ [ 10.0, 1.0 ], [ 10.0, 1.9000953687711808 ] ]
     },
     "properties" : {
-      "roadSectionId" : 3,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 3,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -86,8 +86,8 @@
       "coordinates" : [ [ 10.0, 1.9000953687711808 ], [ 10.0, 9.100147749128709 ] ]
     },
     "properties" : {
-      "roadSectionId" : 3,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 3,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -99,8 +99,8 @@
       "coordinates" : [ [ 10.0, 9.100147749128709 ], [ 10.0, 10.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 3,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 3,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -112,8 +112,8 @@
       "coordinates" : [ [ 10.0, 10.0 ], [ 5.0, 10.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 4,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 4,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -125,8 +125,8 @@
       "coordinates" : [ [ 5.0, 10.0 ], [ 10.0, 10.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 4,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 4,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -138,8 +138,8 @@
       "coordinates" : [ [ 5.0, 10.0 ], [ 1.0, 10.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 5,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 5,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -151,8 +151,8 @@
       "coordinates" : [ [ 1.0, 10.0 ], [ 5.0, 10.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 5,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 5,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -164,8 +164,8 @@
       "coordinates" : [ [ 1.0, 10.0 ], [ 1.0, 1.9000953683267154 ] ]
     },
     "properties" : {
-      "roadSectionId" : 6,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 6,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -177,9 +177,9 @@
       "coordinates" : [ [ 1.0, 1.9000953683267154 ], [ 1.0, 10.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 6,
       "type" : "roadSectionSegment",
-      "accessible" : false,
+      "roadSectionId" : 6,
+      "accessible" : true,
       "direction" : "backward"
     }
   }, {
@@ -190,8 +190,8 @@
       "coordinates" : [ [ 1.0, 1.9000953683267154 ], [ 1.0, 1.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 6,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 6,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -203,8 +203,8 @@
       "coordinates" : [ [ 1.0, 1.0 ], [ 1.0, 1.9000953683267154 ] ]
     },
     "properties" : {
-      "roadSectionId" : 6,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 6,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -216,8 +216,8 @@
       "coordinates" : [ [ 4.0, 5.0 ], [ 5.0, 2.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 7,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 7,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -229,8 +229,8 @@
       "coordinates" : [ [ 5.0, 2.0 ], [ 4.0, 5.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 7,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 7,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -242,8 +242,8 @@
       "coordinates" : [ [ 5.0, 2.0 ], [ 7.0, 2.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 8,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 8,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -255,8 +255,8 @@
       "coordinates" : [ [ 7.0, 2.0 ], [ 5.0, 2.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 8,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 8,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -268,8 +268,8 @@
       "coordinates" : [ [ 7.0, 2.0 ], [ 7.0, 8.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 9,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 9,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -281,8 +281,8 @@
       "coordinates" : [ [ 7.0, 8.0 ], [ 7.0, 2.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 9,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 9,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -294,8 +294,8 @@
       "coordinates" : [ [ 7.0, 8.0 ], [ 5.0, 8.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 10,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 10,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -307,8 +307,8 @@
       "coordinates" : [ [ 5.0, 8.0 ], [ 7.0, 8.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 10,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 10,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -320,8 +320,8 @@
       "coordinates" : [ [ 5.0, 8.0 ], [ 4.0, 5.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 11,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 11,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -333,8 +333,8 @@
       "coordinates" : [ [ 4.0, 5.0 ], [ 5.0, 8.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 11,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 11,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -346,8 +346,8 @@
       "coordinates" : [ [ 5.0, 2.0 ], [ 5.0, 1.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 12,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 12,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -359,8 +359,8 @@
       "coordinates" : [ [ 5.0, 1.0 ], [ 5.0, 2.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 12,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 12,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -372,8 +372,8 @@
       "coordinates" : [ [ 5.0, 10.0 ], [ 5.0, 9.000027127389366 ] ]
     },
     "properties" : {
-      "roadSectionId" : 13,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 13,
       "accessible" : true,
       "direction" : "forward"
     }
@@ -385,8 +385,8 @@
       "coordinates" : [ [ 5.0, 9.000027127389366 ], [ 5.0, 10.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 13,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 13,
       "accessible" : true,
       "direction" : "backward"
     }
@@ -398,9 +398,9 @@
       "coordinates" : [ [ 5.0, 9.000027127389366 ], [ 5.0, 8.0 ] ]
     },
     "properties" : {
-      "roadSectionId" : 13,
       "type" : "roadSectionSegment",
-      "accessible" : false,
+      "roadSectionId" : 13,
+      "accessible" : true,
       "direction" : "forward"
     }
   }, {
@@ -411,8 +411,8 @@
       "coordinates" : [ [ 5.0, 8.0 ], [ 5.0, 9.000027127389366 ] ]
     },
     "properties" : {
-      "roadSectionId" : 13,
       "type" : "roadSectionSegment",
+      "roadSectionId" : 13,
       "accessible" : true,
       "direction" : "backward"
     }

@@ -13,150 +13,6 @@ security:
   - bearerAuth: [ ]
 
 paths:
-  /accessibility:
-    post:
-      tags:
-        - "accessibilityV2"
-      summary: "Returns accessible and inaccessible road sections as JSON. Supports gzip compression."
-      operationId: "getAccessibility"
-      parameters:
-        - $ref: "#/components/parameters/Accept-encoding"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AccessibilityRequest"
-            examples:
-              accessibilityRequestByMunicipality:
-                $ref: "#/components/examples/AccessibilityRequestByMunicipality"
-      responses:
-        "200":
-          description: "OK"
-          headers:
-            Content-Encoding:
-              $ref: "#/components/headers/Content-encoding"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AccessibilityResponse"
-              example:
-                roadSections:
-                  - id: 1
-                    roadSectionSegments:
-                      - direction: forward
-                        accessible: false
-                        geometry:
-                          type: LineString
-                          coordinates:
-                            - - 4.600000072202962
-                              - 1
-                            - - 5
-                              - 1
-                      - direction: backward
-                        accessible: true
-                        geometry:
-                          type: LineString
-                          coordinates:
-                            - - 5
-                              - 1
-                            - - 4.600000072202962
-                              - 1
-                      - direction: forward
-                        accessible: false
-                        geometry:
-                          type: LineString
-                          coordinates:
-                            - - 1.3999999358068789
-                              - 1
-                            - - 4.600000072202962
-                              - 1
-                      - direction: backward
-                        accessible: false
-                        geometry:
-                          type: LineString
-                          coordinates:
-                            - - 4.600000072202962
-                              - 1
-                            - - 1.3999999358068789
-                              - 1
-                      - direction: forward
-                        accessible: false
-                        geometry:
-                          type: LineString
-                          coordinates:
-                            - - 1
-                              - 1
-                            - - 1.3999999358068789
-                              - 1
-                      - direction: backward
-                        accessible: false
-                        geometry:
-                          type: LineString
-                          coordinates:
-                            - - 1.3999999358068789
-                              - 1
-                            - - 1
-                              - 1
-                  - id: 2
-                    roadSectionSegments:
-                      - direction: forward
-                        accessible: true
-                        geometry:
-                          type: LineString
-                          coordinates:
-                            - - 5
-                              - 1
-                            - - 10
-                              - 1
-                      - direction: backward
-                        accessible: true
-                        geometry:
-                          type: LineString
-                          coordinates:
-                            - - 10
-                              - 1
-                            - - 5
-                              - 1
-                destination:
-                  roadSectionId: 1
-                  accessible: false
-                  reasons:
-                    - - trafficSignId: 00000000-0000-4000-0000-000000000004
-                        trafficSignType: C22a
-                        restrictions:
-                          - type: vehicleWeightRestriction
-                            unitSymbol: tons
-                            condition: greater_than_or_equals
-                            value: 12
-                      - trafficSignId: 00000000-0000-4000-0000-000000000004
-                        trafficSignType: C22a
-                        restrictions:
-                          - type: vehicleTypeRestriction
-                            unitSymbol: enum
-                            condition: equals
-                            values:
-                              - light_commercial_vehicle
-                              - truck
-        "400":
-          description: "Validation error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-        "404":
-          description: "Resource not found"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-        "500":
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/APIError"
-
   /accessibility.geojson:
     post:
       tags:
@@ -569,6 +425,12 @@ components:
           example: false
           default: true
           nullable: false
+        effectivelyAccessible:
+          description: "Effective accessibility means that you can reach the road section segment from at least one direction"
+          type: "boolean"
+          example: false
+          default: false
+          nullable: false
         area:
           $ref: '#/components/schemas/AreaRequest'
         destination:
@@ -630,17 +492,6 @@ components:
         - "backward"
       example: "forward"
 
-    AccessibilityResponse:
-      type: "object"
-      description: "Response object containing (in)accessible road sections"
-      readOnly: true
-      properties:
-        roadSections:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/RoadSection"
-        destination:
-          $ref: "#/components/schemas/Destination"
     RoadSectionId:
       type: "integer"
       format: "int64"
@@ -652,57 +503,6 @@ components:
       example: false
       readOnly: true
       nullable: false
-    RoadSection:
-      type: "object"
-      description: "A road section."
-      required:
-        - id
-        - accessible
-        - roadSectionSegments
-      properties:
-        id:
-          $ref: "#/components/schemas/RoadSectionId"
-        roadSectionSegments:
-          type: "array"
-          description: "A collection of road section segments"
-          minItems: 1
-          items:
-            $ref: "#/components/schemas/RoadSectionSegment"
-          readOnly: true
-    RoadSectionSegment:
-      type: "object"
-      description: "a road section segment is a part of a road section in a certain direction."
-      required:
-        - "direction"
-        - "accessible"
-        - "geometry"
-      properties:
-        direction:
-          $ref: "#/components/schemas/Direction"
-        accessible:
-          $ref: "#/components/schemas/Accessible"
-        geometry:
-          $ref: "./geojson-geometry.yaml#/components/schemas/LineString"
-    Destination:
-      type: "object"
-      description: "If a destination is specified in the request, this object will be present in the response. Representing the destination location and why it is accessible or not."
-      required:
-        - roadSectionId
-        - accessible
-        - reasons
-      properties:
-        roadSectionId:
-          $ref: "#/components/schemas/RoadSectionId"
-        accessible:
-          $ref: "#/components/schemas/Accessible"
-        reasons:
-          type: "array"
-          description: "Group of combined reasons why the destination is inaccessible. Each group contains a list of unique reasons. why the destination is inaccessible. Resolving one of these groups would mean the destination is accessible."
-          items:
-            type: "array"
-            description: "A list of reasons why the destination is inaccessible."
-            items:
-              $ref: "#/components/schemas/Reason"
     Reason:
       type: "object"
       description: "Reason why the road section is inaccessible"

@@ -16,7 +16,6 @@ import net.javacrumbs.jsonunit.core.Option;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoadSection;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
@@ -136,37 +135,6 @@ public class AccessibilityMapApiStepDefinitions {
         assertThatJson(response.body())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(testDataProvider.readFromFile("api/accessibility", expectedResponseFile));
-    }
-
-    @When("request accessibility for {word}")
-    public void requestAccessibilityForV2(String requestFile) {
-
-        AccessibilityRequestJson accessibilityRequest = testDataProvider.readFromFile(
-                "api/accessibility/v2/request/",
-                requestFile + ".json",
-                AccessibilityRequestJson.class);
-        Response<AccessibilityRequestJson, String> response = accessibilityMapApiClient.getAccessibility(accessibilityRequest);
-
-        assertThat(response.containsError())
-                .withFailMessage(
-                        "Failed to get accessibility. Error: %s with body: %s",
-                        response.error(),
-                        response.body())
-                .isFalse();
-    }
-
-    @Then("we expect accessibility response {word}")
-    public void expectAccessibilityResponseV2(String responseFile) {
-
-        Response<AccessibilityRequestJson, String> actualResponse = accessibilityMapApiClient.getLastResponseForGetAccessibility();
-        assertThat(actualResponse.headers()).containsEntry(HttpHeaders.CONTENT_ENCODING, List.of("gzip"));
-
-        AccessibilityResponseJson expectedResponse = testDataProvider.readFromFile(
-                "api/accessibility/v2/response",
-                responseFile + ".json",
-                AccessibilityResponseJson.class);
-
-        assertThatJson(actualResponse.bodyAsString()).isEqualTo(expectedResponse);
     }
 
     @When("request accessibility geojson for {word}")

@@ -15,14 +15,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
 import nu.ndw.nls.accessibilitymap.backend.openapi.api.v2.AccessibilityV2ApiController;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationFeaturePropertiesJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionZoneTypeJson;
@@ -33,9 +30,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionUnitSymbolJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadSectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadSectionSegmentFeaturePropertiesJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadSectionSegmentJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeRestrictionJson;
@@ -81,9 +76,6 @@ class AccessibilityV2ApiDelegateImplTest {
     private AccessibilityRequestMapperV2 accessibilityRequestMapperV2;
 
     @MockitoBean
-    private AccessibilityResponseMapperV2 accessibilityResponseMapperV2;
-
-    @MockitoBean
     private AccessibilityResponseGeoJsonMapperV2 accessibilityResponseGeoJsonMapperV2;
 
     @MockitoBean
@@ -103,118 +95,6 @@ class AccessibilityV2ApiDelegateImplTest {
 
     @Mock
     private Accessibility accessibility;
-
-
-    @Test
-    void getAccessibility() throws Exception {
-
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(accessibilityRequestMapperV2.map(assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson)))
-                .thenReturn(accessibilityRequest);
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
-
-        AccessibilityResponseJson accessibilityMapResponseJson = AccessibilityResponseJson.builder()
-                .roadSections(List.of(
-                        RoadSectionJson.builder()
-                                .id(1L)
-                                .roadSectionSegments(List.of(RoadSectionSegmentJson.builder()
-                                        .accessible(true)
-                                        .geometry(new LineStringJson(List.of(List.of(1D, 2D)), TypeEnum.LINE_STRING))
-                                        .direction(DirectionJson.BACKWARD)
-                                        .build()))
-                                .build()
-                ))
-                .destination(DestinationJson.builder()
-                        .roadSectionId(2L)
-                        .accessible(true)
-                        .reasons(List.of(List.of(ReasonJson.builder()
-                                .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
-                                .trafficSignType(TrafficSignTypeJson.C1)
-                                .restrictions(List.of(VehicleTypeRestrictionJson.builder()
-                                        .type(RestrictionJson.TypeEnum.VEHICLE_TYPE_RESTRICTION)
-                                        .unitSymbol(RestrictionUnitSymbolJson.ENUM)
-                                        .values(List.of(VehicleTypeJson.CAR))
-                                        .condition(RestrictionConditionJson.EQUALS)
-                                        .build()))
-                                .build())))
-                        .build())
-                .build();
-        when(accessibilityResponseMapperV2.map(
-                assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson),
-                eq(accessibility)))
-                .thenReturn(accessibilityMapResponseJson);
-
-        ResultActions mockMvcBuilder = mockMvc
-                .perform(MockMvcRequestBuilders.post("/v2/accessibility")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(SecurityMockMvcRequestPostProcessors.anonymous())
-                .content("""
-                        {
-                          "includeAccessibleRoadSections": true,
-                          "includeInaccessibleRoadSections": true,
-                          "destination": {
-                            "latitude": 1.1,
-                            "longitude": 2.2
-                          },
-                          "area": {
-                            "type": "municipality",
-                            "id": "GM0001"
-                          },
-                          "vehicle": {
-                            "type": "truck",
-                            "width": 3.0,
-                            "height": 2.0,
-                            "length": 5.0,
-                            "weight": 4.0,
-                            "axleLoad": 6.0,
-                            "hasTrailer": true,
-                            "emissionClass": "zero",
-                            "fuelTypes": [
-                              "electric",
-                              "diesel"
-                            ]
-                          },
-                          "exclusions": {
-                             "emissionZoneTypes": ["low_emission_zone", "zero_emission_zone"],
-                             "emissionZoneIds": ["zone1","zone2"]
-                          }
-                        }
-                        
-                        """));
-
-        mockMvcBuilder.andExpect(status().is(HttpStatus.OK.value()));
-        assertThatJson(mockMvcBuilder.andReturn().getResponse().getContentAsString())
-                .isEqualTo("""
-                        {
-                          "roadSections" : [ {
-                            "id" : 1,
-                            "roadSectionSegments" : [ {
-                              "direction" : "backward",
-                              "accessible" : true,
-                              "geometry" : {
-                                "type" : "LineString",
-                                "coordinates" : [ [ 1.0, 2.0 ] ]
-                              }
-                            } ]
-                          } ],
-                          "destination" : {
-                            "roadSectionId" : 2,
-                            "accessible" : true,
-                            "reasons" : [ [ {
-                              "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
-                              "trafficSignType" : "C1",
-                              "restrictions" : [ {
-                                "type" : "vehicleTypeRestriction",
-                                "unitSymbol" : "enum",
-                                "condition" : "equals",
-                                "values" : [ "car" ]
-                              } ]
-                            } ] ]
-                          }
-                        }
-                        """);
-    }
 
     @Test
     void getAccessibilityAsGeoJson() throws Exception {
