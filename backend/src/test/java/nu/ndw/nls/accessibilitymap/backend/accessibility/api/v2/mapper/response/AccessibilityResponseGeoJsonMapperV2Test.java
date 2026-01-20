@@ -51,6 +51,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     private RoadSection roadSectionInaccessible;
 
     private RoadSection roadSectionAccessible;
+    private RoadSection roadSectionPartiallyhaccessible;
 
     private RoadSection destinationRoadSectionAccessible;
 
@@ -63,10 +64,11 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
         objectMapper = new ObjectMapper();
 
-        roadSectionAccessible = buildRoadSection(1, true);
-        roadSectionInaccessible = buildRoadSection(2, false);
-        destinationRoadSectionAccessible = buildRoadSection(3, true);
-        destinationRoadSectionInAccessible = buildRoadSection(4, false);
+        roadSectionAccessible = buildRoadSection(1, true, true);
+        roadSectionInaccessible = buildRoadSection(2, false, false);
+        roadSectionPartiallyhaccessible = buildRoadSection(5, false, true);
+        destinationRoadSectionAccessible = buildRoadSection(3, true, true);
+        destinationRoadSectionInAccessible = buildRoadSection(4, false, false);
 
         accessibilityResponseGeoJsonMapperV2 = new AccessibilityResponseGeoJsonMapperV2(accessibilityReasonsJsonMapperV2);
     }
@@ -80,7 +82,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
         Accessibility accessibility = Accessibility.builder()
                 .toRoadSection(Optional.of(destinationRoadSectionAccessible))
-                .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, destinationRoadSectionAccessible))
+                .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, roadSectionPartiallyhaccessible, destinationRoadSectionAccessible))
                 .build();
 
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
@@ -171,13 +173,39 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     },
                     "properties" : {
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 5,
+                      "accessible" : false,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 7,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 5,
+                      "accessible" : true,
+                      "direction" : "backward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 8,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
                       "accessible" : true,
                       "direction" : "forward"
                     }
                   }, {
                     "type" : "Feature",
-                    "id" : 7,
+                    "id" : 9,
                     "geometry" : {
                       "type" : "LineString",
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
@@ -192,6 +220,298 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 }
                 """);
     }
+
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "false",
+            "null"
+    }, nullValues = "null")
+    void map_effectivelyAccessible_defaultBehavior(Boolean effectivelyAccessible) throws JsonProcessingException {
+
+        Accessibility accessibility = Accessibility.builder()
+                .toRoadSection(Optional.of(destinationRoadSectionAccessible))
+                .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, roadSectionPartiallyhaccessible, destinationRoadSectionAccessible))
+                .build();
+
+        AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
+                .effectivelyAccessible(effectivelyAccessible)
+                .destination(DestinationRequestJson.builder()
+                        .latitude(5.34d)
+                        .longitude(4.45d)
+                        .build())
+                .build();
+
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+
+        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+                {
+                  "type" : "FeatureCollection",
+                  "features" : [ {
+                    "type" : "Feature",
+                    "id" : 1,
+                    "geometry" : {
+                      "type" : "Point",
+                      "coordinates" : [ 4.45, 5.34 ]
+                    },
+                    "properties" : {
+                      "type" : "destination",
+                      "roadSectionId" : 3,
+                      "accessible" : true,
+                      "reasons" : [ ]
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 2,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
+                      "accessible" : true,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 3,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
+                      "accessible" : true,
+                      "direction" : "backward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 4,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
+                      "accessible" : false,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 5,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
+                      "accessible" : false,
+                      "direction" : "backward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 6,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 5,
+                      "accessible" : false,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 7,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 5,
+                      "accessible" : true,
+                      "direction" : "backward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 8,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 3,
+                      "accessible" : true,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 9,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 3,
+                      "accessible" : true,
+                      "direction" : "backward"
+                    }
+                  } ]
+                }
+                """);
+    }
+
+    @Test
+    void map_effectivelyAccessible_enabled() throws JsonProcessingException {
+
+        Accessibility accessibility = Accessibility.builder()
+                .toRoadSection(Optional.of(destinationRoadSectionAccessible))
+                .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, roadSectionPartiallyhaccessible, destinationRoadSectionAccessible))
+                .build();
+
+        AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
+                .effectivelyAccessible(true)
+                .destination(DestinationRequestJson.builder()
+                        .latitude(5.34d)
+                        .longitude(4.45d)
+                        .build())
+                .build();
+
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+
+        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+                {
+                  "type" : "FeatureCollection",
+                  "features" : [ {
+                    "type" : "Feature",
+                    "id" : 1,
+                    "geometry" : {
+                      "type" : "Point",
+                      "coordinates" : [ 4.45, 5.34 ]
+                    },
+                    "properties" : {
+                      "type" : "destination",
+                      "roadSectionId" : 3,
+                      "accessible" : true,
+                      "reasons" : [ ]
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 2,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
+                      "accessible" : true,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 3,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
+                      "accessible" : true,
+                      "direction" : "backward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 4,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
+                      "accessible" : false,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 5,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
+                      "accessible" : false,
+                      "direction" : "backward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 6,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 5,
+                      "accessible" : true,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 7,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 5,
+                      "accessible" : true,
+                      "direction" : "backward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 8,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 3,
+                      "accessible" : true,
+                      "direction" : "forward"
+                    }
+                  }, {
+                    "type" : "Feature",
+                    "id" : 9,
+                    "geometry" : {
+                      "type" : "LineString",
+                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
+                    },
+                    "properties" : {
+                      "type" : "roadSectionSegment",
+                      "roadSectionId" : 3,
+                      "accessible" : true,
+                      "direction" : "backward"
+                    }
+                  } ]
+                }
+                """);
+    }
+
 
     @Test
     void map_destinationInaccessible() throws JsonProcessingException {
@@ -572,7 +892,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 """);
     }
 
-    private RoadSection buildRoadSection(long id, boolean accessible) {
+    private RoadSection buildRoadSection(long id, boolean accessibleForward, boolean accessibleBackward) {
         RoadSection roadSection = RoadSection.builder()
                 .id(id)
                 .build();
@@ -585,7 +905,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
         DirectionalSegment directionalSegmentForward = DirectionalSegment.builder()
                 .id(3)
-                .accessible(accessible)
+                .accessible(accessibleForward)
                 .direction(Direction.FORWARD)
                 .roadSectionFragment(roadSectionFragment)
                 .lineString(new GeometryFactory().createLineString(
@@ -611,6 +931,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
         DirectionalSegment directionalSegmentBackward = directionalSegmentForward
                 .withDirection(Direction.BACKWARD)
+                .withAccessible(accessibleBackward)
                 .withLineString(new GeometryFactory().createLineString(
                         new Coordinate[]{
                                 new Coordinate(2, 3, 0),

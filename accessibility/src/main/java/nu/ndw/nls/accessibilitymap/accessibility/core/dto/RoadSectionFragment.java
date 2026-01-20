@@ -40,6 +40,12 @@ public class RoadSectionFragment {
                 .toList();
     }
 
+    public boolean isAccessibleFromAnySegment() {
+
+        return getSegments().stream()
+                .anyMatch(DirectionalSegment::isAccessible);
+    }
+
     public boolean isAccessibleFromAllSegments() {
 
         return getSegments().stream()
