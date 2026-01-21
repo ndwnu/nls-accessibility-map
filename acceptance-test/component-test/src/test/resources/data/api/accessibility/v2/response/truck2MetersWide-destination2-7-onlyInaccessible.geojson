@@ -13,5 +13,31 @@
       "accessible" : true,
       "reasons" : [ ]
     }
+  }, {
+    "type" : "Feature",
+    "id" : 2,
+    "geometry" : {
+      "type" : "LineString",
+      "coordinates" : [ [ 1.0, 1.9000953683267154 ], [ 1.0, 10.0 ] ]
+    },
+    "properties" : {
+      "type" : "roadSectionSegment",
+      "roadSectionId" : 6,
+      "accessible" : false,
+      "direction" : "backward"
+    }
+  }, {
+    "type" : "Feature",
+    "id" : 3,
+    "geometry" : {
+      "type" : "LineString",
+      "coordinates" : [ [ 5.0, 9.000027127389366 ], [ 5.0, 8.0 ] ]
+    },
+    "properties" : {
+      "type" : "roadSectionSegment",
+      "roadSectionId" : 13,
+      "accessible" : false,
+      "direction" : "forward"
+    }
   } ]
 }

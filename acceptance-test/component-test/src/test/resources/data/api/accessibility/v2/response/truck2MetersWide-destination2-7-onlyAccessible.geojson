@@ -174,19 +174,6 @@
     "id" : 14,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0, 1.9000953683267154 ], [ 1.0, 10.0 ] ]
-    },
-    "properties" : {
-      "type" : "roadSectionSegment",
-      "roadSectionId" : 6,
-      "accessible" : true,
-      "direction" : "backward"
-    }
-  }, {
-    "type" : "Feature",
-    "id" : 15,
-    "geometry" : {
-      "type" : "LineString",
       "coordinates" : [ [ 1.0, 1.9000953683267154 ], [ 1.0, 1.0 ] ]
     },
     "properties" : {
@@ -197,7 +184,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 16,
+    "id" : 15,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 1.0, 1.0 ], [ 1.0, 1.9000953683267154 ] ]
@@ -210,7 +197,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 17,
+    "id" : 16,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 4.0, 5.0 ], [ 5.0, 2.0 ] ]
@@ -223,7 +210,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 18,
+    "id" : 17,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 2.0 ], [ 4.0, 5.0 ] ]
@@ -236,7 +223,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 19,
+    "id" : 18,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 2.0 ], [ 7.0, 2.0 ] ]
@@ -249,7 +236,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 20,
+    "id" : 19,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 7.0, 2.0 ], [ 5.0, 2.0 ] ]
@@ -262,7 +249,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 21,
+    "id" : 20,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 7.0, 2.0 ], [ 7.0, 8.0 ] ]
@@ -275,7 +262,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 22,
+    "id" : 21,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 7.0, 8.0 ], [ 7.0, 2.0 ] ]
@@ -288,7 +275,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 23,
+    "id" : 22,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 7.0, 8.0 ], [ 5.0, 8.0 ] ]
@@ -301,7 +288,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 24,
+    "id" : 23,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 8.0 ], [ 7.0, 8.0 ] ]
@@ -314,7 +301,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 25,
+    "id" : 24,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 8.0 ], [ 4.0, 5.0 ] ]
@@ -327,7 +314,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 26,
+    "id" : 25,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 4.0, 5.0 ], [ 5.0, 8.0 ] ]
@@ -340,7 +327,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 27,
+    "id" : 26,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 2.0 ], [ 5.0, 1.0 ] ]
@@ -353,7 +340,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 28,
+    "id" : 27,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 1.0 ], [ 5.0, 2.0 ] ]
@@ -366,7 +353,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 29,
+    "id" : 28,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 10.0 ], [ 5.0, 9.000027127389366 ] ]
@@ -379,7 +366,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 30,
+    "id" : 29,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 9.000027127389366 ], [ 5.0, 10.0 ] ]
@@ -392,20 +379,7 @@
     }
   }, {
     "type" : "Feature",
-    "id" : 31,
-    "geometry" : {
-      "type" : "LineString",
-      "coordinates" : [ [ 5.0, 9.000027127389366 ], [ 5.0, 8.0 ] ]
-    },
-    "properties" : {
-      "type" : "roadSectionSegment",
-      "roadSectionId" : 13,
-      "accessible" : true,
-      "direction" : "forward"
-    }
-  }, {
-    "type" : "Feature",
-    "id" : 32,
+    "id" : 30,
     "geometry" : {
       "type" : "LineString",
       "coordinates" : [ [ 5.0, 8.0 ], [ 5.0, 9.000027127389366 ] ]
