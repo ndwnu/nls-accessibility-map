@@ -179,7 +179,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 6,
-      "accessible" : true,
+      "accessible" : false,
       "direction" : "backward"
     }
   }, {
@@ -400,7 +400,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 13,
-      "accessible" : true,
+      "accessible" : false,
       "direction" : "forward"
     }
   }, {
