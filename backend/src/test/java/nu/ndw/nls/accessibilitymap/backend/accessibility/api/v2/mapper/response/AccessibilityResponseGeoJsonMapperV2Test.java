@@ -51,7 +51,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     private RoadSection roadSectionInaccessible;
 
     private RoadSection roadSectionAccessible;
-    private RoadSection roadSectionPartiallyhaccessible;
+
+    private RoadSection roadSectionPartiallyAccessible;
 
     private RoadSection destinationRoadSectionAccessible;
 
@@ -66,35 +67,37 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
         roadSectionAccessible = buildRoadSection(1, true, true);
         roadSectionInaccessible = buildRoadSection(2, false, false);
-        roadSectionPartiallyhaccessible = buildRoadSection(5, false, true);
+        roadSectionPartiallyAccessible = buildRoadSection(5, false, true);
         destinationRoadSectionAccessible = buildRoadSection(3, true, true);
         destinationRoadSectionInAccessible = buildRoadSection(4, false, false);
 
         accessibilityResponseGeoJsonMapperV2 = new AccessibilityResponseGeoJsonMapperV2(accessibilityReasonsJsonMapperV2);
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {
-            "true",
-            "null"
-    }, nullValues = "null")
-    void map(Boolean includeAccessibleAndInAccessibleRoadSections) throws JsonProcessingException {
-
+    @Test
+    void map() throws JsonProcessingException {
         Accessibility accessibility = Accessibility.builder()
                 .toRoadSection(Optional.of(destinationRoadSectionAccessible))
-                .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, roadSectionPartiallyhaccessible, destinationRoadSectionAccessible))
+                .combinedAccessibility(List.of(
+                        roadSectionAccessible,
+                        roadSectionInaccessible,
+                        roadSectionPartiallyAccessible,
+                        destinationRoadSectionAccessible))
                 .build();
 
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
-                .includeAccessibleRoadSections(includeAccessibleAndInAccessibleRoadSections)
-                .includeInaccessibleRoadSections(includeAccessibleAndInAccessibleRoadSections)
+                .includeAccessibleRoadSections(true)
+                .includeInaccessibleRoadSections(true)
+                .effectivelyAccessible(false)
                 .destination(DestinationRequestJson.builder()
                         .latitude(5.34d)
                         .longitude(4.45d)
                         .build())
                 .build();
 
-        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(
+                accessibilityRequestJson,
+                accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -222,162 +225,22 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     }
 
 
-    @ParameterizedTest
-    @CsvSource(value = {
-            "false",
-            "null"
-    }, nullValues = "null")
-    void map_effectivelyAccessible_defaultBehavior(Boolean effectivelyAccessible) throws JsonProcessingException {
-
-        Accessibility accessibility = Accessibility.builder()
-                .toRoadSection(Optional.of(destinationRoadSectionAccessible))
-                .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, roadSectionPartiallyhaccessible, destinationRoadSectionAccessible))
-                .build();
-
-        AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
-                .effectivelyAccessible(effectivelyAccessible)
-                .destination(DestinationRequestJson.builder()
-                        .latitude(5.34d)
-                        .longitude(4.45d)
-                        .build())
-                .build();
-
-        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
-
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
-                {
-                  "type" : "FeatureCollection",
-                  "features" : [ {
-                    "type" : "Feature",
-                    "id" : 1,
-                    "geometry" : {
-                      "type" : "Point",
-                      "coordinates" : [ 4.45, 5.34 ]
-                    },
-                    "properties" : {
-                      "type" : "destination",
-                      "roadSectionId" : 3,
-                      "accessible" : true,
-                      "reasons" : [ ]
-                    }
-                  }, {
-                    "type" : "Feature",
-                    "id" : 2,
-                    "geometry" : {
-                      "type" : "LineString",
-                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
-                    },
-                    "properties" : {
-                      "type" : "roadSectionSegment",
-                      "roadSectionId" : 1,
-                      "accessible" : true,
-                      "direction" : "forward"
-                    }
-                  }, {
-                    "type" : "Feature",
-                    "id" : 3,
-                    "geometry" : {
-                      "type" : "LineString",
-                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
-                    },
-                    "properties" : {
-                      "type" : "roadSectionSegment",
-                      "roadSectionId" : 1,
-                      "accessible" : true,
-                      "direction" : "backward"
-                    }
-                  }, {
-                    "type" : "Feature",
-                    "id" : 4,
-                    "geometry" : {
-                      "type" : "LineString",
-                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
-                    },
-                    "properties" : {
-                      "type" : "roadSectionSegment",
-                      "roadSectionId" : 2,
-                      "accessible" : false,
-                      "direction" : "forward"
-                    }
-                  }, {
-                    "type" : "Feature",
-                    "id" : 5,
-                    "geometry" : {
-                      "type" : "LineString",
-                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
-                    },
-                    "properties" : {
-                      "type" : "roadSectionSegment",
-                      "roadSectionId" : 2,
-                      "accessible" : false,
-                      "direction" : "backward"
-                    }
-                  }, {
-                    "type" : "Feature",
-                    "id" : 6,
-                    "geometry" : {
-                      "type" : "LineString",
-                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
-                    },
-                    "properties" : {
-                      "type" : "roadSectionSegment",
-                      "roadSectionId" : 5,
-                      "accessible" : false,
-                      "direction" : "forward"
-                    }
-                  }, {
-                    "type" : "Feature",
-                    "id" : 7,
-                    "geometry" : {
-                      "type" : "LineString",
-                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
-                    },
-                    "properties" : {
-                      "type" : "roadSectionSegment",
-                      "roadSectionId" : 5,
-                      "accessible" : true,
-                      "direction" : "backward"
-                    }
-                  }, {
-                    "type" : "Feature",
-                    "id" : 8,
-                    "geometry" : {
-                      "type" : "LineString",
-                      "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
-                    },
-                    "properties" : {
-                      "type" : "roadSectionSegment",
-                      "roadSectionId" : 3,
-                      "accessible" : true,
-                      "direction" : "forward"
-                    }
-                  }, {
-                    "type" : "Feature",
-                    "id" : 9,
-                    "geometry" : {
-                      "type" : "LineString",
-                      "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
-                    },
-                    "properties" : {
-                      "type" : "roadSectionSegment",
-                      "roadSectionId" : 3,
-                      "accessible" : true,
-                      "direction" : "backward"
-                    }
-                  } ]
-                }
-                """);
-    }
 
     @Test
     void map_effectivelyAccessible_enabled() throws JsonProcessingException {
 
         Accessibility accessibility = Accessibility.builder()
                 .toRoadSection(Optional.of(destinationRoadSectionAccessible))
-                .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, roadSectionPartiallyhaccessible, destinationRoadSectionAccessible))
+                .combinedAccessibility(List.of(
+                        roadSectionAccessible,
+                        roadSectionInaccessible,
+                        roadSectionPartiallyAccessible,
+                        destinationRoadSectionAccessible))
                 .build();
 
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
+                .includeAccessibleRoadSections(true)
+                .includeInaccessibleRoadSections(true)
                 .effectivelyAccessible(true)
                 .destination(DestinationRequestJson.builder()
                         .latitude(5.34d)
@@ -385,7 +248,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .build())
                 .build();
 
-        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(
+                accessibilityRequestJson,
+                accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -511,7 +376,6 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 }
                 """);
     }
-
 
     @Test
     void map_destinationInaccessible() throws JsonProcessingException {
@@ -541,7 +405,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .build())
                 .build();
 
-        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(
+                accessibilityRequestJson,
+                accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -668,7 +534,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .build())
                 .build();
 
-        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(
+                accessibilityRequestJson,
+                accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -734,7 +602,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .build())
                 .build();
 
-        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(
+                accessibilityRequestJson,
+                accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
@@ -804,7 +674,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         : null)
                 .build();
 
-        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility);
+        AccessibilityResponseGeoJsonJson geoJsonResponse = accessibilityResponseGeoJsonMapperV2.map(
+                accessibilityRequestJson,
+                accessibility);
 
         assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {

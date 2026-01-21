@@ -73,8 +73,8 @@ public class AccessibilityResponseGeoJsonMapperV2 {
             RoadSection roadSection,
             AtomicInteger idGenerator) {
 
-        boolean includeAccessibleRoadSections = includeAccessibleRoadSections(accessibilityRequestJson);
-        boolean includeInAccessibleRoadSections = isIncludeInAccessibleRoadSections(accessibilityRequestJson);
+        boolean includeAccessibleRoadSections = accessibilityRequestJson.getIncludeAccessibleRoadSections();
+        boolean includeInAccessibleRoadSections = accessibilityRequestJson.getIncludeInaccessibleRoadSections();
 
         return roadSection.getRoadSectionFragments().stream()
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
@@ -95,16 +95,6 @@ public class AccessibilityResponseGeoJsonMapperV2 {
                 .toList();
     }
 
-    private static boolean isIncludeInAccessibleRoadSections(AccessibilityRequestJson accessibilityRequestJson) {
-        return Objects.isNull(accessibilityRequestJson.getIncludeInaccessibleRoadSections())
-               || accessibilityRequestJson.getIncludeInaccessibleRoadSections();
-    }
-
-    private static boolean includeAccessibleRoadSections(AccessibilityRequestJson accessibilityRequestJson) {
-        return Objects.isNull(accessibilityRequestJson.getIncludeAccessibleRoadSections())
-               || accessibilityRequestJson.getIncludeAccessibleRoadSections();
-    }
-
     private static LineStringJson mapLineString(LineString lineString) {
 
         List<List<Double>> coordinates = Arrays.stream(lineString.getCoordinates())
@@ -115,8 +105,7 @@ public class AccessibilityResponseGeoJsonMapperV2 {
     }
 
     public static boolean isAccessible(AccessibilityRequestJson accessibilityRequestJson, DirectionalSegment directionalSegment) {
-        if (Objects.isNull(accessibilityRequestJson.getEffectivelyAccessible())
-            || Boolean.FALSE.equals(accessibilityRequestJson.getEffectivelyAccessible())) {
+        if (Boolean.FALSE.equals(accessibilityRequestJson.getEffectivelyAccessible())) {
             return directionalSegment.isAccessible();
         } else {
             return directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment();
