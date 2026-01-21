@@ -31,7 +31,7 @@ spec:
                 memory: 384Mi
               requests:
                 memory: 384Mi
-            image: ndwnls.azurecr.io/nls-pod-restarter:{{ .Values.podRestarterVersion }}
+            image: ndwnls.azurecr.io/nls-pod-restarter:20260120.4
             imagePullPolicy: Always
             envFrom:
               - configMapRef:

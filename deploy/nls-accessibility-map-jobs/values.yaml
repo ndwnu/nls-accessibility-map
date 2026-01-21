@@ -1,7 +1,6 @@
 datadog:
   agent:
     version: v1.45.1
-podRestarterVersion: "20251105.2"
 
 mapGenerator:
   cronJobs: []
