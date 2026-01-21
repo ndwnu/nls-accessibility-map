@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,26 @@ class RoadSectionFragmentTest {
     @Mock
     private DirectionalSegment backwardSegment;
 
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            true, true, true
+            false, false, false
+            true, false, true
+            false, true, true
+            """)
+    void isAccessibleFromAnySegment(boolean forwardsAccessible, boolean backwardsAccessible, boolean expectedAccessibility) {
+
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .forwardSegment(forwardSegment)
+                .backwardSegment(backwardSegment)
+                .build();
+
+        when(forwardSegment.isAccessible()).thenReturn(forwardsAccessible);
+        lenient().when(backwardSegment.isAccessible()).thenReturn(backwardsAccessible);
+
+        assertThat(roadSectionFragment.isAccessibleFromAnySegment()).isEqualTo(expectedAccessibility);
+    }
+
     @Test
     void hasForwardSegment_noForwardSegment() {
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder().build();
@@ -32,7 +53,6 @@ class RoadSectionFragmentTest {
                 .build();
         assertThat(roadSectionFragment.hasForwardSegment()).isTrue();
     }
-
 
     @Test
     void hasBackwardSegment_noBackwardSegment() {

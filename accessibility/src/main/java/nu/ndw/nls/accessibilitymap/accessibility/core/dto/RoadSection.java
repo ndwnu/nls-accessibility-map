@@ -37,8 +37,12 @@ public final class RoadSection {
     public boolean isRestrictedInAnyDirection() {
 
         return roadSectionFragments.stream()
-                .anyMatch(RoadSectionFragment::isNotAccessibleFromAllSegments)
-                || roadSectionFragments.stream().anyMatch(RoadSectionFragment::isPartiallyAccessible);
+                       .anyMatch(RoadSectionFragment::isNotAccessibleFromAllSegments)
+               || roadSectionFragments.stream().anyMatch(RoadSectionFragment::isPartiallyAccessible);
+    }
+
+    public boolean isAccessibleInAnyDirection() {
+        return !isRestrictedInAnyDirection();
     }
 
     public boolean hasForwardSegments() {
@@ -113,5 +117,4 @@ public final class RoadSection {
         newRoadSection.setRoadSectionFragments(newRoadSectionFragments);
         return newRoadSection;
     }
-
 }

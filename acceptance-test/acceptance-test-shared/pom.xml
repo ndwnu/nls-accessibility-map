@@ -4,13 +4,13 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>acceptance-test</artifactId>
-    <version>5.1.80-SNAPSHOT</version>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>acceptance-test-shared</artifactId>
   <name>NLS Accessibility Map - Acceptance test shared</name>
 
   <properties>
-    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.backend.generated</openapi-generator.base.classpath>
+    <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.backend.openapi</openapi-generator.base.classpath>
   </properties>
 
   <dependencies>
@@ -82,6 +82,10 @@
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.openapitools</groupId>
+      <artifactId>jackson-databind-nullable</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <exclusions>
@@ -105,7 +109,6 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <plugins>
       <plugin>
@@ -114,7 +117,7 @@
         <executions>
           <execution>
             <id>copy-api-yml-resource</id>
-            <phase>generate-resources</phase>
+            <phase>generate-sources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -123,7 +126,7 @@
               <resources>
                 <resource>
                   <directory>
-                    ../specification/src/main/resources/nu/ndw/nls/accessibilitymap/specification
+                    ../../specification/src/main/resources/nu/ndw/nls/accessibilitymap/specification
                   </directory>
                   <filtering>false</filtering>
                 </resource>
@@ -138,13 +141,17 @@
         <executions>
           <execution>
             <id>generate-open-api</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
             <configuration>
-              <!-- Package for the model (or domain) side of things -->
+              <inputSpec>
+                ${project.basedir}/target/classes/static/api-docs/v1.yaml
+              </inputSpec>
+              <generatorName>spring</generatorName>
+              <apiPackage>${openapi-generator.base.classpath}.api.v1</apiPackage>
               <modelPackage>${openapi-generator.base.classpath}.model.v1</modelPackage>
-
-              <generateApis>false</generateApis>
-              <generateModelDocumentation>false</generateModelDocumentation>
-              <generateSupportingFiles>false</generateSupportingFiles>
               <configOptions>
                 <useSpringBoot3>true</useSpringBoot3>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
@@ -176,6 +183,60 @@
                   @lombok.AllArgsConstructor
                 </additionalModelTypeAnnotations>
               </configOptions>
+              <modelNameSuffix>Json</modelNameSuffix>
+              <generateApis>false</generateApis>
+              <generateModelDocumentation>false</generateModelDocumentation>
+              <generateSupportingFiles>false</generateSupportingFiles>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-open-api-v2</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>
+                ${project.basedir}/target/classes/static/api-docs/v2.yaml
+              </inputSpec>
+              <generatorName>spring</generatorName>
+              <apiPackage>${openapi-generator.base.classpath}.api.v2</apiPackage>
+              <modelPackage>${openapi-generator.base.classpath}.model.v2</modelPackage>
+              <configOptions>
+                <useSpringBoot3>true</useSpringBoot3>
+                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+
+                <!-- Whether to generate the server files using the delegate pattern -->
+                <delegatePattern>true</delegatePattern>
+
+                <!-- Whether to generate only API interface stubs without the server files. -->
+                <interfaceOnly>false</interfaceOnly>
+
+                <!-- Use Optional container for optional parameters -->
+                <useOptional>false</useOptional>
+
+                <!-- Split endpoints into different classes according to tags -->
+                <useTags>true</useTags>
+                <!-- use and perform jakarta validation-->
+                <useBeanValidation>true</useBeanValidation>
+                <performBeanValidation>true</performBeanValidation>
+
+                <!--
+                  OpenAPI Jackson Nullable library
+                  https://github.com/OpenAPITools/jackson-databind-nullable
+                 -->
+                <openApiNullable>false</openApiNullable>
+
+                <additionalModelTypeAnnotations>
+                  @lombok.experimental.SuperBuilder
+                  @lombok.NoArgsConstructor
+                  @lombok.AllArgsConstructor
+                </additionalModelTypeAnnotations>
+              </configOptions>
+              <modelNameSuffix>Json</modelNameSuffix>
+              <generateApis>false</generateApis>
+              <generateModelDocumentation>false</generateModelDocumentation>
+              <generateSupportingFiles>false</generateSupportingFiles>
             </configuration>
           </execution>
         </executions>

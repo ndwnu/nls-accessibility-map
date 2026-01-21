@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson.RoadOperatorTypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadOperatorJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadOperatorJson.RoadOperatorTypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ class RoadOperatorMapperTest {
         assertThat(roadOperators).containsExactlyInAnyOrderElementsOf(List.of(
                 RoadOperatorJson.builder()
                         .roadOperatorCode("DR")
-                        .roadOperatorType(roadOperatorType)
+                        .roadOperatorType(RoadOperatorJson.RoadOperatorTypeEnum.valueOf(roadOperatorType.name()))
                         .roadOperatorName("Drenthe")
                         .municipalityId("123")
                         .requestExemptionUrl(
@@ -68,7 +68,7 @@ class RoadOperatorMapperTest {
         assertThat(roadOperators).containsExactlyInAnyOrderElementsOf(List.of(
                 RoadOperatorJson.builder()
                         .roadOperatorCode("DR")
-                        .roadOperatorType(RoadOperatorTypeEnum.MUNICIPALITY)
+                        .roadOperatorType(RoadOperatorJson.RoadOperatorTypeEnum.MUNICIPALITY)
                         .roadOperatorName("Drenthe")
                         .municipalityId("123")
                         .requestExemptionUrl(null)

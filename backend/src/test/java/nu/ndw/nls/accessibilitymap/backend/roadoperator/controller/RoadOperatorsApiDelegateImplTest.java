@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.backend.generated.model.v1.RoadOperatorJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadOperatorJson;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.controller.mapper.RoadOperatorMapper;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
 import nu.ndw.nls.accessibilitymap.backend.roadoperator.service.RoadOperatorService;
