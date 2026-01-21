@@ -141,8 +141,8 @@ class RoadSectionTest extends ValidationTest {
                 .backwardSegment(directionalSegmentBackward.withAccessible(true))
                 .build()));
 
-        boolean result = roadSection.isRestrictedInAnyDirection();
-        assertThat(result).isFalse();
+        assertThat(roadSection.isRestrictedInAnyDirection()).isFalse();
+        assertThat(roadSection.isAccessibleInAnyDirection()).isTrue();
     }
 
     @Test
@@ -153,9 +153,8 @@ class RoadSectionTest extends ValidationTest {
                 .backwardSegment(directionalSegmentBackward.withAccessible(true))
                 .build()));
 
-        boolean result = roadSection.isRestrictedInAnyDirection();
-
-        assertThat(result).isTrue();
+        assertThat(roadSection.isRestrictedInAnyDirection()).isTrue();
+        assertThat(roadSection.isAccessibleInAnyDirection()).isFalse();
     }
 
     @Test
@@ -165,8 +164,8 @@ class RoadSectionTest extends ValidationTest {
                 .forwardSegment(directionalSegmentForward.withAccessible(false))
                 .backwardSegment(directionalSegmentBackward.withAccessible(false))
                 .build()));
-        boolean result = roadSection.isRestrictedInAnyDirection();
-        assertThat(result).isTrue();
+        assertThat(roadSection.isRestrictedInAnyDirection()).isTrue();
+        assertThat(roadSection.isAccessibleInAnyDirection()).isFalse();
     }
 
     @Test

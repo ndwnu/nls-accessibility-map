@@ -17,7 +17,7 @@ public record Municipality(
         @NotNull @JsonProperty("start-coordinate-latitude") Double startCoordinateLatitude,
         @NotNull @JsonProperty("start-coordinate-longitude") Double startCoordinateLongitude,
         @NotNull @JsonProperty("search-distance-in-metres") Integer searchDistanceInMetres,
-        @NotNull @JsonProperty("municipality-id") String municipalityId,
+        @NotNull @JsonProperty("municipality-id") String id,
         @NotNull String name,
         @NotNull @Valid MunicipalityBoundingBox bounds,
         @JsonProperty("date-last-check") LocalDate dateLastCheck) {
@@ -25,13 +25,13 @@ public record Municipality(
     @SuppressWarnings("java:S5852")
     private static final Pattern PATTERN = Pattern.compile(".{2}0*(\\d+)$");
 
-    public int municipalityIdAsInteger() {
+    public int idAsInteger() {
 
-        Matcher m = PATTERN.matcher(municipalityId);
+        Matcher m = PATTERN.matcher(id);
         if (m.find()) {
             return Integer.parseInt(m.group(1));
         } else {
-            throw new IllegalStateException("Incorrect municipalityId " + municipalityId);
+            throw new IllegalStateException("Incorrect id " + id);
         }
     }
 }

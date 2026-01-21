@@ -1,6 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +31,16 @@ public final class DirectionalSegment {
 
     @NotNull
     private final LineString lineString;
+
+    @NotNull
+    @Min(0)
+    @Max(1)
+    private final double startFraction;
+
+    @NotNull
+    @Min(0)
+    @Max(1)
+    private final double endFraction;
 
     @NotNull
     private RoadSectionFragment roadSectionFragment;
