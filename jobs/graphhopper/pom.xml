@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>jobs</artifactId>
-    <version>5.1.80-SNAPSHOT</version>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>graphhopper-job</artifactId>
   <name>NLS Accessibility Map generate Graphhopper job</name>
