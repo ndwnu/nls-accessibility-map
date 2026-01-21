@@ -115,7 +115,8 @@ public class AccessibilityResponseGeoJsonMapperV2 {
     }
 
     public static boolean isAccessible(AccessibilityRequestJson accessibilityRequestJson, DirectionalSegment directionalSegment) {
-        if (Boolean.FALSE.equals(accessibilityRequestJson.getEffectivelyAccessible())) {
+        if (Objects.isNull(accessibilityRequestJson.getEffectivelyAccessible())
+            || Boolean.FALSE.equals(accessibilityRequestJson.getEffectivelyAccessible())) {
             return directionalSegment.isAccessible();
         } else {
             return directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment();

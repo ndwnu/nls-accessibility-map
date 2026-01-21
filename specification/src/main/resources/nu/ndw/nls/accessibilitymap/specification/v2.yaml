@@ -8,10 +8,6 @@ info:
 servers:
   - url: "/api/rest/static-road-data/accessibility-map/v2"
 
-security:
-  - iamNdw: [ ]
-  - bearerAuth: [ ]
-
 paths:
   /accessibility.geojson:
     post:
@@ -242,20 +238,6 @@ paths:
                 $ref: "#/components/schemas/APIError"
 
 components:
-  securitySchemes:
-    iamNdw:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token
-          refreshUrl: https://iam.ndw.nu/auth/realms/ndw/protocol/openid-connect/token
-          scopes: { }
-      description: Authenticate using the NDW keycloak
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   parameters:
     Accept-encoding:
       in: "header"

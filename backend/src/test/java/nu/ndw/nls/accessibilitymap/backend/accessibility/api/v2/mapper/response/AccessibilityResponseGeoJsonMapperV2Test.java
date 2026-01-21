@@ -236,8 +236,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
         Accessibility accessibility = Accessibility.builder()
                 .toRoadSection(Optional.of(destinationRoadSectionAccessible))
                 .combinedAccessibility(List.of(
-                        roadSectionAccessible, roadSectionInaccessible,
-                        roadSectionPartiallyAccessible, destinationRoadSectionAccessible))
+                        roadSectionAccessible, roadSectionInaccessible, roadSectionPartiallyAccessible, destinationRoadSectionAccessible))
                 .build();
 
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
