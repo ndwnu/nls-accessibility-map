@@ -1,8 +1,7 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.dto.value;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

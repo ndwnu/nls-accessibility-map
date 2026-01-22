@@ -1,24 +1,24 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
 
 import static java.util.Map.entry;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C1;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C10;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C11;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C12;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C17;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C18;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C19;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C20;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C21;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C22;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C22A;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C22C;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C6;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7A;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7B;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C8;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C9;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C1;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C10;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C11;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C12;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C17;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C18;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C19;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C20;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C21;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C22;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C22A;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C22C;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C6;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C7;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C7A;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C7B;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C8;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C9;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
@@ -91,7 +91,7 @@ public class AccessibilityReasonsMapper {
     private static List<AccessibilityRestriction> mapVehicleHeight(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
-                .value(trafficSign.restrictions().vehicleHeightInCm())
+                .value(trafficSign.transportRestrictions().vehicleHeightInCm())
                 .restrictionType(RestrictionType.VEHICLE_HEIGHT)
                 .build());
     }
@@ -100,7 +100,7 @@ public class AccessibilityReasonsMapper {
     private static List<AccessibilityRestriction> mapVehicleWidth(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
-                .value(trafficSign.restrictions().vehicleWidthInCm())
+                .value(trafficSign.transportRestrictions().vehicleWidthInCm())
                 .restrictionType(RestrictionType.VEHICLE_WIDTH)
                 .build());
     }
@@ -109,7 +109,7 @@ public class AccessibilityReasonsMapper {
     private static List<AccessibilityRestriction> mapVehicleLength(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
-                .value(trafficSign.restrictions().vehicleLengthInCm())
+                .value(trafficSign.transportRestrictions().vehicleLengthInCm())
                 .restrictionType(RestrictionType.VEHICLE_LENGTH)
                 .build());
     }
@@ -118,7 +118,7 @@ public class AccessibilityReasonsMapper {
     private static List<AccessibilityRestriction> mapVehicleAxleLoad(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
-                .value(trafficSign.restrictions().vehicleAxleLoadInKg())
+                .value(trafficSign.transportRestrictions().vehicleAxleLoadInKg())
                 .restrictionType(RestrictionType.VEHICLE_AXLE_LOAD)
                 .build());
     }
@@ -127,7 +127,7 @@ public class AccessibilityReasonsMapper {
     private static List<AccessibilityRestriction> mapVehicleWeight(TrafficSign trafficSign) {
 
         return List.of(MaximumRestriction.builder()
-                .value(trafficSign.restrictions().vehicleWeightInKg())
+                .value(trafficSign.transportRestrictions().vehicleWeightInKg())
                 .restrictionType(RestrictionType.VEHICLE_WEIGHT)
                 .build());
     }
@@ -136,14 +136,14 @@ public class AccessibilityReasonsMapper {
     private static List<AccessibilityRestriction> mapTransportTypes(TrafficSign trafficSign) {
 
         return List.of(TransportTypeRestriction.builder()
-                .value(trafficSign.restrictions().transportTypes())
+                .value(trafficSign.transportRestrictions().transportTypes())
                 .build());
     }
 
     @SuppressWarnings("java:S3740")
     private static List<AccessibilityRestriction> mapEmissionZoneRestrictions(TrafficSign trafficSign) {
 
-        EmissionZoneRestriction restriction = trafficSign.restrictions().emissionZone().restriction();
+        EmissionZoneRestriction restriction = trafficSign.transportRestrictions().emissionZone().restriction();
         List<AccessibilityRestriction> accessibilityRestrictions = new ArrayList<>();
 
         if (Objects.nonNull(restriction.vehicleWeightInKg())) {

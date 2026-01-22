@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.EmissionZoneMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class TrafficSignRestrictionsBuilderTest {
+class TrafficSignTransportRestrictionsBuilderTest {
 
     private TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
 
@@ -67,7 +67,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C1)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Arrays.stream(TransportType.values())
                         .filter(transportType -> transportType != TransportType.PEDESTRIAN)
                         .collect(Collectors.toSet()))
@@ -81,7 +81,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C6)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Set.of(
                         TransportType.BUS,
                         TransportType.CAR,
@@ -100,7 +100,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C7)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.TRUCK))
                 .build());
     }
@@ -112,7 +112,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C7A)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.BUS))
                 .build());
     }
@@ -124,7 +124,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C7B)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.BUS, TransportType.TRUCK))
                 .build());
     }
@@ -136,7 +136,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C10)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Set.of(
                         TransportType.VEHICLE_WITH_TRAILER
                 ))
@@ -150,7 +150,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C11)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Set.of(
                         TransportType.MOTORCYCLE
                 ))
@@ -164,7 +164,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C12)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Set.of(
                         TransportType.BUS,
                         TransportType.CAR,
@@ -186,7 +186,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .blackCode(10d)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .vehicleLengthInCm(Maximum.builder().value(1_000d).build())
                 .build());
     }
@@ -199,7 +199,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .blackCode(10d)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .vehicleWidthInCm(Maximum.builder().value(1_000d).build())
                 .build());
     }
@@ -212,7 +212,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .blackCode(10d)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .vehicleHeightInCm(Maximum.builder().value(1_000d).build())
                 .build());
     }
@@ -225,7 +225,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .blackCode(10d)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .vehicleAxleLoadInKg(Maximum.builder().value(10_000d).build())
                 .build());
     }
@@ -238,7 +238,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .blackCode(10d)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .vehicleWeightInKg(Maximum.builder().value(10_000d).build())
                 .build());
     }
@@ -250,7 +250,7 @@ class TrafficSignRestrictionsBuilderTest {
                 .trafficSignType(TrafficSignType.C22)
                 .build();
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES))
                 .build());
     }
@@ -264,7 +264,7 @@ class TrafficSignRestrictionsBuilderTest {
 
         when(emissionZoneMapper.map(trafficSign.trafficRegulationOrderId())).thenReturn(emissionZone);
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .build());
     }
@@ -278,7 +278,7 @@ class TrafficSignRestrictionsBuilderTest {
 
         when(emissionZoneMapper.map(trafficSign.trafficRegulationOrderId())).thenReturn(emissionZone);
 
-        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(Restrictions.builder()
+        assertThat(trafficSignRestrictionsBuilder.buildFor(trafficSign)).isEqualTo(TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .build());
     }

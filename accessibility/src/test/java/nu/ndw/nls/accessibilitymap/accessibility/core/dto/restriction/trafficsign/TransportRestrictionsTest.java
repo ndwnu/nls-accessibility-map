@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -9,9 +9,9 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class RestrictionsTest {
+class TransportRestrictionsTest {
 
     private AccessibilityRequest accessibilityRequest;
 
@@ -41,25 +41,25 @@ class RestrictionsTest {
     @Test
     void hasActiveRestrictions() {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .transportTypes(TransportType.allExcept())
                 .build();
 
-        assertThat(restrictions.hasActiveRestrictions(accessibilityRequest.withTransportTypes(TransportType.allExcept()))).isTrue();
+        assertThat(transportRestrictions.hasActiveRestrictions(accessibilityRequest.withTransportTypes(TransportType.allExcept()))).isTrue();
     }
 
     @Test
     void hasActiveRestrictions_noRestrictions() {
 
-        Restrictions restrictions = Restrictions.builder().build();
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder().build();
 
-        assertThat(restrictions.hasActiveRestrictions(accessibilityRequest)).isFalse();
+        assertThat(transportRestrictions.hasActiveRestrictions(accessibilityRequest)).isFalse();
     }
 
     @Test
     void isRestrictive_combinationTest() {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.TRUCK))
                 .vehicleLengthInCm(Maximum.builder().value(10d).build())
                 .vehicleWidthInCm(Maximum.builder().value(20d).build())
@@ -69,22 +69,22 @@ class RestrictionsTest {
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest
                 .withTransportTypes(Set.of(TransportType.TRUCK))
-                .withVehicleLengthInCm(restrictions.vehicleLengthInCm().value() + 1d)
-                .withVehicleWidthInCm(restrictions.vehicleWidthInCm().value() + 1d)
-                .withVehicleHeightInCm(restrictions.vehicleHeightInCm().value() + 1d)
-                .withVehicleWeightInKg(restrictions.vehicleWeightInKg().value() + 1d)
-                .withVehicleAxleLoadInKg(restrictions.vehicleAxleLoadInKg().value() + 1d)
+                .withVehicleLengthInCm(transportRestrictions.vehicleLengthInCm().value() + 1d)
+                .withVehicleWidthInCm(transportRestrictions.vehicleWidthInCm().value() + 1d)
+                .withVehicleHeightInCm(transportRestrictions.vehicleHeightInCm().value() + 1d)
+                .withVehicleWeightInKg(transportRestrictions.vehicleWeightInKg().value() + 1d)
+                .withVehicleAxleLoadInKg(transportRestrictions.vehicleAxleLoadInKg().value() + 1d)
         )).isTrue();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest
                 .withTransportTypes(Set.of(TransportType.BUS))
-                .withVehicleLengthInCm(restrictions.vehicleLengthInCm().value() - 1d)
-                .withVehicleWidthInCm(restrictions.vehicleWidthInCm().value() - 1d)
-                .withVehicleHeightInCm(restrictions.vehicleHeightInCm().value() - 1d)
-                .withVehicleWeightInKg(restrictions.vehicleWeightInKg().value() - 1d)
-                .withVehicleAxleLoadInKg(restrictions.vehicleAxleLoadInKg().value() - 1d)
+                .withVehicleLengthInCm(transportRestrictions.vehicleLengthInCm().value() - 1d)
+                .withVehicleWidthInCm(transportRestrictions.vehicleWidthInCm().value() - 1d)
+                .withVehicleHeightInCm(transportRestrictions.vehicleHeightInCm().value() - 1d)
+                .withVehicleWeightInKg(transportRestrictions.vehicleWeightInKg().value() - 1d)
+                .withVehicleAxleLoadInKg(transportRestrictions.vehicleAxleLoadInKg().value() - 1d)
         )).isFalse();
     }
 
@@ -92,22 +92,22 @@ class RestrictionsTest {
     @EnumSource(TransportType.class)
     void isRestrictive_transportType_isRestrictive(TransportType transportType) {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .transportTypes(Set.of(transportType))
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportTypes(Set.of(transportType)))).isTrue();
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest.withTransportTypes(Set.of(transportType)))).isTrue();
     }
 
     @ParameterizedTest
     @EnumSource(TransportType.class)
     void isRestrictive_transportType_notRestrictive(TransportType transportType) {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .transportTypes(TransportType.allExcept(transportType))
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withTransportTypes(Set.of(transportType)))).isFalse();
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest.withTransportTypes(Set.of(transportType)))).isFalse();
     }
 
     @ParameterizedTest
@@ -122,11 +122,11 @@ class RestrictionsTest {
             boolean accessibilityRequestHasTransportTypes,
             boolean expectedResult) {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .transportTypes(restrictionHasTransportTypes ? TransportType.allExcept() : null)
                 .build();
 
-        assertThat(restrictions.isRestrictive(
+        assertThat(transportRestrictions.isRestrictive(
                 accessibilityRequest.withTransportTypes(accessibilityRequestHasTransportTypes ? TransportType.allExcept() : null))
         ).isEqualTo(expectedResult);
     }
@@ -144,11 +144,11 @@ class RestrictionsTest {
             Double vehicleLengthToTestFor,
             boolean expectedResult) {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .vehicleLengthInCm(Maximum.builder().value(vehicleLength).build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleLengthInCm(vehicleLengthToTestFor))).isEqualTo(
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest.withVehicleLengthInCm(vehicleLengthToTestFor))).isEqualTo(
                 expectedResult);
     }
 
@@ -165,13 +165,13 @@ class RestrictionsTest {
             Double vehicleHeightToTestFor,
             boolean expectedResult) {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .vehicleHeightInCm(Maximum.builder()
                         .value(vehicleHeight)
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleHeightInCm(vehicleHeightToTestFor))).isEqualTo(
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest.withVehicleHeightInCm(vehicleHeightToTestFor))).isEqualTo(
                 expectedResult);
     }
 
@@ -188,13 +188,13 @@ class RestrictionsTest {
             Double vehicleWidthToTestFor,
             boolean expectedResult) {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .vehicleWidthInCm(Maximum.builder()
                         .value(vehicleWidth)
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleWidthInCm(vehicleWidthToTestFor))).isEqualTo(expectedResult);
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest.withVehicleWidthInCm(vehicleWidthToTestFor))).isEqualTo(expectedResult);
     }
 
     @ParameterizedTest
@@ -210,13 +210,13 @@ class RestrictionsTest {
             Double vehicleWeightToTestFor,
             boolean expectedResult) {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .vehicleWeightInKg(Maximum.builder()
                         .value(vehicleWeight)
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleWeightInKg(vehicleWeightToTestFor))).isEqualTo(
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest.withVehicleWeightInKg(vehicleWeightToTestFor))).isEqualTo(
                 expectedResult);
     }
 
@@ -233,13 +233,13 @@ class RestrictionsTest {
             Double vehicleAxleLoadToTestFor,
             boolean expectedResult) {
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .vehicleAxleLoadInKg(Maximum.builder()
                         .value(vehicleAxleLoad)
                         .build())
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest.withVehicleAxleLoadInKg(vehicleAxleLoadToTestFor))).isEqualTo(
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest.withVehicleAxleLoadInKg(vehicleAxleLoadToTestFor))).isEqualTo(
                 expectedResult);
     }
 
@@ -266,11 +266,11 @@ class RestrictionsTest {
                 accessibilityRequest.transportTypes())
         ).thenReturn(false);
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isTrue();
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest)).isTrue();
     }
 
     @Test
@@ -296,11 +296,11 @@ class RestrictionsTest {
                 accessibilityRequest.transportTypes())
         ).thenReturn(true);
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -320,11 +320,11 @@ class RestrictionsTest {
                 accessibilityRequest.transportTypes())
         ).thenReturn(false);
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -339,11 +339,11 @@ class RestrictionsTest {
 
         when(emissionZone.isActive(timestamp)).thenReturn(false);
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -358,11 +358,11 @@ class RestrictionsTest {
 
         when(emissionZone.isActive(timestamp)).thenReturn(true);
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -377,10 +377,10 @@ class RestrictionsTest {
 
         when(emissionZone.isActive(timestamp)).thenReturn(true);
 
-        Restrictions restrictions = Restrictions.builder()
+        TransportRestrictions transportRestrictions = TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .build();
 
-        assertThat(restrictions.isRestrictive(accessibilityRequest)).isFalse();
+        assertThat(transportRestrictions.isRestrictive(accessibilityRequest)).isFalse();
     }
 }
