@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class TrafficSignExclusionCalculator {
 
     private static final BiPredicate<TrafficSign, AccessibilityRequest> hasExclusionsForZoneCodeTypes =
