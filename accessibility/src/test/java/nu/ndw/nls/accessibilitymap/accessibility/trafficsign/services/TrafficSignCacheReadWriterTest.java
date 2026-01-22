@@ -24,9 +24,9 @@ import java.util.Set;
 import net.javacrumbs.jsonunit.core.Option;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
@@ -87,7 +87,7 @@ class TrafficSignCacheReadWriterTest {
                 .direction(Direction.FORWARD)
                 .fraction(0.5)
                 .roadSectionId(2)
-                .restrictions(Restrictions.builder()
+                .transportRestrictions(TransportRestrictions.builder()
                         .transportTypes(Set.of(TransportType.CAR))
                         .vehicleAxleLoadInKg(Maximum.builder().value(10d).build())
                         .vehicleHeightInCm(Maximum.builder().value(20d).build())

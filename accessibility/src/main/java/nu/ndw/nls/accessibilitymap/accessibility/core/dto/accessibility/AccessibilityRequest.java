@@ -1,6 +1,7 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service.dto;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility;
 
 import com.graphhopper.util.shapes.BBox;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -11,8 +12,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.springframework.validation.annotation.Validated;
 
@@ -44,7 +45,7 @@ public record AccessibilityRequest(
         Set<String> excludeRestrictionsWithEmissionZoneIds,
         Set<EmissionZoneType> excludeRestrictionsWithEmissionZoneTypes) {
 
-    public Set<TextSignType> excludeTrafficSignTextSignTypes() {
+    public @NotEmpty Set<TextSignType> excludeTrafficSignTextSignTypes() {
 
         if (Objects.nonNull(excludeTrafficSignTextSignTypes)) {
             return excludeTrafficSignTextSignTypes;
@@ -53,7 +54,7 @@ public record AccessibilityRequest(
         }
     }
 
-    public Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes() {
+    public @NotEmpty Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes() {
 
         if (Objects.nonNull(excludeTrafficSignZoneCodeTypes)) {
             return excludeTrafficSignZoneCodeTypes;

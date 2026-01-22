@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
