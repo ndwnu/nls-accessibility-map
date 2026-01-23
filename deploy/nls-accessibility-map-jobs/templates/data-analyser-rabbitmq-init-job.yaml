@@ -26,9 +26,9 @@ spec:
         - name: {{ .Values.baseNetworkAnalyser.name }}
           resources:
             limits:
-              memory: 1024Mi
+              memory: 1.5Gi
             requests:
-              memory: 1024Mi
+              memory: 1.5Gi
           image: ndwnls.azurecr.io/nls-accessibility-map-data-analyser-job:{{ $.Chart.AppVersion }}
           imagePullPolicy: Always
           envFrom:
