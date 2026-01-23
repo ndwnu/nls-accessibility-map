@@ -13,7 +13,7 @@ import picocli.CommandLine.IFactory;
  */
 @Component
 @ConditionalOnNotRunningAsService
-@Command(name = "jobs", subcommands = {CreateOrUpdateNetworkCommand.class, ConfigureRabbitMQCommand.class})
+@Command(name = "jobs", subcommands = {CreateOrUpdateNetworkCommand.class, ConfigureRabbitMQCommand.class, InitialiseNetworkCommand.class})
 public class BaseLoaderCommand extends AbstractCommand {
 
     public BaseLoaderCommand(IFactory factory) {
