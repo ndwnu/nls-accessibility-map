@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import lombok.Builder;
 import lombok.With;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import org.springframework.validation.annotation.Validated;
 
 @Builder

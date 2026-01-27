@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
@@ -7,6 +7,8 @@ import java.util.Optional;
 import lombok.Builder;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import org.springframework.validation.annotation.Validated;
 
@@ -29,7 +31,7 @@ public record TrafficSign(
         @NotNull List<TextSign> textSigns,
         ZoneCodeType zoneCodeType,
         String trafficRegulationOrderId,
-        @NotNull Restrictions restrictions) {
+        @NotNull TransportRestrictions transportRestrictions) implements Restriction {
 
     public boolean hasTimeWindowedSign() {
 
@@ -46,4 +48,9 @@ public record TrafficSign(
                 .findFirst();
     }
 
+    @Override
+    public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
+        return TrafficSignExclusionCalculator.isNotExcluded(this, accessibilityRequest)
+               && TrafficSignRestrictionCalculator.isRestrictive(this, accessibilityRequest);
+    }
 }

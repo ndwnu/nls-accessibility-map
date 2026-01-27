@@ -8,13 +8,11 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.exclude.TrafficSignExclusion;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.restrictive.TrafficSignRestriction;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +27,6 @@ public class TrafficSignDataService {
 
     private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
 
-    private final List<TrafficSignRestriction> trafficSignRestrictiveDeterminations;
-
-    private final List<TrafficSignExclusion> trafficSignExclusionDeterminations;
-
     private final NetworkCacheDataService networkCacheDataService;
 
     private final GraphHopperService graphHopperService;
@@ -46,27 +40,8 @@ public class TrafficSignDataService {
     public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
 
         return this.getTrafficSigns().stream()
-                .filter(trafficSign -> isRelevant(trafficSign, accessibilityRequest))
+                .filter(trafficSign -> trafficSign.isRestrictive(accessibilityRequest))
                 .toList();
-    }
-
-    @SuppressWarnings("java:S1067")
-    private boolean isRelevant(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-
-        return isNotExcluded(trafficSign, accessibilityRequest)
-               && isRestrictive(trafficSign, accessibilityRequest);
-    }
-
-    private boolean isRestrictive(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-
-        return trafficSignRestrictiveDeterminations.stream()
-                .anyMatch(trafficSignRestriction -> trafficSignRestriction.test(trafficSign, accessibilityRequest));
-    }
-
-    private boolean isNotExcluded(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-
-        return trafficSignExclusionDeterminations.stream()
-                .noneMatch(trafficSignExclusion -> trafficSignExclusion.test(trafficSign, accessibilityRequest));
     }
 
     public List<TrafficSign> getTrafficSigns() {
@@ -88,7 +63,8 @@ public class TrafficSignDataService {
                 networkCacheDataService.create(newTrafficSignsData, networkGraphHopper);
             } finally {
                 dataLock.unlock();
-                log.info("Switched internal traffic signs data structure and was locked for {} ms",
+                log.info(
+                        "Switched internal traffic signs data structure and was locked for {} ms",
                         Duration.between(start, OffsetDateTime.now()).toMillis());
             }
         });

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign;
+package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,12 +7,12 @@ import java.util.Set;
 import java.util.function.Predicate;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 
 @Builder
-public record Restrictions(
+public record TransportRestrictions(
         Set<TransportType> transportTypes,
         Maximum vehicleLengthInCm,
         Maximum vehicleHeightInCm,
