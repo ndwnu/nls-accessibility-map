@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
@@ -38,7 +37,6 @@ import nu.ndw.nls.accessibilitymap.backend.security.SecurityConfig;
 import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,9 +68,6 @@ class AccessibilityV2ApiDelegateImplTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private GraphHopperService graphHopperService;
-
-    @MockitoBean
     private AccessibilityRequestMapperV2 accessibilityRequestMapperV2;
 
     @MockitoBean
@@ -88,9 +83,6 @@ class AccessibilityV2ApiDelegateImplTest {
     private ClockService clockService;
 
     @Mock
-    private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
     private AccessibilityRequest accessibilityRequest;
 
     @Mock
@@ -99,10 +91,9 @@ class AccessibilityV2ApiDelegateImplTest {
     @Test
     void getAccessibilityAsGeoJson() throws Exception {
 
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(accessibilityRequestMapperV2.map(assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson)))
                 .thenReturn(accessibilityRequest);
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         AccessibilityResponseGeoJsonJson accessibilityResponseGeoJsonJson = AccessibilityResponseGeoJsonJson.builder()
                 .features(List.of(

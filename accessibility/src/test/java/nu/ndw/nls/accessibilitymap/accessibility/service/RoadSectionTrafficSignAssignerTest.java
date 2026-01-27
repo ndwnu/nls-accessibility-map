@@ -9,7 +9,7 @@ import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,18 +19,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class RoadSectionTrafficSignAssignerTest {
 
-    private static final int SEGMENT_ID = 1;
     private RoadSectionTrafficSignAssigner assigner;
+
     @Mock
     private RoadSection roadSection;
+
     @Mock
     private DirectionalSegment segment;
+
     @Mock
     private RoadSectionFragment fragment;
-    @Mock
-    private TrafficSign trafficSign;
 
-    private Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey;
+    @Mock
+    private Restriction restriction;
+
+    private Map<Integer, List<Restriction>> trafficSignsByEdgeKey;
 
     @BeforeEach
     void setUp() {
@@ -39,28 +42,27 @@ class RoadSectionTrafficSignAssignerTest {
     }
 
     @Test
-    void assignTrafficSigns_WhenTrafficSignsExistForSegments() {
+    void assignTrafficSigns_WhenRestrictionExistForSegments() {
 
-        trafficSignsByEdgeKey.put(SEGMENT_ID, List.of(trafficSign));
+        trafficSignsByEdgeKey.put(1, List.of(restriction));
         when(fragment.getSegments()).thenReturn(List.of(segment));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(fragment));
-        when(segment.getId()).thenReturn(SEGMENT_ID);
-        assigner.assignTrafficSigns(roadSection, trafficSignsByEdgeKey);
+        when(segment.getId()).thenReturn(1);
+        assigner.assignRestriction(roadSection, trafficSignsByEdgeKey);
 
-        verify(segment).setTrafficSigns(List.of(trafficSign));
-
+        verify(segment).setRestrictions(List.of(restriction));
     }
 
     @Test
-    void assignTrafficSigns_WhenNoTrafficSignsExistForSegments() {
+    void assignTrafficSigns_WhenNoRestrictionExistForSegments() {
 
-        trafficSignsByEdgeKey.put(SEGMENT_ID, List.of(trafficSign));
+        trafficSignsByEdgeKey.put(1, List.of(restriction));
         when(fragment.getSegments()).thenReturn(List.of(segment));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(fragment));
         when(segment.getId()).thenReturn(2);
 
-        assigner.assignTrafficSigns(roadSection, trafficSignsByEdgeKey);
+        assigner.assignRestriction(roadSection, trafficSignsByEdgeKey);
 
-        verify(segment).setTrafficSigns(null);
+        verify(segment).setRestrictions(null);
     }
 }

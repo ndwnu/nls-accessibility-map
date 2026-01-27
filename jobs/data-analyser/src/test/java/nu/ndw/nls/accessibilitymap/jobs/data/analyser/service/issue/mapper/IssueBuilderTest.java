@@ -75,7 +75,7 @@ class IssueBuilderTest {
     @Test
     void buildTrafficSignIssue() {
 
-        when(directionalSegment.getTrafficSigns()).thenReturn(List.of(trafficSign));
+        when(directionalSegment.getRestrictions()).thenReturn(List.of(trafficSign));
         when(trafficSign.externalId()).thenReturn("id");
         when(directionalSegment.getRoadSectionId()).thenReturn(1L);
 

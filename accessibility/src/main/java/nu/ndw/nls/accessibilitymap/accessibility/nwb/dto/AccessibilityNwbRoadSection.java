@@ -1,26 +1,17 @@
 package nu.ndw.nls.accessibilitymap.accessibility.nwb.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import org.locationtech.jts.geom.LineString;
+import org.springframework.validation.annotation.Validated;
 
-/**
- * Summary of {@link nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto}, required for determining base accessibility
- */
-@Data
-@AllArgsConstructor
-@RequiredArgsConstructor
-@Builder
-public class AccessibilityNwbRoadSection {
-
-    private final long roadSectionId;
-
-    private final LineString geometry;
-
-    private boolean forwardAccessible;
-
-    private boolean backwardAccessible;
+@Validated
+public record AccessibilityNwbRoadSection(
+        @NotNull long roadSectionId,
+        @NotNull long fromNode,
+        @NotNull long toNode,
+        @NotNull int municipalityId,
+        @NotNull LineString geometry,
+        @NotNull boolean forwardAccessible,
+        @NotNull boolean backwardAccessible) {
 
 }

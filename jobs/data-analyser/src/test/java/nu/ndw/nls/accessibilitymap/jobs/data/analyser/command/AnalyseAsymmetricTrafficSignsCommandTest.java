@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.jobs.data.analyser.command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -14,13 +13,11 @@ import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseAsymmetricTrafficSignsConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.TrafficSignAnalyserService;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -41,15 +38,6 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
     private AnalyseAsymmetricTrafficSignsCommand analyseAsymmetricTrafficSignsCommand;
 
     @Mock
-    private GraphHopperService graphHopperService;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
-    private GraphhopperConfiguration graphhopperConfiguration;
-
-    @Mock
     private ClockService clockService;
 
     @Mock
@@ -61,6 +49,9 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
     @Mock
     private TrafficSignCacheUpdater trafficSignCacheUpdater;
 
+    @Mock
+    private NetworkMetaDataService networkMetaDataService;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -68,11 +59,10 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
     void setUp() {
 
         analyseAsymmetricTrafficSignsCommand = new AnalyseAsymmetricTrafficSignsCommand(
-                graphHopperService,
-                graphhopperConfiguration,
                 clockService,
                 trafficSignAnalyserService,
-                trafficSignCacheUpdater);
+                trafficSignCacheUpdater,
+                networkMetaDataService);
     }
 
     @ParameterizedTest
@@ -81,11 +71,9 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
         assertThat(new CommandLine(analyseAsymmetricTrafficSignsCommand)
                 .execute(
@@ -97,9 +85,8 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
                         "--report-issues")
         ).isZero();
 
-        verify(trafficSignCacheUpdater).updateCache(networkGraphHopper);
+        verify(trafficSignCacheUpdater).updateCache();
         verify(trafficSignAnalyserService).analyse(
-                networkGraphHopper,
                 AnalyseAsymmetricTrafficSignsConfiguration.builder()
                         .startTime(startTime)
                         .accessibilityRequest(AccessibilityRequest.builder()
@@ -120,11 +107,9 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
         assertThat(new CommandLine(analyseAsymmetricTrafficSignsCommand)
                 .execute(
@@ -137,11 +122,9 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
         ).isZero();
 
         verify(trafficSignAnalyserService).analyse(
-                eq(networkGraphHopper),
                 argThat(analyseProperties -> analyseProperties.accessibilityRequest().trafficSignTypes()
                         .containsAll(List.of(TrafficSignType.C6, TrafficSignType.C7))));
         verify(trafficSignAnalyserService).analyse(
-                eq(networkGraphHopper),
                 argThat(analyseProperties -> analyseProperties.accessibilityRequest().trafficSignTypes().contains(TrafficSignType.C18)));
     }
 
@@ -159,7 +142,7 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
                         "--report-issues")
         ).isOne();
 
-        verify(trafficSignAnalyserService, never()).analyse(any(), any());
+        verify(trafficSignAnalyserService, never()).analyse(any());
         loggerExtension.containsLog(Level.ERROR, "Could not analyse traffic signs because of:", "test exception");
     }
 

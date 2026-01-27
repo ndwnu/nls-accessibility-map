@@ -2,8 +2,8 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.response
 
 import java.util.Comparator;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.TransportTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;

@@ -123,7 +123,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                     generateConfiguration,
                     new GeoJsonObjectMapperFactory());
             String expectedFileName = "c7";
-            when(directionalSegmentForward1.hasTrafficSigns()).thenReturn(true);
+            when(directionalSegmentForward1.hasRestrictions()).thenReturn(true);
             when(directionalSegmentBackward1.isAccessible()).thenReturn(true);
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));

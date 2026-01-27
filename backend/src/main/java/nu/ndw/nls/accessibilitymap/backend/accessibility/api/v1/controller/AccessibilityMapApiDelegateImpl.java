@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.VehicleArguments;
@@ -26,7 +25,6 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -37,8 +35,6 @@ import org.springframework.stereotype.Component;
 public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDelegate {
 
     private final PointValidator pointValidator;
-
-    private final GraphHopperService graphHopperService;
 
     private final AccessibilityResponseMapper accessibilityResponseMapper;
 
@@ -72,9 +68,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
                 excludeEmissionZoneTypes, latitude, longitude);
 
-        NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
-
-        Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
         return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility));
     }
@@ -102,9 +96,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
                 excludeEmissionZoneTypes, latitude, longitude);
 
-        NetworkGraphHopper networkGraphHopper = graphHopperService.getNetworkGraphHopper();
-
-        Accessibility accessibility = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
         return ResponseEntity.ok(
                 roadSectionFeatureCollectionMapper.map(
