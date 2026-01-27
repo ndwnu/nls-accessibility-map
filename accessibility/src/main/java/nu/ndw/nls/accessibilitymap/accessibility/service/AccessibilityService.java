@@ -18,7 +18,9 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
@@ -29,8 +31,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.Restricti
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.PointMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
@@ -152,7 +152,8 @@ public class AccessibilityService {
     @SuppressWarnings("java:S3553")
     private List<List<AccessibilityReason>> calculateReasons(
             AccessibilityRequest accessibilityRequest,
-            NetworkData networkData, Optional<RoadSection> toRoadSection,
+            NetworkData networkData,
+            Optional<RoadSection> toRoadSection,
             List<TrafficSign> trafficSigns) {
 
         return toRoadSection

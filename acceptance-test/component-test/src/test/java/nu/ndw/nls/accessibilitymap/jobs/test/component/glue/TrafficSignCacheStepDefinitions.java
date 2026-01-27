@@ -13,7 +13,7 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Option;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignDriverConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
@@ -50,19 +50,19 @@ public class TrafficSignCacheStepDefinitions {
 
     @SuppressWarnings("java:S3658")
     private boolean verifyEmissionRestrictions(
-            nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign cachedTrafficSign,
+            nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign cachedTrafficSign,
             TrafficSign trafficSignExpected) {
 
-        Restrictions actualRestrictions = cachedTrafficSign.restrictions();
+        TransportRestrictions actualTransportRestrictions = cachedTrafficSign.transportRestrictions();
         if (Objects.nonNull(trafficSignExpected.regulationOrderId())
-                && (Objects.isNull(cachedTrafficSign.trafficRegulationOrderId()) || Objects.isNull(actualRestrictions.emissionZone()))) {
+                && (Objects.isNull(cachedTrafficSign.trafficRegulationOrderId()) || Objects.isNull(actualTransportRestrictions.emissionZone()))) {
             fail("Traffic sign with id '%s' has an emission zone, but the cache is missing an emission restriction."
                     .formatted(cachedTrafficSign.externalId()));
             return false;
         }
 
         if (Objects.isNull(trafficSignExpected.regulationOrderId())) {
-            if ((Objects.nonNull(cachedTrafficSign.trafficRegulationOrderId()) || Objects.nonNull(actualRestrictions.emissionZone()))) {
+            if ((Objects.nonNull(cachedTrafficSign.trafficRegulationOrderId()) || Objects.nonNull(actualTransportRestrictions.emissionZone()))) {
                 fail("Traffic sign with id '%s' has no emission zone, but the cache has an unexpected emission restriction."
                         .formatted(cachedTrafficSign.externalId()));
                 return false;
@@ -77,7 +77,7 @@ public class TrafficSignCacheStepDefinitions {
         };
 
         try {
-            assertThatJson(objectMapper.writeValueAsString(actualRestrictions.emissionZone()))
+            assertThatJson(objectMapper.writeValueAsString(actualTransportRestrictions.emissionZone()))
                     .withOptions(Option.IGNORING_ARRAY_ORDER)
                     .isEqualTo(emissionZoneJsonExpected);
         } catch (JsonProcessingException exception) {

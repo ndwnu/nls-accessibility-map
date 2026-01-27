@@ -1,23 +1,23 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C1;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C10;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C11;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C12;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C17;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C18;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C19;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C20;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C21;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C22;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C22A;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C22C;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C6;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7A;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C7B;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C8;
-import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType.C9;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C1;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C10;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C11;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C12;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C17;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C18;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C19;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C20;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C21;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C22;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C22A;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C22C;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C6;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C7;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C7A;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C7B;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C8;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C9;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -28,9 +28,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
@@ -84,7 +84,7 @@ class AccessibilityReasonsMapperTest {
         return Stream.of(
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C1),
@@ -95,7 +95,7 @@ class AccessibilityReasonsMapperTest {
                                 C1)),
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C6),
@@ -106,7 +106,7 @@ class AccessibilityReasonsMapperTest {
                                 C6)),
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C7),
@@ -116,7 +116,7 @@ class AccessibilityReasonsMapperTest {
                                         .build()),
                                 C7)),
                 Arguments.of(createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C7A),
@@ -128,7 +128,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C7B),
@@ -140,7 +140,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C8),
@@ -152,7 +152,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C9),
@@ -163,7 +163,7 @@ class AccessibilityReasonsMapperTest {
                                 C9)),
 
                 Arguments.of(createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C10),
@@ -174,7 +174,7 @@ class AccessibilityReasonsMapperTest {
                                 C10)),
 
                 Arguments.of(createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C11),
@@ -186,7 +186,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C12),
@@ -198,7 +198,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .vehicleLengthInCm(Maximum.builder()
                                                 .value(VEHICLE_LENGTH_CM)
                                                 .build())
@@ -215,7 +215,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .vehicleWidthInCm(Maximum.builder()
                                                 .value(VEHICLE_WIDTH_CM)
                                                 .build())
@@ -232,7 +232,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .vehicleHeightInCm(Maximum.builder()
                                                 .value(VEHICLE_HEIGHT_CM)
                                                 .build())
@@ -248,7 +248,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .vehicleAxleLoadInKg(Maximum.builder()
                                                 .value(MAXIMUM_AXLE_LOAD)
                                                 .build())
@@ -265,7 +265,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .vehicleWeightInKg(Maximum.builder()
                                                 .value(MAXIMUM_AXLE_LOAD)
                                                 .build())
@@ -282,7 +282,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
                                 C22),
@@ -293,7 +293,7 @@ class AccessibilityReasonsMapperTest {
                                 C22)),
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .emissionZone(EmissionZone.builder()
                                                 .restriction(EmissionZoneRestriction
                                                         .builder()
@@ -320,7 +320,7 @@ class AccessibilityReasonsMapperTest {
 
                 Arguments.of(
                         createTrafficSign(
-                                Restrictions.builder()
+                                TransportRestrictions.builder()
                                         .emissionZone(EmissionZone.builder()
                                                 .restriction(EmissionZoneRestriction
                                                         .builder()
@@ -347,14 +347,14 @@ class AccessibilityReasonsMapperTest {
         );
     }
 
-    private static TrafficSign createTrafficSign(Restrictions restrictions, TrafficSignType trafficSignType) {
+    private static TrafficSign createTrafficSign(TransportRestrictions transportRestrictions, TrafficSignType trafficSignType) {
 
         return TrafficSign.builder()
                 .direction(Direction.FORWARD)
                 .externalId(EXTERNAL_ID)
                 .roadSectionId(ROAD_SECTION_ID)
                 .trafficSignType(trafficSignType)
-                .restrictions(restrictions)
+                .transportRestrictions(transportRestrictions)
                 .build();
     }
 

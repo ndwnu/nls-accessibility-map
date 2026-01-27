@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 
 @Builder(toBuilder = true)
 public record AccessibilityReason(

@@ -11,10 +11,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapService;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
@@ -67,7 +67,7 @@ class TrafficSignBuilderTest {
     private TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
 
     @Mock
-    private Restrictions restrictions;
+    private TransportRestrictions transportRestrictions;
 
     @Mock
     private CoordinateAndBearing coordinateAndBearing;
@@ -108,7 +108,7 @@ class TrafficSignBuilderTest {
 
         when(blackCodeMapper.map(trafficSignGeoJsonDto, trafficSignType)).thenReturn(4.1d);
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign -> trafficSign.trafficSignType() == trafficSignType)))
-                .thenReturn(restrictions);
+                .thenReturn(transportRestrictions);
 
         setupFixtureForNwbSnap();
 
@@ -172,7 +172,7 @@ class TrafficSignBuilderTest {
                 .thenReturn(4.1d);
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                 trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-        ).thenReturn(restrictions);
+        ).thenReturn(transportRestrictions);
 
         trafficSignGeoJsonDto.getProperties().setZoneCode(zoneCodeString);
         setupFixtureForNwbSnap();
@@ -210,7 +210,7 @@ class TrafficSignBuilderTest {
                 .thenReturn(4.1d);
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                 trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-        ).thenReturn(restrictions);
+        ).thenReturn(transportRestrictions);
 
         trafficSignGeoJsonDto.getProperties().setZoneCode(null);
         setupFixtureForNwbSnap();
@@ -235,7 +235,7 @@ class TrafficSignBuilderTest {
             setupFixtureForNwbSnap();
             when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                     trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-            ).thenReturn(restrictions);
+            ).thenReturn(transportRestrictions);
         }
 
         trafficSignGeoJsonDto.getProperties().setDrivingDirection(directionType);
@@ -263,7 +263,7 @@ class TrafficSignBuilderTest {
 
         when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
                 trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-        ).thenReturn(restrictions);
+        ).thenReturn(transportRestrictions);
 
         trafficSignGeoJsonDto.getProperties().setImageUrl(imageUrl);
         setupFixtureForNwbSnap();
@@ -297,7 +297,7 @@ class TrafficSignBuilderTest {
         assertThat(trafficSign.longitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getFirst());
         assertThat(trafficSign.textSigns()).isEqualTo(trafficSignGeoJsonDto.getProperties().getTextSigns());
         assertThat(trafficSign.iconUri()).isEqualTo(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()));
-        assertThat(trafficSign.restrictions()).isEqualTo(restrictions);
+        assertThat(trafficSign.transportRestrictions()).isEqualTo(transportRestrictions);
         assertThat(trafficSign.networkSnappedLatitude()).isEqualTo(DEFAULT_Y_COORDINATE);
         assertThat(trafficSign.networkSnappedLongitude()).isEqualTo(DEFAULT_X_COORDINATE);
 

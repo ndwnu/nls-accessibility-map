@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.DataLinkJson;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.DataLinkRecordJson;
