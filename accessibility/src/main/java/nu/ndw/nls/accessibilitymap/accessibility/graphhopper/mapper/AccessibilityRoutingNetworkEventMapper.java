@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper;
 
 import java.time.Instant;
 import nu.ndw.nls.events.NlsEvent;
