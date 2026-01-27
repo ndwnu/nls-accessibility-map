@@ -1,14 +1,31 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
+import static java.util.stream.Collectors.toMap;
+
+import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.storage.index.Snap;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityException;
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -16,7 +33,6 @@ import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class GraphHopperService {
 
@@ -24,17 +40,40 @@ public class GraphHopperService {
 
     private final GraphHopperNetworkService graphHopperNetworkService;
 
+    private final QueryGraphConfigurer queryGraphConfigurer;
+
+    private final Snapper snapper;
+
+    private final List<Runnable> newNetworkListeners;
+
+    private final NetworkMetaDataService networkMetaDataService;
+
+    @SuppressWarnings("java:S3749")
     private NetworkGraphHopper networkGraphHopper;
 
-    public synchronized NetworkGraphHopper getNetworkGraphHopper() {
+    public GraphHopperService(
+            GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder,
+            GraphHopperNetworkService graphHopperNetworkService,
+            QueryGraphConfigurer queryGraphConfigurer,
+            Snapper snapper,
+            NetworkMetaDataService networkMetaDataService) {
 
-        if (Objects.isNull(networkGraphHopper)) {
-            createNetworkGraphHopper();
-        }
-        return networkGraphHopper;
+        this.graphHopperNetworkSettingsBuilder = graphHopperNetworkSettingsBuilder;
+        this.graphHopperNetworkService = graphHopperNetworkService;
+        this.queryGraphConfigurer = queryGraphConfigurer;
+        this.snapper = snapper;
+        this.networkMetaDataService = networkMetaDataService;
+
+        newNetworkListeners = new ArrayList<>();
     }
 
-    public synchronized void createNetworkGraphHopper() {
+    public void registerUpdateListener(Runnable runnable) {
+        synchronized (newNetworkListeners) {
+            newNetworkListeners.add(runnable);
+        }
+    }
+
+    public synchronized void loadNewNetworkGraphHopper() {
         try {
             RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
             Files.createDirectories(
@@ -44,10 +83,62 @@ public class GraphHopperService {
 
             networkGraphHopper = graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
             log.info("GraphHopper network loaded from disk in {}ms", Duration.between(start, OffsetDateTime.now()).toMillis());
+            newNetworkListeners.forEach(Runnable::run);
         } catch (IOException | GraphHopperNotImportedException exception) {
             RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
-            throw new IllegalStateException("Could not create network GraphHopper from %s"
-                    .formatted(routingNetworkSettings.getGraphhopperRootPath().toAbsolutePath()), exception);
+            throw new IllegalStateException(
+                    "Could not load network GraphHopper from %s"
+                            .formatted(routingNetworkSettings.getGraphhopperRootPath().toAbsolutePath()), exception);
         }
+    }
+
+    @SuppressWarnings("java:S1941")
+    public @Valid GraphHopperNetwork getNetwork(Restrictions restrictions, Location from, Location destination) {
+        NetworkGraphHopper localNetworkGraphHopper = getNetworkGraphHopper();
+
+        Optional<Snap> fromSnap = snapper.snapLocation(localNetworkGraphHopper, from);
+        if (fromSnap.isEmpty()) {
+            throw new AccessibilityException("Could not find a snap point for from location (%s, %s).".formatted(
+                    from.latitude(),
+                    from.longitude()
+            ));
+        }
+        Optional<Snap> destinationSnap = snapper.snapLocation(localNetworkGraphHopper, destination);
+        Map<Restriction, Snap> restrictionsToSnap = restrictions.stream()
+                .map(restriction -> snapper.snapRestriction(localNetworkGraphHopper, restriction)
+                        .map(snap -> Map.entry(restriction, snap))
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .collect(toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue
+                ));
+
+        List<Snap> snaps = Stream.of(
+                        restrictionsToSnap.values().stream(),
+                        Stream.of(fromSnap.get()),
+                        destinationSnap.stream())
+                .flatMap(snapStream -> snapStream)
+                .toList();
+
+        QueryGraph queryGraph = QueryGraph.create(localNetworkGraphHopper.getBaseGraph(), snaps);
+
+        return new GraphHopperNetwork(
+                localNetworkGraphHopper,
+                networkMetaDataService.loadMetaData().nwbVersion(),
+                queryGraph,
+                restrictions,
+                restrictionsToSnap,
+                queryGraphConfigurer.createEdgeRestrictions(queryGraph, restrictionsToSnap),
+                fromSnap.get(),
+                destinationSnap.orElse(null));
+    }
+
+    protected synchronized NetworkGraphHopper getNetworkGraphHopper() {
+
+        if (Objects.isNull(networkGraphHopper)) {
+            loadNewNetworkGraphHopper();
+        }
+        return networkGraphHopper;
     }
 }

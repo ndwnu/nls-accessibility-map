@@ -36,7 +36,6 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionPropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.security.SecurityConfig;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,9 +92,6 @@ class AccessibilityMapApiDelegateImplTest {
     private ClockService clockService;
 
     @Mock
-    private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
     private Municipality municipality;
 
     @Mock
@@ -118,7 +114,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(municipalityService.getMunicipalityById("GM0001")).thenReturn(municipality);
         when(accessibilityRequestMapper.map(
                 eq(municipality),
@@ -142,7 +137,7 @@ class AccessibilityMapApiDelegateImplTest {
                 eq(1.1D),
                 eq(2.2D)
         )).thenReturn(accessibilityRequest);
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         AccessibilityMapResponseJson accessibilityMapResponseJson = AccessibilityMapResponseJson.builder()
                 .inaccessibleRoadSections(List.of(
@@ -187,7 +182,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_emissionClassDefined_NoFuelTypes() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -217,7 +211,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_fuelTypesDefined_noEmissionClass() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -247,7 +240,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_invalidVehicleType() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "invalid")
@@ -278,7 +270,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_invalidFuelType() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -309,7 +300,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_invalidEmissionClass() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -340,7 +330,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_destinationSet_missingLatitude() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -370,7 +359,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_destinationSet_missingLongitude() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -400,7 +388,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_invalidMunicipalityId() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/INVALID_MUNICIPALITY_ID/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -424,14 +411,13 @@ class AccessibilityMapApiDelegateImplTest {
         MvcResult response = mockMvcBuilder.andReturn();
         assertThatJson(response.getResponse().getContentAsString()).isEqualTo("""
                 {
-                   "message": "'municipalityId' must match \\"^(GM)(?=\\\\d{4}$)\\\\d*[1-9]\\\\d*\\\""
+                   "message": "'municipalityId' must match \\"^(GM)(?=\\\\d{4}$)\\\\d*[1-9]\\\\d*\\""
                 }
                 """);
     }
 
     @Test
     void getInaccessibleRoadSections_invalidVehicleLength() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -462,7 +448,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getInaccessibleRoadSections_invalidVehicleHasTrailer() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections")
                         .queryParam("vehicleType", "truck")
@@ -493,7 +478,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(municipalityService.getMunicipalityById("GM0001")).thenReturn(municipality);
         when(accessibilityRequestMapper.map(
                 eq(municipality),
@@ -517,7 +501,7 @@ class AccessibilityMapApiDelegateImplTest {
                 eq(1.1D),
                 eq(2.2D)
         )).thenReturn(accessibilityRequest);
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
         when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
@@ -569,7 +553,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_accessiblity_false() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(municipalityService.getMunicipalityById("GM0001")).thenReturn(municipality);
         when(accessibilityRequestMapper.map(
                 eq(municipality),
@@ -593,7 +576,7 @@ class AccessibilityMapApiDelegateImplTest {
                 eq(1.1D),
                 eq(2.2D)
         )).thenReturn(accessibilityRequest);
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
         when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
@@ -645,7 +628,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_emissionClassDefined_NoFuelTypes() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "truck")
@@ -675,7 +657,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_fuelTypesDefined_noEmissionClass() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "truck")
@@ -705,7 +686,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_invalidVehicleType() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "invalid")
@@ -736,7 +716,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_invalidFuelType() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "truck")
@@ -767,7 +746,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_invalidEmissionClass() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "truck")
@@ -798,7 +776,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_destinationSet_missingLatitude() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "truck")
@@ -828,7 +805,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_destinationSet_missingLongitude() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "truck")
@@ -858,7 +834,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_invalidMunicipalityId() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/INVALID_MUNICIPALITY_ID/road-sections.geojson")
                         .queryParam("vehicleType", "truck")
@@ -882,14 +857,13 @@ class AccessibilityMapApiDelegateImplTest {
         MvcResult response = mockMvcBuilder.andReturn();
         assertThatJson(response.getResponse().getContentAsString()).isEqualTo("""
                 {
-                   "message": "'municipalityId' must match \\"^(GM)(?=\\\\d{4}$)\\\\d*[1-9]\\\\d*\\\""
+                   "message": "'municipalityId' must match \\"^(GM)(?=\\\\d{4}$)\\\\d*[1-9]\\\\d*\\""
                 }
                 """);
     }
 
     @Test
     void getRoadSections_invalidVehicleLength() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "truck")
@@ -920,7 +894,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Test
     void getRoadSections_invalidVehicleHasTrailer() throws Exception {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         ResultActions mockMvcBuilder = mockMvc
                 .perform(MockMvcRequestBuilders.get("/v1/municipalities/GM0001/road-sections.geojson")
                         .queryParam("vehicleType", "truck")

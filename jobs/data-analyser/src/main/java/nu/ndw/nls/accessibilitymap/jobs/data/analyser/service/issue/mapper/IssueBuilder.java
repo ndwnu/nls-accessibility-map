@@ -46,9 +46,12 @@ public class IssueBuilder {
     }
 
     public CreateIssueJson buildTrafficSignIssue(DirectionalSegment directionalSegment, String reportId, String reportGroupId) {
-        List<DataLinkRecordJson> recordsList = directionalSegment.getTrafficSigns()
+        // Todo add support for all restrictions not only trafficsigns.
+        List<DataLinkRecordJson> recordsList = directionalSegment.getRestrictions()
                 .stream()
-                .map(IssueBuilder::mapTrafficSign)
+                .filter(TrafficSign.class::isInstance)
+                .map(TrafficSign.class::cast)
+                .map(IssueBuilder::mapRestriction)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         recordsList.add(DataLinkRecordJson.builder()
@@ -76,7 +79,7 @@ public class IssueBuilder {
                 .build();
     }
 
-    private static DataLinkRecordJson mapTrafficSign(TrafficSign trafficSign) {
+    private static DataLinkRecordJson mapRestriction(TrafficSign trafficSign) {
         return DataLinkRecordJson.builder()
                 .type("TrafficSign")
                 .id(trafficSign.externalId())
