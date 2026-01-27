@@ -47,7 +47,7 @@ public class GeoJsonRoadAsymmetricTrafficSignWriter extends AbstractGeoJsonWrite
                         .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                         .filter(RoadSectionFragment::isPartiallyAccessible)
                         .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                        .filter(DirectionalSegment::hasTrafficSigns)
+                        .filter(DirectionalSegment::hasRestrictions)
                         .map(directionalSegment -> featureBuilder.createTrafficSigns(
                                 directionalSegment,
                                 idSequenceSupplier,

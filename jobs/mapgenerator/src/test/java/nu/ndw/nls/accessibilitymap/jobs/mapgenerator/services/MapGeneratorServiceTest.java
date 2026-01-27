@@ -18,7 +18,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
@@ -26,7 +25,6 @@ import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.writers.GeoJsonPolygonWriter;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.writers.GeoJsonRoadSectionWriter;
 import nu.ndw.nls.events.NlsEvent;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -46,12 +44,6 @@ class MapGeneratorServiceTest {
 
     @Mock
     private AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
-
-    @Mock
-    private GraphHopperService graphHopperService;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private GeoJsonPolygonWriter geoJsonPolygonWriter;
@@ -95,7 +87,6 @@ class MapGeneratorServiceTest {
                 .build();
 
         mapGeneratorService = new MapGeneratorService(
-                graphHopperService,
                 accessibilityGeoJsonGeneratedEventMapper,
                 List.of(geoJsonPolygonWriter, geoJsonRoadSectionWriter),
                 accessibilityService,
@@ -108,12 +99,12 @@ class MapGeneratorServiceTest {
                                 RoadSectionFragment.builder()
                                         .backwardSegment(
                                                 DirectionalSegment.builder()
-                                                        .trafficSigns(List.of(TrafficSign.builder().build()))
+                                                        .restrictions(List.of(TrafficSign.builder().build()))
                                                         .build()
                                         )
                                         .forwardSegment(
                                                 DirectionalSegment.builder()
-                                                        .trafficSigns(List.of(TrafficSign.builder().build()))
+                                                        .restrictions(List.of(TrafficSign.builder().build()))
                                                         .build()
                                         )
                                         .build()
@@ -127,8 +118,7 @@ class MapGeneratorServiceTest {
 
         when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(accessibilityGeoJsonGeneratedEventMapper.map(
@@ -158,8 +148,7 @@ class MapGeneratorServiceTest {
         when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         exportProperties = exportProperties.withPublishEvents(false);
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         mapGeneratorService.generate(exportProperties);

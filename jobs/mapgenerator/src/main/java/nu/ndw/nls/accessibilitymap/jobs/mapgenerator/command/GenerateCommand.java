@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
@@ -29,15 +28,13 @@ public class GenerateCommand implements Callable<Integer> {
 
     private final MapGeneratorService mapGeneratorService;
 
-    private final GraphhopperConfiguration graphhopperConfiguration;
+    private final NetworkMetaDataService networkMetaDataService;
 
     private final GenerateConfiguration generateConfiguration;
 
     private final ClockService clockService;
 
     private final TrafficSignCacheUpdater trafficSignCacheUpdater;
-
-    private final GraphHopperService graphHopperService;
 
     @Option(names = {"-t", "--traffic-sign"},
             description = "Traffic signs to generate the map for.",
@@ -93,7 +90,7 @@ public class GenerateCommand implements Callable<Integer> {
     public Integer call() {
 
         if (updateTrafficSignCache) {
-            trafficSignCacheUpdater.updateCache(graphHopperService.getNetworkGraphHopper());
+            trafficSignCacheUpdater.updateCache();
         }
 
         try {
@@ -117,7 +114,7 @@ public class GenerateCommand implements Callable<Integer> {
                                             : null)
                             .build())
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
-                    .nwbVersion(graphhopperConfiguration.getMetaData().nwbVersion())
+                    .nwbVersion(networkMetaDataService.loadMetaData().nwbVersion())
                     .publishEvents(publishEvents)
                     .generateConfiguration(generateConfiguration)
                     .build();

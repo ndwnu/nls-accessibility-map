@@ -2,35 +2,22 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 
 import static java.util.stream.Collectors.toCollection;
 
-import com.graphhopper.routing.querygraph.QueryGraph;
-import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.TrafficSignSnapMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.RoadSectionTrafficSignAssigner;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Component;
 
 /**
@@ -44,12 +31,7 @@ import org.springframework.stereotype.Component;
  * The class ensures data consistency and protection against concurrent access through the use of a ReentrantLock.
  */
 @Component
-@RequiredArgsConstructor
 public class NetworkCacheDataService {
-
-    private final QueryGraphFactory queryGraphFactory;
-
-    private final TrafficSignSnapMapper trafficSignSnapMapper;
 
     private final IsochroneServiceFactory isochroneServiceFactory;
 
@@ -57,137 +39,88 @@ public class NetworkCacheDataService {
 
     private final RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner;
 
-    private final QueryGraphConfigurer queryGraphConfigurer;
+    private final ReentrantLock cachedDataLock = new ReentrantLock();
 
-    private final ReentrantLock dataLock = new ReentrantLock();
+    private final Map<Integer, Collection<RoadSection>> baseAccessibilityByMunicipalityId = new HashMap<>();
 
-    private QueryGraph queryGraph;
+    private final Collection<RoadSection> allBaseAccessibility = new ArrayList<>();
 
-    private Map<String, TrafficSignSnap> trafficSignSnaps;
+    public NetworkCacheDataService(
+            IsochroneServiceFactory isochroneServiceFactory,
+            RoadSectionMapper roadSectionMapper,
+            RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner,
+            GraphHopperService graphHopperService) {
 
-    private Map<Integer, Collection<RoadSection>> baseAccessibilityByMunicipalityId = new HashMap<>();
+        this.isochroneServiceFactory = isochroneServiceFactory;
+        this.roadSectionMapper = roadSectionMapper;
+        this.roadSectionTrafficSignAssigner = roadSectionTrafficSignAssigner;
 
-    private Collection<RoadSection> allBaseAccessibility;
-
-    public void create(TrafficSigns trafficSigns, NetworkGraphHopper networkGraphHopper) {
-
-        List<TrafficSignSnap> trafficSignSnapList = trafficSignSnapMapper.map(trafficSigns, networkGraphHopper);
-        Map<String, TrafficSignSnap> newTrafficSignSnaps = trafficSignSnapList.stream()
-                .collect(Collectors.toMap(
-                        t -> t.getTrafficSign().externalId(),
-                        Function.identity()));
-        QueryGraph newQueryGraph = queryGraphFactory.createQueryGraph(trafficSignSnapList, networkGraphHopper);
-        dataLock.lock();
-        try {
-            allBaseAccessibility = null;
-            baseAccessibilityByMunicipalityId = new HashMap<>();
-            trafficSignSnaps = newTrafficSignSnaps;
-            queryGraph = newQueryGraph;
-        } finally {
-            dataLock.unlock();
-        }
+        graphHopperService.registerUpdateListener(this::clearCachedData);
     }
 
-    public NetworkData getNetworkData(
+    public Collection<RoadSection> getBaseAccessibility(
+            GraphHopperNetwork graphHopperNetwork,
             Integer municipalityId,
-            Snap start,
-            double searchRadiusInMeters,
-            List<TrafficSign> trafficSigns,
-            NetworkGraphHopper networkGraphHopper) {
+            double searchRadiusInMeters) {
 
-        if (queryGraph == null || trafficSignSnaps == null) {
-            throw new IllegalStateException("NetworkData is not initialised. Call create() before calling getNetworkData().");
-        }
-
-        dataLock.lock();
-        try {
-            List<TrafficSignSnap> snappedTrafficSigns = getTrafficSignSnaps(trafficSigns.stream().map(TrafficSign::externalId).toList());
-            EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(
-                    getQueryGraph(),
-                    networkGraphHopper.getEncodingManager(), snappedTrafficSigns);
-            return NetworkData.builder()
-                    .networkGraphHopper(networkGraphHopper)
-                    .edgeRestrictions(edgeRestrictions)
-                    .queryGraph(getQueryGraph())
-                    .baseAccessibleRoads(
-                            getBaseAccessibility(
-                                    municipalityId, start, searchRadiusInMeters, edgeRestrictions.getTrafficSignsByEdgeKey(),
-                                    networkGraphHopper))
-                    .build();
-        } finally {
-            dataLock.unlock();
-        }
-    }
-
-    private List<TrafficSignSnap> getTrafficSignSnaps(List<String> trafficSignsIds) {
-
-        return trafficSignsIds.stream()
-                .filter(trafficSignSnaps::containsKey)
-                .map(trafficSignSnaps::get)
-                .toList();
-    }
-
-    private QueryGraph getQueryGraph() {
-
-        return queryGraph;
-    }
-
-    /**
-     * Retrieves base accessibility road sections, optionally restricted to a specific municipality. Adds traffic sign information to the
-     * road sections based on the provided mappings.
-     *
-     * @param municipalityId        the ID of the municipality for which to calculate accessibility; if null, calculates for all
-     *                              municipalities
-     * @param start                 the snapping point used for geographical calculations
-     * @param searchRadiusInMeters  the search radius, in meters, used for accessibility calculations
-     * @param trafficSignsByEdgeKey a map linking edge keys to their associated traffic signs
-     * @return a collection of road sections representing the base accessibility, with traffic sign information included
-     */
-    private Collection<RoadSection> getBaseAccessibility(
-            Integer municipalityId,
-            Snap start,
-            double searchRadiusInMeters,
-            Map<Integer, List<TrafficSign>> trafficSignsByEdgeKey, NetworkGraphHopper networkGraphHopper) {
-
-        dataLock.lock();
+        cachedDataLock.lock();
         try {
             if (municipalityId == null) {
-                if (allBaseAccessibility == null) {
-                    allBaseAccessibility = calculateBaseAccessibility(null, start, searchRadiusInMeters, networkGraphHopper);
+                if (allBaseAccessibility.isEmpty()) {
+                    allBaseAccessibility.addAll(calculateBaseAccessibility(
+                            graphHopperNetwork,
+                            searchRadiusInMeters,
+                            null));
                 }
                 return allBaseAccessibility.stream()
                         .map(RoadSection::copy)
-                        .map(roadSection -> roadSectionTrafficSignAssigner.assignTrafficSigns(roadSection, trafficSignsByEdgeKey))
+                        .map(roadSection -> roadSectionTrafficSignAssigner.assignRestriction(
+                                roadSection,
+                                graphHopperNetwork.getRestrictionsByEdgeKey()))
                         .collect(toCollection(ArrayList::new));
             } else {
-
                 return baseAccessibilityByMunicipalityId.computeIfAbsent(
                                 municipalityId,
-                                id -> calculateBaseAccessibility(municipalityId, start, searchRadiusInMeters, networkGraphHopper)).stream()
+                                id -> calculateBaseAccessibility(
+                                        graphHopperNetwork,
+                                        searchRadiusInMeters,
+                                        municipalityId)).stream()
                         .map(RoadSection::copy)
-                        .map(roadSection -> roadSectionTrafficSignAssigner.assignTrafficSigns(roadSection, trafficSignsByEdgeKey))
+                        .map(roadSection -> roadSectionTrafficSignAssigner.assignRestriction(
+                                roadSection,
+                                graphHopperNetwork.getRestrictionsByEdgeKey()))
                         .collect(toCollection(ArrayList::new));
             }
         } finally {
-            dataLock.unlock();
+            cachedDataLock.unlock();
         }
     }
 
     private Collection<RoadSection> calculateBaseAccessibility(
-            Integer municipalityId, Snap start, double searchRadiusInMeters,
-            NetworkGraphHopper networkGraphHopper) {
+            GraphHopperNetwork graphHopperNetwork,
+            double searchRadiusInMeters,
+            Integer municipalityId) {
 
-        IsochroneService isochroneService = isochroneServiceFactory.createService(networkGraphHopper);
+        IsochroneService isochroneService = isochroneServiceFactory.createService(graphHopperNetwork);
         return roadSectionMapper.mapToRoadSections(
                 isochroneService.getIsochroneMatchesByMunicipalityId(
                         IsochroneArguments.builder()
                                 .weighting(new RestrictionWeightingAdapter(
-                                        networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()),
+                                        graphHopperNetwork.getNetwork().createWeighting(NetworkConstants.CAR_PROFILE, new PMap()),
                                         Set.of()))
                                 .municipalityId(municipalityId)
                                 .searchDistanceInMetres(searchRadiusInMeters)
                                 .build(),
-                        getQueryGraph(),
-                        start));
+                        graphHopperNetwork.getQueryGraph(),
+                        graphHopperNetwork.getFrom()));
+    }
+
+    private void clearCachedData() {
+        cachedDataLock.lock();
+
+        this.allBaseAccessibility.clear();
+        baseAccessibilityByMunicipalityId.clear();
+
+        cachedDataLock.unlock();
     }
 }

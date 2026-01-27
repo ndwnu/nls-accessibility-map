@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.restriction;
 
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.MaximumRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.mapper.DecimalValueMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;

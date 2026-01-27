@@ -19,6 +19,8 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.tra
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C8;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType.C9;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import java.util.Set;
@@ -26,20 +28,24 @@ import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.FuelTypeRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.MaximumRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.TransportTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasons;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.FuelTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -70,13 +76,36 @@ class AccessibilityReasonsMapperTest {
 
     @ParameterizedTest
     @MethodSource("provideReasons")
-    void mapToAoAccessibilityReasons(TrafficSign trafficSign, AccessibilityReason expectedReason) {
+    void mapRestrictions(TrafficSign trafficSign, AccessibilityReason expectedReason) {
 
-        AccessibilityReasons actual = mapper.mapToAoAccessibilityReasons(List.of(trafficSign));
+        AccessibilityReasons actual = mapper.mapRestrictions(new Restrictions(Set.of(trafficSign)));
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("accessibilityReason")
                 .isEqualTo(new AccessibilityReasons(List.of(expectedReason)));
+    }
+
+    @Test
+    void mapRestrictions_unsupportedRestriction() {
+
+        assertThat(catchThrowable(() -> mapper.mapRestrictions(new Restrictions(Set.of(new UnsupportedRestriction())))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Restriction type class nu.ndw.nls.accessibilitymap.accessibility.reason.mapper"
+                            + ".AccessibilityReasonsMapperTest$UnsupportedRestriction is not supported");
+    }
+
+    @Test
+    void mapRestrictions_unsupportedTrafficSignType() {
+
+        TrafficSignType trafficSignType = mock(TrafficSignType.class);
+
+        assertThat(catchThrowable(() -> mapper.mapRestrictions(new Restrictions(Set.of( createTrafficSign(
+                        TransportRestrictions.builder()
+                                .transportTypes(Set.of(TransportType.CAR))
+                                .build(),
+                trafficSignType))))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Traffic sign type '%s' is not supported".formatted(trafficSignType));
     }
 
     private static Stream<Arguments> provideReasons() {
@@ -115,7 +144,8 @@ class AccessibilityReasonsMapperTest {
                                         .value(Set.of(TransportType.CAR))
                                         .build()),
                                 C7)),
-                Arguments.of(createTrafficSign(
+                Arguments.of(
+                        createTrafficSign(
                                 TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
@@ -162,7 +192,8 @@ class AccessibilityReasonsMapperTest {
                                         .build()),
                                 C9)),
 
-                Arguments.of(createTrafficSign(
+                Arguments.of(
+                        createTrafficSign(
                                 TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
@@ -173,7 +204,8 @@ class AccessibilityReasonsMapperTest {
                                         .build()),
                                 C10)),
 
-                Arguments.of(createTrafficSign(
+                Arguments.of(
+                        createTrafficSign(
                                 TransportRestrictions.builder()
                                         .transportTypes(Set.of(TransportType.CAR))
                                         .build(),
@@ -305,7 +337,8 @@ class AccessibilityReasonsMapperTest {
                                         .build(),
                                 C22A),
                         createAccessibilityReason(
-                                List.of(MaximumRestriction.builder()
+                                List.of(
+                                        MaximumRestriction.builder()
                                                 .value(Maximum.builder().value(VEHICLE_WEIGHT).build())
                                                 .restrictionType(RestrictionType.VEHICLE_WEIGHT)
                                                 .build(),
@@ -331,7 +364,8 @@ class AccessibilityReasonsMapperTest {
                                                 .build()).build(),
                                 C22C),
                         createAccessibilityReason(
-                                List.of(MaximumRestriction.builder()
+                                List.of(
+                                        MaximumRestriction.builder()
                                                 .value(Maximum.builder().value(VEHICLE_WEIGHT).build())
                                                 .restrictionType(RestrictionType.VEHICLE_WEIGHT)
                                                 .build(),
@@ -374,4 +408,31 @@ class AccessibilityReasonsMapperTest {
         return reason;
     }
 
+    private class UnsupportedRestriction implements Restriction {
+
+        @Override
+        public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
+            return false;
+        }
+
+        @Override
+        public Double networkSnappedLatitude() {
+            return 0.0;
+        }
+
+        @Override
+        public Double networkSnappedLongitude() {
+            return 0.0;
+        }
+
+        @Override
+        public Integer roadSectionId() {
+            return 0;
+        }
+
+        @Override
+        public Direction direction() {
+            return null;
+        }
+    }
 }

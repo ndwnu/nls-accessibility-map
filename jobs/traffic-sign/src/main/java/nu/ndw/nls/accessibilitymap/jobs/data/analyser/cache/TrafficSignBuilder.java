@@ -73,7 +73,8 @@ public class TrafficSignBuilder {
 
             return Optional.of(trafficSign.withTransportRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign)));
         } catch (RuntimeException exception) {
-            log.info("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
+            log.info(
+                    "Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
                     trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto, exception);
             return Optional.empty();
         }

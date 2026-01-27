@@ -2,21 +2,17 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import jakarta.annotation.PostConstruct;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import java.util.concurrent.atomic.AtomicBoolean;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -39,16 +35,7 @@ class TrafficSignDataServiceTest {
     private TrafficSign trafficSign2;
 
     @Mock
-    private AccessibilityRequest accessibilityRequest;
-
-    @Mock
     private TrafficSignCacheReadWriter trafficSignCacheReadWriter;
-
-    @Mock
-    private NetworkCacheDataService networkCacheDataService;
-
-    @Mock
-    private GraphHopperService graphHopperService;
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
@@ -56,10 +43,7 @@ class TrafficSignDataServiceTest {
     @BeforeEach
     void setUp() {
 
-        trafficSignDataService = new TrafficSignDataService(
-                trafficSignCacheReadWriter,
-                networkCacheDataService,
-                graphHopperService);
+        trafficSignDataService = new TrafficSignDataService(trafficSignCacheReadWriter);
     }
 
     @Test
@@ -72,49 +56,37 @@ class TrafficSignDataServiceTest {
     }
 
     @Test
-    void findAllBy() {
+    void findAll() {
 
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
-        when(trafficSign1.isRestrictive(accessibilityRequest)).thenReturn(true);
-        when(trafficSign2.isRestrictive(accessibilityRequest)).thenReturn(true);
 
-        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
+        assertThat(trafficSignDataService.findAll()).isEmpty();
 
         trafficSignDataService.init();
-        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).containsExactly(trafficSign1, trafficSign2);
-    }
-
-    @Test
-    void findAllBy_restrictiveTrafficSign() {
-
-        when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
-        when(trafficSign1.isRestrictive(accessibilityRequest)).thenReturn(true);
-        when(trafficSign2.isRestrictive(accessibilityRequest)).thenReturn(false);
-
-        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
-
-        trafficSignDataService.init();
-        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).containsExactly(trafficSign1);
+        assertThat(trafficSignDataService.findAll()).containsExactlyInAnyOrder(trafficSign1, trafficSign2);
     }
 
     @Test
     void getTrafficSigns() {
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(trafficSignCacheReadWriter.read()).thenReturn(Optional.of(new TrafficSigns(trafficSign1, trafficSign2)));
 
-        assertThat(trafficSignDataService.findAllBy(accessibilityRequest)).isEmpty();
+        assertThat(trafficSignDataService.findAll()).isEmpty();
 
+        AtomicBoolean updateHasBeenTriggered = new AtomicBoolean(false);
+
+        trafficSignDataService.registerUpdateListener(() -> updateHasBeenTriggered.set(true));
         trafficSignDataService.init();
-        List<TrafficSign> trafficSigns = trafficSignDataService.getTrafficSigns();
 
+        assertThat(updateHasBeenTriggered.get()).isTrue();
+
+        Set<TrafficSign> trafficSigns = trafficSignDataService.getTrafficSigns();
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign2);
 
         //should be cached
-        List<TrafficSign> cachedTrafficSigns = trafficSignDataService.getTrafficSigns();
+        Set<TrafficSign> cachedTrafficSigns = trafficSignDataService.getTrafficSigns();
+        assertThat(cachedTrafficSigns).isEqualTo(trafficSigns);
 
         verify(trafficSignCacheReadWriter).read();
-        verify(networkCacheDataService).create(argThat(t -> t.equals(trafficSigns)), eq(networkGraphHopper));
-        assertThat(cachedTrafficSigns).isEqualTo(trafficSigns);
     }
 
     @Test
@@ -126,7 +98,10 @@ class TrafficSignDataServiceTest {
             return Optional.of(new TrafficSigns(trafficSign1, trafficSign2));
         });
 
+        AtomicBoolean updateHasBeenTriggered = new AtomicBoolean(false);
+        trafficSignDataService.registerUpdateListener(() -> updateHasBeenTriggered.set(true));
         trafficSignDataService.init();
+        assertThat(updateHasBeenTriggered.get()).isTrue();
 
         try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
             executorService.execute(() -> trafficSignDataService.getTrafficSigns());
