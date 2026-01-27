@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.response.restriction;
 
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.FuelTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.FuelTypeRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;

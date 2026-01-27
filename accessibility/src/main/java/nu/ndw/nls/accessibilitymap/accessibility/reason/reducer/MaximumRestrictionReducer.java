@@ -2,8 +2,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.reason.reducer;
 
 import java.util.Comparator;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.MaximumRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumRestriction;
 import org.springframework.stereotype.Component;
 
 /**

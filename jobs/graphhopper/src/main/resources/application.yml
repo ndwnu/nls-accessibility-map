@@ -55,6 +55,7 @@ nu:
             folder: "trafficsigns"
             file-name-active-version: "active"
             watch-for-updates: false
+            fail-on-no-data-on-startup: false
 management:
   observations:
     annotations:

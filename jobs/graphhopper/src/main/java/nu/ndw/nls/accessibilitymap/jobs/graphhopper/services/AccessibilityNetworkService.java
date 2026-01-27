@@ -10,7 +10,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkS
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
+import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.mapper.AccessibilityNwbRoadSectionToLinkMapper;
 import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
@@ -27,7 +29,7 @@ public class AccessibilityNetworkService {
 
     private final GraphHopperNetworkService graphHopperNetworkService;
 
-    private final AccessibilityLinkService accessibilityLinkService;
+    private final AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService;
 
     private final GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder;
 
@@ -38,6 +40,8 @@ public class AccessibilityNetworkService {
     private final NetworkMetaDataService networkMetaDataService;
 
     private final NwbVersionCrudService nwbVersionCrudService;
+
+    private final AccessibilityNwbRoadSectionToLinkMapper accessibilityNwbRoadSectionToLinkMapper;
 
     private final ClockService clockService;
 
@@ -50,7 +54,9 @@ public class AccessibilityNetworkService {
         int nwbVersionId = nwbVersionCrudService.findLatestVersionId();
 
         log.info("Retrieving link data");
-        List<AccessibilityLink> accessibilityLinks = accessibilityLinkService.getLinks(nwbVersionId);
+        List<AccessibilityLink> accessibilityLinks = accessibilityNwbRoadSectionService.findAllByVersion(nwbVersionId).stream()
+                .map(accessibilityNwbRoadSectionToLinkMapper::map)
+                .toList();
         Instant dataTimestamp = clockService.now().toInstant();
 
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings =
@@ -67,5 +73,4 @@ public class AccessibilityNetworkService {
             messageService.publish(nlsEvent);
         }
     }
-
 }

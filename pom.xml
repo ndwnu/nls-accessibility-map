@@ -31,7 +31,7 @@
     <nls-springboot.logging.version>8.4.16</nls-springboot.logging.version>
     <nls-springboot.component-test.version>12.4.0</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>8.4.18</nls-springboot.monitoring.version>
-    <nls-springboot.test.version>9.0.16</nls-springboot.test.version>
+    <nls-springboot.test.version>9.1.0</nls-springboot.test.version>
     <nls-springboot.gatling-test.version>1.1.0</nls-springboot.gatling-test.version>
     <gatling.version>3.14.9</gatling.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

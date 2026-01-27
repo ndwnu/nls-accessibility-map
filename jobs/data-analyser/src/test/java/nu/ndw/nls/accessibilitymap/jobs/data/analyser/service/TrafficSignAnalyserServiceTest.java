@@ -30,7 +30,6 @@ import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiCl
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.ReportApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.IssueJson;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,9 +46,6 @@ class TrafficSignAnalyserServiceTest {
 
     @Mock
     private AccessibilityService accessibilityService;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private IssueApiClient issueApiClient;
@@ -111,18 +107,19 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
         when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
-        when(directionalSegment.hasTrafficSigns()).thenReturn(true);
+        when(directionalSegment.hasRestrictions()).thenReturn(true);
         when(issueBuilder.buildTrafficSignIssue(
                 eq(directionalSegment),
                 argThat(reportId -> {
-                    Pattern pattern = Pattern.compile("^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                    Pattern pattern = Pattern.compile(
+                            "^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
                             Pattern.CASE_INSENSITIVE);
                     Matcher matcher = pattern.matcher(reportId);
                     return matcher.find();
@@ -132,17 +129,19 @@ class TrafficSignAnalyserServiceTest {
 
         when(issueApiClient.createIssue(createIssueJson)).thenReturn(createIssueResponse);
 
-        trafficSignAnalyserService.analyse(networkGraphHopper, analyseAsymmetricTrafficSignsConfiguration);
+        trafficSignAnalyserService.analyse(analyseAsymmetricTrafficSignsConfiguration);
 
         verify(issueApiClient).createIssue(createIssueJson);
         verify(reportApiClient).reportComplete(argThat(completeReportJson -> {
-            Pattern pattern = Pattern.compile("^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            Pattern pattern = Pattern.compile(
+                    "^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
                     Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(completeReportJson.getReporterReportId());
             return matcher.find()
-                    && completeReportJson.getReporterReportGroupId()
-                    .equals("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(),
-                            TrafficSignType.C22C.getRvvCode()));
+                   && completeReportJson.getReporterReportGroupId()
+                           .equals("AsymmetricTrafficSignPlacement-%s-%s".formatted(
+                                   TrafficSignType.C21.getRvvCode(),
+                                   TrafficSignType.C22C.getRvvCode()));
         }));
 
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseAsymmetricTrafficSignsConfiguration");
@@ -156,18 +155,19 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
         when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
-        when(directionalSegment.hasTrafficSigns()).thenReturn(true);
+        when(directionalSegment.hasRestrictions()).thenReturn(true);
         when(issueBuilder.buildTrafficSignIssue(
                 eq(directionalSegment),
                 argThat(reportId -> {
-                    Pattern pattern = Pattern.compile("^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                    Pattern pattern = Pattern.compile(
+                            "^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
                             Pattern.CASE_INSENSITIVE);
                     Matcher matcher = pattern.matcher(reportId);
                     return matcher.find();
@@ -175,7 +175,7 @@ class TrafficSignAnalyserServiceTest {
                 eq("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(), TrafficSignType.C22C.getRvvCode()))
         )).thenReturn(createIssueJson);
 
-        trafficSignAnalyserService.analyse(networkGraphHopper, analyseAsymmetricTrafficSignsConfiguration);
+        trafficSignAnalyserService.analyse(analyseAsymmetricTrafficSignsConfiguration);
 
         verify(issueApiClient, never()).createIssue(any());
         verify(reportApiClient, never()).reportComplete(any());
@@ -191,18 +191,19 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
         when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
-        when(directionalSegment.hasTrafficSigns()).thenReturn(true);
+        when(directionalSegment.hasRestrictions()).thenReturn(true);
         when(issueBuilder.buildTrafficSignIssue(
                 eq(directionalSegment),
                 argThat(reportId -> {
-                    Pattern pattern = Pattern.compile("^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                    Pattern pattern = Pattern.compile(
+                            "^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
                             Pattern.CASE_INSENSITIVE);
                     Matcher matcher = pattern.matcher(reportId);
                     return matcher.find();
@@ -212,7 +213,7 @@ class TrafficSignAnalyserServiceTest {
 
         when(issueApiClient.createIssue(createIssueJson)).thenThrow(feignServerException);
 
-        assertThat(catchThrowable(() -> trafficSignAnalyserService.analyse(networkGraphHopper, analyseAsymmetricTrafficSignsConfiguration)))
+        assertThat(catchThrowable(() -> trafficSignAnalyserService.analyse(analyseAsymmetricTrafficSignsConfiguration)))
                 .isInstanceOf(FeignServerException.class);
 
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseAsymmetricTrafficSignsConfiguration");
@@ -226,28 +227,30 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
         when(roadSectionFragment.isPartiallyAccessible()).thenReturn(true);
         when(roadSectionFragment.getSegments()).thenReturn(List.of(directionalSegment));
-        when(directionalSegment.hasTrafficSigns()).thenReturn(true);
+        when(directionalSegment.hasRestrictions()).thenReturn(true);
         when(issueBuilder.buildTrafficSignIssue(
                 eq(directionalSegment),
                 argThat(reportId -> {
-                    Pattern pattern = Pattern.compile("^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                    Pattern pattern = Pattern.compile(
+                            "^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
                             Pattern.CASE_INSENSITIVE);
                     Matcher matcher = pattern.matcher(reportId);
                     return matcher.find();
                 }),
-                eq("AsymmetricTrafficSignPlacement-%s-%s".formatted(TrafficSignType.C21.getRvvCode(),
+                eq("AsymmetricTrafficSignPlacement-%s-%s".formatted(
+                        TrafficSignType.C21.getRvvCode(),
                         TrafficSignType.C22C.getRvvCode())))).thenReturn(createIssueJson);
 
         when(issueApiClient.createIssue(createIssueJson)).thenThrow(feignClientException);
 
-        assertThat(catchThrowable(() -> trafficSignAnalyserService.analyse(networkGraphHopper, analyseAsymmetricTrafficSignsConfiguration)))
+        assertThat(catchThrowable(() -> trafficSignAnalyserService.analyse(analyseAsymmetricTrafficSignsConfiguration)))
                 .isInstanceOf(FeignClientException.class);
 
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseAsymmetricTrafficSignsConfiguration");

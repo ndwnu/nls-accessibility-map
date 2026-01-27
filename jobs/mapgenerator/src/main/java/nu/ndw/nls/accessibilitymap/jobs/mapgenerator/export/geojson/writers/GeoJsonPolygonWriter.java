@@ -9,13 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.FeatureCollection;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.utils.polygon.MultiPolygonFactory;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.util.polygon.MultiPolygonFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.springframework.stereotype.Component;
@@ -86,15 +86,15 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
                                     directionalSegment.getRoadSectionFragment().getRoadSection().getId())
                             .collect(Collectors.toSet());
 
-                    List<TrafficSign> relevantTrafficSigns = relevantDirectionalSegment.stream()
-                            .filter(DirectionalSegment::hasTrafficSigns)
-                            .flatMap(directionalSegment -> directionalSegment.getTrafficSigns().stream())
-                            .toList();
+                    Set<Restriction> relevantRestrictions = relevantDirectionalSegment.stream()
+                            .filter(DirectionalSegment::hasRestrictions)
+                            .flatMap(directionalSegment -> directionalSegment.getRestrictions().stream())
+                            .collect(Collectors.toSet());
 
                     return featureBuilder.createPolygon(
                             geometry,
                             idSequenceSupplier,
-                            relevantTrafficSigns,
+                            relevantRestrictions,
                             relevantRoadSectionIds);
                 })
                 .toList();
