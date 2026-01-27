@@ -48,14 +48,7 @@
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>nu.ndw</groupId>
-      <artifactId>nls-events</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>nu.ndw.nls.springboot</groupId>
-      <artifactId>messaging</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>monitoring</artifactId>

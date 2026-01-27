@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.AccessibilityNetworkService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityNetworkService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.springboot.messaging.services.MessageService;

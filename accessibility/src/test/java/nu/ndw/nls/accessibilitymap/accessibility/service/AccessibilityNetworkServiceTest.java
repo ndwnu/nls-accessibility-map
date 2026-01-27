@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.graphhopper.services;
+package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import static nu.ndw.nls.events.NlsEventType.ACCESSIBILITY_ROUTING_NETWORK_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,14 +12,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.List;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkSettingsBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
-import nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
@@ -30,6 +29,7 @@ import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,12 +41,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityNetworkServiceTest {
 
     private AccessibilityNetworkService accessibilityNetworkService;
-
-    @Mock
-    private List<AccessibilityLink> links;
-
-    @Mock
-    private Iterator<AccessibilityLink> linkIterator;
 
     @Mock
     private NlsEvent publishedEvent;
@@ -105,7 +99,6 @@ class AccessibilityNetworkServiceTest {
 
     @AfterEach
     void tearDown() throws IOException {
-
         FileUtils.deleteDirectory(testFolder.toFile());
     }
 
@@ -152,31 +145,39 @@ class AccessibilityNetworkServiceTest {
         loggerExtension.containsLog(Level.INFO, "Starting network creation for %s".formatted(graphopperPath.toAbsolutePath()));
         loggerExtension.containsLog(Level.INFO, "Retrieving link data");
         loggerExtension.containsLog(Level.INFO, "Creating GraphHopper network and writing to disk");
-
     }
 
-//    @SneakyThrows
-//    @Test
-//    void storeLatestNetworkOnDisk_noEvents() {
-//        when(accessibilityLinkService.getLinks()).thenReturn(accessibilityLinks);
-//        when(links.iterator()).thenReturn(linkIterator);
-//        when(graphHopperNetworkSettingsBuilder.publishEvents()).thenReturn(false);
-//        when(graphHopperNetworkSettingsBuilder.configurePersistingRoutingNetworkSettings(any(), eq(TRAFFIC_SIGN_TIMESTAMP)))
-//                .thenReturn(routingNetworkSettings);
-//
-//        accessibilityNetworkService.storeLatestNetworkOnDisk();
-//
-//        verify(networkMetaDataService).saveMetaData(new AccessibilityGraphhopperMetaData(NWB_VERSION_ID));
-//
-//        verify(graphHopperNetworkSettingsBuilder).configurePersistingRoutingNetworkSettings(supplierArgumentCaptor.capture(),
-//                eq(TRAFFIC_SIGN_TIMESTAMP));
-//
-//        assertEquals(linkIterator, supplierArgumentCaptor.getValue().get());
-//
-//        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkSettings);
-//        assertTrue(Files.exists(tmpLatestPathFolder));
-//
-//        verifyNoInteractions(messageService);
-//    }
+    @SneakyThrows
+    @Test
+    void initializeNetwork_no_network() {
+        Path graphopperPath = testFolder.resolve("latest");
+        OffsetDateTime timestamp = OffsetDateTime.parse("2022-12-06T09:00:00.001Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        when(graphHopperNetworkSettingsBuilder.getLatestPath()).thenReturn(graphopperPath);
 
+        int nwbVersionId = 123;
+        when(nwbVersionCrudService.findLatestVersionId()).thenReturn(nwbVersionId);
+        when(accessibilityLinkService.getLinks(nwbVersionId)).thenReturn(accessibilityLinks);
+        when(clockService.now()).thenReturn(timestamp);
+
+        when(graphHopperNetworkSettingsBuilder.networkSettingsWithData(accessibilityLinks, timestamp.toInstant()))
+                .thenReturn(routingNetworkSettings);
+
+        accessibilityNetworkService.initializeNetwork();
+
+        assertThat(Files.exists(graphopperPath)).isTrue();
+        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkSettings);
+        verify(networkMetaDataService).saveMetaData(new GraphhopperMetaData(nwbVersionId));
+        loggerExtension.containsLog(Level.INFO, "No network found on disk, creating new one");
+    }
+
+    @SneakyThrows
+    @Test
+    void initializeNetwork_network_exists() {
+        Path graphopperPath = testFolder.resolve("latest");
+        Files.createDirectories(graphopperPath);
+        when(graphHopperNetworkSettingsBuilder.getLatestPath()).thenReturn(graphopperPath);
+        accessibilityNetworkService.initializeNetwork();
+        assertThat(Files.exists(graphopperPath)).isTrue();
+        verifyNoMoreInteractions(indexedGraphHopperNetworkService);
+    }
 }
