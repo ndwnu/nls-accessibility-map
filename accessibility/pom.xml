@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
@@ -26,18 +26,6 @@
     <dependency>
       <groupId>nu.ndw.nls.geometry</groupId>
       <artifactId>nls-geometry</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>nu.ndw.nls.springboot</groupId>
-      <artifactId>messaging</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>nu.ndw</groupId>
-      <artifactId>nls-events</artifactId>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

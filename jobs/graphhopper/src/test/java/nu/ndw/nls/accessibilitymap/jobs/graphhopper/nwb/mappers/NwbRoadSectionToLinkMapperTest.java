@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper;
+package nu.ndw.nls.accessibilitymap.jobs.graphhopper.nwb.mappers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper;
+package nu.ndw.nls.accessibilitymap.jobs.graphhopper.nwb.mappers;
 
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;

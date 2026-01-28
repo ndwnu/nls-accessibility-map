@@ -1,11 +1,11 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service;
+package nu.ndw.nls.accessibilitymap.jobs.graphhopper.services;
 
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.NwbRoadSectionToLinkMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionService;
+import nu.ndw.nls.accessibilitymap.jobs.graphhopper.nwb.mappers.NwbRoadSectionToLinkMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
