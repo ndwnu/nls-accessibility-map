@@ -11,7 +11,7 @@
   <dependencies>
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
-      <artifactId>security</artifactId>
+      <artifactId>oauth2-client-credentials</artifactId>
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls.accessibilitymap</groupId>
