@@ -37,8 +37,10 @@ public class GeoJsonRoadSectionWriter extends AbstractGeoJsonWriter {
     }
 
     @Override
-    protected FeatureCollection prepareGeoJsonFeatureCollection(Accessibility accessibility,
-            ExportProperties exportProperties, AtomicLong idSequenceSupplier) {
+    protected FeatureCollection prepareGeoJsonFeatureCollection(
+            Accessibility accessibility,
+            ExportProperties exportProperties,
+            AtomicLong idSequenceSupplier) {
 
         return FeatureCollection
                 .builder()

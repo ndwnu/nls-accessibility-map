@@ -148,7 +148,7 @@ class QueryGraphConfigurerTest {
     }
 
     @Test
-    void createEdgeRestrictions_noRestrictionAssigned_isTrafficSignInFrontOfEdge() {
+    void createEdgeRestrictions_noRestrictionAssigned_isSnapInFrontOfEdge() {
 
         when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
         when(queryGraph.getNodes()).thenReturn(1);

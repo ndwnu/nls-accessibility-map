@@ -11,10 +11,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,9 +34,6 @@ class TrafficSignDataServiceTest {
 
     @Mock
     private TrafficSignCacheReadWriter trafficSignCacheReadWriter;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
 
     @BeforeEach
     void setUp() {
@@ -72,12 +67,7 @@ class TrafficSignDataServiceTest {
 
         assertThat(trafficSignDataService.findAll()).isEmpty();
 
-        AtomicBoolean updateHasBeenTriggered = new AtomicBoolean(false);
-
-        trafficSignDataService.registerUpdateListener(() -> updateHasBeenTriggered.set(true));
         trafficSignDataService.init();
-
-        assertThat(updateHasBeenTriggered.get()).isTrue();
 
         Set<TrafficSign> trafficSigns = trafficSignDataService.getTrafficSigns();
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign2);
@@ -98,10 +88,7 @@ class TrafficSignDataServiceTest {
             return Optional.of(new TrafficSigns(trafficSign1, trafficSign2));
         });
 
-        AtomicBoolean updateHasBeenTriggered = new AtomicBoolean(false);
-        trafficSignDataService.registerUpdateListener(() -> updateHasBeenTriggered.set(true));
         trafficSignDataService.init();
-        assertThat(updateHasBeenTriggered.get()).isTrue();
 
         try (ExecutorService executorService = Executors.newFixedThreadPool(2)) {
             executorService.execute(() -> trafficSignDataService.getTrafficSigns());

@@ -117,7 +117,7 @@ class AccessibilityNwbRoadSectionServiceTest {
                 null,
                 250
         )).thenReturn(Stream.of(nwbRoadSectionDto1, nwbRoadSectionDto2));
-        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto1)).thenReturn(accessibilityNwbRoadSection1);;
+        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto1)).thenReturn(accessibilityNwbRoadSection1);
         when(accessibilityNwbRoadSection1.municipalityId()).thenReturn(null);
         when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto2)).thenReturn(accessibilityNwbRoadSection2);
         when(accessibilityNwbRoadSection2.municipalityId()).thenReturn(3);

@@ -27,8 +27,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.BaseAccessibilityCalculator;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
@@ -52,7 +52,7 @@ public class AccessibilityService {
 
     private final ClockService clockService;
 
-    private final NetworkCacheDataService networkCacheDataService;
+    private final BaseAccessibilityCalculator baseAccessibilityCalculator;
 
     private final RoadSectionCombinator roadSectionCombinator;
 
@@ -75,7 +75,7 @@ public class AccessibilityService {
 
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
 
-        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = networkCacheDataService.getBaseAccessibility(
+        Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = baseAccessibilityCalculator.calculate(
                 graphHopperNetwork,
                 accessibilityRequest.municipalityId(),
                 accessibilityRequest.searchRadiusInMeters());

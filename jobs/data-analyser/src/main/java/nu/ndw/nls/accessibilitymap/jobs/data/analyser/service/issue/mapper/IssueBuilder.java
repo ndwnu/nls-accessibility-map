@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -45,14 +46,17 @@ public class IssueBuilder {
                 .build();
     }
 
-    public CreateIssueJson buildTrafficSignIssue(DirectionalSegment directionalSegment, String reportId, String reportGroupId) {
-        // Todo add support for all restrictions not only trafficsigns.
+    public Optional<CreateIssueJson> buildTrafficSignIssue(DirectionalSegment directionalSegment, String reportId, String reportGroupId) {
         List<DataLinkRecordJson> recordsList = directionalSegment.getRestrictions()
                 .stream()
                 .filter(TrafficSign.class::isInstance)
                 .map(TrafficSign.class::cast)
                 .map(IssueBuilder::mapRestriction)
                 .collect(Collectors.toCollection(ArrayList::new));
+
+        if(recordsList.isEmpty()) {
+            return Optional.empty();
+        }
 
         recordsList.add(DataLinkRecordJson.builder()
                 .type(DATA_LINK_RECORD_TYPE_ROAD_SECTION)
@@ -66,7 +70,7 @@ public class IssueBuilder {
                 .build();
 
         String title = "Asymmetric traffic sign placement";
-        return CreateIssueJson.builder()
+        return Optional.of(CreateIssueJson.builder()
                 .type(IssueTypeJson.MISSING)
                 .title(title)
                 .description(title)
@@ -76,7 +80,7 @@ public class IssueBuilder {
                 .priority(IssuePriorityJson.MEDIUM)
                 .reporterReportId(reportId)
                 .reporterReportGroupId(reportGroupId)
-                .build();
+                .build());
     }
 
     private static DataLinkRecordJson mapRestriction(TrafficSign trafficSign) {
