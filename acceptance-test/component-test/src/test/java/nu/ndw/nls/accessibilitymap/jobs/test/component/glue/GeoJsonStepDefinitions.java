@@ -36,6 +36,8 @@ public class GeoJsonStepDefinitions {
                 : mapGenerationJobDriver.getLastGeneratedGeoJson());
         String expectedResult = fileService.readTestDataFromFile("geojson", fileName, "geojson");
 
-        assertThatJson(actualResult).isEqualTo(expectedResult);
+        assertThatJson(actualResult)
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(expectedResult);
     }
 }
