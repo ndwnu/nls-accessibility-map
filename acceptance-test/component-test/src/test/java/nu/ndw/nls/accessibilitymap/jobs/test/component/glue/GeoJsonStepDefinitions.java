@@ -23,9 +23,7 @@ public class GeoJsonStepDefinitions {
         String actualResult = mapGenerationJobDriver.getLastGeneratedGeoJson();
         String expectedResult = fileService.readTestDataFromFile("geojson", "EmptyFeatureCollection", "geojson");
 
-        assertThatJson(actualResult)
-                .withOptions(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(expectedResult);
+        assertThatJson(actualResult).isEqualTo(expectedResult);
     }
 
     @Then("we expect {word} geojson")
@@ -38,6 +36,7 @@ public class GeoJsonStepDefinitions {
 
         assertThatJson(actualResult)
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .whenIgnoringPaths("features[*].id")
                 .isEqualTo(expectedResult);
     }
 }
