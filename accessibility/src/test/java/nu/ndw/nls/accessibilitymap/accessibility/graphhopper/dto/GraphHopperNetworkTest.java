@@ -50,7 +50,7 @@ class GraphHopperNetworkTest {
                 1,
                 queryGraph,
                 restrictions,
-                Map.of(2, restriction),
+                Map.of(2, List.of(restriction)),
                 fromSnap,
                 destinationSnap
         );

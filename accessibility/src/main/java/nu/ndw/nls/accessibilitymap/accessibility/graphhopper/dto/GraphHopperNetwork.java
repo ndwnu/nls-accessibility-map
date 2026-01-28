@@ -1,16 +1,11 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toList;
-
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.storage.index.Snap;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
@@ -50,7 +45,7 @@ public final class GraphHopperNetwork {
             @NotNull Integer nwbVersion,
             @NotNull QueryGraph queryGraph,
             @NotNull Restrictions restrictions,
-            @NotNull Map<Integer, Restriction> edgeToRestriction,
+            @NotNull Map<Integer, List<Restriction>> restrictionsByEdgeKey,
             @NotNull Snap from,
             Snap destination) {
 
@@ -58,14 +53,8 @@ public final class GraphHopperNetwork {
         this.nwbVersion = nwbVersion;
         this.queryGraph = queryGraph;
         this.restrictions = restrictions;
-
-        this.blockedEdges = new HashSet<>(edgeToRestriction.keySet());
-
-        this.restrictionsByEdgeKey = edgeToRestriction.entrySet().stream()
-                .collect(groupingBy(
-                        Entry::getKey,
-                        mapping(Entry::getValue, toList())));
-
+        this.blockedEdges = new HashSet<>(restrictionsByEdgeKey.keySet());
+        this.restrictionsByEdgeKey = restrictionsByEdgeKey;
         this.from = from;
         this.destination = destination;
     }

@@ -94,11 +94,11 @@ class QueryGraphConfigurerTest {
         when(ghPoint.getLat()).thenReturn(2.0);
 
         when(restriction.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
-        Map<Integer, Restriction> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
                 List.of(new SnapRestriction(snap, restriction)));
 
-        assertThat(restrictionsByEdgeKey.get(edgeIterator.getEdgeKey())).isEqualTo(restriction);
+        assertThat(restrictionsByEdgeKey.get(edgeIterator.getEdgeKey())).isEqualTo(List.of(restriction));
         loggerExtension.containsLog(
                 Level.INFO,
                 "Query graph configuration summary. "
@@ -115,7 +115,7 @@ class QueryGraphConfigurerTest {
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(true);
         when(restriction.direction()).thenReturn(Direction.FORWARD);
 
-        Map<Integer, Restriction> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
                 List.of(new SnapRestriction(snap, restriction)));
 
@@ -144,7 +144,7 @@ class QueryGraphConfigurerTest {
         when(ghPoint.getLon()).thenReturn(3.0);
         when(ghPoint.getLat()).thenReturn(4.0);
 
-        Map<Integer, Restriction> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
                 List.of(new SnapRestriction(snap, restriction)));
 
