@@ -36,8 +36,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.BaseAccessibilityCalculator;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
@@ -130,7 +130,7 @@ class AccessibilityServiceTest {
     private GraphHopperService graphHopperService;
 
     @Mock
-    private NetworkCacheDataService networkCacheDataService;
+    private BaseAccessibilityCalculator baseAccessibilityCalculator;
 
     private AccessibilityService accessibilityService;
 
@@ -190,7 +190,7 @@ class AccessibilityServiceTest {
                 restrictionService,
                 roadSectionMapper,
                 clockService,
-                networkCacheDataService,
+                baseAccessibilityCalculator,
                 roadSectionCombinator,
                 missingRoadSectionProvider,
                 accessibilityReasonService,
@@ -219,7 +219,7 @@ class AccessibilityServiceTest {
         mockFromAndDestination(accessibilityRequest);
         mockGraphHopperNetwork(accessibilityRequest);
 
-        when(networkCacheDataService.getBaseAccessibility(
+        when(baseAccessibilityCalculator.calculate(
                 graphHopperNetwork,
                 accessibilityRequest.municipalityId(),
                 accessibilityRequest.searchRadiusInMeters()))
@@ -276,7 +276,7 @@ class AccessibilityServiceTest {
         mockFromAndDestination(accessibilityRequest);
         mockGraphHopperNetwork(accessibilityRequest);
 
-        when(networkCacheDataService.getBaseAccessibility(
+        when(baseAccessibilityCalculator.calculate(
                 graphHopperNetwork,
                 accessibilityRequest.municipalityId(),
                 accessibilityRequest.searchRadiusInMeters()))
@@ -329,7 +329,7 @@ class AccessibilityServiceTest {
         mockFromAndDestination(accessibilityRequest);
         mockGraphHopperNetwork(accessibilityRequest);
 
-        when(networkCacheDataService.getBaseAccessibility(
+        when(baseAccessibilityCalculator.calculate(
                 graphHopperNetwork,
                 accessibilityRequest.municipalityId(),
                 accessibilityRequest.searchRadiusInMeters()))
@@ -381,7 +381,7 @@ class AccessibilityServiceTest {
         mockFromAndDestination(accessibilityRequest);
         mockGraphHopperNetwork(accessibilityRequest);
 
-        when(networkCacheDataService.getBaseAccessibility(
+        when(baseAccessibilityCalculator.calculate(
                 graphHopperNetwork,
                 accessibilityRequest.municipalityId(),
                 accessibilityRequest.searchRadiusInMeters()))

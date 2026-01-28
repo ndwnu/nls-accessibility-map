@@ -17,19 +17,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper
 import nu.ndw.nls.accessibilitymap.accessibility.service.RoadSectionTrafficSignAssigner;
 import org.springframework.stereotype.Component;
 
-/**
- * The NetworkCacheDataService class provides functionality to manage cached traffic sign data, road section accessibility, and query graph
- * generation within a network. It ensures thread-safe access and modification of the cached data through the use of a lock mechanism.
- * <p>
- * This service is responsible for: - Creating and maintaining a query graph based on traffic sign data. - Retrieving snapped traffic sign
- * data for specified traffic sign IDs. - Calculating and managing base accessibility of road sections by municipality, including optional
- * caching.
- * <p>
- * The class ensures data consistency and protection against concurrent access through the use of a ReentrantLock.
- */
 @Component
 @Slf4j
-public class NetworkCacheDataService {
+public class BaseAccessibilityCalculator {
 
     private final IsochroneServiceFactory isochroneServiceFactory;
 
@@ -37,7 +27,7 @@ public class NetworkCacheDataService {
 
     private final RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner;
 
-    public NetworkCacheDataService(
+    public BaseAccessibilityCalculator(
             IsochroneServiceFactory isochroneServiceFactory,
             RoadSectionMapper roadSectionMapper,
             RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner) {
@@ -47,7 +37,7 @@ public class NetworkCacheDataService {
         this.roadSectionTrafficSignAssigner = roadSectionTrafficSignAssigner;
     }
 
-    public Collection<RoadSection> getBaseAccessibility(
+    public Collection<RoadSection> calculate(
             GraphHopperNetwork graphHopperNetwork,
             Integer municipalityId,
             double searchRadiusInMeters) {

@@ -47,12 +47,6 @@ public class TrafficSignDataService {
         }
     }
 
-    public void registerUpdateListener(Runnable runnable) {
-        synchronized (updateListeners) {
-            updateListeners.add(runnable);
-        }
-    }
-
     protected void updateTrafficSignData() {
         trafficSignCacheReadWriter.read().ifPresent(newTrafficSignsData -> {
             OffsetDateTime start = OffsetDateTime.now();

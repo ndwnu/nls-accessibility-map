@@ -34,12 +34,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class NetworkCacheDataServiceTest {
+class BaseAccessibilityCalculatorTest {
 
-    private NetworkCacheDataService networkCacheDataService;
+    private BaseAccessibilityCalculator baseAccessibilityCalculator;
 
     @Mock
-
     private IsochroneServiceFactory isochroneServiceFactory;
 
     @Mock
@@ -77,7 +76,7 @@ class NetworkCacheDataServiceTest {
 
     @BeforeEach
     void setUp() {
-        networkCacheDataService = new NetworkCacheDataService(
+        baseAccessibilityCalculator = new BaseAccessibilityCalculator(
                 isochroneServiceFactory,
                 roadSectionMapper,
                 roadSectionTrafficSignAssigner);
@@ -88,7 +87,7 @@ class NetworkCacheDataServiceTest {
             "1",
             "null"
     }, nullValues = "null")
-    void getBaseAccessibility(Integer municipalityId) {
+    void calculate(Integer municipalityId) {
 
         when(graphHopperNetwork.getNetwork()).thenReturn(network);
         when(graphHopperNetwork.getQueryGraph()).thenReturn(queryGraph);
@@ -114,7 +113,7 @@ class NetworkCacheDataServiceTest {
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch)))
                 .thenReturn(List.of(roadSection));
 
-        Collection<RoadSection> baseAccessibility = networkCacheDataService.getBaseAccessibility(graphHopperNetwork, municipalityId, 2.0);
+        Collection<RoadSection> baseAccessibility = baseAccessibilityCalculator.calculate(graphHopperNetwork, municipalityId, 2.0);
 
         assertThat(baseAccessibility).containsExactly(roadSection);
     }

@@ -55,7 +55,7 @@ public class QueryGraphConfigurer {
 
             while (edgeIterator.next()) {
                 if (hasDirectionInSameDirectionAsCurrentEdge(edgeIterator, restriction)
-                    && isTrafficSignInFrontOfEdge(edgeIterator, snap)) {
+                    && isSnapInFrontOfEdge(edgeIterator, snap)) {
                     edgeRestrictions.computeIfAbsent(edgeIterator.getEdgeKey(), integer -> new ArrayList<>());
                     edgeRestrictions.get(edgeIterator.getEdgeKey()).add(restriction);
                     assignedRestrictions.add(restriction);
@@ -79,7 +79,7 @@ public class QueryGraphConfigurer {
         return edgeRestrictions;
     }
 
-    private static boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, Snap snap) {
+    private static boolean isSnapInFrontOfEdge(EdgeIteratorState edgeIteratorState, Snap snap) {
 
         GHPoint point = snap.getSnappedPoint();
         Coordinate snapCoordinate = new Coordinate(point.getLon(), point.getLat());
