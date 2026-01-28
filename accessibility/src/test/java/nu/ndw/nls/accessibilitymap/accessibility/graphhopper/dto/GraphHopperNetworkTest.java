@@ -71,7 +71,7 @@ class GraphHopperNetworkTest {
     @Test
     void toStringTest() {
         assertThat(graphHopperNetwork)
-                .hasToString("GraphHopperNetwork[network=networkGraphHopper, queryGraph=queryGraph, restrictions=restrictions, "
-                             + "restrictionToSnap={restriction=snap}, restrictionsByEdgeKey={2=[restriction]}, blockedEdges=[2]]");
+                .hasToString("GraphHopperNetwork[network=networkGraphHopper, queryGraph=queryGraph, "
+                             + "restrictions=restrictions, restrictionsByEdgeKey={2=[restriction]}, blockedEdges=[2]]");
     }
 }
