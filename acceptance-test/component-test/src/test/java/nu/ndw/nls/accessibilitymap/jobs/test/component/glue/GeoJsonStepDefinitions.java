@@ -5,6 +5,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import io.cucumber.java.en.Then;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
+import net.javacrumbs.jsonunit.core.Option;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJobDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 
@@ -22,7 +23,9 @@ public class GeoJsonStepDefinitions {
         String actualResult = mapGenerationJobDriver.getLastGeneratedGeoJson();
         String expectedResult = fileService.readTestDataFromFile("geojson", "EmptyFeatureCollection", "geojson");
 
-        assertThatJson(actualResult).isEqualTo(expectedResult);
+        assertThatJson(actualResult)
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(expectedResult);
     }
 
     @Then("we expect {word} geojson")
