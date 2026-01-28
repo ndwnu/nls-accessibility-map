@@ -11,6 +11,7 @@ import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.shapes.GHPoint;
 import io.micrometer.core.annotation.Timed;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,15 +38,15 @@ public class QueryGraphConfigurer {
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
-    public Map<Integer, Restriction> createEdgeRestrictions(QueryGraph queryGraph, List<SnapRestriction> snaps) {
+    public Map<Integer, List<Restriction>> createEdgeRestrictions(QueryGraph queryGraph, List<SnapRestriction> snapRestrictions) {
 
-        Map<Integer, Restriction> edgeRestrictions = new HashMap<>();
+        Map<Integer, List<Restriction> > edgeRestrictions = new HashMap<>();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         Restrictions assignedRestrictions = new Restrictions();
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         log.debug("Configuring query graph total nodes {} total edges {}", queryGraph.getNodes(), queryGraph.getEdges());
-        snaps.forEach(snapRestriction -> {
+        snapRestrictions.forEach(snapRestriction -> {
             Restriction restriction = snapRestriction.restriction();
             Snap snap = snapRestriction.snap();
             // By creating a query graph with a snap, the closestNode of the snap is updated to a virtual node if applicable.
@@ -55,13 +56,14 @@ public class QueryGraphConfigurer {
             while (edgeIterator.next()) {
                 if (hasDirectionInSameDirectionAsCurrentEdge(edgeIterator, restriction)
                     && isTrafficSignInFrontOfEdge(edgeIterator, snap)) {
-                    edgeRestrictions.put(edgeIterator.getEdgeKey(), restriction);
+                    edgeRestrictions.computeIfAbsent(edgeIterator.getEdgeKey(), integer -> new ArrayList<>());
+                    edgeRestrictions.get(edgeIterator.getEdgeKey()).add(restriction);
                     assignedRestrictions.add(restriction);
                 }
             }
         });
 
-        Restrictions original = new Restrictions(snaps.stream().map(SnapRestriction::restriction).collect(Collectors.toSet()));
+        Restrictions original = new Restrictions(snapRestrictions.stream().map(SnapRestriction::restriction).collect(Collectors.toSet()));
         Restrictions notAssigned = new Restrictions(Sets.difference(original, assignedRestrictions));
 
         log.atLevel(notAssigned.isEmpty() ? Level.INFO : Level.WARN)
@@ -69,7 +71,7 @@ public class QueryGraphConfigurer {
                         "Query graph configuration summary. "
                         + "Total restriction: {}. "
                         + "Total not assignable restrictions: {}. {}")
-                .addArgument(snaps.size())
+                .addArgument(snapRestrictions.size())
                 .addArgument(notAssigned.size())
                 .addArgument(notAssigned)
                 .log();

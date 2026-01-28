@@ -134,7 +134,7 @@ class GraphHopperServiceTest {
             queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
             when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(new SnapRestriction(restrictionSnap, restriction))))
-                    .thenReturn(Map.of(2, restriction));
+                    .thenReturn(Map.of(2, List.of(restriction)));
 
             GraphHopperNetwork graphHopperNetwork = graphHopperService.getNetwork(restrictions, from, destination);
 
@@ -182,7 +182,7 @@ class GraphHopperServiceTest {
             queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap)))
                     .thenReturn(queryGraph);
             when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(new SnapRestriction(restrictionSnap, restriction))))
-                    .thenReturn(Map.of(2, restriction));
+                    .thenReturn(Map.of(2, List.of(restriction)));
 
             GraphHopperNetwork graphHopperNetwork = graphHopperService.getNetwork(restrictions, from, destination);
 
