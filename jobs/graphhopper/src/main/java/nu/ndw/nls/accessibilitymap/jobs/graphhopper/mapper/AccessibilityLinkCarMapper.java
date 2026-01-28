@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper;
+package nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper;
 
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;

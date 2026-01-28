@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import java.io.IOException;
-import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityNetworkService;
+import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.AccessibilityNetworkService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventType;
 import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;

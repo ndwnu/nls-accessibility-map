@@ -1,6 +1,5 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service;
+package nu.ndw.nls.accessibilitymap.jobs.graphhopper.services;
 
-import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
@@ -10,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkSettingsBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
+import nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
 import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
@@ -69,17 +68,4 @@ public class AccessibilityNetworkService {
         }
     }
 
-    protected boolean networkExists() {
-        return Files.exists(graphHopperNetworkSettingsBuilder.getLatestPath());
-    }
-
-    @PostConstruct
-    public void initializeNetwork() throws IOException {
-        if (!networkExists()) {
-            log.info("No network found on disk, creating new one");
-            storeLatestNetworkOnDisk();
-        } else {
-            log.info("Network already exists on disk");
-        }
-    }
 }
