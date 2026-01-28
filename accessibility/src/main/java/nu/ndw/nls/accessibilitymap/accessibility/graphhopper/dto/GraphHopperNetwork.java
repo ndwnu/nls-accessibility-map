@@ -40,6 +40,7 @@ public final class GraphHopperNetwork {
 
     private final Snap destination;
 
+    @SuppressWarnings("java:S107")
     public GraphHopperNetwork(
             @NotNull NetworkGraphHopper network,
             @NotNull Integer nwbVersion,
