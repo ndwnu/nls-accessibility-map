@@ -35,9 +35,6 @@ public final class GraphHopperNetwork {
     private final Restrictions restrictions;
 
     @NotNull
-    private final Map<Restriction, Snap> restrictionToSnap;
-
-    @NotNull
     private final Map<Integer, List<Restriction>> restrictionsByEdgeKey;
 
     @NotNull
@@ -53,7 +50,6 @@ public final class GraphHopperNetwork {
             @NotNull Integer nwbVersion,
             @NotNull QueryGraph queryGraph,
             @NotNull Restrictions restrictions,
-            @NotNull Map<Restriction, Snap> restrictionToSnap,
             @NotNull Map<Integer, Restriction> edgeToRestriction,
             @NotNull Snap from,
             Snap destination) {
@@ -62,7 +58,6 @@ public final class GraphHopperNetwork {
         this.nwbVersion = nwbVersion;
         this.queryGraph = queryGraph;
         this.restrictions = restrictions;
-        this.restrictionToSnap = restrictionToSnap;
 
         this.blockedEdges = new HashSet<>(edgeToRestriction.keySet());
 
@@ -81,7 +76,6 @@ public final class GraphHopperNetwork {
                "network=" + network + ", " +
                "queryGraph=" + queryGraph + ", " +
                "restrictions=" + restrictions + ", " +
-               "restrictionToSnap=" + restrictionToSnap + ", " +
                "restrictionsByEdgeKey=" + restrictionsByEdgeKey + ", " +
                "blockedEdges=" + blockedEdges + ']';
     }

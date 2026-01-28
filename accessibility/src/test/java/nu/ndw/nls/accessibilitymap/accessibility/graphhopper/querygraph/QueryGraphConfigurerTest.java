@@ -12,8 +12,10 @@ import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.GHPoint3D;
+import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +96,7 @@ class QueryGraphConfigurerTest {
         when(restriction.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
         Map<Integer, Restriction> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
-                Map.of(restriction, snap));
+                List.of(new SnapRestriction(snap, restriction)));
 
         assertThat(restrictionsByEdgeKey.get(edgeIterator.getEdgeKey())).isEqualTo(restriction);
         loggerExtension.containsLog(
@@ -115,7 +117,7 @@ class QueryGraphConfigurerTest {
 
         Map<Integer, Restriction> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
-                Map.of(restriction, snap));
+                List.of(new SnapRestriction(snap, restriction)));
 
         assertThat(restrictionsByEdgeKey).isEmpty();
         loggerExtension.containsLog(
@@ -144,7 +146,7 @@ class QueryGraphConfigurerTest {
 
         Map<Integer, Restriction> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
-                Map.of(restriction, snap));
+                List.of(new SnapRestriction(snap, restriction)));
 
         assertThat(restrictionsByEdgeKey).isEmpty();
         loggerExtension.containsLog(

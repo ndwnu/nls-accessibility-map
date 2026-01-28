@@ -12,9 +12,12 @@ import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.shapes.GHPoint;
 import io.micrometer.core.annotation.Timed;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import org.locationtech.jts.geom.Coordinate;
@@ -34,7 +37,7 @@ public class QueryGraphConfigurer {
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
-    public Map<Integer, Restriction> createEdgeRestrictions(QueryGraph queryGraph, Map<Restriction, Snap> restrictionToSnap) {
+    public Map<Integer, Restriction> createEdgeRestrictions(QueryGraph queryGraph, List<SnapRestriction> snaps) {
 
         Map<Integer, Restriction> edgeRestrictions = new HashMap<>();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
@@ -42,9 +45,9 @@ public class QueryGraphConfigurer {
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         log.debug("Configuring query graph total nodes {} total edges {}", queryGraph.getNodes(), queryGraph.getEdges());
-        restrictionToSnap.entrySet().forEach(entry -> {
-            Restriction restriction = entry.getKey();
-            Snap snap = entry.getValue();
+        snaps.forEach(snapRestriction -> {
+            Restriction restriction = snapRestriction.restriction();
+            Snap snap = snapRestriction.snap();
             // By creating a query graph with a snap, the closestNode of the snap is updated to a virtual node if applicable.
             // See QueryOverlayBuilder.buildVirtualEdges
             EdgeIterator edgeIterator = edgeExplorer.setBaseNode(snap.getClosestNode());
@@ -58,7 +61,7 @@ public class QueryGraphConfigurer {
             }
         });
 
-        Restrictions original = new Restrictions(restrictionToSnap.keySet());
+        Restrictions original = new Restrictions(snaps.stream().map(SnapRestriction::restriction).collect(Collectors.toSet()));
         Restrictions notAssigned = new Restrictions(Sets.difference(original, assignedRestrictions));
 
         log.atLevel(notAssigned.isEmpty() ? Level.INFO : Level.WARN)
@@ -66,7 +69,7 @@ public class QueryGraphConfigurer {
                         "Query graph configuration summary. "
                         + "Total restriction: {}. "
                         + "Total not assignable restrictions: {}. {}")
-                .addArgument(restrictionToSnap.size())
+                .addArgument(snaps.size())
                 .addArgument(notAssigned.size())
                 .addArgument(notAssigned)
                 .log();

@@ -49,7 +49,18 @@
     "id" : 3,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 10.0, 1.0 ], [ 10.0, 1.9000954 ], [ 10.0, 9.1001477 ], [ 10.0, 10.0 ] ]
+      "coordinates" : [ [ 10.0, 1.0 ], [ 10.0, 10.0 ] ]
+    },
+    "properties" : {
+      "accessible" : true,
+      "matched" : false
+    }
+  }, {
+    "type" : "Feature",
+    "id" : -3,
+    "geometry" : {
+      "type" : "LineString",
+      "coordinates" : [ [ 10.0, 10.0 ], [ 10.0, 1.0 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -170,7 +181,7 @@
     "id" : 9,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 7.0, 2.0 ], [ 7.0, 8.0 ] ]
+      "coordinates" : [ [ 7.0, 2.0 ], [ 7.0, 3.0 ], [ 7.0, 8.0 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -181,7 +192,7 @@
     "id" : -9,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 7.0, 8.0 ], [ 7.0, 2.0 ] ]
+      "coordinates" : [ [ 7.0, 8.0 ], [ 7.0, 3.0 ], [ 7.0, 2.0 ] ]
     },
     "properties" : {
       "accessible" : true,
