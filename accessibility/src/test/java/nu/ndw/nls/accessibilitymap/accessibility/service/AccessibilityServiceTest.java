@@ -13,7 +13,6 @@ import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.PMap;
@@ -43,9 +42,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
-import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -54,7 +51,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.locationtech.jts.geom.Point;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -79,9 +75,6 @@ class AccessibilityServiceTest {
     private IntEncodedValue idIntEncodedValue;
 
     @Mock
-    private TrafficSignDataService trafficSignDataService;
-
-    @Mock
     private RoadSectionMapper roadSectionMapper;
 
     @Mock
@@ -95,9 +88,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private EdgeIteratorState endSegmentClosestEdge;
-
-    @Mock
-    private LocationIndexTree locationIndexTree;
 
     @Mock
     private QueryGraph queryGraph;
@@ -142,18 +132,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private List<List<AccessibilityReason>> accessibilityReasons;
-
-    @Mock
-    private PointMatchService pointMatchService;
-
-    @Mock
-    private Point startPoint;
-
-    @Mock
-    private Point endPoint;
-
-    @Mock
-    private CandidateMatch endCandidateMatch;
 
     @Mock
     private Location from;
