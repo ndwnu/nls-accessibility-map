@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>5.2.8-SNAPSHOT</version>
+    <version>5.2.10-SNAPSHOT</version>
   </parent>
   <artifactId>trafficsignclient</artifactId>
   <name>NLS Accessibility Map Traffic Sign Client</name>
@@ -50,6 +50,7 @@
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.github.jsurfer</groupId>
