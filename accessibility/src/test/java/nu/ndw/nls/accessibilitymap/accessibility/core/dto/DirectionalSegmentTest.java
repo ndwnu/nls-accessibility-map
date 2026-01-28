@@ -38,7 +38,7 @@ class DirectionalSegmentTest {
     }
 
     @Test
-    void hasTrafficSign_noTrafficSigns() {
+    void hasRestrictions_noRestrictions() {
 
         DirectionalSegment directionalSegment = DirectionalSegment.builder().build();
 
