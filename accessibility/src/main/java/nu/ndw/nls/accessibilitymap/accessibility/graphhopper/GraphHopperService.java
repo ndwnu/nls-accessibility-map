@@ -1,7 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
-import static java.util.stream.Collectors.toMap;
-
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.storage.index.Snap;
 import jakarta.validation.Valid;
@@ -12,13 +10,12 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
@@ -104,20 +101,17 @@ public class GraphHopperService {
             ));
         }
         Optional<Snap> destinationSnap = snapper.snapLocation(localNetworkGraphHopper, destination);
-        Map<Restriction, Snap> restrictionsToSnap = restrictions.stream()
+        List<SnapRestriction> snapRestrictions = restrictions.stream()
                 .map(restriction -> snapper.snapRestriction(localNetworkGraphHopper, restriction)
-                        .map(snap -> Map.entry(restriction, snap))
-                        .orElse(null))
+                        .map(snap -> new SnapRestriction(snap, restriction)).orElse(null))
                 .filter(Objects::nonNull)
-                .collect(toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
+                .toList();
 
         List<Snap> snaps = Stream.of(
-                        restrictionsToSnap.values().stream(),
+                        snapRestrictions.stream().map(SnapRestriction::snap),
                         Stream.of(fromSnap.get()),
-                        destinationSnap.stream())
+                        destinationSnap.stream()
+                )
                 .flatMap(snapStream -> snapStream)
                 .toList();
 
@@ -128,8 +122,7 @@ public class GraphHopperService {
                 networkMetaDataService.loadMetaData().nwbVersion(),
                 queryGraph,
                 restrictions,
-                restrictionsToSnap,
-                queryGraphConfigurer.createEdgeRestrictions(queryGraph, restrictionsToSnap),
+                queryGraphConfigurer.createEdgeRestrictions(queryGraph, snapRestrictions),
                 fromSnap.get(),
                 destinationSnap.orElse(null));
     }

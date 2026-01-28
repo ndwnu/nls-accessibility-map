@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
@@ -92,6 +93,8 @@ class GraphHopperServiceTest {
 
     @Mock
     private GraphhopperMetaData graphhopperMetaData;
+    @Mock
+    private SnapRestriction snapRestriction;
 
     private Path testDir;
 
@@ -130,7 +133,7 @@ class GraphHopperServiceTest {
         try (MockedStatic<QueryGraph> queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class)) {
             queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
-            when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, Map.of(restriction, restrictionSnap)))
+            when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(new SnapRestriction(restrictionSnap, restriction))))
                     .thenReturn(Map.of(2, restriction));
 
             GraphHopperNetwork graphHopperNetwork = graphHopperService.getNetwork(restrictions, from, destination);
@@ -141,7 +144,6 @@ class GraphHopperServiceTest {
             assertThat(graphHopperNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(graphHopperNetwork.getDestination()).isEqualTo(destinationSnap);
             assertThat(graphHopperNetwork.getRestrictions()).isEqualTo(restrictions);
-            assertThat(graphHopperNetwork.getRestrictionToSnap()).isEqualTo(Map.of(restriction, restrictionSnap));
             assertThat(graphHopperNetwork.getBlockedEdges()).isEqualTo(Set.of(2));
             assertThat(graphHopperNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(2, List.of(restriction)));
         }
@@ -179,7 +181,7 @@ class GraphHopperServiceTest {
         try (MockedStatic<QueryGraph> queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class)) {
             queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap)))
                     .thenReturn(queryGraph);
-            when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, Map.of(restriction, restrictionSnap)))
+            when(queryGraphConfigurer.createEdgeRestrictions(queryGraph, List.of(new SnapRestriction(restrictionSnap, restriction))))
                     .thenReturn(Map.of(2, restriction));
 
             GraphHopperNetwork graphHopperNetwork = graphHopperService.getNetwork(restrictions, from, destination);
@@ -190,7 +192,6 @@ class GraphHopperServiceTest {
             assertThat(graphHopperNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(graphHopperNetwork.getDestination()).isNull();
             assertThat(graphHopperNetwork.getRestrictions()).isEqualTo(restrictions);
-            assertThat(graphHopperNetwork.getRestrictionToSnap()).isEqualTo(Map.of(restriction, restrictionSnap));
             assertThat(graphHopperNetwork.getBlockedEdges()).isEqualTo(Set.of(2));
             assertThat(graphHopperNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(2, List.of(restriction)));
         }

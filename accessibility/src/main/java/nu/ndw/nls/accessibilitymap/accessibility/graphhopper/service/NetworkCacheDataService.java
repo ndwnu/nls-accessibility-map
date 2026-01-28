@@ -5,12 +5,9 @@ import static java.util.stream.Collectors.toCollection;
 import com.graphhopper.util.PMap;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
@@ -31,6 +28,7 @@ import org.springframework.stereotype.Component;
  * The class ensures data consistency and protection against concurrent access through the use of a ReentrantLock.
  */
 @Component
+@Slf4j
 public class NetworkCacheDataService {
 
     private final IsochroneServiceFactory isochroneServiceFactory;
@@ -39,23 +37,14 @@ public class NetworkCacheDataService {
 
     private final RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner;
 
-    private final ReentrantLock cachedDataLock = new ReentrantLock();
-
-    private final Map<Integer, Collection<RoadSection>> baseAccessibilityByMunicipalityId = new HashMap<>();
-
-    private final Collection<RoadSection> allBaseAccessibility = new ArrayList<>();
-
     public NetworkCacheDataService(
             IsochroneServiceFactory isochroneServiceFactory,
             RoadSectionMapper roadSectionMapper,
-            RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner,
-            GraphHopperService graphHopperService) {
+            RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner) {
 
         this.isochroneServiceFactory = isochroneServiceFactory;
         this.roadSectionMapper = roadSectionMapper;
         this.roadSectionTrafficSignAssigner = roadSectionTrafficSignAssigner;
-
-        graphHopperService.registerUpdateListener(this::clearCachedData);
     }
 
     public Collection<RoadSection> getBaseAccessibility(
@@ -63,37 +52,12 @@ public class NetworkCacheDataService {
             Integer municipalityId,
             double searchRadiusInMeters) {
 
-        cachedDataLock.lock();
-        try {
-            if (municipalityId == null) {
-                if (allBaseAccessibility.isEmpty()) {
-                    allBaseAccessibility.addAll(calculateBaseAccessibility(
-                            graphHopperNetwork,
-                            searchRadiusInMeters,
-                            null));
-                }
-                return allBaseAccessibility.stream()
-                        .map(RoadSection::copy)
-                        .map(roadSection -> roadSectionTrafficSignAssigner.assignRestriction(
-                                roadSection,
-                                graphHopperNetwork.getRestrictionsByEdgeKey()))
-                        .collect(toCollection(ArrayList::new));
-            } else {
-                return baseAccessibilityByMunicipalityId.computeIfAbsent(
-                                municipalityId,
-                                id -> calculateBaseAccessibility(
-                                        graphHopperNetwork,
-                                        searchRadiusInMeters,
-                                        municipalityId)).stream()
-                        .map(RoadSection::copy)
-                        .map(roadSection -> roadSectionTrafficSignAssigner.assignRestriction(
-                                roadSection,
-                                graphHopperNetwork.getRestrictionsByEdgeKey()))
-                        .collect(toCollection(ArrayList::new));
-            }
-        } finally {
-            cachedDataLock.unlock();
-        }
+        return calculateBaseAccessibility(graphHopperNetwork, searchRadiusInMeters, municipalityId).stream()
+                .map(RoadSection::copy)
+                .map(roadSection -> roadSectionTrafficSignAssigner.assignRestriction(
+                        roadSection,
+                        graphHopperNetwork.getRestrictionsByEdgeKey()))
+                .collect(toCollection(ArrayList::new));
     }
 
     private Collection<RoadSection> calculateBaseAccessibility(
@@ -101,6 +65,7 @@ public class NetworkCacheDataService {
             double searchRadiusInMeters,
             Integer municipalityId) {
 
+        log.debug("Calculating base accessibility for municipality id: '{}'", municipalityId);
         IsochroneService isochroneService = isochroneServiceFactory.createService(graphHopperNetwork);
         return roadSectionMapper.mapToRoadSections(
                 isochroneService.getIsochroneMatchesByMunicipalityId(
@@ -113,14 +78,5 @@ public class NetworkCacheDataService {
                                 .build(),
                         graphHopperNetwork.getQueryGraph(),
                         graphHopperNetwork.getFrom()));
-    }
-
-    private void clearCachedData() {
-        cachedDataLock.lock();
-
-        this.allBaseAccessibility.clear();
-        baseAccessibilityByMunicipalityId.clear();
-
-        cachedDataLock.unlock();
     }
 }

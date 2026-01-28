@@ -3,8 +3,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
@@ -18,7 +16,6 @@ import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
@@ -32,9 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatcher;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -52,12 +47,6 @@ class NetworkCacheDataServiceTest {
 
     @Mock
     private RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner;
-
-    @Mock
-    private GraphHopperService graphHopperService;
-
-    @Captor
-    private ArgumentCaptor<Runnable> updateListenerCaptor;
 
     @Mock
     private GraphHopperNetwork graphHopperNetwork;
@@ -86,18 +75,12 @@ class NetworkCacheDataServiceTest {
     @Mock
     private Map<Integer, List<Restriction>> restrictionsByEdgeKey;
 
-    private Runnable clearCache;
-
     @BeforeEach
     void setUp() {
         networkCacheDataService = new NetworkCacheDataService(
                 isochroneServiceFactory,
                 roadSectionMapper,
-                roadSectionTrafficSignAssigner,
-                graphHopperService);
-
-        verify(graphHopperService).registerUpdateListener(updateListenerCaptor.capture());
-        clearCache = updateListenerCaptor.getValue();
+                roadSectionTrafficSignAssigner);
     }
 
     @ParameterizedTest
@@ -134,89 +117,6 @@ class NetworkCacheDataServiceTest {
         Collection<RoadSection> baseAccessibility = networkCacheDataService.getBaseAccessibility(graphHopperNetwork, municipalityId, 2.0);
 
         assertThat(baseAccessibility).containsExactly(roadSection);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {
-            "1",
-            "null"
-    }, nullValues = "null")
-    void getBaseAccessibility_verifyCacheBehavior(Integer municipalityId) {
-
-        when(graphHopperNetwork.getNetwork()).thenReturn(network);
-        when(graphHopperNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(graphHopperNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
-        when(network.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
-                weightingNoRestrictions);
-        when(graphHopperNetwork.getFrom()).thenReturn(from);
-
-        when(isochroneServiceFactory.createService(graphHopperNetwork)).thenReturn(isochroneService);
-        when(isochroneService.getIsochroneMatchesByMunicipalityId(
-                argThat(new IsochroneArgumentMatcher(IsochroneArguments
-                        .builder()
-                        .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, Set.of()))
-                        .municipalityId(municipalityId)
-                        .searchDistanceInMetres(2.0)
-                        .build())),
-                eq(queryGraph),
-                eq(from)))
-                .thenReturn(List.of(isochroneMatch));
-
-        when(roadSectionTrafficSignAssigner.assignRestriction(roadSection, restrictionsByEdgeKey)).thenReturn(roadSection);
-        when(roadSection.copy()).thenReturn(roadSection);
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch)))
-                .thenReturn(List.of(roadSection));
-
-        Collection<RoadSection> baseAccessibility = networkCacheDataService.getBaseAccessibility(graphHopperNetwork, municipalityId, 2.0);
-        Collection<RoadSection> baseAccessibility2 = networkCacheDataService.getBaseAccessibility(graphHopperNetwork, municipalityId, 2.0);
-
-        assertThat(baseAccessibility).containsExactly(roadSection);
-        assertThat(baseAccessibility2).containsExactly(roadSection);
-        assertThat(baseAccessibility).isNotSameAs(baseAccessibility2);
-
-        verify(isochroneServiceFactory).createService(graphHopperNetwork);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {
-            "1",
-            "null"
-    }, nullValues = "null")
-    void getBaseAccessibility_verifyClearCache(Integer municipalityId) {
-
-        when(graphHopperNetwork.getNetwork()).thenReturn(network);
-        when(graphHopperNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(graphHopperNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
-        when(network.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
-                weightingNoRestrictions);
-        when(graphHopperNetwork.getFrom()).thenReturn(from);
-
-        when(isochroneServiceFactory.createService(graphHopperNetwork)).thenReturn(isochroneService);
-        when(isochroneService.getIsochroneMatchesByMunicipalityId(
-                argThat(new IsochroneArgumentMatcher(IsochroneArguments
-                        .builder()
-                        .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, Set.of()))
-                        .municipalityId(municipalityId)
-                        .searchDistanceInMetres(2.0)
-                        .build())),
-                eq(queryGraph),
-                eq(from)))
-                .thenReturn(List.of(isochroneMatch));
-
-        when(roadSectionTrafficSignAssigner.assignRestriction(roadSection, restrictionsByEdgeKey)).thenReturn(roadSection);
-        when(roadSection.copy()).thenReturn(roadSection);
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch)))
-                .thenReturn(List.of(roadSection));
-
-        Collection<RoadSection> baseAccessibility = networkCacheDataService.getBaseAccessibility(graphHopperNetwork, municipalityId, 2.0);
-        clearCache.run();
-        Collection<RoadSection> baseAccessibility2 = networkCacheDataService.getBaseAccessibility(graphHopperNetwork, municipalityId, 2.0);
-
-        assertThat(baseAccessibility).containsExactly(roadSection);
-        assertThat(baseAccessibility2).containsExactly(roadSection);
-        assertThat(baseAccessibility).isNotSameAs(baseAccessibility2);
-
-        verify(isochroneServiceFactory, times(2)).createService(graphHopperNetwork);
     }
 
     private record IsochroneArgumentMatcher(IsochroneArguments expected) implements

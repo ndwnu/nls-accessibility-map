@@ -50,7 +50,6 @@ class GraphHopperNetworkTest {
                 1,
                 queryGraph,
                 restrictions,
-                Map.of(restriction, snap),
                 Map.of(2, restriction),
                 fromSnap,
                 destinationSnap
@@ -65,7 +64,6 @@ class GraphHopperNetworkTest {
         assertThat(graphHopperNetwork.getFrom()).isEqualTo(fromSnap);
         assertThat(graphHopperNetwork.getDestination()).isEqualTo(destinationSnap);
         assertThat(graphHopperNetwork.getRestrictions()).isEqualTo(restrictions);
-        assertThat(graphHopperNetwork.getRestrictionToSnap()).isEqualTo(Map.of(restriction, snap));
         assertThat(graphHopperNetwork.getBlockedEdges()).isEqualTo(Set.of(2));
         assertThat(graphHopperNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(2, List.of(restriction)));
     }

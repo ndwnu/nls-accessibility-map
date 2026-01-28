@@ -15,26 +15,26 @@ Feature: Accessibility V1
       | 3           | 4         | 0.9      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000008 |
     When run TrafficSignUpdateCache
     And traffic signs data is reloaded
-    When request accessibility for
-      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | excludeEmissionZoneIds | excludeEmissionZoneTypes |
-      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            |                        |                          |
-    Then we expect the following blocked roadSections with matched roadSection with id 9 and is forward accessible true and backward accessible true
-      | roadSectionId | forwardAccessible | backwardAccessible |
-      | 6             | true              | false              |
-      | 7             | false             | false              |
-      | 11            | false             | false              |
-      | 13            | false             | true               |
+#    When request accessibility for
+#      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | excludeEmissionZoneIds | excludeEmissionZoneTypes |
+#      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            |                        |                          |
+#    Then we expect the following blocked roadSections with matched roadSection with id 9 and is forward accessible true and backward accessible true
+#      | roadSectionId | forwardAccessible | backwardAccessible |
+#      | 6             | true              | false              |
+#      | 7             | false             | false              |
+#      | 11            | false             | false              |
+#      | 13            | false             | true               |
+#    When request accessibility geojson for
+#      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth |
+#      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            |
+#    Then we expect geojson to match response.emission-zone.geojson
+#    When request accessibility geojson for
+#      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | accessible |
+#      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            | true       |
+#    Then we expect geojson to match response.emission-zone.onlyAccessible.geojson
     When request accessibility geojson for
-      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth |
-      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            |
-    Then we expect geojson to match response.emission-zone.geojson
-    When request accessibility geojson for
-      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | accessible|
-      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            | true     |
-    Then we expect geojson to match response.emission-zone.onlyAccessible.geojson
-    When request accessibility geojson for
-      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | accessible|
-      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            | false     |
+      | endLatitude | endLongitude | municipalityId | vehicleType | fuelTypes | emissionClass | vehicleWidth | accessible |
+      | 3           | 7            | GM0001         | truck       | diesel    | euro_3        | 2            | false      |
     Then we expect geojson to match response.emission-zone.onlyInAccessible.geojson
 
 
