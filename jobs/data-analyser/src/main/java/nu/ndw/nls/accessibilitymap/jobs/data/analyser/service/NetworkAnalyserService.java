@@ -50,6 +50,7 @@ public class NetworkAnalyserService extends IssueReporterService {
                 .searchRadiusInMeters(analyseNetworkConfiguration.searchRadiusInMeters())
                 .startLocationLatitude(analyseNetworkConfiguration.startLocationLatitude())
                 .startLocationLongitude(analyseNetworkConfiguration.startLocationLongitude())
+                .addMissingRoadsSectionsFromNwb(true)
                 .build());
 
         String issueReportId = "Nwb-%s-%s".formatted(analyseNetworkConfiguration.nwbVersion(), UUID.randomUUID());

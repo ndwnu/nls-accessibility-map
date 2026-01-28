@@ -9,7 +9,7 @@ public record AccessibilityNwbRoadSection(
         @NotNull long roadSectionId,
         @NotNull long fromNode,
         @NotNull long toNode,
-        @NotNull int municipalityId,
+        Integer municipalityId,
         @NotNull LineString geometry,
         @NotNull boolean forwardAccessible,
         @NotNull boolean backwardAccessible) {

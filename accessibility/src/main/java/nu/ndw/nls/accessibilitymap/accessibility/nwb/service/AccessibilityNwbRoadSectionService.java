@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.nwb.service;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -77,6 +78,7 @@ public class AccessibilityNwbRoadSectionService {
 
     public List<AccessibilityNwbRoadSection> findAllByVersionAndMunicipalityId(int versionId, int municipalityId) {
         return findAllByVersion(versionId).stream()
+                .filter(accessibilityNwbRoadSection -> Objects.nonNull(accessibilityNwbRoadSection.municipalityId()))
                 .filter(accessibilityNwbRoadSection -> accessibilityNwbRoadSection.municipalityId() == municipalityId)
                 .toList();
     }

@@ -42,7 +42,10 @@ class QueryGraphConfigurerTest {
     private QueryGraph queryGraph;
 
     @Mock
-    private Restriction restriction;
+    private Restriction restriction1;
+
+    @Mock
+    private Restriction restriction2;
 
     @Mock
     private Snap snap;
@@ -79,13 +82,22 @@ class QueryGraphConfigurerTest {
             false
             true
             """)
-    void createEdgeRestrictions(boolean reversed) {
-        setupFixtureForQueryGraph();
+    void createEdgeRestrictions_withRestrictionsOnTheExactSamePlace(boolean reversed) {
 
-        when(snap.getClosestNode()).thenReturn(0);
+        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+        when(queryGraph.getNodes()).thenReturn(1);
+        when(queryGraph.getEdges()).thenReturn(1);
+        when(edgeExplorer.setBaseNode(24))
+                .thenReturn(edgeIterator)
+                .thenReturn(edgeIterator);
+        when(edgeIterator.next())
+                .thenReturn(true, false)
+                .thenReturn(true, false);
+        when(snap.getClosestNode()).thenReturn(24);
 
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(reversed);
         when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
+        when(edgeIterator.getEdgeKey()).thenReturn(234);
         when(pointList.toLineString(false)).thenReturn(lineString);
         when(lineString.getStartPoint()).thenReturn(point);
         when(point.getCoordinate()).thenReturn(new Coordinate(1.0, 2.0));
@@ -93,48 +105,60 @@ class QueryGraphConfigurerTest {
         when(ghPoint.getLon()).thenReturn(1.0);
         when(ghPoint.getLat()).thenReturn(2.0);
 
-        when(restriction.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
+        when(restriction1.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
+        when(restriction2.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
-                List.of(new SnapRestriction(snap, restriction)));
+                List.of(
+                        new SnapRestriction(snap, restriction1),
+                        new SnapRestriction(snap, restriction2)
+                ));
 
-        assertThat(restrictionsByEdgeKey.get(edgeIterator.getEdgeKey())).isEqualTo(List.of(restriction));
+        assertThat(restrictionsByEdgeKey.get(234)).containsExactlyInAnyOrder(restriction1, restriction2);
         loggerExtension.containsLog(
                 Level.INFO,
                 "Query graph configuration summary. "
-                + "Total restriction: 1. "
+                + "Total restriction: 2. "
                 + "Total not assignable restrictions: 0. []");
     }
 
     @Test
     void createEdgeRestrictions_noRestrictionAssigned_edgeNotInSameDirection() {
-        setupFixtureForQueryGraph();
 
-        when(snap.getClosestNode()).thenReturn(0);
+        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+        when(queryGraph.getNodes()).thenReturn(1);
+        when(queryGraph.getEdges()).thenReturn(1);
+        when(edgeExplorer.setBaseNode(24)).thenReturn(edgeIterator);
+        when(edgeIterator.next()).thenReturn(true, false);
+        when(snap.getClosestNode()).thenReturn(24);
 
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(true);
-        when(restriction.direction()).thenReturn(Direction.FORWARD);
+        when(restriction1.direction()).thenReturn(Direction.FORWARD);
 
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
-                List.of(new SnapRestriction(snap, restriction)));
+                List.of(new SnapRestriction(snap, restriction1)));
 
         assertThat(restrictionsByEdgeKey).isEmpty();
         loggerExtension.containsLog(
                 Level.WARN,
                 "Query graph configuration summary. "
                 + "Total restriction: 1. "
-                + "Total not assignable restrictions: 1. [restriction]");
+                + "Total not assignable restrictions: 1. [restriction1]");
     }
 
     @Test
     void createEdgeRestrictions_noRestrictionAssigned_isTrafficSignInFrontOfEdge() {
-        setupFixtureForQueryGraph();
 
-        when(snap.getClosestNode()).thenReturn(0);
+        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+        when(queryGraph.getNodes()).thenReturn(1);
+        when(queryGraph.getEdges()).thenReturn(1);
+        when(edgeExplorer.setBaseNode(24)).thenReturn(edgeIterator);
+        when(edgeIterator.next()).thenReturn(true, false);
+        when(snap.getClosestNode()).thenReturn(24);
 
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
-        when(restriction.direction()).thenReturn(Direction.FORWARD);
+        when(restriction1.direction()).thenReturn(Direction.FORWARD);
 
         when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
         when(pointList.toLineString(false)).thenReturn(lineString);
@@ -146,22 +170,13 @@ class QueryGraphConfigurerTest {
 
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 queryGraph,
-                List.of(new SnapRestriction(snap, restriction)));
+                List.of(new SnapRestriction(snap, restriction1)));
 
         assertThat(restrictionsByEdgeKey).isEmpty();
         loggerExtension.containsLog(
                 Level.WARN,
                 "Query graph configuration summary. "
                 + "Total restriction: 1. "
-                + "Total not assignable restrictions: 1. [restriction]");
-    }
-
-    private void setupFixtureForQueryGraph() {
-
-        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
-        when(queryGraph.getNodes()).thenReturn(1);
-        when(queryGraph.getEdges()).thenReturn(1);
-        when(edgeExplorer.setBaseNode(0)).thenReturn(edgeIterator);
-        when(edgeIterator.next()).thenReturn(true, false);
+                + "Total not assignable restrictions: 1. [restriction1]");
     }
 }
