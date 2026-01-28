@@ -84,6 +84,7 @@ class NetworkAnalyserServiceTest {
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
                 .searchRadiusInMeters(4d)
+                .addMissingRoadsSectionsFromNwb(true)
                 .build();
 
         networkAnalyserService = new NetworkAnalyserService(
