@@ -43,26 +43,27 @@ import org.springframework.stereotype.Component;
 public class AccessibilityReasonsMapper {
 
     @SuppressWarnings("java:S3740")
-    private static final Map<TrafficSignType, Function<TrafficSign, List<AccessibilityRestriction>>> TRAFFIC_SIGN_TYPE_TO_REASON_MAPPER = Map.ofEntries(
-            entry(C1, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C6, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C7, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C7A, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C7B, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C8, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C9, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C10, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C11, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C12, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C17, AccessibilityReasonsMapper::mapVehicleLength),
-            entry(C18, AccessibilityReasonsMapper::mapVehicleWidth),
-            entry(C19, AccessibilityReasonsMapper::mapVehicleHeight),
-            entry(C20, AccessibilityReasonsMapper::mapVehicleAxleLoad),
-            entry(C21, AccessibilityReasonsMapper::mapVehicleWeight),
-            entry(C22, AccessibilityReasonsMapper::mapTransportTypes),
-            entry(C22A, AccessibilityReasonsMapper::mapEmissionZoneRestrictions),
-            entry(C22C, AccessibilityReasonsMapper::mapEmissionZoneRestrictions)
-    );
+    private static final Map<TrafficSignType, Function<TrafficSign, List<AccessibilityRestriction>>> TRAFFIC_SIGN_TYPE_TO_REASON_MAPPER =
+            Map.ofEntries(
+                    entry(C1, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C6, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C7, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C7A, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C7B, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C8, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C9, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C10, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C11, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C12, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C17, AccessibilityReasonsMapper::mapVehicleLength),
+                    entry(C18, AccessibilityReasonsMapper::mapVehicleWidth),
+                    entry(C19, AccessibilityReasonsMapper::mapVehicleHeight),
+                    entry(C20, AccessibilityReasonsMapper::mapVehicleAxleLoad),
+                    entry(C21, AccessibilityReasonsMapper::mapVehicleWeight),
+                    entry(C22, AccessibilityReasonsMapper::mapTransportTypes),
+                    entry(C22A, AccessibilityReasonsMapper::mapEmissionZoneRestrictions),
+                    entry(C22C, AccessibilityReasonsMapper::mapEmissionZoneRestrictions)
+            );
 
     public AccessibilityReasons mapRestrictions(Restrictions restrictions) {
 
@@ -76,7 +77,8 @@ public class AccessibilityReasonsMapper {
 
         if (restriction instanceof TrafficSign trafficSignRestriction) {
             if (!TRAFFIC_SIGN_TYPE_TO_REASON_MAPPER.containsKey(trafficSignRestriction.trafficSignType())) {
-                throw new IllegalArgumentException("Traffic sign type '%s' is not supported".formatted(trafficSignRestriction.trafficSignType()));
+                throw new IllegalArgumentException(
+                        "Traffic sign type '%s' is not supported".formatted(trafficSignRestriction.trafficSignType()));
             }
             List<AccessibilityRestriction> restrictions = TRAFFIC_SIGN_TYPE_TO_REASON_MAPPER.get(trafficSignRestriction.trafficSignType())
                     .apply(trafficSignRestriction);

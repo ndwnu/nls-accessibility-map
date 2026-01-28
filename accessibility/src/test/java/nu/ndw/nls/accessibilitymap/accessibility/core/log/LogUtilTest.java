@@ -15,7 +15,7 @@ class LogUtilTest {
         OffsetDateTime timestamp = OffsetDateTime.parse("2022-03-11T09:00:00.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         StructuredArgument keyValue = LogUtil.keyValueJson("key", new CustomObject("name", timestamp));
 
-        assertThat(keyValue.toString()).isEqualTo("key={\"name\":\"name\",\"timestamp\":\"%s\"}"
+        assertThat(keyValue).hasToString("key={\"name\":\"name\",\"timestamp\":\"%s\"}"
                 .formatted(DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(timestamp)));
     }
 
