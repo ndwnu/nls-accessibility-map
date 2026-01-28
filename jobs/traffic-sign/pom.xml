@@ -10,6 +10,10 @@
   <name>NLS Accessibility Map Traffic Sign Analyser Job</name>
   <dependencies>
     <dependency>
+      <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>security</artifactId>
+    </dependency>
+    <dependency>
       <groupId>nu.ndw.nls.accessibilitymap</groupId>
       <version>${project.parent.version}</version>
       <artifactId>accessibility</artifactId>
