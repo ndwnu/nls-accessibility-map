@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.graphhopper.util.shapes.BBox;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +23,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public record AccessibilityRequest(
         @NotNull OffsetDateTime timestamp,
-        BBox boundingBox,
+        @JsonIgnore BBox boundingBox,
         Integer municipalityId,
         boolean addMissingRoadsSectionsFromNwb,
         @NotNull Double searchRadiusInMeters,
@@ -66,5 +67,12 @@ public record AccessibilityRequest(
     public boolean hasEndLocation() {
         return Objects.nonNull(endLocationLatitude)
                && Objects.nonNull(endLocationLongitude);
+    }
+
+    /**
+     * Used for logging purposes when using objectmapper to convert this object to json.
+     */
+    public String getBoundingBoxString() {
+        return boundingBox.toString();
     }
 }
