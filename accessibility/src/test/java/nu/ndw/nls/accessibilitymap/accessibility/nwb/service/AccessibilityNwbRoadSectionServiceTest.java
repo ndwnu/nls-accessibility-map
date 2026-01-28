@@ -109,6 +109,33 @@ class AccessibilityNwbRoadSectionServiceTest {
     }
 
     @Test
+    void findAllByVersionAndMunicipalityId() {
+
+        when(nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
+                2,
+                carriageWayTypeCodeInclusions,
+                null,
+                250
+        )).thenReturn(Stream.of(nwbRoadSectionDto1, nwbRoadSectionDto2));
+        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto1)).thenReturn(accessibilityNwbRoadSection1);;
+        when(accessibilityNwbRoadSection1.municipalityId()).thenReturn(null);
+        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto2)).thenReturn(accessibilityNwbRoadSection2);
+        when(accessibilityNwbRoadSection2.municipalityId()).thenReturn(3);
+
+        var accessibilityNwbRoadSections = accessibilityNwbRoadSectionService.findAllByVersionAndMunicipalityId(2, 3);
+        assertThat(accessibilityNwbRoadSections).containsExactlyInAnyOrder(accessibilityNwbRoadSection2);
+
+        var accessibilityNwbRoadSections2 = accessibilityNwbRoadSectionService.findAllByVersionAndMunicipalityId(2, 3);
+        assertThat(accessibilityNwbRoadSections2).containsExactlyInAnyOrder(accessibilityNwbRoadSection2);
+
+        verify(nwbRoadSectionCrudService).findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
+                2,
+                carriageWayTypeCodeInclusions,
+                null,
+                250);
+    }
+
+    @Test
     void clearCache() {
 
         when(nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
