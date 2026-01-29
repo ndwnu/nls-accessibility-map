@@ -2,9 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
@@ -18,8 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegate {
-
-    private final GraphHopperService graphHopperService;
 
     private final AccessibilityResponseGeoJsonMapperV2 accessibilityResponseGeoJsonMapperV2;
 
@@ -36,9 +32,7 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
 
         accessibilityRequestValidator.verify(accessibilityRequestJson);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(
-                graphHopperService.getNetworkGraphHopper(),
-                accessibilityRequestMapperV2.map(accessibilityRequestJson));
+        var accessibility = accessibilityService.calculateAccessibility(accessibilityRequestMapperV2.map(accessibilityRequestJson));
 
         return ResponseEntity.ok(accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility));
     }

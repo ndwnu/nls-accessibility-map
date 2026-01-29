@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationFeaturePropertiesJson;

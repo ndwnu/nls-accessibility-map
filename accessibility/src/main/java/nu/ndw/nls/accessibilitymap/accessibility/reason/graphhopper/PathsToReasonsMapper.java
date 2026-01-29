@@ -9,10 +9,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasons;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.reducer.AccessibilityRestrictionReducer;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
 import org.springframework.stereotype.Component;
 
 /**

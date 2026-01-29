@@ -8,10 +8,9 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseAsymmetricTrafficSignsConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.TrafficSignAnalyserService;
@@ -26,15 +25,13 @@ import picocli.CommandLine.Option;
 @RequiredArgsConstructor
 public class AnalyseAsymmetricTrafficSignsCommand implements Callable<Integer> {
 
-    private final GraphHopperService graphHopperService;
-
-    private final GraphhopperConfiguration graphhopperConfiguration;
-
     private final ClockService clockService;
 
     private final TrafficSignAnalyserService trafficSignAnalyserService;
 
     private final TrafficSignCacheUpdater trafficSignCacheUpdater;
+
+    private final NetworkMetaDataService networkMetaDataService;
 
     @Option(names = {"-t", "--traffic-signs"},
             description = "Traffic signs to generate the map for.",
@@ -70,7 +67,7 @@ public class AnalyseAsymmetricTrafficSignsCommand implements Callable<Integer> {
     public Integer call() {
 
         if (updateTrafficSignCache) {
-            trafficSignCacheUpdater.updateCache(graphHopperService.getNetworkGraphHopper());
+            trafficSignCacheUpdater.updateCache();
         }
 
         try {
@@ -91,11 +88,11 @@ public class AnalyseAsymmetricTrafficSignsCommand implements Callable<Integer> {
                                 .startLocationLongitude(startLocationLongitude)
                                 .searchRadiusInMeters(searchRadiusInMeters)
                                 .build())
-                        .nwbVersion(graphhopperConfiguration.getMetaData().nwbVersion())
+                        .nwbVersion(networkMetaDataService.loadMetaData().nwbVersion())
                         .reportIssues(reportIssues)
                         .build();
 
-                trafficSignAnalyserService.analyse(graphHopperService.getNetworkGraphHopper(), analyseAsymmetricTrafficSignsConfiguration);
+                trafficSignAnalyserService.analyse(analyseAsymmetricTrafficSignsConfiguration);
             }
 
             return 0;

@@ -11,3 +11,8 @@ nu:
         trafficsigns:
           cache:
             folder: "./.tmp/trafficsigns/"
+management:
+  datadog:
+    metrics:
+      export:
+        enabled: false

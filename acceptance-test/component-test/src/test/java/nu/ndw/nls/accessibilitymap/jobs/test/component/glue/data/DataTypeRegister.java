@@ -78,6 +78,7 @@ public class DataTypeRegister {
                 .vehicleAxleLoadInTonnes(mapDoubleValue("vehicleAxleLoad", entry))
                 .vehicleType(entry.containsKey("vehicleType") ? VehicleTypeJson.fromValue(entry.get("vehicleType")) : null)
                 .emissionClass(entry.containsKey("emissionClass") ? EmissionClassJson.fromValue(entry.get("emissionClass")) : null)
+                .accessible(entry.containsKey("accessible") ? Boolean.parseBoolean(entry.get("accessible")) : null)
                 .fuelTypes(entry.containsKey("fuelTypes") && Objects.nonNull(entry.get("fuelTypes"))
                         ? Arrays.stream(entry.get("fuelTypes").split(",")).map(FuelTypeJson::fromValue).toList()
                         : null)

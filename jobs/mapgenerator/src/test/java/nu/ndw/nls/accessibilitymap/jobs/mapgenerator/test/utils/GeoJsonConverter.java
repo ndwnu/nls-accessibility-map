@@ -5,10 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.FeatureCollection;
@@ -45,14 +46,14 @@ public class GeoJsonConverter {
                 .mapToObj(i -> {
                     Geometry geometry = multiPolygon.getGeometryN(i);
 
-                    List<TrafficSign> relevantTrafficSigns = allRelevantRoadSectionFragments.stream()
+                    Set<Restriction> relevantRestrictions = allRelevantRoadSectionFragments.stream()
                             .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                             .filter(directionalSegment -> geometry.intersects(directionalSegment.getLineString()))
-                            .filter(DirectionalSegment::hasTrafficSigns)
-                            .flatMap(directionalSegment -> directionalSegment.getTrafficSigns().stream())
-                            .toList();
+                            .filter(DirectionalSegment::hasRestrictions)
+                            .flatMap(directionalSegment -> directionalSegment.getRestrictions().stream())
+                            .collect(Collectors.toSet());
 
-                    return featureBuilder.createPolygon(geometry, idSequenceSupplier, relevantTrafficSigns, Set.of());
+                    return featureBuilder.createPolygon(geometry, idSequenceSupplier, relevantRestrictions, Set.of());
                 })
                 .toList();
     }

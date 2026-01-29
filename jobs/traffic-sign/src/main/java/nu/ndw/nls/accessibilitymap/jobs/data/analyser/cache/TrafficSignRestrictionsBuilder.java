@@ -6,9 +6,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.EmissionZoneMapper;
 import org.springframework.stereotype.Service;
@@ -20,9 +20,9 @@ public class TrafficSignRestrictionsBuilder {
 
     private static final int MULTIPLIER_FROM_TONNE_TO_KILO_GRAM = 1000;
 
-    private final Map<TrafficSignType, Restrictions> nonDynamicTrafficSigns;
+    private final Map<TrafficSignType, TransportRestrictions> nonDynamicTrafficSigns;
 
-    private final Map<TrafficSignType, Function<TrafficSign, Restrictions>> dynamicTrafficSigns;
+    private final Map<TrafficSignType, Function<TrafficSign, TransportRestrictions>> dynamicTrafficSigns;
 
     private final EmissionZoneMapper emissionZoneMapper;
 
@@ -53,7 +53,7 @@ public class TrafficSignRestrictionsBuilder {
         dynamicTrafficSigns.put(TrafficSignType.C22C, buildEmissionZoneRestrictions());
     }
 
-    public Restrictions buildFor(TrafficSign trafficSign) {
+    public TransportRestrictions buildFor(TrafficSign trafficSign) {
 
         if (!nonDynamicTrafficSigns.containsKey(trafficSign.trafficSignType())) {
             if (!dynamicTrafficSigns.containsKey(trafficSign.trafficSignType())) {
@@ -66,14 +66,14 @@ public class TrafficSignRestrictionsBuilder {
         return nonDynamicTrafficSigns.get(trafficSign.trafficSignType());
     }
 
-    private static Restrictions buildC1Restrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC1Restrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(TransportType.allExcept(TransportType.PEDESTRIAN))
                 .build();
     }
 
-    private static Restrictions buildC9Restrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC9Restrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(
                         TransportType.TRACTOR,
                         TransportType.MOTORCYCLE,
@@ -83,14 +83,14 @@ public class TrafficSignRestrictionsBuilder {
                 .build();
     }
 
-    private static Restrictions buildC8Restrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC8Restrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.TRACTOR))
                 .build();
     }
 
-    private static Restrictions buildC6Restrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC6Restrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(
                         TransportType.BUS,
                         TransportType.CAR,
@@ -102,38 +102,38 @@ public class TrafficSignRestrictionsBuilder {
                 .build();
     }
 
-    private static Restrictions buildC7Restrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC7Restrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.TRUCK))
                 .build();
     }
 
-    private static Restrictions buildC7aRestrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC7aRestrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.BUS))
                 .build();
     }
 
-    private static Restrictions buildC7bRestrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC7bRestrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.BUS, TransportType.TRUCK))
                 .build();
     }
 
-    private static Restrictions buildC10Restrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC10Restrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.VEHICLE_WITH_TRAILER))
                 .build();
     }
 
-    private static Restrictions buildC11Restrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC11Restrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.MOTORCYCLE))
                 .build();
     }
 
-    private static Restrictions buildC12Restrictions() {
-        return Restrictions.builder()
+    private static TransportRestrictions buildC12Restrictions() {
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(
                         TransportType.BUS,
                         TransportType.CAR,
@@ -147,12 +147,12 @@ public class TrafficSignRestrictionsBuilder {
                 .build();
     }
 
-    private static Function<TrafficSign, Restrictions> buildC17Restrictions() {
+    private static Function<TrafficSign, TransportRestrictions> buildC17Restrictions() {
         return trafficSign -> {
             if (Objects.isNull(trafficSign.blackCode()) || trafficSign.blackCode() == 0) {
-                return Restrictions.builder().build();
+                return TransportRestrictions.builder().build();
             }
-            return Restrictions.builder()
+            return TransportRestrictions.builder()
                     .vehicleLengthInCm(Maximum.builder()
                             .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
@@ -160,12 +160,12 @@ public class TrafficSignRestrictionsBuilder {
         };
     }
 
-    private static Function<TrafficSign, Restrictions> buildC18Restrictions() {
+    private static Function<TrafficSign, TransportRestrictions> buildC18Restrictions() {
         return trafficSign -> {
             if (Objects.isNull(trafficSign.blackCode()) || trafficSign.blackCode() == 0) {
-                return Restrictions.builder().build();
+                return TransportRestrictions.builder().build();
             }
-            return Restrictions.builder()
+            return TransportRestrictions.builder()
                     .vehicleWidthInCm(Maximum.builder()
                             .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
@@ -173,12 +173,12 @@ public class TrafficSignRestrictionsBuilder {
         };
     }
 
-    private static Function<TrafficSign, Restrictions> buildC19Restrictions() {
+    private static Function<TrafficSign, TransportRestrictions> buildC19Restrictions() {
         return trafficSign -> {
             if (Objects.isNull(trafficSign.blackCode()) || trafficSign.blackCode() == 0) {
-                return Restrictions.builder().build();
+                return TransportRestrictions.builder().build();
             }
-            return Restrictions.builder()
+            return TransportRestrictions.builder()
                     .vehicleHeightInCm(Maximum.builder()
                             .value(trafficSign.blackCode() * MULTIPLIER_FROM_METERS_TO_CM)
                             .build())
@@ -186,13 +186,13 @@ public class TrafficSignRestrictionsBuilder {
         };
     }
 
-    private static Function<TrafficSign, Restrictions> buildC20Restrictions() {
+    private static Function<TrafficSign, TransportRestrictions> buildC20Restrictions() {
 
         return trafficSign -> {
             if (Objects.isNull(trafficSign.blackCode()) || trafficSign.blackCode() == 0) {
-                return Restrictions.builder().build();
+                return TransportRestrictions.builder().build();
             }
-            return Restrictions.builder()
+            return TransportRestrictions.builder()
                     .vehicleAxleLoadInKg(Maximum.builder()
                             .value(trafficSign.blackCode() * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM)
                             .build())
@@ -200,13 +200,13 @@ public class TrafficSignRestrictionsBuilder {
         };
     }
 
-    private static Function<TrafficSign, Restrictions> buildC21Restrictions() {
+    private static Function<TrafficSign, TransportRestrictions> buildC21Restrictions() {
 
         return trafficSign -> {
             if (Objects.isNull(trafficSign.blackCode()) || trafficSign.blackCode() == 0) {
-                return Restrictions.builder().build();
+                return TransportRestrictions.builder().build();
             }
-            return Restrictions.builder()
+            return TransportRestrictions.builder()
                     .vehicleWeightInKg(Maximum.builder()
                             .value(trafficSign.blackCode() * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM)
                             .build())
@@ -214,16 +214,16 @@ public class TrafficSignRestrictionsBuilder {
         };
     }
 
-    private static Restrictions buildC22Restrictions() {
+    private static TransportRestrictions buildC22Restrictions() {
 
-        return Restrictions.builder()
+        return TransportRestrictions.builder()
                 .transportTypes(Set.of(TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES))
                 .build();
     }
 
-    private Function<TrafficSign, Restrictions> buildEmissionZoneRestrictions() {
+    private Function<TrafficSign, TransportRestrictions> buildEmissionZoneRestrictions() {
 
-        return trafficSign -> Restrictions.builder()
+        return trafficSign -> TransportRestrictions.builder()
                 .emissionZone(emissionZoneMapper.map(trafficSign.trafficRegulationOrderId()))
                 .build();
     }

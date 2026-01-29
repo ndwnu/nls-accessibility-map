@@ -1,8 +1,9 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.log.LogConstants.ACCESSIBILITY_REQUEST;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -10,41 +11,38 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
-import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.log.LogUtil;
+import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.BaseAccessibilityCalculator;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.PointMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
-import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -53,29 +51,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.locationtech.jts.geom.Point;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityServiceTest {
 
-    private static final double START_LOCATION_LATITUDE = 1d;
-
-    private static final double START_LOCATION_LONGITUDE = 2d;
-
-    private static final double END_LOCATION_LATITUDE = 3d;
-
-    private static final double END_LOCATION_LONGITUDE = 4d;
-
-    private static final long END_LOCATION_ROAD_SECTION_ID = 10;
-
-    private static final int MUNICIPALITY_ID = 11;
-
-    private static final double SEARCH_DISTANCE_IN_METRES = 200D;
+    @Mock
+    private LocationFactory locationFactory;
 
     @Mock
     private IsochroneServiceFactory isochroneServiceFactory;
@@ -90,9 +75,6 @@ class AccessibilityServiceTest {
     private IntEncodedValue idIntEncodedValue;
 
     @Mock
-    private TrafficSignDataService trafficSignDataService;
-
-    @Mock
     private RoadSectionMapper roadSectionMapper;
 
     @Mock
@@ -102,22 +84,10 @@ class AccessibilityServiceTest {
     private ClockService clockService;
 
     @Mock
-    private TrafficSign trafficSign;
-
-    @Mock
     private IsochroneService isochroneService;
 
     @Mock
-    private Snap startSegmentSnap;
-
-    @Mock
-    private Snap endSegmentSnap;
-
-    @Mock
     private EdgeIteratorState endSegmentClosestEdge;
-
-    @Mock
-    private LocationIndexTree locationIndexTree;
 
     @Mock
     private QueryGraph queryGraph;
@@ -135,7 +105,7 @@ class AccessibilityServiceTest {
     private RoadSection roadSectionCombined;
 
     @Mock
-    private RoadSection roadSectionCombinedEnd;
+    private RoadSection roadSectionDestination;
 
     @Mock
     private RoadSection missingRoadSection;
@@ -144,13 +114,13 @@ class AccessibilityServiceTest {
     private IsochroneMatch isochroneMatchRestriction;
 
     @Mock
-    private EdgeRestrictions edgeRestrictions;
+    private RestrictionService restrictionService;
 
     @Mock
-    private NetworkData networkData;
+    private GraphHopperService graphHopperService;
 
     @Mock
-    private NetworkCacheDataService networkCacheDataService;
+    private BaseAccessibilityCalculator baseAccessibilityCalculator;
 
     private AccessibilityService accessibilityService;
 
@@ -164,288 +134,325 @@ class AccessibilityServiceTest {
     private List<List<AccessibilityReason>> accessibilityReasons;
 
     @Mock
-    private PointMatchService pointMatchService;
+    private Location from;
 
     @Mock
-    private PointMapper pointMapper;
+    private Location destination;
 
     @Mock
-    private Point startPoint;
-
-    @Mock
-    private CandidateMatch startCandidateMatch;
-
-    @Mock
-    private Point endPoint;
-
-    @Mock
-    private CandidateMatch endCandidateMatch;
+    private Set<Integer> blockedEdges;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
+
+    @Mock
+    private Restrictions restrictions;
+
+    @Mock
+    private GraphHopperNetwork graphHopperNetwork;
+
+    @Mock
+    private Snap fromSnap;
+
+    @Mock
+    private Snap destinationSnap;
+
+    private AccessibilityRequest accessibilityRequest;
 
     @BeforeEach
     void setUp() {
 
         accessibilityService = new AccessibilityService(
-                pointMatchService,
-                pointMapper,
+                locationFactory,
                 isochroneServiceFactory,
-                trafficSignDataService,
+                restrictionService,
                 roadSectionMapper,
                 clockService,
-                networkCacheDataService,
+                baseAccessibilityCalculator,
                 roadSectionCombinator,
                 missingRoadSectionProvider,
-                accessibilityReasonService);
+                accessibilityReasonService,
+                graphHopperService);
+
+        accessibilityRequest = AccessibilityRequest.builder()
+                .startLocationLatitude(1.0)
+                .startLocationLongitude(2.0)
+                .endLocationLatitude(3.0)
+                .endLocationLongitude(4.0)
+                .municipalityId(5)
+                .searchRadiusInMeters(6.0)
+                .addMissingRoadsSectionsFromNwb(true)
+                .build();
     }
 
     @Test
     void calculateAccessibility() {
 
-        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                List.of(roadSectionNoRestriction),
-                List.of(roadSectionRestriction)))
-                .thenReturn(List.of(roadSectionCombined, roadSectionCombinedEnd));
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:00:00.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .startLocationLatitude(START_LOCATION_LATITUDE)
-                .startLocationLongitude(START_LOCATION_LONGITUDE)
-                .endLocationLatitude(END_LOCATION_LATITUDE)
-                .endLocationLongitude(END_LOCATION_LONGITUDE)
-                .municipalityId(MUNICIPALITY_ID)
-                .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
-                .transportTypes(Set.of(TransportType.CAR))
-                .build();
+        when(restrictionService.findAllBy(accessibilityRequest)).thenReturn(restrictions);
 
-        prepareMocks(accessibilityRequest, true, true);
+        mockFromAndDestination(accessibilityRequest);
+        mockGraphHopperNetwork(accessibilityRequest);
 
-        Accessibility result = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+        when(baseAccessibilityCalculator.calculate(
+                graphHopperNetwork,
+                accessibilityRequest.municipalityId(),
+                accessibilityRequest.searchRadiusInMeters()))
+                .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
 
-        Accessibility expected = Accessibility
-                .builder()
-                .combinedAccessibility(List.of(roadSectionCombined, roadSectionCombinedEnd))
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
-                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .toRoadSection(Optional.of(roadSectionCombinedEnd))
-                .reasons(accessibilityReasons)
-                .build();
-
-        assertThat(result).isEqualTo(expected);
-    }
-
-    @Test
-    void calculateAccessibility_invalidStartLocation() {
-
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .startLocationLatitude(START_LOCATION_LATITUDE)
-                .startLocationLongitude(START_LOCATION_LONGITUDE)
-                .endLocationLatitude(END_LOCATION_LATITUDE)
-                .endLocationLongitude(END_LOCATION_LONGITUDE)
-                .municipalityId(MUNICIPALITY_ID)
-                .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
-                .transportTypes(Set.of(TransportType.CAR))
-                .build();
-
-        prepareMocks(accessibilityRequest, false, true);
-
-        assertThat(catchThrowable(() -> accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)))
-                .hasMessage("Could not find a snap point for start location (1.0, 2.0).")
-                .isInstanceOf(AccessibilityException.class);
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            null, null,
-            1, null,
-            null, 2
-            """, nullValues = "null")
-    void calculateAccessibility_noEndLocation(Double endLocationLatitude, Double endLocationLongitude) {
-
-        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                List.of(roadSectionNoRestriction),
-                List.of(roadSectionRestriction)))
-                .thenReturn(List.of(roadSectionCombined, roadSectionCombinedEnd));
-
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .startLocationLatitude(START_LOCATION_LATITUDE)
-                .startLocationLongitude(START_LOCATION_LONGITUDE)
-                .endLocationLatitude(endLocationLatitude)
-                .endLocationLongitude(endLocationLongitude)
-                .municipalityId(MUNICIPALITY_ID)
-                .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
-                .transportTypes(Set.of(TransportType.CAR))
-                .build();
-
-        prepareMocks(accessibilityRequest, true, false);
-
-        Accessibility result = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
-
-        Accessibility expected = Accessibility
-                .builder()
-                .combinedAccessibility(List.of(roadSectionCombined, roadSectionCombinedEnd))
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
-                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .toRoadSection(Optional.empty())
-                .reasons(Collections.emptyList())
-                .build();
-
-        assertThat(result).isEqualTo(expected);
-    }
-
-    @Test
-    void calculateAccessibility_endLocation_couldNotBeSnapped() {
-
-        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                List.of(roadSectionNoRestriction),
-                List.of(roadSectionRestriction)))
-                .thenReturn(List.of(roadSectionCombined, roadSectionCombinedEnd));
-
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .startLocationLatitude(START_LOCATION_LATITUDE)
-                .startLocationLongitude(START_LOCATION_LONGITUDE)
-                .endLocationLatitude(END_LOCATION_LATITUDE)
-                .endLocationLongitude(END_LOCATION_LONGITUDE)
-                .municipalityId(MUNICIPALITY_ID)
-                .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
-                .transportTypes(Set.of(TransportType.CAR))
-                .build();
-
-        prepareMocks(accessibilityRequest, true, false);
-
-        Accessibility result = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
-
-        Accessibility expected = Accessibility
-                .builder()
-                .combinedAccessibility(List.of(roadSectionCombined, roadSectionCombinedEnd))
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction))
-                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction))
-                .toRoadSection(Optional.empty())
-                .reasons(Collections.emptyList())
-                .build();
-
-        assertThat(result).isEqualTo(expected);
-        loggerExtension.containsLog(Level.ERROR, "Could not find a snap point for end location (3.0, 4.0).");
-    }
-
-    @Test
-    void calculateAccessibility_addMissingRoadSectionsFromNwb() {
-
-        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
-                List.of(roadSectionNoRestriction, missingRoadSection),
-                List.of(roadSectionRestriction, missingRoadSection)))
-                .thenReturn(List.of(roadSectionCombined, missingRoadSection, roadSectionCombinedEnd));
-
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .addMissingRoadsSectionsFromNwb(true)
-                .startLocationLatitude(START_LOCATION_LATITUDE)
-                .startLocationLongitude(START_LOCATION_LONGITUDE)
-                .endLocationLatitude(END_LOCATION_LATITUDE)
-                .endLocationLongitude(END_LOCATION_LONGITUDE)
-                .municipalityId(MUNICIPALITY_ID)
-                .searchRadiusInMeters(SEARCH_DISTANCE_IN_METRES)
-                .transportTypes(Set.of(TransportType.CAR))
-                .build();
-
-        prepareMocks(accessibilityRequest, true, true);
-
-        when(missingRoadSectionProvider.get(MUNICIPALITY_ID, List.of(roadSectionNoRestriction), false))
+        when(missingRoadSectionProvider.get(20, accessibilityRequest.municipalityId(), Set.of(roadSectionNoRestriction), false))
                 .thenReturn(List.of(missingRoadSection));
 
-        Accessibility result = accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest);
+        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+                Set.of(roadSectionNoRestriction, missingRoadSection),
+                Set.of(roadSectionRestriction, missingRoadSection)))
+                .thenReturn(Set.of(roadSectionCombined, roadSectionDestination));
 
-        Accessibility expected = Accessibility
-                .builder()
-                .combinedAccessibility(List.of(roadSectionCombined, missingRoadSection, roadSectionCombinedEnd))
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(List.of(roadSectionNoRestriction, missingRoadSection))
-                .accessibleRoadSectionsWithAppliedRestrictions(List.of(roadSectionRestriction, missingRoadSection))
-                .toRoadSection(Optional.of(roadSectionCombinedEnd))
-                .reasons(accessibilityReasons)
-                .build();
+        calculateRoadsSectionsWithAppliedRestrictions(accessibilityRequest);
 
-        assertThat(result).isEqualTo(expected);
+        mockFindDestinationRoadSection(true);
+        when(roadSectionDestination.getId()).thenReturn(30L);
+        when(roadSectionDestination.isRestrictedInAnyDirection()).thenReturn(true);
+
+        mockCalculateReasons(accessibilityRequest);
+
+        try (var logUtilStaticMock = Mockito.mockStatic(LogUtil.class)) {
+            logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
+                    .thenReturn(keyValue("key", "value"));
+
+            Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
+
+            assertThat(accessibility.combinedAccessibility()).containsExactlyInAnyOrder(roadSectionCombined, roadSectionDestination);
+            assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(
+                    roadSectionNoRestriction,
+                    missingRoadSection);
+            assertThat(accessibility.accessibleRoadSectionsWithAppliedRestrictions()).containsExactlyInAnyOrder(
+                    roadSectionRestriction,
+                    missingRoadSection);
+            assertThat(accessibility.unroutableRoadSections()).containsExactlyInAnyOrder(missingRoadSection);
+            assertThat(accessibility.toRoadSection()).contains(roadSectionDestination);
+            assertThat(accessibility.reasons()).isEqualTo(accessibilityReasons);
+
+            loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
+            loggerExtension.containsLog(Level.DEBUG, "Accessibility calculation done. It took: 123 ms");
+        }
     }
 
-    private void prepareMocks(AccessibilityRequest accessibilityRequest, boolean valisStartPoint, boolean validEndPoint) {
+    @Test
+    void calculateAccessibility_noAddingMissingRoadSections() {
 
-        when(pointMapper.mapCoordinate(START_LOCATION_LATITUDE, START_LOCATION_LONGITUDE)).thenReturn(Optional.of(startPoint));
-        when(pointMatchService.match(networkGraphHopper, startPoint)).thenReturn(Optional.of(startCandidateMatch));
-        when(startCandidateMatch.getSnappedPoint()).thenReturn(startPoint);
-        when(startPoint.isValid()).thenReturn(valisStartPoint);
+        accessibilityRequest = accessibilityRequest.withAddMissingRoadsSectionsFromNwb(false);
 
-        if (valisStartPoint) {
-            when(clockService.now()).thenReturn(OffsetDateTime.MIN);
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:00:00.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        when(restrictionService.findAllBy(accessibilityRequest)).thenReturn(restrictions);
 
-            when(startPoint.getY()).thenReturn(START_LOCATION_LATITUDE);
-            when(startPoint.getX()).thenReturn(START_LOCATION_LONGITUDE);
-            when(locationIndexTree.findClosest(
-                    START_LOCATION_LATITUDE,
-                    START_LOCATION_LONGITUDE,
-                    EdgeFilter.ALL_EDGES))
-                    .thenReturn(startSegmentSnap);
-            if (accessibilityRequest.hasEndLocation()) {
-                when(pointMapper.mapCoordinate(END_LOCATION_LATITUDE, END_LOCATION_LONGITUDE)).thenReturn(Optional.of(endPoint));
-                when(pointMatchService.match(networkGraphHopper, endPoint)).thenReturn(Optional.of(endCandidateMatch));
-                when(endCandidateMatch.getSnappedPoint()).thenReturn(endPoint);
-                when(endPoint.isValid()).thenReturn(validEndPoint);
-                if (validEndPoint) {
-                    when(endPoint.getY()).thenReturn(END_LOCATION_LATITUDE);
-                    when(endPoint.getX()).thenReturn(END_LOCATION_LONGITUDE);
+        mockFromAndDestination(accessibilityRequest);
+        mockGraphHopperNetwork(accessibilityRequest);
 
-                    when(locationIndexTree.findClosest(
-                            END_LOCATION_LATITUDE,
-                            END_LOCATION_LONGITUDE,
-                            EdgeFilter.ALL_EDGES))
-                            .thenReturn(endSegmentSnap);
-                    when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
-                    when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
-                    when(endSegmentSnap.getClosestEdge()).thenReturn(endSegmentClosestEdge);
-                    when(endSegmentClosestEdge.get(idIntEncodedValue)).thenReturn((int) END_LOCATION_ROAD_SECTION_ID);
+        when(baseAccessibilityCalculator.calculate(
+                graphHopperNetwork,
+                accessibilityRequest.municipalityId(),
+                accessibilityRequest.searchRadiusInMeters()))
+                .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
 
-                    when(roadSectionCombinedEnd.getId()).thenReturn(END_LOCATION_ROAD_SECTION_ID);
-                    when(roadSectionCombinedEnd.isRestrictedInAnyDirection()).thenReturn(true);
+        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+                Set.of(roadSectionNoRestriction),
+                Set.of(roadSectionRestriction)))
+                .thenReturn(Set.of(roadSectionCombined, roadSectionDestination));
 
-                    when(accessibilityReasonService.calculateReasons(accessibilityRequest, networkData, List.of(trafficSign)))
-                            .thenReturn(accessibilityReasons);
-                }
-            }
+        calculateRoadsSectionsWithAppliedRestrictions(accessibilityRequest);
 
-            when(trafficSignDataService.findAllBy(accessibilityRequest)).thenReturn(List.of(trafficSign));
+        mockFindDestinationRoadSection(true);
+        when(roadSectionDestination.getId()).thenReturn(30L);
+        when(roadSectionDestination.isRestrictedInAnyDirection()).thenReturn(true);
 
-            when(networkCacheDataService.getNetworkData(
-                    MUNICIPALITY_ID,
-                    startSegmentSnap,
-                    SEARCH_DISTANCE_IN_METRES,
-                    List.of(trafficSign),
-                    networkGraphHopper)
-            ).thenReturn(networkData);
+        mockCalculateReasons(accessibilityRequest);
 
-            when(isochroneServiceFactory.createService(networkGraphHopper)).thenReturn(isochroneService);
-            when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
-            when(networkGraphHopper.createWeighting(
-                    eq(NetworkConstants.CAR_PROFILE),
-                    argThat(new PMapArgumentMatcher(new PMap())))
-            ).thenReturn(weightingNoRestrictions);
+        try (var logUtilStaticMock = Mockito.mockStatic(LogUtil.class)) {
+            logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
+                    .thenReturn(keyValue("key", "value"));
 
-            when(networkData.networkGraphHopper()).thenReturn(networkGraphHopper);
-            when(networkData.queryGraph()).thenReturn(queryGraph);
-            when(networkData.edgeRestrictions()).thenReturn(edgeRestrictions);
-            when(edgeRestrictions.getBlockedEdges()).thenReturn(Set.of(1));
-            when(isochroneService
-                    .getIsochroneMatchesByMunicipalityId(
-                            argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
-                                    .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, edgeRestrictions.getBlockedEdges()))
-                                    .municipalityId(MUNICIPALITY_ID)
-                                    .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
-                                    .build())),
-                            eq(queryGraph),
-                            eq(startSegmentSnap)))
-                    .thenReturn(List.of(isochroneMatchRestriction));
+            Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
 
-            when(networkData.baseAccessibleRoads())
-                    .thenReturn(new ArrayList<>(List.of(roadSectionNoRestriction)));
-            when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction)))
-                    .thenReturn(new ArrayList<>(List.of(roadSectionRestriction)));
+            assertThat(accessibility.combinedAccessibility()).containsExactlyInAnyOrder(roadSectionCombined, roadSectionDestination);
+            assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(roadSectionNoRestriction);
+            assertThat(accessibility.accessibleRoadSectionsWithAppliedRestrictions()).containsExactlyInAnyOrder(roadSectionRestriction);
+            assertThat(accessibility.unroutableRoadSections()).isEmpty();
+            assertThat(accessibility.toRoadSection()).contains(roadSectionDestination);
+            assertThat(accessibility.reasons()).isEqualTo(accessibilityReasons);
+
+            loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
+            loggerExtension.containsLog(Level.DEBUG, "Accessibility calculation done. It took: 123 ms");
+        }
+    }
+
+    @Test
+    void calculateAccessibility_requestHasNoEndLocation() {
+
+        accessibilityRequest = accessibilityRequest
+                .withEndLocationLatitude(null)
+                .withEndLocationLongitude(null);
+
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:00:00.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+
+        when(restrictionService.findAllBy(accessibilityRequest)).thenReturn(restrictions);
+
+        mockFromAndDestination(accessibilityRequest);
+        mockGraphHopperNetwork(accessibilityRequest);
+
+        when(baseAccessibilityCalculator.calculate(
+                graphHopperNetwork,
+                accessibilityRequest.municipalityId(),
+                accessibilityRequest.searchRadiusInMeters()))
+                .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
+
+        when(missingRoadSectionProvider.get(20, accessibilityRequest.municipalityId(), Set.of(roadSectionNoRestriction), false))
+                .thenReturn(List.of(missingRoadSection));
+
+        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+                Set.of(roadSectionNoRestriction, missingRoadSection),
+                Set.of(roadSectionRestriction, missingRoadSection)))
+                .thenReturn(Set.of(roadSectionCombined, roadSectionDestination));
+
+        calculateRoadsSectionsWithAppliedRestrictions(accessibilityRequest);
+
+        mockFindDestinationRoadSection(false);
+
+        try (var logUtilStaticMock = Mockito.mockStatic(LogUtil.class)) {
+            logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
+                    .thenReturn(keyValue("key", "value"));
+
+            Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
+
+            assertThat(accessibility.combinedAccessibility()).containsExactlyInAnyOrder(roadSectionCombined, roadSectionDestination);
+            assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(
+                    roadSectionNoRestriction,
+                    missingRoadSection);
+            assertThat(accessibility.accessibleRoadSectionsWithAppliedRestrictions()).containsExactlyInAnyOrder(
+                    roadSectionRestriction,
+                    missingRoadSection);
+            assertThat(accessibility.unroutableRoadSections()).containsExactlyInAnyOrder(missingRoadSection);
+            assertThat(accessibility.toRoadSection()).isEmpty();
+            assertThat(accessibility.reasons()).isEmpty();
+
+            loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
+            loggerExtension.containsLog(Level.DEBUG, "Accessibility calculation done. It took: 123 ms");
+        }
+    }
+
+    @Test
+    void calculateAccessibility_destinationNotFound() {
+
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:00:00.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+
+        when(restrictionService.findAllBy(accessibilityRequest)).thenReturn(restrictions);
+
+        mockFromAndDestination(accessibilityRequest);
+        mockGraphHopperNetwork(accessibilityRequest);
+
+        when(baseAccessibilityCalculator.calculate(
+                graphHopperNetwork,
+                accessibilityRequest.municipalityId(),
+                accessibilityRequest.searchRadiusInMeters()))
+                .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
+
+        when(missingRoadSectionProvider.get(20, accessibilityRequest.municipalityId(), Set.of(roadSectionNoRestriction), false))
+                .thenReturn(List.of(missingRoadSection));
+
+        when(roadSectionCombinator.combineNoRestrictionsWithAccessibilityRestrictions(
+                Set.of(roadSectionNoRestriction, missingRoadSection),
+                Set.of(roadSectionRestriction, missingRoadSection)))
+                .thenReturn(Set.of(roadSectionCombined, roadSectionDestination));
+
+        calculateRoadsSectionsWithAppliedRestrictions(accessibilityRequest);
+
+        mockFindDestinationRoadSection(false);
+
+        try (var logUtilStaticMock = Mockito.mockStatic(LogUtil.class)) {
+            logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
+                    .thenReturn(keyValue("key", "value"));
+
+            Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
+
+            assertThat(accessibility.combinedAccessibility()).containsExactlyInAnyOrder(roadSectionCombined, roadSectionDestination);
+            assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(
+                    roadSectionNoRestriction,
+                    missingRoadSection);
+            assertThat(accessibility.accessibleRoadSectionsWithAppliedRestrictions()).containsExactlyInAnyOrder(
+                    roadSectionRestriction,
+                    missingRoadSection);
+            assertThat(accessibility.unroutableRoadSections()).containsExactlyInAnyOrder(missingRoadSection);
+            assertThat(accessibility.toRoadSection()).isEmpty();
+            assertThat(accessibility.reasons()).isEmpty();
+
+            loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
+            loggerExtension.containsLog(Level.DEBUG, "Accessibility calculation done. It took: 123 ms");
+            loggerExtension.containsLog(
+                    Level.ERROR, "Could not find a snap point for end location (%s, %s).".formatted(
+                            accessibilityRequest.endLocationLatitude(),
+                            accessibilityRequest.endLocationLongitude()));
+        }
+    }
+
+    private void mockFromAndDestination(AccessibilityRequest accessibilityRequest) {
+        when(locationFactory.mapCoordinate(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude()))
+                .thenReturn(from);
+        when(locationFactory.mapCoordinate(accessibilityRequest.endLocationLatitude(), accessibilityRequest.endLocationLongitude()))
+                .thenReturn(destination);
+    }
+
+    private void mockGraphHopperNetwork(AccessibilityRequest accessibilityRequest) {
+        when(graphHopperService.getNetwork(restrictions, from, destination)).thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.getBlockedEdges()).thenReturn(blockedEdges);
+        when(graphHopperNetwork.getNetwork()).thenReturn(networkGraphHopper);
+        when(graphHopperNetwork.getQueryGraph()).thenReturn(queryGraph);
+        when(graphHopperNetwork.getFrom()).thenReturn(fromSnap);
+        if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
+            when(graphHopperNetwork.getNwbVersion()).thenReturn(20);
+        }
+    }
+
+    private void calculateRoadsSectionsWithAppliedRestrictions(AccessibilityRequest accessibilityRequest) {
+
+        when(networkGraphHopper.createWeighting(
+                eq(NetworkConstants.CAR_PROFILE),
+                argThat(new PMapArgumentMatcher(new PMap())))
+        ).thenReturn(weightingNoRestrictions);
+        when(isochroneServiceFactory.createService(graphHopperNetwork)).thenReturn(isochroneService);
+        when(isochroneService
+                .getIsochroneMatchesByMunicipalityId(
+                        argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
+                                .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, blockedEdges))
+                                .municipalityId(accessibilityRequest.municipalityId())
+                                .searchDistanceInMetres(accessibilityRequest.searchRadiusInMeters())
+                                .build())),
+                        eq(queryGraph),
+                        eq(fromSnap)))
+                .thenReturn(List.of(isochroneMatchRestriction));
+        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatchRestriction)))
+                .thenReturn(new HashSet<>(Set.of(roadSectionRestriction)));
+    }
+
+    private void mockCalculateReasons(AccessibilityRequest accessibilityRequest) {
+        when(accessibilityReasonService.calculateReasons(accessibilityRequest, graphHopperNetwork)).thenReturn(accessibilityReasons);
+    }
+
+    private void mockFindDestinationRoadSection(boolean hasDestination) {
+        if (hasDestination) {
+            when(graphHopperNetwork.getDestination()).thenReturn(destinationSnap);
+            when(destinationSnap.getClosestEdge()).thenReturn(endSegmentClosestEdge);
+            when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+            when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
+            when(endSegmentClosestEdge.get(idIntEncodedValue)).thenReturn(30);
         }
     }
 
@@ -484,14 +491,14 @@ class AccessibilityServiceTest {
                 return false;
             }
             return Objects.equals(expected.municipalityId(), actual.municipalityId()) &&
-                    expected.searchDistanceInMetres() == actual.searchDistanceInMetres() &&
-                    weightingEquals(expected.weighting(), actual.weighting());
+                   expected.searchDistanceInMetres() == actual.searchDistanceInMetres() &&
+                   weightingEquals(expected.weighting(), actual.weighting());
         }
 
         private boolean weightingEquals(Weighting expectedWeighting, Weighting actualWeighting) {
 
             if (expected.weighting() instanceof RestrictionWeightingAdapter expectedWeightingAdapter
-                    && actualWeighting instanceof RestrictionWeightingAdapter actualWeightingAdapter) {
+                && actualWeighting instanceof RestrictionWeightingAdapter actualWeightingAdapter) {
                 return Objects.equals(
                         expectedWeightingAdapter.getBlockedEdges(),
                         actualWeightingAdapter.getBlockedEdges());

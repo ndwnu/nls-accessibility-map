@@ -1,15 +1,15 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.response;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType.FUEL_TYPE;
-import static nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType.VEHICLE_TYPE;
+import static nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType.FUEL_TYPE;
+import static nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType.VEHICLE_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.FuelTypeRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.TransportTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.FuelTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.response.restriction.FuelTypeRestrictionJsonMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeRestrictionJson;

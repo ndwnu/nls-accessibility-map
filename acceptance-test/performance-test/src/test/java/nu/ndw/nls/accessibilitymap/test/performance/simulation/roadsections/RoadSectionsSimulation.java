@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;

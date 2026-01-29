@@ -4,14 +4,14 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>jobs</artifactId>
-    <version>5.2.3-SNAPSHOT</version>
+    <version>5.2.12-SNAPSHOT</version>
   </parent>
   <artifactId>traffic-sign</artifactId>
   <name>NLS Accessibility Map Traffic Sign Analyser Job</name>
   <dependencies>
     <dependency>
-      <groupId>nu.ndw.nls.locationdataissuesapi</groupId>
-      <artifactId>client-feign</artifactId>
+      <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>oauth2-client-credentials</artifactId>
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls.accessibilitymap</groupId>
@@ -106,6 +106,7 @@
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>test</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

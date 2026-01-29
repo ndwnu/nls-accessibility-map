@@ -8,7 +8,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.LineStringGeometry;
@@ -33,13 +34,13 @@ public class FeatureBuilder {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
-    public List<Feature> createTrafficSigns(DirectionalSegment directionalSegment,
+    public List<Feature> createTrafficSigns(
+            DirectionalSegment directionalSegment,
             AtomicLong idSequenceSupplier,
             GenerateConfiguration generateConfiguration) {
         List<Feature> features = new ArrayList<>();
         addTrafficSigns(directionalSegment, idSequenceSupplier, generateConfiguration, features);
         return features;
-
     }
 
     public List<Feature> createLineStringsAndTrafficSigns(
@@ -58,7 +59,7 @@ public class FeatureBuilder {
     public Feature createPolygon(
             Geometry polygonGeometry,
             AtomicLong idSequenceSupplier,
-            List<TrafficSign> relevantTrafficSigns,
+            Set<Restriction> relevantRestrictions,
             Set<Long> relevantRoadSectionIds) {
 
         return Feature.builder()
@@ -68,7 +69,10 @@ public class FeatureBuilder {
                         .build())
                 .properties(PolygonProperties.builder()
                         .inAccessibleRoadSectionIds(relevantRoadSectionIds.stream().sorted().toList())
-                        .windowTimes(relevantTrafficSigns.stream()
+                        .windowTimes(relevantRestrictions.stream()
+                                //Todo: Add support for other types of restrictions
+                                .filter(TrafficSign.class::isInstance)
+                                .map(TrafficSign.class::cast)
                                 .map(TrafficSign::findFirstTimeWindowedSign)
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
@@ -86,18 +90,18 @@ public class FeatureBuilder {
             GenerateConfiguration generateConfiguration,
             List<Feature> features) {
 
-        if (directionalSegment.hasTrafficSigns()) {
+        if (directionalSegment.hasRestrictions()) {
             if (generateConfiguration.addTrafficSignsAsLineStrings()) {
                 features.addAll(buildTrafficSignsAsLineString(
                         idSequenceSupplier,
-                        directionalSegment.getTrafficSigns(),
+                        directionalSegment.getRestrictions(),
                         directionalSegment,
                         generateConfiguration.trafficSignLineStringDistanceInMeters()));
             }
             if (generateConfiguration.addTrafficSignsAsPoints()) {
-                features.addAll(buildTrafficSignsAsPoint(
+                features.addAll(buildRestrictionAsPoint(
                         idSequenceSupplier,
-                        directionalSegment.getTrafficSigns(),
+                        directionalSegment.getRestrictions(),
                         directionalSegment));
             }
         }
@@ -113,10 +117,10 @@ public class FeatureBuilder {
             features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
         } else {
             if (generateConfiguration.addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections()
-                    && directionalSegment.getRoadSectionFragment().isNotAccessibleFromAllSegments()) {
+                && directionalSegment.getRoadSectionFragment().isNotAccessibleFromAllSegments()) {
                 features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
             } else if (generateConfiguration.addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections()
-                    && directionalSegment.getRoadSectionFragment().isAccessibleFromAllSegments()) {
+                       && directionalSegment.getRoadSectionFragment().isAccessibleFromAllSegments()) {
                 features.add(buildRoadSection(directionalSegment, idSequenceSupplier, false));
             } else if (directionalSegment.getRoadSectionFragment().isPartiallyAccessible()) {
                 if (generateConfiguration.writeRoadSegmentFragmentsThatArePartiallyAccessibleAsAccessible()) {
@@ -135,29 +139,36 @@ public class FeatureBuilder {
                 .toList();
     }
 
-    private List<Feature> buildTrafficSignsAsPoint(
+    private List<Feature> buildRestrictionAsPoint(
             AtomicLong geoJsonIdSequenceSupplier,
-            List<TrafficSign> trafficSigns,
+            List<Restriction> restrictions,
             DirectionalSegment directionalSegment) {
 
         LineStringJson directionSegmentLineStringJson = jtsLineStringJsonMapper.map(
                 directionalSegment.getLineString());
-        return trafficSigns.stream().map(trafficSign -> Feature.builder()
-                .id(geoJsonIdSequenceSupplier.getAndIncrement())
-                .geometry(PointGeometry
-                        .builder()
-                        .coordinates(directionSegmentLineStringJson.getCoordinates().getFirst())
-                        .build())
-                .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
-                .build()).toList();
+        return restrictions.stream()
+                // Todo: Add support for other restriction types
+                .filter(TrafficSign.class::isInstance)
+                .map(TrafficSign.class::cast)
+                .map(trafficSign -> Feature.builder()
+                        .id(geoJsonIdSequenceSupplier.getAndIncrement())
+                        .geometry(PointGeometry
+                                .builder()
+                                .coordinates(directionSegmentLineStringJson.getCoordinates().getFirst())
+                                .build())
+                        .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
+                        .build()).toList();
     }
 
     private List<Feature> buildTrafficSignsAsLineString(
             AtomicLong geoJsonIdSequenceSupplier,
-            List<TrafficSign> trafficSigns,
+            List<Restriction> restrictions,
             DirectionalSegment directionalSegment,
             int trafficSignLineStringDistanceInMeters) {
-        return trafficSigns.stream()
+        return restrictions.stream()
+                // Todo: Add support for other restriction types
+                .filter(TrafficSign.class::isInstance)
+                .map(TrafficSign.class::cast)
                 .map(trafficSign -> Feature.builder()
                         .id(geoJsonIdSequenceSupplier.getAndIncrement())
                         .geometry(LineStringGeometry
@@ -170,7 +181,6 @@ public class FeatureBuilder {
                         .properties(buildTrafficSignProperties(trafficSign, directionalSegment))
                         .build())
                 .toList();
-
     }
 
     private TrafficSignProperties buildTrafficSignProperties(

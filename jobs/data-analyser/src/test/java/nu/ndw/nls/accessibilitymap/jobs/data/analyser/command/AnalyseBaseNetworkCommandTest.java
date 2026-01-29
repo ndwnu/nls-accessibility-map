@@ -8,14 +8,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.NetworkAnalyserService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.events.NlsEventType;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
 import nu.ndw.nls.springboot.messaging.functions.NlsEventConsumeFunction;
 import nu.ndw.nls.springboot.messaging.services.MessageService;
@@ -36,13 +34,7 @@ class AnalyseBaseNetworkCommandTest {
     private AnalyseBaseNetworkCommand analyseBaseNetworkCommand;
 
     @Mock
-    private GraphHopperService graphHopperService;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
-    private GraphhopperConfiguration graphhopperConfiguration;
+    private NetworkMetaDataService networkMetaDataService;
 
     @Mock
     private NetworkAnalyserService networkAnalyserService;
@@ -60,8 +52,7 @@ class AnalyseBaseNetworkCommandTest {
     void setUp() {
 
         analyseBaseNetworkCommand = new AnalyseBaseNetworkCommand(
-                graphHopperService,
-                graphhopperConfiguration,
+                networkMetaDataService,
                 networkAnalyserService,
                 messageService);
     }
@@ -76,9 +67,8 @@ class AnalyseBaseNetworkCommandTest {
                     .build();
         });
 
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
         assertThat(new CommandLine(analyseBaseNetworkCommand).execute(
                 "--start-location-latitude=2d",
@@ -88,7 +78,6 @@ class AnalyseBaseNetworkCommandTest {
         ).isZero();
 
         verify(networkAnalyserService).analyse(
-                networkGraphHopper,
                 AnalyseNetworkConfiguration.builder()
                         .startLocationLatitude(2d)
                         .startLocationLongitude(3d)
@@ -109,12 +98,10 @@ class AnalyseBaseNetworkCommandTest {
                     .build();
         });
 
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
 
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-
-        doThrow(new RuntimeException("test exception")).when(networkAnalyserService).analyse(any(), any());
+        doThrow(new RuntimeException("test exception")).when(networkAnalyserService).analyse(any());
         assertThat(new CommandLine(analyseBaseNetworkCommand).execute(
                 "--start-location-latitude=2d",
                 "--start-location-longitude=3d",
