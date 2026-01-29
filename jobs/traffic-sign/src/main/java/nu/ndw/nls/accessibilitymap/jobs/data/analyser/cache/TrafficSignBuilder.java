@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.ZoneCodeType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapService;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
@@ -71,9 +71,10 @@ public class TrafficSignBuilder {
                     .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
                     .build();
 
-            return Optional.of(trafficSign.withRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign)));
+            return Optional.of(trafficSign.withTransportRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign)));
         } catch (RuntimeException exception) {
-            log.info("Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
+            log.info(
+                    "Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
                     trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto, exception);
             return Optional.empty();
         }

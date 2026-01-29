@@ -1,8 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.reducer;
 
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction;
 
 /**
  * An interface for reducing a collection of accessibility restrictions into a consolidated form.

@@ -31,11 +31,6 @@ spring:
     oauth2:
       client:
         registration:
-          sa-nls-location-data-issues-api:
-            authorization-grant-type: client_credentials
-            client-id: ${keycloak.client-id}
-            client-secret: ${keycloak.client-secret}
-            provider: ndw-keycloak
           traffic-sign-area-backend:
             authorization-grant-type: client_credentials
             client-id: ${keycloak.client-id}
@@ -51,15 +46,6 @@ spring:
 nu:
   ndw:
     nls:
-      locationdataissuesapi:
-        issue:
-          url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
-        report:
-          url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
-        client:
-          feign:
-            oauth2:
-              registration-id: sa-nls-location-data-issues-api
       accessibilitymap:
         jobs:
           analyse:

@@ -16,8 +16,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
@@ -285,7 +286,7 @@ class FeatureBuilderTest {
                 new Coordinate(2, 2, 0),
         });
 
-        List<TrafficSign> trafficSigns = List.of(TrafficSign.builder()
+        Restrictions restrictions = new Restrictions(Set.of(TrafficSign.builder()
                 .textSigns(List.of(
                         TextSign.builder()
                                 .type(TextSignType.EXCLUDING)
@@ -294,13 +295,13 @@ class FeatureBuilderTest {
                                 .type(TextSignType.TIME_PERIOD)
                                 .text("window")
                                 .build()))
-                .build());
+                .build()));
         Set<Long> relevantRoadSectionIds = Set.of(1L, 2L, 3L);
 
         Feature polygonFeature = featureBuilder.createPolygon(
                 polygonGeometry,
                 idSequenceSupplier,
-                trafficSigns,
+                restrictions,
                 relevantRoadSectionIds);
 
         assertThatJson(new ObjectMapper().writeValueAsString(polygonFeature))
@@ -432,7 +433,7 @@ class FeatureBuilderTest {
                 .direction(Direction.FORWARD)
                 .lineString(directionalSegmentLineString)
                 .accessible(forwardAccessible)
-                .trafficSigns(
+                .restrictions(
                         !addTrafficSign
                                 ? null
                                 : List.of(TrafficSign.builder()
@@ -462,7 +463,7 @@ class FeatureBuilderTest {
                 .direction(Direction.BACKWARD)
                 .lineString(directionalSegmentLineString)
                 .accessible(backwardAccessible)
-                .trafficSigns(
+                .restrictions(
                         !addTrafficSign
                                 ? null
                                 : List.of(TrafficSign.builder()

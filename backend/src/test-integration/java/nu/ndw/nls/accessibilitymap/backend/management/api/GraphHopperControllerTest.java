@@ -77,11 +77,11 @@ class GraphHopperControllerTest {
         if (expectedHttpStatus.is2xxSuccessful()) {
             mockMvcBuilder.andExpect(status().is(expectedHttpStatus.value()));
 
-            verify(graphHopperService).createNetworkGraphHopper();
+            verify(graphHopperService).loadNewNetworkGraphHopper();
 
         } else {
             mockMvcBuilder.andExpect(status().is(expectedHttpStatus.value()));
-            verify(graphHopperService, never()).createNetworkGraphHopper();
+            verify(graphHopperService, never()).loadNewNetworkGraphHopper();
         }
     }
 

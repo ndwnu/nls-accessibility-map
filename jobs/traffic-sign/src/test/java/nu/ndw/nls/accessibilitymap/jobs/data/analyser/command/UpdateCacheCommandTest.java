@@ -15,9 +15,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheReadWriter;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.TrafficSignBuilder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
@@ -87,6 +88,9 @@ class UpdateCacheCommandTest {
     private GraphhopperMetaData graphhopperMetaData;
 
     @Mock
+    private NetworkMetaDataService networkMetaDataService;
+
+    @Mock
     private NwbRoadSectionCrudService roadSectionService;
 
     @Mock
@@ -102,8 +106,11 @@ class UpdateCacheCommandTest {
     void setUp() {
 
         updateCacheCommand = new UpdateCacheCommand(
-                trafficSignCacheReadWriter, trafficSignService, trafficSignBuilder,
-                roadSectionService, graphhopperMetaData);
+                trafficSignCacheReadWriter,
+                trafficSignService,
+                trafficSignBuilder,
+                roadSectionService,
+                networkMetaDataService);
     }
 
     @Test
@@ -122,6 +129,7 @@ class UpdateCacheCommandTest {
                 2L, List.of(trafficSignGeoJsonDto3),
                 3L, List.of(trafficSignGeoJsonDto4)
         ));
+        when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(NWB_VERSION);
         when(roadSectionService.findById(argThat(id -> id.getRoadSectionId() == ROAD_SECTION_ID && id.getVersionId() == NWB_VERSION)))
                 .thenReturn(Optional.of(roadSection));
@@ -136,7 +144,7 @@ class UpdateCacheCommandTest {
 
         verify(trafficSignCacheReadWriter).write(argThat(trafficSigns ->
                 trafficSigns.size() == 3
-                        && trafficSigns.containsAll(List.of(trafficSign1, trafficSign2, trafficSign3))));
+                && trafficSigns.containsAll(List.of(trafficSign1, trafficSign2, trafficSign3))));
 
         loggerExtension.containsLog(Level.INFO, "Updating traffic signs");
     }

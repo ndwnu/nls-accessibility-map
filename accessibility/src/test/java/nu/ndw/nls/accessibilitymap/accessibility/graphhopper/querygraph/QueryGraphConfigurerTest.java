@@ -1,13 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 
-import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
-import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeExplorer;
@@ -16,10 +13,10 @@ import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.GHPoint3D;
 import java.util.List;
+import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,32 +33,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class QueryGraphConfigurerTest {
 
-    private static final int ROAD_SECTION_ID = 123;
-
-    private static final double LON = 0.0;
-
-    private static final double LAT = 1.0;
-
-    private static final String MESSAGE_NOT_ASSIGNED = "Query graph configuration summary. "
-            + "Total traffic signs in request 1. "
-            + "Total not assignable road sections with traffic sign 1, notAssigned {%s=[trafficSignSnap]}";
-
     private QueryGraphConfigurer queryGraphConfigurer;
 
     @Mock
     private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
     @Mock
-    private EncodingManager encodingManager;
-
-    @Mock
     private QueryGraph queryGraph;
 
     @Mock
-    private TrafficSignSnap trafficSignSnap;
+    private Restriction restriction1;
 
     @Mock
-    private TrafficSign trafficSign;
+    private Restriction restriction2;
 
     @Mock
     private Snap snap;
@@ -71,9 +55,6 @@ class QueryGraphConfigurerTest {
 
     @Mock
     private EdgeIterator edgeIterator;
-
-    @Mock
-    private IntEncodedValue intEncodedValueWayId;
 
     @Mock
     private GHPoint3D ghPoint;
@@ -90,7 +71,6 @@ class QueryGraphConfigurerTest {
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
-
     @BeforeEach
     void setUp() {
 
@@ -102,104 +82,101 @@ class QueryGraphConfigurerTest {
             false
             true
             """)
-    void createEdgeRestrictions_assignRestrictionsSuccessfully(boolean reversed) {
-        setupFixtureForQueryGraph();
-        setupFixtureForTrafficSignSnap();
-
-        when(trafficSignSnap.getSnap()).thenReturn(snap);
-        when(snap.getClosestNode()).thenReturn(0);
-
-        if (reversed) {
-            when(trafficSign.direction()).thenReturn(Direction.BACKWARD);
-        } else {
-            when(trafficSign.direction()).thenReturn(Direction.FORWARD);
-        }
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(reversed);
-        when(trafficSign.roadSectionId()).thenReturn(ROAD_SECTION_ID);
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
-        when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
-        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
-        when(pointList.toLineString(false)).thenReturn(lineString);
-        when(lineString.getStartPoint()).thenReturn(point);
-        when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
-        when(snap.getSnappedPoint()).thenReturn(ghPoint);
-        when(ghPoint.getLon()).thenReturn(LON);
-        when(ghPoint.getLat()).thenReturn(LAT);
-
-        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, List.of(trafficSignSnap));
-
-        assertThat(edgeRestrictions.getBlockedEdges()).contains(edgeIterator.getEdgeKey());
-        List<TrafficSign> trafficSigns = edgeRestrictions.getTrafficSignsByEdgeKey().get(edgeIterator.getEdgeKey());
-        assertThat(trafficSigns.getFirst()).isEqualTo(trafficSign);
-        loggerExtension.containsLog(
-                Level.INFO,
-                "Query graph configuration summary. "
-                        + "Total traffic signs in request 1. "
-                        + "Total not assignable road sections with traffic sign 0, notAssigned {}");
-    }
-
-    @Test
-    void createEdgeRestrictions_noRestrictionsAssigned_edgeNotInSameDirection() {
-        setupFixtureForQueryGraph();
-        setupFixtureForTrafficSignSnap();
-
-        when(trafficSignSnap.getSnap()).thenReturn(snap);
-        when(snap.getClosestNode()).thenReturn(0);
-
-        when(trafficSign.direction()).thenReturn(Direction.BACKWARD);
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
-
-        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, List.of(trafficSignSnap));
-
-        assertThat(edgeRestrictions.getBlockedEdges()).isEmpty();
-        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(0));
-    }
-
-    @Test
-    void createEdgeRestrictions_noRestrictionsAssigned_roadSectionIdMismatch() {
-        setupFixtureForQueryGraph();
-        setupFixtureForTrafficSignSnap();
-
-        when(trafficSignSnap.getSnap()).thenReturn(snap);
-        when(snap.getSnappedPoint()).thenReturn(ghPoint);
-        when(ghPoint.getLon()).thenReturn(LON);
-        when(ghPoint.getLat()).thenReturn(LAT);
-
-        //Latitude is the Y axis, longitude is the X axis
-        when(point.getCoordinate()).thenReturn(new Coordinate(LON, LAT));
-        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
-        when(snap.getClosestNode()).thenReturn(0);
-        when(pointList.toLineString(false)).thenReturn(lineString);
-        when(lineString.getStartPoint()).thenReturn(point);
-        when(trafficSign.direction()).thenReturn(Direction.FORWARD);
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
-        when(trafficSign.roadSectionId()).thenReturn(124); // Mismatched road section ID
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
-        when(edgeIterator.get(intEncodedValueWayId)).thenReturn(ROAD_SECTION_ID);
-
-        EdgeRestrictions edgeRestrictions = queryGraphConfigurer.createEdgeRestrictions(queryGraph, encodingManager, List.of(trafficSignSnap));
-
-        assertThat(edgeRestrictions.getBlockedEdges()).isEmpty();
-
-        loggerExtension.containsLog(Level.WARN, MESSAGE_NOT_ASSIGNED.formatted(124));
-
-        loggerExtension.containsLog(Level.WARN,
-                "Traffic sign trafficSignSnap and road section id 124 does not match linked edge with road section id 123");
-
-    }
-
-    private void setupFixtureForTrafficSignSnap() {
-
-        when(trafficSignSnap.getTrafficSign()).thenReturn(trafficSign);
-    }
-
-    private void setupFixtureForQueryGraph() {
+    void createEdgeRestrictions_withRestrictionsOnTheExactSamePlace(boolean reversed) {
 
         when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
         when(queryGraph.getNodes()).thenReturn(1);
         when(queryGraph.getEdges()).thenReturn(1);
-        when(edgeExplorer.setBaseNode(0)).thenReturn(edgeIterator);
-        when(edgeIterator.next()).thenReturn(true, false);
+        when(edgeExplorer.setBaseNode(24))
+                .thenReturn(edgeIterator)
+                .thenReturn(edgeIterator);
+        when(edgeIterator.next())
+                .thenReturn(true, false)
+                .thenReturn(true, false);
+        when(snap.getClosestNode()).thenReturn(24);
+
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(reversed);
+        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
+        when(edgeIterator.getEdgeKey()).thenReturn(234);
+        when(pointList.toLineString(false)).thenReturn(lineString);
+        when(lineString.getStartPoint()).thenReturn(point);
+        when(point.getCoordinate()).thenReturn(new Coordinate(1.0, 2.0));
+        when(snap.getSnappedPoint()).thenReturn(ghPoint);
+        when(ghPoint.getLon()).thenReturn(1.0);
+        when(ghPoint.getLat()).thenReturn(2.0);
+
+        when(restriction1.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
+        when(restriction2.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+                queryGraph,
+                List.of(
+                        new SnapRestriction(snap, restriction1),
+                        new SnapRestriction(snap, restriction2)
+                ));
+
+        assertThat(restrictionsByEdgeKey.get(234)).containsExactlyInAnyOrder(restriction1, restriction2);
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Query graph configuration summary. "
+                + "Total restriction: 2. "
+                + "Total not assignable restrictions: 0. []");
     }
 
+    @Test
+    void createEdgeRestrictions_noRestrictionAssigned_edgeNotInSameDirection() {
+
+        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+        when(queryGraph.getNodes()).thenReturn(1);
+        when(queryGraph.getEdges()).thenReturn(1);
+        when(edgeExplorer.setBaseNode(24)).thenReturn(edgeIterator);
+        when(edgeIterator.next()).thenReturn(true, false);
+        when(snap.getClosestNode()).thenReturn(24);
+
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(true);
+        when(restriction1.direction()).thenReturn(Direction.FORWARD);
+
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+                queryGraph,
+                List.of(new SnapRestriction(snap, restriction1)));
+
+        assertThat(restrictionsByEdgeKey).isEmpty();
+        loggerExtension.containsLog(
+                Level.WARN,
+                "Query graph configuration summary. "
+                + "Total restriction: 1. "
+                + "Total not assignable restrictions: 1. [restriction1]");
+    }
+
+    @Test
+    void createEdgeRestrictions_noRestrictionAssigned_isSnapInFrontOfEdge() {
+
+        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+        when(queryGraph.getNodes()).thenReturn(1);
+        when(queryGraph.getEdges()).thenReturn(1);
+        when(edgeExplorer.setBaseNode(24)).thenReturn(edgeIterator);
+        when(edgeIterator.next()).thenReturn(true, false);
+        when(snap.getClosestNode()).thenReturn(24);
+
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
+        when(restriction1.direction()).thenReturn(Direction.FORWARD);
+
+        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
+        when(pointList.toLineString(false)).thenReturn(lineString);
+        when(lineString.getStartPoint()).thenReturn(point);
+        when(point.getCoordinate()).thenReturn(new Coordinate(1.0, 2.0));
+        when(snap.getSnappedPoint()).thenReturn(ghPoint);
+        when(ghPoint.getLon()).thenReturn(3.0);
+        when(ghPoint.getLat()).thenReturn(4.0);
+
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+                queryGraph,
+                List.of(new SnapRestriction(snap, restriction1)));
+
+        assertThat(restrictionsByEdgeKey).isEmpty();
+        loggerExtension.containsLog(
+                Level.WARN,
+                "Query graph configuration summary. "
+                + "Total restriction: 1. "
+                + "Total not assignable restrictions: 1. [restriction1]");
+    }
 }

@@ -7,18 +7,16 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheUpdater;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.services.MapGeneratorService;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +39,7 @@ class GenerateCommandTest {
     private MapGeneratorService mapGeneratorService;
 
     @Mock
-    private GraphhopperConfiguration graphhopperConfiguration;
+    private NetworkMetaDataService networkMetaDataService;
 
     @Mock
     private GenerateConfiguration generateConfiguration;
@@ -55,12 +53,6 @@ class GenerateCommandTest {
     @Mock
     private TrafficSignCacheUpdater trafficSignCacheUpdater;
 
-    @Mock
-    private GraphHopperService graphHopperService;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
-
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -69,11 +61,10 @@ class GenerateCommandTest {
 
         generateCommand = new GenerateCommand(
                 mapGeneratorService,
-                graphhopperConfiguration,
+                networkMetaDataService,
                 generateConfiguration,
                 clockService,
-                trafficSignCacheUpdater,
-                graphHopperService);
+                trafficSignCacheUpdater);
     }
 
     @ParameterizedTest
@@ -82,12 +73,9 @@ class GenerateCommandTest {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
-
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
         assertThat(new CommandLine(generateCommand)
                 .execute(
@@ -102,7 +90,7 @@ class GenerateCommandTest {
                         "--publish-events")
         ).isZero();
 
-        verify(trafficSignCacheUpdater).updateCache(networkGraphHopper);
+        verify(trafficSignCacheUpdater).updateCache();
 
         ArgumentCaptor<ExportProperties> exportPropertiesCaptor = ArgumentCaptor.forClass(
                 ExportProperties.class);
@@ -124,8 +112,7 @@ class GenerateCommandTest {
 
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
 
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
 
@@ -160,8 +147,7 @@ class GenerateCommandTest {
         OffsetDateTime startTime = OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00");
         TrafficSignType trafficSignType = TrafficSignType.C1;
 
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
-        when(graphhopperConfiguration.getMetaData()).thenReturn(graphhopperMetaData);
+        when(networkMetaDataService.loadMetaData()).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(123);
         when(clockService.now()).thenReturn(startTime);
 

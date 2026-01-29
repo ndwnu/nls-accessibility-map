@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @ComponentScan
 @EnableNwbDataAccessServices
-@Import(RoutingMapMatcherConfiguration.class)
+@Import({RoutingMapMatcherConfiguration.class})
 public class NwbConfiguration {
 
 }

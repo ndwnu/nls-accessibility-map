@@ -78,13 +78,14 @@ class GraphHopperNetworkSettingsBuilderTest {
 
         RoutingNetworkSettings<AccessibilityLink> accessibilityLinkRoutingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
 
-        assertEquals(RoutingNetworkSettings
-                .builder(AccessibilityLink.class)
-                .indexed(true)
-                .graphhopperRootPath(GRAPHHOPPER_BASE_PATH)
-                .networkNameAndVersion(NETWORK_NAME)
-                .profiles(List.of(CAR_PROFILE))
-                .build(), accessibilityLinkRoutingNetworkSettings);
+        assertEquals(
+                RoutingNetworkSettings
+                        .builder(AccessibilityLink.class)
+                        .indexed(true)
+                        .graphhopperRootPath(GRAPHHOPPER_BASE_PATH)
+                        .networkNameAndVersion(NETWORK_NAME)
+                        .profiles(List.of(CAR_PROFILE))
+                        .build(), accessibilityLinkRoutingNetworkSettings);
     }
 
     @Test

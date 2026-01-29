@@ -4,18 +4,14 @@ import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkCacheDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.exclude.TrafficSignExclusion;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.rule.restrictive.TrafficSignRestriction;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -23,72 +19,48 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class TrafficSignDataService {
 
+    private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
+
     private final TrafficSigns trafficSigns = new TrafficSigns();
 
     private final ReentrantLock dataLock = new ReentrantLock();
 
-    private final TrafficSignCacheReadWriter trafficSignCacheReadWriter;
-
-    private final List<TrafficSignRestriction> trafficSignRestrictiveDeterminations;
-
-    private final List<TrafficSignExclusion> trafficSignExclusionDeterminations;
-
-    private final NetworkCacheDataService networkCacheDataService;
-
-    private final GraphHopperService graphHopperService;
+    public final List<Runnable> updateListeners = new ArrayList<>();
 
     @PostConstruct
     public void init() {
 
-        updateTrafficSignData(graphHopperService.getNetworkGraphHopper());
+        updateTrafficSignData();
     }
 
-    public List<TrafficSign> findAllBy(AccessibilityRequest accessibilityRequest) {
+    public Set<TrafficSign> findAll() {
 
-        return this.getTrafficSigns().stream()
-                .filter(trafficSign -> isRelevant(trafficSign, accessibilityRequest))
-                .toList();
+        return this.getTrafficSigns();
     }
 
-    @SuppressWarnings("java:S1067")
-    private boolean isRelevant(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-
-        return isNotExcluded(trafficSign, accessibilityRequest)
-               && isRestrictive(trafficSign, accessibilityRequest);
-    }
-
-    private boolean isRestrictive(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-
-        return trafficSignRestrictiveDeterminations.stream()
-                .anyMatch(trafficSignRestriction -> trafficSignRestriction.test(trafficSign, accessibilityRequest));
-    }
-
-    private boolean isNotExcluded(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
-
-        return trafficSignExclusionDeterminations.stream()
-                .noneMatch(trafficSignExclusion -> trafficSignExclusion.test(trafficSign, accessibilityRequest));
-    }
-
-    public List<TrafficSign> getTrafficSigns() {
+    public Set<TrafficSign> getTrafficSigns() {
         dataLock.lock();
         try {
-            return new ArrayList<>(trafficSigns);
+            return new HashSet<>(trafficSigns);
         } finally {
             dataLock.unlock();
         }
     }
 
-    protected void updateTrafficSignData(NetworkGraphHopper networkGraphHopper) {
+    protected void updateTrafficSignData() {
         trafficSignCacheReadWriter.read().ifPresent(newTrafficSignsData -> {
             OffsetDateTime start = OffsetDateTime.now();
             dataLock.lock();
             try {
                 trafficSigns.clear();
                 trafficSigns.addAll(newTrafficSignsData);
-                networkCacheDataService.create(newTrafficSignsData, networkGraphHopper);
             } finally {
                 dataLock.unlock();
-                log.info("Switched internal traffic signs data structure and was locked for {} ms",
+                synchronized (updateListeners) {
+                    updateListeners.forEach(Runnable::run);
+                }
+                log.info(
+                        "Switched internal traffic signs data structure and was locked for {} ms",
                         Duration.between(start, OffsetDateTime.now()).toMillis());
             }
         });

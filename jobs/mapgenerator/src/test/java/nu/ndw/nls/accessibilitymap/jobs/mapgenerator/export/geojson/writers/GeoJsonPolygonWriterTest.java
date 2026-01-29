@@ -21,15 +21,16 @@ import java.util.concurrent.atomic.AtomicLong;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.dto.Feature;
-import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.utils.polygon.MultiPolygonFactory;
+import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.geojson.util.polygon.MultiPolygonFactory;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -94,7 +95,7 @@ class GeoJsonPolygonWriterTest {
             PosixFilePermission.OWNER_WRITE)
     );
 
-    private List<TrafficSign> relevantTrafficSigns;
+    private Set<Restriction> relevantRestrictions;
 
     private Set<Long> relevantRoadSectionIds;
 
@@ -107,7 +108,7 @@ class GeoJsonPolygonWriterTest {
                         RoadSectionFragment.builder()
                                 .backwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .trafficSigns(List.of(TrafficSign.builder()
+                                        .restrictions(List.of(TrafficSign.builder()
                                                 .id(1)
                                                 .textSigns(List.of(
                                                         TextSign.builder()
@@ -122,7 +123,7 @@ class GeoJsonPolygonWriterTest {
                                         .build())
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .trafficSigns(List.of(TrafficSign.builder()
+                                        .restrictions(List.of(TrafficSign.builder()
                                                 .id(2)
                                                 .textSigns(List.of(
                                                         TextSign.builder()
@@ -139,11 +140,11 @@ class GeoJsonPolygonWriterTest {
                         RoadSectionFragment.builder()
                                 .backwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesNotIntersect)
-                                        .trafficSigns(null)
+                                        .restrictions(null)
                                         .build())
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .trafficSigns(List.of(TrafficSign.builder()
+                                        .restrictions(List.of(TrafficSign.builder()
                                                 .id(3)
                                                 .textSigns(List.of(
                                                         TextSign.builder()
@@ -160,7 +161,7 @@ class GeoJsonPolygonWriterTest {
                         RoadSectionFragment.builder()
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesNotIntersect)
-                                        .trafficSigns(List.of(TrafficSign.builder()
+                                        .restrictions(List.of(TrafficSign.builder()
                                                 .id(4)
                                                 .textSigns(List.of(
                                                         TextSign.builder()
@@ -183,12 +184,11 @@ class GeoJsonPolygonWriterTest {
         });
 
         relevantRoadSectionIds = Set.of(roadSection.getId());
-        relevantTrafficSigns = List.of(
-                roadSection.getRoadSectionFragments().getFirst().getForwardSegment().getTrafficSigns().getFirst(),
-                roadSection.getRoadSectionFragments().getFirst().getBackwardSegment().getTrafficSigns().getFirst(),
-                roadSection.getRoadSectionFragments().get(1).getForwardSegment().getTrafficSigns().getFirst()
+        relevantRestrictions = Set.of(
+                roadSection.getRoadSectionFragments().getFirst().getForwardSegment().getRestrictions().getFirst(),
+                roadSection.getRoadSectionFragments().getFirst().getBackwardSegment().getRestrictions().getFirst(),
+                roadSection.getRoadSectionFragments().get(1).getForwardSegment().getRestrictions().getFirst()
         );
-
     }
 
     @ParameterizedTest
@@ -233,14 +233,14 @@ class GeoJsonPolygonWriterTest {
             when(featureBuilder.createPolygon(
                     eq(geometry1),
                     any(AtomicLong.class),
-                    eq(relevantTrafficSigns),
+                    eq(relevantRestrictions),
                     eq(relevantRoadSectionIds)))
                     .thenReturn(Feature.builder().id(1).build());
 
             when(featureBuilder.createPolygon(
                     eq(geometry2),
                     any(AtomicLong.class),
-                    eq(relevantTrafficSigns),
+                    eq(relevantRestrictions),
                     eq(relevantRoadSectionIds)))
                     .thenReturn(Feature.builder().id(2).build());
 
@@ -275,7 +275,6 @@ class GeoJsonPolygonWriterTest {
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }
-
     }
 
     @Test

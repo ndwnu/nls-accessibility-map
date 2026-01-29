@@ -11,7 +11,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -114,7 +114,7 @@ class RoadSectionCombinatorTest {
                 .id(Integer.MAX_VALUE)
                 .direction(Direction.FORWARD)
                 .lineString(mock(LineString.class))
-                .trafficSigns(List.of(mock(TrafficSign.class)))
+                .restrictions(List.of(mock(Restriction.class)))
                 .roadSectionFragment(roadSectionFragment)
                 .accessible(true)
                 .build();
@@ -135,7 +135,7 @@ class RoadSectionCombinatorTest {
 
         assertThat(directionalSegment.getId()).isEqualTo(expectedDirection.getId());
         assertThat(directionalSegment.getLineString()).isEqualTo(expectedDirection.getLineString());
-        assertThat(directionalSegment.getTrafficSigns()).isEqualTo(expectedDirection.getTrafficSigns());
+        assertThat(directionalSegment.getRestrictions()).isEqualTo(expectedDirection.getRestrictions());
         assertThat(directionalSegment.getRoadSectionFragment()).isEqualTo(roadSectionFragment);
 
         verifyDirectionIsNotInCollection(directionalSegment, roadSectionsWithoutRestrictions);
@@ -164,7 +164,6 @@ class RoadSectionCombinatorTest {
                 .filter(directionalSegment -> directionalSegment.getId() == directionSegmentId)
                 .findFirst()
                 .orElse(null);
-
     }
 
     private void verifyDirectionIsNotInCollection(
@@ -197,7 +196,7 @@ class RoadSectionCombinatorTest {
                                     .id(roadSectionFragmentId + 10)
                                     .direction(Direction.FORWARD)
                                     .lineString(mock(LineString.class))
-                                    .trafficSigns(List.of(mock(TrafficSign.class)))
+                                    .restrictions(List.of(mock(Restriction.class)))
                                     .roadSectionFragment(roadSectionFragment)
                                     .accessible(accessibleSupplier.apply(roadSectionFragmentId))
                                     .build());
@@ -207,7 +206,7 @@ class RoadSectionCombinatorTest {
                                     .id(roadSectionFragmentId + 20)
                                     .direction(Direction.BACKWARD)
                                     .lineString(mock(LineString.class))
-                                    .trafficSigns(List.of(mock(TrafficSign.class)))
+                                    .restrictions(List.of(mock(Restriction.class)))
                                     .roadSectionFragment(roadSectionFragment)
                                     .accessible(accessibleSupplier.apply(roadSectionFragmentId))
                                     .build());

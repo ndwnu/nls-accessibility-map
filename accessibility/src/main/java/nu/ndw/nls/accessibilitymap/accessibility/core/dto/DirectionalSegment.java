@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.With;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
@@ -46,7 +46,7 @@ public final class DirectionalSegment {
     private RoadSectionFragment roadSectionFragment;
 
     @Valid
-    private List<TrafficSign> trafficSigns;
+    private List<Restriction> restrictions;
 
     private final boolean accessible;
 
@@ -54,8 +54,8 @@ public final class DirectionalSegment {
         return roadSectionFragment.getRoadSection().getId();
     }
 
-    public boolean hasTrafficSigns() {
+    public boolean hasRestrictions() {
 
-        return Objects.nonNull(trafficSigns) && !trafficSigns.isEmpty();
+        return Objects.nonNull(restrictions) && !restrictions.isEmpty();
     }
 }

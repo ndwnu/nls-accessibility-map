@@ -9,11 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheReadWriter;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.TrafficSignBuilder;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
@@ -37,7 +38,7 @@ public class UpdateCacheCommand implements Callable<Integer> {
 
     private final NwbRoadSectionCrudService roadSectionService;
 
-    private final GraphhopperMetaData graphhopperMetaData;
+    private final NetworkMetaDataService networkMetaDataService;
 
     @Override
     public Integer call() {
@@ -47,10 +48,11 @@ public class UpdateCacheCommand implements Callable<Integer> {
 
             AtomicInteger idSupplier = new AtomicInteger();
 
+            TrafficSignData externalTrafficSigns = trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
+                    .map(TrafficSignType::getRvvCode)
+                    .collect(Collectors.toSet()));
             TrafficSigns trafficSigns = new TrafficSigns(
-                    trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
-                                    .map(TrafficSignType::getRvvCode)
-                                    .collect(Collectors.toSet()))
+                    externalTrafficSigns
                             .trafficSignsByRoadSectionId().values().stream()
                             .flatMap(Collection::stream)
                             .map(trafficSignGeoJsonDto ->
@@ -75,8 +77,10 @@ public class UpdateCacheCommand implements Callable<Integer> {
         if (Objects.isNull(trafficSignGeoJsonDto.getProperties().getRoadSectionId())) {
             return null;
         }
-        return roadSectionService.findById(
-                        new Id(graphhopperMetaData.nwbVersion(), trafficSignGeoJsonDto.getProperties().getRoadSectionId()))
+        return roadSectionService.findById(new Id(
+                        networkMetaDataService.loadMetaData().nwbVersion(),
+                        trafficSignGeoJsonDto.getProperties().getRoadSectionId()
+                ))
                 .map(NwbRoadSectionDto::getGeometry)
                 .orElse(null);
     }

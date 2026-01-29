@@ -13,10 +13,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.request.AccessibilityRequestMapper;
@@ -32,7 +31,6 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -66,12 +64,6 @@ class AccessibilityMapApiDelegateImpTest {
     private static final double REQUESTED_LATITUDE = 222;
 
     private static final String ENVIRONMENTAL_ZONE_PARAMETER_ERROR_MESSAGE = "If one of the environmental zone parameters is set, the other must be set as well.";
-
-    @Mock
-    private GraphHopperService graphHopperService;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private PointValidator pointValidator;
@@ -116,7 +108,6 @@ class AccessibilityMapApiDelegateImpTest {
 
         accessibilityMapApiDelegate = new AccessibilityMapApiDelegateImpl(
                 pointValidator,
-                graphHopperService,
                 accessibilityResponseMapper,
                 roadSectionFeatureCollectionMapper,
                 municipalityService,
@@ -289,8 +280,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     private void setUpFixture(EmissionClassJson emissionClassJson, List<FuelTypeJson> fuelTypesJson) {
 
-        when(graphHopperService.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(accessibilityService.calculateAccessibility(networkGraphHopper, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibilityRequestMapper.map(
                 municipality,

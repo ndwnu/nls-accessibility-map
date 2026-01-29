@@ -12,11 +12,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
@@ -931,7 +931,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                                 new Coordinate(1, 2, 0),
                                 new Coordinate(2, 3, 0)
                         }))
-                .trafficSigns(List.of(TrafficSign.builder()
+                .restrictions(List.of(TrafficSign.builder()
                         .id(4)
                         .roadSectionId(1)
                         .externalId("externalId")
@@ -943,7 +943,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .networkSnappedLatitude(1D)
                         .networkSnappedLongitude(2D)
                         .trafficSignType(TrafficSignType.C7)
-                        .restrictions(Restrictions.builder().build())
+                        .transportRestrictions(TransportRestrictions.builder().build())
                         .build()))
                 .build();
 

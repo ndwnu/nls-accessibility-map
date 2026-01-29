@@ -23,7 +23,6 @@ public class NwbRoadSectionSnapService {
         LineString lineStringWgs84 = (LineString) crsTransformer.transformFromRdNewToWgs84(geometry);
         lineStringWgs84.setSRID(SRID.WGS84.value);
 
-        return fractionAndDistanceCalculator.getCoordinateAndBearing(
-                lineStringWgs84, fraction);
+        return fractionAndDistanceCalculator.getCoordinateAndBearing(lineStringWgs84, fraction);
     }
 }

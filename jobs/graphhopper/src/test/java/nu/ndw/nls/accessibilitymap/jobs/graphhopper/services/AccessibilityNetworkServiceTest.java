@@ -19,7 +19,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkS
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
 import nu.ndw.nls.accessibilitymap.jobs.graphhopper.mapper.AccessibilityRoutingNetworkEventMapper;
+import nu.ndw.nls.accessibilitymap.jobs.graphhopper.services.mapper.AccessibilityNwbRoadSectionToLinkMapper;
 import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.events.NlsEvent;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
@@ -55,7 +58,10 @@ class AccessibilityNetworkServiceTest {
     private GraphHopperNetworkService indexedGraphHopperNetworkService;
 
     @Mock
-    private AccessibilityLinkService accessibilityLinkService;
+    private AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService;
+
+    @Mock
+    private AccessibilityNwbRoadSectionToLinkMapper accessibilityNwbRoadSectionToLinkMapper;
 
     @Mock
     private GraphHopperNetworkSettingsBuilder graphHopperNetworkSettingsBuilder;
@@ -76,7 +82,10 @@ class AccessibilityNetworkServiceTest {
     private RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings;
 
     @Mock
-    private List<AccessibilityLink> accessibilityLinks;
+    private AccessibilityLink accessibilityLink;
+
+    @Mock
+    private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
 
     @Mock
     private ClockService clockService;
@@ -92,12 +101,13 @@ class AccessibilityNetworkServiceTest {
 
         accessibilityNetworkService = new AccessibilityNetworkService(
                 indexedGraphHopperNetworkService,
-                accessibilityLinkService,
+                accessibilityNwbRoadSectionService,
                 graphHopperNetworkSettingsBuilder,
                 messageService,
                 accessibilityRoutingNetworkEventMapper,
                 networkMetaDataService,
                 nwbVersionCrudService,
+                accessibilityNwbRoadSectionToLinkMapper,
                 clockService);
 
         testFolder = Files.createTempDirectory("test-accessibility-network-service");
@@ -119,10 +129,11 @@ class AccessibilityNetworkServiceTest {
 
         int nwbVersionId = 123;
         when(nwbVersionCrudService.findLatestVersionId()).thenReturn(nwbVersionId);
-        when(accessibilityLinkService.getLinks(nwbVersionId)).thenReturn(accessibilityLinks);
+        when(accessibilityNwbRoadSectionService.findAllByVersion(nwbVersionId)).thenReturn(List.of(accessibilityNwbRoadSection));
+        when(accessibilityNwbRoadSectionToLinkMapper.map(accessibilityNwbRoadSection)).thenReturn(accessibilityLink);
         when(clockService.now()).thenReturn(timestamp);
 
-        when(graphHopperNetworkSettingsBuilder.networkSettingsWithData(accessibilityLinks, timestamp.toInstant()))
+        when(graphHopperNetworkSettingsBuilder.networkSettingsWithData(List.of(accessibilityLink), timestamp.toInstant()))
                 .thenReturn(routingNetworkSettings);
 
         if (publishEvents) {
@@ -141,10 +152,11 @@ class AccessibilityNetworkServiceTest {
 
         if (publishEvents) {
             verify(messageService).publish(publishedEvent);
-            loggerExtension.containsLog(Level.INFO, "Sending %s event for NWB version %s"
-                    .formatted(
-                            ACCESSIBILITY_ROUTING_NETWORK_UPDATED.getLabel(),
-                            nwbVersionId));
+            loggerExtension.containsLog(
+                    Level.INFO, "Sending %s event for NWB version %s"
+                            .formatted(
+                                    ACCESSIBILITY_ROUTING_NETWORK_UPDATED.getLabel(),
+                                    nwbVersionId));
         } else {
             verifyNoMoreInteractions(messageService);
         }
@@ -152,31 +164,5 @@ class AccessibilityNetworkServiceTest {
         loggerExtension.containsLog(Level.INFO, "Starting network creation for %s".formatted(graphopperPath.toAbsolutePath()));
         loggerExtension.containsLog(Level.INFO, "Retrieving link data");
         loggerExtension.containsLog(Level.INFO, "Creating GraphHopper network and writing to disk");
-
     }
-
-//    @SneakyThrows
-//    @Test
-//    void storeLatestNetworkOnDisk_noEvents() {
-//        when(accessibilityLinkService.getLinks()).thenReturn(accessibilityLinks);
-//        when(links.iterator()).thenReturn(linkIterator);
-//        when(graphHopperNetworkSettingsBuilder.publishEvents()).thenReturn(false);
-//        when(graphHopperNetworkSettingsBuilder.configurePersistingRoutingNetworkSettings(any(), eq(TRAFFIC_SIGN_TIMESTAMP)))
-//                .thenReturn(routingNetworkSettings);
-//
-//        accessibilityNetworkService.storeLatestNetworkOnDisk();
-//
-//        verify(networkMetaDataService).saveMetaData(new AccessibilityGraphhopperMetaData(NWB_VERSION_ID));
-//
-//        verify(graphHopperNetworkSettingsBuilder).configurePersistingRoutingNetworkSettings(supplierArgumentCaptor.capture(),
-//                eq(TRAFFIC_SIGN_TIMESTAMP));
-//
-//        assertEquals(linkIterator, supplierArgumentCaptor.getValue().get());
-//
-//        verify(indexedGraphHopperNetworkService).storeOnDisk(routingNetworkSettings);
-//        assertTrue(Files.exists(tmpLatestPathFolder));
-//
-//        verifyNoInteractions(messageService);
-//    }
-
 }
