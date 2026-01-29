@@ -8,7 +8,7 @@
   </parent>
   <groupId>nu.ndw.nls.accessibilitymap</groupId>
   <artifactId>parent</artifactId>
-  <version>5.2.10-SNAPSHOT</version>
+  <version>5.2.11-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>nls-accessibility-map</name>
   <description>REST API to determine accessible road sections for a given vehicle type</description>
@@ -32,7 +32,7 @@
     <nls-springboot.component-test.version>12.4.0</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>8.4.19</nls-springboot.monitoring.version>
     <nls-springboot.test.version>9.1.0</nls-springboot.test.version>
-    <nls-springboot.gatling-test.version>1.1.0</nls-springboot.gatling-test.version>
+    <nls-springboot.gatling-test.version>1.1.1</nls-springboot.gatling-test.version>
     <gatling.version>3.14.9</gatling.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -55,8 +55,8 @@
     <jackson-geojson.version>3.0</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>5.1.0</json-unit.version>
-    <cucumber.version>7.33.0</cucumber.version>
-    <location-data-issues.version>2.2.97</location-data-issues.version>
+    <cucumber.version>7.34.1</cucumber.version>
+    <location-data-issues.version>2.2.99</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
