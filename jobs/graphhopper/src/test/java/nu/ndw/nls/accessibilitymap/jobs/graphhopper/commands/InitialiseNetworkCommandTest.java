@@ -49,6 +49,7 @@ class InitialiseNetworkCommandTest {
     void call_network_exists() {
         when(accessibilityNetworkService.networkExists()).thenReturn(true);
         assertThat(new CommandLine(initialiseNetworkCommand).execute()).isZero();
+        loggerExtension.containsLog(Level.INFO, "Network already exists, skipping creation");
         verifyNoMoreInteractions(accessibilityNetworkService);
     }
 
