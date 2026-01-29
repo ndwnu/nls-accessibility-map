@@ -73,4 +73,8 @@ public class AccessibilityNetworkService {
             messageService.publish(nlsEvent);
         }
     }
+
+    public boolean networkExists() {
+        return Files.exists(graphHopperNetworkSettingsBuilder.getLatestPath());
+    }
 }
