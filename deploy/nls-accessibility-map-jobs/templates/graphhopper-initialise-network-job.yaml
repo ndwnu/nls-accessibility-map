@@ -8,6 +8,7 @@ metadata:
     tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
 spec:
   ttlSecondsAfterFinished: 604800
+  activeDeadlineSeconds: 86400
   backoffLimit: 3
   template:
     metadata:
@@ -23,12 +24,12 @@ spec:
         tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
     spec:
       containers:
-        - name: nls-accessibility-map-graphhopper-job-initialise-network-init
+        - name: nls-accessibility-map-graphhopper-job-network-init
           resources:
             limits:
-              memory: 1024Mi
+              memory: 8Gi
             requests:
-              memory: 1024Mi
+              memory: 8Gi
           image: ndwnls.azurecr.io/nls-accessibility-map-graphhopper-job:{{ $.Chart.AppVersion }}
           imagePullPolicy: Always
           envFrom:
@@ -50,9 +51,9 @@ spec:
               readOnly: true
             - mountPath: /application/heapdumps
               name: nls-accessibility-map-heapdump
-              subPath: nls-accessibility-map-graphhopper-job-initialise-network-init
+              subPath: nls-accessibility-map-graphhopper-job-network-init
             - mountPath: /application/graphhopper
-              name: nls-accessibility-map-graphhopper-job-initialise-network-init-volume
+              name: nls-accessibility-map-graphhopper-job-network-init-volume
       restartPolicy: Never
       volumes:
         - name: nls-accessibility-map-api-secrets
@@ -64,6 +65,6 @@ spec:
         - name: nls-accessibility-map-heapdump
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
-        - name: nls-accessibility-map-graphhopper-job-initialise-network-init-volume
+        - name: nls-accessibility-map-graphhopper-job-network-init-volume
           persistentVolumeClaim:
             claimName: nls-accessibility-map-api-pvc
