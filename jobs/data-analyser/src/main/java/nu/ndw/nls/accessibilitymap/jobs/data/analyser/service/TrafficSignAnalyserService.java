@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.data.analyser.service;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,6 @@ import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.Issue
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.ReportApiClient;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,15 +37,11 @@ public class TrafficSignAnalyserService extends IssueReporterService {
         this.issueBuilder = issueBuilder;
     }
 
-    public void analyse(
-            NetworkGraphHopper networkGraphHopper,
-            @Valid AnalyseAsymmetricTrafficSignsConfiguration analyseAsymmetricTrafficSignsConfiguration) {
+    public void analyse(@Valid AnalyseAsymmetricTrafficSignsConfiguration analyseAsymmetricTrafficSignsConfiguration) {
 
         log.info("Analysing with the following properties: {}", analyseAsymmetricTrafficSignsConfiguration);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(
-                networkGraphHopper,
-                analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest());
+        var accessibility = accessibilityService.calculateAccessibility(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest());
 
         analyseTrafficSigns(accessibility, analyseAsymmetricTrafficSignsConfiguration);
     }
@@ -66,8 +62,10 @@ public class TrafficSignAnalyserService extends IssueReporterService {
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .filter(RoadSectionFragment::isPartiallyAccessible)
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
-                .filter(DirectionalSegment::hasTrafficSigns)
+                .filter(DirectionalSegment::hasRestrictions)
                 .map(directionalSegment -> issueBuilder.buildTrafficSignIssue(directionalSegment, issueReportId, issueReportGroupId))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
 
         logAndReportIssues(issues, analyseAsymmetricTrafficSignsConfiguration.reportIssues(), issueReportId, issueReportGroupId);

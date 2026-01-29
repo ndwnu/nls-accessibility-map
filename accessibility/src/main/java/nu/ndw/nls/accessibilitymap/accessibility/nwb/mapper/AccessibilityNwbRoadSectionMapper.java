@@ -18,8 +18,13 @@ public class AccessibilityNwbRoadSectionMapper {
         boolean reverseAccessible =
                 !ROAD_SECTION_DRIVING_DIRECTION_FORWARD.equals(nwbRoadSectionDto.getDrivingDirection());
 
-        return new AccessibilityNwbRoadSection((int) nwbRoadSectionDto.getRoadSectionId(), nwbRoadSectionDto.getGeometry(),
-                forwardAccessible, reverseAccessible);
+        return new AccessibilityNwbRoadSection(
+                nwbRoadSectionDto.getRoadSectionId(),
+                nwbRoadSectionDto.getJunctionIdFrom(),
+                nwbRoadSectionDto.getJunctionIdTo(),
+                nwbRoadSectionDto.getMunicipalityId(),
+                nwbRoadSectionDto.getGeometry(),
+                forwardAccessible,
+                reverseAccessible);
     }
-
 }

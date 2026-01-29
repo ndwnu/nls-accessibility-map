@@ -13,41 +13,42 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityRoadSectionsService;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Component
 public class MissingRoadSectionProvider {
 
-    private final AccessibilityRoadSectionsService accessibilityRoadSectionsService;
+    private final AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService;
 
-    private final GraphhopperMetaData graphhopperMetaData;
-
+    @Transactional(readOnly = true)
     public Collection<RoadSection> get(
+            Integer nwbVersion,
             Integer municipalityId,
             Collection<RoadSection> knownRoadSections,
             boolean missingRoadsSectionAreAccessible) {
 
-        return calculateMissingRoadSections(municipalityId, knownRoadSections, missingRoadsSectionAreAccessible);
+        return calculateMissingRoadSections(nwbVersion, municipalityId, knownRoadSections, missingRoadsSectionAreAccessible);
     }
 
     @SuppressWarnings("java:S5612")
     private List<RoadSection> calculateMissingRoadSections(
+            Integer nwbVersion,
             Integer municipalityId,
             Collection<RoadSection> knownRoadSections,
             boolean isAccessible) {
 
-        List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(municipalityId);
+        List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(nwbVersion, municipalityId);
 
         Map<Long, List<RoadSection>> roadSectionsById = knownRoadSections.stream()
                 .collect(Collectors.groupingBy(RoadSection::getId));
 
         Map<Long, List<AccessibilityNwbRoadSection>> allNwbRoadSectionById = roadSections.stream()
-                .collect(Collectors.groupingBy(AccessibilityNwbRoadSection::getRoadSectionId));
+                .collect(Collectors.groupingBy(AccessibilityNwbRoadSection::roadSectionId));
 
         SetView<Long> missingRoadSectionIds = Sets.difference(allNwbRoadSectionById.keySet(), roadSectionsById.keySet());
 
@@ -60,15 +61,15 @@ public class MissingRoadSectionProvider {
                 .flatMap(List::stream)
                 .map(accessibilityRoadSection -> {
                     RoadSection roadSection = RoadSection.builder()
-                            .id(accessibilityRoadSection.getRoadSectionId())
+                            .id(accessibilityRoadSection.roadSectionId())
                             .build();
                     RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
                             .id(roadSectionFragmentIdSupplier.getAndIncrement())
                             .roadSection(roadSection)
                             .build();
 
-                    LineString geometry = accessibilityRoadSection.getGeometry();
-                    if (accessibilityRoadSection.isForwardAccessible()) {
+                    LineString geometry = accessibilityRoadSection.geometry();
+                    if (accessibilityRoadSection.forwardAccessible()) {
                         roadSectionFragment.setForwardSegment(
                                 buildDirection(
                                         Direction.FORWARD,
@@ -77,7 +78,7 @@ public class MissingRoadSectionProvider {
                                         roadSectionFragment,
                                         isAccessible));
                     }
-                    if (accessibilityRoadSection.isBackwardAccessible()) {
+                    if (accessibilityRoadSection.backwardAccessible()) {
                         roadSectionFragment.setBackwardSegment(
                                 buildDirection(
                                         Direction.BACKWARD,
@@ -92,13 +93,13 @@ public class MissingRoadSectionProvider {
                 .toList();
     }
 
-    private List<AccessibilityNwbRoadSection> getAllRoadSections(Integer municipalityId) {
+    private List<AccessibilityNwbRoadSection> getAllRoadSections(Integer nwbVersion, Integer municipalityId) {
 
         if (Objects.isNull(municipalityId)) {
-            return accessibilityRoadSectionsService.getRoadSections(graphhopperMetaData.nwbVersion());
+            return accessibilityNwbRoadSectionService.findAllByVersion(nwbVersion);
         } else {
-            return accessibilityRoadSectionsService.getRoadSectionsByMunicipalityId(
-                    graphhopperMetaData.nwbVersion(),
+            return accessibilityNwbRoadSectionService.findAllByVersionAndMunicipalityId(
+                    nwbVersion,
                     municipalityId);
         }
     }

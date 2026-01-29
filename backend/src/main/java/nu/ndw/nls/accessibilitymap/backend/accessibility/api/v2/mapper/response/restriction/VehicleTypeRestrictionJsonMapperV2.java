@@ -3,8 +3,8 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.TransportTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.TransportTypeMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;

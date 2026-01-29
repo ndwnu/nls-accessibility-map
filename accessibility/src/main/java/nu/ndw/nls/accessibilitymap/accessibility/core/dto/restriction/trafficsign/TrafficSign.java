@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
@@ -52,5 +53,19 @@ public record TrafficSign(
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
         return TrafficSignExclusionCalculator.isNotExcluded(this, accessibilityRequest)
                && TrafficSignRestrictionCalculator.isRestrictive(this, accessibilityRequest);
+    }
+
+    @Override
+    public @NonNull String toString() {
+        return "TrafficSign{" +
+               "id=" + id +
+               ", externalId='" + externalId + "'" +
+               ", roadSectionId=" + roadSectionId +
+               ", trafficSignType=" + trafficSignType +
+               ", fraction=" + fraction +
+               ", networkSnappedLatitude=" + networkSnappedLatitude +
+               ", networkSnappedLongitude=" + networkSnappedLongitude +
+               ", direction=" + direction +
+               '}';
     }
 }

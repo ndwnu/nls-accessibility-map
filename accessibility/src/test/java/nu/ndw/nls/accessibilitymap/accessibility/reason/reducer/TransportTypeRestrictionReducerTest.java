@@ -5,11 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.MaximumRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.TransportTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

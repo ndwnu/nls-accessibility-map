@@ -1,13 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 
-import static java.util.stream.Collectors.groupingBy;
-import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.graphhopper.routing.querygraph.QueryGraph;
-import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
+import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeExplorer;
 import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.EdgeIteratorState;
@@ -15,16 +12,15 @@ import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.shapes.GHPoint;
 import io.micrometer.core.annotation.Timed;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.EdgeRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.TrafficSignSnap;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.slf4j.event.Level;
@@ -42,91 +38,63 @@ public class QueryGraphConfigurer {
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
-    /**
-     * Creates edge restrictions for traffic signs by mapping the snapped traffic signs to road edges in the query graph, based on the
-     * characteristics of the traffic signs and edges. Ensures compatible matches between traffic signs and edges, and logs any unassigned
-     * traffic signs.
-     *
-     * @param queryGraph          the query graph containing the nodes and edges used for mapping traffic signs
-     * @param snappedTrafficSigns a list of traffic signs with their corresponding snapped locations
-     * @return an instance of EdgeRestrictions containing the mapped edge restrictions
-     */
-    public EdgeRestrictions createEdgeRestrictions(
-            QueryGraph queryGraph,
-            EncodingManager encodingManager,
-            List<TrafficSignSnap> snappedTrafficSigns) {
-        List<EdgeRestriction> edgeRestrictions = new ArrayList<>();
+    public Map<Integer, List<Restriction>> createEdgeRestrictions(QueryGraph queryGraph, List<SnapRestriction> snapRestrictions) {
+
+        Map<Integer, List<Restriction> > edgeRestrictions = new HashMap<>();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
-        Set<TrafficSignSnap> assignedTrafficSignSnaps = new HashSet<>();
+        Restrictions assignedRestrictions = new Restrictions();
         Stopwatch stopwatch = Stopwatch.createStarted();
 
-        log.debug("Configuring query graph total nodes {} total edges {}", queryGraph.getNodes(),
-                queryGraph.getEdges());
-        snappedTrafficSigns.forEach(trafficSignSnap -> {
+        log.debug("Configuring query graph total nodes {} total edges {}", queryGraph.getNodes(), queryGraph.getEdges());
+        snapRestrictions.forEach(snapRestriction -> {
+            Restriction restriction = snapRestriction.restriction();
+            Snap snap = snapRestriction.snap();
             // By creating a query graph with a snap, the closestNode of the snap is updated to a virtual node if applicable.
             // See QueryOverlayBuilder.buildVirtualEdges
-            EdgeIterator edgeIterator = edgeExplorer.setBaseNode(trafficSignSnap.getSnap().getClosestNode());
+            EdgeIterator edgeIterator = edgeExplorer.setBaseNode(snap.getClosestNode());
 
             while (edgeIterator.next()) {
-                if (isTrafficSignInSameDirectionAsEdge(edgeIterator, trafficSignSnap) && isTrafficSignInFrontOfEdge(edgeIterator,
-                        trafficSignSnap)) {
-                    if (trafficSignDoesNotMatchEdge(encodingManager, trafficSignSnap.getTrafficSign(), edgeIterator)) {
-                        log.warn("Traffic sign {} and road section id {} does not match linked edge with road section id {}",
-                                trafficSignSnap,
-                                trafficSignSnap.getTrafficSign().roadSectionId(), getLinkId(encodingManager, edgeIterator));
-                    } else {
-
-                        edgeRestrictions.add(EdgeRestriction.builder()
-                                .edgeKey(edgeIterator.getEdgeKey())
-                                .trafficSign(trafficSignSnap.getTrafficSign())
-                                .build());
-                        assignedTrafficSignSnaps.add(trafficSignSnap);
-                    }
+                if (hasDirectionInSameDirectionAsCurrentEdge(edgeIterator, restriction)
+                    && isSnapInFrontOfEdge(edgeIterator, snap)) {
+                    edgeRestrictions.computeIfAbsent(edgeIterator.getEdgeKey(), integer -> new ArrayList<>());
+                    edgeRestrictions.get(edgeIterator.getEdgeKey()).add(restriction);
+                    assignedRestrictions.add(restriction);
                 }
             }
         });
 
-        Set<TrafficSignSnap> original = new HashSet<>(snappedTrafficSigns);
-        Set<TrafficSignSnap> notAssigned = Sets.difference(original, assignedTrafficSignSnaps);
-        Map<Integer, List<TrafficSignSnap>> notAssignedByRoadSectionId = notAssigned.stream()
-                .collect(groupingBy(s -> s.getTrafficSign().roadSectionId()));
-        log.atLevel(notAssignedByRoadSectionId.isEmpty() ? Level.INFO : Level.WARN)
+        Restrictions original = new Restrictions(snapRestrictions.stream().map(SnapRestriction::restriction).collect(Collectors.toSet()));
+        Restrictions notAssigned = new Restrictions(Sets.difference(original, assignedRestrictions));
+
+        log.atLevel(notAssigned.isEmpty() ? Level.INFO : Level.WARN)
                 .setMessage(
                         "Query graph configuration summary. "
-                                + "Total traffic signs in request {}. "
-                                + "Total not assignable road sections with traffic sign {}, notAssigned {}")
-                .addArgument(snappedTrafficSigns.size())
-                .addArgument(notAssignedByRoadSectionId.size())
-                .addArgument(notAssignedByRoadSectionId)
+                        + "Total restriction: {}. "
+                        + "Total not assignable restrictions: {}. {}")
+                .addArgument(snapRestrictions.size())
+                .addArgument(notAssigned.size())
+                .addArgument(notAssigned)
                 .log();
         log.debug("Configured query graph in {} ms", stopwatch.elapsed().toMillis());
-        return new EdgeRestrictions(edgeRestrictions);
+        return edgeRestrictions;
     }
 
-    /**
-     * Determines if a traffic sign is located in front of the specified edge. The method compares the coordinates of the snapped point of
-     * the traffic sign with the starting coordinate of the edge, within a defined tolerance.
-     *
-     * @param edgeIteratorState the edge being evaluated
-     * @param trafficSignSnap   the snapped traffic sign point containing the location data
-     * @return true if the traffic sign is considered to be positioned in front of the edge, false otherwise
-     */
-    private static boolean isTrafficSignInFrontOfEdge(EdgeIteratorState edgeIteratorState, TrafficSignSnap trafficSignSnap) {
+    private static boolean isSnapInFrontOfEdge(EdgeIteratorState edgeIteratorState, Snap snap) {
 
-        GHPoint point = trafficSignSnap.getSnap().getSnappedPoint();
+        GHPoint point = snap.getSnappedPoint();
         Coordinate snapCoordinate = new Coordinate(point.getLon(), point.getLat());
         Coordinate edgeCoordinate = getEdgeStartCoordinate(edgeIteratorState);
 
         return edgeCoordinate.equals2D(snapCoordinate, TOLERANCE_METRE_PRECISION);
     }
 
-    private boolean isTrafficSignInSameDirectionAsEdge(EdgeIterator edgeIterator, TrafficSignSnap trafficSignSnap) {
+    private boolean hasDirectionInSameDirectionAsCurrentEdge(EdgeIterator edgeIterator, Restriction restriction) {
 
         if (edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)) {
-            return trafficSignSnap.getTrafficSign().direction().isBackward();
+            return restriction.direction().isBackward();
         }
 
-        return trafficSignSnap.getTrafficSign().direction().isForward();
+        return restriction.direction().isForward();
     }
 
     private static Coordinate getEdgeStartCoordinate(EdgeIteratorState edgeIteratorState) {
@@ -135,18 +103,5 @@ public class QueryGraphConfigurer {
                 .fetchWayGeometry(FetchMode.ALL)
                 .toLineString(INCLUDE_ELEVATION);
         return lineString.getStartPoint().getCoordinate();
-    }
-
-    private boolean trafficSignDoesNotMatchEdge(
-            EncodingManager encodingManager,
-            TrafficSign trafficSign,
-            EdgeIteratorState edgeIteratorState) {
-
-        return getLinkId(encodingManager, edgeIteratorState) != trafficSign.roadSectionId();
-    }
-
-    private int getLinkId(EncodingManager encodingManager, EdgeIteratorState edge) {
-
-        return edge.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
     }
 }

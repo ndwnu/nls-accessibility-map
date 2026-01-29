@@ -454,11 +454,11 @@
       },
       "properties": {
         "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000001",
+        "trafficSignId": "00000000-0000-4000-0000-000000000003",
         "accessible": false,
         "direction": "FORWARD",
-        "trafficSignType": "C12",
-        "windowTimes": "window 1",
+        "trafficSignType": "C7",
+        "windowTimes": "window 3",
         "trafficSign": true
       },
       "type": "Feature"
@@ -480,11 +480,11 @@
       },
       "properties": {
         "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000003",
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "accessible": false,
         "direction": "FORWARD",
-        "trafficSignType": "C7",
-        "windowTimes": "window 3",
+        "trafficSignType": "C12",
+        "windowTimes": "window 1",
         "trafficSign": true
       },
       "type": "Feature"
@@ -500,11 +500,11 @@
       },
       "properties": {
         "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000001",
+        "trafficSignId": "00000000-0000-4000-0000-000000000003",
         "accessible": false,
         "direction": "FORWARD",
-        "trafficSignType": "C12",
-        "windowTimes": "window 1",
+        "trafficSignType": "C7",
+        "windowTimes": "window 3",
         "trafficSign": true
       },
       "type": "Feature"
@@ -520,11 +520,11 @@
       },
       "properties": {
         "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000003",
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "accessible": false,
         "direction": "FORWARD",
-        "trafficSignType": "C7",
-        "windowTimes": "window 3",
+        "trafficSignType": "C12",
+        "windowTimes": "window 1",
         "trafficSign": true
       },
       "type": "Feature"

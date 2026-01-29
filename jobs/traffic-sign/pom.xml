@@ -10,8 +10,8 @@
   <name>NLS Accessibility Map Traffic Sign Analyser Job</name>
   <dependencies>
     <dependency>
-      <groupId>nu.ndw.nls.locationdataissuesapi</groupId>
-      <artifactId>client-feign</artifactId>
+      <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>oauth2-client-credentials</artifactId>
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls.accessibilitymap</groupId>

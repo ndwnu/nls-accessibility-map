@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.graphhopper.util.shapes.BBox;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -108,6 +109,13 @@ class AccessibilityRequestTest extends ValidationTest {
                 .withEndLocationLatitude(latitude ? 1D : null)
                 .withEndLocationLongitude(longitude ? 2D : null);
         assertThat(accessibilityRequest.hasEndLocation()).isEqualTo(latitude && longitude);
+    }
+
+    @Test
+    void getBoundingBoxString() {
+
+        accessibilityRequest = accessibilityRequest.withBoundingBox(BBox.fromPoints(1.0,2.0,3.0,4.0));
+        assertThat(accessibilityRequest.getBoundingBoxString()).contains("2.0,4.0,1.0,3.0");
     }
 
     @Override
