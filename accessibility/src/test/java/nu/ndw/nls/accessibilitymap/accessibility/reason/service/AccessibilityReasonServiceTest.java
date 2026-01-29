@@ -20,13 +20,13 @@ import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasons;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.AccessibilityReasonsMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReasons;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.AfterEach;
@@ -47,7 +47,6 @@ class AccessibilityReasonServiceTest {
     @Mock
     private AccessibilityReasonsMapper accessibilityReasonsMapper;
 
-
     @Mock
     private RoutingAlgorithmFactory routingAlgorithmFactory;
 
@@ -55,7 +54,7 @@ class AccessibilityReasonServiceTest {
     private PathsToReasonsMapper pathsToReasonsMapper;
 
     @Mock
-    private NetworkData networkData;
+    private GraphHopperNetwork graphHopperNetwork;
 
     @Mock
     private BaseGraph baseGraph;
@@ -76,7 +75,7 @@ class AccessibilityReasonServiceTest {
     private Snap endSnap;
 
     @Mock
-    private List<TrafficSign> trafficSigns;
+    private Restrictions restrictions;
 
     @Mock
     private AccessibilityReasons accessibilityReasons;
@@ -132,7 +131,7 @@ class AccessibilityReasonServiceTest {
                 .endLocationLongitude(4d)
                 .build();
 
-        when(networkData.networkGraphHopper()).thenReturn(networkGraphHopper);
+        when(graphHopperNetwork.getNetwork()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(PMap::isEmpty))).thenReturn(weighting);
@@ -149,8 +148,9 @@ class AccessibilityReasonServiceTest {
 
         queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, startSnap, endSnap)).thenReturn(queryGraph);
 
-        when(routingAlgorithmFactory.createAlgo(eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
-                algorithmOptions.getHints().getBool("pass_through", false)
+        when(routingAlgorithmFactory.createAlgo(
+                eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
+                        algorithmOptions.getHints().getBool("pass_through", false)
                         && algorithmOptions.getAlgorithm().equals("dijkstrabi")
                         && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
@@ -160,16 +160,14 @@ class AccessibilityReasonServiceTest {
         when(routeRoutingAlgorithm.calcPaths(1, 2)).thenReturn(routes);
         when(path.isFound()).thenReturn(true);
 
-        when(accessibilityReasonsMapper.mapToAoAccessibilityReasons(trafficSigns)).thenReturn(accessibilityReasons);
+        when(graphHopperNetwork.getRestrictions()).thenReturn(restrictions);
+        when(accessibilityReasonsMapper.mapRestrictions(restrictions)).thenReturn(accessibilityReasons);
         when(pathsToReasonsMapper.mapRoutesToReasons(routes, accessibilityReasons, encodingManager)).thenReturn(accessibilityReasonsList);
 
-        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest,
-                networkData,
-                trafficSigns);
+        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest, graphHopperNetwork);
 
         assertThat(result).isEqualTo(accessibilityReasonsList);
     }
-
 
     @Test
     void calculateReasons_noRoutesFound() {
@@ -181,7 +179,7 @@ class AccessibilityReasonServiceTest {
                 .endLocationLongitude(4d)
                 .build();
 
-        when(networkData.networkGraphHopper()).thenReturn(networkGraphHopper);
+        when(graphHopperNetwork.getNetwork()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(PMap::isEmpty))).thenReturn(weighting);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
@@ -197,8 +195,9 @@ class AccessibilityReasonServiceTest {
 
         queryGraphStaticMock.when(() -> QueryGraph.create(baseGraph, startSnap, endSnap)).thenReturn(queryGraph);
 
-        when(routingAlgorithmFactory.createAlgo(eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
-                algorithmOptions.getHints().getBool("pass_through", false)
+        when(routingAlgorithmFactory.createAlgo(
+                eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
+                        algorithmOptions.getHints().getBool("pass_through", false)
                         && algorithmOptions.getAlgorithm().equals("dijkstrabi")
                         && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
@@ -208,9 +207,7 @@ class AccessibilityReasonServiceTest {
         when(routeRoutingAlgorithm.calcPaths(1, 2)).thenReturn(routes);
         when(path.isFound()).thenReturn(false);
 
-        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest,
-                networkData,
-                trafficSigns);
+        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest, graphHopperNetwork);
 
         assertThat(result).isEmpty();
         loggerExtension.containsLog(Level.WARN, "No routes found for request: %s".formatted(accessibilityRequest));

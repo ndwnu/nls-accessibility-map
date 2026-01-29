@@ -16,7 +16,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.reasons.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
@@ -931,7 +931,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                                 new Coordinate(1, 2, 0),
                                 new Coordinate(2, 3, 0)
                         }))
-                .trafficSigns(List.of(TrafficSign.builder()
+                .restrictions(List.of(TrafficSign.builder()
                         .id(4)
                         .roadSectionId(1)
                         .externalId("externalId")

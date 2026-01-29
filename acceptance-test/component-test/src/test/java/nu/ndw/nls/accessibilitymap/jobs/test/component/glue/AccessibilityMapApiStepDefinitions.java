@@ -63,8 +63,7 @@ public class AccessibilityMapApiStepDefinitions {
     @When("request accessibility geojson for")
     public void requestAccessibilityGeoJsonFor(AccessibilityRequest accessibilityRequest) {
 
-        Response<Void, RoadSectionFeatureCollectionJson> response = accessibilityMapApiClient.getAccessibilityGeoJsonForMunicipality(
-                accessibilityRequest);
+        var response = accessibilityMapApiClient.getAccessibilityGeoJsonForMunicipality(accessibilityRequest);
 
         assertThat(response.containsError())
                 .withFailMessage(
@@ -102,7 +101,7 @@ public class AccessibilityMapApiStepDefinitions {
 
         String reasons = Objects.isNull(reasonsFile)
                 ? "[]"
-                : testDataProvider.readFromFile("api/accessibility/InaccessibleReasons", reasonsFile + ".json");
+                : testDataProvider.readFromFile("api/accessibility/v1/InaccessibleReasons", reasonsFile + ".json");
 
         assertThatJson(response.bodyAsString())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
@@ -134,7 +133,7 @@ public class AccessibilityMapApiStepDefinitions {
 
         assertThatJson(response.body())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(testDataProvider.readFromFile("api/accessibility", expectedResponseFile));
+                .isEqualTo(testDataProvider.readFromFile("api/accessibility/v1", expectedResponseFile));
     }
 
     @When("request accessibility geojson for {word}")

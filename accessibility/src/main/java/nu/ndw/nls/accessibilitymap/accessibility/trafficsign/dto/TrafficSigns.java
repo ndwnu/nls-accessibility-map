@@ -1,15 +1,15 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto;
 
 import java.io.Serial;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import lombok.NoArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class TrafficSigns extends ArrayList<TrafficSign> {
+public class TrafficSigns extends LinkedHashSet<TrafficSign> {
 
     @Serial
     private static final long serialVersionUID = 1L;

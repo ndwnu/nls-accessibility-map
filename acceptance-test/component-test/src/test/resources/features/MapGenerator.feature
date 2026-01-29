@@ -13,6 +13,7 @@ Feature: Map Generator
     Then we expect InnerCircleBlocked geojson
     And we expect InnerCircleBlockedPolygon geojson
 
+
   Scenario: Job generate geojson for window times with multiple traffic signs on one edge
     Given a simple Graph Hopper network
     And with traffic signs

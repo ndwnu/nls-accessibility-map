@@ -3,8 +3,7 @@ package nu.ndw.nls.accessibilitymap.jobs.data.analyser.command;
 import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphhopperConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.NetworkMetaDataService;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.NetworkAnalyserService;
 import nu.ndw.nls.events.NlsEvent;
@@ -20,9 +19,7 @@ import picocli.CommandLine.Option;
 @RequiredArgsConstructor
 public class AnalyseBaseNetworkCommand implements Callable<Integer> {
 
-    private final GraphHopperService graphHopperService;
-
-    private final GraphhopperConfiguration graphhopperConfiguration;
+    private final NetworkMetaDataService networkMetaDataService;
 
     private final NetworkAnalyserService networkAnalyserService;
 
@@ -61,11 +58,11 @@ public class AnalyseBaseNetworkCommand implements Callable<Integer> {
                     .startLocationLatitude(startLocationLatitude)
                     .startLocationLongitude(startLocationLongitude)
                     .searchRadiusInMeters(searchRadiusInMeters)
-                    .nwbVersion(graphhopperConfiguration.getMetaData().nwbVersion())
+                    .nwbVersion(networkMetaDataService.loadMetaData().nwbVersion())
                     .reportIssues(reportIssues)
                     .build();
 
-            networkAnalyserService.analyse(graphHopperService.getNetworkGraphHopper(), analyseNetworkConfiguration);
+            networkAnalyserService.analyse(analyseNetworkConfiguration);
 
             return 0;
         } catch (RuntimeException exception) {
