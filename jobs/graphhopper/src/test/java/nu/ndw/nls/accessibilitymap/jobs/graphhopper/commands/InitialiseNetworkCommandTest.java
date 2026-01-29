@@ -3,6 +3,8 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.commands;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import java.io.IOException;
@@ -40,6 +42,14 @@ class InitialiseNetworkCommandTest {
     void call() {
         assertThat(new CommandLine(initialiseNetworkCommand).execute()).isZero();
         verify(accessibilityNetworkService).storeLatestNetworkOnDisk();
+    }
+
+    @SneakyThrows
+    @Test
+    void call_network_exists() {
+        when(accessibilityNetworkService.networkExists()).thenReturn(true);
+        assertThat(new CommandLine(initialiseNetworkCommand).execute()).isZero();
+        verifyNoMoreInteractions(accessibilityNetworkService);
     }
 
     @Test

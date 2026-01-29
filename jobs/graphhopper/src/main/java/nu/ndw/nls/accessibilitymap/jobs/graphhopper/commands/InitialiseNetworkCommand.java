@@ -18,6 +18,10 @@ public class InitialiseNetworkCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        if (accessibilityNetworkService.networkExists()) {
+            log.info("Network already exists, skipping creation");
+            return 0;
+        }
         try {
             accessibilityNetworkService.storeLatestNetworkOnDisk();
             return 0;
