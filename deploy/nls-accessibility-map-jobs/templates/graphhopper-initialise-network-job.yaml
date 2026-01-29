@@ -38,9 +38,9 @@ spec:
           env:
             - name: COMMAND
               value: initialiseNetwork
-            {{ - /*
-                    Added as env variable so the dd init container appends the settings instead of an overwrite
-              */ }}
+            {{- /*
+                  Added as env variable so the dd init container appends the settings instead of an overwrite
+              */}}
             - name: SPRING_PROFILES_ACTIVE
               value: {{ $.Values.environment }}
             - name: JAVA_TOOL_OPTIONS
