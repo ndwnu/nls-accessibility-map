@@ -47,7 +47,7 @@
     <swagger-annotations.version>2.2.42</swagger-annotations.version>
     <nls-events.version>5.5.2</nls-events.version>
     <nls-nwb-data-access.version>9.4.10</nls-nwb-data-access.version>
-    <nls-springboot.version>9.4.12</nls-springboot.version>
+    <nls-springboot.version>9.4.13</nls-springboot.version>
     <nls-routing-map-matcher.version>19.0.27</nls-routing-map-matcher.version>
     <nls-geometry.version>5.2.4</nls-geometry.version>
     <nls-geojson-geometry.version>1.4.52</nls-geojson-geometry.version>
@@ -60,7 +60,7 @@
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
-    <wiremock-spring-boot.version>4.0.9</wiremock-spring-boot.version>
+    <wiremock-spring-boot.version>4.1.0</wiremock-spring-boot.version>
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-24970 -->
     <netty.version>4.2.4.Final</netty.version>
