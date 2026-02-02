@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,6 +34,7 @@ import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,12 +46,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityNetworkServiceTest {
 
     private AccessibilityNetworkService accessibilityNetworkService;
-
-    @Mock
-    private List<AccessibilityLink> links;
-
-    @Mock
-    private Iterator<AccessibilityLink> linkIterator;
 
     @Mock
     private NlsEvent publishedEvent;
@@ -167,5 +161,11 @@ class AccessibilityNetworkServiceTest {
         loggerExtension.containsLog(Level.INFO, "Starting network creation for %s".formatted(graphopperPath.toAbsolutePath()));
         loggerExtension.containsLog(Level.INFO, "Retrieving link data");
         loggerExtension.containsLog(Level.INFO, "Creating GraphHopper network and writing to disk");
+    }
+
+    @Test
+    void networkExists_no_network() {
+        when(graphHopperNetworkSettingsBuilder.getLatestPath()).thenReturn(testFolder.resolve("latest"));
+        assertThat(accessibilityNetworkService.networkExists()).isFalse();
     }
 }

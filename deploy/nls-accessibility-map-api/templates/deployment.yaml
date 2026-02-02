@@ -28,14 +28,13 @@ spec:
       restartPolicy: Always
       containers:
         - name: {{ .Chart.Name }}
-          image:
-            ndwnls.azurecr.io/nls-accessibility-map-api:{{ .Chart.AppVersion }}
+          image: ndwnls.azurecr.io/nls-accessibility-map-api:{{ .Chart.AppVersion }}
           imagePullPolicy: Always
           resources:
             limits:
-              memory: 2560Mi
+              memory: 4Gi
             requests:
-              memory: 2560Mi
+              memory: 4Gi
           ports:
             - containerPort: 8080
           envFrom:
