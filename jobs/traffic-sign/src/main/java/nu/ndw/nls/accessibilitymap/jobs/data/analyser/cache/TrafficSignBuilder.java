@@ -15,7 +15,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapS
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -49,7 +48,7 @@ public class TrafficSignBuilder {
                 throw new IllegalStateException("Traffic sign with id '%s' is missing a fraction."
                         .formatted(trafficSignGeoJsonDto.getId()));
             }
-            CoordinateAndBearing coordinateAndBearing = nwbRoadSectionSnapService.snapToLine(nwbRoadSectionGeometry, fraction);
+            var coordinateAndBearing = nwbRoadSectionSnapService.snapToLineForRdGeometry(nwbRoadSectionGeometry, fraction);
 
             TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode());
             TrafficSign trafficSign = TrafficSign.builder()

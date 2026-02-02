@@ -24,6 +24,7 @@ public class AccessibilityRequestRestrictionMapper {
     public Restriction map(
             AccessibilityContext accessibilityContext,
             AccessibilityRequestRestrictionJson accessibilityRequestRestrictionJson) {
+
         if (accessibilityRequestRestrictionJson instanceof AccessibilityRequestRoadSectionRestrictionJson roadSectionRestrictionJson) {
             var roadSectionSnappedToGeometryCoordinates = getRoadSectionSnappedToGeometryCoordinates(
                     accessibilityContext,

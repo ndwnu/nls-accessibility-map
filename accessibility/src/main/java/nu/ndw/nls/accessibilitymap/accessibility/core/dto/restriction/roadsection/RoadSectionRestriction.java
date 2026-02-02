@@ -17,8 +17,7 @@ public record RoadSectionRestriction(
         @NotNull Direction direction,
         @NotNull Double fraction,
         @NotNull Double networkSnappedLatitude,
-        @NotNull Double networkSnappedLongitude,
-        boolean isDynamic
+        @NotNull Double networkSnappedLongitude
 ) implements Restriction {
 
     @Override
