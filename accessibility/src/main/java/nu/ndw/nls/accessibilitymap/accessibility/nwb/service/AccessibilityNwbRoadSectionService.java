@@ -2,20 +2,22 @@ package nu.ndw.nls.accessibilitymap.accessibility.nwb.service;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.mapper.AccessibilityNwbRoadSectionMapper;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.db.nwb.jooq.services.NwbRoadSectionCrudService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 public class AccessibilityNwbRoadSectionService {
 
     private static final int FETCH_SIZE = 250;
@@ -47,7 +49,7 @@ public class AccessibilityNwbRoadSectionService {
 
     private final AccessibilityNwbRoadSectionMapper accessibilityNwbRoadSectionMapper;
 
-    private final SortedMap<Integer, List<AccessibilityNwbRoadSection>> roadSectionsCache;
+    private final SortedMap<Integer, SortedMap<Long, AccessibilityNwbRoadSection>> roadSectionsCacheByVersionById;
 
     public AccessibilityNwbRoadSectionService(
             NwbRoadSectionCrudService nwbRoadSectionCrudService,
@@ -56,36 +58,36 @@ public class AccessibilityNwbRoadSectionService {
         this.nwbRoadSectionCrudService = nwbRoadSectionCrudService;
         this.accessibilityNwbRoadSectionMapper = accessibilityNwbRoadSectionMapper;
 
-        roadSectionsCache = new TreeMap<>();
+        roadSectionsCacheByVersionById = new TreeMap<>();
         graphHopperService.registerUpdateListener(this::clearCache);
     }
 
-    public List<AccessibilityNwbRoadSection> findAllByVersion(int versionId) {
-        synchronized (roadSectionsCache) {
-            roadSectionsCache.computeIfAbsent(
-                    versionId,
+    @Transactional(readOnly = true)
+    public SortedMap<Long, AccessibilityNwbRoadSection> getRoadSectionsByIdForNwbVersion(int nwbVersionId) {
+        synchronized (roadSectionsCacheByVersionById) {
+            roadSectionsCacheByVersionById.computeIfAbsent(
+                    nwbVersionId,
                     version -> nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
-                                    versionId,
+                                    nwbVersionId,
                                     CARRIAGE_WAY_TYPE_CODE_INCLUSIONS,
                                     null,
                                     FETCH_SIZE)
                             .map(accessibilityNwbRoadSectionMapper::map)
-                            .toList());
+                            .collect(Collectors.toMap(
+                                    AccessibilityNwbRoadSection::roadSectionId,               // key mapper (id)
+                                    Function.identity(),           // value mapper (the object)
+                                    (a, b) -> a,                   // merge function if duplicate ids occur (pick first; adjust if needed)
+                                    TreeMap::new
+                            )));
 
-            return roadSectionsCache.get(versionId);
+            return roadSectionsCacheByVersionById.get(nwbVersionId);
         }
     }
 
-    public List<AccessibilityNwbRoadSection> findAllByVersionAndMunicipalityId(int versionId, int municipalityId) {
-        return findAllByVersion(versionId).stream()
-                .filter(accessibilityNwbRoadSection -> Objects.nonNull(accessibilityNwbRoadSection.municipalityId()))
-                .filter(accessibilityNwbRoadSection -> accessibilityNwbRoadSection.municipalityId() == municipalityId)
-                .toList();
-    }
-
     private void clearCache() {
-        synchronized (roadSectionsCache) {
-            roadSectionsCache.clear();
+        synchronized (roadSectionsCacheByVersionById) {
+            log.info("Clearing road sections cache");
+            roadSectionsCacheByVersionById.clear();
         }
     }
 }

@@ -18,7 +18,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.export.ExportType;
@@ -46,6 +48,9 @@ class MapGeneratorServiceTest {
     private AccessibilityGeoJsonGeneratedEventMapper accessibilityGeoJsonGeneratedEventMapper;
 
     @Mock
+    private AccessibilityContextProvider accessibilityContextProvider;
+
+    @Mock
     private GeoJsonPolygonWriter geoJsonPolygonWriter;
 
     @Mock
@@ -65,6 +70,9 @@ class MapGeneratorServiceTest {
 
     @Mock
     private NlsEvent nlsEvent;
+
+    @Mock
+    private AccessibilityContext accessibilityContext;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -90,6 +98,7 @@ class MapGeneratorServiceTest {
                 accessibilityGeoJsonGeneratedEventMapper,
                 List.of(geoJsonPolygonWriter, geoJsonRoadSectionWriter),
                 accessibilityService,
+                accessibilityContextProvider,
                 messageService
         );
 
@@ -118,7 +127,8 @@ class MapGeneratorServiceTest {
 
         when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(accessibilityGeoJsonGeneratedEventMapper.map(
@@ -148,7 +158,9 @@ class MapGeneratorServiceTest {
         when(geoJsonPolygonWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         exportProperties = exportProperties.withPublishEvents(false);
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         mapGeneratorService.generate(exportProperties);

@@ -15,7 +15,9 @@ import java.util.regex.Pattern;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueBuilder;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
@@ -43,6 +45,12 @@ class NetworkAnalyserServiceTest {
 
     @Mock
     private AccessibilityService accessibilityService;
+
+    @Mock
+    private AccessibilityContextProvider accessibilityContextProvider;
+
+    @Mock
+    private AccessibilityContext accessibilityContext;
 
     @Mock
     private ClockService clockService;
@@ -92,6 +100,7 @@ class NetworkAnalyserServiceTest {
                 reportApiClient,
                 issueBuilder,
                 accessibilityService,
+                accessibilityContextProvider,
                 clockService);
     }
 
@@ -109,7 +118,9 @@ class NetworkAnalyserServiceTest {
                 }),
                 eq("UnreachableNetworkSegments")
         )).thenReturn(issue);
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
         when(accessibilityService.calculateAccessibility(
+                eq(accessibilityContext),
                 assertArg(actualAccessibilityRequest -> assertThat(actualAccessibilityRequest).isEqualTo(accessibilityRequest)))
         ).thenReturn(
                 Accessibility.builder()

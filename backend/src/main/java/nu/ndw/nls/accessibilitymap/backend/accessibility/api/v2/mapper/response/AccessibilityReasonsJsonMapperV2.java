@@ -12,6 +12,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestric
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.restriction.AccessibilityRestrictionJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignTypeJson;
 import org.springframework.stereotype.Component;
 
@@ -32,17 +33,20 @@ public class AccessibilityReasonsJsonMapperV2 {
     public List<List<ReasonJson>> map(List<List<AccessibilityReason>> reasons) {
         return reasons.stream()
                 .map(reasonsList -> reasonsList.stream()
-                        .map(reason -> new ReasonJson()
+                        .map(reason -> TrafficSignReasonJson.builder()
                                 .trafficSignId(UUID.fromString(reason.trafficSignExternalId()))
                                 .trafficSignType(TrafficSignTypeJson.fromValue(reason.trafficSignType().getRvvCode()))
                                 .restrictions(mapToRestrictionsJson(reason.restrictions()))
-                        ).toList())
+                                .build()
+                        )
+                        .map(ReasonJson.class::cast)
+                        .toList())
                 .toList();
     }
 
     @SuppressWarnings("java:S3740")
-    private List<RestrictionJson> mapToRestrictionsJson(List<AccessibilityRestriction> accessibilityRestrictions) {
-        return accessibilityRestrictions.stream()
+    private List<RestrictionJson> mapToRestrictionsJson(List<AccessibilityRestriction> accessibilityReasonRestrictions) {
+        return accessibilityReasonRestrictions.stream()
                 .map(restriction ->
                         restrictionMapperMap.containsKey(restriction.getTypeOfRestriction())
                                 ? restrictionMapperMap.get(restriction.getTypeOfRestriction()).map(restriction)

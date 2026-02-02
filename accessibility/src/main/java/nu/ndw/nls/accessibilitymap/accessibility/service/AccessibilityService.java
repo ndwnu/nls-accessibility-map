@@ -22,9 +22,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.BaseAccessibilityCalculator;
@@ -34,6 +32,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
 
@@ -60,15 +60,18 @@ public class AccessibilityService {
 
     private final AccessibilityReasonService accessibilityReasonService;
 
-    private final GraphHopperService graphHopperService;
+    private final AccessibilityNetworkProvider accessibilityNetworkProvider;
 
     @Timed(description = "Time spent calculating accessibility")
-    public Accessibility calculateAccessibility(@Valid AccessibilityRequest accessibilityRequest) throws AccessibilityException {
+    public Accessibility calculateAccessibility(
+            @Valid AccessibilityContext accessibilityContext,
+            @Valid AccessibilityRequest accessibilityRequest) throws AccessibilityException {
 
         log.info("Calculating accessibility for {}", keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest));
         Restrictions restrictions = restrictionService.findAllBy(accessibilityRequest);
 
-        GraphHopperNetwork graphHopperNetwork = graphHopperService.getNetwork(
+        AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
+                accessibilityContext,
                 restrictions,
                 locationFactory.mapCoordinate(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude()),
                 locationFactory.mapCoordinate(accessibilityRequest.endLocationLatitude(), accessibilityRequest.endLocationLongitude()));
@@ -76,18 +79,18 @@ public class AccessibilityService {
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
 
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions = baseAccessibilityCalculator.calculate(
-                graphHopperNetwork,
+                accessibilityNetwork,
                 accessibilityRequest.municipalityId(),
                 accessibilityRequest.searchRadiusInMeters());
 
         Collection<RoadSection> accessibleRoadsSectionsWithAppliedRestrictions = calculateRoadsSectionsWithAppliedRestrictions(
                 accessibilityRequest,
-                graphHopperNetwork);
+                accessibilityNetwork);
 
         Collection<RoadSection> unroutableRoadSections = new ArrayList<>();
         if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
             unroutableRoadSections.addAll(missingRoadSectionProvider.get(
-                    graphHopperNetwork.getNwbVersion(),
+                    accessibilityContext,
                     accessibilityRequest.municipalityId(),
                     accessibleRoadsSectionsWithoutAppliedRestrictions,
                     false));
@@ -98,7 +101,7 @@ public class AccessibilityService {
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                 accessibleRoadsSectionsWithAppliedRestrictions,
                 unroutableRoadSections,
-                graphHopperNetwork);
+                accessibilityNetwork);
 
         log.debug("Accessibility calculation done. It took: {} ms", MILLIS.between(startTimeCalculatingAccessibility, clockService.now()));
         return accessibility;
@@ -109,7 +112,7 @@ public class AccessibilityService {
             Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
             Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions,
             Collection<RoadSection> unroutableRoadSections,
-            GraphHopperNetwork graphHopperNetwork) {
+            AccessibilityNetwork accessibilityNetwork) {
 
         accessibleRoadsSectionsWithoutAppliedRestrictions.addAll(unroutableRoadSections);
         accessibleRoadSectionsWithAppliedRestrictions.addAll(unroutableRoadSections);
@@ -120,10 +123,10 @@ public class AccessibilityService {
 
         Optional<RoadSection> toRoadSection = findDestinationRoadSection(
                 accessibilityRequest,
-                graphHopperNetwork,
+                accessibilityNetwork,
                 combinedRestrictions);
 
-        List<List<AccessibilityReason>> reasons = calculateReasons(accessibilityRequest, toRoadSection, graphHopperNetwork);
+        List<List<AccessibilityReason>> reasons = calculateReasons(accessibilityRequest, toRoadSection, accessibilityNetwork);
 
         return Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
@@ -139,35 +142,37 @@ public class AccessibilityService {
     private List<List<AccessibilityReason>> calculateReasons(
             AccessibilityRequest accessibilityRequest,
             Optional<RoadSection> toRoadSection,
-            GraphHopperNetwork graphHopperNetwork) {
+            AccessibilityNetwork accessibilityNetwork) {
 
         return toRoadSection
                 .filter(RoadSection::isRestrictedInAnyDirection)
-                .map(roadSection -> accessibilityReasonService.calculateReasons(accessibilityRequest, graphHopperNetwork))
+                .map(roadSection -> accessibilityReasonService.calculateReasons(accessibilityRequest, accessibilityNetwork))
                 .orElse(Collections.emptyList());
     }
 
     private Optional<RoadSection> findDestinationRoadSection(
             AccessibilityRequest accessibilityRequest,
-            GraphHopperNetwork graphHopperNetwork,
+            AccessibilityNetwork accessibilityNetwork,
             Collection<RoadSection> combinedRoadSections) {
 
         if (!accessibilityRequest.hasEndLocation()) {
             return Optional.empty();
         }
 
-        Optional<Snap> destinationSnap = Optional.ofNullable(graphHopperNetwork.getDestination());
+        Optional<Snap> destinationSnap = Optional.ofNullable(accessibilityNetwork.getDestination());
 
         if (destinationSnap.isEmpty()) {
-            log.error("Could not find a snap point for end location (%s, %s).".formatted(
+            log.error(
+                    "Could not find a snap point for end location ({}, {}).",
                     accessibilityRequest.endLocationLatitude(),
                     accessibilityRequest.endLocationLongitude()
-            ));
+            );
             return Optional.empty();
         }
 
+        var network = accessibilityNetwork.getAccessibilityContext().graphHopperNetwork().network();
         int roadSectionId = destinationSnap.get()
-                .getClosestEdge().get(graphHopperNetwork.getNetwork().getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+                .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
         return combinedRoadSections.stream()
                 .filter(roadSection -> roadSection.getId() == roadSectionId)
                 .findFirst();
@@ -175,13 +180,14 @@ public class AccessibilityService {
 
     private Collection<RoadSection> calculateRoadsSectionsWithAppliedRestrictions(
             AccessibilityRequest accessibilityRequest,
-            GraphHopperNetwork graphHopperNetwork) {
+            AccessibilityNetwork accessibilityNetwork) {
 
         RestrictionWeightingAdapter weighting = new RestrictionWeightingAdapter(
-                graphHopperNetwork.getNetwork().createWeighting(NetworkConstants.CAR_PROFILE, new PMap()),
-                graphHopperNetwork.getBlockedEdges());
+                accessibilityNetwork.getAccessibilityContext().graphHopperNetwork().network()
+                        .createWeighting(NetworkConstants.CAR_PROFILE, new PMap()),
+                accessibilityNetwork.getBlockedEdges());
 
-        IsochroneService isochroneService = isochroneServiceFactory.createService(graphHopperNetwork);
+        IsochroneService isochroneService = isochroneServiceFactory.createService(accessibilityNetwork);
 
         return roadSectionMapper.mapToRoadSections(
                 isochroneService.getIsochroneMatchesByMunicipalityId(
@@ -190,8 +196,8 @@ public class AccessibilityService {
                                 .municipalityId(accessibilityRequest.municipalityId())
                                 .searchDistanceInMetres(accessibilityRequest.searchRadiusInMeters())
                                 .build(),
-                        graphHopperNetwork.getQueryGraph(),
-                        graphHopperNetwork.getFrom()));
+                        accessibilityNetwork.getQueryGraph(),
+                        accessibilityNetwork.getFrom()));
     }
 }
 

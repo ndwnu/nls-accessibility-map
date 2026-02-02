@@ -9,12 +9,12 @@ import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.RoadSectionTrafficSignAssigner;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,35 +38,35 @@ public class BaseAccessibilityCalculator {
     }
 
     public Collection<RoadSection> calculate(
-            GraphHopperNetwork graphHopperNetwork,
+            AccessibilityNetwork accessibilityNetwork,
             Integer municipalityId,
             double searchRadiusInMeters) {
 
-        return calculateBaseAccessibility(graphHopperNetwork, searchRadiusInMeters, municipalityId).stream()
+        return calculateBaseAccessibility(accessibilityNetwork, searchRadiusInMeters, municipalityId).stream()
                 .map(RoadSection::copy)
                 .map(roadSection -> roadSectionTrafficSignAssigner.assignRestriction(
                         roadSection,
-                        graphHopperNetwork.getRestrictionsByEdgeKey()))
+                        accessibilityNetwork.getRestrictionsByEdgeKey()))
                 .collect(toCollection(ArrayList::new));
     }
 
     private Collection<RoadSection> calculateBaseAccessibility(
-            GraphHopperNetwork graphHopperNetwork,
+            AccessibilityNetwork accessibilityNetwork,
             double searchRadiusInMeters,
             Integer municipalityId) {
 
         log.debug("Calculating base accessibility for municipality id: '{}'", municipalityId);
-        IsochroneService isochroneService = isochroneServiceFactory.createService(graphHopperNetwork);
+        IsochroneService isochroneService = isochroneServiceFactory.createService(accessibilityNetwork);
         return roadSectionMapper.mapToRoadSections(
                 isochroneService.getIsochroneMatchesByMunicipalityId(
                         IsochroneArguments.builder()
                                 .weighting(new RestrictionWeightingAdapter(
-                                        graphHopperNetwork.getNetwork().createWeighting(NetworkConstants.CAR_PROFILE, new PMap()),
-                                        Set.of()))
+                                        accessibilityNetwork.getAccessibilityContext().graphHopperNetwork().network()
+                                                .createWeighting(NetworkConstants.CAR_PROFILE, new PMap()), Set.of()))
                                 .municipalityId(municipalityId)
                                 .searchDistanceInMetres(searchRadiusInMeters)
                                 .build(),
-                        graphHopperNetwork.getQueryGraph(),
-                        graphHopperNetwork.getFrom()));
+                        accessibilityNetwork.getQueryGraph(),
+                        accessibilityNetwork.getFrom()));
     }
 }

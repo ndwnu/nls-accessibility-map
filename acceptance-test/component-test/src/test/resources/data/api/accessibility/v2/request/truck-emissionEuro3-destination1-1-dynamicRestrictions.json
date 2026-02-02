@@ -14,5 +14,13 @@
     "fuelTypes": [
       "diesel"
     ]
-  }
+  },
+  "restrictions": [
+    {
+      "type": "roadSection",
+      "id": "2",
+      "direction": "forward",
+      "fraction": 0
+    }
+  ]
 }

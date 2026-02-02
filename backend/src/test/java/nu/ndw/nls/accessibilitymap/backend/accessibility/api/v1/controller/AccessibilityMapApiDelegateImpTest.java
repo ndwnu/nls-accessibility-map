@@ -15,7 +15,9 @@ import java.util.stream.Stream;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.VehicleArguments;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.mapper.request.AccessibilityRequestMapper;
@@ -89,6 +91,9 @@ class AccessibilityMapApiDelegateImpTest {
     @Mock
     private AccessibilityService accessibilityService;
 
+    @Mock
+    private AccessibilityContextProvider accessibilityContextProvider;
+
     private AccessibilityMapApiDelegateImpl accessibilityMapApiDelegate;
 
     @Mock
@@ -103,6 +108,8 @@ class AccessibilityMapApiDelegateImpTest {
     @Mock
     private Collection<RoadSection> roadSections;
 
+    @Mock
+    private AccessibilityContext accessibilityContext;
     @BeforeEach
     void setup() {
 
@@ -112,7 +119,8 @@ class AccessibilityMapApiDelegateImpTest {
                 roadSectionFeatureCollectionMapper,
                 municipalityService,
                 accessibilityRequestMapper,
-                accessibilityService);
+                accessibilityService,
+                accessibilityContextProvider);
     }
 
     @ParameterizedTest
@@ -280,7 +288,8 @@ class AccessibilityMapApiDelegateImpTest {
 
     private void setUpFixture(EmissionClassJson emissionClassJson, List<FuelTypeJson> fuelTypesJson) {
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibilityRequestMapper.map(
                 municipality,

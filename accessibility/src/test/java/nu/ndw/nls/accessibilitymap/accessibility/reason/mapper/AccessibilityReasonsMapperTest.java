@@ -38,9 +38,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonRestriction.RestrictionType;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasons;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.FuelTypeRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
@@ -99,10 +99,10 @@ class AccessibilityReasonsMapperTest {
 
         TrafficSignType trafficSignType = mock(TrafficSignType.class);
 
-        assertThat(catchThrowable(() -> mapper.mapRestrictions(new Restrictions(Set.of( createTrafficSign(
-                        TransportRestrictions.builder()
-                                .transportTypes(Set.of(TransportType.CAR))
-                                .build(),
+        assertThat(catchThrowable(() -> mapper.mapRestrictions(new Restrictions(Set.of(createTrafficSign(
+                TransportRestrictions.builder()
+                        .transportTypes(Set.of(TransportType.CAR))
+                        .build(),
                 trafficSignType))))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Traffic sign type '%s' is not supported".formatted(trafficSignType));
@@ -393,7 +393,7 @@ class AccessibilityReasonsMapperTest {
     }
 
     private static AccessibilityReason createAccessibilityReason(
-            List<AccessibilityRestriction> restrictions,
+            List<AccessibilityReasonRestriction> restrictions,
             TrafficSignType trafficSignType) {
 
         AccessibilityReason reason = AccessibilityReason.builder()
@@ -433,6 +433,11 @@ class AccessibilityReasonsMapperTest {
         @Override
         public Direction direction() {
             return null;
+        }
+
+        @Override
+        public boolean isDynamic() {
+            return false;
         }
     }
 }

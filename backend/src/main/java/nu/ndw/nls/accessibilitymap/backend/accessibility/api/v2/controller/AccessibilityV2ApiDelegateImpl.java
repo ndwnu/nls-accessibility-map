@@ -2,7 +2,10 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
@@ -25,6 +28,8 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
 
     private final AccessibilityRequestValidator accessibilityRequestValidator;
 
+    private final AccessibilityContextProvider accessibilityContextProvider;
+
     @Override
     public ResponseEntity<AccessibilityResponseGeoJsonJson> getAccessibilityAsGeoJson(
             AccessibilityRequestJson accessibilityRequestJson,
@@ -32,7 +37,10 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
 
         accessibilityRequestValidator.verify(accessibilityRequestJson);
 
-        var accessibility = accessibilityService.calculateAccessibility(accessibilityRequestMapperV2.map(accessibilityRequestJson));
+        AccessibilityContext accessibilityContext = accessibilityContextProvider.get();
+        Accessibility accessibility = accessibilityService.calculateAccessibility(
+                accessibilityContext,
+                accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson));
 
         return ResponseEntity.ok(accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility));
     }

@@ -13,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
@@ -44,7 +45,8 @@ public record AccessibilityRequest(
         Set<TextSignType> excludeTrafficSignTextSignTypes,
         Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes,
         Set<String> excludeRestrictionsWithEmissionZoneIds,
-        Set<EmissionZoneType> excludeRestrictionsWithEmissionZoneTypes) {
+        Set<EmissionZoneType> excludeRestrictionsWithEmissionZoneTypes,
+        Set<Restriction> dynamicRestrictions) {
 
     public @NotEmpty Set<TextSignType> excludeTrafficSignTextSignTypes() {
 

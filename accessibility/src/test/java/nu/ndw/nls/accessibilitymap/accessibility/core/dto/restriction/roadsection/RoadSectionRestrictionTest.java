@@ -21,8 +21,7 @@ class RoadSectionRestrictionTest extends ValidationTest {
         roadSectionRestriction = RoadSectionRestriction.builder()
                 .id(1)
                 .direction(Direction.BACKWARD)
-                .startFraction(0.2)
-                .endFraction(0.3)
+                .fraction(0.2)
                 .networkSnappedLatitude(2D)
                 .networkSnappedLongitude(3D)
                 .build();
@@ -44,7 +43,7 @@ class RoadSectionRestrictionTest extends ValidationTest {
     void toStringTest() {
 
         assertThat(roadSectionRestriction).hasToString(
-                "RoadSectionRestriction{id=1, direction=BACKWARD, startFraction=0.2, endFraction=0.3, networkSnappedLatitude=2.0, networkSnappedLongitude=3.0}");
+                "RoadSectionRestriction{id=1, direction=BACKWARD, fraction=0.2, networkSnappedLatitude=2.0, networkSnappedLongitude=3.0}");
     }
 
     @Test
@@ -66,20 +65,11 @@ class RoadSectionRestrictionTest extends ValidationTest {
     }
 
     @Test
-    void validate_startFraction_null() {
-        roadSectionRestriction = roadSectionRestriction.withStartFraction(null);
+    void validate_fraction_null() {
+        roadSectionRestriction = roadSectionRestriction.withFraction(null);
         validate(
                 roadSectionRestriction,
-                List.of("startFraction"),
-                List.of("must not be null"));
-    }
-
-    @Test
-    void validate_endFraction_null() {
-        roadSectionRestriction = roadSectionRestriction.withEndFraction(null);
-        validate(
-                roadSectionRestriction,
-                List.of("endFraction"),
+                List.of("fraction"),
                 List.of("must not be null"));
     }
 

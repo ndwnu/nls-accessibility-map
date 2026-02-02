@@ -14,6 +14,8 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkSettingsBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
@@ -129,7 +131,8 @@ class AccessibilityNetworkServiceTest {
 
         int nwbVersionId = 123;
         when(nwbVersionCrudService.findLatestVersionId()).thenReturn(nwbVersionId);
-        when(accessibilityNwbRoadSectionService.findAllByVersion(nwbVersionId)).thenReturn(List.of(accessibilityNwbRoadSection));
+        when(accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(nwbVersionId))
+                .thenReturn( new TreeMap<>(Map.of(1L, accessibilityNwbRoadSection)));
         when(accessibilityNwbRoadSectionToLinkMapper.map(accessibilityNwbRoadSection)).thenReturn(accessibilityLink);
         when(clockService.now()).thenReturn(timestamp);
 

@@ -32,7 +32,7 @@ Feature: Accessibility V2
       | 1           | 2         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000004 |
     When run TrafficSignUpdateCache
     And traffic signs data is reloaded
-    When request accessibility geojson for truck-emissionEuro3-destination1-1
+    When request accessibility geojson for truck-emissionEuro3-destination1-1-dynamicRestrictions
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-1-unreachable
-    When request accessibility geojson for truck-emissionEuro3-destination1-1-effectivelyAccessible
+    When request accessibility geojson for truck-emissionEuro3-destination1-1-dynamicRestrictions-effectivelyAccessible
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-1-unreachable-effectivelyAccessible

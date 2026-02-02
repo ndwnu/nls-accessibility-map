@@ -11,13 +11,16 @@ import java.util.List;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
 import nu.ndw.nls.accessibilitymap.backend.openapi.api.v2.AccessibilityV2ApiController;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibleRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationFeaturePropertiesJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionClassJson;
@@ -25,11 +28,12 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionZoneTypeJson
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FeatureJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.MunicipalityAreaRequestJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionUnitSymbolJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadSectionReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadSectionSegmentFeaturePropertiesJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeRestrictionJson;
@@ -82,18 +86,27 @@ class AccessibilityV2ApiDelegateImplTest {
     @MockitoBean
     private ClockService clockService;
 
+    @MockitoBean
+    private AccessibilityContextProvider accessibilityContextProvider;
+
     @Mock
     private AccessibilityRequest accessibilityRequest;
 
     @Mock
     private Accessibility accessibility;
 
+    @Mock
+    private AccessibilityContext accessibilityContext;
+
     @Test
     void getAccessibilityAsGeoJson() throws Exception {
 
-        when(accessibilityRequestMapperV2.map(assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson)))
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityRequestMapperV2.map(
+                eq(accessibilityContext),
+                assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson)))
                 .thenReturn(accessibilityRequest);
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
 
         AccessibilityResponseGeoJsonJson accessibilityResponseGeoJsonJson = AccessibilityResponseGeoJsonJson.builder()
                 .features(List.of(
@@ -114,16 +127,27 @@ class AccessibilityV2ApiDelegateImplTest {
                                 .properties(DestinationFeaturePropertiesJson.builder()
                                         .roadSectionId(4L)
                                         .accessible(true)
-                                        .reasons(List.of(List.of(ReasonJson.builder()
-                                                .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
-                                                .trafficSignType(TrafficSignTypeJson.C1)
-                                                .restrictions(List.of(VehicleTypeRestrictionJson.builder()
-                                                        .type(RestrictionJson.TypeEnum.VEHICLE_TYPE_RESTRICTION)
-                                                        .unitSymbol(RestrictionUnitSymbolJson.ENUM)
-                                                        .values(List.of(VehicleTypeJson.CAR))
-                                                        .condition(RestrictionConditionJson.EQUALS)
-                                                        .build()))
-                                                .build())))
+                                        .reasons(List.of(List.of(
+                                                TrafficSignReasonJson.builder()
+                                                        .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
+                                                        .trafficSignType(TrafficSignTypeJson.C1)
+                                                        .restrictions(List.of(VehicleTypeRestrictionJson.builder()
+                                                                .type(RestrictionJson.TypeEnum.VEHICLE_TYPE_RESTRICTION)
+                                                                .unitSymbol(RestrictionUnitSymbolJson.ENUM)
+                                                                .values(List.of(VehicleTypeJson.CAR))
+                                                                .condition(RestrictionConditionJson.EQUALS)
+                                                                .build()))
+                                                        .build(),
+                                                RoadSectionReasonJson.builder()
+                                                        .roadSectionId(123L)
+                                                        .restrictions(List.of(AccessibleRestrictionJson.builder()
+                                                                .type(RestrictionJson.TypeEnum.ACCESSIBLE_RESTRICTION)
+                                                                .unitSymbol(RestrictionUnitSymbolJson.BOOLEAN)
+                                                                .value(false)
+                                                                .condition(RestrictionConditionJson.EQUALS)
+                                                                .build()))
+                                                        .build())
+                                        ))
                                         .build())
                                 .build()
                 ))
@@ -176,43 +200,53 @@ class AccessibilityV2ApiDelegateImplTest {
         assertThatJson(mockMvcBuilder.andReturn().getResponse().getContentAsString())
                 .isEqualTo("""
                         {
-                          "features" : [ {
-                            "type" : "Feature",
-                            "id" : 1,
-                            "geometry" : {
-                              "type" : "LineString",
-                              "coordinates" : [ [ 1.1, 1.2 ], [ 2.1, 2.2 ] ]
-                            },
-                            "properties" : {
-                              "roadSectionId" : 2,
-                              "type": "roadSectionSegment",
-                              "accessible" : true,
-                              "direction" : "backward"
-                            }
-                          }, {
-                            "type" : "Feature",
-                            "id" : 3,
-                            "geometry" : {
-                              "type" : "Point",
-                              "coordinates" : [ 3.1, 3.2 ]
-                            },
-                            "properties" : {
-                              "roadSectionId" : 4,
-                              "accessible" : true,
-                              "type": "destination",
-                              "reasons" : [ [ {
-                                "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
-                                "trafficSignType" : "C1",
-                                "restrictions" : [ {
-                                  "type" : "vehicleTypeRestriction",
-                                  "unitSymbol" : "enum",
-                                  "condition" : "equals",
-                                  "values" : [ "car" ]
-                                } ]
-                              } ] ]
-                            }
-                          } ]
-                        }
+                           "features" : [ {
+                             "type" : "Feature",
+                             "id" : 1,
+                             "geometry" : {
+                               "type" : "LineString",
+                               "coordinates" : [ [ 1.1, 1.2 ], [ 2.1, 2.2 ] ]
+                             },
+                             "properties" : {
+                               "type" : "roadSectionSegment",
+                               "roadSectionId" : 2,
+                               "accessible" : true,
+                               "direction" : "backward"
+                             }
+                           }, {
+                             "type" : "Feature",
+                             "id" : 3,
+                             "geometry" : {
+                               "type" : "Point",
+                               "coordinates" : [ 3.1, 3.2 ]
+                             },
+                             "properties" : {
+                               "type" : "destination",
+                               "roadSectionId" : 4,
+                               "accessible" : true,
+                               "reasons" : [ [ {
+                                 "type" : "trafficSign",
+                                 "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
+                                 "trafficSignType" : "C1",
+                                 "restrictions" : [ {
+                                   "type" : "vehicleTypeRestriction",
+                                   "unitSymbol" : "enum",
+                                   "condition" : "equals",
+                                   "values" : [ "car" ]
+                                 } ]
+                               }, {
+                                 "type" : "roadSection",
+                                 "roadSectionId" : 123,
+                                 "restrictions" : [ {
+                                   "type" : "accessibleRestriction",
+                                   "unitSymbol" : "boolean",
+                                   "condition" : "equals",
+                                   "value" : false
+                                 } ]
+                               } ] ]
+                             }
+                           } ]
+                         }
                         """);
     }
 

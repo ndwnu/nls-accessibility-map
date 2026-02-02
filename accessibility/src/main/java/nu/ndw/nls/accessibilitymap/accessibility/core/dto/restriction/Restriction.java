@@ -14,4 +14,6 @@ public interface Restriction {
     Integer roadSectionId();
 
     Direction direction();
+
+    boolean isDynamic();
 }
