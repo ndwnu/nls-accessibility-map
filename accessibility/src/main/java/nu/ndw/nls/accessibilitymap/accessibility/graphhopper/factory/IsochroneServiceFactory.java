@@ -2,13 +2,12 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 
-import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.PMap;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
@@ -26,9 +25,10 @@ public class IsochroneServiceFactory {
 
     private final GeometryFactoryWgs84 geometryFactory;
 
-    public IsochroneService createService(GraphHopperNetwork graphHopperNetwork) {
+    public IsochroneService createService(AccessibilityNetwork accessibilityNetwork) {
 
-        EncodingManager encodingManager = graphHopperNetwork.getNetwork().getEncodingManager();
+        var network = accessibilityNetwork.getAccessibilityContext().graphHopperNetwork().network();
+        var encodingManager = network.getEncodingManager();
 
         IsochroneMatchMapper isochroneMatchMapper = new IsochroneMatchMapper(
                 encodingManager,
@@ -36,10 +36,9 @@ public class IsochroneServiceFactory {
                 new PointListUtil(geometryFactory),
                 fractionAndDistanceCalculator);
 
-        Weighting weighting = graphHopperNetwork.getNetwork().createWeighting(CAR_PROFILE, new PMap());
+        Weighting weighting = network.createWeighting(CAR_PROFILE, new PMap());
         ShortestPathTreeFactory shortestPathTreeFactory = new ShortestPathTreeFactory(weighting, encodingManager);
 
         return new IsochroneService(encodingManager, isochroneMatchMapper, shortestPathTreeFactory);
     }
-
 }

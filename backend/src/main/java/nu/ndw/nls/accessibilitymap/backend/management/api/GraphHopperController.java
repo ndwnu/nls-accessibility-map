@@ -22,6 +22,6 @@ public class GraphHopperController {
     @PutMapping(path = "/reload")
     public void reloadGraphHopperNetwork() {
 
-        graphHopperService.loadNewNetworkGraphHopper();
+        graphHopperService.loadNewGraphHopperNetwork();
     }
 }

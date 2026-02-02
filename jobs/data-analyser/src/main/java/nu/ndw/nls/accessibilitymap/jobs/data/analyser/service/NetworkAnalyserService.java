@@ -6,6 +6,7 @@ import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueBuilder;
@@ -25,6 +26,8 @@ public class NetworkAnalyserService extends IssueReporterService {
 
     private final AccessibilityService accessibilityService;
 
+    private final AccessibilityContextProvider accessibilityContextProvider;
+
     private final ClockService clockService;
 
     public NetworkAnalyserService(
@@ -32,12 +35,14 @@ public class NetworkAnalyserService extends IssueReporterService {
             ReportApiClient reportApiClient,
             IssueBuilder issueBuilder,
             AccessibilityService accessibilityService,
+            AccessibilityContextProvider accessibilityContextProvider,
             ClockService clockService) {
 
         super(issueApiClient, reportApiClient);
 
         this.issueBuilder = issueBuilder;
         this.accessibilityService = accessibilityService;
+        this.accessibilityContextProvider = accessibilityContextProvider;
         this.clockService = clockService;
     }
 
@@ -45,13 +50,15 @@ public class NetworkAnalyserService extends IssueReporterService {
 
         log.info("Analysing with the following properties: {}", analyseNetworkConfiguration);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(AccessibilityRequest.builder()
-                .timestamp(clockService.now())
-                .searchRadiusInMeters(analyseNetworkConfiguration.searchRadiusInMeters())
-                .startLocationLatitude(analyseNetworkConfiguration.startLocationLatitude())
-                .startLocationLongitude(analyseNetworkConfiguration.startLocationLongitude())
-                .addMissingRoadsSectionsFromNwb(true)
-                .build());
+        Accessibility accessibility = accessibilityService.calculateAccessibility(
+                accessibilityContextProvider.get(),
+                AccessibilityRequest.builder()
+                        .timestamp(clockService.now())
+                        .searchRadiusInMeters(analyseNetworkConfiguration.searchRadiusInMeters())
+                        .startLocationLatitude(analyseNetworkConfiguration.startLocationLatitude())
+                        .startLocationLongitude(analyseNetworkConfiguration.startLocationLongitude())
+                        .addMissingRoadsSectionsFromNwb(true)
+                        .build());
 
         String issueReportId = "Nwb-%s-%s".formatted(analyseNetworkConfiguration.nwbVersion(), UUID.randomUUID());
         List<CreateIssueJson> issues = accessibility.unroutableRoadSections().stream()

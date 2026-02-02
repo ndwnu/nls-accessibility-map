@@ -14,35 +14,31 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Component
 public class MissingRoadSectionProvider {
 
-    private final AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService;
-
-    @Transactional(readOnly = true)
     public Collection<RoadSection> get(
-            Integer nwbVersion,
+            AccessibilityContext accessibilityContext,
             Integer municipalityId,
             Collection<RoadSection> knownRoadSections,
             boolean missingRoadsSectionAreAccessible) {
 
-        return calculateMissingRoadSections(nwbVersion, municipalityId, knownRoadSections, missingRoadsSectionAreAccessible);
+        return calculateMissingRoadSections(accessibilityContext, municipalityId, knownRoadSections, missingRoadsSectionAreAccessible);
     }
 
     @SuppressWarnings("java:S5612")
     private List<RoadSection> calculateMissingRoadSections(
-            Integer nwbVersion,
+            AccessibilityContext accessibilityContext,
             Integer municipalityId,
             Collection<RoadSection> knownRoadSections,
             boolean isAccessible) {
 
-        List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(nwbVersion, municipalityId);
+        List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(accessibilityContext, municipalityId);
 
         Map<Long, List<RoadSection>> roadSectionsById = knownRoadSections.stream()
                 .collect(Collectors.groupingBy(RoadSection::getId));
@@ -93,13 +89,12 @@ public class MissingRoadSectionProvider {
                 .toList();
     }
 
-    private List<AccessibilityNwbRoadSection> getAllRoadSections(Integer nwbVersion, Integer municipalityId) {
+    private List<AccessibilityNwbRoadSection> getAllRoadSections(AccessibilityContext accessibilityContext, Integer municipalityId) {
 
         if (Objects.isNull(municipalityId)) {
-            return accessibilityNwbRoadSectionService.findAllByVersion(nwbVersion);
+            return accessibilityContext.findAllAccessibilityNwbRoadSection();
         } else {
-            return accessibilityNwbRoadSectionService.findAllByVersionAndMunicipalityId(
-                    nwbVersion,
+            return accessibilityContext.findAllAccessibilityNwbRoadSectionByMunicipalityId(
                     municipalityId);
         }
     }

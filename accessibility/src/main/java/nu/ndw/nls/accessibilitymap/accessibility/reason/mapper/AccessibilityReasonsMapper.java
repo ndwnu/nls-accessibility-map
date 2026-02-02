@@ -28,6 +28,7 @@ import java.util.function.Function;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
@@ -69,6 +70,7 @@ public class AccessibilityReasonsMapper {
 
         return new AccessibilityReasons(restrictions.stream()
                 .map(this::mapRestrictionToAccessibilityReason)
+                .filter(Objects::nonNull)
                 .toList());
     }
 
@@ -91,6 +93,8 @@ public class AccessibilityReasonsMapper {
                     .build();
             restrictions.forEach(r -> r.setAccessibilityReason(reason));
             return reason.withRestrictions(restrictions);
+        } else if (restriction instanceof RoadSectionRestriction) {
+            return null;
         } else {
             throw new IllegalArgumentException("Restriction type " + restriction.getClass() + " is not supported");
         }

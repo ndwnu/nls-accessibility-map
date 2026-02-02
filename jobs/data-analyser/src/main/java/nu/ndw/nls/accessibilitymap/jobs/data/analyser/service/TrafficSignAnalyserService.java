@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseAsymmetricTrafficSignsConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueBuilder;
@@ -24,16 +25,20 @@ public class TrafficSignAnalyserService extends IssueReporterService {
 
     private final AccessibilityService accessibilityService;
 
+    private final AccessibilityContextProvider accessibilityContextProvider;
+
     private final IssueBuilder issueBuilder;
 
     public TrafficSignAnalyserService(
             IssueApiClient issueApiClient,
             ReportApiClient reportApiClient,
             AccessibilityService accessibilityService,
+            AccessibilityContextProvider accessibilityContextProvider,
             IssueBuilder issueBuilder) {
 
         super(issueApiClient, reportApiClient);
         this.accessibilityService = accessibilityService;
+        this.accessibilityContextProvider = accessibilityContextProvider;
         this.issueBuilder = issueBuilder;
     }
 
@@ -41,7 +46,9 @@ public class TrafficSignAnalyserService extends IssueReporterService {
 
         log.info("Analysing with the following properties: {}", analyseAsymmetricTrafficSignsConfiguration);
 
-        var accessibility = accessibilityService.calculateAccessibility(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest());
+        var accessibility = accessibilityService.calculateAccessibility(
+                accessibilityContextProvider.get(),
+                analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest());
 
         analyseTrafficSigns(accessibility, analyseAsymmetricTrafficSignsConfiguration);
     }

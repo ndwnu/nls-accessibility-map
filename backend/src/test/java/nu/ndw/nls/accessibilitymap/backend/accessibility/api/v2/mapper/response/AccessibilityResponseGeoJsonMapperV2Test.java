@@ -20,10 +20,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionUnitSymbolJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeRestrictionJson;
@@ -526,7 +526,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     @Test
     void map_destinationInaccessible() throws JsonProcessingException {
 
-        when(accessibilityReasonsJsonMapperV2.map(reasons)).thenReturn(List.of(List.of(ReasonJson.builder()
+        when(accessibilityReasonsJsonMapperV2.map(reasons)).thenReturn(List.of(List.of(TrafficSignReasonJson.builder()
                 .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
                 .trafficSignType(TrafficSignTypeJson.C1)
                 .restrictions(List.of(VehicleTypeRestrictionJson.builder()
@@ -570,6 +570,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "accessible" : true,
                       "type" : "destination",
                       "reasons" : [ [ {
+                        "type": "trafficSign",
                         "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
                         "trafficSignType" : "C1",
                         "restrictions" : [ {

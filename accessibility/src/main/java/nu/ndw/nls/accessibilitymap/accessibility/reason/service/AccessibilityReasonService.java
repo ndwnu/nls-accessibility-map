@@ -18,10 +18,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.AccessibilityReasonsMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Service;
 
@@ -49,16 +49,17 @@ public class AccessibilityReasonService {
     @SuppressWarnings("java:S1941")
     public List<List<AccessibilityReason>> calculateReasons(
             AccessibilityRequest accessibilityRequest,
-            GraphHopperNetwork graphHopperNetwork) {
+            AccessibilityNetwork accessibilityNetwork) {
 
         log.debug("Calculating accessibility reasons for request: {}", accessibilityRequest);
         Stopwatch stopwatch = Stopwatch.createStarted();
 
-        Snap startSegment = getStartSegment(accessibilityRequest, graphHopperNetwork.getNetwork());
-        Snap endSegment = getEndSegment(accessibilityRequest, graphHopperNetwork.getNetwork());
+        var network = accessibilityNetwork.getAccessibilityContext().graphHopperNetwork().network();
+        Snap startSegment = getStartSegment(accessibilityRequest, network);
+        Snap endSegment = getEndSegment(accessibilityRequest, network);
 
-        QueryGraph queryGraph = QueryGraph.create(graphHopperNetwork.getNetwork().getBaseGraph(), startSegment, endSegment);
-        Weighting weighting = graphHopperNetwork.getNetwork().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
+        QueryGraph queryGraph = QueryGraph.create(network.getBaseGraph(), startSegment, endSegment);
+        Weighting weighting = network.createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
         RoutingAlgorithm router = routingAlgorithmFactory.createAlgo(queryGraph, weighting, createAlgorithmOptions());
         List<Path> routes = router.calcPaths(startSegment.getClosestNode(), endSegment.getClosestNode()).stream()
                 .filter(Path::isFound)
@@ -71,8 +72,8 @@ public class AccessibilityReasonService {
 
         List<List<AccessibilityReason>> reasons = pathsToReasonsMapper.mapRoutesToReasons(
                 routes,
-                accessibilityReasonsMapper.mapRestrictions(graphHopperNetwork.getRestrictions()),
-                graphHopperNetwork.getNetwork().getEncodingManager());
+                accessibilityReasonsMapper.mapRestrictions(accessibilityNetwork.getRestrictions()),
+                network.getEncodingManager());
         log.debug("Calculating accessibility reasons took: {} ms", stopwatch.elapsed().toMillis());
 
         return reasons;

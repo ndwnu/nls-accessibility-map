@@ -54,7 +54,7 @@ public class AccessibilityNetworkService {
         int nwbVersionId = nwbVersionCrudService.findLatestVersionId();
 
         log.info("Retrieving link data");
-        List<AccessibilityLink> accessibilityLinks = accessibilityNwbRoadSectionService.findAllByVersion(nwbVersionId).stream()
+        List<AccessibilityLink> accessibilityLinks = accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(nwbVersionId).values().stream()
                 .map(accessibilityNwbRoadSectionToLinkMapper::map)
                 .toList();
         Instant dataTimestamp = clockService.now().toInstant();
