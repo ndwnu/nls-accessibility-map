@@ -42,15 +42,27 @@ class NwbRoadSectionSnapServiceTest {
     }
 
     @Test
-    void snapToLine() {
+    void snapToLineForRdGeometry() {
         when(crsTransformer.transformFromRdNewToWgs84(lineStringRdNew)).thenReturn(lineStringWgs84);
         when(fractionAndDistanceCalculator.getCoordinateAndBearing(lineStringWgs84, 0.5)).thenReturn(coordinateAndBearing);
 
         double fraction = 0.5;
 
-        CoordinateAndBearing result = nwbRoadSectionSnapService.snapToLine(lineStringRdNew, fraction);
+        CoordinateAndBearing result = nwbRoadSectionSnapService.snapToLineForRdGeometry(lineStringRdNew, fraction);
 
         assertThat(result).isEqualTo(coordinateAndBearing);
         verify(lineStringWgs84, times(1)).setSRID(SRID.WGS84.value);
+    }
+
+    @Test
+    void snapToLine() {
+
+        when(fractionAndDistanceCalculator.getCoordinateAndBearing(lineStringWgs84, 0.5)).thenReturn(coordinateAndBearing);
+
+        double fraction = 0.5;
+
+        CoordinateAndBearing result = nwbRoadSectionSnapService.snapToLine(lineStringWgs84, fraction);
+
+        assertThat(result).isEqualTo(coordinateAndBearing);
     }
 }

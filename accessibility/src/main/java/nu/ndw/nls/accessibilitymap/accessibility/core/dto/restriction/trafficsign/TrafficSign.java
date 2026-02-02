@@ -32,8 +32,7 @@ public record TrafficSign(
         @NotNull List<TextSign> textSigns,
         ZoneCodeType zoneCodeType,
         String trafficRegulationOrderId,
-        @NotNull TransportRestrictions transportRestrictions,
-        boolean isDynamic) implements Restriction {
+        @NotNull TransportRestrictions transportRestrictions) implements Restriction {
 
     public boolean hasTimeWindowedSign() {
 

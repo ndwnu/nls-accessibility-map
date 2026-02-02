@@ -47,12 +47,26 @@ class RestrictionServiceTest {
         when(trafficSignDataService.findAll()).thenReturn(Set.of(trafficSignRestrictive, trafficSignNotRestrictive));
         when(trafficSignRestrictive.isRestrictive(accessibilityRequest)).thenReturn(true);
         when(trafficSignNotRestrictive.isRestrictive(accessibilityRequest)).thenReturn(false);
-        when(roadSectionRestriction.isRestrictive(accessibilityRequest)).thenReturn(true);
 
         when(accessibilityRequest.dynamicRestrictions()).thenReturn(Set.of(roadSectionRestriction));
+        when(roadSectionRestriction.isRestrictive(accessibilityRequest)).thenReturn(true);
 
         Restrictions restrictions = restrictionService.findAllBy(accessibilityRequest);
 
         assertThat(restrictions).containsExactlyInAnyOrder(trafficSignRestrictive, roadSectionRestriction);
+    }
+
+    @Test
+    void findAllBy_noDynamicRestrictions() {
+
+        when(trafficSignDataService.findAll()).thenReturn(Set.of(trafficSignRestrictive, trafficSignNotRestrictive));
+        when(trafficSignRestrictive.isRestrictive(accessibilityRequest)).thenReturn(true);
+        when(trafficSignNotRestrictive.isRestrictive(accessibilityRequest)).thenReturn(false);
+
+        when(accessibilityRequest.dynamicRestrictions()).thenReturn(null);
+
+        Restrictions restrictions = restrictionService.findAllBy(accessibilityRequest);
+
+        assertThat(restrictions).containsExactlyInAnyOrder(trafficSignRestrictive);
     }
 }

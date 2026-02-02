@@ -1,10 +1,12 @@
 package nu.ndw.nls.accessibilitymap.accessibility.restriction;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,15 @@ public class RestrictionService {
 
         return new Restrictions(Stream.concat(
                         trafficSignDataService.findAll().stream(),
-                        accessibilityRequest.dynamicRestrictions().stream())
+                        createDynamicRestrictions(accessibilityRequest))
                 .filter(restriction -> restriction.isRestrictive(accessibilityRequest))
                 .collect(Collectors.toSet()));
+    }
+
+    private Stream<Restriction> createDynamicRestrictions(AccessibilityRequest accessibilityRequest) {
+        if (Objects.isNull(accessibilityRequest.dynamicRestrictions())) {
+            return Stream.empty();
+        }
+        return accessibilityRequest.dynamicRestrictions().stream();
     }
 }

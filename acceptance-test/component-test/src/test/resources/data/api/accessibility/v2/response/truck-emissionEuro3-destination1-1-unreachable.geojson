@@ -147,7 +147,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 2,
-      "accessible" : true,
+      "accessible" : false,
       "direction" : "forward"
     }
   }, {
