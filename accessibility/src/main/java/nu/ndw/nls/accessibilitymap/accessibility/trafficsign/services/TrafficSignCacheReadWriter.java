@@ -37,7 +37,7 @@ public class TrafficSignCacheReadWriter {
 
     private final ClockService clockService;
 
-    @Timed(value = "accessibilitymap.loadTrafficSignData")
+    @Timed(value = "accessibilitymap.trafficSign.loadData")
     public Optional<TrafficSigns> read() {
 
         try {
@@ -59,7 +59,7 @@ public class TrafficSignCacheReadWriter {
         }
     }
 
-    @Timed(value = "accessibilitymap.updateTrafficSignData")
+    @Timed(value = "accessibilitymap.trafficSign.updateData")
     public void write(TrafficSigns trafficSigns) {
         try {
             Files.createDirectories(trafficSignCacheConfiguration.getFolder());

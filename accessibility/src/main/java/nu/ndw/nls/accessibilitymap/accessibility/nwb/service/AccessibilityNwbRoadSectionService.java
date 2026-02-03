@@ -73,7 +73,7 @@ public class AccessibilityNwbRoadSectionService {
         }
     }
 
-    @Timed(value = "accessibilitymap.loadNwbRoadSections")
+    @Timed(value = "accessibilitymap.nwb.loadNwbRoadSections")
     private @NonNull Function<Integer, SortedMap<Long, AccessibilityNwbRoadSection>> loadNwbRoadSections() {
         return nwbVersionId -> nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                         nwbVersionId,

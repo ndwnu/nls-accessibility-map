@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MissingRoadSectionProvider {
 
-    @Timed(value = "accessibilitymap.calculateMissingRoadSections")
+    @Timed(value = "accessibilitymap.accessibility.calculateMissingRoadSections")
     public Collection<RoadSection> get(
             AccessibilityContext accessibilityContext,
             Integer municipalityId,
