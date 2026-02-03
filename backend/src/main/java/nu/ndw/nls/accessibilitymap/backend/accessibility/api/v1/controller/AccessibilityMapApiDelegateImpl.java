@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v1.dto.VehicleArguments;
@@ -45,6 +46,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     private final AccessibilityRequestMapper accessibilityRequestMapper;
 
     private final AccessibilityService accessibilityService;
+    private final AccessibilityContextProvider accessibilityContextProvider;
 
     @Override
     public ResponseEntity<AccessibilityMapResponseJson> getInaccessibleRoadSections(
@@ -68,7 +70,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
                 excludeEmissionZoneTypes, latitude, longitude);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityContextProvider.get(), accessibilityRequest);
 
         return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility));
     }
@@ -96,7 +98,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
                 excludeEmissionZoneTypes, latitude, longitude);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityRequest);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityContextProvider.get(), accessibilityRequest);
 
         return ResponseEntity.ok(
                 roadSectionFeatureCollectionMapper.map(

@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.PMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class IsochroneServiceFactoryTest {
+
+    @Mock
+    private AccessibilityNetwork accessibilityNetwork;
+
+    @Mock
+    private AccessibilityContext accessibilityContext;
 
     @Mock
     private GraphHopperNetwork graphHopperNetwork;
@@ -30,9 +38,11 @@ class IsochroneServiceFactoryTest {
     @Test
     void createService() {
 
-        when(graphHopperNetwork.getNetwork()).thenReturn(network);
+        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
+        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.network()).thenReturn(network);
 
-        isochroneServiceFactory.createService(graphHopperNetwork);
+        isochroneServiceFactory.createService(accessibilityNetwork);
 
         verify(network).createWeighting(eq(CAR_PROFILE), any(PMap.class));
         verify(network).getEncodingManager();

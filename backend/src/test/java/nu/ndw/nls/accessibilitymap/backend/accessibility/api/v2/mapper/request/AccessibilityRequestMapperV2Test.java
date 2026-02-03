@@ -2,17 +2,21 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.shapes.BBox;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.FuelTypeMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.TransportTypeMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.exception.ResourceNotFoundException;
@@ -20,6 +24,8 @@ import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipal
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AreaRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionZoneTypeJson;
@@ -29,11 +35,13 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.MunicipalityAreaRequ
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleCharacteristicsJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
+import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityRequestMapperV2Test {
@@ -59,7 +67,19 @@ class AccessibilityRequestMapperV2Test {
     private MunicipalityService municipalityService;
 
     @Mock
+    private AccessibilityRequestRestrictionMapper accessibilityRequestRestrictionMapper;
+
+    @Mock
     private OffsetDateTime timestamp;
+
+    @Mock
+    private AccessibilityContext accessibilityContext;
+
+    @Mock
+    private AccessibilityRequestRestrictionJson accessibilityRequestRestrictionJson;
+
+    @Mock
+    private Restriction restriction;
 
     private Municipality municipality;
 
@@ -73,7 +93,7 @@ class AccessibilityRequestMapperV2Test {
         municipalityAreaRequestJson = MunicipalityAreaRequestJson.builder()
                 .id("GM0001")
                 .build();
-                
+
         accessibilityRequestJson = AccessibilityRequestJson.builder()
                 .vehicle(VehicleCharacteristicsJson.builder()
                         .axleLoad(1F)
@@ -95,6 +115,7 @@ class AccessibilityRequestMapperV2Test {
                         .longitude(11D)
                         .build())
                 .area(municipalityAreaRequestJson)
+                .restrictions(List.of(accessibilityRequestRestrictionJson))
                 .build();
 
         municipality = Municipality.builder()
@@ -116,7 +137,8 @@ class AccessibilityRequestMapperV2Test {
                 fuelTypeMapperV2,
                 emissionZoneTypeMapperV2,
                 clockService,
-                municipalityService);
+                municipalityService,
+                accessibilityRequestRestrictionMapper);
     }
 
     @Test
@@ -125,13 +147,14 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
 
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
+        when(accessibilityRequestRestrictionMapper.map(accessibilityContext, accessibilityRequestRestrictionJson)).thenReturn(restriction);
 
         when(transportTypeMapperV2.map(accessibilityRequestJson.getVehicle())).thenReturn(Set.of(TransportType.CAR));
         when(emissionClassMapperV2.map(EmissionClassJson.EURO_1)).thenReturn(Set.of(EmissionClass.EURO_1));
         when(fuelTypeMapperV2.map(FuelTypeJson.PETROL)).thenReturn(FuelType.PETROL);
         when(emissionZoneTypeMapperV2.map(EmissionZoneTypeJson.LOW_EMISSION_ZONE)).thenReturn(EmissionZoneType.LOW);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
@@ -157,7 +180,43 @@ class AccessibilityRequestMapperV2Test {
                 .searchRadiusInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
                 .excludeRestrictionsWithEmissionZoneIds(Set.of("id1"))
                 .excludeRestrictionsWithEmissionZoneTypes(Set.of(EmissionZoneType.LOW))
+                .dynamicRestrictions(Set.of(restriction))
                 .build());
+    }
+
+    @Test
+    void map_noDynamicRestrictions() {
+
+        when(clockService.now()).thenReturn(timestamp);
+
+        when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
+        when(transportTypeMapperV2.map(accessibilityRequestJson.getVehicle())).thenReturn(Set.of(TransportType.CAR));
+        when(emissionClassMapperV2.map(EmissionClassJson.EURO_1)).thenReturn(Set.of(EmissionClass.EURO_1));
+        when(fuelTypeMapperV2.map(FuelTypeJson.PETROL)).thenReturn(FuelType.PETROL);
+        when(emissionZoneTypeMapperV2.map(EmissionZoneTypeJson.LOW_EMISSION_ZONE)).thenReturn(EmissionZoneType.LOW);
+
+        accessibilityRequestJson.setRestrictions(null);
+
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+
+        assertThat(accessibilityRequest.dynamicRestrictions()).isEmpty();
+    }
+
+    @Test
+    void map_invalidArea() {
+
+        accessibilityRequestJson.setArea(mock(AreaRequestJson.class));
+
+        try {
+            accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        } catch (ApiException exception) {
+
+            assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("fdd86f4f-a34d-4a01-8abc-4ea8b0e327a9"));
+            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            assertThat(exception.getTitle()).isEqualTo("Invalid area type");
+            assertThat(exception.getDescription())
+                    .isEqualTo("Area type of 'AreaRequestJson' is not a valid. Please check the api specification for valid options.");
+        }
     }
 
     @Test
@@ -168,7 +227,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.excludeRestrictionsWithEmissionZoneIds()).isNull();
         assertThat(accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes()).isNull();
@@ -183,7 +242,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes()).isNull();
     }
@@ -197,7 +256,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.excludeRestrictionsWithEmissionZoneIds()).isNull();
     }
@@ -207,7 +266,7 @@ class AccessibilityRequestMapperV2Test {
 
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(null);
 
-        assertThat(catchThrowable(() -> accessibilityRequestMapperV2.map(accessibilityRequestJson)))
+        assertThat(catchThrowable(() -> accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson)))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Municipality with id 'GM0001' not found.");
     }
@@ -220,7 +279,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.vehicleHeightInCm()).isNull();
     }
@@ -233,7 +292,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.endLocationLatitude()).isNull();
         assertThat(accessibilityRequest.endLocationLongitude()).isNull();
@@ -247,7 +306,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.fuelTypes()).isNull();
     }

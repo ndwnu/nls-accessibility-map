@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.jobs.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
@@ -25,12 +26,16 @@ public class MapGeneratorService {
 
     private final AccessibilityService accessibilityService;
 
+    private final AccessibilityContextProvider accessibilityContextProvider;
+
     private final MessageService messageService;
 
     public void generate(@Valid ExportProperties exportProperties) {
 
         log.info("Generating with the following properties: {}", exportProperties);
-        Accessibility accessibility = accessibilityService.calculateAccessibility(exportProperties.accessibilityRequest());
+        Accessibility accessibility = accessibilityService.calculateAccessibility(
+                accessibilityContextProvider.get(),
+                exportProperties.accessibilityRequest());
 
         long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())

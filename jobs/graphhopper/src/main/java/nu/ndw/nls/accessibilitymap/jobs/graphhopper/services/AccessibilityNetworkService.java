@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.jobs.graphhopper.services;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperNetworkSettingsBuilder;
@@ -54,7 +53,7 @@ public class AccessibilityNetworkService {
         int nwbVersionId = nwbVersionCrudService.findLatestVersionId();
 
         log.info("Retrieving link data");
-        List<AccessibilityLink> accessibilityLinks = accessibilityNwbRoadSectionService.findAllByVersion(nwbVersionId).stream()
+        var accessibilityLinks = accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(nwbVersionId).values().stream()
                 .map(accessibilityNwbRoadSectionToLinkMapper::map)
                 .toList();
         Instant dataTimestamp = clockService.now().toInstant();

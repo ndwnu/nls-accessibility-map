@@ -27,6 +27,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasons;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.AccessibilityReasonsMapper;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.AfterEach;
@@ -55,6 +57,12 @@ class AccessibilityReasonServiceTest {
 
     @Mock
     private GraphHopperNetwork graphHopperNetwork;
+
+    @Mock
+    private AccessibilityNetwork accessibilityNetwork;
+
+    @Mock
+    private AccessibilityContext accessibilityContext;
 
     @Mock
     private BaseGraph baseGraph;
@@ -131,7 +139,9 @@ class AccessibilityReasonServiceTest {
                 .endLocationLongitude(4d)
                 .build();
 
-        when(graphHopperNetwork.getNetwork()).thenReturn(networkGraphHopper);
+        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
+        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(PMap::isEmpty))).thenReturn(weighting);
@@ -160,11 +170,11 @@ class AccessibilityReasonServiceTest {
         when(routeRoutingAlgorithm.calcPaths(1, 2)).thenReturn(routes);
         when(path.isFound()).thenReturn(true);
 
-        when(graphHopperNetwork.getRestrictions()).thenReturn(restrictions);
+        when(accessibilityNetwork.getRestrictions()).thenReturn(restrictions);
         when(accessibilityReasonsMapper.mapRestrictions(restrictions)).thenReturn(accessibilityReasons);
         when(pathsToReasonsMapper.mapRoutesToReasons(routes, accessibilityReasons, encodingManager)).thenReturn(accessibilityReasonsList);
 
-        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest, graphHopperNetwork);
+        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest, accessibilityNetwork);
 
         assertThat(result).isEqualTo(accessibilityReasonsList);
     }
@@ -179,7 +189,9 @@ class AccessibilityReasonServiceTest {
                 .endLocationLongitude(4d)
                 .build();
 
-        when(graphHopperNetwork.getNetwork()).thenReturn(networkGraphHopper);
+        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
+        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(PMap::isEmpty))).thenReturn(weighting);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
@@ -207,7 +219,7 @@ class AccessibilityReasonServiceTest {
         when(routeRoutingAlgorithm.calcPaths(1, 2)).thenReturn(routes);
         when(path.isFound()).thenReturn(false);
 
-        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest, graphHopperNetwork);
+        List<List<AccessibilityReason>> result = accessibilityReasonService.calculateReasons(accessibilityRequest, accessibilityNetwork);
 
         assertThat(result).isEmpty();
         loggerExtension.containsLog(Level.WARN, "No routes found for request: %s".formatted(accessibilityRequest));

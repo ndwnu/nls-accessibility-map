@@ -25,7 +25,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.command.dto.AnalyseAsymmetricTrafficSignsConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.data.analyser.service.issue.mapper.IssueBuilder;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.api.v1.IssueApiClient;
@@ -48,6 +50,12 @@ class TrafficSignAnalyserServiceTest {
 
     @Mock
     private AccessibilityService accessibilityService;
+
+    @Mock
+    private AccessibilityContextProvider accessibilityContextProvider;
+
+    @Mock
+    private AccessibilityContext accessibilityContext;
 
     @Mock
     private IssueApiClient issueApiClient;
@@ -98,6 +106,7 @@ class TrafficSignAnalyserServiceTest {
                 issueApiClient,
                 reportApiClient,
                 accessibilityService,
+                accessibilityContextProvider,
                 issueBuilder);
     }
 
@@ -109,7 +118,8 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -157,7 +167,8 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -185,7 +196,6 @@ class TrafficSignAnalyserServiceTest {
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseAsymmetricTrafficSignsConfiguration");
     }
 
-
     @Test
     void analyse_noIssueCreatedForDirection() {
 
@@ -194,7 +204,8 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -228,7 +239,8 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -264,7 +276,8 @@ class TrafficSignAnalyserServiceTest {
         when(analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest()).thenReturn(accessibilityRequest);
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
-        when(accessibilityService.calculateAccessibility(accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));

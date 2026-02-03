@@ -15,8 +15,7 @@ import org.springframework.validation.annotation.Validated;
 public record RoadSectionRestriction(
         @NotNull Integer id,
         @NotNull Direction direction,
-        @NotNull Double startFraction,
-        @NotNull Double endFraction,
+        @NotNull Double fraction,
         @NotNull Double networkSnappedLatitude,
         @NotNull Double networkSnappedLongitude
 ) implements Restriction {
@@ -36,8 +35,7 @@ public record RoadSectionRestriction(
         return "RoadSectionRestriction{" +
                "id=" + id +
                ", direction=" + direction +
-               ", startFraction=" + startFraction +
-               ", endFraction=" + endFraction +
+               ", fraction=" + fraction +
                ", networkSnappedLatitude=" + networkSnappedLatitude +
                ", networkSnappedLongitude=" + networkSnappedLongitude +
                '}';
