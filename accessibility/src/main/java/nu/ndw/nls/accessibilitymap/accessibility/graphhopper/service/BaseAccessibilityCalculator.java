@@ -38,7 +38,7 @@ public class BaseAccessibilityCalculator {
         this.roadSectionTrafficSignAssigner = roadSectionTrafficSignAssigner;
     }
 
-    @Timed(value = "accessibilitymap.calculateBasemap")
+    @Timed(value = "accessibilitymap.accessibility.calculateBasemap")
     public Collection<RoadSection> calculate(
             AccessibilityNetwork accessibilityNetwork,
             Integer municipalityId,

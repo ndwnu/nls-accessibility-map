@@ -64,7 +64,7 @@ public class AccessibilityService {
 
     private final AccessibilityNetworkProvider accessibilityNetworkProvider;
 
-    @Timed(value = "accessibilitymap.calculateAccessibility")
+    @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
             @Valid AccessibilityContext accessibilityContext,
             @Valid AccessibilityRequest accessibilityRequest) throws AccessibilityException {
@@ -128,7 +128,6 @@ public class AccessibilityService {
         }
     }
 
-    @Timed(value = "accessibilitymap.buildingAccessibilityDto")
     private Accessibility buildAccessibility(
             AccessibilityRequest accessibilityRequest,
             Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
@@ -200,7 +199,6 @@ public class AccessibilityService {
                 .findFirst();
     }
 
-    @Timed(value = "accessibilitymap.calculateAccessibilityWithRestrictions")
     private Collection<RoadSection> calculateRoadsSectionsWithAppliedRestrictions(
             AccessibilityRequest accessibilityRequest,
             AccessibilityNetwork accessibilityNetwork) {

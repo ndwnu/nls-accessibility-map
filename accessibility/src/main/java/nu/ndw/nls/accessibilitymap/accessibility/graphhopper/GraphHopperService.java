@@ -52,7 +52,7 @@ public class GraphHopperService {
         }
     }
 
-    @Timed(value = "accessibilitymap.loadingGraphHopperNetwork")
+    @Timed(value = "accessibilitymap.graphHopper.loadNetwork")
     public synchronized void loadNewGraphHopperNetwork() {
         try {
             RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
