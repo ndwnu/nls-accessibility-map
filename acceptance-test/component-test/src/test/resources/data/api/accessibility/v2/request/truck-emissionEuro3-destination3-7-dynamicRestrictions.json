@@ -1,7 +1,7 @@
 {
   "destination": {
-    "latitude": 1.0,
-    "longitude": 2.0
+    "latitude": 3.0,
+    "longitude": 7.0
   },
   "area": {
     "type": "municipality",
@@ -14,5 +14,13 @@
     "fuelTypes": [
       "diesel"
     ]
-  }
+  },
+  "restrictions": [
+    {
+      "type": "roadSection",
+      "id": "2",
+      "direction": "forward",
+      "fraction": 0
+    }
+  ]
 }

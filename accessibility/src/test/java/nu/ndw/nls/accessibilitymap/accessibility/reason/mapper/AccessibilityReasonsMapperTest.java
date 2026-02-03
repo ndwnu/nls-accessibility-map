@@ -99,10 +99,10 @@ class AccessibilityReasonsMapperTest {
 
         TrafficSignType trafficSignType = mock(TrafficSignType.class);
 
-        assertThat(catchThrowable(() -> mapper.mapRestrictions(new Restrictions(Set.of( createTrafficSign(
-                        TransportRestrictions.builder()
-                                .transportTypes(Set.of(TransportType.CAR))
-                                .build(),
+        assertThat(catchThrowable(() -> mapper.mapRestrictions(new Restrictions(Set.of(createTrafficSign(
+                TransportRestrictions.builder()
+                        .transportTypes(Set.of(TransportType.CAR))
+                        .build(),
                 trafficSignType))))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Traffic sign type '%s' is not supported".formatted(trafficSignType));

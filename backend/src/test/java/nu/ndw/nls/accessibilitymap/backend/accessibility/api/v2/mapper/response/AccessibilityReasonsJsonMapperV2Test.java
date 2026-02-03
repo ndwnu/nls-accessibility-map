@@ -17,6 +17,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionUnitSymbolJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignTypeJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,7 +73,7 @@ class AccessibilityReasonsJsonMapperV2Test {
 
         List<List<ReasonJson>> actual = accessibilityReasonsJsonMapperV2.map(List.of(List.of(accessibilityReason)));
 
-        ReasonJson expected = new ReasonJson()
+        ReasonJson expected = new TrafficSignReasonJson()
                 .trafficSignId(java.util.UUID.fromString(UUID))
                 .trafficSignType(TrafficSignTypeJson.fromValue(trafficSignType.getRvvCode()))
                 .restrictions(List.of(fuelTypeRestrictionJson));
@@ -92,7 +93,7 @@ class AccessibilityReasonsJsonMapperV2Test {
 
         List<List<ReasonJson>> actual = accessibilityReasonsJsonMapperV2.map(List.of(List.of(accessibilityReason)));
 
-        ReasonJson expected = new ReasonJson()
+        ReasonJson expected = new TrafficSignReasonJson()
                 .trafficSignId(java.util.UUID.fromString(UUID))
                 .trafficSignType(TrafficSignTypeJson.fromValue(trafficSignType.getRvvCode()))
                 .restrictions(List.of());

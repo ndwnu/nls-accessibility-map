@@ -85,7 +85,7 @@ class AccessibilityNwbRoadSectionServiceTest {
     }
 
     @Test
-    void findAllByVersion() {
+    void getRoadSectionsByIdForNwbVersion() {
 
         when(nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                 2,
@@ -93,40 +93,15 @@ class AccessibilityNwbRoadSectionServiceTest {
                 null,
                 250
         )).thenReturn(Stream.of(nwbRoadSectionDto1));
+
+        when(accessibilityNwbRoadSection1.roadSectionId()).thenReturn(11L);
         when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto1)).thenReturn(accessibilityNwbRoadSection1);
 
-        var accessibilityNwbRoadSections = accessibilityNwbRoadSectionService.findAllByVersion(2);
-        assertThat(accessibilityNwbRoadSections).containsExactlyInAnyOrder(accessibilityNwbRoadSection1);
+        var accessibilityNwbRoadSections = accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(2);
+        assertThat(accessibilityNwbRoadSections).containsEntry(11L, accessibilityNwbRoadSection1);
 
-        var accessibilityNwbRoadSections2 = accessibilityNwbRoadSectionService.findAllByVersion(2);
-        assertThat(accessibilityNwbRoadSections2).containsExactlyInAnyOrder(accessibilityNwbRoadSection1);
-
-        verify(nwbRoadSectionCrudService).findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
-                2,
-                carriageWayTypeCodeInclusions,
-                null,
-                250);
-    }
-
-    @Test
-    void findAllByVersionAndMunicipalityId() {
-
-        when(nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
-                2,
-                carriageWayTypeCodeInclusions,
-                null,
-                250
-        )).thenReturn(Stream.of(nwbRoadSectionDto1, nwbRoadSectionDto2));
-        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto1)).thenReturn(accessibilityNwbRoadSection1);
-        when(accessibilityNwbRoadSection1.municipalityId()).thenReturn(null);
-        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto2)).thenReturn(accessibilityNwbRoadSection2);
-        when(accessibilityNwbRoadSection2.municipalityId()).thenReturn(3);
-
-        var accessibilityNwbRoadSections = accessibilityNwbRoadSectionService.findAllByVersionAndMunicipalityId(2, 3);
-        assertThat(accessibilityNwbRoadSections).containsExactlyInAnyOrder(accessibilityNwbRoadSection2);
-
-        var accessibilityNwbRoadSections2 = accessibilityNwbRoadSectionService.findAllByVersionAndMunicipalityId(2, 3);
-        assertThat(accessibilityNwbRoadSections2).containsExactlyInAnyOrder(accessibilityNwbRoadSection2);
+        var accessibilityNwbRoadSectionsCached = accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(2);
+        assertThat(accessibilityNwbRoadSectionsCached).containsEntry(11L, accessibilityNwbRoadSection1);
 
         verify(nwbRoadSectionCrudService).findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                 2,
@@ -149,13 +124,11 @@ class AccessibilityNwbRoadSectionServiceTest {
         when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto1)).thenReturn(accessibilityNwbRoadSection1);
         when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto2)).thenReturn(accessibilityNwbRoadSection2);
 
-        when(accessibilityNwbRoadSection1.municipalityId()).thenReturn(2);
-        when(accessibilityNwbRoadSection2.municipalityId()).thenReturn(3);
+        when(accessibilityNwbRoadSection1.roadSectionId()).thenReturn(11L);
+        when(accessibilityNwbRoadSection2.roadSectionId()).thenReturn(12L);
 
-        assertThat(accessibilityNwbRoadSectionService.findAllByVersionAndMunicipalityId(2, 3))
-                .containsExactlyInAnyOrder(accessibilityNwbRoadSection2);
-        assertThat(accessibilityNwbRoadSectionService.findAllByVersion(2))
-                .containsExactlyInAnyOrder(accessibilityNwbRoadSection1, accessibilityNwbRoadSection2);
+        assertThat(accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(2))
+                .containsEntry(11L, accessibilityNwbRoadSection1);
 
         verify(nwbRoadSectionCrudService).findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                 2,
@@ -165,10 +138,10 @@ class AccessibilityNwbRoadSectionServiceTest {
 
         clearCache.run();
 
-        assertThat(accessibilityNwbRoadSectionService.findAllByVersionAndMunicipalityId(2, 3))
-                .containsExactlyInAnyOrder(accessibilityNwbRoadSection2);
-        assertThat(accessibilityNwbRoadSectionService.findAllByVersion(2))
-                .containsExactlyInAnyOrder(accessibilityNwbRoadSection1, accessibilityNwbRoadSection2);
+        assertThat(accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(2))
+                .containsEntry(11L, accessibilityNwbRoadSection1)
+                .containsEntry(12L, accessibilityNwbRoadSection2)
+                .hasSize(2);
 
         verify(nwbRoadSectionCrudService, times(2)).findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                 2,

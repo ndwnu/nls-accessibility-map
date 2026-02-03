@@ -371,6 +371,37 @@ components:
               type: "string"
               example: "GM0344"
               pattern: ^(GM)(?=\d{4}$)\d*[1-9]\d*
+    AccessibilityRequestRestriction:
+      type: "object"
+      required:
+        - type
+      discriminator:
+        propertyName: type
+        mapping:
+          roadSection: "#/components/schemas/AccessibilityRequestRoadSectionRestriction"
+      properties:
+        type:
+          type: "string"
+          enum:
+            - "roadSection"
+    AccessibilityRequestRoadSectionRestriction:
+      allOf:
+        - $ref: '#/components/schemas/AccessibilityRequestRestriction'
+        - type: "object"
+          description: "Defines a restriction on a road section or on a fraction of a road section. A restriction means that the road section is not accessible for any type of transportation."
+          required:
+            - id
+            - direction
+            - fraction
+          properties:
+            id:
+              type: "integer"
+              format: "int32"
+              example: 123456
+            direction:
+              $ref: '#/components/schemas/Direction'
+            fraction:
+              $ref: '#/components/schemas/Fraction'
     Exclusions:
       type: "object"
       description: "Exclusions"
@@ -421,6 +452,10 @@ components:
           $ref: "#/components/schemas/VehicleCharacteristics"
         exclusions:
           $ref: "#/components/schemas/Exclusions"
+        restrictions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/AccessibilityRequestRestriction"
 
     FuelType:
       type: "string"
@@ -473,7 +508,13 @@ components:
         - "forward"
         - "backward"
       example: "forward"
-
+    Fraction:
+      type: "number"
+      format: "float"
+      example: 0.0
+      minimum: 0.0
+      maximum: 1.0
+      description: "Fraction is defined between 0 and 1. This represents from where the road section is not accessible. 0 means from the beginning and 1 means at the end of the road section. Anywhere in between means that the road section is accessible from the beginning up to the fraction/percentage and inaccessible from the fraction to the end of the road section."
     RoadSectionId:
       type: "integer"
       format: "int64"
@@ -490,17 +531,55 @@ components:
       description: "Reason why the road section is inaccessible"
       required:
         - type
-        - unitSymbol
-        - condition
+      discriminator:
+        propertyName: type
+        mapping:
+          roadSection: "#/components/schemas/RoadSectionReason"
+          trafficSign: "#/components/schemas/TrafficSignReason"
       properties:
-        trafficSignId:
-          $ref: "#/components/schemas/TrafficSignId"
-        trafficSignType:
-          $ref: "#/components/schemas/TrafficSignType"
-        restrictions:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/Restriction"
+        type:
+          type: "string"
+          enum:
+            - "roadSection"
+            - "trafficSign"
+
+    RoadSectionReason:
+      type: "object"
+      allOf:
+        - $ref: '#/components/schemas/Reason'
+        - type: "object"
+          description: ""
+          required:
+            - roadSectionId
+            - restrictions
+          properties:
+            roadSectionId:
+              $ref: "#/components/schemas/RoadSectionId"
+            restrictions:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Restriction"
+    TrafficSignReason:
+      type: "object"
+      allOf:
+        - $ref: '#/components/schemas/Reason'
+        - type: "object"
+          description: ""
+          required:
+            - trafficSignId
+            - trafficSignType
+            - restrictions
+          properties:
+            trafficSignId:
+              $ref: "#/components/schemas/TrafficSignId"
+            trafficSignType:
+              $ref: "#/components/schemas/TrafficSignType"
+            restrictions:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Restriction"
+
+
 
     Restriction:
       type: "object"
@@ -519,6 +598,7 @@ components:
           vehicleWeightRestriction: "#/components/schemas/VehicleWeightRestriction"
           fuelTypeRestriction: "#/components/schemas/FuelTypeRestriction"
           vehicleTypeRestriction: "#/components/schemas/VehicleTypeRestriction"
+          accessibleRestriction: "#/components/schemas/AccessibleRestriction"
           unknown: "#/components/schemas/Restriction"
       properties:
         type:
@@ -531,6 +611,7 @@ components:
             - "vehicleWeightRestriction"
             - "fuelTypeRestriction"
             - "vehicleTypeRestriction"
+            - "accessibleRestriction"
             - "unknown"
           default: "unknown"
           description: "The type of restriction."
@@ -543,6 +624,7 @@ components:
       enum:
         - "tons"
         - "metre"
+        - "boolean"
         - "enum"
         - "unknown"
       type: "string"
@@ -622,7 +704,7 @@ components:
               items:
                 $ref: "#/components/schemas/FuelType"
       example:
-        - type: "FuelTypeRestriction"
+        - type: "fuelTypeRestriction"
           unitSymbol: "enum"
           condition: "equals"
           values:
@@ -641,12 +723,23 @@ components:
               items:
                 $ref: "#/components/schemas/VehicleType"
       example:
-        - type: "VehicleTypeRestriction"
+        - type: "vehicleTypeRestriction"
           unitSymbol: "enum"
           condition: "equals"
           values:
             - "car"
             - "light_commercial_vehicle"
+
+    AccessibleRestriction:
+      type: "object"
+      description: "Not accessible"
+      required:
+        - value
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - properties:
+            value:
+              type: "boolean"
 
     TrafficSignId:
       type: "string"
@@ -919,7 +1012,7 @@ components:
           longitude: 5.152890
         area:
           type: municipality
-          id: GM0001
+          id: GM0334
         vehicle:
           type: truck
           width: 2

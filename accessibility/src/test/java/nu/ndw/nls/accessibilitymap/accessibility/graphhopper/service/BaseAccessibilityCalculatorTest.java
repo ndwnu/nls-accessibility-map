@@ -23,6 +23,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneSe
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.RoadSectionTrafficSignAssigner;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +50,16 @@ class BaseAccessibilityCalculatorTest {
     private RoadSectionTrafficSignAssigner roadSectionTrafficSignAssigner;
 
     @Mock
+    private AccessibilityNetwork accessibilityNetwork;
+
+    @Mock
+    private AccessibilityContext accessibilityContext;
+
+    @Mock
     private GraphHopperNetwork graphHopperNetwork;
+
+    @Mock
+    private RoadSection roadSection;
 
     @Mock
     private Snap from;
@@ -69,9 +80,6 @@ class BaseAccessibilityCalculatorTest {
     private QueryGraph queryGraph;
 
     @Mock
-    private RoadSection roadSection;
-
-    @Mock
     private Map<Integer, List<Restriction>> restrictionsByEdgeKey;
 
     @BeforeEach
@@ -89,14 +97,17 @@ class BaseAccessibilityCalculatorTest {
     }, nullValues = "null")
     void calculate(Integer municipalityId) {
 
-        when(graphHopperNetwork.getNetwork()).thenReturn(network);
-        when(graphHopperNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(graphHopperNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
+        when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
+        when(accessibilityNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
         when(network.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
                 weightingNoRestrictions);
-        when(graphHopperNetwork.getFrom()).thenReturn(from);
+        when(accessibilityNetwork.getFrom()).thenReturn(from);
+        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
+        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.network()).thenReturn(network);
 
-        when(isochroneServiceFactory.createService(graphHopperNetwork)).thenReturn(isochroneService);
+        when(isochroneServiceFactory.createService(accessibilityNetwork)).thenReturn(isochroneService);
         when(isochroneService.getIsochroneMatchesByMunicipalityId(
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments
                         .builder()
@@ -113,7 +124,7 @@ class BaseAccessibilityCalculatorTest {
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch)))
                 .thenReturn(List.of(roadSection));
 
-        Collection<RoadSection> baseAccessibility = baseAccessibilityCalculator.calculate(graphHopperNetwork, municipalityId, 2.0);
+        Collection<RoadSection> baseAccessibility = baseAccessibilityCalculator.calculate(accessibilityNetwork, municipalityId, 2.0);
 
         assertThat(baseAccessibility).containsExactly(roadSection);
     }

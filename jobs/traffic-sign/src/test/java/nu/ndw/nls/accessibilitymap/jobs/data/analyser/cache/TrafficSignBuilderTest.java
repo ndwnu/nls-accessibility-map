@@ -310,7 +310,7 @@ class TrafficSignBuilderTest {
 
     private void setupFixtureForNwbSnap() {
 
-        when(nwbRoadSectionSnapService.snapToLine(nwbRoadSectionGeometry, trafficSignGeoJsonDto.getProperties().getFraction())).thenReturn(
+        when(nwbRoadSectionSnapService.snapToLineForRdGeometry(nwbRoadSectionGeometry, trafficSignGeoJsonDto.getProperties().getFraction())).thenReturn(
                 coordinateAndBearing);
         when(coordinateAndBearing.coordinate()).thenReturn(coordinate);
         when(coordinate.getX()).thenReturn(DEFAULT_X_COORDINATE);

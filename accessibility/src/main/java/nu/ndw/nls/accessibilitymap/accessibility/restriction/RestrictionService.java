@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.restriction;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,15 @@ public class RestrictionService {
 
         return new Restrictions(Stream.concat(
                         trafficSignDataService.findAll().stream(),
-                        findAllDynamicRestrictions(accessibilityRequest))
+                        createDynamicRestrictions(accessibilityRequest))
                 .filter(restriction -> restriction.isRestrictive(accessibilityRequest))
                 .collect(Collectors.toSet()));
     }
 
-    private Stream<Restriction> findAllDynamicRestrictions(AccessibilityRequest accessibilityRequest) {
-
-        // Todo: Implement dynamic restrictions
-        return Stream.empty();
+    private Stream<Restriction> createDynamicRestrictions(AccessibilityRequest accessibilityRequest) {
+        if (Objects.isNull(accessibilityRequest.dynamicRestrictions())) {
+            return Stream.empty();
+        }
+        return accessibilityRequest.dynamicRestrictions().stream();
     }
 }

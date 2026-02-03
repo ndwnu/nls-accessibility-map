@@ -18,11 +18,16 @@ public class NwbRoadSectionSnapService {
 
     private final CrsTransformer crsTransformer;
 
-    public CoordinateAndBearing snapToLine(LineString geometry, double fraction) {
+    public CoordinateAndBearing snapToLineForRdGeometry(LineString geometry, double fraction) {
 
         LineString lineStringWgs84 = (LineString) crsTransformer.transformFromRdNewToWgs84(geometry);
         lineStringWgs84.setSRID(SRID.WGS84.value);
 
         return fractionAndDistanceCalculator.getCoordinateAndBearing(lineStringWgs84, fraction);
+    }
+
+    public CoordinateAndBearing snapToLine(LineString geometry, double fraction) {
+
+        return fractionAndDistanceCalculator.getCoordinateAndBearing(geometry, fraction);
     }
 }
