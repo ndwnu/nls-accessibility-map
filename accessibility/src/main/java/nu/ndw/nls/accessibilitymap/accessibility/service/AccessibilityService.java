@@ -64,7 +64,7 @@ public class AccessibilityService {
 
     private final AccessibilityNetworkProvider accessibilityNetworkProvider;
 
-    @Timed(description = "Time spent calculating accessibility")
+    @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
             @Valid AccessibilityContext accessibilityContext,
             @Valid AccessibilityRequest accessibilityRequest) throws AccessibilityException {

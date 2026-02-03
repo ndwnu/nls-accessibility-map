@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 import static java.util.stream.Collectors.toCollection;
 
 import com.graphhopper.util.PMap;
+import io.micrometer.core.annotation.Timed;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
@@ -37,6 +38,7 @@ public class BaseAccessibilityCalculator {
         this.roadSectionTrafficSignAssigner = roadSectionTrafficSignAssigner;
     }
 
+    @Timed(value = "accessibilitymap.accessibility.calculateBasemap")
     public Collection<RoadSection> calculate(
             AccessibilityNetwork accessibilityNetwork,
             Integer municipalityId,
