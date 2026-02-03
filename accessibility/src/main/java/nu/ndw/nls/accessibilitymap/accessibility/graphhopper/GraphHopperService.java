@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
+import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,6 +52,7 @@ public class GraphHopperService {
         }
     }
 
+    @Timed(value = "accessibilitymap.loadingGraphHopperNetwork")
     public synchronized void loadNewGraphHopperNetwork() {
         try {
             RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = graphHopperNetworkSettingsBuilder.defaultNetworkSettings();
