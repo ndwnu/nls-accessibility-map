@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MissingRoadSectionProvider {
 
+    @Timed(value = "accessibilitymap.calculateMissingRoadSections")
     public Collection<RoadSection> get(
             AccessibilityContext accessibilityContext,
             Integer municipalityId,
