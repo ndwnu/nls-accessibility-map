@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@Timed
 public class QueryGraphConfigurer {
 
     private static final double TOLERANCE_METRE_PRECISION = 0.00001;
@@ -38,6 +37,7 @@ public class QueryGraphConfigurer {
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
+    @Timed(value = "accessibilitymap.queryGraph.createEdgeRestrictions")
     public Map<Integer, List<Restriction>> createEdgeRestrictions(QueryGraph queryGraph, List<SnapRestriction> snapRestrictions) {
 
         Map<Integer, List<Restriction> > edgeRestrictions = new HashMap<>();

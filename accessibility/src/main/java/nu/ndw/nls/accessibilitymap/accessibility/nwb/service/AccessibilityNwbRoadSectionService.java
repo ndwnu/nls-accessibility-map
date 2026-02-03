@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.nwb.service;
 
+import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.SortedMap;
@@ -13,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSec
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.mapper.AccessibilityNwbRoadSectionMapper;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.db.nwb.jooq.services.NwbRoadSectionCrudService;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,23 +67,26 @@ public class AccessibilityNwbRoadSectionService {
     @Transactional(readOnly = true)
     public SortedMap<Long, AccessibilityNwbRoadSection> getRoadSectionsByIdForNwbVersion(int nwbVersionId) {
         synchronized (roadSectionsCacheByVersionById) {
-            roadSectionsCacheByVersionById.computeIfAbsent(
-                    nwbVersionId,
-                    version -> nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
-                                    nwbVersionId,
-                                    CARRIAGE_WAY_TYPE_CODE_INCLUSIONS,
-                                    null,
-                                    FETCH_SIZE)
-                            .map(accessibilityNwbRoadSectionMapper::map)
-                            .collect(Collectors.toMap(
-                                    AccessibilityNwbRoadSection::roadSectionId,               // key mapper (id)
-                                    Function.identity(),           // value mapper (the object)
-                                    (a, b) -> a,                   // merge function if duplicate ids occur (pick first; adjust if needed)
-                                    TreeMap::new
-                            )));
+            roadSectionsCacheByVersionById.computeIfAbsent(nwbVersionId, loadNwbRoadSections());
 
             return roadSectionsCacheByVersionById.get(nwbVersionId);
         }
+    }
+
+    @Timed(value = "accessibilitymap.nwb.loadNwbRoadSections")
+    private @NonNull Function<Integer, SortedMap<Long, AccessibilityNwbRoadSection>> loadNwbRoadSections() {
+        return nwbVersionId -> nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
+                        nwbVersionId,
+                        CARRIAGE_WAY_TYPE_CODE_INCLUSIONS,
+                        null,
+                        FETCH_SIZE)
+                .map(accessibilityNwbRoadSectionMapper::map)
+                .collect(Collectors.toMap(
+                        AccessibilityNwbRoadSection::roadSectionId,               // key mapper (id)
+                        Function.identity(),           // value mapper (the object)
+                        (a, b) -> a,                   // merge function if duplicate ids occur (pick first; adjust if needed)
+                        TreeMap::new
+                ));
     }
 
     private void clearCache() {

@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -36,6 +37,7 @@ public class TrafficSignCacheReadWriter {
 
     private final ClockService clockService;
 
+    @Timed(value = "accessibilitymap.trafficSign.loadData")
     public Optional<TrafficSigns> read() {
 
         try {
@@ -57,6 +59,7 @@ public class TrafficSignCacheReadWriter {
         }
     }
 
+    @Timed(value = "accessibilitymap.trafficSign.updateData")
     public void write(TrafficSigns trafficSigns) {
         try {
             Files.createDirectories(trafficSignCacheConfiguration.getFolder());
