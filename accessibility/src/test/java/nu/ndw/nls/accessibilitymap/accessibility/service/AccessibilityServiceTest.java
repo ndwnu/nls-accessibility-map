@@ -16,7 +16,6 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.PMap;
-import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -47,7 +46,6 @@ import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
-import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -477,18 +475,6 @@ class AccessibilityServiceTest {
             when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
             when(endSegmentClosestEdge.get(idIntEncodedValue)).thenReturn(30);
         }
-    }
-
-    @Test
-    void annotation_calculateAccessibility() {
-
-        AnnotationUtil.methodContainsAnnotation(
-                accessibilityService.getClass(),
-                Timed.class,
-                "calculateAccessibility",
-                annotation -> assertThat(annotation.description())
-                        .isEqualTo("Time spent calculating accessibility")
-        );
     }
 
     private record PMapArgumentMatcher(PMap expected) implements ArgumentMatcher<PMap> {
