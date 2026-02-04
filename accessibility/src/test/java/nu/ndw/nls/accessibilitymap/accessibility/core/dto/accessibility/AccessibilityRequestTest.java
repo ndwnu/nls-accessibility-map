@@ -46,6 +46,13 @@ class AccessibilityRequestTest extends ValidationTest {
     }
 
     @Test
+    void validate_searchRadiusInMeters_null() {
+
+        accessibilityRequest = accessibilityRequest.withSearchRadiusInMeters(null);
+        validate(accessibilityRequest, List.of("searchRadiusInMeters"), List.of("must not be null"));
+    }
+
+    @Test
     void validate_startLocationLatitude_null() {
 
         accessibilityRequest = accessibilityRequest.withStartLocationLatitude(null);
