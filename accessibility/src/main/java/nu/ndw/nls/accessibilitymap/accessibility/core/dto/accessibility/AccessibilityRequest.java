@@ -75,6 +75,9 @@ public record AccessibilityRequest(
      * Used for logging purposes when using objectmapper to convert this object to json.
      */
     public String getBoundingBoxString() {
-        return boundingBox.toString();
+        if (Objects.nonNull(boundingBox)) {
+            return boundingBox.toString();
+        }
+        return null;
     }
 }
