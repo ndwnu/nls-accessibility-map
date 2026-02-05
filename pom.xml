@@ -56,7 +56,7 @@
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>5.1.0</json-unit.version>
     <cucumber.version>7.34.2</cucumber.version>
-    <location-data-issues.version>2.2.103</location-data-issues.version>
+    <location-data-issues.version>2.2.104</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
