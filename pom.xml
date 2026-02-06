@@ -36,7 +36,7 @@
     <gatling.version>3.14.9</gatling.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <jackson-databind-nullable.version>0.2.8</jackson-databind-nullable.version>
+    <jackson-databind-nullable.version>0.2.9</jackson-databind-nullable.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <keycloak-authz-client.version>26.0.8</keycloak-authz-client.version>
     <mapstruct.version>1.6.3</mapstruct.version>
