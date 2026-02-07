@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>acceptance-test</artifactId>
-    <version>5.2.26-SNAPSHOT</version>
+    <version>5.2.27-SNAPSHOT</version>
   </parent>
   <artifactId>acceptance-test-shared</artifactId>
   <name>NLS Accessibility Map - Acceptance test shared</name>
