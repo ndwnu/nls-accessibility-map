@@ -14,7 +14,7 @@ public class IssueExportStepDefinitions {
 
     private final IssueDriver issueDriver;
 
-    @Given("with issues sent to issue api")
+    @Given("expecting issues to be send to issue api")
     public void issueApi() {
         issueDriver.stubIssueApiRequest();
     }

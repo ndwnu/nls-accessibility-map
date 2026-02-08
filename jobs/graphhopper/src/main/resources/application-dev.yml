@@ -1,6 +1,0 @@
-hostDatabase: localhost
-hostEventBroker: localhost
-
-graphhopper:
-  dir: .tmp/graphhopper
-

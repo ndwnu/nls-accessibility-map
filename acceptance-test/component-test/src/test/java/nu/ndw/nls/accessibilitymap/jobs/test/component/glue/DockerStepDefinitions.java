@@ -8,10 +8,12 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.driver.job.MapGenerationJ
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BaseNetworkAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapServicesClient;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
+import nu.ndw.nls.springboot.test.component.state.StateManagement;
 
 @RequiredArgsConstructor
-public class DockerStepDefinitions {
+public class DockerStepDefinitions implements StateManagement {
 
     private final MapGenerationJobDriver mapGenerationJobDriver;
 
@@ -19,16 +21,12 @@ public class DockerStepDefinitions {
 
     private final JobDriver jobDriver;
 
+    private final AccessibilityMapServicesClient accessibilityMapServicesClient;
+
     @When("run MapGenerationJob with configuration")
     public void runMapGenerationJob(List<MapGeneratorJobConfiguration> jobConfigurations) {
 
         jobConfigurations.forEach(mapGenerationJobDriver::runMapGenerationJobDebugMode);
-    }
-
-    @When("run DataAnalyser RabbitMQ is configured")
-    public void runDataAnalyserJobConfigureRabbitMQ() {
-
-        jobDriver.run("dataAnalyserConfigureRabbitMQ");
     }
 
     @When("run AsymmetricTrafficSignsAnalysis with configuration")
@@ -47,17 +45,18 @@ public class DockerStepDefinitions {
     public void runTrafficSignAnalyser() {
 
         jobDriver.run("trafficSignUpdateCache");
+        accessibilityMapServicesClient.reloadCaches();
     }
 
-    @When("run GraphhopperJob createOrUpdateNetwork is executed")
-    public void runGraphhopperJobCreateOrUpdateNetwork() {
+    @Override
+    public void prepareState() {
+        StateManagement.super.prepareState();
 
-        jobDriver.run("graphHopperCreateOrUpdateNetwork");
+        jobDriver.run("configureRabbitMQ");
     }
 
-    @When("run GraphhopperJob RabbitMQ is configured")
-    public void runGraphhopperJobConfigureRabbitMQ() {
-
-        jobDriver.run("graphHopperConfigureRabbitMQ");
+    @Override
+    public void clearState() {
+        // Nothing to do.
     }
 }

@@ -101,8 +101,7 @@ nu:
               graph-hopper:
                 location-on-disk: "../../.tmp/graphhopper"
               traffic-sign:
-                location-on-disk: "../../.tmp/trafficsigns"
-                file-name-active-version: "active"
+                location-on-disk: "../../.tmp/trafficSigns"
 
 logging:
   level:

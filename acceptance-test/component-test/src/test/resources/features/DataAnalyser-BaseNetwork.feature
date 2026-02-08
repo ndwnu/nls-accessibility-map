@@ -1,12 +1,10 @@
 Feature: DataAnalyser-AnalyseBaseNetwork
 
   Scenario: Report road sections that are not routable in the graph hopper network
-    Given a simple Graph Hopper network
-    And NWB unroutable road sections
+    Given a simple network with unroutable road sections
       | id   | junctionIdFrom | junctionIdTo |
       | 1000 | 2000           | 2001         |
-    And with issues sent to issue api
-    When run DataAnalyser RabbitMQ is configured
+    And expecting issues to be send to issue api
     And a network updated event is triggerd
     When run BaseNetworkAnalyser with configuration
       | startNodeId | reportIssues |

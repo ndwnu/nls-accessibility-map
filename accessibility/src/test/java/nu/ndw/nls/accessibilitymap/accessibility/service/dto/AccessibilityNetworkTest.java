@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityNetworkTest {
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
 
     @Mock
     private QueryGraph queryGraph;
@@ -40,7 +41,7 @@ class AccessibilityNetworkTest {
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = Map.of(1, List.of(restriction));
 
         AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
-                accessibilityContext,
+                networkData,
                 queryGraph,
                 restrictions,
                 restrictionsByEdgeKey,
@@ -48,7 +49,7 @@ class AccessibilityNetworkTest {
                 destination);
 
         assertThat(accessibilityNetwork)
-                .hasToString("GraphHopperNetwork[restrictions=[restriction], restrictionsByEdgeKey={1=[restriction]}, "
-                             + "blockedEdges=[1], from=from, destination=destination]");
+                .hasToString("GraphHopperNetwork[networkData=networkData, restrictions=[restriction], "
+                             + "restrictionsByEdgeKey={1=[restriction]}, blockedEdges=[1], from=from, destination=destination]");
     }
 }

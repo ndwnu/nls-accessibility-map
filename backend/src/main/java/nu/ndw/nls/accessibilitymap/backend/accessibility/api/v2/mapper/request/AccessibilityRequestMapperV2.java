@@ -13,7 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest.AccessibilityRequestBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.FuelTypeMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.TransportTypeMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.exception.ResourceNotFoundException;
@@ -52,7 +52,7 @@ public class AccessibilityRequestMapperV2 {
     private final AccessibilityRequestRestrictionMapper accessibilityRequestRestrictionMapper;
 
     @Valid
-    public AccessibilityRequest map(AccessibilityContext accessibilityContext, AccessibilityRequestJson accessibilityRequest) {
+    public AccessibilityRequest map(NetworkData networkData, AccessibilityRequestJson accessibilityRequest) {
 
         if (accessibilityRequest.getArea() instanceof MunicipalityAreaRequestJson municipalityAreaRequestJson) {
             Municipality municipality = municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId());
@@ -88,7 +88,7 @@ public class AccessibilityRequestMapperV2 {
                     .transportTypes(transportTypeMapperV2.map(accessibilityRequest.getVehicle()))
                     .excludeRestrictionsWithEmissionZoneIds(mapEmissionZoneIds(accessibilityRequest.getExclusions()))
                     .excludeRestrictionsWithEmissionZoneTypes(mapEmissionZoneTypes(accessibilityRequest.getExclusions()))
-                    .dynamicRestrictions(mapRestrictions(accessibilityRequest.getRestrictions(), accessibilityContext));
+                    .dynamicRestrictions(mapRestrictions(accessibilityRequest.getRestrictions(), networkData));
 
             DestinationRequestJson destination = accessibilityRequest.getDestination();
             if (Objects.nonNull(destination)) {
@@ -109,7 +109,7 @@ public class AccessibilityRequestMapperV2 {
 
     private Set<Restriction> mapRestrictions(
             List<AccessibilityRequestRestrictionJson> restrictions,
-            AccessibilityContext accessibilityContext) {
+            NetworkData networkData) {
 
         if (Objects.isNull(restrictions)) {
             return Set.of();
@@ -117,7 +117,7 @@ public class AccessibilityRequestMapperV2 {
 
         return restrictions.stream()
                 .map(accessibilityRequestRestrictionJson ->
-                        accessibilityRequestRestrictionMapper.map(accessibilityContext, accessibilityRequestRestrictionJson))
+                        accessibilityRequestRestrictionMapper.map(networkData, accessibilityRequestRestrictionJson))
                 .collect(Collectors.toSet());
     }
 

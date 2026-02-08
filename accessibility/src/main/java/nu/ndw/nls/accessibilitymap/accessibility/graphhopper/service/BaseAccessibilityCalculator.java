@@ -63,7 +63,7 @@ public class BaseAccessibilityCalculator {
                 isochroneService.getIsochroneMatchesByMunicipalityId(
                         IsochroneArguments.builder()
                                 .weighting(new RestrictionWeightingAdapter(
-                                        accessibilityNetwork.getAccessibilityContext().graphHopperNetwork().network()
+                                        accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network()
                                                 .createWeighting(NetworkConstants.CAR_PROFILE, new PMap()), Set.of()))
                                 .municipalityId(municipalityId)
                                 .searchDistanceInMetres(searchRadiusInMeters)

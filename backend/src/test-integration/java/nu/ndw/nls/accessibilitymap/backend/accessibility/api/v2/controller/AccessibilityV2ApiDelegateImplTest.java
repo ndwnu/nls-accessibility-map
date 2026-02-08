@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
+import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
@@ -87,7 +87,7 @@ class AccessibilityV2ApiDelegateImplTest {
     private ClockService clockService;
 
     @MockitoBean
-    private AccessibilityContextProvider accessibilityContextProvider;
+    private NetworkDataService networkDataService;
 
     @Mock
     private AccessibilityRequest accessibilityRequest;
@@ -96,17 +96,17 @@ class AccessibilityV2ApiDelegateImplTest {
     private Accessibility accessibility;
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
 
     @Test
     void getAccessibilityAsGeoJson() throws Exception {
 
-        when(accessibilityContextProvider.get()).thenReturn(accessibilityContext);
+        when(networkDataService.get()).thenReturn(networkData);
         when(accessibilityRequestMapperV2.map(
-                eq(accessibilityContext),
+                eq(networkData),
                 assertArg(AccessibilityV2ApiDelegateImplTest::assertAccessibilityReqeustJson)))
                 .thenReturn(accessibilityRequest);
-        when(accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
 
         AccessibilityResponseGeoJsonJson accessibilityResponseGeoJsonJson = AccessibilityResponseGeoJsonJson.builder()
                 .features(List.of(

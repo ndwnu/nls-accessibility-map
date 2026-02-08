@@ -3,18 +3,9 @@ hostWireMock: ${host}
 hostDatabase: ${host}
 
 jobEndpoints:
-  dataAnalyser:
+  job:
     host: ${host}
     port: 8081
-  graphHopper:
-    host: ${host}
-    port: 8082
-  trafficSign:
-    host: ${host}
-    port: 8083
-  mapGenerator:
-    host: ${host}
-    port: 8084
 
 spring:
   application:
@@ -52,23 +43,23 @@ nu:
                 compose-file: "../../docker-compose.yml"
               job:
                 job-configurations:
-                  dataAnalyserConfigureRabbitMQ:
+                  configureRabbitMQ:
                     command: "configureRabbitMQ"
-                    run-as-service: false
+                    run-as-service: true
                     service-configuration:
-                      host: ${jobEndpoints.dataAnalyser.host}
-                      port: ${jobEndpoints.dataAnalyser.port}
+                      host: ${jobEndpoints.job.host}
+                      port: ${jobEndpoints.job.port}
                     docker-configuration:
-                      service-name: "nls-accessibility-map-data-analyser-configure-rabbitmq"
+                      service-name: "nls-accessibility-map-job-configure-rabbitmq"
                   dataAnalyserBaseNetworkAnalysis:
                     command: "analyse-base-network"
                     arguments:
                       - parameter: "--search-radius-in-meters"
                         value: "1000000000"
-                    run-as-service: false
+                    run-as-service: true
                     service-configuration:
-                      host: ${jobEndpoints.dataAnalyser.host}
-                      port: ${jobEndpoints.dataAnalyser.port}
+                      host: ${jobEndpoints.job.host}
+                      port: ${jobEndpoints.job.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-base-network-analyser-job"
                   dataAnalyserAsymmetricTrafficSignsAnalysis:
@@ -76,35 +67,26 @@ nu:
                     arguments:
                       - parameter: "--search-radius-in-meters"
                         value: "1000000000"
-                      - parameter: "--update-traffic-sign-cache"
-                    run-as-service: false
+                    run-as-service: true
                     service-configuration:
-                      host: ${jobEndpoints.dataAnalyser.host}
-                      port: ${jobEndpoints.dataAnalyser.port}
+                      host: ${jobEndpoints.job.host}
+                      port: ${jobEndpoints.job.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-base-network-analyser-job"
-                  graphHopperConfigureRabbitMQ:
-                    command: "configureRabbitMQ"
-                    run-as-service: false
+                  rebuildNetworkCache:
+                    command: "rebuildNetworkCache"
+                    run-as-service: true
                     service-configuration:
-                      host: ${jobEndpoints.graphHopper.host}
-                      port: ${jobEndpoints.graphHopper.port}
+                      host: ${jobEndpoints.job.host}
+                      port: ${jobEndpoints.job.port}
                     docker-configuration:
-                      service-name: "nls-accessibility-map-graphhopper-configure-rabbitmq"
-                  graphHopperCreateOrUpdateNetwork:
-                    command: "createOrUpdateNetwork"
-                    run-as-service: false
-                    service-configuration:
-                      host: ${jobEndpoints.graphHopper.host}
-                      port: ${jobEndpoints.graphHopper.port}
-                    docker-configuration:
-                      service-name: "nls-accessibility-map-graphhopper-job"
+                      service-name: "nls-accessibility-map-job-rebuild-network-cache"
                   trafficSignUpdateCache:
                     command: "update-cache"
-                    run-as-service: false
+                    run-as-service: true
                     service-configuration:
-                      host: ${jobEndpoints.trafficSign.host}
-                      port: ${jobEndpoints.trafficSign.port}
+                      host: ${jobEndpoints.job.host}
+                      port: ${jobEndpoints.job.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-traffic-sign-update-cache-job"
                   mapGenerator:
@@ -112,11 +94,10 @@ nu:
                     arguments:
                       - parameter: "--search-radius-in-meters"
                         value: "1000000000"
-                      - parameter: "--update-traffic-sign-cache"
-                    run-as-service: false
+                    run-as-service: true
                     service-configuration:
-                      host: ${jobEndpoints.mapGenerator.host}
-                      port: ${jobEndpoints.mapGenerator.port}
+                      host: ${jobEndpoints.job.host}
+                      port: ${jobEndpoints.job.port}
                     docker-configuration:
                       service-name: "nls-accessibility-map-generator-jobs"
               keycloak:
@@ -132,11 +113,7 @@ nu:
                     - "admin"
               maven:
                 rootPomRelativePath: "../../"
-                modulesUnderTest:
-                  - "jobs/graphhopper"
-                  - "jobs/mapgenerator"
-                  - "jobs/traffic-sign"
-                  - "jobs/data-analyser"
+                modulesUnderTest: []
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
@@ -150,9 +127,9 @@ nu:
                 host: localhost
                 port: 8080
               graph-hopper:
-                location-on-disk: "../../.tmp/graphhopper"
+                location-on-disk: "../../.tmp/network/active/graphHopper"
               traffic-sign:
-                location-on-disk: "../../.tmp/trafficsigns"
+                location-on-disk: "../../.tmp/trafficSigns"
                 file-name-active-version: "active"
       test:
         component:

@@ -9,8 +9,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +26,7 @@ class MissingRoadSectionProviderTest {
     private MissingRoadSectionProvider missingRoadSectionProvider;
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
 
     @Mock
     private LineString roadSection1LineString;
@@ -38,6 +39,9 @@ class MissingRoadSectionProviderTest {
 
     @Mock
     private LineString roadSection2LineStringBackwards;
+
+    @Mock
+    private NwbData nwbData;
 
     private RoadSection roadSectionExisting;
 
@@ -72,10 +76,11 @@ class MissingRoadSectionProviderTest {
     void get(boolean isAccessible) {
 
         when(roadSection2LineString.reverse()).thenReturn(roadSection2LineStringBackwards);
-        when(accessibilityContext.findAllAccessibilityNwbRoadSectionByMunicipalityId(123)).thenReturn(buildRoadSections());
+        when(networkData.getNwbData()).thenReturn(nwbData);
+        when(networkData.getNwbData().findAllAccessibilityNwbRoadSectionByMunicipalityId(123)).thenReturn(buildRoadSections());
 
         Collection<RoadSection> missingRoadSections = missingRoadSectionProvider.get(
-                accessibilityContext,
+                networkData,
                 123,
                 List.of(roadSectionExisting),
                 isAccessible);
@@ -92,10 +97,11 @@ class MissingRoadSectionProviderTest {
 
         when(roadSection2LineString.reverse()).thenReturn(roadSection2LineStringBackwards);
 
-        when(accessibilityContext.findAllAccessibilityNwbRoadSection()).thenReturn(buildRoadSections());
+        when(networkData.getNwbData()).thenReturn(nwbData);
+        when(nwbData.findAllAccessibilityNwbRoadSections()).thenReturn(buildRoadSections());
 
         Collection<RoadSection> missingRoadSections = missingRoadSectionProvider.get(
-                accessibilityContext,
+                networkData,
                 null,
                 List.of(roadSectionExisting),
                 isAccessible);

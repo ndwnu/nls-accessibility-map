@@ -3,9 +3,9 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityContextProvider;
+import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.validator.AccessibilityRequestValidator;
@@ -28,7 +28,7 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
 
     private final AccessibilityRequestValidator accessibilityRequestValidator;
 
-    private final AccessibilityContextProvider accessibilityContextProvider;
+    private final NetworkDataService networkDataService;
 
     @Override
     public ResponseEntity<AccessibilityResponseGeoJsonJson> getAccessibilityAsGeoJson(
@@ -37,10 +37,10 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
 
         accessibilityRequestValidator.verify(accessibilityRequestJson);
 
-        AccessibilityContext accessibilityContext = accessibilityContextProvider.get();
+        NetworkData networkData = networkDataService.get();
         Accessibility accessibility = accessibilityService.calculateAccessibility(
-                accessibilityContext,
-                accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson));
+                networkData,
+                accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson));
 
         return ResponseEntity.ok(accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility));
     }

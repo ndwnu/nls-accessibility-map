@@ -1,0 +1,71 @@
+hostSuffix: "replaced_by_pipeline"
+hostDatabase: database.${hostSuffix}
+hostEventBroker: rabbitmq.${hostSuffix}
+hostWiremock: wiremock.${hostSuffix}
+
+server:
+  port: 8081
+
+spring:
+  cloud:
+    openfeign:
+      micrometer:
+        enabled: false
+  datasource:
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-job&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+  main:
+    web-application-type: servlet
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,command,accessibility-map-cache-reload
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  datadog:
+    metrics:
+      export:
+        enabled: false
+  observations:
+    annotations:
+      enabled: false
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG
+
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficsignclient:
+          api:
+            url: http://${hostWiremock}:8888/api/rest/static-road-data/traffic-signs/v4
+        trafficSigns:
+          emission-zone:
+            client:
+              url: http://${hostWiremock}:8888/api/area/ibbm/emission-zones/v1
+          cache:
+            load-data-on-startup: false
+            watch-for-updates: false
+        network:
+          cache:
+            load-data-on-startup: false
+            watch-for-updates: false
+      springboot:
+        messaging:
+          broker-uri: amqp://guest:guest@${hostEventBroker}:5672?heartbeat=300
+
+keycloak:
+  server-url: http://${hostWiremock}:8888/auth
+  client-id: nls-accessibility-map-api-service-account
+  client-secret: cfe4793c-ddf7-405a-940f-51b43800aed4
+
+feign:
+  client:
+    base-url: http://${hostWiremock}:8888/api

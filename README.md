@@ -50,7 +50,7 @@ To get the password (`client-secret`) for this account, see the KeePass file in 
 Run the following steps to generate the required data for any real scenario exploration tests you would like to run locally
 
 ### 1) Generate a Graph Hopper network with staging or production data data 
-run in the [graphhopper](jobs/graphhopper) module the `createOrUpdateNetwork` command with profiles `dev`. Make sure you override the application properties with
+run in the [graphhopper](job/graphhopper) module the `rebuildNetworkCache` command with profiles `dev`. Make sure you override the application properties with
 ```yaml
 spring:
   datasource:
@@ -59,7 +59,7 @@ spring:
     password: <redacted>
 ```
 ### 2) Generate a Traffic sign cache with production data
-run in the [traffic-sign](jobs/traffic-sign) module `update-cache` command with profiles `dev,update-cache`. Make sure you override the application properties with
+run in the [traffic-sign](job/traffic-sign) module `update-cache` command with profiles `dev,update-cache`. Make sure you override the application properties with
 ```yaml
 spring:
   datasource:

@@ -1,0 +1,14 @@
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        network:
+          cache:
+            load-data-on-startup: false
+            fail-on-no-data-on-startup: false
+            watch-for-updates: false
+        trafficsigns:
+          cache:
+            load-data-on-startup: false
+            fail-on-no-data-on-startup: false
+            watch-for-updates: false

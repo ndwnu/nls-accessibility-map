@@ -10,6 +10,15 @@
   <name>NLS Accessibility library</name>
   <dependencies>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>nu.ndw.nls.accessibilitymap</groupId>
       <artifactId>trafficsignclient</artifactId>
       <version>${project.parent.version}</version>
@@ -62,6 +71,10 @@
       <artifactId>micrometer-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>nu.ndw.nls.springboot.test.graph</groupId>
+      <artifactId>graph-hopper-exporter</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
@@ -71,6 +84,12 @@
       <artifactId>test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <artifactId>scala-reflect</artifactId>
+      <groupId>org.scala-lang</groupId>
+      <version>2.13.16</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -78,6 +97,38 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/test-integration/java</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-test-resource</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>add-test-resource</goal>
+            </goals>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>src/test-integration/resources</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

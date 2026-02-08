@@ -1,7 +1,7 @@
 Feature: DataAnalyser-AsymmetricTrafficSigns
 
   Scenario: Job generate issue export for asymmetric traffic-sign detection should send only asymmetrically placed traffic signs
-    Given a simple Graph Hopper network
+    Given a simple network
     And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | windowTime | id                                   |
       | 5           | 11        | 0.5      | C12     |           | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |

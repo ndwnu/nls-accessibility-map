@@ -8,12 +8,13 @@ import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRoadSectionRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
+import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,10 +36,13 @@ class AccessibilityRequestRestrictionMapperTest {
     private AccessibilityRequestDirectionMapper accessibilityRequestDirectionMapper;
 
     @Mock
-    private NwbRoadSectionSnapService nwbRoadSectionSnapService;
+    private FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
+
+    @Mock
+    private NwbData nwbData;
 
     @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
@@ -57,14 +61,15 @@ class AccessibilityRequestRestrictionMapperTest {
 
         accessibilityRequestRestrictionMapper = new AccessibilityRequestRestrictionMapper(
                 accessibilityRequestDirectionMapper,
-                nwbRoadSectionSnapService);
+                fractionAndDistanceCalculator);
     }
 
     @Test
     void map() {
-        when(accessibilityContext.findAllAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
+        when(networkData.getNwbData()).thenReturn(nwbData);
+        when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
         when(accessibilityNwbRoadSection.geometry()).thenReturn(roadSectionLineString);
-        when(nwbRoadSectionSnapService.snapToLine(roadSectionLineString, 2.0f)).thenReturn(coordinateAndBearing);
+        when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineString, 2.0f)).thenReturn(coordinateAndBearing);
 
         when(coordinateAndBearing.coordinate()).thenReturn(coordinate);
         when(coordinate.getX()).thenReturn(3.0);
@@ -79,7 +84,7 @@ class AccessibilityRequestRestrictionMapperTest {
                 .build();
 
         Restriction restriction = accessibilityRequestRestrictionMapper.map(
-                accessibilityContext,
+                networkData,
                 accessibilityRequestRoadSectionRestrictionJson);
 
         assertThat(restriction)
@@ -101,7 +106,7 @@ class AccessibilityRequestRestrictionMapperTest {
 
         try {
             accessibilityRequestRestrictionMapper.map(
-                    accessibilityContext,
+                    networkData,
                     accessibilityRequestRestrictionJson);
         } catch (ApiException exception) {
 
@@ -116,15 +121,15 @@ class AccessibilityRequestRestrictionMapperTest {
 
     @Test
     void map_coordinatesCouldNotBeSnappedToLine() {
-        when(accessibilityContext.findAllAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.empty());
+        when(networkData.getNwbData()).thenReturn(nwbData);
+        when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.empty());
+
         var accessibilityRequestRoadSectionRestrictionJson = AccessibilityRequestRoadSectionRestrictionJson.builder()
                 .id(1)
                 .build();
 
         try {
-            accessibilityRequestRestrictionMapper.map(
-                    accessibilityContext,
-                    accessibilityRequestRoadSectionRestrictionJson);
+            accessibilityRequestRestrictionMapper.map(networkData, accessibilityRequestRoadSectionRestrictionJson);
         } catch (ApiException exception) {
             assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("355aba7d-4106-4aec-b0fc-94620647b37d"));
             assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);

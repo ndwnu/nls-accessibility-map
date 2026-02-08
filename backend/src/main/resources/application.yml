@@ -6,9 +6,6 @@ server:
   servlet:
     context-path: /api/rest/static-road-data/accessibility-map
 
-graphhopper:
-  dir: /application/graphhopper
-  network-name: accessibility_latest
 spring:
   application:
     name: nls-accessibility-map-api-local
@@ -37,10 +34,14 @@ nu:
   ndw:
     nls:
       accessibilitymap:
-        trafficsigns:
+        network:
           cache:
-            folder: "trafficsigns"
-            file-name-active-version: "active"
+            name: "Network"
+            folder: "./cache/network"
+        trafficSigns:
+          cache:
+            name: "Traffic sign"
+            folder: "./cache/trafficSigns"
 nls:
   oauth2:
     jwtResourceProperty: ${spring.application.name}
@@ -50,12 +51,15 @@ management:
     health:
       probes:
         enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,accessibility-map-cache-reload
   observations:
     annotations:
       enabled: true
     key-values:
       service: ${spring.application.name}
-
 springdoc:
   api-docs:
     path: /api-docs

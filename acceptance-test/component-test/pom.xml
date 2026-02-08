@@ -22,16 +22,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>nu.ndw</groupId>
-      <artifactId>nls-events</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>nu.ndw.nls.springboot</groupId>
-      <artifactId>messaging</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
@@ -126,7 +116,7 @@
                     <argument>nls-postgres</argument>
                     <argument>nls-rabbitmq</argument>
                     <argument>nls-keycloak</argument>
-                    <argument>accessibility-wiremock-stub</argument>
+                    <argument>accessibility-wiremock</argument>
                   </arguments>
                 </configuration>
               </execution>

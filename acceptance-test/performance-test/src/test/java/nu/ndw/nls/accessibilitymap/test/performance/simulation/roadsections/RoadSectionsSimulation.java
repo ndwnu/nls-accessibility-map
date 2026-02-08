@@ -190,14 +190,14 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     }
 
     private void graphhopperDataIsReloaded() {
-        Response<Void, Void> response = accessibilityMapApiClient.reloadGraphHopper();
+        Response<Void, Void> response = accessibilityMapApiClient.reloadCache();
         assertThat(response.containsError())
                 .withFailMessage("Reloading graphhopper failed. %s", response.error())
                 .isFalse();
     }
 
     private void trafficSignsDataIsReloaded() {
-        Response<Void, Void> response = accessibilityMapApiClient.reloadTrafficSigns();
+        Response<Void, Void> response = accessibilityMapApiClient.reloadCache();
         assertThat(response.containsError())
                 .withFailMessage("Reloading traffic signs failed. %s", response.error())
                 .isFalse();

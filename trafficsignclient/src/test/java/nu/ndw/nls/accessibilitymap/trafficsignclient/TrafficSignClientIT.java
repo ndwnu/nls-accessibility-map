@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,14 +36,28 @@ import org.wiremock.spring.EnableWireMock;
 @EnableWireMock
 @TestPropertySource(properties = {
         "nu..ndw.nls.accessibilitymap.trafficsignclient.api.url: http://localhost:${wiremock.server.port}/api/rest/static-road-data/traffic-signs/v4",
-        "nu..ndw.nls.accessibilitymap.trafficsignclient.api.town-codes: GM0307"
 })
 class TrafficSignClientIT {
 
-    private final static Set<String> rvvCodes = Set.of("C6", "C7", "C7a", "C7b", "C8", "C9", "C10", "C11", "C12",
-            "C22c", "C17", "C18", "C19", "C20", "C21");
+    private final static Set<String> rvvCodes = Set.of(
+            "C6",
+            "C7",
+            "C7a",
+            "C7b",
+            "C8",
+            "C9",
+            "C10",
+            "C11",
+            "C12",
+            "C22c",
+            "C17",
+            "C18",
+            "C19",
+            "C20",
+            "C21");
 
     private static final long ROAD_SECTION_A = 600364496;
+
     private static final long ROAD_SECTION_B = 310326144;
 
     @Autowired
@@ -72,7 +84,7 @@ class TrafficSignClientIT {
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                 .withBody(buildFeatureCollectionResponse())));
 
-        TrafficSignData trafficSigns = trafficSignService.getTrafficSigns(rvvCodes, Collections.emptySet());
+        TrafficSignData trafficSigns = trafficSignService.getTrafficSigns(rvvCodes);
         assertNotNull(trafficSigns);
         assertEquals(2, trafficSigns.trafficSignsByRoadSectionId().size());
         assertEquals(LocalDate.of(2024, 7, 1), trafficSigns.maxNwbReferenceDate());

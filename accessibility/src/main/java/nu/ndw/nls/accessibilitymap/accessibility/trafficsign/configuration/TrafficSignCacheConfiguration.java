@@ -1,46 +1,17 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import java.io.File;
-import java.nio.file.Path;
-import java.time.Duration;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Builder.Default;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Configuration
-@ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.trafficsigns.cache")
+@ConfigurationProperties(prefix = "nu.ndw.nls.accessibilitymap.traffic-signs.cache")
 @Validated
-@Builder
-@Getter
-@Setter
-public class TrafficSignCacheConfiguration {
+@SuperBuilder
+@NoArgsConstructor
+public class TrafficSignCacheConfiguration extends CacheConfiguration {
 
-    @Default
-    private boolean failOnNoDataOnStartup = true;
-
-    @Default
-    private boolean watchForUpdates = true;
-
-    @NotNull
-    private Path folder;
-
-    @NotEmpty
-    private String fileNameActiveVersion;
-
-    @NotNull
-    private Duration fileWatcherInterval = Duration.ofSeconds(1);
-
-    public File getActiveVersion() {
-        return folder.resolve(fileNameActiveVersion).toFile();
-    }
 }
