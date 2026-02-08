@@ -92,6 +92,13 @@ class CacheTest {
         cache.read();
 
         assertThat(cache.get()).isEqualTo(data);
+
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Reading %s from location: %s".formatted(
+                        cacheConfiguration.getName(),
+                        cacheConfiguration.getActiveVersion().getAbsolutePath()),
+                VerificationMode.times(2));
         loggerExtension.containsLog(
                 Level.INFO,
                 "Read testCache data from `%s` with size 0.00MB in 310 ms".formatted(cacheConfiguration.getActiveVersion()
@@ -296,7 +303,12 @@ class CacheTest {
 
         loggerExtension.containsLog(
                 Level.INFO,
-                "Writing %s to file: %s".formatted(
+                "Writing %s to location: %s".formatted(
+                        cacheConfiguration.getName(),
+                        cacheConfiguration.getFolder().resolve(timestamp1).toRealPath().toAbsolutePath()));
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Written %s data to `%s` with size 0.00MB in 60000 ms".formatted(
                         cacheConfiguration.getName(),
                         cacheConfiguration.getFolder().resolve(timestamp1).toRealPath().toAbsolutePath()));
         assertThat(cache.get()).isEqualTo("testData1");
@@ -308,20 +320,30 @@ class CacheTest {
         verifySymLink(timestamp1);
 
         // 2nd write
+        String timestamp3 = "2022-03-11T09:03:02.123-01:00";
+        String timestamp4 = "2022-03-11T09:04:02.123-01:00";
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse(timestamp3, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse(timestamp4, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         cache.write("testData2");
 
         loggerExtension.containsLog(
                 Level.INFO,
-                "Writing %s to file: %s".formatted(
+                "Writing %s to location: %s".formatted(
                         cacheConfiguration.getName(),
-                        cacheConfiguration.getFolder().resolve(timestamp2).toRealPath().toAbsolutePath()));
+                        cacheConfiguration.getFolder().resolve(timestamp3).toRealPath().toAbsolutePath()));
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Written %s data to `%s` with size 0.00MB in 60000 ms".formatted(
+                        cacheConfiguration.getName(),
+                        cacheConfiguration.getFolder().resolve(timestamp3).toRealPath().toAbsolutePath()));
         assertThat(cache.get()).isEqualTo("testData2");
 
         // verify we can load data from the disk
         cache.read();
         assertThat(cache.get()).isEqualTo("testData2");
 
-        verifySymLink(timestamp2);
+        verifySymLink(timestamp3);
     }
 
     @Test

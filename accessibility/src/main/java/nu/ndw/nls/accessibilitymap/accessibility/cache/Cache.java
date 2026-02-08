@@ -92,12 +92,20 @@ public abstract class Cache<TYPE> {
     }
 
     public void write(TYPE data) {
-        Path targetLocation = cacheConfiguration.getFolder().resolve(clockService.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        OffsetDateTime start = clockService.now();
+        Path targetLocation = cacheConfiguration.getFolder().resolve(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         try {
             Files.createDirectories(targetLocation);
 
-            log.info("Writing {} to file: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
+            log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
             writeData(targetLocation.toRealPath().toAbsolutePath(), data);
+            log.info(
+                    "Written {} data to `{}` with size {}MB in {} ms",
+                    cacheConfiguration.getName(),
+                    targetLocation.toFile().getAbsolutePath(),
+                    BigDecimal.valueOf(getSizeInBytes(targetLocation))
+                            .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
+                    Duration.between(start, clockService.now()).toMillis());
 
             dataLock.lock();
             switchSymLink(targetLocation.toRealPath().toAbsolutePath());
