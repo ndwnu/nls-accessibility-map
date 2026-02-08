@@ -66,29 +66,11 @@ extends:
         buildContext: docker/nls-accessibility-map-api
         repository: nls-accessibility-map-api
         push: true
-      - imageName: nls-accessibility-map-graphhopper-job
+      - imageName: nls-accessibility-map-job
         imageTag: $(Build.BuildNumber)
-        dockerFile: docker/nls-accessibility-map-graphhopper-job/Dockerfile
-        buildContext: docker/nls-accessibility-map-graphhopper-job
-        repository: nls-accessibility-map-graphhopper-job
-        push: true
-      - imageName: nls-accessibility-map-generator-jobs
-        imageTag: $(Build.BuildNumber)
-        dockerFile: docker/nls-accessibility-map-generator-jobs/Dockerfile
-        buildContext: docker/nls-accessibility-map-generator-jobs
-        repository: nls-accessibility-map-generator-jobs
-        push: true
-      - imageName: nls-accessibility-map-traffic-sign-job
-        imageTag: $(Build.BuildNumber)
-        dockerFile: docker/nls-accessibility-map-traffic-sign-job/Dockerfile
-        buildContext: docker/nls-accessibility-map-traffic-sign-job
-        repository: nls-accessibility-map-traffic-sign-job
-        push: true
-      - imageName: nls-accessibility-map-data-analyser-job
-        imageTag: $(Build.BuildNumber)
-        dockerFile: docker/nls-accessibility-map-data-analyser-job/Dockerfile
-        buildContext: docker/nls-accessibility-map-data-analyser-job
-        repository: nls-accessibility-map-data-analyser-job
+        dockerFile: docker/nls-accessibility-map-job/Dockerfile
+        buildContext: docker/nls-accessibility-map-job
+        repository: nls-accessibility-map-job
         push: true
     componentTests:
       - name: "all"
