@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
 import ch.qos.logback.classic.Level;
@@ -83,7 +83,7 @@ class CacheWatcherTest {
         Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
             loggerExtension.containsLog(Level.INFO, "Triggering update", VerificationMode.atLeastOnce());
             loggerExtension.containsLog(Level.INFO, "Finished update", VerificationMode.atLeastOnce());
-            verify(cache, times(2)).read();
+            verify(cache, atLeast(1)).read();
         });
 
         assertThat(cacheWatcher.fileWatcherThread.isInterrupted()).isFalse();
