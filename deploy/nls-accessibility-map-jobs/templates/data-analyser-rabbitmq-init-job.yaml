@@ -29,11 +29,11 @@ spec:
               memory: 1.5Gi
             requests:
               memory: 1.5Gi
-          image: ndwnls.azurecr.io/nls-accessibility-map-data-analyser-job:{{ $.Chart.AppVersion }}
+          image: ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
-                name: nls-accessibility-map-jobs-config
+                name: nls-accessibility-map-job-config
           env:
             - name: COMMAND
               value: configureRabbitMQ
@@ -46,24 +46,24 @@ spec:
               value: -Xshare:off -XX:MaxRAMPercentage=70 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
           volumeMounts:
             - mountPath: /application/config
-              name: {{ .Values.baseNetworkAnalyser.name }}-secrets
+              name: secrets
               readOnly: true
             - mountPath: /application/heapdumps
-              name: nls-accessibility-map-heapdump
-              subPath: {{ .Values.baseNetworkAnalyser.name }}
-            - mountPath: /application/graphhopper
-              name: nls-accessibility-map-graph-hopper
+              name: heap-dump
+              subPath: {{ $.Chart.Name }}
+            - mountPath: /application/cache
+              name: cache
       restartPolicy: Never
       volumes:
-        - name: {{ .Values.baseNetworkAnalyser.name }}-secrets
+        - name: secrets
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: nls-accessibility-map-jobs-spc
-        - name: nls-accessibility-map-heapdump
+              secretProviderClass: nls-accessibility-map-job-spc
+        - name: heap-dump
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
-        - name: nls-accessibility-map-graph-hopper
+        - name: cache
           persistentVolumeClaim:
-            claimName: nls-accessibility-map-api-pvc
+            claimName: nls-accessibility-map-cache

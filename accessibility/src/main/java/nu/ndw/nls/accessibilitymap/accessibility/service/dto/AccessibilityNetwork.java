@@ -10,6 +10,7 @@ import java.util.Set;
 import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
@@ -17,7 +18,7 @@ import org.springframework.validation.annotation.Validated;
 public class AccessibilityNetwork {
 
     @NotNull
-    private final AccessibilityContext accessibilityContext;
+    private final NetworkData networkData;
 
     @NotNull
     private final QueryGraph queryGraph;
@@ -38,13 +39,13 @@ public class AccessibilityNetwork {
 
     @SuppressWarnings("java:S107")
     public AccessibilityNetwork(
-            @NotNull AccessibilityContext accessibilityContext,
+            @NotNull NetworkData networkData,
             @NotNull QueryGraph queryGraph,
             @NotNull Restrictions restrictions,
             @NotNull Map<Integer, List<Restriction>> restrictionsByEdgeKey,
             @NotNull Snap from,
             Snap destination) {
-        this.accessibilityContext = accessibilityContext;
+        this.networkData = networkData;
 
         this.queryGraph = queryGraph;
         this.restrictions = restrictions;
@@ -57,6 +58,7 @@ public class AccessibilityNetwork {
     @Override
     public String toString() {
         return "GraphHopperNetwork[" +
+               "networkData=" + networkData + ", " +
                "restrictions=" + restrictions + ", " +
                "restrictionsByEdgeKey=" + restrictionsByEdgeKey + ", " +
                "blockedEdges=" + blockedEdges + ", " +

@@ -13,7 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import org.springframework.stereotype.Component;
 
@@ -26,12 +26,12 @@ public class AccessibilityNetworkProvider {
     private final Snapper snapper;
 
     public AccessibilityNetwork get(
-            AccessibilityContext accessibilityContext,
+            NetworkData networkData,
             Restrictions restrictions,
             Location from,
             Location destination) {
 
-        GraphHopperNetwork graphHopperNetwork = accessibilityContext.graphHopperNetwork();
+        GraphHopperNetwork graphHopperNetwork = networkData.getGraphHopperNetwork();
 
         Optional<Snap> fromSnap = snapper.snapLocation(graphHopperNetwork.network(), from);
         if (fromSnap.isEmpty()) {
@@ -58,7 +58,7 @@ public class AccessibilityNetworkProvider {
         QueryGraph queryGraph = QueryGraph.create(graphHopperNetwork.network().getBaseGraph(), snaps);
 
         return new AccessibilityNetwork(
-                accessibilityContext,
+                networkData,
                 queryGraph,
                 restrictions,
                 queryGraphConfigurer.createEdgeRestrictions(queryGraph, snapRestrictions),

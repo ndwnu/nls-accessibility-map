@@ -16,7 +16,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.FuelTypeMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.api.v2.mapper.TransportTypeMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.exception.ResourceNotFoundException;
@@ -73,7 +73,7 @@ class AccessibilityRequestMapperV2Test {
     private OffsetDateTime timestamp;
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
 
     @Mock
     private AccessibilityRequestRestrictionJson accessibilityRequestRestrictionJson;
@@ -147,14 +147,14 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
 
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
-        when(accessibilityRequestRestrictionMapper.map(accessibilityContext, accessibilityRequestRestrictionJson)).thenReturn(restriction);
+        when(accessibilityRequestRestrictionMapper.map(networkData, accessibilityRequestRestrictionJson)).thenReturn(restriction);
 
         when(transportTypeMapperV2.map(accessibilityRequestJson.getVehicle())).thenReturn(Set.of(TransportType.CAR));
         when(emissionClassMapperV2.map(EmissionClassJson.EURO_1)).thenReturn(Set.of(EmissionClass.EURO_1));
         when(fuelTypeMapperV2.map(FuelTypeJson.PETROL)).thenReturn(FuelType.PETROL);
         when(emissionZoneTypeMapperV2.map(EmissionZoneTypeJson.LOW_EMISSION_ZONE)).thenReturn(EmissionZoneType.LOW);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
@@ -197,7 +197,7 @@ class AccessibilityRequestMapperV2Test {
 
         accessibilityRequestJson.setRestrictions(null);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.dynamicRestrictions()).isEmpty();
     }
@@ -208,7 +208,7 @@ class AccessibilityRequestMapperV2Test {
         accessibilityRequestJson.setArea(mock(AreaRequestJson.class));
 
         try {
-            accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+            accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
         } catch (ApiException exception) {
 
             assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("fdd86f4f-a34d-4a01-8abc-4ea8b0e327a9"));
@@ -227,7 +227,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.excludeRestrictionsWithEmissionZoneIds()).isNull();
         assertThat(accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes()).isNull();
@@ -242,7 +242,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes()).isNull();
     }
@@ -256,7 +256,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.excludeRestrictionsWithEmissionZoneIds()).isNull();
     }
@@ -266,7 +266,7 @@ class AccessibilityRequestMapperV2Test {
 
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(null);
 
-        assertThat(catchThrowable(() -> accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson)))
+        assertThat(catchThrowable(() -> accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson)))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Municipality with id 'GM0001' not found.");
     }
@@ -279,7 +279,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.vehicleHeightInCm()).isNull();
     }
@@ -292,7 +292,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.endLocationLatitude()).isNull();
         assertThat(accessibilityRequest.endLocationLongitude()).isNull();
@@ -306,7 +306,7 @@ class AccessibilityRequestMapperV2Test {
         when(clockService.now()).thenReturn(timestamp);
         when(municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId())).thenReturn(municipality);
 
-        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(accessibilityContext, accessibilityRequestJson);
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.fuelTypes()).isNull();
     }

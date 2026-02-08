@@ -1,0 +1,85 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: {{ .Values.rebuildNetworkCache.name }}
+  labels:
+    tags.datadoghq.com/service: {{ .Values.rebuildNetworkCache.name }}
+    tags.datadoghq.com/env: {{ .Values.environment }}
+    tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+spec:
+  jobTargetRef:
+    # Clean up job after 1 week
+    ttlSecondsAfterFinished: 604800
+    activeDeadlineSeconds: 86400 # Maximum execution time before terminating, includes retries
+    backoffLimit: 0 # Number of retries before marking job failed; default 6
+    template:
+      metadata:
+        annotations:
+          ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .Values.rebuildNetworkCache.name }}"}]'
+          admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
+        labels:
+          app: {{ .Values.rebuildNetworkCache.name }}
+          environment: {{ .Values.environment }}
+          admission.datadoghq.com/enabled: "true"
+          tags.datadoghq.com/service: {{ .Values.rebuildNetworkCache.name }}
+          tags.datadoghq.com/env: {{ .Values.environment }}
+          tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
+      spec:
+        containers:
+          - name: {{ .Values.rebuildNetworkCache.name }}
+            resources:
+              limits:
+                memory: {{ .Values.rebuildNetworkCache.memory }}
+              requests:
+                memory: {{ .Values.rebuildNetworkCache.memory }}
+            image: ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}
+            imagePullPolicy: Always
+            envFrom:
+              - configMapRef:
+                  name: nls-accessibility-map-job-config
+            env:
+              - name: COMMAND
+                value: rebuildNetworkCache
+              - name: SPRING_PROFILES_ACTIVE
+                value: {{ .Values.environment }}
+              {{- /*
+                  Added as env variable so the dd init container appends the settings instead of an overwrite
+                */}}
+              - name: JAVA_TOOL_OPTIONS
+                value: -Xshare:off -XX:MaxRAMPercentage=70 -Dorg.jooq.no-tips=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdumps/ -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
+            volumeMounts:
+              - mountPath: /application/config
+                name: secrets
+                readOnly: true
+              - mountPath: /application/heapdumps
+                name: heap-dump
+                subPath: {{ $.Chart.Name }}
+              - mountPath: /application/cache
+                name: cache
+        volumes:
+          - name: secrets
+            csi:
+              driver: secrets-store.csi.k8s.io
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: nls-accessibility-map-job-spc
+          - name: heap-dump
+            persistentVolumeClaim:
+              claimName: heapdump-pvc-claim
+          - name: cache
+            persistentVolumeClaim:
+              claimName: nls-accessibility-map-cache
+        restartPolicy: Never
+  # Polling interval should be longer than job startup time (including pulling Docker image), because Keda creates a new
+  # job at every interval as long as there's a message on the queue, even if it's the same message.
+  pollingInterval: 300 # Default 30 seconds
+  successfulJobsHistoryLimit: 2 # Default 100
+  maxReplicaCount: 1 # Default 100
+  triggers:
+    - type: rabbitmq
+      metadata:
+        queueName: {{ .Values.rebuildNetworkCache.queue }}
+        mode: QueueLength
+        value: '1' # Tells Keda how many queue messages a single instance processes (default 20)
+      authenticationRef:
+        name: {{ .Values.rebuildNetworkCache.name}}-trigger-auth

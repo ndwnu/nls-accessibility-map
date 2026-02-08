@@ -15,9 +15,12 @@ nu:
   ndw:
     nls:
       accessibilitymap:
+        network:
+          cache:
+            folder: "./.tmp/network"
         trafficsigns:
           cache:
-            folder: "./.tmp/trafficsigns/"
+            folder: "./.tmp/trafficSigns/"
 graphhopper:
   dir: ".tmp/graphhopper/"
 logging:

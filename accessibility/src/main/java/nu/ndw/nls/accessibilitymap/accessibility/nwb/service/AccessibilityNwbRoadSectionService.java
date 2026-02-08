@@ -1,25 +1,21 @@
 package nu.ndw.nls.accessibilitymap.accessibility.nwb.service;
 
-import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.mapper.AccessibilityNwbRoadSectionMapper;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.db.nwb.jooq.services.NwbRoadSectionCrudService;
-import org.jspecify.annotations.NonNull;
+import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AccessibilityNwbRoadSectionService {
 
     private static final int FETCH_SIZE = 250;
@@ -49,50 +45,22 @@ public class AccessibilityNwbRoadSectionService {
 
     private final NwbRoadSectionCrudService nwbRoadSectionCrudService;
 
+    private final NwbVersionCrudService nwbVersionCrudService;
+
     private final AccessibilityNwbRoadSectionMapper accessibilityNwbRoadSectionMapper;
 
-    private final SortedMap<Integer, SortedMap<Long, AccessibilityNwbRoadSection>> roadSectionsCacheByVersionById;
-
-    public AccessibilityNwbRoadSectionService(
-            NwbRoadSectionCrudService nwbRoadSectionCrudService,
-            AccessibilityNwbRoadSectionMapper accessibilityNwbRoadSectionMapper,
-            GraphHopperService graphHopperService) {
-        this.nwbRoadSectionCrudService = nwbRoadSectionCrudService;
-        this.accessibilityNwbRoadSectionMapper = accessibilityNwbRoadSectionMapper;
-
-        roadSectionsCacheByVersionById = new TreeMap<>();
-        graphHopperService.registerUpdateListener(this::clearCache);
-    }
-
-    @Transactional(readOnly = true)
-    public SortedMap<Long, AccessibilityNwbRoadSection> getRoadSectionsByIdForNwbVersion(int nwbVersionId) {
-        synchronized (roadSectionsCacheByVersionById) {
-            roadSectionsCacheByVersionById.computeIfAbsent(nwbVersionId, loadNwbRoadSections());
-
-            return roadSectionsCacheByVersionById.get(nwbVersionId);
-        }
-    }
-
-    @Timed(value = "accessibilitymap.nwb.loadNwbRoadSections")
-    private @NonNull Function<Integer, SortedMap<Long, AccessibilityNwbRoadSection>> loadNwbRoadSections() {
-        return nwbVersionId -> nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
+    public NwbData getLatestNwbData() {
+        log.info("Fetching latest NWB data");
+        int nwbVersionId = nwbVersionCrudService.findLatestVersionId();
+        var accessibilityNwbRoadSections = nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                         nwbVersionId,
                         CARRIAGE_WAY_TYPE_CODE_INCLUSIONS,
                         null,
                         FETCH_SIZE)
                 .map(accessibilityNwbRoadSectionMapper::map)
-                .collect(Collectors.toMap(
-                        AccessibilityNwbRoadSection::roadSectionId,               // key mapper (id)
-                        Function.identity(),           // value mapper (the object)
-                        (a, b) -> a,                   // merge function if duplicate ids occur (pick first; adjust if needed)
-                        TreeMap::new
-                ));
-    }
+                .toList();
+        log.info("Fetched {} accessibility road sections", accessibilityNwbRoadSections.size());
 
-    private void clearCache() {
-        synchronized (roadSectionsCacheByVersionById) {
-            log.info("Clearing road sections cache");
-            roadSectionsCacheByVersionById.clear();
-        }
+        return new NwbData(nwbVersionId, accessibilityNwbRoadSections);
     }
 }

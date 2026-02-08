@@ -47,7 +47,7 @@ trafficSignCacheUpdater:
   command: update-cache
   memory: 3Gi
 
-graphhopper:
-  name: nls-accessibility-map-graphhopper-job
+rebuildNetworkCache:
+  name: nls-accessibility-map-job-rebuild-network-cache
   memory: 8Gi
   queue: nls_accessibility_map_graphhopper_job_nwb_imported

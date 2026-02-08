@@ -1,0 +1,12 @@
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        network:
+          cache:
+            name: "Network"
+            folder: "./.tmp/network"
+        trafficSigns:
+          cache:
+            name: "Traffic sign"
+            folder: "./.tmp/trafficSigns"

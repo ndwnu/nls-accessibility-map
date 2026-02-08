@@ -2,71 +2,36 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.List;
-import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
-import org.junit.jupiter.api.BeforeEach;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfigurationTest;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-@ExtendWith(MockitoExtension.class)
-class TrafficSignCacheConfigurationTest extends ValidationTest {
-
-    private TrafficSignCacheConfiguration trafficSignCacheConfiguration;
-
-    @BeforeEach
-    void setUp() {
-        trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
-                .folder(Path.of("folder"))
-                .fileNameActiveVersion("activeVersion")
-                .fileWatcherInterval(Duration.ofMillis(2))
-                .build();
-    }
-
-    @Test
-    void initValue() {
-        trafficSignCacheConfiguration = new TrafficSignCacheConfiguration();
-        assertThat(trafficSignCacheConfiguration.isFailOnNoDataOnStartup()).isTrue();
-        assertThat(trafficSignCacheConfiguration.isWatchForUpdates()).isTrue();
-    }
-
-    @Test
-    void validate() {
-
-        validate(trafficSignCacheConfiguration, List.of(), List.of());
-    }
-
-    @Test
-    void validate_folder_null() {
-
-        trafficSignCacheConfiguration.setFolder(null);
-        validate(trafficSignCacheConfiguration,
-                List.of("folder"),
-                List.of("must not be null"));
-    }
-
-    @Test
-    void validate_fileWatcherInterval_null() {
-
-        trafficSignCacheConfiguration.setFileWatcherInterval(null);
-        validate(trafficSignCacheConfiguration,
-                List.of("fileWatcherInterval"),
-                List.of("must not be null"));
-    }
-
-    @Test
-    void validate_fileNameActiveVersion_null() {
-
-        trafficSignCacheConfiguration.setFileNameActiveVersion(null);
-        validate(trafficSignCacheConfiguration,
-                List.of("fileNameActiveVersion"),
-                List.of("must not be empty"));
-    }
+public class TrafficSignCacheConfigurationTest extends CacheConfigurationTest {
 
     @Override
     protected Class<?> getClassToTest() {
         return TrafficSignCacheConfiguration.class;
+    }
+
+    @Test
+    void class_configurationAnnotation() {
+
+        AnnotationUtil.classContainsAnnotation(
+                getClassToTest(),
+                Configuration.class,
+                annotation -> assertThat(annotation).isNotNull()
+        );
+    }
+
+    @Test
+    void class_configurationPropertiesAnnotation() {
+
+        AnnotationUtil.classContainsAnnotation(
+                getClassToTest(),
+                ConfigurationProperties.class,
+                annotation -> assertThat(annotation.prefix()).isEqualTo("nu.ndw.nls.accessibilitymap.traffic-signs.cache")
+        );
     }
 }

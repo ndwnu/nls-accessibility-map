@@ -30,11 +30,11 @@ spec:
                 memory: {{ .Values.baseNetworkAnalyser.memory }}
               requests:
                 memory: {{ .Values.baseNetworkAnalyser.memory }}
-            image: ndwnls.azurecr.io/nls-accessibility-map-data-analyser-job:{{ $.Chart.AppVersion }}
+            image: ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}
             imagePullPolicy: Always
             envFrom:
               - configMapRef:
-                  name: nls-accessibility-map-jobs-config
+                  name: nls-accessibility-map-job-config
             env:
               - name: COMMAND
                 value: {{ .Values.baseNetworkAnalyser.command }}
@@ -47,31 +47,26 @@ spec:
                 value: -Xshare:off -XX:MaxRAMPercentage=70 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
             volumeMounts:
               - mountPath: /application/config
-                name: nls-accessibility-map-jobs-secrets
+                name: secrets
                 readOnly: true
               - mountPath: /application/heapdumps
-                name: nls-accessibility-map-heapdump
-                subPath: {{ .Values.baseNetworkAnalyser.name }}
-              - mountPath: /application/graphhopper
-                name: nls-accessibility-map-graph-hopper
-              - mountPath: /application/trafficsigns
-                name: nls-accessibility-map-traffic-sign-cache
+                name: heap-dump
+                subPath: {{ $.Chart.Name }}
+              - mountPath: /application/cache
+                name: cache
         volumes:
-          - name: nls-accessibility-map-jobs-secrets
+          - name: secrets
             csi:
               driver: secrets-store.csi.k8s.io
               readOnly: true
               volumeAttributes:
-                secretProviderClass: nls-accessibility-map-jobs-spc
-          - name: nls-accessibility-map-heapdump
+                secretProviderClass: nls-accessibility-map-job-spc
+          - name: heap-dump
             persistentVolumeClaim:
               claimName: heapdump-pvc-claim
-          - name: nls-accessibility-map-graph-hopper
+          - name: cache
             persistentVolumeClaim:
-              claimName: nls-accessibility-map-api-pvc
-          - name: nls-accessibility-map-traffic-sign-cache
-            persistentVolumeClaim:
-              claimName: nls-accessibility-map-traffic-sign-cache
+              claimName: nls-accessibility-map-cache
         restartPolicy: Never
   pollingInterval: 60 # Default 30 seconds
   successfulJobsHistoryLimit: 2 # Default 100

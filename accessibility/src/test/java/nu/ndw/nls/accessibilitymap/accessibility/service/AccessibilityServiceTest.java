@@ -36,11 +36,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneSe
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.BaseAccessibilityCalculator;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -160,7 +160,7 @@ class AccessibilityServiceTest {
     private AccessibilityNetwork accessibilityNetwork;
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
 
     private AccessibilityRequest accessibilityRequest;
 
@@ -200,8 +200,8 @@ class AccessibilityServiceTest {
         when(restrictionService.findAllBy(accessibilityRequest)).thenReturn(restrictions);
         mockFromAndDestination(accessibilityRequest);
         mockGraphHopperNetwork();
-        when(accessibilityNetworkProvider.get(accessibilityContext, restrictions, from, destination)).thenReturn(accessibilityNetwork);
-        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
+        when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
 
         when(baseAccessibilityCalculator.calculate(
                 accessibilityNetwork,
@@ -210,7 +210,7 @@ class AccessibilityServiceTest {
                 .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
 
         when(missingRoadSectionProvider.get(
-                accessibilityContext,
+                networkData,
                 accessibilityRequest.municipalityId(),
                 Set.of(roadSectionNoRestriction),
                 false))
@@ -233,7 +233,7 @@ class AccessibilityServiceTest {
             logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
                     .thenReturn(keyValue("key", "value"));
 
-            Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest);
+            Accessibility accessibility = accessibilityService.calculateAccessibility(networkData, accessibilityRequest);
 
             assertThat(accessibility.combinedAccessibility()).containsExactlyInAnyOrder(roadSectionCombined, roadSectionDestination);
             assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(
@@ -263,8 +263,8 @@ class AccessibilityServiceTest {
 
         mockFromAndDestination(accessibilityRequest);
         mockGraphHopperNetwork();
-        when(accessibilityNetworkProvider.get(accessibilityContext, restrictions, from, destination)).thenReturn(accessibilityNetwork);
-        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
+        when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
 
         when(baseAccessibilityCalculator.calculate(
                 accessibilityNetwork,
@@ -289,7 +289,7 @@ class AccessibilityServiceTest {
             logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
                     .thenReturn(keyValue("key", "value"));
 
-            Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest);
+            Accessibility accessibility = accessibilityService.calculateAccessibility(networkData, accessibilityRequest);
 
             assertThat(accessibility.combinedAccessibility()).containsExactlyInAnyOrder(roadSectionCombined, roadSectionDestination);
             assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(roadSectionNoRestriction);
@@ -318,8 +318,8 @@ class AccessibilityServiceTest {
 
         mockFromAndDestination(accessibilityRequest);
         mockGraphHopperNetwork();
-        when(accessibilityNetworkProvider.get(accessibilityContext, restrictions, from, destination)).thenReturn(accessibilityNetwork);
-        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
+        when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
 
         when(baseAccessibilityCalculator.calculate(
                 accessibilityNetwork,
@@ -328,7 +328,7 @@ class AccessibilityServiceTest {
                 .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
 
         when(missingRoadSectionProvider.get(
-                accessibilityContext,
+                networkData,
                 accessibilityRequest.municipalityId(),
                 Set.of(roadSectionNoRestriction),
                 false))
@@ -347,7 +347,7 @@ class AccessibilityServiceTest {
             logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
                     .thenReturn(keyValue("key", "value"));
 
-            Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest);
+            Accessibility accessibility = accessibilityService.calculateAccessibility(networkData, accessibilityRequest);
 
             assertThat(accessibility.combinedAccessibility()).containsExactlyInAnyOrder(roadSectionCombined, roadSectionDestination);
             assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(
@@ -376,8 +376,8 @@ class AccessibilityServiceTest {
 
         mockFromAndDestination(accessibilityRequest);
         mockGraphHopperNetwork();
-        when(accessibilityNetworkProvider.get(accessibilityContext, restrictions, from, destination)).thenReturn(accessibilityNetwork);
-        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
+        when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
 
         when(baseAccessibilityCalculator.calculate(
                 accessibilityNetwork,
@@ -386,7 +386,7 @@ class AccessibilityServiceTest {
                 .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
 
         when(missingRoadSectionProvider.get(
-                accessibilityContext,
+                networkData,
                 accessibilityRequest.municipalityId(),
                 Set.of(roadSectionNoRestriction),
                 false))
@@ -405,7 +405,7 @@ class AccessibilityServiceTest {
             logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
                     .thenReturn(keyValue("key", "value"));
 
-            Accessibility accessibility = accessibilityService.calculateAccessibility(accessibilityContext, accessibilityRequest);
+            Accessibility accessibility = accessibilityService.calculateAccessibility(networkData, accessibilityRequest);
 
             assertThat(accessibility.combinedAccessibility()).containsExactlyInAnyOrder(roadSectionCombined, roadSectionDestination);
             assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(
@@ -436,7 +436,7 @@ class AccessibilityServiceTest {
 
     private void mockGraphHopperNetwork() {
         when(accessibilityNetwork.getBlockedEdges()).thenReturn(blockedEdges);
-        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
         when(accessibilityNetwork.getFrom()).thenReturn(fromSnap);

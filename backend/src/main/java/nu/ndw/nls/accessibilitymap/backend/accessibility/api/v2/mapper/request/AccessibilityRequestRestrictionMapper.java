@@ -4,10 +4,10 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.NwbRoadSectionSnapService;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRoadSectionRestrictionJson;
+import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.springframework.http.HttpStatus;
@@ -19,15 +19,15 @@ public class AccessibilityRequestRestrictionMapper {
 
     private final AccessibilityRequestDirectionMapper accessibilityRequestDirectionMapper;
 
-    private final NwbRoadSectionSnapService nwbRoadSectionSnapService;
+    private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     public Restriction map(
-            AccessibilityContext accessibilityContext,
+            NetworkData networkData,
             AccessibilityRequestRestrictionJson accessibilityRequestRestrictionJson) {
 
         if (accessibilityRequestRestrictionJson instanceof AccessibilityRequestRoadSectionRestrictionJson roadSectionRestrictionJson) {
             var roadSectionSnappedToGeometryCoordinates = getRoadSectionSnappedToGeometryCoordinates(
-                    accessibilityContext,
+                    networkData,
                     roadSectionRestrictionJson);
 
             return RoadSectionRestriction.builder()
@@ -47,11 +47,11 @@ public class AccessibilityRequestRestrictionMapper {
     }
 
     private CoordinateAndBearing getRoadSectionSnappedToGeometryCoordinates(
-            AccessibilityContext accessibilityContext,
+            NetworkData networkData,
             AccessibilityRequestRoadSectionRestrictionJson roadSectionRestrictionJson) {
 
-        return accessibilityContext.findAllAccessibilityNwbRoadSectionById(roadSectionRestrictionJson.getId())
-                .map(accessibilityNwbRoadSection -> nwbRoadSectionSnapService.snapToLine(
+        return networkData.getNwbData().findAccessibilityNwbRoadSectionById(roadSectionRestrictionJson.getId())
+                .map(accessibilityNwbRoadSection -> fractionAndDistanceCalculator.getCoordinateAndBearing(
                         accessibilityNwbRoadSection.geometry(),
                         roadSectionRestrictionJson.getFraction().doubleValue()))
                 .orElseThrow(() -> new ApiException(
@@ -59,6 +59,6 @@ public class AccessibilityRequestRestrictionMapper {
                         HttpStatus.BAD_REQUEST,
                         "Invalid road section restriction",
                         "Road section with id '%s' available in NWB version '%s'. Please try a different road section."
-                                .formatted(roadSectionRestrictionJson.getId(), accessibilityContext.nwbVersionId())));
+                                .formatted(roadSectionRestrictionJson.getId(), networkData.getNwbVersion())));
     }
 }

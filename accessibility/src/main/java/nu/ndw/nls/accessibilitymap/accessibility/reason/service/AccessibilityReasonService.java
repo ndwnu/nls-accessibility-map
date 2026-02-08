@@ -54,7 +54,7 @@ public class AccessibilityReasonService {
         log.debug("Calculating accessibility reasons for request: {}", accessibilityRequest);
         Stopwatch stopwatch = Stopwatch.createStarted();
 
-        var network = accessibilityNetwork.getAccessibilityContext().graphHopperNetwork().network();
+        var network = accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network();
         Snap startSegment = getStartSegment(accessibilityRequest, network);
         Snap endSegment = getEndSegment(accessibilityRequest, network);
 
