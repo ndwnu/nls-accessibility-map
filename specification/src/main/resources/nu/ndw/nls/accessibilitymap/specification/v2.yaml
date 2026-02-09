@@ -1021,7 +1021,7 @@ components:
           longitude: 5.152890
         area:
           type: municipality
-          id: GM0334
+          id: GM0344
         vehicle:
           type: truck
           width: 2
