@@ -10,7 +10,7 @@ import ch.qos.logback.classic.Level;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.command.UpdateCacheCommand;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,14 +31,14 @@ class InitializeCacheCommandTest {
     private NetworkDataService networkDataService;
 
     @Mock
-    private UpdateCacheCommand updateCacheCommand;
+    private RebuildTrafficSignCacheCommand rebuildTrafficSignCacheCommand;
 
     @Mock
     private TrafficSignDataService trafficSignDataService;
 
     @BeforeEach
     void setUp() {
-        initializeCacheCommand = new InitializeCacheCommand(networkDataService, updateCacheCommand, trafficSignDataService);
+        initializeCacheCommand = new InitializeCacheCommand(networkDataService, rebuildTrafficSignCacheCommand, trafficSignDataService);
     }
 
     @RegisterExtension
@@ -87,7 +87,7 @@ class InitializeCacheCommandTest {
 
     @Test
     void call_trafficSignCache_unableToCreateCache() {
-        doThrow(new RuntimeException("error")).when(updateCacheCommand).call();
+        doThrow(new RuntimeException("error")).when(rebuildTrafficSignCacheCommand).call();
 
         assertThat(new CommandLine(initializeCacheCommand).execute()).isOne();
 

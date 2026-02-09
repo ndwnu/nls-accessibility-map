@@ -5,7 +5,7 @@ import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.AnalyseAsymmetricTra
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.AnalyseBaseNetworkCommand;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.GenerateCommand;
 import nu.ndw.nls.accessibilitymap.job.network.command.RebuildNetworkCacheCommand;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.command.UpdateCacheCommand;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import nu.ndw.nls.springboot.job.annotation.ConditionalOnNotRunningAsService;
 import nu.ndw.nls.springboot.job.command.AbstractCommand;
 import nu.ndw.nls.springboot.messaging.commands.ConfigureRabbitMQCommand;
@@ -26,7 +26,7 @@ import picocli.CommandLine.IFactory;
         RebuildNetworkCacheCommand.class,
         GenerateCommand.class,
         InitializeCacheCommand.class,
-        UpdateCacheCommand.class})
+        RebuildTrafficSignCacheCommand.class})
 public class BaseLoaderCommand extends AbstractCommand {
 
     public BaseLoaderCommand(IFactory factory) {

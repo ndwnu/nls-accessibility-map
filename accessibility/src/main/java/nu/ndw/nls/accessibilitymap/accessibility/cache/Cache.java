@@ -93,7 +93,8 @@ public abstract class Cache<TYPE> {
 
     public void write(TYPE data) {
         OffsetDateTime start = clockService.now();
-        Path targetLocation = cacheConfiguration.getFolder().resolve(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
         try {
             Files.createDirectories(targetLocation);
 
@@ -108,7 +109,7 @@ public abstract class Cache<TYPE> {
                     Duration.between(start, clockService.now()).toMillis());
 
             dataLock.lock();
-            switchSymLink(targetLocation.toRealPath().toAbsolutePath());
+            switchSymLink(targetFolder);
             this.data = data;
             dataLock.unlock();
         } catch (IOException exception) {
@@ -130,7 +131,7 @@ public abstract class Cache<TYPE> {
 
     private void switchSymLink(Path target) throws IOException {
 
-        Path symlink = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath();
+        Path symlink = cacheConfiguration.getActiveVersion().toPath();
         Path oldTarget = null;
 
         if (Files.isSymbolicLink(symlink)) {

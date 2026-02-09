@@ -91,7 +91,7 @@ nu:
         jobs:
           generate:
             zone: "Europe/Amsterdam"
-            root-export-directory: "/application/maps"
+            root-export-directory: "./maps"
             relative-export-directory-pattern: "'v1/windowTimes/'yyyyMMdd'/geojson/'"
             add-traffic-signs-as-points: true
             add-traffic-signs-as-line-strings: true

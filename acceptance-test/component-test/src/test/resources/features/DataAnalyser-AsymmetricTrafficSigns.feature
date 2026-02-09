@@ -8,7 +8,7 @@ Feature: DataAnalyser-AsymmetricTrafficSigns
       | 2           | 8         | 0.5      | C12     |           | FORTH         | window 2   | 00000000-0000-4000-0000-000000000002 |
       | 1           | 6         | 0.0      | C17     | invalid   | FORTH         | window 3   | 00000000-0000-4000-0000-000000000003 |
       | 6           | 1         | 1.0      | C17     | 1.9 m     | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
-    And with issues sent to issue api
+    And expecting issues to be send to issue api
     When run TrafficSignUpdateCache
     And run AsymmetricTrafficSignsAnalysis with configuration
       | startNodeId | trafficSignGroups | reportIssues |

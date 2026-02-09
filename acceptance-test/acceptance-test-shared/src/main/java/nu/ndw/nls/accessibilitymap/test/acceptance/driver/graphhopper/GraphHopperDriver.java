@@ -59,8 +59,11 @@ public class GraphHopperDriver {
     }
 
     public void rebuildCache() {
+        // RabbitMQ is automatically configured on startup. But if the job is not yet running, the queues are yet configured.
+        jobDriver.run("job", "configureRabbitMQ");
+
         rabbitMqDriver.publishNwbImportedEvent();
-        jobDriver.run("rebuildNetworkCache");
+        jobDriver.run("job", "rebuildNetworkCache");
     }
 
     public Graph generate(GenerateSpecification generateSpecification) {

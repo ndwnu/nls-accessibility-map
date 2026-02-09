@@ -2,14 +2,3 @@ hostDatabase: nls-postgres
 hostEventBroker: nls-rabbitmq
 hostWiremock: accessibility-wiremock
 
-spring:
-  main:
-    web-application-type: none
-
-nu:
-  ndw:
-    nls:
-      springboot:
-        job:
-          run-as-service: false
-

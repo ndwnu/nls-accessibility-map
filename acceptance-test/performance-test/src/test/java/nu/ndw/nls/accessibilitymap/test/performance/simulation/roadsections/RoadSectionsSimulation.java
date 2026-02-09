@@ -122,8 +122,15 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .toList();
 
         trafficSignDriver.stubTrafficSignRequest(trafficSigns);
-        jobDriver.run("trafficSignUpdateCache");
+        jobDriver.run("job", "rebuildTrafficSignCache");
         trafficSignsDataIsReloaded();
+    }
+
+    private void trafficSignsDataIsReloaded() {
+        Response<Void, Void> response = accessibilityMapApiClient.reloadCache();
+        assertThat(response.containsError())
+                .withFailMessage("Reloading traffic signs failed. %s", response.error())
+                .isFalse();
     }
 
     public List<PopulationBuilder> getSimulations() {
@@ -196,10 +203,4 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .isFalse();
     }
 
-    private void trafficSignsDataIsReloaded() {
-        Response<Void, Void> response = accessibilityMapApiClient.reloadCache();
-        assertThat(response.containsError())
-                .withFailMessage("Reloading traffic signs failed. %s", response.error())
-                .isFalse();
-    }
 }

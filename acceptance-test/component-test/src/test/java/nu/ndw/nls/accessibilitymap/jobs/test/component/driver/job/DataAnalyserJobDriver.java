@@ -18,7 +18,7 @@ public class DataAnalyserJobDriver implements StateManagement {
 
     public void runBaseNetworkAnalysisJob(BaseNetworkAnalyserJobConfiguration jobConfiguration) {
         jobDriver.run(
-                "dataAnalyserBaseNetworkAnalysis",
+                "job",
                 Stream.concat(
                         Stream.of(
                                 JobArgument.builder()
@@ -28,14 +28,19 @@ public class DataAnalyserJobDriver implements StateManagement {
                                 JobArgument.builder()
                                         .parameter("--start-location-longitude")
                                         .value(String.valueOf(jobConfiguration.startNode().getLongitude()))
+                                        .build(),
+                                JobArgument.builder()
+                                        .parameter("--search-radius-in-meters")
+                                        .value("1000000000")
                                         .build()),
-                        buildArgumentsFromJobConfiguration(jobConfiguration)).toList()
+                        buildArgumentsFromJobConfiguration(jobConfiguration)).toList(),
+                "analyse-base-network"
         );
     }
 
     public void runAsymmetricTrafficSignsAnalysis(TrafficSignAnalyserJobConfiguration jobConfiguration) {
         jobDriver.run(
-                "dataAnalyserAsymmetricTrafficSignsAnalysis",
+                "job",
                 Stream.concat(
                         Stream.of(
                                 JobArgument.builder()
@@ -45,8 +50,13 @@ public class DataAnalyserJobDriver implements StateManagement {
                                 JobArgument.builder()
                                         .parameter("--start-location-longitude")
                                         .value(String.valueOf(jobConfiguration.startNode().getLongitude()))
+                                        .build(),
+                                JobArgument.builder()
+                                        .parameter("--search-radius-in-meters")
+                                        .value("1000000000")
                                         .build()),
-                        buildArgumentsFromJobConfiguration(jobConfiguration)).toList()
+                        buildArgumentsFromJobConfiguration(jobConfiguration)).toList(),
+                "analyse-asymmetric-traffic-signs"
         );
     }
 

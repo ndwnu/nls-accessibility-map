@@ -10,3 +10,7 @@ nu:
             load-data-on-startup: false
             fail-on-no-data-on-startup: false
             watch-for-updates: false
+      springboot:
+        job:
+          run-as-service: false
+

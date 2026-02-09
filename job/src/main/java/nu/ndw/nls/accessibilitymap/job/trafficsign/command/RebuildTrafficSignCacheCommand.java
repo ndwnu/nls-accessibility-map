@@ -23,9 +23,9 @@ import picocli.CommandLine.Command;
 
 @Slf4j
 @Component
-@Command(name = "update-cache")
+@Command(name = "rebuildTrafficSignCache")
 @RequiredArgsConstructor
-public class UpdateCacheCommand implements Callable<Integer> {
+public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
 
     private final TrafficSignDataService trafficSignDataService;
 

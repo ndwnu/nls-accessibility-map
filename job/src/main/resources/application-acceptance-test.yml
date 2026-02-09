@@ -43,6 +43,9 @@ nu:
   ndw:
     nls:
       accessibilitymap:
+        jobs:
+          generate:
+            root-export-directory: "./.tmp/map-generation-destination"
         trafficsignclient:
           api:
             url: http://${hostWiremock}:8888/api/rest/static-road-data/traffic-signs/v4
@@ -51,15 +54,19 @@ nu:
             client:
               url: http://${hostWiremock}:8888/api/area/ibbm/emission-zones/v1
           cache:
+            folder: "./.tmp/trafficSigns/"
             load-data-on-startup: false
             watch-for-updates: false
         network:
           cache:
+            folder: "./.tmp/network"
             load-data-on-startup: false
             watch-for-updates: false
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@${hostEventBroker}:5672?heartbeat=300
+        job:
+          run-as-service: true
 
 keycloak:
   server-url: http://${hostWiremock}:8888/auth
