@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.command.UpdateCacheCommand;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 
@@ -17,7 +17,7 @@ public class InitializeCacheCommand implements Callable<Integer> {
 
     private final NetworkDataService networkDataService;
 
-    private final UpdateCacheCommand updateCacheCommand;
+    private final RebuildTrafficSignCacheCommand rebuildTrafficSignCacheCommand;
 
     private final TrafficSignDataService trafficSignDataService;
 
@@ -38,7 +38,7 @@ public class InitializeCacheCommand implements Callable<Integer> {
             log.info("Traffic sign cache already exists, skipping creation");
         } else {
             try {
-                updateCacheCommand.call();
+                rebuildTrafficSignCacheCommand.call();
             } catch (RuntimeException exception) {
                 log.error("An error occurred while creating traffic sign cache", exception);
                 return 1;

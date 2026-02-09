@@ -10,10 +10,9 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGenerato
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapServicesClient;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
-import nu.ndw.nls.springboot.test.component.state.StateManagement;
 
 @RequiredArgsConstructor
-public class DockerStepDefinitions implements StateManagement {
+public class DockerStepDefinitions {
 
     private final MapGenerationJobDriver mapGenerationJobDriver;
 
@@ -42,21 +41,9 @@ public class DockerStepDefinitions implements StateManagement {
     }
 
     @When("run TrafficSignUpdateCache")
-    public void runTrafficSignAnalyser() {
+    public void runTrafficSignUpdateCache() {
 
-        jobDriver.run("trafficSignUpdateCache");
+        jobDriver.run("job", "rebuildTrafficSignCache");
         accessibilityMapServicesClient.reloadCaches();
-    }
-
-    @Override
-    public void prepareState() {
-        StateManagement.super.prepareState();
-
-        jobDriver.run("configureRabbitMQ");
-    }
-
-    @Override
-    public void clearState() {
-        // Nothing to do.
     }
 }

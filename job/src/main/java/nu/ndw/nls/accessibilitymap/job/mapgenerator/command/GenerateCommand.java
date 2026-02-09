@@ -21,7 +21,7 @@ import picocli.CommandLine.Option;
 
 @Slf4j
 @Component
-@Command(name = "generate")
+@Command(name = "mapGenerate")
 @RequiredArgsConstructor
 public class GenerateCommand implements Callable<Integer> {
 

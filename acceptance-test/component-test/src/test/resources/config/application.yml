@@ -2,11 +2,6 @@ host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
 
-jobEndpoints:
-  job:
-    host: ${host}
-    port: 8081
-
 spring:
   application:
     name: nls-accessibility-map-generator-jobs-component-test
@@ -43,63 +38,13 @@ nu:
                 compose-file: "../../docker-compose.yml"
               job:
                 job-configurations:
-                  configureRabbitMQ:
-                    command: "configureRabbitMQ"
-                    run-as-service: true
+                  job:
+                    run-in-docker-container: true
                     service-configuration:
-                      host: ${jobEndpoints.job.host}
-                      port: ${jobEndpoints.job.port}
+                      host: ${host}
+                      port: 8081
                     docker-configuration:
-                      service-name: "nls-accessibility-map-job-configure-rabbitmq"
-                  dataAnalyserBaseNetworkAnalysis:
-                    command: "analyse-base-network"
-                    arguments:
-                      - parameter: "--search-radius-in-meters"
-                        value: "1000000000"
-                    run-as-service: true
-                    service-configuration:
-                      host: ${jobEndpoints.job.host}
-                      port: ${jobEndpoints.job.port}
-                    docker-configuration:
-                      service-name: "nls-accessibility-map-base-network-analyser-job"
-                  dataAnalyserAsymmetricTrafficSignsAnalysis:
-                    command: "analyse-asymmetric-traffic-signs"
-                    arguments:
-                      - parameter: "--search-radius-in-meters"
-                        value: "1000000000"
-                    run-as-service: true
-                    service-configuration:
-                      host: ${jobEndpoints.job.host}
-                      port: ${jobEndpoints.job.port}
-                    docker-configuration:
-                      service-name: "nls-accessibility-map-base-network-analyser-job"
-                  rebuildNetworkCache:
-                    command: "rebuildNetworkCache"
-                    run-as-service: true
-                    service-configuration:
-                      host: ${jobEndpoints.job.host}
-                      port: ${jobEndpoints.job.port}
-                    docker-configuration:
-                      service-name: "nls-accessibility-map-job-rebuild-network-cache"
-                  trafficSignUpdateCache:
-                    command: "update-cache"
-                    run-as-service: true
-                    service-configuration:
-                      host: ${jobEndpoints.job.host}
-                      port: ${jobEndpoints.job.port}
-                    docker-configuration:
-                      service-name: "nls-accessibility-map-traffic-sign-update-cache-job"
-                  mapGenerator:
-                    command: "generate"
-                    arguments:
-                      - parameter: "--search-radius-in-meters"
-                        value: "1000000000"
-                    run-as-service: true
-                    service-configuration:
-                      host: ${jobEndpoints.job.host}
-                      port: ${jobEndpoints.job.port}
-                    docker-configuration:
-                      service-name: "nls-accessibility-map-generator-jobs"
+                      service-name: "nls-accessibility-map-job"
               keycloak:
                 url: "http://localhost:8000/auth"
                 realm: "ndw"

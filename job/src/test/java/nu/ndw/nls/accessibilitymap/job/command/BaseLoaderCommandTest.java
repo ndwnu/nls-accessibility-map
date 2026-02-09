@@ -7,7 +7,7 @@ import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.AnalyseAsymmetricTra
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.AnalyseBaseNetworkCommand;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.GenerateCommand;
 import nu.ndw.nls.accessibilitymap.job.network.command.RebuildNetworkCacheCommand;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.command.UpdateCacheCommand;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import nu.ndw.nls.springboot.messaging.commands.ConfigureRabbitMQCommand;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class BaseLoaderCommandTest {
                             GenerateCommand.class,
                             RebuildNetworkCacheCommand.class,
                             InitializeCacheCommand.class,
-                            UpdateCacheCommand.class);
+                            RebuildTrafficSignCacheCommand.class);
                 }
         );
     }

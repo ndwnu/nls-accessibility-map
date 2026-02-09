@@ -144,8 +144,8 @@
                     <argument>-R</argument>
                     <argument>777</argument>
                     <argument>../../.tmp/map-generation-destination</argument>
-                    <argument>../../.tmp/graphhopper</argument>
-                    <argument>../../.tmp/trafficsigns</argument>
+                    <argument>../../.tmp/network</argument>
+                    <argument>../../.tmp/trafficSigns</argument>
                   </arguments>
                   <executable>chmod</executable>
                 </configuration>

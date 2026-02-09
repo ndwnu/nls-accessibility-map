@@ -41,9 +41,9 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 @ExtendWith(MockitoExtension.class)
-class UpdateCacheCommandTest {
+class RebuildTrafficSignCacheCommandTest {
 
-    private UpdateCacheCommand updateCacheCommand;
+    private RebuildTrafficSignCacheCommand rebuildTrafficSignCacheCommand;
 
     @Mock
     private TrafficSignDataService trafficSignDataService;
@@ -105,7 +105,7 @@ class UpdateCacheCommandTest {
     @BeforeEach
     void setUp() {
 
-        updateCacheCommand = new UpdateCacheCommand(
+        rebuildTrafficSignCacheCommand = new RebuildTrafficSignCacheCommand(
                 trafficSignDataService,
                 trafficSignService,
                 trafficSignBuilder,
@@ -138,7 +138,7 @@ class UpdateCacheCommandTest {
         mockMapperCalls(trafficSignGeoJsonDto3, trafficSign3);
         mockMapperCalls(trafficSignGeoJsonDto4, null);
 
-        assertThat(new CommandLine(updateCacheCommand).execute()).isZero();
+        assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
         verify(trafficSignDataService).write(argThat(trafficSigns ->
                 trafficSigns.size() == 3
@@ -152,7 +152,7 @@ class UpdateCacheCommandTest {
 
         when(trafficSignService.getTrafficSigns(anySet())).thenThrow(new RuntimeException("test exception"));
 
-        assertThat(new CommandLine(updateCacheCommand)
+        assertThat(new CommandLine(rebuildTrafficSignCacheCommand)
                 .execute()
         ).isOne();
 
@@ -163,7 +163,7 @@ class UpdateCacheCommandTest {
     void annotation_class_command() {
 
         AnnotationUtil.classContainsAnnotation(
-                updateCacheCommand.getClass(),
+                rebuildTrafficSignCacheCommand.getClass(),
                 Command.class,
                 annotation -> assertThat(annotation.name()).isEqualTo("update-cache")
         );

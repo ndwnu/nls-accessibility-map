@@ -44,7 +44,7 @@ asymmetricTrafficSignAnalyser:
 
 trafficSignCacheUpdater:
   name: nls-accessibility-map-traffic-sign-cache-updater-job
-  command: update-cache
+  command: rebuildTrafficSignCache
   memory: 3Gi
 
 rebuildNetworkCache:

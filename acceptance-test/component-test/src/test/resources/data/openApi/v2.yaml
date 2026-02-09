@@ -51,14 +51,16 @@ paths:
                       accessible: false
                       type: destination
                       reasons:
-                        - - trafficSignId: 00000000-0000-4000-0000-000000000004
+                        - - type: trafficSign
+                            trafficSignId: 00000000-0000-4000-0000-000000000004
                             trafficSignType: C22a
                             restrictions:
                               - type: vehicleWeightRestriction
                                 unitSymbol: tons
                                 condition: greater_than_or_equals
                                 value: 12
-                          - trafficSignId: 00000000-0000-4000-0000-000000000004
+                          - type: trafficSign
+                            trafficSignId: 00000000-0000-4000-0000-000000000004
                             trafficSignType: C22a
                             restrictions:
                               - type: vehicleTypeRestriction
@@ -67,6 +69,13 @@ paths:
                                 values:
                                   - light_commercial_vehicle
                                   - truck
+                          - type: roadSection
+                            roadSectionId: 12345
+                            restrictions:
+                              - type: accessibleRestriction
+                                unitSymbol: boolean
+                                condition: equals
+                                value: false
                   - type: Feature
                     id: 2
                     geometry:

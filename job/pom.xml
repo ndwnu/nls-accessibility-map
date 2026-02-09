@@ -158,7 +158,7 @@
                   <version>${project.version}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
-                  <outputDirectory>../../docker/nls-accessibility-map-job</outputDirectory>
+                  <outputDirectory>../docker/nls-accessibility-map-job</outputDirectory>
                   <destFileName>application.jar</destFileName>
                 </artifactItem>
               </artifactItems>

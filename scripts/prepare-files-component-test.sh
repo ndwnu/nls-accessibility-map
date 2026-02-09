@@ -15,6 +15,9 @@ fi
 projectRoot=$(pwd);
 
 
+mkdir -p .tmp/map-generation-destination
+
+
 mkdir -p .tmp/trafficSigns/empty
 cd .tmp/trafficSigns
 echo "[]" > empty/trafficSigns.json

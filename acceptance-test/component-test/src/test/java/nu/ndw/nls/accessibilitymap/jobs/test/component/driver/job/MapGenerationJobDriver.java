@@ -33,7 +33,7 @@ public class MapGenerationJobDriver implements StateManagement {
         lastJobExecution = jobConfiguration;
 
         jobDriver.run(
-                "mapGenerator",
+                "job",
                 Stream.concat(
                         Stream.of(
                                 JobArgument.builder()
@@ -43,8 +43,13 @@ public class MapGenerationJobDriver implements StateManagement {
                                 JobArgument.builder()
                                         .parameter("--start-location-longitude")
                                         .value(String.valueOf(jobConfiguration.startNode().getLongitude()))
+                                        .build(),
+                                JobArgument.builder()
+                                        .parameter("--search-radius-in-meters")
+                                        .value("1000000000")
                                         .build()),
-                        buildArgumentsFromJobConfiguration(jobConfiguration)).toList()
+                        buildArgumentsFromJobConfiguration(jobConfiguration)).toList(),
+                "mapGenerate"
         );
     }
 
