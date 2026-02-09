@@ -1,9 +1,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: nls-accessibility-map-job-initialise-caches
+  name: {{ .Values.initializeCache.name }}
   labels:
-    tags.datadoghq.com/service: nls-accessibility-map-job-initialise-caches
+    tags.datadoghq.com/service: {{ .Values.initializeCache.name }}
     tags.datadoghq.com/env: {{ $.Values.environment }}
     tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
 spec:
@@ -13,23 +13,23 @@ spec:
   template:
     metadata:
       annotations:
-        ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "nls-accessibility-map-job-initialise-caches"}]'
+        ad.datadoghq.com/{{ .Chart.Name }}.logs: '[{"source": "java", "service": "{{ .Values.initializeCache.name }}"}]'
         admission.datadoghq.com/java-lib.version: "{{ .Values.datadog.agent.version }}"
       labels:
-        app: nls-accessibility-map-job-initialise-caches
+        app: {{ .Values.initializeCache.name }}
         environment: {{ $.Values.environment }}
         admission.datadoghq.com/enabled: "true"
-        tags.datadoghq.com/service: nls-accessibility-map-job-initialise-caches
+        tags.datadoghq.com/service: {{ .Values.initializeCache.name }}
         tags.datadoghq.com/env: {{ $.Values.environment }}
         tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
     spec:
       containers:
-        - name: nls-accessibility-map-job-initialise-caches
+        - name: {{ .Values.initializeCache.name }}
           resources:
             limits:
-              memory: 12Gi
+              memory: {{ .Values.initializeCache.memory }}
             requests:
-              memory: 12Gi
+              memory: {{ .Values.initializeCache.memory }}
           image: ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}
           imagePullPolicy: Always
           envFrom:
@@ -37,7 +37,7 @@ spec:
                 name: nls-accessibility-map-job-config
           env:
             - name: COMMAND
-              value: initializeCache
+              value: {{ .Values.initializeCache.command }}
             {{- /*
                   Added as env variable so the dd init container appends the settings instead of an overwrite
               */}}

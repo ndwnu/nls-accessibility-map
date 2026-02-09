@@ -6,30 +6,29 @@ mapGenerator:
   cronJobs: []
 #     generateGeoJsonRvvC6:
 #       name: nls-accessibility-map-generate-rvv-c6-cron-job
-#       command: generate --export-name=C6 --traffic-sign=C6 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
+#       command: mapGenerate --export-name=C6 --traffic-sign=C6 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
 #       memory: 24Gi
 #       schedule: "30 3 * * *"
 #     generateGeoJsonRvvC7:
 #       name: nls-accessibility-map-generate-rvv-c7-cron-job
-#       command: generate --export-name=C7 --traffic-sign=C7 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
+#       command: mapGenerate --export-name=C7 --traffic-sign=C7 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
 #       memory: 24Gi
 #       schedule: "40 3 * * *"
 #     generateGeoJsonRvvC7B:
 #       name: nls-accessibility-map-generate-rvv-c7b-cron-job
-#       command: generate --export-name=C7B --traffic-sign=C7B --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
+#       command: mapGenerate --export-name=C7B --traffic-sign=C7B --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
 #       memory: 24Gi
 #       schedule: "50 3 * * *"
 #     generateGeoJsonRvvC12:
 #       name: nls-accessibility-map-generate-rvv-c12-cron-job
-#       command: generate --export-name=C12 --traffic-sign=C12 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
+#       command: mapGenerate --export-name=C12 --traffic-sign=C12 --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
 #       memory: 24Gi
 #       schedule: "0 4 * * *"
 #     generateGeoJsonRvvC22C:
 #       name: nls-accessibility-map-generate-rvv-c22c-cron-job
-#       command: generate --export-name=C22C --traffic-sign=C22C --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
+#       command: mapGenerate --export-name=C22C --traffic-sign=C22C --include-only-time-windowed-signs --publish-events --export-type=LINE_STRING_GEO_JSON --export-type=POLYGON_GEO_JSON --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
 #       memory: 24Gi
 #       schedule: "10 4 * * *"
-
 
 baseNetworkAnalyser:
   name: nls-accessibility-map-base-network-analyser-job
@@ -42,12 +41,17 @@ asymmetricTrafficSignAnalyser:
   command: analyse-asymmetric-traffic-signs --report-issues=true --traffic-signs=C6,C12 --traffic-signs=C17 --traffic-signs=C18 --traffic-signs=C19 --traffic-signs=C20 --traffic-signs=C21 --start-location-latitude=52.12096528507054 --start-location-longitude=5.334845116067081 --search-radius-in-meters=1000000000
   memory: 12Gi
 
+initializeCache:
+  name: nls-accessibility-map-initialize-cache
+  command: initializeCache
+  memory: 10Gi
+
 trafficSignCacheUpdater:
   name: nls-accessibility-map-traffic-sign-cache-updater-job
   command: rebuildTrafficSignCache
-  memory: 5Gi
+  memory: 7Gi
 
 rebuildNetworkCache:
   name: nls-accessibility-map-job-rebuild-network-cache
-  memory: 8Gi
+  memory: 10Gi
   queue: nls_accessibility_map_graphhopper_job_nwb_imported
