@@ -97,7 +97,7 @@ extends:
           deployAfter:
             - "staging"
           kubernetesNameSpace: "nls"
-          autoDeployment: false
+          autoDeployment: true
           helmCharts:
             - name: "nls-accessibility-map-api"
               path: "deploy/nls-accessibility-map-api"
