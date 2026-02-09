@@ -9,7 +9,6 @@ import java.time.OffsetDateTime;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignCacheWatcher;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
@@ -18,6 +17,7 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.services.MapGeneratorService
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +28,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
 
 @ExtendWith(MockitoExtension.class)
 class GenerateCommandTest {
@@ -42,9 +43,6 @@ class GenerateCommandTest {
 
     @Mock
     private ClockService clockService;
-
-    @Mock
-    private GraphhopperMetaData graphhopperMetaData;
 
     @Mock
     private TrafficSignCacheWatcher trafficSignCacheWatcher;
@@ -233,6 +231,16 @@ class GenerateCommandTest {
         loggerExtension.containsLog(
                 Level.INFO,
                 "Generating export"
+        );
+    }
+
+    @Test
+    void annotation_class_command() {
+
+        AnnotationUtil.classContainsAnnotation(
+                generateCommand.getClass(),
+                Command.class,
+                annotation -> assertThat(annotation.name()).isEqualTo("mapGenerate")
         );
     }
 }

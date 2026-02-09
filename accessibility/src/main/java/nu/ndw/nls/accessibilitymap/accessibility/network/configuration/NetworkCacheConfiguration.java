@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network.configuration;
 
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -17,6 +16,4 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 public class NetworkCacheConfiguration extends CacheConfiguration {
 
-    @Default
-    private boolean writeDataOnStartup = false;
 }

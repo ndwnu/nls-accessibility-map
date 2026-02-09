@@ -12,8 +12,6 @@ import org.locationtech.jts.geom.LineString;
 
 public class LineStringSerializer extends StdSerializer<LineString> {
 
-    private static final String COORDINATES = "coordinates";
-
     private ObjectMapper objectMapper;
 
     protected LineStringSerializer() {

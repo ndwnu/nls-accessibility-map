@@ -28,9 +28,6 @@ class RoadSectionTest extends ValidationTest {
     private DirectionalSegment directionalSegmentBackward;
 
     @Mock
-    private LineString lineString;
-
-    @Mock
     private LineString lineString1;
 
     @Mock
@@ -56,7 +53,7 @@ class RoadSectionTest extends ValidationTest {
                 .accessible(true)
                 .direction(Direction.FORWARD)
                 .roadSectionFragment(roadSectionFragment)
-                .lineString(lineString)
+                .lineString(lineString1)
                 .restrictions(List.of(mock(Restriction.class)))
                 .build();
 
@@ -67,6 +64,7 @@ class RoadSectionTest extends ValidationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void copy() {
 
         LineString lineString = geometryFactoryWgs84.createLineString();
@@ -81,24 +79,24 @@ class RoadSectionTest extends ValidationTest {
         assertThat(copiedRoadSection.getId()).isEqualTo(roadSection.getId());
 
         for (int i = 0; i < roadSection.getRoadSectionFragments().size(); i++) {
-            RoadSectionFragment roadSectionFragment = roadSection.getRoadSectionFragments().get(i);
+            RoadSectionFragment actualRoadSectionFragment = roadSection.getRoadSectionFragments().get(i);
             RoadSectionFragment copiedRoadSectionFragment = copiedRoadSection.getRoadSectionFragments().get(i);
 
-            assertThat(copiedRoadSectionFragment).isNotSameAs(roadSectionFragment);
-            assertThat(copiedRoadSectionFragment.getId()).isEqualTo(roadSectionFragment.getId());
+            assertThat(copiedRoadSectionFragment).isNotSameAs(actualRoadSectionFragment);
+            assertThat(copiedRoadSectionFragment.getId()).isEqualTo(actualRoadSectionFragment.getId());
             DirectionalSegment copiedForwardSegment = copiedRoadSectionFragment.getForwardSegment();
             DirectionalSegment copiedBackwardSegment = copiedRoadSectionFragment.getBackwardSegment();
-            assertThat(copiedForwardSegment).isNotSameAs(roadSectionFragment.getForwardSegment());
-            assertThat(copiedBackwardSegment).isNotSameAs(roadSectionFragment.getBackwardSegment());
-            assertThat(copiedForwardSegment.getId()).isEqualTo(roadSectionFragment.getForwardSegment().getId());
-            assertThat(copiedBackwardSegment.getId()).isEqualTo(roadSectionFragment.getBackwardSegment().getId());
+            assertThat(copiedForwardSegment).isNotSameAs(actualRoadSectionFragment.getForwardSegment());
+            assertThat(copiedBackwardSegment).isNotSameAs(actualRoadSectionFragment.getBackwardSegment());
+            assertThat(copiedForwardSegment.getId()).isEqualTo(actualRoadSectionFragment.getForwardSegment().getId());
+            assertThat(copiedBackwardSegment.getId()).isEqualTo(actualRoadSectionFragment.getBackwardSegment().getId());
             // enums are fixed reference types
-            assertThat(copiedForwardSegment.getDirection()).isEqualTo(roadSectionFragment.getForwardSegment().getDirection());
-            assertThat(copiedBackwardSegment.getDirection()).isEqualTo(roadSectionFragment.getBackwardSegment().getDirection());
-            assertThat(copiedForwardSegment.getLineString()).isEqualTo(roadSectionFragment.getForwardSegment().getLineString());
-            assertThat(copiedForwardSegment.getLineString()).isNotSameAs(roadSectionFragment.getForwardSegment().getLineString());
-            assertThat(copiedBackwardSegment.getLineString()).isEqualTo(roadSectionFragment.getBackwardSegment().getLineString());
-            assertThat(copiedBackwardSegment.getLineString()).isNotSameAs(roadSectionFragment.getBackwardSegment().getLineString());
+            assertThat(copiedForwardSegment.getDirection()).isEqualTo(actualRoadSectionFragment.getForwardSegment().getDirection());
+            assertThat(copiedBackwardSegment.getDirection()).isEqualTo(actualRoadSectionFragment.getBackwardSegment().getDirection());
+            assertThat(copiedForwardSegment.getLineString()).isEqualTo(actualRoadSectionFragment.getForwardSegment().getLineString());
+            assertThat(copiedForwardSegment.getLineString()).isNotSameAs(actualRoadSectionFragment.getForwardSegment().getLineString());
+            assertThat(copiedBackwardSegment.getLineString()).isEqualTo(actualRoadSectionFragment.getBackwardSegment().getLineString());
+            assertThat(copiedBackwardSegment.getLineString()).isNotSameAs(actualRoadSectionFragment.getBackwardSegment().getLineString());
         }
     }
 

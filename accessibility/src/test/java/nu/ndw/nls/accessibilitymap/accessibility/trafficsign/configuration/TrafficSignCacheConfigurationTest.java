@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-public class TrafficSignCacheConfigurationTest extends CacheConfigurationTest {
+class TrafficSignCacheConfigurationTest extends CacheConfigurationTest {
 
     @Override
     protected Class<?> getClassToTest() {

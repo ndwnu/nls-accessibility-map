@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
@@ -74,9 +73,6 @@ class NetworkAnalyserServiceTest {
 
     @Mock
     private OffsetDateTime timestamp;
-
-    @Mock
-    private GraphHopperNetwork graphHopperNetwork;
 
     @BeforeEach
     void setUp() {
