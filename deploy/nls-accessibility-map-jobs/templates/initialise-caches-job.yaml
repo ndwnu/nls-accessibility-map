@@ -37,7 +37,7 @@ spec:
                 name: nls-accessibility-map-job-config
           env:
             - name: COMMAND
-              value: initialiseCaches
+              value: initializeCache
             {{- /*
                   Added as env variable so the dd init container appends the settings instead of an overwrite
               */}}
