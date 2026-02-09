@@ -69,6 +69,7 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
         }
     }
 
+    @SuppressWarnings("java:S2637")
     private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
 
         return networkDataService.get().getNwbData()

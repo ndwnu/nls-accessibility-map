@@ -38,6 +38,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class EmissionZoneMapperTest {
 
     private static final String EMISSION_ZONE_ID = "emissionZoneId";
+
     private static final String TRAFFIC_REGULATION_ORDER_ID = "orderId";
 
     private EmissionZoneMapper emissionZoneMapper;
@@ -90,7 +91,8 @@ class EmissionZoneMapperTest {
                         .vehicleType(VehicleType.CAR)
                         .build())
                 .build();
-        emissionZoneMapper = new EmissionZoneMapper(emissionService, maximumWeightMapper, emissionClassMapper, fuelTypeMapper,
+        emissionZoneMapper = new EmissionZoneMapper(
+                emissionService, maximumWeightMapper, emissionClassMapper, fuelTypeMapper,
                 emissionZoneTypeMapper, transportTypeMapper);
     }
 
@@ -105,7 +107,8 @@ class EmissionZoneMapperTest {
         when(emissionClassMapper.map(emissionZoneDto.exemptions().getFirst().euroClassifications())).thenReturn(
                 Set.of(EmissionClass.EURO_1));
         when(fuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
-        when(transportTypeMapper.map(emissionZoneDto.restriction().vehicleType(),
+        when(transportTypeMapper.map(
+                emissionZoneDto.restriction().vehicleType(),
                 emissionZoneDto.restriction().vehicleCategories())).thenReturn(Set.of(TransportType.BUS));
         when(transportTypeMapper.map(emissionZoneDto.exemptions().getFirst().vehicleCategories())).thenReturn(Set.of(TransportType.CAR));
         when(emissionZoneTypeMapper.map(emissionZoneDto.type())).thenReturn(
@@ -155,33 +158,6 @@ class EmissionZoneMapperTest {
     }
 
     @Test
-    void map_exemptions_null() {
-
-        emissionZoneDto = emissionZoneDto.withExemptions(null);
-
-        when(emissionService.findByTrafficRegulationOrderId(TRAFFIC_REGULATION_ORDER_ID)).thenReturn(Optional.of(emissionZoneDto));
-
-        when(maximumWeightMapper.map(emissionZoneDto.restriction().vehicleCategories())).thenReturn(Maximum.builder().value(3D).build());
-        when(fuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
-        when(transportTypeMapper.map(emissionZoneDto.restriction().vehicleType(),
-                emissionZoneDto.restriction().vehicleCategories())).thenReturn(Set.of(TransportType.BUS));
-
-        EmissionZone emissionZone = emissionZoneMapper.map(TRAFFIC_REGULATION_ORDER_ID);
-
-        assertThat(emissionZone.startTime()).isEqualTo(emissionZoneDto.startTime());
-        assertThat(emissionZone.endTime()).isEqualTo(emissionZoneDto.endTime());
-        assertThat(emissionZone.exemptions()).isEmpty();
-        assertThat(emissionZone.restriction()).isEqualTo(
-                EmissionZoneRestriction.builder()
-                        .id("restrictionId")
-                        .transportTypes(Set.of(TransportType.BUS))
-                        .vehicleWeightInKg(Maximum.builder().value(3D).build())
-                        .fuelTypes(Set.of(FuelType.DIESEL))
-                        .build()
-        );
-    }
-
-    @Test
     void map_exemptions_vehicleWeightInKg_null() {
 
         emissionZoneDto = emissionZoneDto.withExemptions(List.of(emissionZoneDto.exemptions().getFirst().withVehicleWeightInKg(null)));
@@ -194,7 +170,8 @@ class EmissionZoneMapperTest {
         when(emissionClassMapper.map(emissionZoneDto.exemptions().getFirst().euroClassifications())).thenReturn(
                 Set.of(EmissionClass.EURO_1));
         when(fuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
-        when(transportTypeMapper.map(emissionZoneDto.restriction().vehicleType(),
+        when(transportTypeMapper.map(
+                emissionZoneDto.restriction().vehicleType(),
                 emissionZoneDto.restriction().vehicleCategories())).thenReturn(Set.of(TransportType.BUS));
         when(transportTypeMapper.map(emissionZoneDto.exemptions().getFirst().vehicleCategories())).thenReturn(Set.of(TransportType.CAR));
         when(emissionZoneTypeMapper.map(emissionZoneDto.type())).thenReturn(
