@@ -27,9 +27,9 @@ spec:
         - name: nls-accessibility-map-job-initialise-caches
           resources:
             limits:
-              memory: 8Gi
+              memory: 12Gi
             requests:
-              memory: 8Gi
+              memory: 12Gi
           image: ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}
           imagePullPolicy: Always
           envFrom:
