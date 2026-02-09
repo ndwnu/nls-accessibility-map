@@ -75,11 +75,11 @@ extends:
     componentTests:
       - name: "all"
         module: "acceptance-test/component-test"
-        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/performance-test"
+        additionalMavenOptions: "-pl !backend,!job,!acceptance-test/performance-test"
 #    performanceTests:
 #      - name: "all"
 #        module: "acceptance-test/performance-test"
-#        additionalMavenOptions: "-pl !backend,!jobs/graphhopper,!jobs/mapgenerator,!jobs/traffic-sign,!acceptance-test/component-test"
+#        additionalMavenOptions: "-pl !backend,!job,!acceptance-test/component-test"
     deployment:
       environments:
         - name: "staging"
