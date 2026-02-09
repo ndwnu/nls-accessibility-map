@@ -39,7 +39,7 @@ nu:
               job:
                 job-configurations:
                   job:
-                    run-in-docker-container: true
+                    run-in-docker-container: false
                     service-configuration:
                       host: ${host}
                       port: 8081
