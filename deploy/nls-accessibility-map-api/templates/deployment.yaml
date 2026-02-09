@@ -75,7 +75,7 @@ spec:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: nls-accessibility-map-jobs-spc
+              secretProviderClass: nls-accessibility-map-api-spc
         - name: heap-dump
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
