@@ -5,12 +5,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 
 public class LineStringDeserializer extends StdDeserializer<LineString> {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     protected LineStringDeserializer() {
         super(LineString.class);

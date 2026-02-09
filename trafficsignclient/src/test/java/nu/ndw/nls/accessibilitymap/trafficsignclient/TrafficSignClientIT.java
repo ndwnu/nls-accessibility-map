@@ -39,7 +39,7 @@ import org.wiremock.spring.EnableWireMock;
 })
 class TrafficSignClientIT {
 
-    private final static Set<String> rvvCodes = Set.of(
+    private static final Set<String> rvvCodes = Set.of(
             "C6",
             "C7",
             "C7a",

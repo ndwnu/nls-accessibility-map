@@ -71,10 +71,6 @@ public class EmissionZoneMapper {
     private Set<EmissionZoneExemption> mapExemptions(
             nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.EmissionZone emissionZone) {
 
-        if (Objects.isNull(emissionZone.exemptions())) {
-            return Set.of();
-        }
-
         return emissionZone.exemptions().stream()
                 .map(exemption -> EmissionZoneExemption.builder()
                         .startTime(Objects.nonNull(exemption.startTime()) ? exemption.startTime() : OffsetDateTime.MIN)

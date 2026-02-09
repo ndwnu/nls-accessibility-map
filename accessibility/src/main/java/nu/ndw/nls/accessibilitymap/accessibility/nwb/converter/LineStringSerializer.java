@@ -5,12 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
+import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import org.locationtech.jts.geom.LineString;
 
 public class LineStringSerializer extends StdSerializer<LineString> {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private ObjectMapper objectMapper;
 
