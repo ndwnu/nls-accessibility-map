@@ -27,7 +27,6 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
-import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,9 +91,6 @@ class RebuildTrafficSignCacheCommandTest {
 
     @Mock
     private LineString lineString;
-
-    @Mock
-    private NwbRoadSectionDto roadSection;
 
     @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
@@ -165,7 +161,7 @@ class RebuildTrafficSignCacheCommandTest {
         AnnotationUtil.classContainsAnnotation(
                 rebuildTrafficSignCacheCommand.getClass(),
                 Command.class,
-                annotation -> assertThat(annotation.name()).isEqualTo("update-cache")
+                annotation -> assertThat(annotation.name()).isEqualTo("rebuildTrafficSignCache")
         );
     }
 

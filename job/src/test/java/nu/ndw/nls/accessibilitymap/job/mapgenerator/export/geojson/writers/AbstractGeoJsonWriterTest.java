@@ -33,7 +33,6 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -72,11 +71,6 @@ class AbstractGeoJsonWriterTest {
             PosixFilePermission.OWNER_READ,
             PosixFilePermission.OWNER_WRITE)
     );
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @ParameterizedTest
     @CsvSource(textBlock = """

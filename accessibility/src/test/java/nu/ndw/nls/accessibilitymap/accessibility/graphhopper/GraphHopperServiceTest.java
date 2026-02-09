@@ -128,9 +128,9 @@ class GraphHopperServiceTest {
         assertThat(graphHopperNetwork.nwbVersion()).isEqualTo(1);
 
         loggerExtension.containsLog(Level.INFO, "GraphHopper network loaded from disk in 1234ms");
-//        assertThat(testDir.resolve("latest"))
-//                .exists()
-//                .isDirectory();
+        assertThat(testDir.resolve("latest"))
+                .exists()
+                .isDirectory();
     }
 
     @Test

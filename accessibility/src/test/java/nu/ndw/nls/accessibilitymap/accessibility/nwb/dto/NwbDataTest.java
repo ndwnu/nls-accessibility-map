@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -18,11 +17,6 @@ class NwbDataTest extends ValidationTest {
 
     @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @Test
     void validate() {
@@ -97,7 +91,7 @@ class NwbDataTest extends ValidationTest {
 
         NwbData nwbData = new NwbData(1, List.of(accessibilityNwbRoadSection));
 
-        assertThat(nwbData.toString()).isEqualTo("NwbData(nwbVersionId=1)");
+        assertThat(nwbData).hasToString("NwbData(nwbVersionId=1)");
     }
 
     @Override

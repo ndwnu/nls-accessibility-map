@@ -46,7 +46,8 @@ class MunicipalityTest extends ValidationTest {
 
         municipality = municipality.withName(null);
 
-        validate(municipality,
+        validate(
+                municipality,
                 List.of("name"),
                 List.of("must not be null"));
     }
@@ -56,7 +57,8 @@ class MunicipalityTest extends ValidationTest {
 
         municipality = municipality.withStartCoordinateLatitude(null);
 
-        validate(municipality,
+        validate(
+                municipality,
                 List.of("startCoordinateLatitude"),
                 List.of("must not be null"));
     }
@@ -66,7 +68,8 @@ class MunicipalityTest extends ValidationTest {
 
         municipality = municipality.withStartCoordinateLongitude(null);
 
-        validate(municipality,
+        validate(
+                municipality,
                 List.of("startCoordinateLongitude"),
                 List.of("must not be null"));
     }
@@ -76,7 +79,8 @@ class MunicipalityTest extends ValidationTest {
 
         municipality = municipality.withSearchDistanceInMetres(null);
 
-        validate(municipality,
+        validate(
+                municipality,
                 List.of("searchDistanceInMetres"),
                 List.of("must not be null"));
     }
@@ -86,7 +90,8 @@ class MunicipalityTest extends ValidationTest {
 
         municipality = municipality.withId(null);
 
-        validate(municipality,
+        validate(
+                municipality,
                 List.of("id"),
                 List.of("must not be null"));
     }
@@ -96,7 +101,8 @@ class MunicipalityTest extends ValidationTest {
 
         municipality = municipality.withBounds(null);
 
-        validate(municipality,
+        validate(
+                municipality,
                 List.of("bounds"),
                 List.of("must not be null"));
     }
@@ -110,9 +116,7 @@ class MunicipalityTest extends ValidationTest {
             """)
     void idAsInteger(String municipalityId, Integer expectedResult) {
 
-        Municipality municipality = Municipality.builder()
-                .id(municipalityId)
-                .build();
+        municipality = municipality.withId(municipalityId);
 
         if (Objects.isNull(expectedResult)) {
             assertThat(catchThrowable(municipality::idAsInteger))
@@ -136,6 +140,6 @@ class MunicipalityTest extends ValidationTest {
                 this.getClassToTest(),
                 Valid.class,
                 "bounds",
-                (annotation) -> Assertions.assertThat(annotation).isNotNull());
+                annotation -> Assertions.assertThat(annotation).isNotNull());
     }
 }
