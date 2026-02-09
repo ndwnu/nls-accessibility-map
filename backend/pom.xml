@@ -265,6 +265,7 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator-maven-plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>nu.ndw.nls.springboot</groupId>
