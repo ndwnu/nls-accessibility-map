@@ -43,7 +43,7 @@ class MunicipalitiesApiDelegateImplTest {
         when(municipalityService.findAll()).thenReturn(List.of(municipality1, municipality2));
         when(municipality1.id()).thenReturn("GM0008");
         when(municipality2.id()).thenReturn("GM0307");
-        when(municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(List.of(municipality2, municipality1))).thenReturn(featureCollection);
+        when(municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(List.of(municipality1, municipality2))).thenReturn(featureCollection);
 
         ResponseEntity<MunicipalityFeatureCollectionJson> response = municipalitiesApiDelegate.getMunicipalities();
 
