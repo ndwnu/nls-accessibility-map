@@ -41,7 +41,7 @@ spec:
               - name: COMMAND
                 value: rebuildNetworkCache
               - name: SPRING_PROFILES_ACTIVE
-                value: {{ .Values.environment }}
+                value: rebuild-network-cache,{{ .Values.environment }}
               {{- /*
                   Added as env variable so the dd init container appends the settings instead of an overwrite
                 */}}
