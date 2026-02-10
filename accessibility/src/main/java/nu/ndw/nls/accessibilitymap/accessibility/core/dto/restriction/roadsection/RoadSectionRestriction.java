@@ -32,12 +32,12 @@ public record RoadSectionRestriction(
 
     @Override
     public @NonNull String toString() {
-        return "RoadSectionRestriction{" +
+        return "RoadSectionRestriction(" +
                "id=" + id +
                ", direction=" + direction +
                ", fraction=" + fraction +
                ", networkSnappedLatitude=" + networkSnappedLatitude +
                ", networkSnappedLongitude=" + networkSnappedLongitude +
-               '}';
+               ')';
     }
 }

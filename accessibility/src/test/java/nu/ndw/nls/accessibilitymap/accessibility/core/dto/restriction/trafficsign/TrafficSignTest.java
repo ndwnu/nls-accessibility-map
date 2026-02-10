@@ -125,7 +125,7 @@ class TrafficSignTest extends ValidationTest {
     void toStringTest() {
 
         assertThat(trafficSign).hasToString(
-                "TrafficSign{id=1, externalId='id2', roadSectionId=3, trafficSignType=C7, fraction=0.2, networkSnappedLatitude=2.0, networkSnappedLongitude=3.0, direction=BACKWARD}");
+                "TrafficSign(id=1, externalId='id2', roadSectionId=3, trafficSignType=C7, fraction=0.2, networkSnappedLatitude=2.0, networkSnappedLongitude=3.0, direction=BACKWARD)");
     }
 
     @Test

@@ -17,8 +17,8 @@ public record GraphHopperNetwork(
 
     @Override
     public @NonNull String toString() {
-        return "GraphHopperNetwork{" +
+        return "GraphHopperNetwork(" +
                "nwbVersion=" + nwbVersion +
-               '}';
+               ')';
     }
 }
