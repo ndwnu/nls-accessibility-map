@@ -43,7 +43,7 @@ class RoadSectionRestrictionTest extends ValidationTest {
     void toStringTest() {
 
         assertThat(roadSectionRestriction).hasToString(
-                "RoadSectionRestriction{id=1, direction=BACKWARD, fraction=0.2, networkSnappedLatitude=2.0, networkSnappedLongitude=3.0}");
+                "RoadSectionRestriction(id=1, direction=BACKWARD, fraction=0.2, networkSnappedLatitude=2.0, networkSnappedLongitude=3.0)");
     }
 
     @Test

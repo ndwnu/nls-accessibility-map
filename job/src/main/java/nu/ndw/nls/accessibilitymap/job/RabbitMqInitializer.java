@@ -11,10 +11,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class RabbitMqInitializer {
+
     private final MessagingDeclareAndBindConfigurationService service;
 
     @EventListener(ApplicationStartedEvent.class)
-    public void loadDataOnStartup() {
+    public void initRabbitMq() {
 
         log.info("Initializing RabbitMQ");
         this.service.initialize();

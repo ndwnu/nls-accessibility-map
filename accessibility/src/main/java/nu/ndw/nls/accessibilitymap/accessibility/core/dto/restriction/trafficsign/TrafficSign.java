@@ -57,7 +57,7 @@ public record TrafficSign(
 
     @Override
     public @NonNull String toString() {
-        return "TrafficSign{" +
+        return "TrafficSign(" +
                "id=" + id +
                ", externalId='" + externalId + "'" +
                ", roadSectionId=" + roadSectionId +
@@ -66,6 +66,6 @@ public record TrafficSign(
                ", networkSnappedLatitude=" + networkSnappedLatitude +
                ", networkSnappedLongitude=" + networkSnappedLongitude +
                ", direction=" + direction +
-               '}';
+               ')';
     }
 }

@@ -49,7 +49,6 @@ class AccessibilityNetworkTest {
                 destination);
 
         assertThat(accessibilityNetwork)
-                .hasToString("GraphHopperNetwork[networkData=networkData, restrictions=[restriction], "
-                             + "restrictionsByEdgeKey={1=[restriction]}, blockedEdges=[1], from=from, destination=destination]");
+                .hasToString("GraphHopperNetwork(networkData=networkData, restrictions=[restriction], restrictionsByEdgeKey={1=[restriction]}, blockedEdges=[1], from=from, destination=destination)");
     }
 }

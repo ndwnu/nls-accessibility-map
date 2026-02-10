@@ -57,13 +57,13 @@ public class AccessibilityNetwork {
 
     @Override
     public String toString() {
-        return "GraphHopperNetwork[" +
+        return "GraphHopperNetwork(" +
                "networkData=" + networkData + ", " +
                "restrictions=" + restrictions + ", " +
                "restrictionsByEdgeKey=" + restrictionsByEdgeKey + ", " +
                "blockedEdges=" + blockedEdges + ", " +
                "from=" + from + ", " +
                "destination=" + destination +
-               ']';
+               ')';
     }
 }
