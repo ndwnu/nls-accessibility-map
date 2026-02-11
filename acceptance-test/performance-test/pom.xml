@@ -83,7 +83,7 @@
                     <argument>-d</argument>
                     <argument>nls-postgres</argument>
                     <argument>nls-keycloak</argument>
-                    <argument>accessibility-wiremock-stub</argument>
+                    <argument>accessibility-wiremock</argument>
                   </arguments>
                 </configuration>
               </execution>

@@ -5,7 +5,7 @@
     "id" : 1,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0, 1.0 ], [ 5.0, 1.0 ] ]
+      "coordinates" : [ [ 1.0000009, 1.000001 ], [ 5.0000008, 1.0000012 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -16,7 +16,7 @@
     "id" : -1,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 1.0 ], [ 1.0, 1.0 ] ]
+      "coordinates" : [ [ 5.0000008, 1.0000012 ], [ 1.0000009, 1.000001 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -27,7 +27,7 @@
     "id" : 2,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 1.0 ], [ 10.0, 1.0 ] ]
+      "coordinates" : [ [ 5.0000008, 1.0000012 ], [ 10.0000006, 1.0000013 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -38,7 +38,7 @@
     "id" : -2,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 10.0, 1.0 ], [ 5.0, 1.0 ] ]
+      "coordinates" : [ [ 10.0000006, 1.0000013 ], [ 5.0000008, 1.0000012 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -49,7 +49,7 @@
     "id" : 3,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 10.0, 1.0 ], [ 10.0, 10.0 ] ]
+      "coordinates" : [ [ 10.0000006, 1.0000013 ], [ 10.0000003, 10.000001 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -60,7 +60,7 @@
     "id" : -3,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 10.0, 10.0 ], [ 10.0, 1.0 ] ]
+      "coordinates" : [ [ 10.0000003, 10.000001 ], [ 10.0000006, 1.0000013 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -71,7 +71,7 @@
     "id" : 4,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 10.0, 10.0 ], [ 5.0, 10.0 ] ]
+      "coordinates" : [ [ 10.0000003, 10.000001 ], [ 5.0000005, 10.0000008 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -82,7 +82,7 @@
     "id" : -4,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 10.0 ], [ 10.0, 10.0 ] ]
+      "coordinates" : [ [ 5.0000005, 10.0000008 ], [ 10.0000003, 10.000001 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -93,7 +93,7 @@
     "id" : 5,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 10.0 ], [ 1.0, 10.0 ] ]
+      "coordinates" : [ [ 5.0000005, 10.0000008 ], [ 1.0000006, 10.0000007 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -104,7 +104,7 @@
     "id" : -5,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0, 10.0 ], [ 5.0, 10.0 ] ]
+      "coordinates" : [ [ 1.0000006, 10.0000007 ], [ 5.0000005, 10.0000008 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -115,7 +115,7 @@
     "id" : 6,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0, 10.0 ], [ 1.0, 1.9000954 ], [ 1.0, 1.0 ] ]
+      "coordinates" : [ [ 1.0000006, 10.0000007 ], [ 1.0000009, 1.9000963 ], [ 1.0000009, 1.000001 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -126,7 +126,7 @@
     "id" : 8,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 2.0 ], [ 7.0, 2.0 ] ]
+      "coordinates" : [ [ 5.0000007, 2.0000011 ], [ 7.0000007, 2.0000012 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -137,7 +137,7 @@
     "id" : -8,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 7.0, 2.0 ], [ 5.0, 2.0 ] ]
+      "coordinates" : [ [ 7.0000007, 2.0000012 ], [ 5.0000007, 2.0000011 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -148,7 +148,7 @@
     "id" : 9,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 7.0, 2.0 ], [ 7.0, 3.0 ], [ 7.0, 8.0 ] ]
+      "coordinates" : [ [ 7.0000007, 2.0000012 ], [ 7.0000007, 3.0 ], [ 7.0000005, 8.000001 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -159,7 +159,7 @@
     "id" : -9,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 7.0, 8.0 ], [ 7.0, 3.0 ], [ 7.0, 2.0 ] ]
+      "coordinates" : [ [ 7.0000005, 8.000001 ], [ 7.0000007, 3.0 ], [ 7.0000007, 2.0000012 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -170,7 +170,7 @@
     "id" : 10,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 7.0, 8.0 ], [ 5.0, 8.0 ] ]
+      "coordinates" : [ [ 7.0000005, 8.000001 ], [ 5.0000005, 8.0000009 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -181,7 +181,7 @@
     "id" : -10,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 8.0 ], [ 7.0, 8.0 ] ]
+      "coordinates" : [ [ 5.0000005, 8.0000009 ], [ 7.0000005, 8.000001 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -192,7 +192,7 @@
     "id" : 12,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 2.0 ], [ 5.0, 1.0 ] ]
+      "coordinates" : [ [ 5.0000007, 2.0000011 ], [ 5.0000008, 1.0000012 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -203,7 +203,7 @@
     "id" : -12,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 1.0 ], [ 5.0, 2.0 ] ]
+      "coordinates" : [ [ 5.0000008, 1.0000012 ], [ 5.0000007, 2.0000011 ] ]
     },
     "properties" : {
       "accessible" : true,
@@ -214,7 +214,7 @@
     "id" : -13,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 8.0 ], [ 5.0, 9.0000271 ], [ 5.0, 10.0 ] ]
+      "coordinates" : [ [ 5.0000005, 8.0000009 ], [ 5.0000005, 9.000028 ], [ 5.0000005, 10.0000008 ] ]
     },
     "properties" : {
       "accessible" : true,

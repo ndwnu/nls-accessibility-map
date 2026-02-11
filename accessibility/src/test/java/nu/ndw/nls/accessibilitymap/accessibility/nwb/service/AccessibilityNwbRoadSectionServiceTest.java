@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.nwb.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -9,17 +8,15 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.mapper.AccessibilityNwbRoadSectionMapper;
 import nu.ndw.nls.data.api.nwb.dtos.NwbRoadSectionDto;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.db.nwb.jooq.services.NwbRoadSectionCrudService;
+import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -32,40 +29,26 @@ class AccessibilityNwbRoadSectionServiceTest {
     private NwbRoadSectionCrudService nwbRoadSectionCrudService;
 
     @Mock
+    private NwbVersionCrudService nwbVersionCrudService;
+
+    @Mock
     private AccessibilityNwbRoadSectionMapper accessibilityNwbRoadSectionMapper;
 
     @Mock
-    private GraphHopperService graphHopperService;
+    private NwbRoadSectionDto nwbRoadSectionDto;
 
     @Mock
-    private NwbRoadSectionDto nwbRoadSectionDto1;
-
-    @Mock
-    private AccessibilityNwbRoadSection accessibilityNwbRoadSection1;
-
-    @Mock
-    private NwbRoadSectionDto nwbRoadSectionDto2;
-
-    @Mock
-    private AccessibilityNwbRoadSection accessibilityNwbRoadSection2;
-
-    @Captor
-    private ArgumentCaptor<Runnable> updateListenerCaptor;
+    private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
 
     private Set<CarriagewayTypeCode> carriageWayTypeCodeInclusions;
-
-    private Runnable clearCache;
 
     @BeforeEach
     void setUp() {
 
         accessibilityNwbRoadSectionService = new AccessibilityNwbRoadSectionService(
                 nwbRoadSectionCrudService,
-                accessibilityNwbRoadSectionMapper,
-                graphHopperService);
-
-        verify(graphHopperService).registerUpdateListener(updateListenerCaptor.capture());
-        clearCache = updateListenerCaptor.getValue();
+                nwbVersionCrudService,
+                accessibilityNwbRoadSectionMapper);
 
         carriageWayTypeCodeInclusions = Stream.of(CarriagewayTypeCode.values())
                 .filter(carriagewayTypeCode -> !EnumSet.of(
@@ -85,65 +68,24 @@ class AccessibilityNwbRoadSectionServiceTest {
     }
 
     @Test
-    void getRoadSectionsByIdForNwbVersion() {
+    void getLatestNwbData() {
 
+        when(nwbVersionCrudService.findLatestVersionId()).thenReturn(2);
         when(nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                 2,
                 carriageWayTypeCodeInclusions,
                 null,
                 250
-        )).thenReturn(Stream.of(nwbRoadSectionDto1));
+        )).thenReturn(Stream.of(nwbRoadSectionDto));
 
-        when(accessibilityNwbRoadSection1.roadSectionId()).thenReturn(11L);
-        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto1)).thenReturn(accessibilityNwbRoadSection1);
+        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto)).thenReturn(accessibilityNwbRoadSection);
 
-        var accessibilityNwbRoadSections = accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(2);
-        assertThat(accessibilityNwbRoadSections).containsEntry(11L, accessibilityNwbRoadSection1);
+        var nwbData = accessibilityNwbRoadSectionService.getLatestNwbData();
 
-        var accessibilityNwbRoadSectionsCached = accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(2);
-        assertThat(accessibilityNwbRoadSectionsCached).containsEntry(11L, accessibilityNwbRoadSection1);
+        assertThat(nwbData.getNwbVersionId()).isEqualTo(2);
+        assertThat(nwbData.findAllAccessibilityNwbRoadSections()).containsExactlyInAnyOrder(accessibilityNwbRoadSection);
 
         verify(nwbRoadSectionCrudService).findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
-                2,
-                carriageWayTypeCodeInclusions,
-                null,
-                250);
-    }
-
-    @Test
-    void clearCache() {
-
-        when(nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
-                2,
-                carriageWayTypeCodeInclusions,
-                null,
-                250))
-                .thenReturn(Stream.of(nwbRoadSectionDto1, nwbRoadSectionDto2))
-                .thenReturn(Stream.of(nwbRoadSectionDto1, nwbRoadSectionDto2));
-
-        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto1)).thenReturn(accessibilityNwbRoadSection1);
-        when(accessibilityNwbRoadSectionMapper.map(nwbRoadSectionDto2)).thenReturn(accessibilityNwbRoadSection2);
-
-        when(accessibilityNwbRoadSection1.roadSectionId()).thenReturn(11L);
-        when(accessibilityNwbRoadSection2.roadSectionId()).thenReturn(12L);
-
-        assertThat(accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(2))
-                .containsEntry(11L, accessibilityNwbRoadSection1);
-
-        verify(nwbRoadSectionCrudService).findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
-                2,
-                carriageWayTypeCodeInclusions,
-                null,
-                250);
-
-        clearCache.run();
-
-        assertThat(accessibilityNwbRoadSectionService.getRoadSectionsByIdForNwbVersion(2))
-                .containsEntry(11L, accessibilityNwbRoadSection1)
-                .containsEntry(12L, accessibilityNwbRoadSection2)
-                .hasSize(2);
-
-        verify(nwbRoadSectionCrudService, times(2)).findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                 2,
                 carriageWayTypeCodeInclusions,
                 null,

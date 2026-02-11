@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.dtos;
 
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,7 @@ public class TrafficSignPropertiesDto {
     private Integer roadNumber;
     // The API offers Integers, but we use long, so convert it to Long here to avoid a lot of conversions in our own
     // code. Road section id's can be null, for example when the signs are attached to buildings
+    @NotNull
     private Long roadSectionId;
     private LocalDate nwbVersion;
     private String countyName;

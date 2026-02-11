@@ -20,7 +20,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,7 @@ class AccessibilityNetworkProviderTest {
     private Snapper snapper;
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
 
     @Mock
     private GraphHopperNetwork graphHopperNetwork;
@@ -86,7 +86,7 @@ class AccessibilityNetworkProviderTest {
 
         Restrictions restrictions = new Restrictions(List.of(restriction));
 
-        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
@@ -107,12 +107,12 @@ class AccessibilityNetworkProviderTest {
                     .thenReturn(queryGraph);
 
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
-                    accessibilityContext,
+                    networkData,
                     restrictions,
                     from,
                     destination);
 
-            assertThat(accessibilityNetwork.getAccessibilityContext()).isEqualTo(accessibilityContext);
+            assertThat(accessibilityNetwork.getNetworkData()).isEqualTo(networkData);
             assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
             assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));
@@ -126,12 +126,12 @@ class AccessibilityNetworkProviderTest {
     void get_fromLocationCouldNotBeSnapped() {
         Restrictions restrictions = new Restrictions(List.of(restriction));
 
-        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.empty());
 
         assertThat(catchThrowable(() -> accessibilityNetworkProvider.get(
-                accessibilityContext,
+                networkData,
                 restrictions,
                 from,
                 destination)))
@@ -144,7 +144,7 @@ class AccessibilityNetworkProviderTest {
 
         Restrictions restrictions = new Restrictions(List.of(restriction));
 
-        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
@@ -161,12 +161,12 @@ class AccessibilityNetworkProviderTest {
                     .thenReturn(queryGraph);
 
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
-                    accessibilityContext,
+                    networkData,
                     restrictions,
                     from,
                     destination);
 
-            assertThat(accessibilityNetwork.getAccessibilityContext()).isEqualTo(accessibilityContext);
+            assertThat(accessibilityNetwork.getNetworkData()).isEqualTo(networkData);
             assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
             assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));

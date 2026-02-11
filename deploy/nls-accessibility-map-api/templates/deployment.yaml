@@ -62,28 +62,23 @@ spec:
             timeoutSeconds: 60
           volumeMounts:
             - mountPath: /application/config
-              name: nls-accessibility-map-api-secrets
+              name: secrets
               readOnly: true
-            - mountPath: /application/graphhopper
-              name: nls-accessibility-map-api-volume
             - mountPath: /application/heapdumps
-              name: nls-accessibility-map-api-heapdump-volume
-              subPath: {{ .Chart.Name }}
-            - mountPath: /application/trafficsigns
-              name: nls-accessibility-map-traffic-sign-cache
+              name: heap-dump
+              subPath: {{ $.Chart.Name }}
+            - mountPath: /application/cache
+              name: cache
       volumes:
-        - name: nls-accessibility-map-api-secrets
+        - name: secrets
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
               secretProviderClass: nls-accessibility-map-api-spc
-        - name: nls-accessibility-map-api-volume
-          persistentVolumeClaim:
-            claimName: nls-accessibility-map-api-pvc
-        - name: nls-accessibility-map-api-heapdump-volume
+        - name: heap-dump
           persistentVolumeClaim:
             claimName: heapdump-pvc-claim
-        - name: nls-accessibility-map-traffic-sign-cache
+        - name: cache
           persistentVolumeClaim:
-            claimName: nls-accessibility-map-traffic-sign-cache
+            claimName: nls-accessibility-map-cache

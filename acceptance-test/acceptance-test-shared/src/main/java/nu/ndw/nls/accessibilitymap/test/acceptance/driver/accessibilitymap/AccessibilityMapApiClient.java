@@ -68,27 +68,11 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
     @SneakyThrows
-    public Response<Void, Void> reloadGraphHopper() {
+    public Response<Void, Void> reloadCache() {
         Request<Void> request = Request.<Void>builder()
-                .id("reloadGraphHopper")
-                .method(HttpMethod.PUT)
-                .path("api/rest/static-road-data/accessibility-map/management/graph-hopper/reload")
-                .headers(Map.of(
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
-                ))
-                .build();
-
-        return request(
-                request, new ParameterizedTypeReference<>() {
-                });
-    }
-
-    @SneakyThrows
-    public Response<Void, Void> reloadTrafficSigns() {
-        Request<Void> request = Request.<Void>builder()
-                .id("reloadTrafficSigns")
-                .method(HttpMethod.PUT)
-                .path("api/rest/static-road-data/accessibility-map/management/traffic-sign/reload")
+                .id("reloadNetwork")
+                .method(HttpMethod.POST)
+                .path("api/rest/static-road-data/accessibility-map/actuator/accessibility-map-cache-reload")
                 .headers(Map.of(
                         HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
                 ))

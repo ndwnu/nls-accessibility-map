@@ -23,11 +23,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasons;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.AccessibilityReasonsMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -62,7 +62,7 @@ class AccessibilityReasonServiceTest {
     private AccessibilityNetwork accessibilityNetwork;
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
 
     @Mock
     private BaseGraph baseGraph;
@@ -139,8 +139,8 @@ class AccessibilityReasonServiceTest {
                 .endLocationLongitude(4d)
                 .build();
 
-        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
-        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
@@ -189,8 +189,8 @@ class AccessibilityReasonServiceTest {
                 .endLocationLongitude(4d)
                 .build();
 
-        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
-        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(PMap::isEmpty))).thenReturn(weighting);

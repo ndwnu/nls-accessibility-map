@@ -1,8 +1,7 @@
 Feature: Accessibility V2
 
   Scenario: Get - Vehicle width 2 meters - Destination reachable -
-    Given a simple Graph Hopper network
-    And graphHopper data is reloaded
+    Given a simple network
     And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
       | 5           | 11        | 0.5      | C12     |           | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
@@ -10,7 +9,6 @@ Feature: Accessibility V2
       | 3           | 4         | 0.1      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
       | 3           | 4         | 0.9      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
     When run TrafficSignUpdateCache
-    And traffic signs data is reloaded
     When request accessibility geojson for truck2MetersWide-destination3-7
     Then we expect accessibility geojson response truck2MetersWide-destination3-7
 
@@ -22,8 +20,7 @@ Feature: Accessibility V2
 
 
   Scenario: Get - Vehicle emission class euro 3 - Destination unreachable
-    Given a simple Graph Hopper network
-    And graphHopper data is reloaded
+    Given a simple network
     And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
       | 6           | 1         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000001 |
@@ -31,7 +28,6 @@ Feature: Accessibility V2
       | 1           | 2         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000003 |
       | 1           | 2         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000004 |
     When run TrafficSignUpdateCache
-    And traffic signs data is reloaded
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-unreachable
 

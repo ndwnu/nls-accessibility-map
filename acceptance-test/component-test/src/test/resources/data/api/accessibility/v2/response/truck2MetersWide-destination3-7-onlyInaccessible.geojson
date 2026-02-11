@@ -18,7 +18,7 @@
     "id" : 2,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0, 1.9000953683267154 ], [ 1.0, 10.0 ] ]
+      "coordinates" : [ [ 1.000000869996823, 1.9000962835420943 ], [ 1.0000006, 10.0000007 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",
@@ -31,7 +31,7 @@
     "id" : 3,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 5.0, 9.000027127389366 ], [ 5.0, 8.0 ] ]
+      "coordinates" : [ [ 5.0000005, 9.000027960764045 ], [ 5.0000005, 8.0000009 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",

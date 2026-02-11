@@ -4,13 +4,10 @@ spring:
     username: nls-maps
     password: nls-maps
 
-graphhopper:
-  dir: graphhopper
-
-
 nls:
   keycloak:
     url: http://nls-keycloak:8000/auth
+
 logging:
   level:
     root: INFO

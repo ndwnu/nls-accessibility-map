@@ -21,9 +21,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetw
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.RoadSectionTrafficSignAssigner;
-import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityContext;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -53,7 +53,7 @@ class BaseAccessibilityCalculatorTest {
     private AccessibilityNetwork accessibilityNetwork;
 
     @Mock
-    private AccessibilityContext accessibilityContext;
+    private NetworkData networkData;
 
     @Mock
     private GraphHopperNetwork graphHopperNetwork;
@@ -102,9 +102,9 @@ class BaseAccessibilityCalculatorTest {
         when(network.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
                 weightingNoRestrictions);
         when(accessibilityNetwork.getFrom()).thenReturn(from);
-        when(accessibilityNetwork.getAccessibilityContext()).thenReturn(accessibilityContext);
-        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(accessibilityContext.graphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(network);
 
         when(isochroneServiceFactory.createService(accessibilityNetwork)).thenReturn(isochroneService);
