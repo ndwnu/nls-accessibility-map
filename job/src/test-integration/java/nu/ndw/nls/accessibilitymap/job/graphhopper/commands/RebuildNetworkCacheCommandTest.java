@@ -1,0 +1,89 @@
+package nu.ndw.nls.accessibilitymap.job.graphhopper.commands;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import ch.qos.logback.classic.Level;
+import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.job.network.command.RebuildNetworkCacheCommand;
+import nu.ndw.nls.events.NlsEvent;
+import nu.ndw.nls.events.NlsEventType;
+import nu.ndw.nls.springboot.messaging.dtos.MessageConsumeResult;
+import nu.ndw.nls.springboot.messaging.functions.NlsEventConsumeFunction;
+import nu.ndw.nls.springboot.messaging.services.MessageService;
+import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+
+@ExtendWith(MockitoExtension.class)
+class RebuildNetworkCacheCommandTest {
+
+    private RebuildNetworkCacheCommand rebuildNetworkCacheCommand;
+
+    @Mock
+    private NetworkDataService networkDataService;
+
+    @Mock
+    private MessageService messageService;
+
+    @RegisterExtension
+    LoggerExtension loggerExtension = new LoggerExtension();
+
+    @BeforeEach
+    void setUp() {
+
+        rebuildNetworkCacheCommand = new RebuildNetworkCacheCommand(networkDataService, messageService);
+    }
+
+    @Test
+    void call() {
+
+        when(messageService.receive(eq(NlsEventType.NWB_IMPORTED_EVENT), any())).thenAnswer(answer -> {
+            NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
+            return MessageConsumeResult.builder()
+                    .result(function.apply(NlsEvent.builder().build()))
+                    .build();
+        });
+
+        assertThat(new CommandLine(rebuildNetworkCacheCommand).execute()).isZero();
+
+        verify(networkDataService).recompileData();
+    }
+
+    @Test
+    void call_unableToStoreNetwork() {
+
+        when(messageService.receive(eq(NlsEventType.NWB_IMPORTED_EVENT), any())).thenAnswer(answer -> {
+            NlsEventConsumeFunction<Integer> function = answer.getArgument(1);
+            return MessageConsumeResult.builder()
+                    .result(function.apply(NlsEvent.builder().build()))
+                    .build();
+        });
+        doThrow(new RuntimeException("error")).when(networkDataService).recompileData();
+
+        assertThat(new CommandLine(rebuildNetworkCacheCommand).execute()).isOne();
+
+        loggerExtension.containsLog(Level.ERROR, "And error occurred while creating or updating latest network", "error");
+    }
+
+    @Test
+    void annotation_class_command() {
+
+        AnnotationUtil.classContainsAnnotation(
+                rebuildNetworkCacheCommand.getClass(),
+                Command.class,
+                annotation -> assertThat(annotation.name()).isEqualTo("rebuildNetworkCache")
+        );
+    }
+}

@@ -19,14 +19,6 @@ import org.springframework.http.ResponseEntity;
 @ExtendWith(MockitoExtension.class)
 class MunicipalitiesApiDelegateImplTest {
 
-    private static final String MUNICIPALITY_ID_STRING = "GM0307";
-
-    private static final String MUNICIPALITY_ID_2_STRING = "GM0008";
-
-    private static final String MUNICIPALITY_ID_2 = "GM0008";
-
-    private static final String MUNICIPALITY_ID = "GM0307";
-
     @Mock
     private MunicipalityFeatureMapper municipalityFeatureMapper;
 
@@ -49,9 +41,9 @@ class MunicipalitiesApiDelegateImplTest {
     void getMunicipalities() {
 
         when(municipalityService.findAll()).thenReturn(List.of(municipality1, municipality2));
-        when(municipality1.id()).thenReturn(MUNICIPALITY_ID);
-        when(municipality2.id()).thenReturn(MUNICIPALITY_ID_2);
-        when(municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(List.of(municipality2, municipality1))).thenReturn(featureCollection);
+        when(municipality1.id()).thenReturn("GM0008");
+        when(municipality2.id()).thenReturn("GM0307");
+        when(municipalityFeatureMapper.mapToMunicipalitiesToGeoJson(List.of(municipality1, municipality2))).thenReturn(featureCollection);
 
         ResponseEntity<MunicipalityFeatureCollectionJson> response = municipalitiesApiDelegate.getMunicipalities();
 

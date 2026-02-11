@@ -1,0 +1,27 @@
+package nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto;
+
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.time.OffsetDateTime;
+import java.util.Set;
+import lombok.Builder;
+import lombok.With;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
+import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.ExportType;
+import org.springframework.validation.annotation.Validated;
+
+@Builder
+@With
+@Validated
+public record ExportProperties(
+        @NotNull String name,
+        @NotNull @NotEmpty Set<ExportType> exportTypes,
+        @NotNull Boolean publishEvents,
+        @NotNull OffsetDateTime startTime,
+        @NotNull AccessibilityRequest accessibilityRequest,
+        @NotNull GenerateConfiguration generateConfiguration,
+        @Positive double polygonMaxDistanceBetweenPoints) {
+
+}

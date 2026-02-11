@@ -51,7 +51,7 @@ class GraphHopperNetworkTest extends ValidationTest {
     @Test
     void toStringTest() {
         assertThat(graphHopperNetwork)
-                .hasToString("GraphHopperNetwork{nwbVersion=1}");
+                .hasToString("GraphHopperNetwork(nwbVersion=1)");
     }
 
     @Override

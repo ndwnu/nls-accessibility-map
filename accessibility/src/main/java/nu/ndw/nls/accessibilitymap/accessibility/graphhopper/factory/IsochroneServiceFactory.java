@@ -27,7 +27,7 @@ public class IsochroneServiceFactory {
 
     public IsochroneService createService(AccessibilityNetwork accessibilityNetwork) {
 
-        var network = accessibilityNetwork.getAccessibilityContext().graphHopperNetwork().network();
+        var network = accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network();
         var encodingManager = network.getEncodingManager();
 
         IsochroneMatchMapper isochroneMatchMapper = new IsochroneMatchMapper(

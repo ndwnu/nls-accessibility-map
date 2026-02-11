@@ -1,130 +1,4 @@
 services:
-  nls-keycloak:
-    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.4.7
-    command: start-dev --import-realm
-    hostname: nls-keycloak
-    environment:
-      - KEYCLOAK_ADMIN=nls
-      - KEYCLOAK_ADMIN_PASSWORD=nls
-      - KC_HOSTNAME=http://nls-keycloak:8000/auth
-      - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
-      - KC_HTTP_PORT=8000
-      - KC_HTTP_RELATIVE_PATH=/auth
-    expose:
-      - 8000
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./docker/nls-keycloak/config/realm-export-nls.json:/opt/keycloak/data/import/realm-export-nls.json
-      - ./docker/nls-keycloak/dump:/opt/keycloak/data/export/
-    networks:
-      - nls-accessibility-map-network
-
-  nls-accessibility-map-api:
-    build: docker/nls-accessibility-map-api
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - NLS_KEYCLOAK_URL=http://nls-keycloak:8000/auth
-      - NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP=false
-    ports:
-      - "8080:8080"
-    depends_on:
-      - nls-keycloak
-    networks:
-      - nls-accessibility-map-network
-    volumes:
-      - ./.tmp/graphhopper:/application/graphhopper
-      - ./.tmp/trafficsigns:/application/trafficsigns
-
-  nls-accessibility-map-api-component-test:
-    build: docker/nls-accessibility-map-api
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker,component-test
-      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
-      - NLS_KEYCLOAK_URL=http://nls-keycloak:8000/auth
-      - NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP=false
-    ports:
-      - "8080:8080"
-    depends_on:
-      - nls-keycloak
-    networks:
-      - nls-accessibility-map-network
-    volumes:
-      - ./.tmp/graphhopper:/application/graphhopper
-      - ./.tmp/trafficsigns:/application/trafficsigns
-
-  nls-accessibility-map-graphhopper-job:
-    build: docker/nls-accessibility-map-graphhopper-job
-    environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
-      - COMMAND=createOrUpdateNetwork
-    volumes:
-      - ./.tmp/graphhopper:/application/graphhopper
-    networks:
-      - nls-accessibility-map-network
-
-  nls-accessibility-map-graphhopper-configure-rabbitmq:
-    build: docker/nls-accessibility-map-graphhopper-job
-    environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
-      - COMMAND=configureRabbitMQ
-    networks:
-      - nls-accessibility-map-network
-
-  nls-accessibility-map-generator-jobs:
-    build: docker/nls-accessibility-map-generator-jobs
-    environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
-      - COMMAND=generateGeoJson
-    volumes:
-      - ./.tmp/graphhopper:/application/graphhopper
-      - ./.tmp/trafficsigns:/application/trafficsigns
-      - ./.tmp/map-generation-destination:/application/maps
-    networks:
-      - nls-accessibility-map-network
-
-  nls-accessibility-map-base-network-analyser-job:
-    build: docker/nls-accessibility-map-data-analyser-job
-    environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker,job-base-network
-    volumes:
-      - ./.tmp/graphhopper:/application/graphhopper
-      - ./.tmp/trafficsigns:/application/trafficsigns
-    networks:
-      - nls-accessibility-map-network
-
-  nls-accessibility-map-data-analyser-configure-rabbitmq:
-    build: docker/nls-accessibility-map-data-analyser-job
-    environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker,job-base-network
-      - COMMAND=configureRabbitMQ
-    volumes:
-      - ./.tmp/graphhopper:/application/graphhopper
-    networks:
-      - nls-accessibility-map-network
-
-  nls-accessibility-map-traffic-sign-analyser-job:
-    build: docker/nls-accessibility-map-data-analyser-job
-    environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
-    volumes:
-      - ./.tmp/graphhopper:/application/graphhopper
-      - ./.tmp/trafficsigns:/application/trafficsigns
-    networks:
-      - nls-accessibility-map-network
-
-  nls-accessibility-map-traffic-sign-update-cache-job:
-    build: docker/nls-accessibility-map-traffic-sign-job
-    environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
-      - COMMAND=update-cache
-    volumes:
-      - ./.tmp/graphhopper:/application/graphhopper
-      - ./.tmp/trafficsigns:/application/trafficsigns
-    networks:
-      - nls-accessibility-map-network
-
   nls-postgres:
     image: ndwnls.azurecr.io/nls-postgres-it-container:20250726.2
     ports:
@@ -151,19 +25,66 @@ services:
     networks:
       - nls-accessibility-map-network
 
-  accessibility-wiremock-stub:
-    hostname: accessibility-wiremock-stub
+  accessibility-wiremock:
+    hostname: accessibility-wiremock
     image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.0.0-1
     volumes:
-      - ./docker/accessibility-wiremock-stub/mappings:/home/wiremock/mappings
-      - ./docker/accessibility-wiremock-stub/responses:/home/wiremock/__files/responses
-      - ./docker/accessibility-wiremock-stub/extensions:/var/wiremock/extensions
+      - ./docker/accessibility-wiremock/extensions:/var/wiremock/extensions
 
     command: --port 8888 --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
     ports:
       - "8888:8888"
     networks:
       - nls-accessibility-map-network
+
+  nls-keycloak:
+    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.4.7
+    command: start-dev --import-realm
+    hostname: nls-keycloak
+    environment:
+      - KEYCLOAK_ADMIN=nls
+      - KEYCLOAK_ADMIN_PASSWORD=nls
+      - KC_HOSTNAME=http://nls-keycloak:8000/auth
+      - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
+      - KC_HTTP_PORT=8000
+      - KC_HTTP_RELATIVE_PATH=/auth
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./docker/nls-keycloak/config/realm-export-nls.json:/opt/keycloak/data/import/realm-export-nls.json
+      - ./docker/nls-keycloak/dump:/opt/keycloak/data/export/
+    networks:
+      - nls-accessibility-map-network
+
+  nls-accessibility-map-api-component-test:
+    build: docker/nls-accessibility-map-api
+    environment:
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - NLS_KEYCLOAK_URL=http://nls-keycloak:8000/auth
+      - NU_NDW_NLS_ACCESSIBILITYMAP_TRAFFICSIGNS_CACHE_FAILONNODATAONSTARTUP=false
+    ports:
+      - "8080:8080"
+    depends_on:
+      - nls-keycloak
+    networks:
+      - nls-accessibility-map-network
+    volumes:
+      - ./.tmp:/application/.tmp/
+
+  nls-accessibility-map-job:
+    build: docker/nls-accessibility-map-job
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./.tmp:/application/.tmp/
+    environment:
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
+    networks:
+      - nls-accessibility-map-network
+
 
 networks:
   nls-accessibility-map-network:

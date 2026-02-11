@@ -1,0 +1,28 @@
+hostDatabase: localhost
+hostEventBroker: localhost
+hostWiremock: localhost
+
+nu:
+  ndw:
+    nls:
+      springboot:
+        job:
+          run-as-service: true
+        messaging:
+          broker-uri: amqp://guest:guest@${hostEventBroker}:5672?heartbeat=300
+      accessibilitymap:
+        network:
+          cache:
+            folder: "./.tmp/network"
+        trafficSigns:
+          cache:
+            folder: "./.tmp/trafficSigns/"
+        jobs:
+          generate:
+            root-export-directory: "./.tmp/map-generation-destination"
+            prettyPrintJson: true
+management:
+  datadog:
+    metrics:
+      export:
+        enabled: false

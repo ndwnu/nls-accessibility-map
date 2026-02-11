@@ -15,7 +15,7 @@ target
 *.versionsBackup
 # API and jobs copy application JARs to Docker directory after compiling, for Docker to have it in context for building.
 docker/**/application.jar
-docker/accessibility-wiremock-stub/responses/realdata-*
+docker/accessibility-wiremock/responses/realdata-*
 
 **/application-local*.yml
 secrets-*.yaml

@@ -15,6 +15,14 @@
 
   <dependencies>
     <dependency>
+      <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>messaging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>nu.ndw</groupId>
+      <artifactId>nls-events</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
@@ -138,6 +146,7 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>${openapi-generator-maven-plugin.version}</version>
         <executions>
           <execution>
             <id>generate-open-api</id>

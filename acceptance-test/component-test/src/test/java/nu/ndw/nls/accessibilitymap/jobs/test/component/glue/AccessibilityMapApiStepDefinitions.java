@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.List;
@@ -32,24 +31,6 @@ public class AccessibilityMapApiStepDefinitions {
     private final AccessibilityMapApiClient accessibilityMapApiClient;
 
     private final TestDataProvider testDataProvider;
-
-    @And("graphHopper data is reloaded")
-    public void graphhopperDataIsReloaded() {
-
-        Response<Void, Void> response = accessibilityMapApiClient.reloadGraphHopper();
-        assertThat(response.containsError())
-                .withFailMessage("Reloading graphhopper failed. %s", response.error())
-                .isFalse();
-    }
-
-    @And("traffic signs data is reloaded")
-    public void trafficSignsDataIsReloaded() {
-
-        Response<Void, Void> response = accessibilityMapApiClient.reloadTrafficSigns();
-        assertThat(response.containsError())
-                .withFailMessage("Reloading traffic signs failed. %s", response.error())
-                .isFalse();
-    }
 
     @When("request accessibility for")
     public void requestAccessibilityFor(AccessibilityRequest accessibilityRequest) {
