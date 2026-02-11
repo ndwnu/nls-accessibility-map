@@ -81,50 +81,44 @@ public class AccessibilityService {
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
 
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            CompletableFuture<Collection<RoadSection>> accessibleRoadsSectionsWithoutAppliedRestrictionsFuture =
+            CompletableFuture<Collection<RoadSection>> roadsSectionsWithoutAppliedRestrictionsFuture =
                     CompletableFuture.supplyAsync(
                             () -> baseAccessibilityCalculator.calculate(
                                     accessibilityNetwork,
                                     accessibilityRequest.municipalityId(),
                                     accessibilityRequest.searchRadiusInMeters()), executor);
 
-            CompletableFuture<Collection<RoadSection>> accessibleRoadsSectionsWithAppliedRestrictionsFuture =
+            CompletableFuture<Collection<RoadSection>> roadsSectionsWithAppliedRestrictionsFuture =
                     CompletableFuture.supplyAsync(
                             () -> calculateRoadsSectionsWithAppliedRestrictions(
                                     accessibilityRequest,
                                     accessibilityNetwork), executor);
 
-            CompletableFuture.allOf(
-                    accessibleRoadsSectionsWithoutAppliedRestrictionsFuture,
-                    accessibleRoadsSectionsWithAppliedRestrictionsFuture
-            ).join();
+            return roadsSectionsWithoutAppliedRestrictionsFuture
+                    .thenCombine(
+                            roadsSectionsWithAppliedRestrictionsFuture,
+                            (roadsSectionsWithoutAppliedRestrictions, roadsSectionsWithAppliedRestrictions) -> {
+                                Collection<RoadSection> unroutableRoadSections = new ArrayList<>();
+                                if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
+                                    unroutableRoadSections.addAll(missingRoadSectionProvider.get(
+                                            networkData,
+                                            accessibilityRequest.municipalityId(),
+                                            roadsSectionsWithoutAppliedRestrictions,
+                                            false));
+                                }
 
-            Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
-                    accessibleRoadsSectionsWithoutAppliedRestrictionsFuture.join();
+                                Accessibility accessibility = buildAccessibility(
+                                        accessibilityRequest,
+                                        roadsSectionsWithoutAppliedRestrictions,
+                                        roadsSectionsWithAppliedRestrictions,
+                                        unroutableRoadSections,
+                                        accessibilityNetwork);
 
-            Collection<RoadSection> accessibleRoadsSectionsWithAppliedRestrictions =
-                    accessibleRoadsSectionsWithAppliedRestrictionsFuture.join();
-
-            Collection<RoadSection> unroutableRoadSections = new ArrayList<>();
-            if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
-                unroutableRoadSections.addAll(missingRoadSectionProvider.get(
-                        networkData,
-                        accessibilityRequest.municipalityId(),
-                        accessibleRoadsSectionsWithoutAppliedRestrictions,
-                        false));
-            }
-
-            Accessibility accessibility = buildAccessibility(
-                    accessibilityRequest,
-                    accessibleRoadsSectionsWithoutAppliedRestrictions,
-                    accessibleRoadsSectionsWithAppliedRestrictions,
-                    unroutableRoadSections,
-                    accessibilityNetwork);
-
-            log.debug(
-                    "Accessibility calculation done. It took: {} ms",
-                    MILLIS.between(startTimeCalculatingAccessibility, clockService.now()));
-            return accessibility;
+                                log.debug(
+                                        "Accessibility calculation done. It took: {} ms",
+                                        MILLIS.between(startTimeCalculatingAccessibility, clockService.now()));
+                                return accessibility;
+                            }).join();
         }
     }
 
