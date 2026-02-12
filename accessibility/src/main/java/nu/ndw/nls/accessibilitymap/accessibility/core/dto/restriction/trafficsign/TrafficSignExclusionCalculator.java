@@ -47,13 +47,8 @@ public class TrafficSignExclusionCalculator {
             };
 
     private static final BiPredicate<TrafficSign, AccessibilityRequest> isOutsideOfBoundingBox =
-            (trafficSign, accessibilityRequest) -> {
-                if (Objects.isNull(accessibilityRequest.boundingBox())) {
-                    return false;
-                }
-
-                return !accessibilityRequest.boundingBox().contains(trafficSign.latitude(), trafficSign.longitude());
-            };
+            (trafficSign, accessibilityRequest) ->
+                    !accessibilityRequest.searchArea().contains(trafficSign.latitude(), trafficSign.longitude());
 
     public static boolean isNotExcluded(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
         return !hasExclusionsForZoneCodeTypes

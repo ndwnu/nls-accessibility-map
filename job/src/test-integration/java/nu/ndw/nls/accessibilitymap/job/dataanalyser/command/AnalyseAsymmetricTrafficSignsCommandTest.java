@@ -76,7 +76,7 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
                                 .startLocationLatitude(2d)
                                 .startLocationLongitude(3d)
                                 .trafficSignTypes(Set.of(trafficSignType))
-                                .searchRadiusInMeters(4d)
+                                .maxSearchDistanceInMeters(4d)
                                 .build())
                         .reportIssues(true)
                         .build()

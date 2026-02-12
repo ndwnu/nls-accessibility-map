@@ -90,7 +90,7 @@ class NetworkAnalyserServiceTest {
                 .timestamp(timestamp)
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
-                .searchRadiusInMeters(4d)
+                .maxSearchDistanceInMeters(4d)
                 .addMissingRoadsSectionsFromNwb(true)
                 .build();
 
@@ -142,6 +142,6 @@ class NetworkAnalyserServiceTest {
                 }));
         loggerExtension.containsLog(
                 Level.INFO, "Analysing with the following properties: AnalyseNetworkConfiguration[name=name, "
-                            + "reportIssues=true, searchRadiusInMeters=4.0, startLocationLatitude=2.0, startLocationLongitude=3.0]");
+                            + "reportIssues=true, maxSearchDistanceInMeters=4.0, startLocationLatitude=2.0, startLocationLongitude=3.0]");
     }
 }

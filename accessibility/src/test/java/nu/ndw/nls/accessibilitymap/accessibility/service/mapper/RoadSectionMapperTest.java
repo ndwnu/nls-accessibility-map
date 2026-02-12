@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -6,11 +6,14 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +43,9 @@ class RoadSectionMapperTest {
     @Mock
     private LineString geometry;
 
+    @Mock
+    private Restriction restriction;
+
     @BeforeEach
     void setUp() {
         roadSectionMapper = new RoadSectionMapper();
@@ -62,7 +68,9 @@ class RoadSectionMapperTest {
         when(isochroneMatch.isReversed()).thenReturn(isReversed);
         when(isochroneMatch.getGeometry()).thenReturn(geometry);
 
-        Collection<RoadSection> roadSections = roadSectionMapper.mapToRoadSections(isochroneMatches);
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = new HashMap<>();
+        restrictionsByEdgeKey.put(EDGE_KEY, List.of(restriction));
+        Collection<RoadSection> roadSections = roadSectionMapper.mapToRoadSections(isochroneMatches, restrictionsByEdgeKey);
 
         assertThat(roadSections)
                 .isNotEmpty()
@@ -90,14 +98,13 @@ class RoadSectionMapperTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void validateSegments(
-            DirectionalSegment segment,
-            RoadSectionFragment roadSectionFragment,
-            Direction direction) {
+    private void validateSegments(DirectionalSegment segment, RoadSectionFragment roadSectionFragment, Direction direction) {
+
         assertThat(segment.getId()).isEqualTo(EDGE_KEY);
         assertThat(segment.getDirection()).isEqualTo(direction);
         assertThat(segment.getRoadSectionFragment()).isEqualTo(roadSectionFragment);
         assertThat(segment.isAccessible()).isTrue();
         assertThat(segment.getLineString()).isEqualTo(geometry);
+        assertThat(segment.getRestrictions()).isEqualTo(List.of(restriction));
     }
 }

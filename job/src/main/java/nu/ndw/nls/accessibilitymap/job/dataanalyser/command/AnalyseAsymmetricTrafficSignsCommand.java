@@ -71,7 +71,7 @@ public class AnalyseAsymmetricTrafficSignsCommand implements Callable<Integer> {
                                 .trafficSignTypes(trafficSignTypes)
                                 .startLocationLatitude(startLocationLatitude)
                                 .startLocationLongitude(startLocationLongitude)
-                                .searchRadiusInMeters(searchRadiusInMeters)
+                                .maxSearchDistanceInMeters(searchRadiusInMeters)
                                 .build())
                         .reportIssues(reportIssues)
                         .build();

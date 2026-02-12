@@ -60,7 +60,7 @@ public class IssueBuilder {
 
         recordsList.add(DataLinkRecordJson.builder()
                 .type(DATA_LINK_RECORD_TYPE_ROAD_SECTION)
-                .id(String.valueOf(directionalSegment.getRoadSectionId()))
+                .id(String.valueOf(directionalSegment.getRoadSectionFragment().getRoadSection().getId()))
                 .build());
 
         DataLinkJson dataLinkJsonTrafficSign = DataLinkJson.builder()

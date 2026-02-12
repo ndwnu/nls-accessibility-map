@@ -6,7 +6,6 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.log.LogUtil.keyValu
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -24,17 +24,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.BaseAccessibilityCalculator;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RoadSectionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebugger;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
@@ -46,15 +40,11 @@ public class AccessibilityService {
 
     private final LocationFactory locationFactory;
 
-    private final IsochroneServiceFactory isochroneServiceFactory;
-
     private final RestrictionService restrictionService;
-
-    private final RoadSectionMapper roadSectionMapper;
 
     private final ClockService clockService;
 
-    private final BaseAccessibilityCalculator baseAccessibilityCalculator;
+    private final AccessibilityCalculator accessibilityCalculator;
 
     private final RoadSectionCombinator roadSectionCombinator;
 
@@ -64,13 +54,18 @@ public class AccessibilityService {
 
     private final AccessibilityNetworkProvider accessibilityNetworkProvider;
 
+    private final AccessibilityDebugger accessibilityDebugger;
+
     @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
             @Valid NetworkData networkData,
             @Valid AccessibilityRequest accessibilityRequest) throws AccessibilityException {
 
+        accessibilityDebugger.writeDebug(accessibilityRequest);
+
         log.info("Calculating accessibility for {}", keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest));
         Restrictions restrictions = restrictionService.findAllBy(accessibilityRequest);
+        accessibilityDebugger.writeDebug(restrictions);
 
         AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                 networkData,
@@ -83,43 +78,42 @@ public class AccessibilityService {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             CompletableFuture<Collection<RoadSection>> accessibleRoadsSectionsWithoutAppliedRestrictionsFuture =
                     CompletableFuture.supplyAsync(
-                            () -> baseAccessibilityCalculator.calculate(
-                                    accessibilityNetwork,
-                                    accessibilityRequest.municipalityId(),
-                                    accessibilityRequest.searchRadiusInMeters()), executor);
+                            () -> accessibilityCalculator.calculateWithoutRestrictions(accessibilityRequest, accessibilityNetwork),
+                            executor);
 
             CompletableFuture<Collection<RoadSection>> accessibleRoadsSectionsWithAppliedRestrictionsFuture =
                     CompletableFuture.supplyAsync(
-                            () -> calculateRoadsSectionsWithAppliedRestrictions(
-                                    accessibilityRequest,
-                                    accessibilityNetwork), executor);
+                            () -> accessibilityCalculator.calculateWithRestrictions(accessibilityRequest, accessibilityNetwork)
+                            , executor);
 
-            CompletableFuture.allOf(
-                    accessibleRoadsSectionsWithoutAppliedRestrictionsFuture,
-                    accessibleRoadsSectionsWithAppliedRestrictionsFuture
-            ).join();
-
-            Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions =
-                    accessibleRoadsSectionsWithoutAppliedRestrictionsFuture.join();
-
-            Collection<RoadSection> accessibleRoadsSectionsWithAppliedRestrictions =
-                    accessibleRoadsSectionsWithAppliedRestrictionsFuture.join();
+            AtomicReference<Collection<RoadSection>> accessibleRoadsSectionsWithoutAppliedRestrictions = new AtomicReference<>();
+            AtomicReference<Collection<RoadSection>> accessibleRoadsSectionsWithAppliedRestrictions = new AtomicReference<>();
+            accessibleRoadsSectionsWithoutAppliedRestrictionsFuture
+                    .thenAcceptBoth(
+                            accessibleRoadsSectionsWithAppliedRestrictionsFuture,
+                            (withoutRestrictions, withRestrictions) -> {
+                                accessibleRoadsSectionsWithoutAppliedRestrictions.set(withoutRestrictions);
+                                accessibleRoadsSectionsWithAppliedRestrictions.set(withRestrictions);
+                            })
+                    .join();
 
             Collection<RoadSection> unroutableRoadSections = new ArrayList<>();
             if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
-                unroutableRoadSections.addAll(missingRoadSectionProvider.get(
+                unroutableRoadSections.addAll(missingRoadSectionProvider.findAll(
                         networkData,
                         accessibilityRequest.municipalityId(),
-                        accessibleRoadsSectionsWithoutAppliedRestrictions,
-                        false));
+                        accessibleRoadsSectionsWithoutAppliedRestrictions.get(),
+                        false,
+                        accessibilityRequest.requestArea()));
             }
 
             Accessibility accessibility = buildAccessibility(
                     accessibilityRequest,
-                    accessibleRoadsSectionsWithoutAppliedRestrictions,
-                    accessibleRoadsSectionsWithAppliedRestrictions,
+                    accessibleRoadsSectionsWithoutAppliedRestrictions.get(),
+                    accessibleRoadsSectionsWithAppliedRestrictions.get(),
                     unroutableRoadSections,
                     accessibilityNetwork);
+            accessibilityDebugger.writeDebug(accessibility);
 
             log.debug(
                     "Accessibility calculation done. It took: {} ms",
@@ -197,28 +191,6 @@ public class AccessibilityService {
         return combinedRoadSections.stream()
                 .filter(roadSection -> roadSection.getId() == roadSectionId)
                 .findFirst();
-    }
-
-    private Collection<RoadSection> calculateRoadsSectionsWithAppliedRestrictions(
-            AccessibilityRequest accessibilityRequest,
-            AccessibilityNetwork accessibilityNetwork) {
-
-        RestrictionWeightingAdapter weighting = new RestrictionWeightingAdapter(
-                accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network()
-                        .createWeighting(NetworkConstants.CAR_PROFILE, new PMap()),
-                accessibilityNetwork.getBlockedEdges());
-
-        IsochroneService isochroneService = isochroneServiceFactory.createService(accessibilityNetwork);
-
-        return roadSectionMapper.mapToRoadSections(
-                isochroneService.getIsochroneMatchesByMunicipalityId(
-                        IsochroneArguments.builder()
-                                .weighting(weighting)
-                                .municipalityId(accessibilityRequest.municipalityId())
-                                .searchDistanceInMetres(accessibilityRequest.searchRadiusInMeters())
-                                .build(),
-                        accessibilityNetwork.getQueryGraph(),
-                        accessibilityNetwork.getFrom()));
     }
 }
 

@@ -223,7 +223,7 @@ class GenerateCommandTest {
                         .trafficSignTypes(trafficSignTypes)
                         .startLocationLatitude(1d)
                         .startLocationLongitude(2d)
-                        .searchRadiusInMeters(3d)
+                        .maxSearchDistanceInMeters(3d)
                         .trafficSignTextSignTypes(includeTimeWindowedSigns ? Set.of(TextSignType.TIME_PERIOD) : null)
                         .build());
         assertThat(exportProperties.generateConfiguration()).isEqualTo(generateConfiguration);

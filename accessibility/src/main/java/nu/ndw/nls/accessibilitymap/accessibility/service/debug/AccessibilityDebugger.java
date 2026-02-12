@@ -35,6 +35,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AccessibilityDebugger {
 
+    private static final int METERS_PER_DEGREE = 111_320;
+    private static final int CIRCLE_RESOLUTION = 64;
+
     private final DebugConfiguration debugConfiguration;
 
     private final JtsPointJsonMapper jtsPointJsonMapper;
@@ -152,7 +155,7 @@ public class AccessibilityDebugger {
                                         "searchRadius",
                                         accessibilityRequest.startLocationLatitude(),
                                         accessibilityRequest.startLocationLongitude(),
-                                        accessibilityRequest.searchRadiusInMeters())
+                                        accessibilityRequest.maxSearchDistanceInMeters())
                         )
                         .filter(Optional::isPresent)
                         .map(Optional::get)
@@ -191,24 +194,25 @@ public class AccessibilityDebugger {
                 .build());
     }
 
+    @SuppressWarnings("java:S109")
     private Coordinate[] createCircleCoordinates(double centerLongitude, double centerLatitude, double radiusInMeters) {
-        int numberOfPoints = 64;
-        Coordinate[] coordinates = new Coordinate[numberOfPoints + 1];
+
+        Coordinate[] coordinates = new Coordinate[CIRCLE_RESOLUTION + 1];
 
         // Approximate conversion: 1 degree latitude ≈ 111,320 meters
         // 1 degree longitude ≈ 111,320 * cos(latitude) meters
-        double latRadiusInDegrees = radiusInMeters / 111320.0;
-        double lonRadiusInDegrees = radiusInMeters / (111320.0 * Math.cos(Math.toRadians(centerLatitude)));
+        double latRadiusInDegrees = radiusInMeters / METERS_PER_DEGREE;
+        double lonRadiusInDegrees = radiusInMeters / (METERS_PER_DEGREE * Math.cos(Math.toRadians(centerLatitude)));
 
-        for (int i = 0; i < numberOfPoints; i++) {
-            double angle = 2 * Math.PI * i / numberOfPoints;
+        for (int i = 0; i < CIRCLE_RESOLUTION; i++) {
+            double angle = 2 * Math.PI * i / CIRCLE_RESOLUTION;
             double lon = centerLongitude + lonRadiusInDegrees * Math.cos(angle);
             double lat = centerLatitude + latRadiusInDegrees * Math.sin(angle);
             coordinates[i] = new Coordinate(lon, lat);
         }
 
         // Close the circle by repeating the first coordinate
-        coordinates[numberOfPoints] = coordinates[0];
+        coordinates[CIRCLE_RESOLUTION] = coordinates[0];
 
         return coordinates;
     }
