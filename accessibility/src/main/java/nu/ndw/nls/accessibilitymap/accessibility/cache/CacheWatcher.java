@@ -29,7 +29,7 @@ public class CacheWatcher<TYPE> {
      * a File watcher, but as it turns out, that is not reliable on azure.
      */
     @EventListener(ApplicationStartedEvent.class)
-    @SuppressWarnings({"java:S1166", "java:S2142", "java:S134"})
+    @SuppressWarnings("java:S2142")
     public void watchFileChanges() throws IOException {
         if (!cacheConfiguration.isWatchForUpdates()) {
             return;
