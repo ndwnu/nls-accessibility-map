@@ -69,7 +69,7 @@ class AnalyseBaseNetworkCommandTest {
                 AnalyseNetworkConfiguration.builder()
                         .startLocationLatitude(2d)
                         .startLocationLongitude(3d)
-                        .searchRadiusInMeters(4d)
+                        .maxSearchDistanceInMeters(4d)
                         .reportIssues(true)
                         .build()
         );

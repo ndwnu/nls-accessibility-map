@@ -83,7 +83,7 @@ class NetworkAnalyserServiceTest {
                 .reportIssues(true)
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
-                .searchRadiusInMeters(4d)
+                .maxSearchDistanceInMeters(4d)
                 .build();
 
         accessibilityRequest = AccessibilityRequest.builder()
