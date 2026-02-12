@@ -35,6 +35,12 @@ class AccessibilityRequestTest extends ValidationTest {
     }
 
     @Test
+    void constant_boundingBoxGlobe() {
+
+        assertThat(BBox.fromPoints(-90, -180, 90, 180)).isEqualTo(AccessibilityRequest.BOUNDING_BOX_GLOBE);
+    }
+
+    @Test
     void validate() {
 
         validate(accessibilityRequest, List.of(), List.of());
