@@ -76,7 +76,7 @@ class ErrorHandlerControllerTest {
         ResponseEntity<APIErrorJson> response = errorHandlerController.handleApiException(exception);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo(exception.getMessage());
+        assertThat(response.getBody().getMessage()).isEqualTo("Message");
     }
 
     @Test

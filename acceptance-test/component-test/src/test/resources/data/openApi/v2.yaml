@@ -26,6 +26,10 @@ paths:
             examples:
               accessibilityRequestByMunicipality:
                 $ref: "#/components/examples/AccessibilityRequestByMunicipality"
+              accessibilityRequestByMunicipalityWithCustomRestrictions:
+                $ref: "#/components/examples/AccessibilityRequestByMunicipalityWithCustomRestrictions"
+              accessibilityRequestByAreaWithCustomRestrictions:
+                $ref: "#/components/examples/AccessibilityRequestByAreaWithCustomRestrictions"
       responses:
         "200":
           description: "OK"
@@ -392,7 +396,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/AreaRequest'
         - type: "object"
-          description: "Defines a bounding box area by coordinates"
+          description: "Defines a bounding box area by coordinates. When using this type you are required to provide a from location."
           required:
             - minLatitude
             - maxLatitude
@@ -1051,6 +1055,72 @@ components:
         area:
           type: municipality
           id: GM0344
+        vehicle:
+          type: truck
+          width: 2
+          height: 2.5
+          weight: 20
+          length: 5.2
+          axleLoad: 4
+          hasTrailer: false
+          emissionClass: euro_6
+          fuelTypes:
+            - petrol
+        exclusions:
+          emissionZoneTypes:
+            - low_emission_zone
+          emissionZoneIds:
+            - NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47
+    AccessibilityRequestByMunicipalityWithCustomRestrictions:
+      summary: "Accessibility request by area with custom restrictions"
+      value:
+        destination:
+          latitude: 52.093784
+          longitude: 5.152890
+        area:
+          type: municipality
+          id: GM0344
+        restrictions:
+          - type: roadSection
+            id: 269305008
+            direction: forward
+            fraction: 0
+        vehicle:
+          type: truck
+          width: 2
+          height: 2.5
+          weight: 20
+          length: 5.2
+          axleLoad: 4
+          hasTrailer: false
+          emissionClass: euro_6
+          fuelTypes:
+            - petrol
+        exclusions:
+          emissionZoneTypes:
+            - low_emission_zone
+          emissionZoneIds:
+            - NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47
+    AccessibilityRequestByAreaWithCustomRestrictions:
+      summary: "Accessibility request by area with custom restrictions"
+      value:
+        destination:
+          latitude: 52.093784
+          longitude: 5.152890
+        from:
+          latitude: 5.001547943824298
+          longitude: 52.078092444078244
+        area:
+          type: boundingBox
+          minLatitude: 51.534549
+          minLongitude: 52.02628198454681
+          maxLatitude: 52.142050597982795
+          maxLongitude: 5.1951549701599244
+        restrictions:
+          - type: roadSection
+            id: 269305008
+            direction: forward
+            fraction: 0
         vehicle:
           type: truck
           width: 2
