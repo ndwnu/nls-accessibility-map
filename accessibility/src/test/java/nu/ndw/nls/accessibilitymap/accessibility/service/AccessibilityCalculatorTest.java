@@ -99,6 +99,7 @@ class AccessibilityCalculatorTest {
     @Test
     void calculateWithoutRestrictions() {
 
+        when(accessibilityNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
         when(network.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
                 weightingNoRestrictions);
@@ -121,7 +122,7 @@ class AccessibilityCalculatorTest {
                 eq(from)))
                 .thenReturn(List.of(isochroneMatch));
 
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch), Map.of())).thenReturn(List.of(roadSection));
+        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch), restrictionsByEdgeKey)).thenReturn(List.of(roadSection));
 
         Collection<RoadSection> baseAccessibility = accessibilityCalculator.calculateWithoutRestrictions(
                 accessibilityRequest,
