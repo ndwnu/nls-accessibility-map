@@ -224,6 +224,8 @@ class GenerateCommandTest {
                         .startLocationLatitude(1d)
                         .startLocationLongitude(2d)
                         .maxSearchDistanceInMeters(3d)
+                        .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
+                        .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                         .trafficSignTextSignTypes(includeTimeWindowedSigns ? Set.of(TextSignType.TIME_PERIOD) : null)
                         .build());
         assertThat(exportProperties.generateConfiguration()).isEqualTo(generateConfiguration);

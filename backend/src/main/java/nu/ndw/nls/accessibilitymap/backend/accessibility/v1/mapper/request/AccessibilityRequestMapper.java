@@ -55,6 +55,12 @@ public class AccessibilityRequestMapper {
                         municipality.bounds().latitudeTo(),
                         municipality.bounds().longitudeTo()
                 ))
+                .searchArea(BBox.fromPoints(
+                        municipality.bounds().latitudeFrom(),
+                        municipality.bounds().longitudeFrom(),
+                        municipality.bounds().latitudeTo(),
+                        municipality.bounds().longitudeTo()
+                ))
                 .maxSearchDistanceInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
                 .startLocationLatitude(municipality.startCoordinateLatitude())
                 .startLocationLongitude(municipality.startCoordinateLongitude())
