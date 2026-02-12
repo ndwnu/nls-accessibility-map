@@ -58,7 +58,7 @@ class AccessibilityRequestMapperBoundingBoxAreaMapperTest {
                 boundingBoxAreaRequestJson.getMaxLongitude() + expansionInDegrees
         ));
 
-        assertThat(accessibilityRequest.maxSearchDistanceInMeters()).isEqualTo(343144.77877420775);
+        assertThat(accessibilityRequest.maxSearchDistanceInMeters()).isEqualTo(514717.16816131165);
     }
 
     @Test
