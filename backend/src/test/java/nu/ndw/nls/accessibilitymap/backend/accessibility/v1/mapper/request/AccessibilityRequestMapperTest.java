@@ -141,7 +141,7 @@ class AccessibilityRequestMapperTest {
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
                 .addMissingRoadsSectionsFromNwb(true)
-                .boundingBox(BBox.fromPoints(DEFAULT_LATITUDE_COORDINATE, DEFAULT_LONGITUDE_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
+                .requestArea(BBox.fromPoints(DEFAULT_LATITUDE_COORDINATE, DEFAULT_LONGITUDE_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
                 .transportTypes(Set.of(TransportType.CAR))
                 .vehicleHeightInCm((double) DEFAULT_VEHICLE_HEIGHT * 100)
                 .vehicleLengthInCm((double) DEFAULT_VEHICLE_LENGTH * 100)
@@ -153,7 +153,7 @@ class AccessibilityRequestMapperTest {
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
                 .emissionClasses(Set.of(EmissionClass.EURO_1))
                 .fuelTypes(Set.of(FuelType.PETROL))
-                .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
+                .maxSearchDistanceInMeters(DEFAULT_SEARCH_DISTANCE)
                 .excludeRestrictionsWithEmissionZoneIds(Set.of("id1"))
                 .excludeRestrictionsWithEmissionZoneTypes(Set.of(EmissionZoneType.LOW))
                 .build());
@@ -190,13 +190,13 @@ class AccessibilityRequestMapperTest {
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
-                .boundingBox(BBox.fromPoints(DEFAULT_LATITUDE_COORDINATE, DEFAULT_LONGITUDE_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
+                .requestArea(BBox.fromPoints(DEFAULT_LATITUDE_COORDINATE, DEFAULT_LONGITUDE_COORDINATE, MAX_LATITUDE, MAX_LONGITUDE))
                 .transportTypes(Set.of(TransportType.CAR))
                 .startLocationLongitude(DEFAULT_LONGITUDE_COORDINATE)
                 .startLocationLatitude(DEFAULT_LATITUDE_COORDINATE)
                 .municipalityId(DEFAULT_MUNICIPALITY_ID)
                 .addMissingRoadsSectionsFromNwb(true)
-                .searchRadiusInMeters(DEFAULT_SEARCH_DISTANCE)
+                .maxSearchDistanceInMeters(DEFAULT_SEARCH_DISTANCE)
                 .build());
     }
 }

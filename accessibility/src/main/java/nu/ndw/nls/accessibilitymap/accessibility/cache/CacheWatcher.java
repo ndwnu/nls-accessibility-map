@@ -42,7 +42,7 @@ public class CacheWatcher<TYPE> {
             long lastModified = cacheConfiguration.getActiveVersion().lastModified();
             log.info("Watching file changes on {}", cacheConfiguration.getActiveVersion());
 
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     if (lastModified != cacheConfiguration.getActiveVersion().lastModified()) {
                         lastModified = cacheConfiguration.getActiveVersion().lastModified();
@@ -55,7 +55,7 @@ public class CacheWatcher<TYPE> {
                     try {
                         Thread.sleep(cacheConfiguration.getFileWatcherInterval().toMillis());
                     } catch (InterruptedException exception) {
-                        log.error("Failed to sleep", exception);
+                        log.warn("Failed to sleep", exception);
                     }
                 }
             }

@@ -9,8 +9,6 @@ import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Properties;
 @Builder
 public class RoadSectionSegmentProperties implements Properties {
 
-    private final String type;
-
     private final long roadSectionId;
 
     private final int roadSectionFragmentId;

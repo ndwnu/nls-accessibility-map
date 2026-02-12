@@ -36,6 +36,8 @@ class TrafficSignDataServiceTest {
 
     private Path testDir;
 
+    private TrafficSignCacheConfiguration trafficSignCacheConfiguration;
+
     @BeforeEach
     void setUp() throws IOException {
 
@@ -43,11 +45,8 @@ class TrafficSignDataServiceTest {
         trafficSign2 = TrafficSign.builder().id(2).build();
 
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
-        when(clockService.now())
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        TrafficSignCacheConfiguration trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
+        trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
                 .name("testCache")
                 .folder(testDir.resolve("testFolder"))
                 .build();
@@ -63,6 +62,9 @@ class TrafficSignDataServiceTest {
 
     @Test
     void findAll() {
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
         trafficSignDataService.write(new TrafficSigns(trafficSign1, trafficSign2));
 
@@ -73,10 +75,28 @@ class TrafficSignDataServiceTest {
     @Test
     void readWrite() {
 
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+
         trafficSignDataService.write(new TrafficSigns(trafficSign1, trafficSign2));
         trafficSignDataService.read();
 
         Set<TrafficSign> trafficSigns = trafficSignDataService.findAll();
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign2);
+    }
+
+    @Test
+    void dataExists() throws IOException {
+
+        Files.createDirectories(trafficSignCacheConfiguration.getActiveVersion().toPath());
+
+        assertThat(trafficSignDataService.dataExists()).isTrue();
+    }
+
+    @Test
+    void dataExists_false() {
+
+        assertThat(trafficSignDataService.dataExists()).isFalse();
     }
 }

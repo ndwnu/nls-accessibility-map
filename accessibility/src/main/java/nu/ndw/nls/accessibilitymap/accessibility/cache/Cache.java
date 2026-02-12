@@ -108,8 +108,9 @@ public abstract class Cache<TYPE> {
                             .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
                     Duration.between(start, clockService.now()).toMillis());
 
-            dataLock.lock();
             switchSymLink(targetFolder);
+
+            dataLock.lock();
             this.data = data;
             dataLock.unlock();
         } catch (IOException exception) {

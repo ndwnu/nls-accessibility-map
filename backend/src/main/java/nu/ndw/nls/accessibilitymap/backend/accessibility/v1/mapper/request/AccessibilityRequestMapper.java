@@ -49,13 +49,13 @@ public class AccessibilityRequestMapper {
                 .timestamp(clockService.now())
                 .municipalityId(municipality.idAsInteger())
                 .addMissingRoadsSectionsFromNwb(true)
-                .boundingBox(BBox.fromPoints(
+                .requestArea(BBox.fromPoints(
                         municipality.bounds().latitudeFrom(),
                         municipality.bounds().longitudeFrom(),
                         municipality.bounds().latitudeTo(),
                         municipality.bounds().longitudeTo()
                 ))
-                .searchRadiusInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
+                .maxSearchDistanceInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
                 .startLocationLatitude(municipality.startCoordinateLatitude())
                 .startLocationLongitude(municipality.startCoordinateLongitude())
                 .endLocationLatitude(endPointLatitude)

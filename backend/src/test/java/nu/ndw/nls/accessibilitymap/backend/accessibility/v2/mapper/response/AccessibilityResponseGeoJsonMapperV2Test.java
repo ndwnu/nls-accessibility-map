@@ -19,7 +19,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson.TypeEnum;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionUnitSymbolJson;
@@ -91,7 +91,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
                 .includeAccessibleRoadSections(includeAccessibleAndInAccessibleRoadSections)
                 .includeInaccessibleRoadSections(includeAccessibleAndInAccessibleRoadSections)
-                .destination(DestinationRequestJson.builder()
+                .destination(LocationJson.builder()
                         .latitude(5.34d)
                         .longitude(4.45d)
                         .build())
@@ -241,7 +241,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
                 .effectivelyAccessible(effectivelyAccessible)
-                .destination(DestinationRequestJson.builder()
+                .destination(LocationJson.builder()
                         .latitude(5.34d)
                         .longitude(4.45d)
                         .build())
@@ -388,7 +388,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
                 .effectivelyAccessible(true)
-                .destination(DestinationRequestJson.builder()
+                .destination(LocationJson.builder()
                         .latitude(5.34d)
                         .longitude(4.45d)
                         .build())
@@ -545,7 +545,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
                 .includeAccessibleRoadSections(true)
                 .includeInaccessibleRoadSections(true)
-                .destination(DestinationRequestJson.builder()
+                .destination(LocationJson.builder()
                         .latitude(5.34d)
                         .longitude(4.45d)
                         .build())
@@ -675,7 +675,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
                 .includeAccessibleRoadSections(true)
                 .includeInaccessibleRoadSections(false)
-                .destination(DestinationRequestJson.builder()
+                .destination(LocationJson.builder()
                         .latitude(5.34d)
                         .longitude(4.45d)
                         .build())
@@ -743,7 +743,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
         AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
                 .includeAccessibleRoadSections(false)
                 .includeInaccessibleRoadSections(true)
-                .destination(DestinationRequestJson.builder()
+                .destination(LocationJson.builder()
                         .latitude(5.34d)
                         .longitude(4.45d)
                         .build())
@@ -817,7 +817,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 .includeAccessibleRoadSections(true)
                 .includeInaccessibleRoadSections(true)
                 .destination(hasRequestDestination
-                        ? DestinationRequestJson.builder().latitude(5.34d).longitude(4.45d).build()
+                        ? LocationJson.builder().latitude(5.34d).longitude(4.45d).build()
                         : null)
                 .build();
 

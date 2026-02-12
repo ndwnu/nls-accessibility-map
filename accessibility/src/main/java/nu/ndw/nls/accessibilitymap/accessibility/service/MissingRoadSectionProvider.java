@@ -2,6 +2,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import com.graphhopper.util.PointList;
+import com.graphhopper.util.shapes.BBox;
 import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
@@ -24,21 +26,12 @@ import org.springframework.stereotype.Component;
 public class MissingRoadSectionProvider {
 
     @Timed(value = "accessibilitymap.accessibility.calculateMissingRoadSections")
-    public Collection<RoadSection> get(
+    public Collection<RoadSection> findAll(
             NetworkData networkData,
             Integer municipalityId,
             Collection<RoadSection> knownRoadSections,
-            boolean missingRoadsSectionAreAccessible) {
-
-        return calculateMissingRoadSections(networkData, municipalityId, knownRoadSections, missingRoadsSectionAreAccessible);
-    }
-
-    @SuppressWarnings("java:S5612")
-    private List<RoadSection> calculateMissingRoadSections(
-            NetworkData networkData,
-            Integer municipalityId,
-            Collection<RoadSection> knownRoadSections,
-            boolean isAccessible) {
+            boolean missingRoadsSectionAreAccessible,
+            BBox searchArea) {
 
         List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(networkData, municipalityId);
 
@@ -58,6 +51,11 @@ public class MissingRoadSectionProvider {
                 .filter(Objects::nonNull)
                 .flatMap(List::stream)
                 .map(accessibilityRoadSection -> {
+                    LineString geometry = accessibilityRoadSection.geometry();
+                    if (!searchArea.intersects(PointList.from(geometry))) {
+                        return null;
+                    }
+
                     RoadSection roadSection = RoadSection.builder()
                             .id(accessibilityRoadSection.roadSectionId())
                             .build();
@@ -66,7 +64,6 @@ public class MissingRoadSectionProvider {
                             .roadSection(roadSection)
                             .build();
 
-                    LineString geometry = accessibilityRoadSection.geometry();
                     if (accessibilityRoadSection.forwardAccessible()) {
                         roadSectionFragment.setForwardSegment(
                                 buildDirection(
@@ -74,7 +71,7 @@ public class MissingRoadSectionProvider {
                                         directionIdSupplier.getAndIncrement(),
                                         geometry,
                                         roadSectionFragment,
-                                        isAccessible));
+                                        missingRoadsSectionAreAccessible));
                     }
                     if (accessibilityRoadSection.backwardAccessible()) {
                         roadSectionFragment.setBackwardSegment(
@@ -83,11 +80,12 @@ public class MissingRoadSectionProvider {
                                         directionIdSupplier.getAndIncrement(),
                                         geometry.reverse(),
                                         roadSectionFragment,
-                                        isAccessible));
+                                        missingRoadsSectionAreAccessible));
                     }
                     roadSection.setRoadSectionFragments(List.of(roadSectionFragment));
                     return roadSection;
                 })
+                .filter(Objects::nonNull)
                 .toList();
     }
 

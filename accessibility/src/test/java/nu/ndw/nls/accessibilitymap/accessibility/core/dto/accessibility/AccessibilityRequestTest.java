@@ -26,9 +26,11 @@ class AccessibilityRequestTest extends ValidationTest {
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .timestamp(OffsetDateTime.now())
-                .searchRadiusInMeters(1d)
+                .maxSearchDistanceInMeters(1d)
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
+                .requestArea(BBox.fromPoints(1.0, 2.0, 3.0, 4.0))
+                .searchArea(BBox.fromPoints(10.0, 12.0, 13.0, 14.0))
                 .build();
     }
 
@@ -48,8 +50,8 @@ class AccessibilityRequestTest extends ValidationTest {
     @Test
     void validate_searchRadiusInMeters_null() {
 
-        accessibilityRequest = accessibilityRequest.withSearchRadiusInMeters(null);
-        validate(accessibilityRequest, List.of("searchRadiusInMeters"), List.of("must not be null"));
+        accessibilityRequest = accessibilityRequest.withMaxSearchDistanceInMeters(null);
+        validate(accessibilityRequest, List.of("maxSearchDistanceInMeters"), List.of("must not be null"));
     }
 
     @Test
@@ -64,6 +66,20 @@ class AccessibilityRequestTest extends ValidationTest {
 
         accessibilityRequest = accessibilityRequest.withStartLocationLongitude(null);
         validate(accessibilityRequest, List.of("startLocationLongitude"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_requestArea_null() {
+
+        accessibilityRequest = accessibilityRequest.withRequestArea(null);
+        validate(accessibilityRequest, List.of("requestArea"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_searchArea_null() {
+
+        accessibilityRequest = accessibilityRequest.withSearchArea(null);
+        validate(accessibilityRequest, List.of("searchArea"), List.of("must not be null"));
     }
 
     @Test
@@ -112,16 +128,15 @@ class AccessibilityRequestTest extends ValidationTest {
     }
 
     @Test
-    void getBoundingBoxString() {
+    void getRequestAreaString() {
 
-        accessibilityRequest = accessibilityRequest.withBoundingBox(BBox.fromPoints(1.0,2.0,3.0,4.0));
-        assertThat(accessibilityRequest.getBoundingBoxString()).contains("2.0,4.0,1.0,3.0");
+        assertThat(accessibilityRequest.getRequestAreaString()).contains("2.0,4.0,1.0,3.0");
     }
 
     @Test
-    void getBoundingBoxString_null() {
+    void getSearchAreaString() {
 
-        assertThat(accessibilityRequest.getBoundingBoxString()).isNull();
+        assertThat(accessibilityRequest.getSearchAreaString()).contains("12.0,14.0,10.0,13.0");
     }
 
     @Override

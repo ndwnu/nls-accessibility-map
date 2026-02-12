@@ -24,10 +24,11 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public record AccessibilityRequest(
         @NotNull OffsetDateTime timestamp,
-        @JsonIgnore BBox boundingBox,
+        @NotNull @JsonIgnore BBox requestArea,
+        @NotNull @JsonIgnore BBox searchArea,
         Integer municipalityId,
         boolean addMissingRoadsSectionsFromNwb,
-        @NotNull Double searchRadiusInMeters,
+        @NotNull Double maxSearchDistanceInMeters,
         @NotNull Double startLocationLatitude,
         @NotNull Double startLocationLongitude,
         Double endLocationLatitude,
@@ -74,10 +75,14 @@ public record AccessibilityRequest(
     /**
      * Used for logging purposes when using objectmapper to convert this object to json.
      */
-    public String getBoundingBoxString() {
-        if (Objects.nonNull(boundingBox)) {
-            return boundingBox.toString();
-        }
-        return null;
+    public String getRequestAreaString() {
+        return requestArea.toString();
+    }
+
+    /**
+     * Used for logging purposes when using objectmapper to convert this object to json.
+     */
+    public String getSearchAreaString() {
+        return searchArea.toString();
     }
 }

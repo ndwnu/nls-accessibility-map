@@ -16,6 +16,9 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.BaseGraph;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
+import com.graphhopper.util.FetchMode;
+import com.graphhopper.util.PointList;
+import com.graphhopper.util.shapes.BBox;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.function.Consumer;
@@ -96,6 +99,12 @@ class IsochroneServiceTest {
 
     private static MockedStatic<QueryGraph> queryGraphStaticMock;
 
+    @Mock
+    private BBox boundingBox;
+
+    @Mock
+    private PointList points;
+
     @BeforeAll
     static void setup() {
         queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class);
@@ -107,7 +116,7 @@ class IsochroneServiceTest {
     }
 
     @Test
-    void getIsochroneMatchesByMunicipalityId() {
+    void getIsochroneMatches_municipalityId() {
         IsoLabel isoLabel = createIsoLabel();
 
         when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
@@ -160,7 +169,105 @@ class IsochroneServiceTest {
     }
 
     @Test
-    void getIsochroneMatchesByMunicipalityId_noMunicipality() {
+    void getIsochroneMatches_boundingBox_intersects() {
+        IsoLabel isoLabel = createIsoLabel();
+
+        when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
+                weighting,
+                queryGraph,
+                TraversalMode.EDGE_BASED,
+                ISOCHRONE_VALUE_METERS,
+                IsochroneUnit.METERS,
+                false,
+                false, LINK_ID))
+                .thenReturn(isochroneAlgorithm);
+
+        when(queryGraph.getEdgeIteratorState(anyInt(), anyInt())).thenReturn(currentEdge);
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
+        when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
+        doAnswer(invocation -> {
+            Consumer<IsoLabel> callback = invocation.getArgument(1, Consumer.class);
+            callback.accept(isoLabel);
+            return null;
+        }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
+
+        when(startSegment.getClosestEdge()).thenReturn(startEdge);
+        when(isochroneMatchMapper.mapToIsochroneMatch(
+                isoLabel,
+                Double.POSITIVE_INFINITY,
+                queryGraph,
+                startSegment.getClosestEdge(),
+                false)
+        ).thenReturn(isochroneMatch);
+
+        when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
+        queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
+
+        when(currentEdge.fetchWayGeometry(FetchMode.TOWER_ONLY)).thenReturn(points);
+        when(boundingBox.intersects(points)).thenReturn(true);
+
+        List<IsochroneMatch> result = isochroneService.getIsochroneMatchesByMunicipalityId(
+                IsochroneArguments.builder()
+                        .weighting(weighting)
+                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
+                        .boundingBox(boundingBox)
+                        .build(),
+                queryGraph,
+                startSegment);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(1);
+
+        assertThat(result.getFirst()).isEqualTo(isochroneMatch);
+    }
+
+    @Test
+    void getIsochroneMatches_boundingBox_notIntersects() {
+        IsoLabel isoLabel = createIsoLabel();
+
+        when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
+                weighting,
+                queryGraph,
+                TraversalMode.EDGE_BASED,
+                ISOCHRONE_VALUE_METERS,
+                IsochroneUnit.METERS,
+                false,
+                false, LINK_ID))
+                .thenReturn(isochroneAlgorithm);
+
+        when(queryGraph.getEdgeIteratorState(anyInt(), anyInt())).thenReturn(currentEdge);
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
+        when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
+        doAnswer(invocation -> {
+            Consumer<IsoLabel> callback = invocation.getArgument(1, Consumer.class);
+            callback.accept(isoLabel);
+            return null;
+        }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
+
+        when(startSegment.getClosestEdge()).thenReturn(startEdge);
+        when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
+        queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
+
+        when(currentEdge.fetchWayGeometry(FetchMode.TOWER_ONLY)).thenReturn(points);
+        when(boundingBox.intersects(points)).thenReturn(false);
+
+        List<IsochroneMatch> result = isochroneService.getIsochroneMatchesByMunicipalityId(
+                IsochroneArguments.builder()
+                        .weighting(weighting)
+                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
+                        .boundingBox(boundingBox)
+                        .build(),
+                queryGraph,
+                startSegment);
+
+        assertThat(result)
+                .isNotNull()
+                .isEmpty();
+    }
+
+    @Test
+    void getIsochroneMatches_municipalityId_noMunicipality() {
         IsoLabel isoLabel = createIsoLabel();
 
         when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
