@@ -55,7 +55,7 @@ class AccessibilityRequestValidatorTest {
             accessibilityRequestValidator.verify(accessibilityRequestJson);
         } catch (ApiException exception) {
 
-            assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("06d84c7c-7be2-4f79-a8fd-00264f06267d"));
+            assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("8091b9dc-c15f-4b74-8b45-0bf7605042be"));
             assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(exception.getTitle()).isEqualTo("Invalid Request");
             assertThat(exception.getDescription())
@@ -77,7 +77,7 @@ class AccessibilityRequestValidatorTest {
             accessibilityRequestValidator.verify(accessibilityRequestJson);
         } catch (ApiException exception) {
 
-            assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("06d84c7c-7be2-4f79-a8fd-00264f06267d"));
+            assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("8091b9dc-c15f-4b74-8b45-0bf7605042be"));
             assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(exception.getTitle()).isEqualTo("Invalid Request");
             assertThat(exception.getDescription())
@@ -99,7 +99,7 @@ class AccessibilityRequestValidatorTest {
             accessibilityRequestValidator.verify(accessibilityRequestJson);
         } catch (ApiException exception) {
 
-            assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("06d84c7c-7be2-4f79-a8fd-00264f06267d"));
+            assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("8091b9dc-c15f-4b74-8b45-0bf7605042be"));
             assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
             assertThat(exception.getTitle()).isEqualTo("Invalid Request");
             assertThat(exception.getDescription())
