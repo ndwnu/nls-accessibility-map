@@ -4,7 +4,6 @@ import com.graphhopper.util.PMap;
 import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -75,7 +74,7 @@ public class AccessibilityCalculator {
 
         return roadSectionMapper.mapToRoadSections(
                 isochroneMatches,
-                applyRestrictions ? accessibilityNetwork.getRestrictionsByEdgeKey() : Map.of()
+                accessibilityNetwork.getRestrictionsByEdgeKey()
         );
     }
 
