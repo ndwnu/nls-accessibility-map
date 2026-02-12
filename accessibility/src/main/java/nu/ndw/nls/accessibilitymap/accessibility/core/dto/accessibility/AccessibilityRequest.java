@@ -49,6 +49,12 @@ public record AccessibilityRequest(
         Set<EmissionZoneType> excludeRestrictionsWithEmissionZoneTypes,
         Set<Restriction> dynamicRestrictions) {
 
+    public static final int MAX_LONGITUDE = 180;
+
+    public static final double MAX_LATITUDE = 90D;
+
+    public static BBox BOUNDING_BOX_GLOBE = BBox.fromPoints(-MAX_LATITUDE, -MAX_LONGITUDE, MAX_LATITUDE, -MAX_LONGITUDE);
+
     public @NotEmpty Set<TextSignType> excludeTrafficSignTextSignTypes() {
 
         if (Objects.nonNull(excludeTrafficSignTextSignTypes)) {

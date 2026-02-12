@@ -282,6 +282,18 @@ components:
       required: false
 
   schemas:
+
+    Latitude:
+      description: "latitude of the destination location"
+      type: "number"
+      format: "double"
+      example: 52.1326
+    Longitude:
+      description: "longitude of the destination location"
+      type: "number"
+      format: "double"
+      example: 5.2913
+
     VehicleCharacteristics:
       type: "object"
       description: "Vehicle characteristics"
@@ -338,7 +350,7 @@ components:
           minItems: 0
           items:
             $ref: "#/components/schemas/FuelType"
-    DestinationRequest:
+    Location:
       type: "object"
       description: "Destination"
       required:
@@ -346,15 +358,9 @@ components:
         - longitude
       properties:
         latitude:
-          description: "latitude of the destination location"
-          type: "number"
-          format: "double"
-          example: 52.1326
+          $ref: "#/components/schemas/Latitude"
         longitude:
-          description: "longitude of the destination location"
-          type: "number"
-          format: "double"
-          example: 5.2913
+          $ref: "#/components/schemas/Longitude"
     AreaRequest:
       type: "object"
       required:
@@ -363,11 +369,13 @@ components:
         propertyName: type
         mapping:
           municipality: "#/components/schemas/MunicipalityAreaRequest"
+          boundingBox: "#/components/schemas/BoundingBoxAreaRequest"
       properties:
         type:
           type: "string"
           enum:
             - "municipality"
+            - "boundingBox"
     MunicipalityAreaRequest:
       allOf:
         - $ref: '#/components/schemas/AreaRequest'
@@ -380,6 +388,25 @@ components:
               type: "string"
               example: "GM0344"
               pattern: ^(GM)(?=\d{4}$)\d*[1-9]\d*
+    BoundingBoxAreaRequest:
+      allOf:
+        - $ref: '#/components/schemas/AreaRequest'
+        - type: "object"
+          description: "Defines a bounding box area by coordinates"
+          required:
+            - minLatitude
+            - maxLatitude
+            - minLongitude
+            - maxLongitude
+          properties:
+            minLatitude:
+              $ref: "#/components/schemas/Latitude"
+            maxLatitude:
+              $ref: "#/components/schemas/Longitude"
+            minLongitude:
+              $ref: "#/components/schemas/Latitude"
+            maxLongitude:
+              $ref: "#/components/schemas/Longitude"
     AccessibilityRequestRestriction:
       type: "object"
       required:
@@ -455,8 +482,10 @@ components:
           nullable: false
         area:
           $ref: '#/components/schemas/AreaRequest'
+        from:
+          $ref: "#/components/schemas/Location"
         destination:
-          $ref: "#/components/schemas/DestinationRequest"
+          $ref: "#/components/schemas/Location"
         vehicle:
           $ref: "#/components/schemas/VehicleCharacteristics"
         exclusions:

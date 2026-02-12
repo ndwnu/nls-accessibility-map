@@ -80,7 +80,7 @@ class IssueBuilderTest {
 
         when(directionalSegment.getRestrictions()).thenReturn(List.of(trafficSign));
         when(trafficSign.externalId()).thenReturn("id");
-        when(directionalSegment.getRoadSectionId()).thenReturn(1L);
+        when(directionalSegment.getRoadSectionFragment().getRoadSection().getId()).thenReturn(1L);
 
         Optional<CreateIssueJson> issue = issueBuilder.buildTrafficSignIssue(directionalSegment, "reportId", "reportGroupId");
 

@@ -77,6 +77,8 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
                                 .startLocationLongitude(3d)
                                 .trafficSignTypes(Set.of(trafficSignType))
                                 .maxSearchDistanceInMeters(4d)
+                                .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
+                                .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                                 .build())
                         .reportIssues(true)
                         .build()

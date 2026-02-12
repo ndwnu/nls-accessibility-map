@@ -16,6 +16,8 @@ public class AccessibilityRequestMapperBoundingBoxAreaMapper implements Accessib
 
     private static final double SEARCH_GRID_DISTANCE_FROM_REQUEST_AREA = 10_000.0; // 10KM
 
+    private static final double SEARCH_DISTANCE_MULTIPLIER = 1.5;
+
     private final GeometryFactory geometryFactory;
 
     public AccessibilityRequestMapperBoundingBoxAreaMapper() {
@@ -57,6 +59,6 @@ public class AccessibilityRequestMapperBoundingBoxAreaMapper implements Accessib
         double maxDistance = DistanceOp.distance(
                 geometryFactory.createPoint(new Coordinate(searchArea.minLon, searchArea.minLat)),
                 geometryFactory.createPoint(new Coordinate(searchArea.maxLon, searchArea.maxLat)));
-        return maxDistance * METERS_PER_DEGREE;
+        return maxDistance * METERS_PER_DEGREE * SEARCH_DISTANCE_MULTIPLIER;
     }
 }

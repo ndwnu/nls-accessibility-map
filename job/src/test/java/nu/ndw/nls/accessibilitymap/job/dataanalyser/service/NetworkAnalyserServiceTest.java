@@ -92,6 +92,8 @@ class NetworkAnalyserServiceTest {
                 .startLocationLongitude(3d)
                 .maxSearchDistanceInMeters(4d)
                 .addMissingRoadsSectionsFromNwb(true)
+                .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
+                .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                 .build();
 
         networkAnalyserService = new NetworkAnalyserService(

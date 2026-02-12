@@ -59,6 +59,8 @@ public class NetworkAnalyserService extends IssueReporterService {
                         .maxSearchDistanceInMeters(analyseNetworkConfiguration.searchRadiusInMeters())
                         .startLocationLatitude(analyseNetworkConfiguration.startLocationLatitude())
                         .startLocationLongitude(analyseNetworkConfiguration.startLocationLongitude())
+                        .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
+                        .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                         .addMissingRoadsSectionsFromNwb(true)
                         .build());
 
