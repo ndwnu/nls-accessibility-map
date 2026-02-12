@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>5.2.32-SNAPSHOT</version>
+    <version>5.2.33-SNAPSHOT</version>
   </parent>
   <artifactId>accessibility</artifactId>
   <name>NLS Accessibility library</name>
