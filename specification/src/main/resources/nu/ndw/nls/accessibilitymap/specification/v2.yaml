@@ -26,6 +26,10 @@ paths:
             examples:
               accessibilityRequestByMunicipality:
                 $ref: "#/components/examples/AccessibilityRequestByMunicipality"
+              accessibilityRequestByMunicipalityWithCustomRestrictions:
+                $ref: "#/components/examples/AccessibilityRequestByMunicipalityWithCustomRestrictions"
+              accessibilityRequestByAreaWithCustomRestrictions:
+                $ref: "#/components/examples/AccessibilityRequestByAreaWithCustomRestrictions"
       responses:
         "200":
           description: "OK"
@@ -282,6 +286,18 @@ components:
       required: false
 
   schemas:
+
+    Latitude:
+      description: "latitude of the destination location"
+      type: "number"
+      format: "double"
+      example: 52.1326
+    Longitude:
+      description: "longitude of the destination location"
+      type: "number"
+      format: "double"
+      example: 5.2913
+
     VehicleCharacteristics:
       type: "object"
       description: "Vehicle characteristics"
@@ -338,7 +354,7 @@ components:
           minItems: 0
           items:
             $ref: "#/components/schemas/FuelType"
-    DestinationRequest:
+    Location:
       type: "object"
       description: "Destination"
       required:
@@ -346,15 +362,9 @@ components:
         - longitude
       properties:
         latitude:
-          description: "latitude of the destination location"
-          type: "number"
-          format: "double"
-          example: 52.1326
+          $ref: "#/components/schemas/Latitude"
         longitude:
-          description: "longitude of the destination location"
-          type: "number"
-          format: "double"
-          example: 5.2913
+          $ref: "#/components/schemas/Longitude"
     AreaRequest:
       type: "object"
       required:
@@ -363,11 +373,13 @@ components:
         propertyName: type
         mapping:
           municipality: "#/components/schemas/MunicipalityAreaRequest"
+          boundingBox: "#/components/schemas/BoundingBoxAreaRequest"
       properties:
         type:
           type: "string"
           enum:
             - "municipality"
+            - "boundingBox"
     MunicipalityAreaRequest:
       allOf:
         - $ref: '#/components/schemas/AreaRequest'
@@ -380,6 +392,25 @@ components:
               type: "string"
               example: "GM0344"
               pattern: ^(GM)(?=\d{4}$)\d*[1-9]\d*
+    BoundingBoxAreaRequest:
+      allOf:
+        - $ref: '#/components/schemas/AreaRequest'
+        - type: "object"
+          description: "Defines a bounding box area by coordinates. When using this type you are required to provide a from location."
+          required:
+            - minLatitude
+            - maxLatitude
+            - minLongitude
+            - maxLongitude
+          properties:
+            minLatitude:
+              $ref: "#/components/schemas/Latitude"
+            maxLatitude:
+              $ref: "#/components/schemas/Longitude"
+            minLongitude:
+              $ref: "#/components/schemas/Latitude"
+            maxLongitude:
+              $ref: "#/components/schemas/Longitude"
     AccessibilityRequestRestriction:
       type: "object"
       required:
@@ -455,8 +486,10 @@ components:
           nullable: false
         area:
           $ref: '#/components/schemas/AreaRequest'
+        from:
+          $ref: "#/components/schemas/Location"
         destination:
-          $ref: "#/components/schemas/DestinationRequest"
+          $ref: "#/components/schemas/Location"
         vehicle:
           $ref: "#/components/schemas/VehicleCharacteristics"
         exclusions:
@@ -1022,6 +1055,72 @@ components:
         area:
           type: municipality
           id: GM0344
+        vehicle:
+          type: truck
+          width: 2
+          height: 2.5
+          weight: 20
+          length: 5.2
+          axleLoad: 4
+          hasTrailer: false
+          emissionClass: euro_6
+          fuelTypes:
+            - petrol
+        exclusions:
+          emissionZoneTypes:
+            - low_emission_zone
+          emissionZoneIds:
+            - NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47
+    AccessibilityRequestByMunicipalityWithCustomRestrictions:
+      summary: "Accessibility request by municipality with custom restrictions"
+      value:
+        destination:
+          latitude: 52.093784
+          longitude: 5.152890
+        area:
+          type: municipality
+          id: GM0344
+        restrictions:
+          - type: roadSection
+            id: 269305008
+            direction: forward
+            fraction: 0
+        vehicle:
+          type: truck
+          width: 2
+          height: 2.5
+          weight: 20
+          length: 5.2
+          axleLoad: 4
+          hasTrailer: false
+          emissionClass: euro_6
+          fuelTypes:
+            - petrol
+        exclusions:
+          emissionZoneTypes:
+            - low_emission_zone
+          emissionZoneIds:
+            - NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47
+    AccessibilityRequestByAreaWithCustomRestrictions:
+      summary: "Accessibility request by area with custom restrictions"
+      value:
+        destination:
+          latitude: 52.093784
+          longitude: 5.152890
+        from:
+          latitude: 5.001547943824298
+          longitude: 52.078092444078244
+        area:
+          type: boundingBox
+          minLatitude: 51.534549
+          minLongitude: 52.02628198454681
+          maxLatitude: 52.142050597982795
+          maxLongitude: 5.1951549701599244
+        restrictions:
+          - type: roadSection
+            id: 269305008
+            direction: forward
+            fraction: 0
         vehicle:
           type: truck
           width: 2

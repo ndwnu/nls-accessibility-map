@@ -55,7 +55,7 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<APIErrorJson> handleApiException(ApiException exception) {
         APIErrorJson restError = APIErrorJson.builder()
-                .message(exception.getMessage())
+                .message(exception.getDescription())
                 .build();
 
         return ResponseEntity.status(exception.getStatusCode()).body(restError);

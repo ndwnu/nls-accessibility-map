@@ -24,10 +24,11 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public record AccessibilityRequest(
         @NotNull OffsetDateTime timestamp,
-        @JsonIgnore BBox boundingBox,
+        @NotNull @JsonIgnore BBox requestArea,
+        @NotNull @JsonIgnore BBox searchArea,
         Integer municipalityId,
         boolean addMissingRoadsSectionsFromNwb,
-        @NotNull Double searchRadiusInMeters,
+        @NotNull Double maxSearchDistanceInMeters,
         @NotNull Double startLocationLatitude,
         @NotNull Double startLocationLongitude,
         Double endLocationLatitude,
@@ -47,6 +48,12 @@ public record AccessibilityRequest(
         Set<String> excludeRestrictionsWithEmissionZoneIds,
         Set<EmissionZoneType> excludeRestrictionsWithEmissionZoneTypes,
         Set<Restriction> dynamicRestrictions) {
+
+    private static final int MAX_LONGITUDE = 180;
+
+    private static final double MAX_LATITUDE = 90D;
+
+    public static final BBox BOUNDING_BOX_GLOBE = BBox.fromPoints(-MAX_LATITUDE, -MAX_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
 
     public @NotEmpty Set<TextSignType> excludeTrafficSignTextSignTypes() {
 
@@ -74,10 +81,14 @@ public record AccessibilityRequest(
     /**
      * Used for logging purposes when using objectmapper to convert this object to json.
      */
-    public String getBoundingBoxString() {
-        if (Objects.nonNull(boundingBox)) {
-            return boundingBox.toString();
-        }
-        return null;
+    public String getRequestAreaString() {
+        return requestArea.toString();
+    }
+
+    /**
+     * Used for logging purposes when using objectmapper to convert this object to json.
+     */
+    public String getSearchAreaString() {
+        return searchArea.toString();
     }
 }

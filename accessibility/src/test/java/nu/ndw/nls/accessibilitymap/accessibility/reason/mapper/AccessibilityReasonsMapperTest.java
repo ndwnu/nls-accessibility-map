@@ -434,5 +434,10 @@ class AccessibilityReasonsMapperTest {
         public Direction direction() {
             return null;
         }
+
+        @Override
+        public Double fraction() {
+            return 0.0;
+        }
     }
 }

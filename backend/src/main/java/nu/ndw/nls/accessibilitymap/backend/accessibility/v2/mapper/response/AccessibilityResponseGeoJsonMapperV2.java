@@ -14,9 +14,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationFeaturePropertiesJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FeatureJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RoadSectionSegmentFeaturePropertiesJson;
 import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
@@ -49,7 +49,7 @@ public class AccessibilityResponseGeoJsonMapperV2 {
             AccessibilityRequestJson accessibilityRequestJson,
             Accessibility accessibility,
             AtomicInteger idGenerator) {
-        DestinationRequestJson requestDestination = accessibilityRequestJson.getDestination();
+        LocationJson requestDestination = accessibilityRequestJson.getDestination();
         Optional<RoadSection> toRoadSection = accessibility.toRoadSection();
 
         if (Objects.isNull(requestDestination) || toRoadSection.isEmpty()) {

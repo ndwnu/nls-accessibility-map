@@ -84,5 +84,5 @@ logging:
   level:
     root: WARN
     nu.ndw.nls: WARN
-    nu.ndw.nls.accessibilitymap.accessibility.services.mappers.TrafficSignSnapMapper: ERROR
+    nu.ndw.nls.accessibilitymap.accessibility: INFO
     nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer: ERROR

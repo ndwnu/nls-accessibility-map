@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.request;
 
-import com.graphhopper.util.shapes.BBox;
 import jakarta.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
@@ -16,14 +15,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.FuelTypeMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.TransportTypeMapperV2;
-import nu.ndw.nls.accessibilitymap.backend.exception.ResourceNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.request.mapper.AccessibilityRequestBuilderAreaMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ExclusionsJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.MunicipalityAreaRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.springframework.http.HttpStatus;
@@ -47,64 +43,81 @@ public class AccessibilityRequestMapperV2 {
 
     private final ClockService clockService;
 
-    private final MunicipalityService municipalityService;
-
     private final AccessibilityRequestRestrictionMapper accessibilityRequestRestrictionMapper;
+
+    private final List<AccessibilityRequestBuilderAreaMapper> areaRequestMappers;
 
     @Valid
     public AccessibilityRequest map(NetworkData networkData, AccessibilityRequestJson accessibilityRequest) {
 
-        if (accessibilityRequest.getArea() instanceof MunicipalityAreaRequestJson municipalityAreaRequestJson) {
-            Municipality municipality = municipalityService.getMunicipalityById(municipalityAreaRequestJson.getId());
-            if (Objects.isNull(municipality)) {
-                throw new ResourceNotFoundException("Municipality with id '%s' not found.".formatted(municipalityAreaRequestJson.getId()));
-            }
+        AccessibilityRequestBuilder accessibilityRequestBuilder = AccessibilityRequest.builder();
 
-            AccessibilityRequestBuilder builder = AccessibilityRequest.builder()
-                    .timestamp(clockService.now())
-                    .municipalityId(municipality.idAsInteger())
-                    .addMissingRoadsSectionsFromNwb(true)
-                    .boundingBox(BBox.fromPoints(
-                            municipality.bounds().latitudeFrom(),
-                            municipality.bounds().longitudeFrom(),
-                            municipality.bounds().latitudeTo(),
-                            municipality.bounds().longitudeTo()
-                    ))
-                    .searchRadiusInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
-                    .startLocationLatitude(municipality.startCoordinateLatitude())
-                    .startLocationLongitude(municipality.startCoordinateLongitude())
-                    .vehicleHeightInCm(mapToDouble(accessibilityRequest.getVehicle().getHeight(), MULTIPLIER_FROM_METERS_TO_CM))
-                    .vehicleLengthInCm(mapToDouble(accessibilityRequest.getVehicle().getLength(), MULTIPLIER_FROM_METERS_TO_CM))
-                    .vehicleWidthInCm(mapToDouble(accessibilityRequest.getVehicle().getWidth(), MULTIPLIER_FROM_METERS_TO_CM))
-                    .vehicleWeightInKg(mapToDouble(accessibilityRequest.getVehicle().getWeight(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
-                    .vehicleAxleLoadInKg(mapToDouble(accessibilityRequest.getVehicle().getAxleLoad(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
-                    .fuelTypes(
-                            Objects.isNull(accessibilityRequest.getVehicle().getFuelTypes())
-                                    ? null
-                                    : accessibilityRequest.getVehicle().getFuelTypes().stream()
-                                            .map(fuelTypeMapperV2::map)
-                                            .collect(Collectors.toSet()))
-                    .emissionClasses(emissionClassMapperV2.map(accessibilityRequest.getVehicle().getEmissionClass()))
-                    .transportTypes(transportTypeMapperV2.map(accessibilityRequest.getVehicle()))
-                    .excludeRestrictionsWithEmissionZoneIds(mapEmissionZoneIds(accessibilityRequest.getExclusions()))
-                    .excludeRestrictionsWithEmissionZoneTypes(mapEmissionZoneTypes(accessibilityRequest.getExclusions()))
-                    .dynamicRestrictions(mapRestrictions(accessibilityRequest.getRestrictions(), networkData));
+        mapFrom(accessibilityRequest, accessibilityRequestBuilder);
+        mapDestination(accessibilityRequest, accessibilityRequestBuilder);
+        mapAreaRequest(accessibilityRequest, accessibilityRequestBuilder);
 
-            DestinationRequestJson destination = accessibilityRequest.getDestination();
-            if (Objects.nonNull(destination)) {
-                builder
-                        .endLocationLatitude(destination.getLatitude())
-                        .endLocationLongitude(destination.getLongitude());
-            }
-            return builder.build();
+        accessibilityRequestBuilder
+                .timestamp(clockService.now())
+                .addMissingRoadsSectionsFromNwb(true)
+                .vehicleHeightInCm(mapToDouble(accessibilityRequest.getVehicle().getHeight(), MULTIPLIER_FROM_METERS_TO_CM))
+                .vehicleLengthInCm(mapToDouble(accessibilityRequest.getVehicle().getLength(), MULTIPLIER_FROM_METERS_TO_CM))
+                .vehicleWidthInCm(mapToDouble(accessibilityRequest.getVehicle().getWidth(), MULTIPLIER_FROM_METERS_TO_CM))
+                .vehicleWeightInKg(mapToDouble(accessibilityRequest.getVehicle().getWeight(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
+                .vehicleAxleLoadInKg(mapToDouble(accessibilityRequest.getVehicle().getAxleLoad(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
+                .fuelTypes(
+                        Objects.isNull(accessibilityRequest.getVehicle().getFuelTypes())
+                                ? null
+                                : accessibilityRequest.getVehicle().getFuelTypes().stream()
+                                        .map(fuelTypeMapperV2::map)
+                                        .collect(Collectors.toSet()))
+                .emissionClasses(emissionClassMapperV2.map(accessibilityRequest.getVehicle().getEmissionClass()))
+                .transportTypes(transportTypeMapperV2.map(accessibilityRequest.getVehicle()))
+                .excludeRestrictionsWithEmissionZoneIds(mapEmissionZoneIds(accessibilityRequest.getExclusions()))
+                .excludeRestrictionsWithEmissionZoneTypes(mapEmissionZoneTypes(accessibilityRequest.getExclusions()))
+                .dynamicRestrictions(mapRestrictions(accessibilityRequest.getRestrictions(), networkData));
+
+        return accessibilityRequestBuilder.build();
+    }
+
+    private static void mapDestination(
+            AccessibilityRequestJson accessibilityRequest,
+            AccessibilityRequestBuilder accessibilityRequestBuilder) {
+        LocationJson destination = accessibilityRequest.getDestination();
+        if (Objects.nonNull(destination)) {
+            accessibilityRequestBuilder
+                    .endLocationLatitude(destination.getLatitude())
+                    .endLocationLongitude(destination.getLongitude());
         }
+    }
 
-        throw new ApiException(
-                UUID.fromString("fdd86f4f-a34d-4a01-8abc-4ea8b0e327a9"),
-                HttpStatus.BAD_REQUEST,
-                "Invalid area type",
-                "Area type of '%s' is not a valid. Please check the api specification for valid options."
-                        .formatted(accessibilityRequest.getArea().getClass().getSimpleName()));
+    private static void mapFrom(
+            AccessibilityRequestJson accessibilityRequestJson,
+            AccessibilityRequestBuilder accessibilityRequestBuilder) {
+        LocationJson from = accessibilityRequestJson.getFrom();
+        if (Objects.nonNull(from)) {
+            accessibilityRequestBuilder
+                    .startLocationLatitude(from.getLatitude())
+                    .startLocationLongitude(from.getLongitude());
+        }
+    }
+
+    private void mapAreaRequest(
+            AccessibilityRequestJson accessibilityRequestJson,
+            AccessibilityRequestBuilder accessibilityRequestBuilder) {
+
+        areaRequestMappers.stream()
+                .filter(mapper -> mapper.canProcessAreaRequest(accessibilityRequestJson.getArea()))
+                .findFirst()
+                .ifPresentOrElse(
+                        mapper -> mapper.build(accessibilityRequestBuilder, accessibilityRequestJson.getArea()),
+                        () -> {
+                            throw new ApiException(
+                                    UUID.fromString("fdd86f4f-a34d-4a01-8abc-4ea8b0e327a9"),
+                                    HttpStatus.BAD_REQUEST,
+                                    "Invalid area type",
+                                    "Area type of '%s' is not a valid. Please check the api specification for valid options."
+                                            .formatted(accessibilityRequestJson.getArea().getClass().getSimpleName()));
+                        });
     }
 
     private Set<Restriction> mapRestrictions(
