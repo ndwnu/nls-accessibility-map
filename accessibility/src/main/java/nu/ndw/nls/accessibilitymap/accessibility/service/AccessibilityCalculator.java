@@ -5,6 +5,7 @@ import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
@@ -22,19 +23,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class AccessibilityCalculator {
 
     private final IsochroneServiceFactory isochroneServiceFactory;
 
     private final RoadSectionMapper roadSectionMapper;
-
-    public AccessibilityCalculator(
-            IsochroneServiceFactory isochroneServiceFactory,
-            RoadSectionMapper roadSectionMapper) {
-
-        this.isochroneServiceFactory = isochroneServiceFactory;
-        this.roadSectionMapper = roadSectionMapper;
-    }
 
     @Timed(value = "accessibilitymap.accessibility.calculateWithRestrictions")
     public Collection<RoadSection> calculateWithRestrictions(

@@ -1072,7 +1072,7 @@ components:
           emissionZoneIds:
             - NDW11_63a0104e-0b70-4b01-ad72-1ec692b41c47
     AccessibilityRequestByMunicipalityWithCustomRestrictions:
-      summary: "Accessibility request by area with custom restrictions"
+      summary: "Accessibility request by municipality with custom restrictions"
       value:
         destination:
           latitude: 52.093784
