@@ -1,6 +1,6 @@
 Feature: Accessibility V2
 
-  Scenario: Get - Vehicle width 2 meters - Destination reachable -
+  Scenario: Get - Vehicle width 2 meters - Destination reachable
     Given a simple network
     And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
@@ -36,3 +36,13 @@ Feature: Accessibility V2
 
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions-effectivelyAccessible
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-unreachable-effectivelyAccessible
+
+
+  Scenario: Get - Bounding box inner circle - Destination reachable
+    Given a simple network
+    And with traffic signs
+      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
+    When run TrafficSignUpdateCache
+    When request accessibility geojson for boundingBox-destination3-7
+    Then we expect accessibility geojson response boundingBox-destination3-7
+

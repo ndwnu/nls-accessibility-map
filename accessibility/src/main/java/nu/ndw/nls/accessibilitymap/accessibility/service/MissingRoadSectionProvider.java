@@ -2,6 +2,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import com.graphhopper.util.PointList;
+import com.graphhopper.util.shapes.BBox;
 import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
@@ -24,21 +26,13 @@ import org.springframework.stereotype.Component;
 public class MissingRoadSectionProvider {
 
     @Timed(value = "accessibilitymap.accessibility.calculateMissingRoadSections")
-    public Collection<RoadSection> get(
-            NetworkData networkData,
-            Integer municipalityId,
-            Collection<RoadSection> knownRoadSections,
-            boolean missingRoadsSectionAreAccessible) {
-
-        return calculateMissingRoadSections(networkData, municipalityId, knownRoadSections, missingRoadsSectionAreAccessible);
-    }
-
     @SuppressWarnings("java:S5612")
-    private List<RoadSection> calculateMissingRoadSections(
+    public Collection<RoadSection> findAll(
             NetworkData networkData,
             Integer municipalityId,
             Collection<RoadSection> knownRoadSections,
-            boolean isAccessible) {
+            boolean missingRoadSectionsAreAccessible,
+            BBox searchArea) {
 
         List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(networkData, municipalityId);
 
@@ -58,6 +52,11 @@ public class MissingRoadSectionProvider {
                 .filter(Objects::nonNull)
                 .flatMap(List::stream)
                 .map(accessibilityRoadSection -> {
+                    LineString geometry = accessibilityRoadSection.geometry();
+                    if (!searchArea.intersects(PointList.from(geometry))) {
+                        return null;
+                    }
+
                     RoadSection roadSection = RoadSection.builder()
                             .id(accessibilityRoadSection.roadSectionId())
                             .build();
@@ -66,7 +65,6 @@ public class MissingRoadSectionProvider {
                             .roadSection(roadSection)
                             .build();
 
-                    LineString geometry = accessibilityRoadSection.geometry();
                     if (accessibilityRoadSection.forwardAccessible()) {
                         roadSectionFragment.setForwardSegment(
                                 buildDirection(
@@ -74,7 +72,7 @@ public class MissingRoadSectionProvider {
                                         directionIdSupplier.getAndIncrement(),
                                         geometry,
                                         roadSectionFragment,
-                                        isAccessible));
+                                        missingRoadSectionsAreAccessible));
                     }
                     if (accessibilityRoadSection.backwardAccessible()) {
                         roadSectionFragment.setBackwardSegment(
@@ -83,11 +81,12 @@ public class MissingRoadSectionProvider {
                                         directionIdSupplier.getAndIncrement(),
                                         geometry.reverse(),
                                         roadSectionFragment,
-                                        isAccessible));
+                                        missingRoadSectionsAreAccessible));
                     }
                     roadSection.setRoadSectionFragments(List.of(roadSectionFragment));
                     return roadSection;
                 })
+                .filter(Objects::nonNull)
                 .toList();
     }
 
@@ -102,9 +101,9 @@ public class MissingRoadSectionProvider {
     }
 
     private static AtomicInteger newRoadSectionFragmentIdSupplier(
-            Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions) {
+            Collection<RoadSection> accessibleRoadSectionsWithoutAppliedRestrictions) {
 
-        AtomicInteger idSequenceSupplier = new AtomicInteger(accessibleRoadsSectionsWithoutAppliedRestrictions.stream()
+        AtomicInteger idSequenceSupplier = new AtomicInteger(accessibleRoadSectionsWithoutAppliedRestrictions.stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .map(RoadSectionFragment::getId)
                 .max(Integer::compareTo)
@@ -115,9 +114,9 @@ public class MissingRoadSectionProvider {
     }
 
     private static AtomicInteger newDirectionIdSupplier(
-            Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions) {
+            Collection<RoadSection> accessibleRoadSectionsWithoutAppliedRestrictions) {
 
-        AtomicInteger idSequenceSupplier = new AtomicInteger(accessibleRoadsSectionsWithoutAppliedRestrictions.stream()
+        AtomicInteger idSequenceSupplier = new AtomicInteger(accessibleRoadSectionsWithoutAppliedRestrictions.stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .map(DirectionalSegment::getId)

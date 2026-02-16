@@ -50,10 +50,6 @@ public final class DirectionalSegment {
 
     private final boolean accessible;
 
-    public long getRoadSectionId() {
-        return roadSectionFragment.getRoadSection().getId();
-    }
-
     public boolean hasRestrictions() {
 
         return Objects.nonNull(restrictions) && !restrictions.isEmpty();

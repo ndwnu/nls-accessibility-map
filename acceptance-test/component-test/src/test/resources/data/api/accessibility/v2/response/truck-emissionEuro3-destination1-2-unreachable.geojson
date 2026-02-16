@@ -13,7 +13,7 @@
       "accessible" : false,
       "reasons" : [ [ {
         "type" : "trafficSign",
-        "trafficSignId" : "00000000-0000-4000-0000-000000000001",
+        "trafficSignId" : "00000000-0000-4000-0000-000000000004",
         "trafficSignType" : "C22a",
         "restrictions" : [ {
           "type" : "vehicleWeightRestriction",
@@ -23,7 +23,7 @@
         } ]
       }, {
         "type" : "trafficSign",
-        "trafficSignId" : "00000000-0000-4000-0000-000000000001",
+        "trafficSignId" : "00000000-0000-4000-0000-000000000004",
         "trafficSignType" : "C22a",
         "restrictions" : [ {
           "type" : "vehicleTypeRestriction",
@@ -272,7 +272,7 @@
     "id" : 20,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.000000869996823, 1.9000962835420943 ], [ 1.0000009, 1.000001 ] ]
+      "coordinates" : [ [ 1.0000006299950754, 9.100148464200709 ], [ 1.000000869996823, 1.9000962835420943 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",
@@ -285,7 +285,7 @@
     "id" : 21,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0000009, 1.000001 ], [ 1.000000869996823, 1.9000962835420943 ] ]
+      "coordinates" : [ [ 1.000000869996823, 1.9000962835420943 ], [ 1.0000006299950754, 9.100148464200709 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",
@@ -298,7 +298,7 @@
     "id" : 22,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0000006299950754, 9.100148464200709 ], [ 1.000000869996823, 1.9000962835420943 ] ]
+      "coordinates" : [ [ 1.000000869996823, 1.9000962835420943 ], [ 1.0000009, 1.000001 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",
@@ -311,7 +311,7 @@
     "id" : 23,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.000000869996823, 1.9000962835420943 ], [ 1.0000006299950754, 9.100148464200709 ] ]
+      "coordinates" : [ [ 1.0000009, 1.000001 ], [ 1.000000869996823, 1.9000962835420943 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",

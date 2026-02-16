@@ -54,7 +54,7 @@ public class AnalyseBaseNetworkCommand implements Callable<Integer> {
             AnalyseNetworkConfiguration analyseNetworkConfiguration = AnalyseNetworkConfiguration.builder()
                     .startLocationLatitude(startLocationLatitude)
                     .startLocationLongitude(startLocationLongitude)
-                    .searchRadiusInMeters(searchRadiusInMeters)
+                    .maxSearchDistanceInMeters(searchRadiusInMeters)
                     .reportIssues(reportIssues)
                     .build();
 

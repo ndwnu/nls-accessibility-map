@@ -1,8 +1,10 @@
-package nu.ndw.nls.accessibilitymap.accessibility.reason.mapper;
+package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
 
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -21,7 +24,9 @@ import org.springframework.stereotype.Component;
 public class RoadSectionMapper {
 
     @SuppressWarnings({"java:S5612", "java:S1941"})
-    public @Valid Collection<RoadSection> mapToRoadSections(Iterable<IsochroneMatch> isochroneMatches) {
+    public @Valid Collection<RoadSection> mapToRoadSections(
+            Iterable<IsochroneMatch> isochroneMatches,
+            Map<Integer, List<Restriction>> restrictionsByEdgeKey) {
 
         SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
@@ -49,11 +54,13 @@ public class RoadSectionMapper {
                         return roadSectionFragmentNew;
                     });
 
+            List<Restriction> restrictions = restrictionsByEdgeKey.getOrDefault(directionalSegmentId, List.of());
             addSegmentsToRoadSectionFragment(
                     roadSectionFragment,
                     isochroneMatch,
                     directionalSegmentId,
-                    roadSectionFragmentById);
+                    roadSectionFragmentById,
+                    restrictions);
         });
 
         return new ArrayList<>(roadSectionsById.values());
@@ -63,7 +70,8 @@ public class RoadSectionMapper {
             RoadSectionFragment roadSectionFragment,
             IsochroneMatch isochroneMatch,
             int directionalSegmentId,
-            SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById) {
+            SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById,
+            List<Restriction> restrictions) {
 
         if (isochroneMatch.isReversed()) {
             roadSectionFragment.setBackwardSegment(
@@ -71,14 +79,16 @@ public class RoadSectionMapper {
                             directionalSegmentId,
                             Direction.BACKWARD,
                             isochroneMatch.getGeometry(),
-                            roadSectionFragmentById.get(roadSectionFragment.getId())));
+                            roadSectionFragmentById.get(roadSectionFragment.getId()),
+                            restrictions));
         } else {
             roadSectionFragment.setForwardSegment(
                     buildDirectionalSegment(
                             directionalSegmentId,
                             Direction.FORWARD,
                             isochroneMatch.getGeometry(),
-                            roadSectionFragmentById.get(roadSectionFragment.getId())));
+                            roadSectionFragmentById.get(roadSectionFragment.getId()),
+                            restrictions));
         }
     }
 
@@ -86,7 +96,8 @@ public class RoadSectionMapper {
             Integer id,
             Direction direction,
             LineString geometry,
-            RoadSectionFragment roadSectionFragment) {
+            RoadSectionFragment roadSectionFragment,
+            List<Restriction> restrictions) {
 
         return DirectionalSegment.builder()
                 .id(id)
@@ -94,6 +105,7 @@ public class RoadSectionMapper {
                 .accessible(true)
                 .lineString(geometry)
                 .roadSectionFragment(roadSectionFragment)
+                .restrictions(restrictions)
                 .build();
     }
 }

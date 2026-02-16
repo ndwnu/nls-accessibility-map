@@ -19,7 +19,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DestinationRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
@@ -94,7 +94,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .build();
 
         debugLogDestination(
-                DestinationRequestJson.builder()
+                LocationJson.builder()
                         .latitude(accessibilityRequest.endLatitude())
                         .longitude(accessibilityRequest.endLongitude())
                         .build(),
@@ -189,7 +189,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .build();
 
         debugLogDestination(
-                DestinationRequestJson.builder()
+                LocationJson.builder()
                         .latitude(accessibilityRequest.endLatitude())
                         .longitude(accessibilityRequest.endLongitude())
                         .build(),
@@ -278,8 +278,8 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     @NotNull
-    private Optional<FeatureCollection> buildGeoJsonEndPoint(DestinationRequestJson destinationRequestJson) {
-        if (Objects.isNull(destinationRequestJson)) {
+    private Optional<FeatureCollection> buildGeoJsonEndPoint(LocationJson locationJson) {
+        if (Objects.isNull(locationJson)) {
             return Optional.empty();
         }
         return Optional.of(FeatureCollection.builder()
@@ -287,8 +287,8 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                         Feature.builder()
                                 .id(1)
                                 .geometry(jtsPointJsonMapper.map(geometryFactory.createPoint(new Coordinate(
-                                        destinationRequestJson.getLongitude(),
-                                        destinationRequestJson.getLatitude()))))
+                                        locationJson.getLongitude(),
+                                        locationJson.getLatitude()))))
                                 .properties(PointNodeGraphProperties.builder()
                                         .name("endpoint")
                                         .build())
@@ -385,8 +385,8 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                 .getLast();
     }
 
-    private void debugLogDestination(DestinationRequestJson destinationRequestJson, Request<?> request) {
-        buildGeoJsonEndPoint(destinationRequestJson)
+    private void debugLogDestination(LocationJson locationJson, Request<?> request) {
+        buildGeoJsonEndPoint(locationJson)
                 .ifPresent(endpoint -> {
                     try {
                         fileService.writeDataToFile(

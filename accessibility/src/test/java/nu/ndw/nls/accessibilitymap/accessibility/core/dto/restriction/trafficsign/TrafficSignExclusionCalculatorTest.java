@@ -29,15 +29,21 @@ class TrafficSignExclusionCalculatorTest {
     @Mock
     private TransportRestrictions transportRestrictions;
 
+    @Mock
+    private BBox searchArea;
+
     @BeforeEach
     void setUp() {
 
         trafficSign = TrafficSign.builder()
+                .latitude(2D)
+                .longitude(3D)
                 .textSigns(List.of())
                 .transportRestrictions(transportRestrictions)
                 .build();
 
         accessibilityRequest = AccessibilityRequest.builder()
+                .searchArea(searchArea)
                 .build();
     }
 
@@ -49,6 +55,10 @@ class TrafficSignExclusionCalculatorTest {
             "false, false, true"
     })
     void isNotExcluded_hasExclusionsForZoneCodeTypes(boolean hasZoneType, boolean isExcluded, boolean expectedResult) {
+
+        if(expectedResult) {
+            when(searchArea.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(true);
+        }
 
         if (hasZoneType) {
             ZoneCodeType zoneCodeType = mock(ZoneCodeType.class);
@@ -76,6 +86,10 @@ class TrafficSignExclusionCalculatorTest {
             boolean hasTrafficSignTextType,
             boolean matchesRequestTextSignType,
             boolean expectedResult) {
+
+        if(expectedResult) {
+            when(searchArea.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(true);
+        }
 
         TextSign textSign = mock(TextSign.class);
         trafficSign = trafficSign.withTextSigns(List.of(textSign));
@@ -111,6 +125,10 @@ class TrafficSignExclusionCalculatorTest {
             boolean trafficSignHasEmissionZone,
             boolean isExcluded,
             boolean expectedResult) {
+
+        if(expectedResult) {
+            when(searchArea.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(true);
+        }
 
         if (requestHasExclusion) {
             if (trafficSignHasEmissionZone) {
@@ -149,6 +167,10 @@ class TrafficSignExclusionCalculatorTest {
             boolean isExcluded,
             boolean expectedResult) {
 
+        if(expectedResult) {
+            when(searchArea.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(true);
+        }
+
         if (requestHasExclusion) {
             if (trafficSignHasEmissionZone) {
                 EmissionZone emissionZone = mock(EmissionZone.class);
@@ -172,28 +194,15 @@ class TrafficSignExclusionCalculatorTest {
 
     @ParameterizedTest
     @CsvSource({
-            "true, true, false",
-            "true, false, true",
-            "false, true, true",
-            "false, false, true"
+            "true, false",
+            "false, true",
     })
-    void isNotExcluded_isOutsideOfBoundingBox(boolean requestHasBoundingBox, boolean isExcluded, boolean expectedResult) {
+    void isNotExcluded_isOutsideOfSearchBoundingBox(boolean isExcluded, boolean expectedResult) {
 
-        trafficSign = trafficSign
-                .withLatitude(2D)
-                .withLongitude(3D);
-
-        if (requestHasBoundingBox) {
-            BBox boundingBox = mock(BBox.class);
-            accessibilityRequest = accessibilityRequest.withBoundingBox(boundingBox);
-
-            if (isExcluded) {
-                when(boundingBox.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(false);
-            } else {
-                when(boundingBox.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(true);
-            }
+        if (isExcluded) {
+            when(searchArea.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(false);
         } else {
-            accessibilityRequest = accessibilityRequest.withBoundingBox(null);
+            when(searchArea.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(true);
         }
 
         assertThat(TrafficSignExclusionCalculator.isNotExcluded(trafficSign, accessibilityRequest)).isEqualTo(expectedResult);

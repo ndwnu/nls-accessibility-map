@@ -95,7 +95,9 @@ public class GenerateCommand implements Callable<Integer> {
                             .trafficSignTypes(trafficSignTypes)
                             .startLocationLatitude(startLocationLatitude)
                             .startLocationLongitude(startLocationLongitude)
-                            .searchRadiusInMeters(searchRadiusInMeters)
+                            .maxSearchDistanceInMeters(searchRadiusInMeters)
+                            .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
+                            .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                             .trafficSignTextSignTypes(
                                     includeOnlyTimeWindowedSigns
                                             ? Set.of(TextSignType.TIME_PERIOD)

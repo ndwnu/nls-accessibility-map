@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
@@ -80,7 +81,8 @@ class IssueBuilderTest {
 
         when(directionalSegment.getRestrictions()).thenReturn(List.of(trafficSign));
         when(trafficSign.externalId()).thenReturn("id");
-        when(directionalSegment.getRoadSectionId()).thenReturn(1L);
+        when(directionalSegment.getRoadSectionFragment()).thenReturn(RoadSectionFragment.builder().roadSection(roadSection).build());
+        when(directionalSegment.getRoadSectionFragment().getRoadSection().getId()).thenReturn(1L);
 
         Optional<CreateIssueJson> issue = issueBuilder.buildTrafficSignIssue(directionalSegment, "reportId", "reportGroupId");
 
