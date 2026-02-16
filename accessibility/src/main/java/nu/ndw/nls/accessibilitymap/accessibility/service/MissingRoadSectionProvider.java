@@ -26,11 +26,12 @@ import org.springframework.stereotype.Component;
 public class MissingRoadSectionProvider {
 
     @Timed(value = "accessibilitymap.accessibility.calculateMissingRoadSections")
+    @SuppressWarnings("java:S5612")
     public Collection<RoadSection> findAll(
             NetworkData networkData,
             Integer municipalityId,
             Collection<RoadSection> knownRoadSections,
-            boolean missingRoadsSectionAreAccessible,
+            boolean missingRoadsSectionsAreAccessible,
             BBox searchArea) {
 
         List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(networkData, municipalityId);
@@ -71,7 +72,7 @@ public class MissingRoadSectionProvider {
                                         directionIdSupplier.getAndIncrement(),
                                         geometry,
                                         roadSectionFragment,
-                                        missingRoadsSectionAreAccessible));
+                                        missingRoadsSectionsAreAccessible));
                     }
                     if (accessibilityRoadSection.backwardAccessible()) {
                         roadSectionFragment.setBackwardSegment(
@@ -80,7 +81,7 @@ public class MissingRoadSectionProvider {
                                         directionIdSupplier.getAndIncrement(),
                                         geometry.reverse(),
                                         roadSectionFragment,
-                                        missingRoadsSectionAreAccessible));
+                                        missingRoadsSectionsAreAccessible));
                     }
                     roadSection.setRoadSectionFragments(List.of(roadSectionFragment));
                     return roadSection;
