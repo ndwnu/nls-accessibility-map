@@ -593,7 +593,6 @@ class AccessibilityDebuggerTest {
                         """);
     }
 
-
     @Test
     void writeDebug_accessibilityNetwork_noDestination() throws IOException {
         debugEnabled();
