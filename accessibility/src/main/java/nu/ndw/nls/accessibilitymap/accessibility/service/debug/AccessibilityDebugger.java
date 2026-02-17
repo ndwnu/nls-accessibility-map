@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.shapes.BBox;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.RestrictionProperties.RestrictionPropertiesBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPolygonJsonMapper;
@@ -36,6 +38,7 @@ import org.springframework.stereotype.Service;
 public class AccessibilityDebugger {
 
     private static final int METERS_PER_DEGREE = 111_320;
+
     private static final int CIRCLE_RESOLUTION = 64;
 
     private final DebugConfiguration debugConfiguration;
@@ -163,6 +166,34 @@ public class AccessibilityDebugger {
                 .build();
 
         writeGeoJson("accessibilityRequest", featureCollection);
+    }
+
+    public void writeDebug(AccessibilityNetwork accessibilityNetwork) {
+        if (debugConfiguration.isDisabled()) {
+            return;
+        }
+
+        Snap destination = accessibilityNetwork.getDestination();
+        AtomicLong idSupplier = new AtomicLong(1);
+        FeatureCollection featureCollection = FeatureCollection.builder()
+                .features(Stream.of(
+                                buildPoint(
+                                        idSupplier,
+                                        "from",
+                                        accessibilityNetwork.getFrom().getSnappedPoint().getLat(),
+                                        accessibilityNetwork.getFrom().getSnappedPoint().getLon()),
+                                buildPoint(
+                                        idSupplier,
+                                        "destination",
+                                        Objects.nonNull(destination) ? destination.getSnappedPoint().getLat() : null,
+                                        Objects.nonNull(destination) ? destination.getSnappedPoint().getLon() : null)
+                        )
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .toList())
+                .build();
+
+        writeGeoJson("accessibilityNetwork", featureCollection);
     }
 
     private Optional<Feature> buildPoint(AtomicLong idSupplier, String name, Double latitude, Double longitude) {

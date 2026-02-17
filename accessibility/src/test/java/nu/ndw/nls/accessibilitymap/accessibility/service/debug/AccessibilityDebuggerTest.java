@@ -3,13 +3,17 @@ package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.shapes.BBox;
+import com.graphhopper.util.shapes.GHPoint3D;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import net.javacrumbs.jsonunit.core.Option;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
@@ -23,6 +27,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsectio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPolygonJsonMapper;
@@ -522,6 +527,70 @@ class AccessibilityDebuggerTest {
         accessibilityDebugger.writeDebug(accessibilityRequest);
 
         assertThat(testDir.resolve("accessibilityRequest.geojson")).doesNotExist();
+    }
+
+    @Test
+    void writeDebug_accessibilityNetwork() throws IOException {
+        debugEnabled();
+
+        Snap from = mock(Snap.class);
+        when(from.getSnappedPoint()).thenReturn(new GHPoint3D(1D, 2D, 0));
+        Snap destination = mock(Snap.class);
+        when(destination.getSnappedPoint()).thenReturn(new GHPoint3D(3D, 4D, 0));
+
+        AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
+                null,
+                null,
+                mock(Restrictions.class),
+                Map.of(),
+                from,
+                destination);
+
+        when(jtsPointJsonMapper.map(any(Point.class))).thenAnswer(invocation -> {
+            Point p = invocation.getArgument(0, Point.class);
+            if (p == null) {
+                return null;
+            }
+
+            if (p.getX() == 2D && p.getY() == 1D) {
+                return new PointJson(List.of(2D, 1D), TypeEnum.POINT);
+            }
+            if (p.getX() == 4D && p.getY() == 3D) {
+                return new PointJson(List.of(4D, 3D), TypeEnum.POINT);
+            }
+
+            throw new IllegalArgumentException("Unexpected point: " + p);
+        });
+
+        accessibilityDebugger.writeDebug(accessibilityNetwork);
+
+        assertThatJson(Files.readString(testDir.resolve("accessibilityNetwork.geojson")))
+                .isEqualTo("""
+                        {
+                          "features" : [ {
+                            "id" : 1,
+                            "geometry" : {
+                              "type" : "Point",
+                              "coordinates" : [ 2.0, 1.0 ]
+                            },
+                            "properties" : {
+                              "name" : "from"
+                            },
+                            "type" : "Feature"
+                          }, {
+                            "id" : 2,
+                            "geometry" : {
+                              "type" : "Point",
+                              "coordinates" : [ 4.0, 3.0 ]
+                            },
+                            "properties" : {
+                              "name" : "destination"
+                            },
+                            "type" : "Feature"
+                          } ],
+                          "type" : "FeatureCollection"
+                        }
+                        """);
     }
 
     private @NonNull RoadSection buildRoadSection() {
