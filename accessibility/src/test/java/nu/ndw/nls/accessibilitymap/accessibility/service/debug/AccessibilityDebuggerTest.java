@@ -593,6 +593,66 @@ class AccessibilityDebuggerTest {
                         """);
     }
 
+
+    @Test
+    void writeDebug_accessibilityNetwork_noDestination() throws IOException {
+        debugEnabled();
+
+        Snap from = mock(Snap.class);
+        when(from.getSnappedPoint()).thenReturn(new GHPoint3D(1D, 2D, 0));
+
+        AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
+                null,
+                null,
+                mock(Restrictions.class),
+                Map.of(),
+                from,
+                null);
+
+        when(jtsPointJsonMapper.map(any(Point.class))).thenAnswer(invocation -> {
+            Point p = invocation.getArgument(0, Point.class);
+            if (p == null) {
+                return null;
+            }
+
+            if (p.getX() == 2D && p.getY() == 1D) {
+                return new PointJson(List.of(2D, 1D), TypeEnum.POINT);
+            }
+
+            throw new IllegalArgumentException("Unexpected point: " + p);
+        });
+
+        accessibilityDebugger.writeDebug(accessibilityNetwork);
+
+        assertThatJson(Files.readString(testDir.resolve("accessibilityNetwork.geojson")))
+                .isEqualTo("""
+                        {
+                          "features" : [ {
+                            "id" : 1,
+                            "geometry" : {
+                              "type" : "Point",
+                              "coordinates" : [ 2.0, 1.0 ]
+                            },
+                            "properties" : {
+                              "name" : "from"
+                            },
+                            "type" : "Feature"
+                          } ],
+                          "type" : "FeatureCollection"
+                        }
+                        """);
+    }
+
+    @Test
+    void writeDebug_accessibilityNetwork_disabled() {
+        when(debugConfiguration.isDisabled()).thenReturn(true);
+
+        AccessibilityNetwork accessibilityNetwork = null;
+        accessibilityDebugger.writeDebug(accessibilityNetwork);
+
+        assertThat(testDir.resolve("accessibilityNetwork.geojson")).doesNotExist();
+    }
+
     private @NonNull RoadSection buildRoadSection() {
         RoadSection roadSection = RoadSection.builder()
                 .id(1L)
