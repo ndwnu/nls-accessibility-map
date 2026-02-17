@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -72,6 +71,7 @@ public class AccessibilityService {
                 restrictions,
                 locationFactory.mapCoordinate(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude()),
                 locationFactory.mapCoordinate(accessibilityRequest.endLocationLatitude(), accessibilityRequest.endLocationLongitude()));
+        accessibilityDebugger.writeDebug(accessibilityNetwork);
 
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
 

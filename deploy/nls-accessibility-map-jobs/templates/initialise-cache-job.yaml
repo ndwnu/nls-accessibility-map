@@ -23,6 +23,7 @@ spec:
         tags.datadoghq.com/env: {{ $.Values.environment }}
         tags.datadoghq.com/version: "{{ .Chart.AppVersion }}"
     spec:
+      terminationGracePeriodSeconds: 300
       containers:
         - name: {{ .Values.initializeCache.name }}
           resources:
