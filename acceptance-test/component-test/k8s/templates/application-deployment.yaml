@@ -46,7 +46,6 @@ spec:
               name: nls-accessibility-network-volume
             - mountPath: /application/trafficsigns
               name: nls-accessibility-traffic-sign-volume
-      restartPolicy: Always
       volumes:
         - name: nls-accessibility-network-volume
           persistentVolumeClaim:
