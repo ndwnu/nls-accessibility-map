@@ -1,0 +1,58 @@
+{{- range .Values.jobsAsAService }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  {{ .name }}
+  template:
+    metadata:
+      labels:
+        app:  {{ .name }}
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    spec:
+      containers:
+        - name:  {{ .name }}
+          image: {{.image }}
+          imagePullPolicy: Always
+          resources:
+            {{ toYaml .container.resources | nindent 12 }}
+          ports:
+            - containerPort: 8081
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: -Dspring.profiles.active=acceptance-test,pipeline -DhostSuffix={{ .Values.hostSuffix }} {{ .container.env.javaOptions }}
+          readinessProbe:
+            httpGet:
+              path: /api/actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: /api/actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 12
+          volumeMounts:
+            - mountPath: /application/graphhopper
+              name: nls-accessibility-network-volume
+            - mountPath: /application/trafficsigns
+              name: nls-accessibility-traffic-sign-volume
+      volumes:
+        - name: nls-accessibility-network-volume
+          persistentVolumeClaim:
+            claimName: network-azure-blob-claim
+        - name: nls-accessibility-traffic-sign-volume
+          persistentVolumeClaim:
+            claimName: traffic-sign-azure-blob-claim
+---
+{{- end }}
