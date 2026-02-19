@@ -27,7 +27,7 @@ spec:
               value: -Dspring.profiles.active=acceptance-test,pipeline -DhostSuffix={{ .Values.hostSuffix }} {{ .Values.pods.jobs.container.env.javaOptions }}
           readinessProbe:
             httpGet:
-              path:  /api/rest/static-road-data/actuator/health/readiness
+              path:  /actuator/health/readiness
               port: 8081
             initialDelaySeconds: 10
             timeoutSeconds: 1
@@ -35,7 +35,7 @@ spec:
             failureThreshold: 12
           livenessProbe:
             httpGet:
-              path:  /api/rest/static-road-data/actuator/health/liveness
+              path: /actuator/health/liveness
               port: 8081
             initialDelaySeconds: 10
             timeoutSeconds: 1

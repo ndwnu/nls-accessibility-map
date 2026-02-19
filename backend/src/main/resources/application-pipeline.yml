@@ -3,7 +3,8 @@ hostDatabase: database.${hostSuffix}
 hostOauth: oauth.${hostSuffix}
 hostRabbitMQ: rabbitmq.${hostSuffix}
 hostWireMock: wiremock.${hostSuffix}
-
+server:
+  context-path: /api
 spring:
   rabbitmq:
     host: ${hostRabbitMQ}
