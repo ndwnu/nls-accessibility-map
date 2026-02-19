@@ -3,6 +3,7 @@ hostWireMock: ${host}
 hostDatabase: ${host}
 hostKeycloak: ${host}
 hostApplication: ${host}
+hostRabbit: ${host}
 hostJobs: ${host}
 kubernetes:
   namespace: "replaced_by_pipeline"
@@ -29,7 +30,7 @@ nu:
     nls:
       springboot:
         messaging:
-          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
+          broker-uri: amqp://guest:guest@${hostRabbit}:5672?heartbeat=300
           publish:
             - routingKey: ndw.nls.nwb.imported
               expectedEventType: NWB_IMPORTED_EVENT

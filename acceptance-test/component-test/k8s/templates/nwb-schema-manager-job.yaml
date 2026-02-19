@@ -1,0 +1,30 @@
+# This job runs immediately after deployment to update the nwb schema with liquibase scripts.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name:  nls-nwb-schema-manager-liquibase-update-job
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app:  nls-nwb-schema-manager-liquibase-update-job
+    spec:
+      containers:
+        - name:  nls-nwb-schema-manager
+          image: "ndwnls.azurecr.io/nls-nwb-schema-manager:20260213.2"
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              memory: 512Mi
+          envFrom:
+            - configMapRef:
+                name: nls-nwb-schema-manager-config
+          env:
+            - name: COMMAND
+              value: updateNwbSchema
+            - name: JAVA_TOOL_OPTIONS
+              value: -XX:MaxRAMPercentage=70 -Ddatadog.slf4j.simpleLogger.logFile=System.out -Ddatadog.slf4j.simpleLogger.dateTimeFormat="yyyy-MM-dd HH:mm:ss.SSS"
+      restartPolicy: Never
