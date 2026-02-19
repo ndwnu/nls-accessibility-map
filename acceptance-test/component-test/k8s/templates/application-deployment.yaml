@@ -27,7 +27,7 @@ spec:
               value: -Dserver.port=8080 -Dspring.profiles.active=dev,pipeline -DhostSuffix={{ .Values.hostSuffix }} {{ .Values.pods.application.container.env.javaOptions}}
           readinessProbe:
             httpGet:
-              path: /api/actuator/health/readiness
+              path:  /api/rest/static-road-data/actuator/health/readiness
               port: 8080
             initialDelaySeconds: 10
             timeoutSeconds: 1
@@ -35,7 +35,7 @@ spec:
             failureThreshold: 12
           livenessProbe:
             httpGet:
-              path: /api/actuator/health/liveness
+              path: /api/rest/static-road-data/accessibility-map/actuator/health/liveness
               port: 8080
             initialDelaySeconds: 10
             timeoutSeconds: 1
