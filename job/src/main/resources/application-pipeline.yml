@@ -3,7 +3,6 @@ hostDatabase: database.${hostSuffix}
 hostOauth: oauth.${hostSuffix}
 hostRabbitMQ: rabbitmq.${hostSuffix}
 hostWireMock: wiremock.${hostSuffix}
-
 spring:
   rabbitmq:
     host: ${hostRabbitMQ}
