@@ -1,0 +1,28 @@
+hostSuffix: "replaced_by_pipeline"
+hostDatabase: database.${hostSuffix}
+hostOauth: oauth.${hostSuffix}
+hostRabbitMQ: rabbitmq.${hostSuffix}
+hostWireMock: wiremock.${hostSuffix}
+
+spring:
+  rabbitmq:
+    host: ${hostRabbitMQ}
+  datasource:
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-fcd-travel-time-api&stringtype=unspecified
+
+nls:
+  keycloak:
+    url: http://${hostOauth}/auth
+nu:
+  ndw:
+    nls:
+      api:
+        url: http://${hostWireMock}:8080
+      springboot:
+        messaging:
+          broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
+management:
+  datadog:
+    metrics:
+      export:
+        enabled: false
