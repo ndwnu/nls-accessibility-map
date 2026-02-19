@@ -46,6 +46,7 @@ spec:
               name: nls-accessibility-network-volume
             - mountPath: /application/trafficsigns
               name: nls-accessibility-traffic-sign-volume
+      restartPolicy: OnFailure
       volumes:
         - name: nls-accessibility-network-volume
           persistentVolumeClaim:
@@ -53,3 +54,4 @@ spec:
         - name: nls-accessibility-traffic-sign-volume
           persistentVolumeClaim:
             claimName: traffic-sign-azure-blob-claim
+
