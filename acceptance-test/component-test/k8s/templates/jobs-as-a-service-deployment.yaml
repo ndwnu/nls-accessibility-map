@@ -1,31 +1,30 @@
-{{- range .Values.jobsAsAService }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .name }}
+  name: jobs
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app:  {{ .name }}
+      app:  jobs
   template:
     metadata:
       labels:
-        app:  {{ .name }}
+        app: jobs
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     spec:
       containers:
-        - name:  {{ .name }}
-          image: {{.image }}
+        - name: jobs
+          image: {{ .Values.pods.jobs.image }}
           imagePullPolicy: Always
           resources:
-            {{ toYaml .container.resources | nindent 12 }}
+            {{ toYaml .Values.pods.jobs.container.resources | nindent 12 }}
           ports:
             - containerPort: 8081
           env:
             - name: JAVA_TOOL_OPTIONS
-              value: -Dspring.profiles.active=acceptance-test,pipeline -DhostSuffix={{ $.Values.hostSuffix }} {{ .container.env.javaOptions }}
+              value: -Dspring.profiles.active=acceptance-test,pipeline -DhostSuffix={{ .Values.hostSuffix }} {{ .Values.pods.jobs.container.env.javaOptions }}
           readinessProbe:
             httpGet:
               path: /api/actuator/health/readiness
@@ -54,5 +53,4 @@ spec:
         - name: nls-accessibility-traffic-sign-volume
           persistentVolumeClaim:
             claimName: traffic-sign-azure-blob-claim
----
-{{- end }}
+
