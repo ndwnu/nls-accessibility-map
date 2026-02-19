@@ -19,7 +19,7 @@ spec:
           image: "ndwnls.azurecr.io/{{ .Chart.Name }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: Always
           resources:
-            { { toYaml .Values.pods.application.container.resources | nindent 12 } }
+            {{ toYaml .Values.pods.application.container.resources | nindent 12 }}
           ports:
             - containerPort: 8080
           env:
