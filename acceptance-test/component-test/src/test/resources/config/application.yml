@@ -90,4 +90,4 @@ nu:
               location-on-disk: "../../.tmp/map-generation-destination"
               download-from-pod: false
               download-directory: "/application/maps"
-              service-name: "map-generator-job"
+              service-name: "jobs"
