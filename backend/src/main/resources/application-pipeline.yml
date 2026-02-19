@@ -16,6 +16,26 @@ nls:
 nu:
   ndw:
     nls:
+      accessibilitymap:
+        jobs:
+          generate:
+            root-export-directory: "./maps"
+        trafficsignclient:
+          api:
+            url: http://${hostWiremock}:8888/api/rest/static-road-data/traffic-signs/v4
+        trafficSigns:
+          emission-zone:
+            client:
+              url: http://${hostWiremock}:8888/api/area/ibbm/emission-zones/v1
+          cache:
+            folder: "./trafficSigns/"
+            load-data-on-startup: false
+            watch-for-updates: false
+        network:
+          cache:
+            folder: "./network"
+            load-data-on-startup: false
+            watch-for-updates: false
       api:
         url: http://${hostWireMock}:8080
       springboot:
