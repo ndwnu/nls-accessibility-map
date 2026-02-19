@@ -51,12 +51,8 @@ pods:
         limits:
           memory: "256Mi"
           cpu: "1000m"
-
-jobsAsAService:
-
-  graphhopperJob:
-    name: "graphhopper-job"
-    image: ndwnls.azurecr.io/nls-accessibility-map-graphhopper-job:{{ $.Chart.AppVersion }}
+  jobs:
+    image: ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}
     container:
       resources:
         requests:
@@ -68,44 +64,4 @@ jobsAsAService:
       env:
         javaOptions: -XX:MaxRAMPercentage=70
 
-  mapGeneratorJob:
-    name: "map-generator-job"
-    image: ndwnls.azurecr.io/nls-accessibility-map-generator-jobs:{{ $.Chart.AppVersion }}
-    container:
-      resources:
-        requests:
-          memory: "768Mi"
-          cpu: "200m"
-        limits:
-          memory: "768Mi"
-          cpu: "1000m"
-      env:
-        javaOptions: -XX:MaxRAMPercentage=70
 
-  trafficSignJob:
-    name: "traffic-sign-job"
-    image: ndwnls.azurecr.io/nls-accessibility-map-traffic-sign-job:{{ $.Chart.AppVersion }}
-    container:
-      resources:
-        requests:
-          memory: "768Mi"
-          cpu: "200m"
-        limits:
-          memory: "768Mi"
-          cpu: "1000m"
-      env:
-        javaOptions: -XX:MaxRAMPercentage=70
-
-  dataAnalyserJob:
-    name: "data-analyser-job"
-    image: ndwnls.azurecr.io/nls-accessibility-map-data-analyser-job:{{ $.Chart.AppVersion }}
-    container:
-      resources:
-        requests:
-          memory: "768Mi"
-          cpu: "200m"
-        limits:
-          memory: "768Mi"
-          cpu: "1000m"
-      env:
-        javaOptions: -XX:MaxRAMPercentage=70

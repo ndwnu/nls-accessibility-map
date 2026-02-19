@@ -1,6 +1,9 @@
 host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
+hostKeycloak: ${host}
+hostApplication: ${host}
+hostJobs: ${host}
 kubernetes:
   namespace: "replaced_by_pipeline"
 spring:
@@ -42,12 +45,12 @@ nu:
                   job:
                     run-in-docker-container: false
                     service-configuration:
-                      host: ${host}
+                      host: ${hostJobs}
                       port: 8081
                     docker-configuration:
                       service-name: "nls-accessibility-map-job"
               keycloak:
-                url: "http://localhost:8000/auth"
+                url: http://${hostKeycloak}:8000/auth
                 realm: "ndw"
                 admin-username: "nls"
                 admin-password: "nls"
@@ -72,7 +75,7 @@ nu:
               general:
                 debugFolder: ".debug/"
               accessibility-map:
-                host: localhost
+                host: ${hostApplication}
                 port: 8080
               graph-hopper:
                 location-on-disk: "../../.tmp/network/active/graphHopper"

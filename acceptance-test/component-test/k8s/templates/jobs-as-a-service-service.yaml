@@ -1,13 +1,11 @@
-{{- range .Values.jobsAsAService }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .name }}
+  name: jobs
 spec:
   ports:
     - port: 80
       targetPort: 8081
   selector:
-    app: {{ .name }}
----
-{{- end }}
+    app: jobs
+
