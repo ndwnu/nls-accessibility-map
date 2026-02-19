@@ -1,11 +1,8 @@
 nu:
   ndw:
     nls:
-      springboot:
-        test:
-          component:
-            driver:
-              job:
-                job-configurations:
-                  job:
-                    run-in-docker-container: true
+      test:
+        component:
+          driver:
+            map-generation-job:
+              download-from-pod: true

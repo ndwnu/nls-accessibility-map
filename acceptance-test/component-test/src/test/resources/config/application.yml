@@ -1,7 +1,8 @@
 host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
-
+kubernetes:
+  namespace: "replaced_by_pipeline"
 spring:
   application:
     name: nls-accessibility-map-generator-jobs-component-test
@@ -62,6 +63,8 @@ nu:
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
+            kubectl:
+              name-space: ${kubernetes.namespace}
       accessibilitymap:
         test:
           acceptance:
@@ -81,3 +84,6 @@ nu:
           driver:
             map-generation-job:
               location-on-disk: "../../.tmp/map-generation-destination"
+              download-from-pod: false
+              download-directory: "/application/maps"
+              service-name: "map-generator-job"

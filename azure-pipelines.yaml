@@ -75,6 +75,7 @@ extends:
     componentTests:
       - name: "all"
         module: "acceptance-test/component-test"
+        helmChartsFolder: "k8s"
         additionalMavenOptions: "-pl !backend,!job,!acceptance-test/performance-test"
 #    performanceTests:
 #      - name: "all"

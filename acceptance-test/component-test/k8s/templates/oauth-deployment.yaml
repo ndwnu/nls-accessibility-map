@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth
+  template:
+    metadata:
+      labels:
+        app: oauth
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    spec:
+      containers:
+        - name: oauth
+          image: {{ .Values.pods.oauth.container.image }}
+          imagePullPolicy: IfNotPresent
+          resources:
+            {{ toYaml .Values.pods.oauth.container.resources | nindent 12 }}
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          args: [ "start-dev", "--health-enabled=true", "--import-realm" ]
+          env:
+            - name: KEYCLOAK_ADMIN
+              value: "nls"
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: "nls"
+            - name: KC_HOSTNAME
+              value: "http://oauth.{{ .Values.hostSuffix }}/auth"
+            - name: KC_HOSTNAME_BACKCHANNEL_DYNAMIC
+              value: "true"
+            - name: KC_HTTP_PORT
+              value: "8000"
+            - name: KC_HTTP_RELATIVE_PATH
+              value: "/auth"
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+          volumeMounts:
+            - name: import
+              mountPath: /opt/keycloak/data/import
+      volumes:
+        - name: import
+          configMap:
+            name: oauth-import
