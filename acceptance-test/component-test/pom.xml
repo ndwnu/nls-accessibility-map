@@ -90,36 +90,36 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
             <executions>
-              <execution>
-                <id>docker-compose-down</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>down</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-up-infra</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>up</argument>
-                    <argument>--build</argument>
-                    <argument>-d</argument>
-                    <argument>nls-postgres</argument>
-                    <argument>nls-rabbitmq</argument>
-                    <argument>nls-keycloak</argument>
-                    <argument>accessibility-wiremock</argument>
-                  </arguments>
-                </configuration>
-              </execution>
+<!--              <execution>-->
+<!--                <id>docker-compose-down</id>-->
+<!--                <phase>pre-integration-test</phase>-->
+<!--                <goals>-->
+<!--                  <goal>exec</goal>-->
+<!--                </goals>-->
+<!--                <configuration>-->
+<!--                  <arguments combine.children="append">-->
+<!--                    <argument>down</argument>-->
+<!--                  </arguments>-->
+<!--                </configuration>-->
+<!--              </execution>-->
+<!--              <execution>-->
+<!--                <id>docker-compose-up-infra</id>-->
+<!--                <phase>pre-integration-test</phase>-->
+<!--                <goals>-->
+<!--                  <goal>exec</goal>-->
+<!--                </goals>-->
+<!--                <configuration>-->
+<!--                  <arguments combine.children="append">-->
+<!--                    <argument>up</argument>-->
+<!--                    <argument>&#45;&#45;build</argument>-->
+<!--                    <argument>-d</argument>-->
+<!--                    <argument>nls-postgres</argument>-->
+<!--                    <argument>nls-rabbitmq</argument>-->
+<!--                    <argument>nls-keycloak</argument>-->
+<!--                    <argument>accessibility-wiremock</argument>-->
+<!--                  </arguments>-->
+<!--                </configuration>-->
+<!--              </execution>-->
               <execution>
                 <id>init-component-test</id>
                 <phase>pre-integration-test</phase>
