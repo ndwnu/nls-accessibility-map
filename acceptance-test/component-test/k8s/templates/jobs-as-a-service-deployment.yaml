@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: jobs
-          image: {{ .Values.pods.jobs.image }}
+          image: "ndwnls.azurecr.io//nls-accessibility-map-job:{{ .Chart.AppVersion }}"
           imagePullPolicy: Always
           resources:
             {{ toYaml .Values.pods.jobs.container.resources | nindent 12 }}

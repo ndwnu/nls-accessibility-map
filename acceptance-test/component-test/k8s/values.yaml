@@ -52,7 +52,6 @@ pods:
           memory: "256Mi"
           cpu: "1000m"
   jobs:
-    image: ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}
     container:
       resources:
         requests:
