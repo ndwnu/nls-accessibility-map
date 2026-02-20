@@ -24,11 +24,11 @@ nu:
             root-export-directory: "./maps"
         trafficsignclient:
           api:
-            url: http://${hostWiremock}:8888/api/rest/static-road-data/traffic-signs/v4
+            url: http://${hostWiremock}/api/rest/static-road-data/traffic-signs/v4
         trafficSigns:
           emission-zone:
             client:
-              url: http://${hostWiremock}:8888/api/area/ibbm/emission-zones/v1
+              url: http://${hostWiremock}/api/area/ibbm/emission-zones/v1
           cache:
             folder: "./trafficSigns/"
             load-data-on-startup: false
