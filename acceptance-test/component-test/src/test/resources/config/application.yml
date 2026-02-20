@@ -67,8 +67,8 @@ nu:
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
-            kubectl:
-              name-space: ${kubernetes.namespace}
+              kubectl:
+                name-space: ${kubernetes.namespace}
       accessibilitymap:
         test:
           acceptance:
