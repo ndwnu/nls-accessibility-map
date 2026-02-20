@@ -5,7 +5,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;
 
 public interface AccessibilityRestrictionJsonMapperV2<T extends Restriction> {
 
-    RestrictionJson map(T Restriction);
+    RestrictionJson map(T restriction);
 
     Class<? extends Restriction> getRestrictionType();
 }

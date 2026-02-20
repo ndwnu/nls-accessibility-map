@@ -52,9 +52,9 @@ class FuelTypeReasonJsonMapperV2Test {
 
         when(fuelTypeMapperV2.map(fuelType)).thenReturn(fuelTypeJson);
 
-        ReasonJson ReasonJson = fuelTypeReasonJsonMapperV2.map(fuelTypeReason, List.of(restrictionJson));
+        ReasonJson reasonJson = fuelTypeReasonJsonMapperV2.map(fuelTypeReason, List.of(restrictionJson));
 
-        assertThat(ReasonJson)
+        assertThat(reasonJson)
                 .isInstanceOf(FuelTypeReasonJson.class)
                 .isEqualTo(getExpected());
     }

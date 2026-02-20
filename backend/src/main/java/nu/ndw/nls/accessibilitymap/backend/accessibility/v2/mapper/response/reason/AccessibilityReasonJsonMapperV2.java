@@ -8,7 +8,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;
 
 public interface AccessibilityReasonJsonMapperV2<T extends AccessibilityReason> {
 
-    ReasonJson map(T AccessibilityReason, List<RestrictionJson> restrictions);
+    ReasonJson map(T accessibilityReason, List<RestrictionJson> restrictions);
 
     ReasonType getReasonType();
 

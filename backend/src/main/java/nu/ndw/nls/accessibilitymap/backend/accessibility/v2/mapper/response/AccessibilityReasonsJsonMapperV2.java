@@ -19,10 +19,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AccessibilityReasonsJsonMapperV2 {
 
-    @SuppressWarnings("java:S3740")
+    @SuppressWarnings({"java:S3740", "java:S6411"})
     private final Map<ReasonType, AccessibilityReasonJsonMapperV2> reasonMapper;
 
-    @SuppressWarnings("java:S3740")
+    @SuppressWarnings({"java:S3740", "java:S6411"})
     private final Map<Class<? extends Restriction>, AccessibilityRestrictionJsonMapperV2> restrictionsMapper;
 
     @SuppressWarnings("java:S3740")
@@ -46,12 +46,14 @@ public class AccessibilityReasonsJsonMapperV2 {
                 .toList();
     }
 
+    @SuppressWarnings("unchecked")
     private ReasonJson mapReasonToReasonJson(AccessibilityReason<?> reason) {
         return reasonMapper.containsKey(reason.getReasonType())
                 ? reasonMapper.get(reason.getReasonType()).map(reason, mapReasonRestrictionsToRestrictionJson(reason.getRestrictions()))
                 : null;
     }
 
+    @SuppressWarnings("unchecked")
     private List<RestrictionJson> mapReasonRestrictionsToRestrictionJson(Set<Restriction> restrictions) {
         return restrictions.stream()
                 .map(restriction -> restrictionsMapper.containsKey(restriction.getClass())

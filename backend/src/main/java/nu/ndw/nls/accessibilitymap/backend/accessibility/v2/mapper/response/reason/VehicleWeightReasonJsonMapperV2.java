@@ -12,8 +12,6 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleWeightReasonJson;
 import org.springframework.stereotype.Component;
 
-;
-
 @Component
 public class VehicleWeightReasonJsonMapperV2 implements AccessibilityReasonJsonMapperV2<MaximumReason> {
 
