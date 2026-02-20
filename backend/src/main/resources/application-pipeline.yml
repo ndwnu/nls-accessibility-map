@@ -9,8 +9,9 @@ spring:
   rabbitmq:
     host: ${hostRabbitMQ}
   datasource:
-    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-fcd-travel-time-api&stringtype=unspecified
-
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-api&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
 nls:
   keycloak:
     url: http://${hostOauth}/auth
