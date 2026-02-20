@@ -4,6 +4,7 @@ hostWireMock: wiremock.${host}
 hostDatabase: database.${host}
 hostOauth: oauth.${host}
 hostApplication: application.${host}
+hostRabbit: rabbitmq.${host}
 hostJobs: jobs.${host}
 nu:
   ndw:
