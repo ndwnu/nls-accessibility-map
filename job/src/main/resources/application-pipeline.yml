@@ -29,11 +29,13 @@ nu:
           cache:
             folder: "./trafficSigns/"
             load-data-on-startup: false
+            fail-on-no-data-on-startup: false
             watch-for-updates: false
         network:
           cache:
             folder: "./network"
             load-data-on-startup: false
+            fail-on-no-data-on-startup: false
             watch-for-updates: false
       api:
         url: http://${hostWireMock}:8080
