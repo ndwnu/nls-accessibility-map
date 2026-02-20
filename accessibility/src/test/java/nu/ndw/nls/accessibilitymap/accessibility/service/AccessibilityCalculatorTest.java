@@ -5,10 +5,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.PMap;
 import com.graphhopper.util.shapes.BBox;
 import java.util.Collection;
 import java.util.List;
@@ -18,17 +15,12 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.factory.IsochroneServiceFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
-import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.RoadSectionMapper;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,31 +34,13 @@ class AccessibilityCalculatorTest {
     private AccessibilityCalculator accessibilityCalculator;
 
     @Mock
-    private IsochroneServiceFactory isochroneServiceFactory;
-
-    @Mock
     private RoadSectionMapper roadSectionMapper;
 
     @Mock
     private AccessibilityNetwork accessibilityNetwork;
 
     @Mock
-    private NetworkData networkData;
-
-    @Mock
-    private GraphHopperNetwork graphHopperNetwork;
-
-    @Mock
     private RoadSection roadSection;
-
-    @Mock
-    private Snap from;
-
-    @Mock
-    private NetworkGraphHopper network;
-
-    @Mock
-    private Weighting weightingNoRestrictions;
 
     @Mock
     private IsochroneService isochroneService;
@@ -75,12 +49,16 @@ class AccessibilityCalculatorTest {
     private IsochroneMatch isochroneMatch;
 
     @Mock
-    private QueryGraph queryGraph;
+    private Map<Integer, List<Restriction>> restrictionsByEdgeKey;
 
     @Mock
-    private Map<Integer, List<Restriction>> restrictionsByEdgeKey;
-    @Mock
     private BBox requestArea;
+
+    @Mock
+    private Weighting weighting;
+
+    @Mock
+    private Set<Integer> blockedEdges;
 
     private AccessibilityRequest accessibilityRequest;
 
@@ -93,33 +71,24 @@ class AccessibilityCalculatorTest {
                 .requestArea(requestArea)
                 .build();
 
-        accessibilityCalculator = new AccessibilityCalculator(isochroneServiceFactory, roadSectionMapper);
+        accessibilityCalculator = new AccessibilityCalculator(isochroneService, roadSectionMapper);
     }
 
     @Test
     void calculateWithoutRestrictions() {
 
+        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
         when(accessibilityNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
-        when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(network.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
-                weightingNoRestrictions);
-        when(accessibilityNetwork.getFrom()).thenReturn(from);
-        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(network);
 
-        when(isochroneServiceFactory.createService(accessibilityNetwork)).thenReturn(isochroneService);
-        when(isochroneService.getIsochroneMatchesByMunicipalityId(
+        when(isochroneService.search(
+                eq(accessibilityNetwork),
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments
                         .builder()
-                        .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, Set.of()))
+                        .weighting(new RestrictionWeightingAdapter(weighting, Set.of()))
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(2.0)
-                        .build())),
-                eq(queryGraph),
-                eq(from)))
+                        .build()))))
                 .thenReturn(List.of(isochroneMatch));
 
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch), restrictionsByEdgeKey)).thenReturn(List.of(roadSection));
@@ -134,27 +103,19 @@ class AccessibilityCalculatorTest {
     @Test
     void calculateWithRestrictions() {
 
+        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
         when(accessibilityNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
-        when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(network.createWeighting(eq(NetworkConstants.CAR_PROFILE), argThat(new PMapArgumentMatcher(new PMap())))).thenReturn(
-                weightingNoRestrictions);
-        when(accessibilityNetwork.getFrom()).thenReturn(from);
-        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(network);
+        when(accessibilityNetwork.getBlockedEdges()).thenReturn(blockedEdges);
 
-        when(isochroneServiceFactory.createService(accessibilityNetwork)).thenReturn(isochroneService);
-        when(isochroneService.getIsochroneMatchesByMunicipalityId(
+        when(isochroneService.search(
+                eq(accessibilityNetwork),
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments
                         .builder()
-                        .weighting(new RestrictionWeightingAdapter(weightingNoRestrictions, Set.of()))
+                        .weighting(new RestrictionWeightingAdapter(weighting, blockedEdges))
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(2.0)
-                        .build())),
-                eq(queryGraph),
-                eq(from)))
+                        .build()))))
                 .thenReturn(List.of(isochroneMatch));
 
         when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch), restrictionsByEdgeKey)).thenReturn(List.of(roadSection));
@@ -171,7 +132,7 @@ class AccessibilityCalculatorTest {
 
         @Override
         public boolean matches(IsochroneArguments actual) {
-            // Mockito initializes with null value
+            // Mockito initializes with a null value
             if (actual == null) {
                 return false;
             }
@@ -190,19 +151,6 @@ class AccessibilityCalculatorTest {
             } else {
                 return Objects.equals(expectedWeighting, actualWeighting);
             }
-        }
-    }
-
-    private record PMapArgumentMatcher(PMap expected) implements ArgumentMatcher<PMap> {
-
-        @Override
-        public boolean matches(PMap actual) {
-            // Mockito initializes with null value
-            if (actual == null) {
-                return false;
-            }
-
-            return expected.toMap().equals(actual.toMap());
         }
     }
 }

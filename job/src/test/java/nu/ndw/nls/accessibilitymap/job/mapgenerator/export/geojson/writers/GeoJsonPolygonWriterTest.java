@@ -24,6 +24,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
@@ -31,7 +32,6 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfig
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.util.polygon.MultiPolygonFactory;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,6 +87,18 @@ class GeoJsonPolygonWriterTest {
     @Mock
     private Geometry geometry2;
 
+    @Mock
+    private TrafficSign trafficSign1;
+
+    @Mock
+    private TrafficSign trafficSign2;
+
+    @Mock
+    private TrafficSign trafficSign3;
+
+    @Mock
+    private TrafficSign trafficSign4;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -108,33 +120,11 @@ class GeoJsonPolygonWriterTest {
                         RoadSectionFragment.builder()
                                 .backwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .restrictions(List.of(TrafficSign.builder()
-                                                .id(1)
-                                                .textSigns(List.of(
-                                                        TextSign.builder()
-                                                                .type(TextSignType.TIME_PERIOD)
-                                                                .text("window1")
-                                                                .build(),
-                                                        TextSign.builder()
-                                                                .type(TextSignType.TIME_PERIOD)
-                                                                .text("window2")
-                                                                .build()))
-                                                .build()))
+                                        .restrictions(new Restrictions(List.of(trafficSign1)))
                                         .build())
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .restrictions(List.of(TrafficSign.builder()
-                                                .id(2)
-                                                .textSigns(List.of(
-                                                        TextSign.builder()
-                                                                .type(TextSignType.FREE_TEXT)
-                                                                .text("window3")
-                                                                .build(),
-                                                        TextSign.builder()
-                                                                .type(TextSignType.TIME_PERIOD)
-                                                                .text("window4")
-                                                                .build()))
-                                                .build()))
+                                        .restrictions(new Restrictions(List.of(trafficSign2)))
                                         .build())
                                 .build(),
                         RoadSectionFragment.builder()
@@ -144,35 +134,13 @@ class GeoJsonPolygonWriterTest {
                                         .build())
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesIntersects)
-                                        .restrictions(List.of(TrafficSign.builder()
-                                                .id(3)
-                                                .textSigns(List.of(
-                                                        TextSign.builder()
-                                                                .type(TextSignType.FREE_TEXT)
-                                                                .text("window5")
-                                                                .build(),
-                                                        TextSign.builder()
-                                                                .type(TextSignType.TIME_PERIOD)
-                                                                .text("window6")
-                                                                .build()))
-                                                .build()))
+                                        .restrictions(new Restrictions(List.of(trafficSign3)))
                                         .build())
                                 .build(),
                         RoadSectionFragment.builder()
                                 .forwardSegment(DirectionalSegment.builder()
                                         .lineString(lineStringDoesNotIntersect)
-                                        .restrictions(List.of(TrafficSign.builder()
-                                                .id(4)
-                                                .textSigns(List.of(
-                                                        TextSign.builder()
-                                                                .type(TextSignType.FREE_TEXT)
-                                                                .text("window5")
-                                                                .build(),
-                                                        TextSign.builder()
-                                                                .type(TextSignType.TIME_PERIOD)
-                                                                .text("window6")
-                                                                .build()))
-                                                .build()))
+                                        .restrictions(new Restrictions(List.of(trafficSign4)))
                                         .build())
                                 .build()
                 ))
@@ -184,11 +152,7 @@ class GeoJsonPolygonWriterTest {
         });
 
         relevantRoadSectionIds = Set.of(roadSection.getId());
-        relevantRestrictions = Set.of(
-                roadSection.getRoadSectionFragments().getFirst().getForwardSegment().getRestrictions().getFirst(),
-                roadSection.getRoadSectionFragments().getFirst().getBackwardSegment().getRestrictions().getFirst(),
-                roadSection.getRoadSectionFragments().get(1).getForwardSegment().getRestrictions().getFirst()
-        );
+        relevantRestrictions = Set.of(trafficSign1, trafficSign2, trafficSign3);
     }
 
     @ParameterizedTest

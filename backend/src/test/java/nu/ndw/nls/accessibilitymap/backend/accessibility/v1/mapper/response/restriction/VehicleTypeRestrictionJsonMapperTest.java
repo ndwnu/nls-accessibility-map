@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason.ReasonType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeReason;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;
@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class VehicleTypeRestrictionJsonMapperTest {
 
     @Mock
-    private TransportTypeRestriction transportTypeRestriction;
+    private TransportTypeReason transportTypeReason;
     @Mock
     private TransportTypeMapper transportTypeMapper;
     @Mock
@@ -37,10 +37,10 @@ class VehicleTypeRestrictionJsonMapperTest {
     private VehicleTypeRestrictionJsonMapper mapper;
 
     @Test
-    void mapToRestrictionJson() {
-        when(transportTypeRestriction.getValue()).thenReturn(Set.of(transportType));
+    void map() {
+        when(transportTypeReason.getValue()).thenReturn(Set.of(transportType));
         when(transportTypeMapper.map(Set.of(transportType))).thenReturn(List.of(vehicleTypeJson));
-        RestrictionJson actual = mapper.mapToRestrictionJson(transportTypeRestriction);
+        RestrictionJson actual = mapper.map(transportTypeReason);
 
         assertThat(actual)
                 .isInstanceOf(VehicleTypeRestrictionJson.class)
@@ -57,6 +57,6 @@ class VehicleTypeRestrictionJsonMapperTest {
 
     @Test
     void mapperForType() {
-        assertThat(mapper.mapperForType()).isEqualTo(RestrictionType.VEHICLE_TYPE);
+        assertThat(mapper.mapperForType()).isEqualTo(ReasonType.VEHICLE_TYPE);
     }
 }

@@ -14,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,6 +106,6 @@ class RoadSectionMapperTest {
         assertThat(segment.getRoadSectionFragment()).isEqualTo(roadSectionFragment);
         assertThat(segment.isAccessible()).isTrue();
         assertThat(segment.getLineString()).isEqualTo(geometry);
-        assertThat(segment.getRestrictions()).isEqualTo(List.of(restriction));
+        assertThat(segment.getRestrictions()).isEqualTo(new Restrictions(List.of(restriction)));
     }
 }
