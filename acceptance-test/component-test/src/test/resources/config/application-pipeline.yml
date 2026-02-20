@@ -13,7 +13,7 @@ nu:
           component:
             driver:
               keycloak:
-                url: ${hostOauth}
+                url: http://${hostOauth}/auth
               wiremock:
                 port: 80
               job:

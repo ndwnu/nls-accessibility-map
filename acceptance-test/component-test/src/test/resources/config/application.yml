@@ -1,7 +1,7 @@
 host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
-hostKeycloak: ${host}
+hostOauth: oauth.${host}
 hostApplication: ${host}
 hostRabbit: ${host}
 hostJobs: ${host}
@@ -51,7 +51,7 @@ nu:
                     docker-configuration:
                       service-name: "nls-accessibility-map-job"
               keycloak:
-                url: http://${hostKeycloak}:8000/auth
+                url: http://${hostOauth}:8000/auth
                 realm: "ndw"
                 admin-username: "nls"
                 admin-password: "nls"
