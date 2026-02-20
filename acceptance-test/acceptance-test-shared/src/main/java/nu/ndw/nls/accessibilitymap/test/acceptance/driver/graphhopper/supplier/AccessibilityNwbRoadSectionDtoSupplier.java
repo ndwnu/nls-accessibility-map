@@ -15,6 +15,7 @@ public class AccessibilityNwbRoadSectionDtoSupplier extends NwbRoadSectionDtoSup
 
         return nwbRoadSectionDto
                 .withMunicipalityId(1)
+                .withDrivingDirection("B")
                 .withRoadOperatorType(RoadOperatorType.MUNICIPALITY);
     }
 }

@@ -12,6 +12,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -114,7 +115,7 @@ class RoadSectionCombinatorTest {
                 .id(Integer.MAX_VALUE)
                 .direction(Direction.FORWARD)
                 .lineString(mock(LineString.class))
-                .restrictions(List.of(mock(Restriction.class)))
+                .restrictions(new Restrictions(List.of(mock(Restriction.class))))
                 .roadSectionFragment(roadSectionFragment)
                 .accessible(true)
                 .build();
@@ -196,7 +197,7 @@ class RoadSectionCombinatorTest {
                                     .id(roadSectionFragmentId + 10)
                                     .direction(Direction.FORWARD)
                                     .lineString(mock(LineString.class))
-                                    .restrictions(List.of(mock(Restriction.class)))
+                                    .restrictions(new Restrictions(List.of(mock(Restriction.class))))
                                     .roadSectionFragment(roadSectionFragment)
                                     .accessible(accessibleSupplier.apply(roadSectionFragmentId))
                                     .build());
@@ -206,7 +207,7 @@ class RoadSectionCombinatorTest {
                                     .id(roadSectionFragmentId + 20)
                                     .direction(Direction.BACKWARD)
                                     .lineString(mock(LineString.class))
-                                    .restrictions(List.of(mock(Restriction.class)))
+                                    .restrictions(new Restrictions(List.of(mock(Restriction.class))))
                                     .roadSectionFragment(roadSectionFragment)
                                     .accessible(accessibleSupplier.apply(roadSectionFragmentId))
                                     .build());

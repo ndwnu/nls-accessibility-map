@@ -7,6 +7,7 @@ import jakarta.validation.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exception.ResourceNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.APIErrorJson;
@@ -59,6 +60,15 @@ public class ErrorHandlerController extends ResponseEntityExceptionHandler {
                 .build();
 
         return ResponseEntity.status(exception.getStatusCode()).body(restError);
+    }
+
+    @ExceptionHandler(AccessibilityLocationNotFoundException.class)
+    public ResponseEntity<APIErrorJson> handleApiException(AccessibilityLocationNotFoundException exception) {
+        APIErrorJson restError = APIErrorJson.builder()
+                .message(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restError);
     }
 
     /**

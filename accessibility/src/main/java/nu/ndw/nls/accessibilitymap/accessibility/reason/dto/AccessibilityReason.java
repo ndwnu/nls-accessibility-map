@@ -1,23 +1,46 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.dto;
 
-import java.util.List;
-import lombok.Builder;
-import lombok.With;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import java.util.Set;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 
-@Builder(toBuilder = true)
-public record AccessibilityReason(
-        String trafficSignExternalId,
-        Direction direction,
-        TrafficSignType trafficSignType,
-        Integer roadSectionId,
-        @SuppressWarnings("java:S3740")
-        @With List<AccessibilityRestriction> restrictions) {
+@SuperBuilder
+@NoArgsConstructor
+public abstract class AccessibilityReason<VALUE_TYPE> {
 
-    @SuppressWarnings("java:S3740")
-    public void mergeRestrictions(List<AccessibilityRestriction> restrictions) {
-
-        this.restrictions.addAll(restrictions);
+    public enum ReasonType {
+        VEHICLE_LENGTH,
+        VEHICLE_HEIGHT,
+        VEHICLE_WIDTH,
+        VEHICLE_WEIGHT,
+        VEHICLE_AXLE_LOAD,
+        FUEL_TYPE,
+        VEHICLE_TYPE,
+        ACCESSIBLE_REASON
     }
+
+    @Setter
+    @Getter
+    /*
+      The causes of why this reason exists.
+     */
+    private Set<Restriction> restrictions;
+
+    public abstract ReasonType getReasonType();
+
+    public abstract VALUE_TYPE getValue();
+
+    @SuppressWarnings("unchecked")
+    protected AccessibilityReason<VALUE_TYPE> ensureSameType(AccessibilityReason<?> other) {
+        if (getReasonType() != other.getReasonType()) {
+            throw new IllegalArgumentException("Cannot compare accessibility restrictions of different types");
+        }
+
+        return (AccessibilityReason<VALUE_TYPE>) other;
+    }
+
+    public abstract AccessibilityReason<VALUE_TYPE> reduce(AccessibilityReason<?> other);
 }

@@ -2,8 +2,8 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.response.res
 
 import java.util.Comparator;
 import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason.ReasonType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeReason;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;
@@ -14,7 +14,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeRestricti
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehicleTypeRestrictionJsonMapper implements AccessibilityRestrictionJsonMapper<TransportTypeRestriction> {
+public class VehicleTypeRestrictionJsonMapper implements AccessibilityRestrictionJsonMapper<TransportTypeReason> {
 
     private final TransportTypeMapper transportTypeMapper;
 
@@ -23,8 +23,8 @@ public class VehicleTypeRestrictionJsonMapper implements AccessibilityRestrictio
     }
 
     @Override
-    public RestrictionJson mapToRestrictionJson(TransportTypeRestriction accessibilityRestriction) {
-        List<VehicleTypeJson> vehicleTypeJsonList = transportTypeMapper.map(accessibilityRestriction.getValue());
+    public RestrictionJson map(TransportTypeReason transportTypeReason) {
+        List<VehicleTypeJson> vehicleTypeJsonList = transportTypeMapper.map(transportTypeReason.getValue());
 
         return new VehicleTypeRestrictionJson()
                 .type(TypeEnum.VEHICLE_TYPE_RESTRICTION)
@@ -34,8 +34,8 @@ public class VehicleTypeRestrictionJsonMapper implements AccessibilityRestrictio
     }
 
     @Override
-    public RestrictionType mapperForType() {
-        return RestrictionType.VEHICLE_TYPE;
+    public ReasonType mapperForType() {
+        return ReasonType.VEHICLE_TYPE;
     }
 
     private List<VehicleTypeJson> sort(List<VehicleTypeJson> vehicleTypeJsons) {

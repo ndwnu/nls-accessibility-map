@@ -46,3 +46,16 @@ Feature: Accessibility V2
     When request accessibility geojson for boundingBox-destination3-7
     Then we expect accessibility geojson response boundingBox-destination3-7
 
+    When request accessibility geojson for boundingBox-destination3-7-unreachable
+    Then we expect accessibility geojson response boundingBox-destination3-7-unreachable
+
+
+  Scenario: Get - Bounding box inner circle - Custom restrictions - Destination unreachable
+    Given a simple network
+    And with traffic signs
+      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
+    When run TrafficSignUpdateCache
+
+    When request accessibility geojson for boundingBox-destination3-7-unreachable
+    Then we expect accessibility geojson response boundingBox-destination3-7-unreachable
+

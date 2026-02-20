@@ -8,12 +8,14 @@ import com.graphhopper.util.shapes.BBox;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
@@ -196,6 +198,35 @@ public class AccessibilityDebugger {
         writeGeoJson("accessibilityNetwork", featureCollection);
     }
 
+    public void writeDebug(List<DirectionalSegment> path) {
+        if (debugConfiguration.isDisabled()) {
+            return;
+        }
+
+        AtomicLong idSupplier = new AtomicLong(1);
+        FeatureCollection featureCollection = FeatureCollection.builder()
+                .features(path.stream()
+                        .map(directionalSegment -> Feature.builder()
+                                .id(idSupplier.getAndIncrement())
+                                .geometry(jtsLineStringJsonMapper.map(directionalSegment.getLineString()))
+                                .properties(RoadSectionSegmentProperties.builder()
+                                        .roadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
+                                        .roadSectionFragmentId(directionalSegment.getRoadSectionFragment().getId())
+                                        .edge(directionalSegment.getRoadSectionFragment().getId())
+                                        .segmentId(directionalSegment.getId())
+                                        .edgeKey(directionalSegment.getId())
+                                        .direction(directionalSegment.getDirection())
+                                        .startFraction(directionalSegment.getStartFraction())
+                                        .endFraction(directionalSegment.getEndFraction())
+                                        .accessible(directionalSegment.isAccessible())
+                                        .build())
+                                .build())
+                        .toList())
+                .build();
+
+        writeGeoJson("destinationPaths", featureCollection);
+    }
+
     private Optional<Feature> buildPoint(AtomicLong idSupplier, String name, Double latitude, Double longitude) {
         if (Objects.isNull(latitude) || Objects.isNull(longitude)) {
             return Optional.empty();
@@ -279,4 +310,5 @@ public class AccessibilityDebugger {
             log.error("Failed to write file.", exception);
         }
     }
+
 }

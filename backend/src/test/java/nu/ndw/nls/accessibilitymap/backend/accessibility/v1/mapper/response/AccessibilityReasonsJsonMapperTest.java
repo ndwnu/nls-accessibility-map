@@ -1,24 +1,25 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.response;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType.FUEL_TYPE;
-import static nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType.VEHICLE_TYPE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.FuelTypeRestriction;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeRestriction;
-import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.response.restriction.FuelTypeRestrictionJsonMapper;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeRestrictionJson;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason.ReasonType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.FuelTypeReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.TransportTypeReason;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.response.restriction.AccessibilityRestrictionJsonMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.ReasonJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson.TypeEnum;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionUnitSymbolJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.TrafficSignTypeJson;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -28,77 +29,98 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AccessibilityReasonsJsonMapperTest {
 
-    private static final String UUID = "4feeabc3-19ad-459f-9b8e-37116c22c512";
-
     private AccessibilityReasonsJsonMapper accessibilityReasonsJsonMapper;
 
     @Mock
     private AccessibilityReason accessibilityReason;
 
     @Mock
-    private FuelTypeRestriction fuelTypeRestriction;
+    private TrafficSign trafficSign;
 
     @Mock
-    private TransportTypeRestriction transportTypeRestriction;
+    private FuelTypeReason fuelTypeReason;
 
     @Mock
-    private FuelTypeRestrictionJsonMapper fuelTypeRestrictionJsonMapper;
+    private TransportTypeReason transportTypeReason;
+
+    @Mock
+    private AccessibilityRestrictionJsonMapper<AccessibilityReason> accessibilityRestrictionJsonMapper;
+
+    @Mock
+    private ReasonType reasonType;
+
+    @Mock
+    private RestrictionJson restrictionJson;
+
 
     @BeforeEach
     void setup() {
 
-        when(fuelTypeRestrictionJsonMapper.mapperForType()).thenReturn(FUEL_TYPE);
+        when(accessibilityRestrictionJsonMapper.mapperForType()).thenReturn(reasonType);
 
-        accessibilityReasonsJsonMapper = new AccessibilityReasonsJsonMapper(List.of(fuelTypeRestrictionJsonMapper));
+        accessibilityReasonsJsonMapper = new AccessibilityReasonsJsonMapper(List.of(accessibilityRestrictionJsonMapper));
     }
 
     @ParameterizedTest
     @EnumSource(TrafficSignType.class)
     void mapToReasonJson(TrafficSignType trafficSignType) {
 
-        when(accessibilityReason.trafficSignExternalId()).thenReturn(UUID);
-        when(accessibilityReason.trafficSignType()).thenReturn(trafficSignType);
-        when(accessibilityReason.restrictions()).thenReturn(List.of(fuelTypeRestriction));
+        when(accessibilityReason.getRestrictions()).thenReturn(Set.of(trafficSign));
+        when(accessibilityReason.getReasonType()).thenReturn(reasonType);
+        when(trafficSign.externalId()).thenReturn("4feeabc3-19ad-459f-9b8e-37116c22c512");
+        when(trafficSign.trafficSignType()).thenReturn(trafficSignType);
 
-        when(fuelTypeRestriction.getTypeOfRestriction()).thenReturn(FUEL_TYPE);
+        when(accessibilityRestrictionJsonMapper.map(accessibilityReason)).thenReturn(restrictionJson);
 
-        FuelTypeRestrictionJson fuelTypeRestrictionJson = new FuelTypeRestrictionJson()
-                .type(TypeEnum.FUEL_TYPE_RESTRICTION)
-                .unitSymbol(RestrictionUnitSymbolJson.ENUM)
-                .condition(RestrictionConditionJson.EQUALS)
-                .values(List.of(FuelTypeJson.DIESEL));
-
-        when(fuelTypeRestrictionJsonMapper.mapToRestrictionJson(fuelTypeRestriction)).thenReturn(fuelTypeRestrictionJson);
-
-        List<List<AccessibilityReason>> accessibilityReasons = List.of(List.of(accessibilityReason));
-
-        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapper.mapToReasonJson(accessibilityReasons);
+        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapper.mapToReasonJson(
+                List.of(new AccessibilityReasonGroup(List.of(accessibilityReason))));
 
         ReasonJson expected = new ReasonJson()
-                .trafficSignId(java.util.UUID.fromString(UUID))
+                .trafficSignId(java.util.UUID.fromString("4feeabc3-19ad-459f-9b8e-37116c22c512"))
                 .trafficSignType(TrafficSignTypeJson.fromValue(trafficSignType.getRvvCode()))
-                .restrictions(List.of(fuelTypeRestrictionJson));
+                .restrictions(List.of(restrictionJson));
         List<List<ReasonJson>> expectedList = List.of(List.of(expected));
 
         assertThat(actual).isEqualTo(expectedList);
     }
 
+    @Test
+    void mapToReasonJson_noRestriction( ) {
+
+        when(accessibilityReason.getRestrictions()).thenReturn(Set.of());
+
+        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapper.mapToReasonJson(
+                List.of(new AccessibilityReasonGroup(List.of(accessibilityReason))));
+
+        assertThat(actual).hasSize(1);
+        assertThat(actual.getFirst()).isEmpty();
+    }
+
+    @Test
+    void mapToReasonJson_unsupportedRestriction() {
+
+        when(accessibilityReason.getRestrictions()).thenReturn(Set.of(mock(RoadSectionRestriction.class)));
+
+        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapper.mapToReasonJson(
+                List.of(new AccessibilityReasonGroup(List.of(accessibilityReason))));
+
+        assertThat(actual).hasSize(1);
+        assertThat(actual.getFirst()).isEmpty();
+    }
+
     @ParameterizedTest
     @EnumSource(TrafficSignType.class)
     void mapToReasonJson_nonExistingMapper(TrafficSignType trafficSignType) {
+        when(accessibilityReason.getRestrictions()).thenReturn(Set.of(trafficSign));
+        when(accessibilityReason.getReasonType()).thenReturn(mock(ReasonType.class));
+        when(trafficSign.externalId()).thenReturn("4feeabc3-19ad-459f-9b8e-37116c22c512");
+        when(trafficSign.trafficSignType()).thenReturn(trafficSignType);
 
-        when(accessibilityReason.trafficSignExternalId()).thenReturn(UUID);
-        when(accessibilityReason.trafficSignType()).thenReturn(trafficSignType);
-        when(accessibilityReason.restrictions()).thenReturn(List.of(transportTypeRestriction));
-
-        when(transportTypeRestriction.getTypeOfRestriction()).thenReturn(VEHICLE_TYPE);
-
-        List<List<AccessibilityReason>> accessibilityReasons = List.of(List.of(accessibilityReason));
-
-        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapper.mapToReasonJson(accessibilityReasons);
+        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapper.mapToReasonJson(
+                List.of(new AccessibilityReasonGroup(List.of(accessibilityReason))));
 
         ReasonJson expected = new ReasonJson()
-                .trafficSignId(java.util.UUID.fromString(UUID))
+                .trafficSignId(java.util.UUID.fromString("4feeabc3-19ad-459f-9b8e-37116c22c512"))
                 .trafficSignType(TrafficSignTypeJson.fromValue(trafficSignType.getRvvCode()))
                 .restrictions(List.of());
         List<List<ReasonJson>> expectedList = List.of(List.of(expected));

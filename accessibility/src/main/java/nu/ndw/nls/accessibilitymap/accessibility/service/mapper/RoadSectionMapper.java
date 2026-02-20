@@ -14,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -105,7 +106,7 @@ public class RoadSectionMapper {
                 .accessible(true)
                 .lineString(geometry)
                 .roadSectionFragment(roadSectionFragment)
-                .restrictions(restrictions)
+                .restrictions(new Restrictions(restrictions))
                 .build();
     }
 }

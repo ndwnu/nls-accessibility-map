@@ -1,7 +1,7 @@
 {
   "from": {
-    "latitude": 5,
-    "longitude": 4
+    "latitude": 8.0,
+    "longitude": 5.1
   },
   "destination": {
     "latitude": 3,

@@ -1,7 +1,9 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.dto;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
+import com.graphhopper.util.PMap;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Set;
 import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import org.springframework.validation.annotation.Validated;
 
@@ -37,6 +40,9 @@ public class AccessibilityNetwork {
 
     private final Snap destination;
 
+    @NotNull
+    private final Weighting weighting;
+
     @SuppressWarnings("java:S107")
     public AccessibilityNetwork(
             @NotNull NetworkData networkData,
@@ -53,6 +59,8 @@ public class AccessibilityNetwork {
         this.restrictionsByEdgeKey = restrictionsByEdgeKey;
         this.from = from;
         this.destination = destination;
+
+        weighting = networkData.getGraphHopperNetwork().network().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
     }
 
     @Override

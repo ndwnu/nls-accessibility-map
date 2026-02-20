@@ -13,20 +13,21 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityResponseGeoJsonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionConditionJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson.TypeEnum;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionUnitSymbolJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignReasonJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonConditionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonJson.TypeEnum;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonUnitSymbolJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.TrafficSignTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeRestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeReasonJson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +47,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     private AccessibilityReasonsJsonMapperV2 accessibilityReasonsJsonMapperV2;
 
     @Mock
-    private List<List<AccessibilityReason>> reasons;
+    private List<AccessibilityReasonGroup> reasons;
 
     private RoadSection roadSectionInaccessible;
 
@@ -526,16 +527,18 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     @Test
     void map_destinationInaccessible() throws JsonProcessingException {
 
-        when(accessibilityReasonsJsonMapperV2.map(reasons)).thenReturn(List.of(List.of(TrafficSignReasonJson.builder()
-                .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
-                .trafficSignType(TrafficSignTypeJson.C1)
-                .restrictions(List.of(VehicleTypeRestrictionJson.builder()
-                        .type(TypeEnum.VEHICLE_TYPE_RESTRICTION)
-                        .unitSymbol(RestrictionUnitSymbolJson.ENUM)
-                        .values(List.of(VehicleTypeJson.CAR))
-                        .condition(RestrictionConditionJson.EQUALS)
-                        .build()))
+
+        when(accessibilityReasonsJsonMapperV2.map(reasons)).thenReturn(List.of(List.of(VehicleTypeReasonJson.builder()
+                .type(TypeEnum.VEHICLE_TYPE_REASON)
+                .unitSymbol(ReasonUnitSymbolJson.ENUM)
+                .values(List.of(VehicleTypeJson.CAR))
+                .condition(ReasonConditionJson.EQUALS)
+                        .becauseOf(List.of(TrafficSignRestrictionJson.builder()
+                                        .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
+                                        .trafficSignType(TrafficSignTypeJson.C1)
+                                .build()))
                 .build())));
+
         Accessibility accessibility = Accessibility.builder()
                 .toRoadSection(Optional.of(destinationRoadSectionAccessible))
                 .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, destinationRoadSectionAccessible))
@@ -566,19 +569,19 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ 4.45, 5.34 ]
                     },
                     "properties" : {
+                      "type" : "destination",
                       "roadSectionId" : 3,
                       "accessible" : true,
-                      "type" : "destination",
                       "reasons" : [ [ {
-                        "type": "trafficSign",
-                        "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
-                        "trafficSignType" : "C1",
-                        "restrictions" : [ {
-                          "type" : "vehicleTypeRestriction",
-                          "unitSymbol" : "enum",
-                          "condition" : "equals",
-                          "values" : [ "car" ]
-                        } ]
+                        "type" : "vehicleTypeReason",
+                        "unitSymbol" : "enum",
+                        "condition" : "equals",
+                        "becauseOf" : [ {
+                          "type" : "trafficSign",
+                          "trafficSignId" : "71332fe6-fb88-4a91-8b72-eefc3c37c713",
+                          "trafficSignType" : "C1"
+                        } ],
+                        "values" : [ "car" ]
                       } ] ]
                     }
                   }, {
@@ -589,8 +592,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 1,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -602,8 +605,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 1,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -615,8 +618,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 2,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -628,8 +631,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 2,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
                       "accessible" : false,
                       "direction" : "backward"
                     }
@@ -641,8 +644,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 3,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 3,
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -654,8 +657,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 3,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 3,
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -932,7 +935,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                                 new Coordinate(1, 2, 0),
                                 new Coordinate(2, 3, 0)
                         }))
-                .restrictions(List.of(TrafficSign.builder()
+                .restrictions(new Restrictions(List.of(TrafficSign.builder()
                         .id(4)
                         .roadSectionId(1)
                         .externalId("externalId")
@@ -945,7 +948,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .networkSnappedLongitude(2D)
                         .trafficSignType(TrafficSignType.C7)
                         .transportRestrictions(TransportRestrictions.builder().build())
-                        .build()))
+                        .build())))
                 .build();
 
         DirectionalSegment directionalSegmentBackward = directionalSegmentForward
