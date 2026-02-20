@@ -1,3 +1,5 @@
+hostSuffix: "replaced_by_pipeline"
+host: ${hostSuffix}
 hostWireMock: wiremock.${host}
 hostDatabase: database.${host}
 hostOauth: oauth.${host}
