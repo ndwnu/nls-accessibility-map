@@ -31,7 +31,9 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
     @Getter
     private final List<DirectionalSegment> pathFollowed = new ArrayList<>();
 
-    public static AccessibilityReasonEdgeVisitor create(Map<Integer, DirectionalSegment> directionalSegmentsById, List<RestrictionMapper> restrictionMappers) {
+    public static AccessibilityReasonEdgeVisitor create(
+            Map<Integer, DirectionalSegment> directionalSegmentsById,
+            List<RestrictionMapper> restrictionMappers) {
         return new AccessibilityReasonEdgeVisitor(directionalSegmentsById, restrictionMappers);
     }
 
