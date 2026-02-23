@@ -7,6 +7,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsectio
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRoadSectionRestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
@@ -52,7 +53,9 @@ public class AccessibilityRequestRestrictionMapper {
 
         return networkData.getNwbData().findAccessibilityNwbRoadSectionById(roadSectionRestrictionJson.getId())
                 .map(accessibilityNwbRoadSection -> fractionAndDistanceCalculator.getCoordinateAndBearing(
-                        accessibilityNwbRoadSection.geometry(),
+                        roadSectionRestrictionJson.getDirection() == DirectionJson.FORWARD
+                                ? accessibilityNwbRoadSection.geometry()
+                                : accessibilityNwbRoadSection.geometry().reverse(),
                         roadSectionRestrictionJson.getFraction().doubleValue()))
                 .orElseThrow(() -> new ApiException(
                         UUID.fromString("355aba7d-4106-4aec-b0fc-94620647b37d"),
