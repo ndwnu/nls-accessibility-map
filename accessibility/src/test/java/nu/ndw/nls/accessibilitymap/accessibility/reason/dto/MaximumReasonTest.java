@@ -79,7 +79,12 @@ class MaximumReasonTest extends ValidationTest {
 
         AccessibilityReason<Maximum> newReason = maximumReason1.reduce(maximumReason2);
 
-        assertThat(newReason).isEqualTo(maximumReason1);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(MaximumReason.class)
+                .isNotEqualTo(maximumReason1)
+                .isNotEqualTo(maximumReason2);
+
         assertThat(newReason.getReasonType()).isEqualTo(reasonType1);
         assertThat(newReason.getValue()).isEqualTo(Maximum.builder().value(2d).build());
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1, restriction2);
@@ -101,7 +106,12 @@ class MaximumReasonTest extends ValidationTest {
 
         AccessibilityReason<Maximum> newReason = maximumReason1.reduce(maximumReason2);
 
-        assertThat(newReason).isEqualTo(maximumReason1);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(MaximumReason.class)
+                .isNotEqualTo(maximumReason1)
+                .isNotEqualTo(maximumReason2);
+
         assertThat(newReason.getReasonType()).isEqualTo(reasonType1);
         assertThat(newReason.getValue()).isEqualTo(Maximum.builder().value(1d).build());
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1);
@@ -123,7 +133,12 @@ class MaximumReasonTest extends ValidationTest {
 
         AccessibilityReason<Maximum> newReason = maximumReason1.reduce(maximumReason2);
 
-        assertThat(newReason).isEqualTo(maximumReason2);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(MaximumReason.class)
+                .isNotEqualTo(maximumReason1)
+                .isNotEqualTo(maximumReason2);
+
         assertThat(newReason.getReasonType()).isEqualTo(reasonType1);
         assertThat(newReason.getValue()).isEqualTo(Maximum.builder().value(2d).build());
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction2);

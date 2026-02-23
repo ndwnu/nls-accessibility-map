@@ -22,11 +22,26 @@ public class MaximumReason extends AccessibilityReason<Maximum> {
     public AccessibilityReason<Maximum> reduce(AccessibilityReason<?> other) {
         AccessibilityReason<Maximum> otherMaximumReason = ensureSameType(other);
 
-        if(Objects.equals(otherMaximumReason.getValue().value(), getValue().value())) {
-            this.getRestrictions().addAll(otherMaximumReason.getRestrictions());
-            return this;
+        if (Objects.equals(otherMaximumReason.getValue().value(), getValue().value())) {
+            return MaximumReason.builder()
+                    .reasonType(this.getReasonType())
+                    .value(this.getValue())
+                    .restrictions(mergeRestrictions(otherMaximumReason))
+                    .build();
         }
 
-        return otherMaximumReason.getValue().value() < getValue().value() ? otherMaximumReason : this;
+        if (otherMaximumReason.getValue().value() < getValue().value()) {
+            return MaximumReason.builder()
+                    .reasonType(otherMaximumReason.getReasonType())
+                    .value(otherMaximumReason.getValue())
+                    .restrictions(otherMaximumReason.getRestrictions())
+                    .build();
+        }
+
+        return MaximumReason.builder()
+                .reasonType(this.getReasonType())
+                .value(this.getValue())
+                .restrictions(this.getRestrictions())
+                .build();
     }
 }

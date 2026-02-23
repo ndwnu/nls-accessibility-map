@@ -74,7 +74,12 @@ class FuelTypeReasonTest extends ValidationTest {
 
         AccessibilityReason<Set<FuelType>> newReason = fuelTypeReason1.reduce(fuelTypeReason2);
 
-        assertThat(newReason).isEqualTo(fuelTypeReason1);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(FuelTypeReason.class)
+                .isNotEqualTo(fuelTypeReason1)
+                .isNotEqualTo(fuelTypeReason2);
+
         assertThat(newReason.getValue()).containsExactly(fuelType1);
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1, restriction2);
     }
@@ -93,7 +98,12 @@ class FuelTypeReasonTest extends ValidationTest {
 
         AccessibilityReason<Set<FuelType>> newReason = fuelTypeReason1.reduce(fuelTypeReason2);
 
-        assertThat(newReason).isEqualTo(fuelTypeReason1);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(FuelTypeReason.class)
+                .isNotEqualTo(fuelTypeReason1)
+                .isNotEqualTo(fuelTypeReason2);
+
         assertThat(newReason.getValue()).containsExactlyInAnyOrder(fuelType1, fuelType2);
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1, restriction2);
     }

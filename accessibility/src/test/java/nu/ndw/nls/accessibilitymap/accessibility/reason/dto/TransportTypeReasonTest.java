@@ -74,7 +74,12 @@ class TransportTypeReasonTest extends ValidationTest {
 
         AccessibilityReason<Set<TransportType>> newReason = transportTypeReason1.reduce(transportTypeReason2);
 
-        assertThat(newReason).isEqualTo(transportTypeReason1);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(TransportTypeReason.class)
+                .isNotEqualTo(transportTypeReason1)
+                .isNotEqualTo(transportTypeReason2);
+
         assertThat(newReason.getValue()).containsExactly(transportType1);
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1, restriction2);
     }
@@ -93,7 +98,12 @@ class TransportTypeReasonTest extends ValidationTest {
 
         AccessibilityReason<Set<TransportType>> newReason = transportTypeReason1.reduce(transportTypeReason2);
 
-        assertThat(newReason).isEqualTo(transportTypeReason1);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(TransportTypeReason.class)
+                .isNotEqualTo(transportTypeReason1)
+                .isNotEqualTo(transportTypeReason2);
+
         assertThat(newReason.getValue()).containsExactlyInAnyOrder(transportType1, transportType2);
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1, restriction2);
     }
@@ -117,6 +127,7 @@ class TransportTypeReasonTest extends ValidationTest {
                 .isInstanceOf(TransportTypeReason.class)
                 .isNotEqualTo(transportTypeReason1)
                 .isNotEqualTo(transportTypeReason2);
+
         assertThat(newReason.getValue()).containsExactlyInAnyOrder(transportType1, transportType2);
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1, restriction2);
     }
