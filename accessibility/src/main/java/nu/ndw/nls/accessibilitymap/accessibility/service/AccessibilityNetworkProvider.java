@@ -15,6 +15,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGra
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -35,12 +36,13 @@ public class AccessibilityNetworkProvider {
 
         Optional<Snap> fromSnap = snapper.snapLocation(graphHopperNetwork.network(), from);
         if (fromSnap.isEmpty()) {
-            throw new AccessibilityException("Could not find a snap point for from location (%s, %s).".formatted(
-                    from.latitude(),
-                    from.longitude()
-            ));
+            throw new AccessibilityLocationNotFoundException(from);
         }
         Optional<Snap> destinationSnap = snapper.snapLocation(graphHopperNetwork.network(), destination);
+        if (Objects.nonNull(destination) && destinationSnap.isEmpty()) {
+            throw new AccessibilityLocationNotFoundException(from);
+        }
+
         List<SnapRestriction> snapRestrictions = restrictions.stream()
                 .map(restriction -> snapper.snapRestriction(graphHopperNetwork.network(), restriction)
                         .map(snap -> new SnapRestriction(snap, restriction)).orElse(null))

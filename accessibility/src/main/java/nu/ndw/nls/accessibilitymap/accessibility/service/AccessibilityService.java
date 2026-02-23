@@ -11,24 +11,26 @@ import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebugger;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityException;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
 
@@ -135,7 +137,15 @@ public class AccessibilityService {
                 accessibilityNetwork,
                 combinedRestrictions);
 
-        List<List<AccessibilityReason>> reasons = calculateReasons(accessibilityRequest, toRoadSection, accessibilityNetwork);
+        Map<Integer, DirectionalSegment> directionalSegmentsById = combinedRestrictions.stream()
+                .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
+                .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
+                .collect(Collectors.toMap(DirectionalSegment::getId, Function.identity()));
+
+        var reasons = accessibilityReasonService.calculateReasons(
+                toRoadSection,
+                directionalSegmentsById,
+                accessibilityNetwork);
 
         return Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)
@@ -145,18 +155,6 @@ public class AccessibilityService {
                 .toRoadSection(toRoadSection)
                 .reasons(reasons)
                 .build();
-    }
-
-    @SuppressWarnings("java:S3553")
-    private List<List<AccessibilityReason>> calculateReasons(
-            AccessibilityRequest accessibilityRequest,
-            Optional<RoadSection> toRoadSection,
-            AccessibilityNetwork accessibilityNetwork) {
-
-        return toRoadSection
-                .filter(RoadSection::isRestrictedInAnyDirection)
-                .map(roadSection -> accessibilityReasonService.calculateReasons(accessibilityRequest, accessibilityNetwork))
-                .orElse(Collections.emptyList());
     }
 
     private Optional<RoadSection> findDestinationRoadSection(
@@ -182,6 +180,7 @@ public class AccessibilityService {
         var network = accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network();
         int roadSectionId = destinationSnap.get()
                 .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+
         return combinedRoadSections.stream()
                 .filter(roadSection -> roadSection.getId() == roadSectionId)
                 .findFirst();

@@ -4,14 +4,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.With;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
@@ -24,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 public final class DirectionalSegment {
 
     @NotNull
+    // AKA the edgeKey
     private final Integer id;
 
     @NotNull
@@ -46,7 +46,7 @@ public final class DirectionalSegment {
     private RoadSectionFragment roadSectionFragment;
 
     @Valid
-    private List<Restriction> restrictions;
+    private Restrictions restrictions;
 
     private final boolean accessible;
 

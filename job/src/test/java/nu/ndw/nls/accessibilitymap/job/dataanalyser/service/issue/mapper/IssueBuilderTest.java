@@ -11,6 +11,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.CreateIssueJson;
 import nu.ndw.nls.locationdataissuesapi.client.feign.generated.model.v1.DataLinkJson;
@@ -79,7 +80,7 @@ class IssueBuilderTest {
     @Test
     void buildTrafficSignIssue() {
 
-        when(directionalSegment.getRestrictions()).thenReturn(List.of(trafficSign));
+        when(directionalSegment.getRestrictions()).thenReturn(new Restrictions(List.of(trafficSign)));
         when(trafficSign.externalId()).thenReturn("id");
         when(directionalSegment.getRoadSectionFragment()).thenReturn(RoadSectionFragment.builder().roadSection(roadSection).build());
         when(directionalSegment.getRoadSectionFragment().getRoadSection().getId()).thenReturn(1L);
@@ -119,7 +120,7 @@ class IssueBuilderTest {
     void buildTrafficSignIssue_notATrafficSignRestriction() {
 
         Restriction restriction = mock(Restriction.class);
-        when(directionalSegment.getRestrictions()).thenReturn(List.of(restriction));
+        when(directionalSegment.getRestrictions()).thenReturn(new Restrictions(List.of(restriction)));
 
         Optional<CreateIssueJson> issue = issueBuilder.buildTrafficSignIssue(directionalSegment, "reportId", "reportGroupId");
 
