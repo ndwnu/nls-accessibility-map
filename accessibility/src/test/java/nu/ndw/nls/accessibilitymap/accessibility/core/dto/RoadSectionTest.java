@@ -6,8 +6,8 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
-import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,8 +33,6 @@ class RoadSectionTest extends ValidationTest {
     @Mock
     private LineString lineString2;
 
-    private final GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
-
     @BeforeEach
     void setUp() {
 
@@ -54,7 +52,7 @@ class RoadSectionTest extends ValidationTest {
                 .direction(Direction.FORWARD)
                 .roadSectionFragment(roadSectionFragment)
                 .lineString(lineString1)
-                .restrictions(List.of(mock(Restriction.class)))
+                .restrictions(new Restrictions(List.of(mock(Restriction.class))))
                 .build();
 
         directionalSegmentBackward = directionalSegmentForward.withDirection(Direction.BACKWARD);
@@ -347,7 +345,7 @@ class RoadSectionTest extends ValidationTest {
     @Test
     void validate_roadSectionFragments_segment_restriction() {
 
-        directionalSegmentForward = directionalSegmentForward.withRestrictions(List.of(TrafficSign.builder().build()));
+        directionalSegmentForward = directionalSegmentForward.withRestrictions(new Restrictions(List.of(TrafficSign.builder().build())));
 
         roadSection = roadSection.withRoadSectionFragments(List.of(roadSectionFragment.withForwardSegment(directionalSegmentForward)));
         validate(

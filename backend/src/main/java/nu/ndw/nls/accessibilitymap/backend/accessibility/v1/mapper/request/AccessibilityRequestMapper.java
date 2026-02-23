@@ -13,7 +13,6 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.dto.VehicleArguments
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.FuelTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
-import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
 
@@ -34,8 +33,6 @@ public class AccessibilityRequestMapper {
     private final EmissionZoneTypeMapper emissionZoneTypeMapper;
 
     private final ClockService clockService;
-
-    private final MunicipalityService municipalityService;
 
     @Valid
     public AccessibilityRequest map(

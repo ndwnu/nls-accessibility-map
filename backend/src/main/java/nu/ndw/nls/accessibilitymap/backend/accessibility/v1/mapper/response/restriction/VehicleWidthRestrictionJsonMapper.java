@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.response.restriction;
 
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason.ReasonType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumReason;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.mapper.DecimalValueMapper;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;
@@ -11,21 +11,21 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleWidthRestrict
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehicleWidthRestrictionJsonMapper implements AccessibilityRestrictionJsonMapper<MaximumRestriction> {
+public class VehicleWidthRestrictionJsonMapper implements AccessibilityRestrictionJsonMapper<MaximumReason> {
 
     private static final int CM_TO_METRES = 2;
 
     @Override
-    public RestrictionJson mapToRestrictionJson(MaximumRestriction accessibilityRestriction) {
+    public RestrictionJson map(MaximumReason maximumReason) {
         return new VehicleWidthRestrictionJson()
                 .type(TypeEnum.VEHICLE_WIDTH_RESTRICTION)
-                .value(DecimalValueMapper.mapToValue(accessibilityRestriction.getValue().value(), CM_TO_METRES))
+                .value(DecimalValueMapper.mapToValue(maximumReason.getValue().value(), CM_TO_METRES))
                 .condition(RestrictionConditionJson.GREATER_THAN_OR_EQUALS)
                 .unitSymbol(RestrictionUnitSymbolJson.METRE);
     }
 
     @Override
-    public RestrictionType mapperForType() {
-        return RestrictionType.VEHICLE_WIDTH;
+    public ReasonType mapperForType() {
+        return ReasonType.VEHICLE_WIDTH;
     }
 }

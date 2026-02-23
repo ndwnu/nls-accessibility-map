@@ -17,6 +17,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -107,12 +108,12 @@ class MapGeneratorServiceTest {
                                 RoadSectionFragment.builder()
                                         .backwardSegment(
                                                 DirectionalSegment.builder()
-                                                        .restrictions(List.of(TrafficSign.builder().build()))
+                                                        .restrictions(new Restrictions(List.of(TrafficSign.builder().build())))
                                                         .build()
                                         )
                                         .forwardSegment(
                                                 DirectionalSegment.builder()
-                                                        .restrictions(List.of(TrafficSign.builder().build()))
+                                                        .restrictions(new Restrictions(List.of(TrafficSign.builder().build())))
                                                         .build()
                                         )
                                         .build()

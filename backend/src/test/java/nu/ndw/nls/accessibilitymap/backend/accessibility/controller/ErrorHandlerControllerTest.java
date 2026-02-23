@@ -8,6 +8,8 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import java.util.Set;
 import java.util.UUID;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
+import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exception.MunicipalityNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.APIErrorJson;
@@ -77,6 +79,16 @@ class ErrorHandlerControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getMessage()).isEqualTo("Message");
+    }
+
+    @Test
+    void handleAccessibilityLocationNotFoundException() {
+        AccessibilityLocationNotFoundException exception = new AccessibilityLocationNotFoundException(new Location(1, 2, null));
+        ResponseEntity<APIErrorJson> response = errorHandlerController.handleApiException(exception);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getMessage()).isEqualTo("Location could not be resolved at 1.0, 2.0. Please try a different"
+                                                              + " location that is closer to actual road sections in the network.");
     }
 
     @Test

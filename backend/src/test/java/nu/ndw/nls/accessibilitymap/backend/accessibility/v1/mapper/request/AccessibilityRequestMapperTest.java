@@ -18,7 +18,6 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.FuelTypeMappe
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
-import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
@@ -80,9 +79,6 @@ class AccessibilityRequestMapperTest {
     @Mock
     private OffsetDateTime timestamp;
 
-    @Mock
-    private MunicipalityService municipalityService;
-
     @BeforeEach
     void setUp() {
 
@@ -91,8 +87,7 @@ class AccessibilityRequestMapperTest {
                 emissionClassMapper,
                 fuelTypeMapper,
                 emissionZoneTypeMapper,
-                clockService,
-                municipalityService);
+                clockService);
     }
 
     @Test

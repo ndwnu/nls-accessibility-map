@@ -55,31 +55,34 @@ paths:
                       accessible: false
                       type: destination
                       reasons:
-                        - - type: trafficSign
-                            trafficSignId: 00000000-0000-4000-0000-000000000004
-                            trafficSignType: C22a
-                            restrictions:
-                              - type: vehicleWeightRestriction
-                                unitSymbol: tons
-                                condition: greater_than_or_equals
-                                value: 12
-                          - type: trafficSign
-                            trafficSignId: 00000000-0000-4000-0000-000000000004
-                            trafficSignType: C22a
-                            restrictions:
-                              - type: vehicleTypeRestriction
-                                unitSymbol: enum
-                                condition: equals
-                                values:
-                                  - light_commercial_vehicle
-                                  - truck
-                          - type: roadSection
-                            roadSectionId: 12345
-                            restrictions:
-                              - type: accessibleRestriction
-                                unitSymbol: boolean
-                                condition: equals
-                                value: false
+                        - - type: vehicleWeightRestriction
+                            unitSymbol: tons
+                            condition: greater_than_or_equals
+                            value: 12
+                            becauseOf:
+                              - type: trafficSign
+                                trafficSignId: 00000000-0000-4000-0000-000000000004
+                                trafficSignType: C22a
+                          - type: fuelTypeRestriction
+                            unitSymbol: enum
+                            condition: equals
+                            values:
+                              - petrol
+                              - electric
+                            becauseOf:
+                              - type: trafficSign
+                                trafficSignId: 00000000-0000-4000-0000-000000000004
+                                trafficSignType: C22a
+                              - type: trafficSign
+                                trafficSignId: 00000000-0000-4000-0000-000000000005
+                                trafficSignType: C22a
+                          - type: accessibleRestriction
+                            unitSymbol: boolean
+                            condition: equals
+                            value: false
+                            becauseOf:
+                              - type: roadSection
+                                roadSectionId: 12345
                   - type: Feature
                     id: 2
                     geometry:
@@ -570,14 +573,59 @@ components:
       nullable: false
     Reason:
       type: "object"
-      description: "Reason why the road section is inaccessible"
+      description: "Reason why the destination is inaccessible."
+      required:
+        - type
+        - unitSymbol
+        - condition
+        - triggeredBy
+      discriminator:
+        propertyName: type
+        mapping:
+          vehicleLengthReason: "#/components/schemas/VehicleLengthReason"
+          vehicleHeightReason: "#/components/schemas/VehicleHeightReason"
+          vehicleWidthReason: "#/components/schemas/VehicleWidthReason"
+          vehicleAxleWeightReason: "#/components/schemas/VehicleAxleWeightReason"
+          vehicleWeightReason: "#/components/schemas/VehicleWeightReason"
+          fuelTypeReason: "#/components/schemas/FuelTypeReason"
+          vehicleTypeReason: "#/components/schemas/VehicleTypeReason"
+          accessibleReason: "#/components/schemas/AccessibleReason"
+          unknown: "#/components/schemas/Reason"
+      properties:
+        type:
+          type: "string"
+          enum:
+            - "vehicleLengthReason"
+            - "vehicleHeightReason"
+            - "vehicleWidthReason"
+            - "vehicleAxleWeightReason"
+            - "vehicleWeightReason"
+            - "fuelTypeReason"
+            - "vehicleTypeReason"
+            - "accessibleReason"
+            - "unknown"
+          default: "unknown"
+          description: "The type of reason."
+        unitSymbol:
+          $ref: "#/components/schemas/ReasonUnitSymbol"
+        condition:
+          $ref: "#/components/schemas/ReasonCondition"
+        becauseOf:
+          type: "array"
+          description: "What triggerd this reason why the destination is inaccessible."
+          items:
+            $ref: "#/components/schemas/Restriction"
+
+    Restriction:
+      type: "object"
+      description: "Describes a restriction."
       required:
         - type
       discriminator:
         propertyName: type
         mapping:
-          roadSection: "#/components/schemas/RoadSectionReason"
-          trafficSign: "#/components/schemas/TrafficSignReason"
+          roadSection: "#/components/schemas/RoadSectionRestriction"
+          trafficSign: "#/components/schemas/TrafficSignRestriction"
       properties:
         type:
           type: "string"
@@ -585,10 +633,10 @@ components:
             - "roadSection"
             - "trafficSign"
 
-    RoadSectionReason:
+    RoadSectionRestriction:
       type: "object"
       allOf:
-        - $ref: '#/components/schemas/Reason'
+        - $ref: '#/components/schemas/Restriction'
         - type: "object"
           description: ""
           required:
@@ -597,72 +645,24 @@ components:
           properties:
             roadSectionId:
               $ref: "#/components/schemas/RoadSectionId"
-            restrictions:
-              type: "array"
-              items:
-                $ref: "#/components/schemas/Restriction"
-    TrafficSignReason:
+
+    TrafficSignRestriction:
       type: "object"
       allOf:
-        - $ref: '#/components/schemas/Reason'
+        - $ref: '#/components/schemas/Restriction'
         - type: "object"
           description: ""
           required:
             - trafficSignId
             - trafficSignType
-            - restrictions
           properties:
             trafficSignId:
               $ref: "#/components/schemas/TrafficSignId"
             trafficSignType:
               $ref: "#/components/schemas/TrafficSignType"
-            restrictions:
-              type: "array"
-              items:
-                $ref: "#/components/schemas/Restriction"
 
 
-
-    Restriction:
-      type: "object"
-      description: "Restriction on a particular route making it inaccessible"
-      required:
-        - type
-        - unitSymbol
-        - condition
-      discriminator:
-        propertyName: type
-        mapping:
-          vehicleLengthRestriction: "#/components/schemas/VehicleLengthRestriction"
-          vehicleHeightRestriction: "#/components/schemas/VehicleHeightRestriction"
-          vehicleWidthRestriction: "#/components/schemas/VehicleWidthRestriction"
-          vehicleAxleWeightRestriction: "#/components/schemas/VehicleAxleWeightRestriction"
-          vehicleWeightRestriction: "#/components/schemas/VehicleWeightRestriction"
-          fuelTypeRestriction: "#/components/schemas/FuelTypeRestriction"
-          vehicleTypeRestriction: "#/components/schemas/VehicleTypeRestriction"
-          accessibleRestriction: "#/components/schemas/AccessibleRestriction"
-          unknown: "#/components/schemas/Restriction"
-      properties:
-        type:
-          type: "string"
-          enum:
-            - "vehicleLengthRestriction"
-            - "vehicleHeightRestriction"
-            - "vehicleWidthRestriction"
-            - "vehicleAxleWeightRestriction"
-            - "vehicleWeightRestriction"
-            - "fuelTypeRestriction"
-            - "vehicleTypeRestriction"
-            - "accessibleRestriction"
-            - "unknown"
-          default: "unknown"
-          description: "The type of restriction."
-        unitSymbol:
-          $ref: "#/components/schemas/RestrictionUnitSymbol"
-        condition:
-          $ref: "#/components/schemas/RestrictionCondition"
-
-    RestrictionUnitSymbol:
+    ReasonUnitSymbol:
       enum:
         - "tons"
         - "metre"
@@ -674,7 +674,7 @@ components:
       default: "unknown"
       description: "The unit symbol is the symbol used to represent a value."
 
-    RestrictionCondition:
+    ReasonCondition:
       enum:
         - "equals"
         - "greater_than_or_equals"
@@ -684,101 +684,101 @@ components:
       example: "greater_than_or_equals"
       description: "The reason condition"
 
-    VehicleLengthRestriction:
+    VehicleLengthReason:
       type: "object"
       required:
         - value
       allOf:
-        - $ref: "#/components/schemas/Restriction"
+        - $ref: "#/components/schemas/Reason"
         - properties:
             value:
               type: "number"
 
-    VehicleAxleWeightRestriction:
+    VehicleAxleWeightReason:
       type: "object"
       required:
         - value
       allOf:
-        - $ref: "#/components/schemas/Restriction"
+        - $ref: "#/components/schemas/Reason"
         - properties:
             value:
               type: "number"
 
-    VehicleWeightRestriction:
+    VehicleWeightReason:
       type: "object"
       required:
         - value
       allOf:
-        - $ref: "#/components/schemas/Restriction"
+        - $ref: "#/components/schemas/Reason"
         - properties:
             value:
               type: "number"
 
-    VehicleWidthRestriction:
+    VehicleWidthReason:
       type: "object"
       required:
         - value
       allOf:
-        - $ref: "#/components/schemas/Restriction"
+        - $ref: "#/components/schemas/Reason"
         - properties:
             value:
               type: "number"
 
-    VehicleHeightRestriction:
+    VehicleHeightReason:
       type: "object"
       required:
         - value
       allOf:
-        - $ref: "#/components/schemas/Restriction"
+        - $ref: "#/components/schemas/Reason"
         - properties:
             value:
               type: "number"
 
-    FuelTypeRestriction:
+    FuelTypeReason:
       type: "object"
       required:
         - values
       allOf:
-        - $ref: "#/components/schemas/Restriction"
+        - $ref: "#/components/schemas/Reason"
         - properties:
             values:
               type: "array"
               items:
                 $ref: "#/components/schemas/FuelType"
       example:
-        - type: "fuelTypeRestriction"
+        - type: "fuelTypeReason"
           unitSymbol: "enum"
           condition: "equals"
           values:
             - "petrol"
             - "electric"
 
-    VehicleTypeRestriction:
+    VehicleTypeReason:
       type: "object"
       required:
         - values
       allOf:
-        - $ref: "#/components/schemas/Restriction"
+        - $ref: "#/components/schemas/Reason"
         - properties:
             values:
               type: "array"
               items:
                 $ref: "#/components/schemas/VehicleType"
       example:
-        - type: "vehicleTypeRestriction"
+        - type: "vehicleTypeReason"
           unitSymbol: "enum"
           condition: "equals"
           values:
             - "car"
             - "light_commercial_vehicle"
 
-    AccessibleRestriction:
+    AccessibleReason:
       type: "object"
       description: "Not accessible"
       required:
         - value
       allOf:
-        - $ref: "#/components/schemas/Restriction"
+        - $ref: "#/components/schemas/Reason"
         - properties:
             value:
               type: "boolean"
@@ -1105,17 +1105,17 @@ components:
       summary: "Accessibility request by area with custom restrictions"
       value:
         destination:
-          latitude: 52.093784
-          longitude: 5.152890
+          latitude: 52.09287
+          longitude: 5.09703
         from:
-          latitude: 5.001547943824298
-          longitude: 52.078092444078244
+          latitude: 52.08574
+          longitude: 5.08045
         area:
           type: boundingBox
-          minLatitude: 51.534549
-          minLongitude: 52.02628198454681
-          maxLatitude: 52.142050597982795
-          maxLongitude: 5.1951549701599244
+          minLatitude: 52.08311
+          minLongitude: 5.07903
+          maxLatitude: 52.09681
+          maxLongitude: 5.10725
         restrictions:
           - type: roadSection
             id: 269305008

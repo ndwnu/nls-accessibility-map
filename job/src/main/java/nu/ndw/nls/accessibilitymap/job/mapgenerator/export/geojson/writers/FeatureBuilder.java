@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
@@ -141,7 +142,7 @@ public class FeatureBuilder {
 
     private List<Feature> buildRestrictionAsPoint(
             AtomicLong geoJsonIdSequenceSupplier,
-            List<Restriction> restrictions,
+            Restrictions restrictions,
             DirectionalSegment directionalSegment) {
 
         LineStringJson directionSegmentLineStringJson = jtsLineStringJsonMapper.map(
@@ -162,7 +163,7 @@ public class FeatureBuilder {
 
     private List<Feature> buildTrafficSignsAsLineString(
             AtomicLong geoJsonIdSequenceSupplier,
-            List<Restriction> restrictions,
+            Restrictions restrictions,
             DirectionalSegment directionalSegment,
             int trafficSignLineStringDistanceInMeters) {
         return restrictions.stream()
