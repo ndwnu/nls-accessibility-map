@@ -1,9 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.dto;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 
@@ -22,7 +23,6 @@ public abstract class AccessibilityReason<VALUE_TYPE> {
         ACCESSIBLE_REASON
     }
 
-    @Setter
     @Getter
     /*
       The causes of why this reason exists.
@@ -43,4 +43,11 @@ public abstract class AccessibilityReason<VALUE_TYPE> {
     }
 
     public abstract AccessibilityReason<VALUE_TYPE> reduce(AccessibilityReason<?> other);
+
+    protected Set<Restriction> mergeRestrictions(AccessibilityReason<VALUE_TYPE> otherReason) {
+        return Stream.concat(
+                        getRestrictions().stream(),
+                        otherReason.getRestrictions().stream())
+                .collect(Collectors.toSet());
+    }
 }

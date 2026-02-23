@@ -73,9 +73,18 @@ class AccessibleReasonTest extends ValidationTest {
 
         AccessibilityReason<Boolean> newReason = accessibilityReason1.reduce(accessibilityReason2);
 
-        assertThat(newReason).isEqualTo(accessibilityReason1);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(AccessibleReason.class)
+                .isNotEqualTo(accessibilityReason1)
+                .isNotEqualTo(accessibilityReason2);
+
         assertThat(newReason.getValue()).isEqualTo(value);
-        assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1, restriction2);
+        if(value) {
+            assertThat(newReason.getRestrictions()).containsExactly(restriction2);
+        } else {
+            assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1, restriction2);
+        }
     }
 
     @Test
@@ -92,7 +101,12 @@ class AccessibleReasonTest extends ValidationTest {
 
         AccessibilityReason<Boolean> newReason = accessibilityReason1.reduce(accessibilityReason2);
 
-        assertThat(newReason).isEqualTo(accessibilityReason1);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(AccessibleReason.class)
+                .isNotEqualTo(accessibilityReason1)
+                .isNotEqualTo(accessibilityReason2);
+
         assertThat(newReason.getValue()).isFalse();
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction1);
     }
@@ -111,7 +125,12 @@ class AccessibleReasonTest extends ValidationTest {
 
         AccessibilityReason<Boolean> newReason = accessibilityReason1.reduce(accessibilityReason2);
 
-        assertThat(newReason).isEqualTo(accessibilityReason2);
+        assertThat(newReason)
+                .isNotNull()
+                .isInstanceOf(AccessibleReason.class)
+                .isNotEqualTo(accessibilityReason1)
+                .isNotEqualTo(accessibilityReason2);
+
         assertThat(newReason.getValue()).isFalse();
         assertThat(newReason.getRestrictions()).containsExactlyInAnyOrder(restriction2);
     }

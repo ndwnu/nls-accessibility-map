@@ -72,15 +72,8 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
     }
 
     private static AccessibilityReason<?> reduceToOneReason(List<AccessibilityReason<?>> reasonsToReduce) {
-        AccessibilityReason<?> currentReason = null;
-        for (AccessibilityReason<?> reasonToReduce : reasonsToReduce) {
-            if (currentReason == null) {
-                currentReason = reasonToReduce;
-                continue;
-            }
-
-            currentReason = currentReason.reduce(reasonToReduce);
-        }
-        return currentReason;
+        return reasonsToReduce.stream()
+                .reduce(AccessibilityReason::reduce)
+                .orElseThrow();
     }
 }

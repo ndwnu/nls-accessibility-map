@@ -7,8 +7,6 @@ import java.util.stream.Stream;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 @SuperBuilder
@@ -28,16 +26,6 @@ public class TransportTypeReason extends AccessibilityReason<Set<TransportType>>
     public AccessibilityReason<Set<TransportType>> reduce(AccessibilityReason<?> other) {
         AccessibilityReason<Set<TransportType>> otherTransportTypeReason = ensureSameType(other);
 
-        if (CollectionUtils.isEqualCollection(getValue(), otherTransportTypeReason.getValue())) {
-            this.setRestrictions(mergeRestrictions(otherTransportTypeReason));
-            return this;
-        }
-
-        if (getValue().containsAll(otherTransportTypeReason.getValue())) {
-            this.setRestrictions(mergeRestrictions(otherTransportTypeReason));
-            return this;
-        }
-
         return TransportTypeReason.builder()
                 .value(Stream.concat(
                                 getValue().stream(),
@@ -47,10 +35,4 @@ public class TransportTypeReason extends AccessibilityReason<Set<TransportType>>
                 .build();
     }
 
-    private Set<Restriction> mergeRestrictions(AccessibilityReason<Set<TransportType>> otherTransportTypeReason) {
-        return Stream.concat(
-                        getRestrictions().stream(),
-                        otherTransportTypeReason.getRestrictions().stream())
-                .collect(Collectors.toSet());
-    }
 }

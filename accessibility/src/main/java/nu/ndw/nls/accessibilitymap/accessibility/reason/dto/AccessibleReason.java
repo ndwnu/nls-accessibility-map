@@ -1,8 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.dto;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.Set;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import org.springframework.validation.annotation.Validated;
 
 @SuperBuilder
@@ -23,15 +25,18 @@ public class AccessibleReason extends AccessibilityReason<Boolean> {
     public AccessibilityReason<Boolean> reduce(AccessibilityReason<?> other) {
         AccessibilityReason<Boolean> otherAccessibleReason = ensureSameType(other);
 
-        if(this.getValue().equals(otherAccessibleReason.getValue())) {
-            this.getRestrictions().addAll(otherAccessibleReason.getRestrictions());
-            return this;
+        Boolean newValue = this.getValue();
+        Set<Restriction> newRestrictions = this.getRestrictions();
+        if(Boolean.TRUE.equals(value)) {
+            newValue = otherAccessibleReason.getValue();
+            newRestrictions = otherAccessibleReason.getRestrictions();
+        } else if(Boolean.FALSE.equals(otherAccessibleReason.getValue())) {
+            newRestrictions = mergeRestrictions(otherAccessibleReason);
         }
 
-        if (this.getValue().equals(false)) {
-            return this;
-        } else {
-            return otherAccessibleReason;
-        }
+        return AccessibleReason.builder()
+                .value(newValue)
+                .restrictions(newRestrictions)
+                .build();
     }
 }
