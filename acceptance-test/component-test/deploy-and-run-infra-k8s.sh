@@ -30,8 +30,7 @@ PREDEFINED_IMAGE_TAG=${PREDEFINED_IMAGE_TAG:-}
 
 # Ports
 APP_PORTS="${APP_PORTS:-8080 8081}"
-ENABLE_DEBUG="${ENABLE_DEBUG:-false}"
-DEBUG_PORT="${DEBUG_PORT:-5005}"
+
 PORT_OVERRIDE_MAP="wiremock:8080:8888"
 ############################################
 # DERIVED VALUES
@@ -49,7 +48,7 @@ if [[ "${SKIP_DOCKER_BUILD}" == "true" ]]; then
   DELETE_IMAGES=false
 fi
 UNIQUE_NAMESPACE=$(echo "$UNIQUE_TAG" | sed 's/\.//g')
-NAMESPACE="component-test-${UNIQUE_NAMESPACE}"
+NAMESPACE="debug-nls-accessibility-map-${UNIQUE_NAMESPACE}"
 PIDS=()
 
 ############################################
@@ -59,7 +58,7 @@ PIDS=()
 cleanup() {
   echo ""
   echo "Cleaning up..."
-sed -i '' "s/${UNIQUE_TAG}/@docker.image.tag@/g" "${HELM_CHART_PATH}/Chart.yaml"
+  sed -i '' "s/${UNIQUE_TAG}/@docker.image.tag@/g" "${HELM_CHART_PATH}/Chart.yaml"
   for PID in "${PIDS[@]:-}"; do
     kill "${PID}" 2>/dev/null || true
   done
@@ -96,12 +95,6 @@ fi
 ############################################
 # LOGIN & CLUSTER CONFIG
 ############################################
-
-#echo "Getting AKS credentials..."
-#az aks get-credentials \
-#  --resource-group "${AKS_RESOURCE_GROUP}" \
-#  --name "${AKS_CLUSTER_NAME}" \
-#  --overwrite-existing
 
 if [[ -n "${KUBE_CONTEXT}" ]]; then
   kubectl config use-context "${KUBE_CONTEXT}"
@@ -150,28 +143,7 @@ HELM_SET_ARGS=""
 HELM_SET_ARGS+=" --set hostSuffix=${NAMESPACE}.svc.cluster.local"
 HELM_SET_ARGS+=" --set buildNumber=${UNIQUE_TAG}"
 
-#HELM_SET_ARGS=""
-#INDEX=0
-#
-#for ENTRY in ${IMAGE_MAP}; do
-#  IMAGE_NAME="${ENTRY%%=*}"
-#
-#  HELM_SET_ARGS+=" --set images[${INDEX}].repository=${ACR_LOGIN_SERVER}/${IMAGE_NAME}"
-#  HELM_SET_ARGS+=" --set images[${INDEX}].tag=${UNIQUE_TAG}"
-#
-#  INDEX=$((INDEX+1))
-#done
-
 sed -i '' "s/@docker.image.tag@/${UNIQUE_TAG}/g" "${HELM_CHART_PATH}/Chart.yaml"
-
-if [[ "${ENABLE_DEBUG}" == "true" ]]; then
-  echo "Enabling remote debug on port ${DEBUG_PORT}"
-
-  HELM_SET_ARGS+=" --set debug.enabled=true"
-  HELM_SET_ARGS+=" --set debug.port=${DEBUG_PORT}"
-  HELM_SET_ARGS+=" --set env[0].name=JAVA_TOOL_OPTIONS"
-  HELM_SET_ARGS+=" --set env[0].value=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:${DEBUG_PORT}"
-fi
 
 ############################################
 # DEPLOY
@@ -229,21 +201,8 @@ for DEPLOY in $DEPLOYMENTS; do
     PIDS+=($!)
   done
 
-  # Forward debug port if enabled
-  if [[ "${ENABLE_DEBUG}" == "true" ]]; then
-    LOCAL_DEBUG_PORT=${PORT_MAPPING["$DEPLOY:$DEBUG_PORT"]:-$DEBUG_PORT}
-    echo "Forwarding DEBUG pod $POD:$DEBUG_PORT -> localhost:$LOCAL_DEBUG_PORT"
-    kubectl port-forward pod/"$POD" "$LOCAL_DEBUG_PORT:$DEBUG_PORT" -n "${NAMESPACE}" &
-    PIDS+=($!)
-  fi
 done
 
-#  # Forward debug port if enabled
-#  if [[ "${ENABLE_DEBUG}" == "true" ]]; then
-#    echo "Forwarding DEBUG pod $POD:$DEBUG_PORT -> localhost:$DEBUG_PORT"
-#    kubectl port-forward pod/"$POD" "$DEBUG_PORT:$DEBUG_PORT" -n "${NAMESPACE}" &
-#    PIDS+=($!)
-#  fi
 
 ############################################
 # WAIT FOR USER

@@ -18,6 +18,9 @@ spec:
         - name: wiremock
           image: {{ .Values.pods.wiremock.container.image }}
           imagePullPolicy: Always
+          args:
+            - "--global-response-templating"
+            - "--verbose"
           resources:
             {{ toYaml .Values.pods.wiremock.container.resources | nindent 12 }}
           ports:
