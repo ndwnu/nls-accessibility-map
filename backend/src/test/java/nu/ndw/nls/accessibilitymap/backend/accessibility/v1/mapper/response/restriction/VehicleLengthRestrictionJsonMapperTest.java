@@ -5,8 +5,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityRestriction.RestrictionType;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason.ReasonType;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.MaximumReason;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionConditionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RestrictionJson.TypeEnum;
@@ -25,15 +25,15 @@ class VehicleLengthRestrictionJsonMapperTest {
     private static final double CENTIMETERS = 100D;
 
     @Mock
-    private MaximumRestriction maximumRestriction;
+    private MaximumReason maximumReason;
 
     @InjectMocks
     private VehicleLengthRestrictionJsonMapper mapper;
 
     @Test
-    void mapToRestrictionJson() {
-        when(maximumRestriction.getValue()).thenReturn(Maximum.builder().value(CENTIMETERS).build());
-        RestrictionJson actual = mapper.mapToRestrictionJson(maximumRestriction);
+    void map() {
+        when(maximumReason.getValue()).thenReturn(Maximum.builder().value(CENTIMETERS).build());
+        RestrictionJson actual = mapper.map(maximumReason);
 
         assertThat(actual)
                 .isInstanceOf(VehicleLengthRestrictionJson.class)
@@ -50,6 +50,6 @@ class VehicleLengthRestrictionJsonMapperTest {
 
     @Test
     void mapperForType() {
-        assertThat(mapper.mapperForType()).isEqualTo(RestrictionType.VEHICLE_LENGTH);
+        assertThat(mapper.mapperForType()).isEqualTo(ReasonType.VEHICLE_LENGTH);
     }
 }

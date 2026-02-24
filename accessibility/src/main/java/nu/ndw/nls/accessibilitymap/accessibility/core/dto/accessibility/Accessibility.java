@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 
 @Builder
 public record Accessibility(
@@ -14,9 +14,6 @@ public record Accessibility(
         Collection<RoadSection> combinedAccessibility,
         Collection<RoadSection> unroutableRoadSections,
         Optional<RoadSection> toRoadSection,
-        /*
-         * A list of unique reason collection groups.
-         */
-        List<List<AccessibilityReason>> reasons) {
+        List<AccessibilityReasonGroup> reasons) {
 
 }

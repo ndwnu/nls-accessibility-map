@@ -1,0 +1,39 @@
+{
+  "from": {
+    "latitude": 8.0,
+    "longitude": 5.1
+  },
+  "destination": {
+    "latitude": 3,
+    "longitude": 7
+  },
+  "area": {
+    "type": "boundingBox",
+    "minLongitude": 3.99,
+    "maxLongitude": 7.01,
+    "minLatitude": 1.99,
+    "maxLatitude": 8.01
+  },
+  "restrictions": [
+    {
+      "type": "roadSection",
+      "id": "9",
+      "direction": "backward",
+      "fraction": 0.4
+    },
+    {
+      "type": "roadSection",
+      "id": "9",
+      "direction": "forward",
+      "fraction": 0.1
+    }
+  ],
+  "vehicle": {
+    "type": "truck",
+    "width": 2.0,
+    "emissionClass": "euro_3",
+    "fuelTypes": [
+      "diesel"
+    ]
+  }
+}

@@ -22,6 +22,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGra
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -128,6 +129,24 @@ class AccessibilityNetworkProviderTest {
 
         when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
+        when(snapper.snapLocation(networkGraphHopper, destination)).thenReturn(Optional.empty());
+
+        assertThat(catchThrowable(() -> accessibilityNetworkProvider.get(
+                networkData,
+                restrictions,
+                from,
+                destination)))
+                .isInstanceOf(AccessibilityLocationNotFoundException.class)
+                .hasMessage(("Location could not be resolved at %s, %s. Please try a different location that is closer to actual "
+                             + "road sections in the network.").formatted(from.latitude(), from.longitude()));
+    }
+    @Test
+    void get_destinationLocationCouldNotBeSnapped() {
+        Restrictions restrictions = new Restrictions(List.of(restriction));
+
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.empty());
 
         assertThat(catchThrowable(() -> accessibilityNetworkProvider.get(
@@ -135,8 +154,50 @@ class AccessibilityNetworkProviderTest {
                 restrictions,
                 from,
                 destination)))
-                .isInstanceOf(AccessibilityException.class)
-                .hasMessage("Could not find a snap point for from location (%s, %s).".formatted(from.latitude(), from.longitude()));
+                .isInstanceOf(AccessibilityLocationNotFoundException.class)
+                .hasMessage(("Location could not be resolved at %s, %s. Please try a different location that is closer to actual "
+                             + "road sections in the network.").formatted(from.latitude(), from.longitude()));
+    }
+
+    @Test
+    void get_noDestination() {
+
+        Restrictions restrictions = new Restrictions(List.of(restriction));
+
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
+        when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
+        when(snapper.snapLocation(networkGraphHopper, null)).thenReturn(Optional.of(destinationSnap));
+
+        when(snapper.snapRestriction(networkGraphHopper, restriction)).thenReturn(Optional.of(restrictionSnap));
+        when(queryGraphConfigurer.createEdgeRestrictions(
+                eq(queryGraph),
+                assertArg(snapRestrictions -> {
+                    assertThat(snapRestrictions).hasSize(1);
+                    SnapRestriction snapRestriction = snapRestrictions.getFirst();
+                    assertThat(snapRestriction.snap()).isEqualTo(restrictionSnap);
+                    assertThat(snapRestriction.restriction()).isEqualTo(restriction);
+                }))).thenReturn(Map.of(1, List.of(restriction)));
+
+        try (var queryGraphMockStatic = Mockito.mockStatic(QueryGraph.class)) {
+            queryGraphMockStatic.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
+                    .thenReturn(queryGraph);
+
+            AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
+                    networkData,
+                    restrictions,
+                    from,
+                    null);
+
+            assertThat(accessibilityNetwork.getNetworkData()).isEqualTo(networkData);
+            assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
+            assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
+            assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));
+            assertThat(accessibilityNetwork.getBlockedEdges()).isEqualTo(Set.of(1));
+            assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
+            assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
+        }
     }
 
     @Test
