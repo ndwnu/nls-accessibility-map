@@ -51,6 +51,5 @@ spec:
           persistentVolumeClaim:
             claimName: azure-cache-blob-claim
         - name: maps
-          persistentVolumeClaim:
-            claimName: azure-maps-blob-claim
+          emptyDir: {}
 

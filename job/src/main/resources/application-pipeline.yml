@@ -8,7 +8,6 @@ spring:
     host: ${hostRabbitMQ}
   datasource:
     url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-fcd-travel-time-api&stringtype=unspecified
-
 nls:
   keycloak:
     url: http://${hostOauth}/auth
@@ -18,7 +17,7 @@ nu:
       accessibilitymap:
         jobs:
           generate:
-            root-export-directory: "./maps"
+            root-export-directory: "/application/maps"
         trafficsignclient:
           api:
             url: http://${hostWiremock}/api/rest/static-road-data/traffic-signs/v4
@@ -48,7 +47,8 @@ management:
       export:
         enabled: false
 keycloak:
-  server-url: http://${hostOauth}/auth
+  server-url: http://${hostWiremock}/auth
 feign:
   client:
     base-url: http://${hostWiremock}/api
+

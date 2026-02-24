@@ -69,7 +69,7 @@ nu:
           run-as-service: true
 
 keycloak:
-  server-url: http://${hostOauth}:8888/auth
+  server-url: http://${hostWiremock}:8888/auth
   client-id: nls-accessibility-map-api-service-account
   client-secret: cfe4793c-ddf7-405a-940f-51b43800aed4
 
