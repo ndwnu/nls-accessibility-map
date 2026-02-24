@@ -20,6 +20,8 @@ import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.mockito.Mock;
@@ -51,6 +53,9 @@ class AccessibilityRequestRestrictionMapperTest {
     private LineString roadSectionLineString;
 
     @Mock
+    private LineString roadSectionLineStringReversed;
+
+    @Mock
     private CoordinateAndBearing coordinateAndBearing;
 
     @Mock
@@ -64,22 +69,32 @@ class AccessibilityRequestRestrictionMapperTest {
                 fractionAndDistanceCalculator);
     }
 
-    @Test
-    void map() {
+    @ParameterizedTest
+    @EnumSource(DirectionJson.class)
+    void map(DirectionJson directionJson) {
+
         when(networkData.getNwbData()).thenReturn(nwbData);
         when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
         when(accessibilityNwbRoadSection.geometry()).thenReturn(roadSectionLineString);
-        when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineString, 2.0f)).thenReturn(coordinateAndBearing);
+
+        if (directionJson == DirectionJson.FORWARD) {
+            when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineString, 2.0f)).thenReturn(coordinateAndBearing);
+        } else {
+            when(roadSectionLineString.reverse()).thenReturn(roadSectionLineStringReversed);
+            when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineStringReversed, 2.0f)).thenReturn(coordinateAndBearing);
+            when(accessibilityRequestDirectionMapper.map(DirectionJson.BACKWARD)).thenReturn(Direction.BACKWARD);
+        }
+
+        Direction expectedDirection = directionJson == DirectionJson.FORWARD ? Direction.FORWARD : Direction.BACKWARD;
+        when(accessibilityRequestDirectionMapper.map(directionJson)).thenReturn(expectedDirection);
 
         when(coordinateAndBearing.coordinate()).thenReturn(coordinate);
         when(coordinate.getX()).thenReturn(3.0);
         when(coordinate.getY()).thenReturn(4.0);
 
-        when(accessibilityRequestDirectionMapper.map(DirectionJson.BACKWARD)).thenReturn(Direction.BACKWARD);
-
         var accessibilityRequestRoadSectionRestrictionJson = AccessibilityRequestRoadSectionRestrictionJson.builder()
                 .id(1)
-                .direction(DirectionJson.BACKWARD)
+                .direction(directionJson)
                 .fraction(2.0f)
                 .build();
 
@@ -94,7 +109,7 @@ class AccessibilityRequestRestrictionMapperTest {
         RoadSectionRestriction roadSectionRestriction = (RoadSectionRestriction) restriction;
 
         assertThat(roadSectionRestriction.id()).isEqualTo(1);
-        assertThat(roadSectionRestriction.direction()).isEqualTo(Direction.BACKWARD);
+        assertThat(roadSectionRestriction.direction()).isEqualTo(expectedDirection);
         assertThat(roadSectionRestriction.fraction()).isEqualTo(accessibilityRequestRoadSectionRestrictionJson.getFraction().doubleValue());
         assertThat(roadSectionRestriction.networkSnappedLatitude()).isEqualTo(4.0);
         assertThat(roadSectionRestriction.networkSnappedLongitude()).isEqualTo(3.0);

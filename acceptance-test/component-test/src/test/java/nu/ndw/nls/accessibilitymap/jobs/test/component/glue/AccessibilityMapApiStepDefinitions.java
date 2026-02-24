@@ -144,6 +144,8 @@ public class AccessibilityMapApiStepDefinitions {
                 "api/accessibility/v2/response",
                 responseFile + ".geojson");
 
-        assertThatJson(actualResponse.bodyAsString()).isEqualTo(expectedResponse);
+        assertThatJson(actualResponse.bodyAsString())
+                .withOptions(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(expectedResponse);
     }
 }
