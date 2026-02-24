@@ -1,7 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: network-azure-blob-claim
+  name: azure-cache-blob-claim
 spec:
   accessModes:
     - ReadWriteOnce

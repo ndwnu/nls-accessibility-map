@@ -42,15 +42,11 @@ spec:
             periodSeconds: 10
             failureThreshold: 12
           volumeMounts:
-            - mountPath: /application/graphhopper
-              name: nls-accessibility-network-volume
-            - mountPath: /application/trafficsigns
-              name: nls-accessibility-traffic-sign-volume
+            - mountPath: /application/cache
+              name: cache
       volumes:
-        - name: nls-accessibility-network-volume
+        - name: cache
           persistentVolumeClaim:
-            claimName: network-azure-blob-claim
-        - name: nls-accessibility-traffic-sign-volume
-          persistentVolumeClaim:
-            claimName: traffic-sign-azure-blob-claim
+            claimName: azure-cache-blob-claim
+
 
