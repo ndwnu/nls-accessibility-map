@@ -12,16 +12,6 @@
       "roadSectionId" : 1,
       "accessible" : false,
       "reasons" : [ [ {
-        "type" : "vehicleWeightReason",
-        "unitSymbol" : "tons",
-        "condition" : "greater_than_or_equals",
-        "becauseOf" : [ {
-          "type" : "trafficSign",
-          "trafficSignId" : "00000000-0000-4000-0000-000000000004",
-          "trafficSignType" : "C22a"
-        } ],
-        "value" : 12.00
-      }, {
         "type" : "vehicleTypeReason",
         "unitSymbol" : "enum",
         "condition" : "equals",
@@ -31,6 +21,16 @@
           "trafficSignType" : "C22a"
         } ],
         "values" : [ "light_commercial_vehicle", "truck" ]
+      }, {
+        "type" : "vehicleWeightReason",
+        "unitSymbol" : "tons",
+        "condition" : "greater_than_or_equals",
+        "becauseOf" : [ {
+          "type" : "trafficSign",
+          "trafficSignId" : "00000000-0000-4000-0000-000000000004",
+          "trafficSignType" : "C22a"
+        } ],
+        "value" : 12.00
       } ] ]
     }
   }, {
