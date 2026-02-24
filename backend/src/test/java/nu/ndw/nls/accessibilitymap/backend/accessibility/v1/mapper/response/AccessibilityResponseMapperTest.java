@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
+import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.AccessibilityMapResponseJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.MatchedRoadSectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.ReasonJson;
@@ -36,7 +36,7 @@ class AccessibilityResponseMapperTest {
     private RoadSection roadSection;
 
     @Mock
-    private List<List<AccessibilityReason>> reasons;
+    private List<AccessibilityReasonGroup> reasons;
 
     @Mock
     private List<List<ReasonJson>> reasonsJson;
@@ -133,6 +133,5 @@ class AccessibilityResponseMapperTest {
                 .inaccessibleRoadSections(List.of(expectedRoadSection))
                 .matchedRoadSection(expectedMatchedRoadSectionJson)
                 .build());
-
     }
 }

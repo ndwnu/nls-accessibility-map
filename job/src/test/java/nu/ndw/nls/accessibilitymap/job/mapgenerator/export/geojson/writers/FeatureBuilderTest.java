@@ -436,7 +436,7 @@ class FeatureBuilderTest {
                 .restrictions(
                         !addTrafficSign
                                 ? null
-                                : List.of(TrafficSign.builder()
+                                : new Restrictions(List.of(TrafficSign.builder()
                                         .externalId(EXTERNAL_ID)
                                         .trafficSignType(TrafficSignType.C7)
                                         .textSigns(List.of(
@@ -454,7 +454,7 @@ class FeatureBuilderTest {
                                         .direction(Direction.FORWARD)
                                         .iconUri(URI.create("https://example.com/image.png"))
                                         .build()
-                                ))
+                                )))
                 .roadSectionFragment(roadSectionFragment)
                 .build();
         roadSectionFragment.setForwardSegment(directionalSegmentForward);
@@ -466,7 +466,7 @@ class FeatureBuilderTest {
                 .restrictions(
                         !addTrafficSign
                                 ? null
-                                : List.of(TrafficSign.builder()
+                                : new Restrictions(List.of(TrafficSign.builder()
                                         .trafficSignType(TrafficSignType.C7)
                                         .textSigns(List.of(
                                                 TextSign.builder()
@@ -482,7 +482,7 @@ class FeatureBuilderTest {
                                         .latitude(5.5)
                                         .direction(Direction.BACKWARD)
                                         .iconUri(URI.create("https://example.com/image.png"))
-                                        .build()))
+                                        .build())))
                 .roadSectionFragment(roadSectionFragment)
                 .build();
         roadSectionFragment.setBackwardSegment(directionalSegmentBackward);

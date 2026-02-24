@@ -8,7 +8,7 @@
   </parent>
   <groupId>nu.ndw.nls.accessibilitymap</groupId>
   <artifactId>parent</artifactId>
-  <version>5.2.42-SNAPSHOT</version>
+  <version>5.2.45-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>nls-accessibility-map</name>
   <description>REST API to determine accessible road sections for a given vehicle type</description>
@@ -30,7 +30,7 @@
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
     <nls-springboot.logging.version>8.4.18</nls-springboot.logging.version>
     <nls-springboot.component-test.version>13.0.4</nls-springboot.component-test.version>
-    <nls-springboot.monitoring.version>8.4.22</nls-springboot.monitoring.version>
+    <nls-springboot.monitoring.version>8.4.23</nls-springboot.monitoring.version>
     <nls-springboot.test.version>9.1.2</nls-springboot.test.version>
     <nls-springboot.gatling-test.version>1.1.1</nls-springboot.gatling-test.version>
     <gatling.version>3.14.9</gatling.version>
@@ -47,16 +47,16 @@
     <swagger-annotations.version>2.2.43</swagger-annotations.version>
     <nls-events.version>5.5.4</nls-events.version>
     <nls-nwb-data-access.version>9.5.3</nls-nwb-data-access.version>
-    <nls-springboot.version>9.4.21</nls-springboot.version>
+    <nls-springboot.version>9.4.23</nls-springboot.version>
     <nls-routing-map-matcher.version>19.0.29</nls-routing-map-matcher.version>
     <nls-geometry.version>5.3.1</nls-geometry.version>
-    <nls-geojson-geometry.version>1.4.56</nls-geojson-geometry.version>
-    <nls-springboot.test.graph.version>1.0.42</nls-springboot.test.graph.version>
+    <nls-geojson-geometry.version>1.4.57</nls-geojson-geometry.version>
+    <nls-springboot.test.graph.version>1.0.43</nls-springboot.test.graph.version>
     <jackson-geojson.version>3.0</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>5.1.0</json-unit.version>
     <cucumber.version>7.34.2</cucumber.version>
-    <location-data-issues.version>2.2.117</location-data-issues.version>
+    <location-data-issues.version>2.2.118</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>

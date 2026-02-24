@@ -3,8 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-import java.util.List;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import org.junit.jupiter.api.Test;
 
 class DirectionalSegmentTest {
@@ -13,7 +12,7 @@ class DirectionalSegmentTest {
     void hasRestrictions() {
 
         DirectionalSegment directionalSegment = DirectionalSegment.builder()
-                .restrictions(List.of(mock(Restriction.class)))
+                .restrictions(mock(Restrictions.class))
                 .build();
 
         assertThat(directionalSegment.hasRestrictions()).isTrue();

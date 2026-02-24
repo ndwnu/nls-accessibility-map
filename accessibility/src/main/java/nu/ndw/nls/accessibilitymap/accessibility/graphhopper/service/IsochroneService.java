@@ -1,110 +1,48 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink.MUNICIPALITY_CODE;
-import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
-
-import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.routing.util.TraversalMode;
-import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.EdgeIteratorState;
-import com.graphhopper.util.FetchMode;
-import com.graphhopper.util.PointList;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
-import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
-import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
-import nu.ndw.nls.routingmapmatcher.model.IsochroneUnit;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
+@Service
 public class IsochroneService {
 
-    private static final int ROOT_PARENT = -1;
+    private final IsochroneMatchMapperFactory isochroneMatchMapperFactory;
 
-    private final EncodingManager encodingManager;
-
-    private final IsochroneMatchMapper isochroneMatchMapper;
-
-    private final ShortestPathTreeFactory shortestPathTreeFactory;
-
-    /**
-     * Creates Isochrone for an entire municipality based on start point. The start point has to be within the municipality This can be used
-     * to create an accessibility map by first calling this method with a weighting that has no restriction and consequently calling this
-     * method with a weighting that has restrictions based on vehicles dimensions etc.
-     *
-     * @param isochroneArguments The isochrone arguments
-     * @return The list of isochrone matches
-     * @see <a href="https://github.com/graphhopper/graphhopper/blob/master/docs/core/custom-models.md">Custom
-     * models</a>
-     */
-    public List<IsochroneMatch> getIsochroneMatchesByMunicipalityId(
-            IsochroneArguments isochroneArguments,
-            QueryGraph queryGraph,
-            Snap start) {
-
-        int matchedLinkId = getLinkId(start.getClosestEdge());
-
-        IsochroneByTimeDistanceAndWeight accessibilityPathTree = shortestPathTreeFactory
-                .createShortestPathTreeByTimeDistanceAndWeight(
-                        isochroneArguments.weighting(),
-                        queryGraph,
-                        TraversalMode.EDGE_BASED,
-                        isochroneArguments.searchDistanceInMetres(),
-                        IsochroneUnit.METERS,
-                        false,
-                        false,
-                        matchedLinkId);
-
-        List<IsoLabel> isoLabels = new ArrayList<>();
-        accessibilityPathTree.search(start.getClosestNode(), isoLabels::add);
-
-        return isoLabels.stream()
-                .filter(isoLabel -> isoLabel.getEdge() != ROOT_PARENT)
-                .filter(isoLabel -> isWithinMunicipality(queryGraph, isoLabel, isochroneArguments))
-                .filter(isoLabel -> isWithinBoundingBox(queryGraph, isoLabel, isochroneArguments))
-                .map(isoLabel -> isochroneMatchMapper.mapToIsochroneMatch(
-                        isoLabel, Double.POSITIVE_INFINITY,
-                        queryGraph, start.getClosestEdge(), false))
-                .toList();
-    }
-
-    private boolean isWithinBoundingBox(QueryGraph queryGraph, IsoLabel isoLabel, IsochroneArguments isochroneArguments) {
-        if (Objects.isNull(isochroneArguments.boundingBox())) {
-            return true;
-        }
-
-        EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(isoLabel.getEdge(), isoLabel.getNode());
-        PointList points = currentEdge.fetchWayGeometry(FetchMode.TOWER_ONLY);
-
-        return isochroneArguments.boundingBox().intersects(points);
-    }
-
-    private boolean isWithinMunicipality(
-            QueryGraph queryGraph,
-            IsoLabel isoLabel,
+    public List<IsochroneMatch> search(
+            AccessibilityNetwork accessibilityNetwork,
             IsochroneArguments isochroneArguments) {
 
-        if (Objects.isNull(isochroneArguments.municipalityId())) {
-            return true;
-        }
+        EncodingManager encodingManager = accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network().getEncodingManager();
+        IsochroneMatchMapper isochroneMatchMapper = isochroneMatchMapperFactory.create(encodingManager);
 
-        IntEncodedValue idEnc = encodingManager.getIntEncodedValue(MUNICIPALITY_CODE);
-        return getMunicipalityCode(isoLabel, queryGraph, idEnc) == isochroneArguments.municipalityId();
-    }
+        QueryGraph queryGraph = accessibilityNetwork.getQueryGraph();
+        var isochroneByTimeDistanceAndWeight = IsochroneShortestPathTreeFactory.createIsochroneByTimeDistanceAndWeight(
+                queryGraph,
+                isochroneArguments);
 
-    private int getMunicipalityCode(IsoLabel isoLabel, QueryGraph queryGraph, IntEncodedValue idEnc) {
-        EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(isoLabel.getEdge(), isoLabel.getNode());
-        return currentEdge.get(idEnc);
-    }
+        List<IsoLabel> isoLabels = new ArrayList<>();
+        isochroneByTimeDistanceAndWeight.search(accessibilityNetwork.getFrom().getClosestNode(), isoLabels::add);
 
-    private int getLinkId(EdgeIteratorState edge) {
-        return edge.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
+        return isoLabels.stream()
+                .filter(IsochroneFilter::isNotRoot)
+                .filter(isoLabel -> IsochroneFilter.isWithinMunicipality(encodingManager, queryGraph, isoLabel, isochroneArguments))
+                .filter(isoLabel -> IsochroneFilter.isWithinBoundingBox(queryGraph, isoLabel, isochroneArguments))
+                .map(isoLabel -> isochroneMatchMapper.mapToIsochroneMatch(
+                        isoLabel,
+                        Double.POSITIVE_INFINITY,
+                        queryGraph,
+                        accessibilityNetwork.getFrom().getClosestEdge(),
+                        false))
+                .toList();
     }
 }

@@ -1,92 +1,76 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 
-import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
-import com.graphhopper.routing.ev.IntEncodedValue;
+import com.carrotsearch.hppc.IntArrayList;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.routing.util.TraversalMode;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.BaseGraph;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
-import com.graphhopper.util.FetchMode;
-import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.BBox;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.function.Consumer;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
-import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.ShortestPathTreeFactory;
 import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
 import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
-import nu.ndw.nls.routingmapmatcher.model.IsochroneUnit;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
 @ExtendWith(MockitoExtension.class)
 class IsochroneServiceTest {
 
-    private static final int ROOT_ID = -1;
+    private IsochroneService isochroneService;
 
-    private static final double ISOCHRONE_VALUE_METERS = 200D;
+    @Mock
+    private IsochroneMatchMapperFactory isochroneMatchMapperFactory;
 
-    private static final int START_NODE_ID = 1;
+    @Mock
+    private AccessibilityNetwork accessibilityNetwork;
 
-    private static final int MUNICIPALITY_ID = 1;
+    @Mock
+    private NetworkData networkData;
 
-    private static final String MUNICIPALITY_CODE_KEY = "municipality_code";
+    @Mock
+    private GraphHopperNetwork graphHopperNetwork;
 
-    private static final int LINK_ID = 5;
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
+
+    @Mock
+    private IntArrayList closestEdges;
 
     @Mock
     private EncodingManager encodingManager;
 
     @Mock
-    private BaseGraph baseGraph;
-
-    @Mock
     private IsochroneMatchMapper isochroneMatchMapper;
-
-    @Mock
-    private ShortestPathTreeFactory shortestPathTreeFactory;
 
     @Mock
     private QueryGraph queryGraph;
 
     @Mock
-    private Snap startSegment;
-
-    @Mock
-    private IsochroneByTimeDistanceAndWeight isochroneAlgorithm;
-
-    @Mock
-    private EdgeIteratorState currentEdge;
-
-    @Mock
-    private EdgeIteratorState startEdge;
-
-    @Mock
-    private IntEncodedValue intEncodedValue;
-
-    @Mock
-    private IntEncodedValue idIntEncodedValue;
+    private IsochroneByTimeDistanceAndWeight isochroneByTimeDistanceAndWeight;
 
     @Mock
     private Weighting weighting;
@@ -94,232 +78,133 @@ class IsochroneServiceTest {
     @Mock
     private IsochroneMatch isochroneMatch;
 
-    @InjectMocks
-    private IsochroneService isochroneService;
-
-    private static MockedStatic<QueryGraph> queryGraphStaticMock;
-
     @Mock
     private BBox boundingBox;
 
     @Mock
-    private PointList points;
+    private Snap from;
 
-    @BeforeAll
-    static void setup() {
-        queryGraphStaticMock = Mockito.mockStatic(QueryGraph.class);
+    @Mock
+    private EdgeIteratorState fromClosestEdge;
+
+    private MockedStatic<IsochroneShortestPathTreeFactory> isochroneShortestPathTreeFactoryMockedStatic;
+
+    private MockedStatic<IsochroneFilter> isochroneFilterMockedStatic;
+
+    @BeforeEach
+    void setUp() {
+
+        isochroneShortestPathTreeFactoryMockedStatic = Mockito.mockStatic(IsochroneShortestPathTreeFactory.class);
+        isochroneFilterMockedStatic = Mockito.mockStatic(IsochroneFilter.class);
+
+        isochroneService = new IsochroneService(isochroneMatchMapperFactory);
     }
 
-    @AfterAll
-    static void tearDown() {
-        queryGraphStaticMock.close();
+    @AfterEach
+    void tearDown() {
+
+        isochroneShortestPathTreeFactoryMockedStatic.close();
+        isochroneFilterMockedStatic.close();
     }
 
-    @Test
-    void getIsochroneMatches_municipalityId() {
+    @ParameterizedTest
+    @CsvSource({
+            "true, true, true, true",
+            "false, true, true, false",
+            "true, false, true, false",
+            "true, true, false, false"
+    })
+    void getIsochroneMatches_municipalityId(
+            boolean isNotRoot,
+            boolean isWithinMunicipality,
+            boolean isWithinBoundingBox,
+            boolean hasMatch) {
+
         IsoLabel isoLabel = createIsoLabel();
 
-        when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
-                weighting,
-                queryGraph,
-                TraversalMode.EDGE_BASED,
-                ISOCHRONE_VALUE_METERS,
-                IsochroneUnit.METERS,
-                false,
-                false, LINK_ID))
-                .thenReturn(isochroneAlgorithm);
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
+        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+        when(isochroneMatchMapperFactory.create(encodingManager)).thenReturn(isochroneMatchMapper);
 
-        when(queryGraph.getEdgeIteratorState(anyInt(), anyInt())).thenReturn(currentEdge);
-        when(encodingManager.getIntEncodedValue(MUNICIPALITY_CODE_KEY)).thenReturn(intEncodedValue);
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
-        when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
-        when(currentEdge.get(intEncodedValue)).thenReturn(MUNICIPALITY_ID);
-        doAnswer(invocation -> {
+        when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
+
+        when(accessibilityNetwork.getFrom()).thenReturn(from);
+        when(from.getClosestNode()).thenReturn(10);
+
+        IsochroneArguments isochroneArguments = IsochroneArguments.builder()
+                .weighting(weighting)
+                .municipalityId(1)
+                .boundingBox(boundingBox)
+                .searchDistanceInMetres(2)
+                .build();
+
+        isochroneShortestPathTreeFactoryMockedStatic.when(() -> IsochroneShortestPathTreeFactory.createIsochroneByTimeDistanceAndWeight(
+                        queryGraph,
+                        isochroneArguments))
+                .thenReturn(isochroneByTimeDistanceAndWeight);
+        doAnswer(addIsoLabelToList(isoLabel)).when(isochroneByTimeDistanceAndWeight).search(eq(10), any());
+
+        mockFiltersAndIsoLabelMapper(isoLabel, isochroneArguments, isNotRoot, isWithinMunicipality, isWithinBoundingBox);
+
+        List<IsochroneMatch> isochroneMatches = isochroneService.search(accessibilityNetwork, isochroneArguments);
+
+        if (hasMatch) {
+            assertThat(isochroneMatches).containsExactly(isochroneMatch);
+        } else {
+            assertThat(isochroneMatches).isEmpty();
+        }
+    }
+
+    private Answer addIsoLabelToList(IsoLabel isoLabel) {
+        return invocation -> {
             Consumer<IsoLabel> callback = invocation.getArgument(1, Consumer.class);
             callback.accept(isoLabel);
             return null;
-        }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
+        };
+    }
 
-        when(startSegment.getClosestEdge()).thenReturn(startEdge);
-        when(isochroneMatchMapper.mapToIsochroneMatch(
+    private void mockFiltersAndIsoLabelMapper(
+            IsoLabel isoLabel,
+            IsochroneArguments isochroneArguments,
+            boolean isNotRoot,
+            boolean isWithinMunicipality,
+            boolean isWithinBoundingBox) {
+
+        isochroneFilterMockedStatic.when(() -> IsochroneFilter.isNotRoot(isoLabel)).thenReturn(isNotRoot);
+
+        if (!isNotRoot) {
+            return;
+        }
+        isochroneFilterMockedStatic.when(() -> IsochroneFilter.isWithinMunicipality(
+                encodingManager,
+                queryGraph,
                 isoLabel,
-                Double.POSITIVE_INFINITY,
-                queryGraph,
-                startSegment.getClosestEdge(),
-                false)
-        ).thenReturn(isochroneMatch);
+                isochroneArguments)).thenReturn(isWithinMunicipality);
 
-        when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
-        queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
+        if (!isWithinMunicipality) {
+            return;
+        }
+        isochroneFilterMockedStatic.when(() -> IsochroneFilter.isWithinBoundingBox(queryGraph, isoLabel, isochroneArguments))
+                .thenReturn(isWithinBoundingBox);
 
-        List<IsochroneMatch> result = isochroneService.getIsochroneMatchesByMunicipalityId(
-                IsochroneArguments.builder()
-                        .weighting(weighting)
-                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
-                        .municipalityId(MUNICIPALITY_ID)
-                        .build(),
-                queryGraph,
-                startSegment);
-
-        assertThat(result)
-                .isNotNull()
-                .hasSize(1);
-
-        assertThat(result.getFirst()).isEqualTo(isochroneMatch);
-    }
-
-    @Test
-    void getIsochroneMatches_boundingBox_intersects() {
-        IsoLabel isoLabel = createIsoLabel();
-
-        when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
-                weighting,
-                queryGraph,
-                TraversalMode.EDGE_BASED,
-                ISOCHRONE_VALUE_METERS,
-                IsochroneUnit.METERS,
-                false,
-                false, LINK_ID))
-                .thenReturn(isochroneAlgorithm);
-
-        when(queryGraph.getEdgeIteratorState(anyInt(), anyInt())).thenReturn(currentEdge);
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
-        when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
-        doAnswer(invocation -> {
-            Consumer<IsoLabel> callback = invocation.getArgument(1, Consumer.class);
-            callback.accept(isoLabel);
-            return null;
-        }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
-
-        when(startSegment.getClosestEdge()).thenReturn(startEdge);
-        when(isochroneMatchMapper.mapToIsochroneMatch(
-                isoLabel,
-                Double.POSITIVE_INFINITY,
-                queryGraph,
-                startSegment.getClosestEdge(),
-                false)
-        ).thenReturn(isochroneMatch);
-
-        when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
-        queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
-
-        when(currentEdge.fetchWayGeometry(FetchMode.TOWER_ONLY)).thenReturn(points);
-        when(boundingBox.intersects(points)).thenReturn(true);
-
-        List<IsochroneMatch> result = isochroneService.getIsochroneMatchesByMunicipalityId(
-                IsochroneArguments.builder()
-                        .weighting(weighting)
-                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
-                        .boundingBox(boundingBox)
-                        .build(),
-                queryGraph,
-                startSegment);
-
-        assertThat(result)
-                .isNotNull()
-                .hasSize(1);
-
-        assertThat(result.getFirst()).isEqualTo(isochroneMatch);
-    }
-
-    @Test
-    void getIsochroneMatches_boundingBox_notIntersects() {
-        IsoLabel isoLabel = createIsoLabel();
-
-        when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
-                weighting,
-                queryGraph,
-                TraversalMode.EDGE_BASED,
-                ISOCHRONE_VALUE_METERS,
-                IsochroneUnit.METERS,
-                false,
-                false, LINK_ID))
-                .thenReturn(isochroneAlgorithm);
-
-        when(queryGraph.getEdgeIteratorState(anyInt(), anyInt())).thenReturn(currentEdge);
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
-        when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
-        doAnswer(invocation -> {
-            Consumer<IsoLabel> callback = invocation.getArgument(1, Consumer.class);
-            callback.accept(isoLabel);
-            return null;
-        }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
-
-        when(startSegment.getClosestEdge()).thenReturn(startEdge);
-        when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
-        queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
-
-        when(currentEdge.fetchWayGeometry(FetchMode.TOWER_ONLY)).thenReturn(points);
-        when(boundingBox.intersects(points)).thenReturn(false);
-
-        List<IsochroneMatch> result = isochroneService.getIsochroneMatchesByMunicipalityId(
-                IsochroneArguments.builder()
-                        .weighting(weighting)
-                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
-                        .boundingBox(boundingBox)
-                        .build(),
-                queryGraph,
-                startSegment);
-
-        assertThat(result)
-                .isNotNull()
-                .isEmpty();
-    }
-
-    @Test
-    void getIsochroneMatches_municipalityId_noMunicipality() {
-        IsoLabel isoLabel = createIsoLabel();
-
-        when(shortestPathTreeFactory.createShortestPathTreeByTimeDistanceAndWeight(
-                weighting,
-                queryGraph,
-                TraversalMode.EDGE_BASED,
-                ISOCHRONE_VALUE_METERS,
-                IsochroneUnit.METERS,
-                false,
-                false, LINK_ID))
-                .thenReturn(isochroneAlgorithm);
-
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
-        when(startEdge.get(idIntEncodedValue)).thenReturn(LINK_ID);
-        doAnswer(invocation -> {
-            Consumer<IsoLabel> callback = invocation.getArgument(1, Consumer.class);
-            callback.accept(isoLabel);
-            return null;
-        }).when(isochroneAlgorithm).search(eq(START_NODE_ID), any());
-
-        when(startSegment.getClosestEdge()).thenReturn(startEdge);
-        when(isochroneMatchMapper.mapToIsochroneMatch(
-                isoLabel,
-                Double.POSITIVE_INFINITY,
-                queryGraph,
-                startSegment.getClosestEdge(),
-                false)
-        ).thenReturn(isochroneMatch);
-
-        when(startSegment.getClosestNode()).thenReturn(START_NODE_ID);
-        queryGraphStaticMock.when(() -> QueryGraph.create(eq(baseGraph), any(Snap.class))).thenReturn(queryGraph);
-
-        List<IsochroneMatch> result = isochroneService.getIsochroneMatchesByMunicipalityId(
-                IsochroneArguments.builder()
-                        .weighting(weighting)
-                        .searchDistanceInMetres(ISOCHRONE_VALUE_METERS)
-                        .build(),
-                queryGraph,
-                startSegment);
-
-        assertThat(result)
-                .isNotNull()
-                .hasSize(1);
-
-        assertThat(result.getFirst()).isEqualTo(isochroneMatch);
+        if (!isWithinBoundingBox) {
+            return;
+        }
+        when(isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY, queryGraph, fromClosestEdge, false))
+                .thenReturn(isochroneMatch);
+        when(from.getClosestEdge()).thenReturn(fromClosestEdge);
     }
 
     @SneakyThrows
     private static IsoLabel createIsoLabel() {
+
+        int rootId = -1;
         int edgeId = 1;
         int adjNode = 2;
         double weight = 0;
+
         Constructor<IsoLabel> constructor = IsoLabel.class.getDeclaredConstructor(
                 int.class,
                 int.class,
@@ -328,7 +213,9 @@ class IsochroneServiceTest {
                 double.class,
                 IsoLabel.class);
         constructor.setAccessible(true);
-        IsoLabel parent = constructor.newInstance(ROOT_ID, ROOT_ID, weight, 0, 0, null);
+
+        IsoLabel parent = constructor.newInstance(rootId, rootId, weight, 0, 0, null);
+
         return constructor.newInstance(edgeId, adjNode, weight, (long) 0, (double) 100, parent);
     }
 }
