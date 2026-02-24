@@ -1,7 +1,7 @@
 host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
-hostOauth: oauth.${host}
+hostOauth: ${host}
 hostApplication: ${host}
 hostRabbit: ${host}
 hostJobs: ${host}

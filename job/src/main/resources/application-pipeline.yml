@@ -27,18 +27,18 @@ nu:
             client:
               url: http://${hostWiremock}/api/area/ibbm/emission-zones/v1
           cache:
-            folder: "./trafficSigns/"
+            folder: "./cache/trafficSigns"
             load-data-on-startup: false
             fail-on-cache-read-error: false
             watch-for-updates: false
         network:
           cache:
-            folder: "./network"
+            folder: "./cache/network"
             load-data-on-startup: false
             fail-on-cache-read-error: false
             watch-for-updates: false
       api:
-        url: http://${hostWireMock}:8080
+        url: http://${hostWireMock}
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
@@ -47,3 +47,8 @@ management:
     metrics:
       export:
         enabled: false
+keycloak:
+  server-url: http://${hostOauth}/auth
+feign:
+  client:
+    base-url: http://${hostWiremock}/api
