@@ -17,6 +17,8 @@ services:
       - COMMAND=updateNwbSchema
     depends_on:
       - nls-postgres
+    networks:
+      - nls-accessibility-map-network
 
   nls-rabbitmq:
     image: ndwnls.azurecr.io/docker.io/library/rabbitmq:4.2.2-management-alpine
