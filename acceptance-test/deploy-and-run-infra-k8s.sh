@@ -5,7 +5,6 @@ set -Eeuo pipefail
 # CONFIGURATION (override via env vars
 ##########################################
 # AKS
-AKS_RESOURCE_GROUP="nls-acr-resource-group"
 AKS_CLUSTER_NAME="nls-aks-pipeline-cluster"
 KUBE_CONTEXT="nls-aks-pipeline-cluster"
 
@@ -14,24 +13,24 @@ ACR_NAME="ndwnls"
 ACR_LOGIN_SERVER="ndwnls.azurecr.io"
 
 # Helm
-HELM_RELEASE_NAME="nls-accessibility-map-api"
-HELM_CHART_PATH="./component-test/k8s"
+HELM_RELEASE_NAME="${HELM_RELEASE_NAME:-nls-accessibility-map-api}"
+HELM_CHART_PATH="${HELM_CHART_PATH:-./component-test/k8s}"
 
 # Maven
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MAIN_POM_FILE="${MAIN_POM_FILE:-${SCRIPT_DIR}/../pom.xml}"
 
 # Images (format: imageName=contextPath)
-IMAGE_MAP="nls-accessibility-map-api=../docker/nls-accessibility-map-api nls-accessibility-map-job=../docker/nls-accessibility-map-job"
+IMAGE_MAP="${IMAGE_MAP:-nls-accessibility-map-api=../docker/nls-accessibility-map-api nls-accessibility-map-job=../docker/nls-accessibility-map-job}"
 
 # Docker control
 SKIP_DOCKER_BUILD="${SKIP_DOCKER_BUILD:-false}"
 PREDEFINED_IMAGE_TAG=${PREDEFINED_IMAGE_TAG:-}
 
-# Ports
+# Ports must match Images IMAGE_MAP
 APP_PORTS="${APP_PORTS:-8080 8081}"
-
-PORT_OVERRIDE_MAP="wiremock:8080:8888"
+#to avoid container port conflicts usage service-name-a:8080:8888 service-name-b:8080:8888
+PORT_OVERRIDE_MAP="${PORT_OVERRIDE_MAP:-wiremock:8080:8888}"
 ############################################
 # DERIVED VALUES
 ############################################
