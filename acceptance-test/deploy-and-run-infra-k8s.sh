@@ -15,14 +15,14 @@ ACR_LOGIN_SERVER="ndwnls.azurecr.io"
 
 # Helm
 HELM_RELEASE_NAME="nls-accessibility-map-api"
-HELM_CHART_PATH="./k8s"
+HELM_CHART_PATH="./component-test/k8s"
 
 # Maven
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MAIN_POM_FILE="${MAIN_POM_FILE:-${SCRIPT_DIR}/../../pom.xml}"
+MAIN_POM_FILE="${MAIN_POM_FILE:-${SCRIPT_DIR}/../pom.xml}"
 
 # Images (format: imageName=contextPath)
-IMAGE_MAP="nls-accessibility-map-api=../../docker/nls-accessibility-map-api nls-accessibility-map-job=../../docker/nls-accessibility-map-job"
+IMAGE_MAP="nls-accessibility-map-api=../docker/nls-accessibility-map-api nls-accessibility-map-job=../docker/nls-accessibility-map-job"
 
 # Docker control
 SKIP_DOCKER_BUILD="${SKIP_DOCKER_BUILD:-false}"
