@@ -61,16 +61,6 @@
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
     <wiremock-spring-boot.version>4.1.0</wiremock-spring-boot.version>
-    <!-- Overrides for transitive dependencies to fix vulnerabilities -->
-    <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-24970 -->
-    <netty.version>4.2.4.Final</netty.version>
-    <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2024-57699 -->
-    <json-smart.version>2.6.0</json-smart.version>
-    <!-- Vulnerability fix: https://avd.aquasec.com/nvd/cve-2025-48976 -->
-    <commons-fileupload.version>1.6.0</commons-fileupload.version>
-    <!-- Downgrade because of https://issues.apache.org/jira/browse/SUREFIRE-2299, https://github.com/apache/maven-surefire/issues/834-->
-    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-    <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
   </properties>
   <distributionManagement>
     <repository>
@@ -188,11 +178,6 @@
         <artifactId>stream-utils</artifactId>
         <version>${stream-utils.version}</version>
       </dependency>
-      <dependency>
-        <groupId>commons-fileupload</groupId>
-        <artifactId>commons-fileupload</artifactId>
-        <version>${commons-fileupload.version}</version>
-      </dependency>
 
       <dependency>
         <groupId>nu.ndw.nls.geojson.geometry</groupId>
@@ -264,11 +249,6 @@
         <groupId>nu.ndw.nls.springboot</groupId>
         <artifactId>security</artifactId>
         <version>${nls-springboot.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.minidev</groupId>
-        <artifactId>json-smart</artifactId>
-        <version>${json-smart.version}</version>
       </dependency>
       <dependency>
         <groupId>nu.ndw.nls.springboot</groupId>
