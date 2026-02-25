@@ -222,6 +222,8 @@ class AccessibilityServiceTest {
             assertThat(accessibility.reasons()).isEqualTo(accessibilityReasonGroups);
 
             loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
+            loggerExtension.containsLog(Level.DEBUG, "Adding missing road sections");
+            loggerExtension.containsLog(Level.DEBUG, "Added 1 missing road sections");
             loggerExtension.containsLog(Level.DEBUG, "Accessibility calculation done. It took: 123 ms");
 
             verify(accessibilityDebugger).writeDebug(accessibilityRequest);
