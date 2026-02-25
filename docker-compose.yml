@@ -38,7 +38,7 @@ services:
       - nls-accessibility-map-network
 
   nls-keycloak:
-    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.4.7
+    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.5.4
     command: start-dev --import-realm
     hostname: nls-keycloak
     environment:
