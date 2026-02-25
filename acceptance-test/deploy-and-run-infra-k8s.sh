@@ -142,6 +142,7 @@ kubectl create namespace "${NAMESPACE}"
 HELM_SET_ARGS=""
 HELM_SET_ARGS+=" --set hostSuffix=${NAMESPACE}.svc.cluster.local"
 HELM_SET_ARGS+=" --set buildNumber=${UNIQUE_TAG}"
+HELM_SET_ARGS+=" --set nameSpace=${UNIQUE_TAG}"
 
 sed -i '' "s/@docker.image.tag@/${UNIQUE_TAG}/g" "${HELM_CHART_PATH}/Chart.yaml"
 

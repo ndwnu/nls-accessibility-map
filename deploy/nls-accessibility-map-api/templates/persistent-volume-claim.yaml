@@ -1,11 +1,11 @@
-kind: PersistentVolumeClaim
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
-  name: azure-cache-blob-claim
+  name: nls-accessibility-map-cache
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: azurefile
   resources:
     requests:
-      storage: 100Mi
-  storageClassName: managed-csi
+      storage: 4Gi
