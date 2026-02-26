@@ -15,10 +15,16 @@ public class IsoLabelToRoadSectionIdMapper {
             EncodingManager encodingManager,
             boolean isReversed,
             boolean isochroneCalculatedInReverse
-            ) {
-        return isReversed != isochroneCalculatedInReverse
+    ) {
+        // Because edges in one direction have no reversed link id we need to check for that and then use the non reversed link id.
+        return (isReversed != isochroneCalculatedInReverse) && hasReversedLinkId(edge, encodingManager)
                 ? getReversedLinkId(edge, encodingManager)
                 : getLinkId(edge, encodingManager);
+
+    }
+
+    private boolean hasReversedLinkId(EdgeIteratorState edge, EncodingManager encodingManager) {
+        return getReversedLinkId(edge, encodingManager) > 0;
     }
 
     private static int getLinkId(EdgeIteratorState edge, EncodingManager encodingManager) {
