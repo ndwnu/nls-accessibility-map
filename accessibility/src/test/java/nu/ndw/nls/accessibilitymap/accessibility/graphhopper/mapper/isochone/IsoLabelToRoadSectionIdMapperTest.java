@@ -40,22 +40,26 @@ class IsoLabelToRoadSectionIdMapperTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            false, false, 1
-            true, true, 1,
-            false, true, 2,
-            true, false, 2,
+            false, false, false, 1,
+            true, false, false, 1,
+            false, true, false, 1,
+            false, false, true, 1,
+            true, true, false, 1,
+            false, true, true, 2,
+            true, false, true, 2,
+            true, true, true, 1,
             """)
-    void map(boolean isReversed, boolean isochroneCalculatedInReverse, int expectedRoadSectionId) {
+    void map(boolean isReversed, boolean isochroneCalculatedInReverse, boolean hasReversedLinkId, int expectedRoadSectionId) {
 
-        if (isReversed != isochroneCalculatedInReverse) {
+        if ((isReversed != isochroneCalculatedInReverse) && hasReversedLinkId) {
             when(encodingManager.getIntEncodedValue(REVERSED_LINK_ID)).thenReturn(intEncodedValueReversedWayId);
-        } else {
-            when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
-        }
-
-        if (isReversed != isochroneCalculatedInReverse) {
             when(edgeIteratorState.get(intEncodedValueReversedWayId)).thenReturn(2);
         } else {
+            if (isReversed != isochroneCalculatedInReverse) {
+                when(encodingManager.getIntEncodedValue(REVERSED_LINK_ID)).thenReturn(intEncodedValueReversedWayId);
+                when(edgeIteratorState.get(intEncodedValueReversedWayId)).thenReturn(0);
+            }
+            when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
             when(edgeIteratorState.get(intEncodedValueWayId)).thenReturn(1);
         }
 
