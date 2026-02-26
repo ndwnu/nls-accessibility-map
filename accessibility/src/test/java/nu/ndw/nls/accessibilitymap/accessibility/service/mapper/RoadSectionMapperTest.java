@@ -9,6 +9,7 @@ import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
+import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwor
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -160,5 +163,19 @@ class RoadSectionMapperTest {
         assertThat(segment.isAccessible()).isTrue();
         assertThat(segment.getLineString()).isEqualTo(geometry);
         assertThat(segment.getRestrictions()).isEqualTo(new Restrictions(List.of(restriction)));
+    }
+
+    @Test
+    void map_containsTimeAnnotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                roadSectionMapper.getClass(),
+                Timed.class,
+                "map",
+                annotation -> {
+                    assertThat(annotation).isNotNull();
+                    assertThat(annotation.value()).isEqualTo("accessibilitymap.roadSection.mapping");
+                }
+        );
     }
 }
