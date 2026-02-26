@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class IsoLabelToRoadSectionIdMapperTest {
 
     private IsoLabelToRoadSectionIdMapper isoLabelToRoadSectionIdMapper;
+
+    @Mock
+    private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
     @Mock
     private EdgeIteratorState edgeIteratorState;
@@ -35,35 +39,37 @@ class IsoLabelToRoadSectionIdMapperTest {
     @BeforeEach
     void setUp() {
 
-        isoLabelToRoadSectionIdMapper = new IsoLabelToRoadSectionIdMapper();
+        isoLabelToRoadSectionIdMapper = new IsoLabelToRoadSectionIdMapper(edgeIteratorStateReverseExtractor);
     }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            false, false, false, 1,
-            true, false, false, 1,
-            false, true, false, 1,
-            false, false, true, 1,
-            true, true, false, 1,
-            false, true, true, 2,
-            true, false, true, 2,
-            true, true, true, 1,
+            false,  false,  false,  1,
+            true,   false,  false,  1,
+            false,  true,   false,  1,
+            false,  false,  true,   1,
+            true,   true,   false,  1,
+            false,  true,   true,   2,
+            true,   false,  true,   2,
+            true,   true,   true,   1,
             """)
     void map(boolean isReversed, boolean isochroneCalculatedInReverse, boolean hasReversedLinkId, int expectedRoadSectionId) {
 
-        if ((isReversed != isochroneCalculatedInReverse) && hasReversedLinkId) {
-            when(encodingManager.getIntEncodedValue(REVERSED_LINK_ID)).thenReturn(intEncodedValueReversedWayId);
-            when(edgeIteratorState.get(intEncodedValueReversedWayId)).thenReturn(2);
-        } else {
+        if ((isReversed == isochroneCalculatedInReverse) || !hasReversedLinkId) {
             if (isReversed != isochroneCalculatedInReverse) {
                 when(encodingManager.getIntEncodedValue(REVERSED_LINK_ID)).thenReturn(intEncodedValueReversedWayId);
                 when(edgeIteratorState.get(intEncodedValueReversedWayId)).thenReturn(0);
             }
             when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValueWayId);
             when(edgeIteratorState.get(intEncodedValueWayId)).thenReturn(1);
+        } else {
+            when(encodingManager.getIntEncodedValue(REVERSED_LINK_ID)).thenReturn(intEncodedValueReversedWayId);
+            when(edgeIteratorState.get(intEncodedValueReversedWayId)).thenReturn(2);
         }
 
-        int roadSectionId = isoLabelToRoadSectionIdMapper.map(edgeIteratorState, encodingManager, isReversed, isochroneCalculatedInReverse);
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(isReversed);
+
+        int roadSectionId = isoLabelToRoadSectionIdMapper.map(edgeIteratorState, encodingManager, isochroneCalculatedInReverse);
 
         assertThat(roadSectionId).isEqualTo(expectedRoadSectionId);
     }

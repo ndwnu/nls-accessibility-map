@@ -49,14 +49,13 @@ public class RoadSectionMapper {
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
 
         isoLabels.forEach(isoLabel -> {
-            EdgeIteratorState currentEdge = accessibilityNetwork.getQueryGraph()
-                    .getEdgeIteratorState(isoLabel.getEdge(), isoLabel.getNode());
-            boolean isReversed = edgeIteratorStateReverseExtractor.hasReversed(currentEdge);
+            EdgeIteratorState currentEdge = accessibilityNetwork.getQueryGraph().getEdgeIteratorState(
+                    isoLabel.getEdge(),
+                    isoLabel.getNode());
             LineString lineString = isoLabelToGeometryMapper.map(currentEdge);
             int roadSectionId = isoLabelToRoadSectionIdMapper.map(
                     currentEdge,
                     accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network().getEncodingManager(),
-                    isReversed,
                     false
             );
 
@@ -81,6 +80,7 @@ public class RoadSectionMapper {
                         return roadSectionFragmentNew;
                     });
 
+            boolean isReversed = edgeIteratorStateReverseExtractor.hasReversed(currentEdge);
             List<Restriction> restrictions = restrictionsByEdgeKey.getOrDefault(directionalSegmentId, List.of());
             addSegmentsToRoadSectionFragment(
                     roadSectionFragment,
