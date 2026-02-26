@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,6 +31,7 @@ import nu.ndw.nls.routingmapmatcher.network.model.Link;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -242,5 +244,33 @@ class GraphHopperServiceTest {
         assertThat(graphHopperDir)
                 .exists()
                 .isDirectory();
+    }
+
+    @Test
+    void load_containsTimeAnnotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                graphHopperService.getClass(),
+                Timed.class,
+                "load",
+                annotation -> {
+                    assertThat(annotation).isNotNull();
+                    assertThat(annotation.value()).isEqualTo("accessibilitymap.graphHopper.load");
+                }
+        );
+    }
+
+    @Test
+    void save_containsTimeAnnotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                graphHopperService.getClass(),
+                Timed.class,
+                "save",
+                annotation -> {
+                    assertThat(annotation).isNotNull();
+                    assertThat(annotation.value()).isEqualTo("accessibilitymap.graphHopper.save");
+                }
+        );
     }
 }

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.BBox;
+import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
@@ -14,7 +15,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -194,5 +197,19 @@ class MissingRoadSectionProviderTest {
         } else {
             assertThat(roadSectionFragment.getBackwardSegment()).isNull();
         }
+    }
+
+    @Test
+    void findAll_containsTimeAnnotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                missingRoadSectionProvider.getClass(),
+                Timed.class,
+                "findAll",
+                annotation -> {
+                    assertThat(annotation).isNotNull();
+                    assertThat(annotation.value()).isEqualTo("accessibilitymap.accessibility.calculateMissingRoadSections");
+                }
+        );
     }
 }
