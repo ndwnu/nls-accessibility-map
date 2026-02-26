@@ -12,6 +12,7 @@ import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
+import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwor
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +50,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityServiceTest {
+
+    private AccessibilityService accessibilityService;
 
     @Mock
     private LocationFactory locationFactory;
@@ -99,8 +103,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private AccessibilityCalculator accessibilityCalculator;
-
-    private AccessibilityService accessibilityService;
 
     @Mock
     private MissingRoadSectionProvider missingRoadSectionProvider;
@@ -434,5 +436,19 @@ class AccessibilityServiceTest {
             when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
             when(endSegmentClosestEdge.get(idIntEncodedValue)).thenReturn(30);
         }
+    }
+
+    @Test
+    void calculateAccessibility_containsTimeAnnotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                accessibilityService.getClass(),
+                Timed.class,
+                "calculateAccessibility",
+                annotation -> {
+                    assertThat(annotation).isNotNull();
+                    assertThat(annotation.value()).isEqualTo("accessibilitymap.accessibility.calculate");
+                }
+        );
     }
 }

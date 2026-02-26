@@ -12,12 +12,14 @@ import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.GHPoint3D;
+import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -178,5 +180,19 @@ class QueryGraphConfigurerTest {
                 "Query graph configuration summary. "
                 + "Total restriction: 1. "
                 + "Total not assignable restrictions: 1. [restriction1]");
+    }
+
+    @Test
+    void createEdgeRestrictions_containsTimeAnnotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                queryGraphConfigurer.getClass(),
+                Timed.class,
+                "createEdgeRestrictions",
+                annotation -> {
+                    assertThat(annotation).isNotNull();
+                    assertThat(annotation.value()).isEqualTo("accessibilitymap.queryGraph.createEdgeRestrictions");
+                }
+        );
     }
 }
