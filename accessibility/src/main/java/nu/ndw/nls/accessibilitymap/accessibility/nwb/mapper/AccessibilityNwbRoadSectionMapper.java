@@ -25,6 +25,7 @@ public class AccessibilityNwbRoadSectionMapper {
                 nwbRoadSectionDto.getMunicipalityId(),
                 nwbRoadSectionDto.getGeometry(),
                 forwardAccessible,
-                reverseAccessible);
+                reverseAccessible,
+                nwbRoadSectionDto.getFunctionalRoadClass());
     }
 }

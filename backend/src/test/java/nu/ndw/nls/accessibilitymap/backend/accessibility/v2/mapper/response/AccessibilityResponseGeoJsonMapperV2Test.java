@@ -128,6 +128,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -141,6 +142,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -154,6 +156,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -167,6 +170,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "backward"
                     }
@@ -180,6 +184,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 5,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -193,6 +198,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 5,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -206,6 +212,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -219,6 +226,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -278,6 +286,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -291,6 +300,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -304,6 +314,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -317,6 +328,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "backward"
                     }
@@ -330,6 +342,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 5,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -343,6 +356,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 5,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -356,6 +370,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -369,6 +384,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -425,6 +441,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -438,6 +455,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -451,6 +469,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -464,6 +483,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "backward"
                     }
@@ -477,6 +497,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 5,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -490,6 +511,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 5,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -503,6 +525,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -516,6 +539,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -594,6 +618,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -607,6 +632,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -620,6 +646,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -633,6 +660,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "backward"
                     }
@@ -646,6 +674,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -659,6 +688,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     "properties" : {
                       "type" : "roadSectionSegment",
                       "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -699,8 +729,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ 4.45, 5.34 ]
                     },
                     "properties" : {
-                      "roadSectionId" : 4,
                       "type" : "destination",
+                      "roadSectionId" : 4,
                       "accessible" : false,
                       "reasons" : [ ]
                     }
@@ -712,8 +742,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 1,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -725,8 +756,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 1,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -780,8 +812,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 2,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -793,8 +826,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 2,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "backward"
                     }
@@ -839,8 +873,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 1,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -852,8 +887,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 1,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 1,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -865,8 +901,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 2,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "forward"
                     }
@@ -878,8 +915,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 2,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 2,
+                      "functionalRoadClass" : "1",
                       "accessible" : false,
                       "direction" : "backward"
                     }
@@ -891,8 +929,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 1.0, 2.0 ], [ 2.0, 3.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 3,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "forward"
                     }
@@ -904,8 +943,9 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "coordinates" : [ [ 2.0, 3.0 ], [ 1.0, 2.0 ] ]
                     },
                     "properties" : {
-                      "roadSectionId" : 3,
                       "type" : "roadSectionSegment",
+                      "roadSectionId" : 3,
+                      "functionalRoadClass" : "1",
                       "accessible" : true,
                       "direction" : "backward"
                     }
@@ -917,6 +957,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     private RoadSection buildRoadSection(long id, boolean accessibleForward, boolean accessibleBackward) {
         RoadSection roadSection = RoadSection.builder()
                 .id(id)
+                .functionalRoadClass("1")
                 .build();
 
         RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()

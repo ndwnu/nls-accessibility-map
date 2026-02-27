@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -24,6 +25,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetw
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToGeometryMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToRoadSectionIdMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -83,6 +86,12 @@ class RoadSectionMapperTest {
     @Mock
     private EncodingManager encodingManager;
 
+    @Mock
+    private NwbData nwbData;
+
+    @Mock
+    private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -112,6 +121,10 @@ class RoadSectionMapperTest {
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
 
+        when(networkData.getNwbData()).thenReturn(nwbData);
+        when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
+        when(accessibilityNwbRoadSection.functionalRoadClass()).thenReturn("2");
+
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(isReversed);
         when(isoLabelToGeometryMapper.map(edgeIteratorState)).thenReturn(geometry);
         when(isoLabelToRoadSectionIdMapper.map(edgeIteratorState, encodingManager, false)).thenReturn(1);
@@ -132,6 +145,7 @@ class RoadSectionMapperTest {
 
         RoadSection roadSection = roadSections.iterator().next();
         assertThat(roadSection.getId()).isEqualTo(1);
+        assertThat(roadSection.getFunctionalRoadClass()).isEqualTo("2");
 
         assertThat(roadSection.getRoadSectionFragments()).hasSize(1);
         RoadSectionFragment roadSectionFragment = roadSection.getRoadSectionFragments().getFirst();
