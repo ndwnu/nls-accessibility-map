@@ -148,7 +148,7 @@
     "id" : 12,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0000006, 10.0000007 ], [ 1.000000869996823, 1.9000962835420943 ] ]
+      "coordinates" : [ [ 1.0000006, 10.0000007 ], [ 1.000000869996823, 1.9000962835420925 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",
@@ -161,7 +161,7 @@
     "id" : 13,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.000000869996823, 1.9000962835420943 ], [ 1.0000006, 10.0000007 ] ]
+      "coordinates" : [ [ 1.000000869996823, 1.9000962835420925 ], [ 1.0000006, 10.0000007 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",
@@ -174,7 +174,7 @@
     "id" : 14,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.000000869996823, 1.9000962835420943 ], [ 1.0000009, 1.000001 ] ]
+      "coordinates" : [ [ 1.000000869996823, 1.9000962835420925 ], [ 1.0000009, 1.000001 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",
@@ -187,7 +187,7 @@
     "id" : 15,
     "geometry" : {
       "type" : "LineString",
-      "coordinates" : [ [ 1.0000009, 1.000001 ], [ 1.000000869996823, 1.9000962835420943 ] ]
+      "coordinates" : [ [ 1.0000009, 1.000001 ], [ 1.000000869996823, 1.9000962835420925 ] ]
     },
     "properties" : {
       "type" : "roadSectionSegment",
