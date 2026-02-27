@@ -38,6 +38,7 @@ class RoadSectionTest extends ValidationTest {
 
         roadSection = RoadSection.builder()
                 .id(1L)
+                .functionalRoadClass("1")
                 .build();
 
         roadSectionFragment = RoadSectionFragment.builder()
@@ -262,6 +263,27 @@ class RoadSectionTest extends ValidationTest {
 
         roadSection = roadSection.withId(null);
         validate(roadSection, List.of("id"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_functionalRoadClass_null() {
+
+        roadSection = roadSection.withFunctionalRoadClass(null);
+        validate(roadSection, List.of("functionalRoadClass"), List.of("must not be null"));
+    }
+
+    @Test
+    void validate_functionalRoadClass_empty() {
+
+        roadSection = roadSection.withFunctionalRoadClass("");
+        validate(roadSection, List.of("functionalRoadClass"), List.of("length must be between 1 and 1"));
+    }
+
+    @Test
+    void validate_functionalRoadClass_invalid() {
+
+        roadSection = roadSection.withFunctionalRoadClass("df");
+        validate(roadSection, List.of("functionalRoadClass"), List.of("length must be between 1 and 1"));
     }
 
     @Test

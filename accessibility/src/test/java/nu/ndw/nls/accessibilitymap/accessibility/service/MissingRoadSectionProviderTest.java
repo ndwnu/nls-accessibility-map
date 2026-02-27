@@ -35,17 +35,17 @@ class MissingRoadSectionProviderTest {
     @Mock
     private NetworkData networkData;
 
-    private LineString roadSection1LineString;
-
-    private LineString roadSection2LineString;
-
-    private LineString roadSection3LineString;
-
     @Mock
     private NwbData nwbData;
 
     @Mock
     private BBox searchArea;
+
+    private LineString roadSection1LineString;
+
+    private LineString roadSection2LineString;
+
+    private LineString roadSection3LineString;
 
     private RoadSection roadSectionExisting;
 
@@ -152,9 +152,9 @@ class MissingRoadSectionProviderTest {
 
     private List<AccessibilityNwbRoadSection> buildRoadSections(boolean hasForwardSection, boolean hasBackwardSection) {
         return List.of(
-                new AccessibilityNwbRoadSection(1, 2, 3, 4, roadSection1LineString, true, true),
-                new AccessibilityNwbRoadSection(45648, 22, 23, 24, roadSection2LineString, hasForwardSection, hasBackwardSection),
-                new AccessibilityNwbRoadSection(45649, 32, 33, 34, roadSection3LineString, true, true)
+                new AccessibilityNwbRoadSection(1, 2, 3, 4, roadSection1LineString, true, true, "1"),
+                new AccessibilityNwbRoadSection(45648, 22, 23, 24, roadSection2LineString, hasForwardSection, hasBackwardSection, "1"),
+                new AccessibilityNwbRoadSection(45649, 32, 33, 34, roadSection3LineString, true, true, "1")
         );
     }
 
@@ -168,6 +168,7 @@ class MissingRoadSectionProviderTest {
 
         RoadSection roadSection = missingRoadSections.stream().toList().getFirst();
         assertThat(roadSection.getId()).isEqualTo(45648L);
+        assertThat(roadSection.getFunctionalRoadClass()).isEqualTo("1");
         assertThat(roadSection.getRoadSectionFragments()).hasSize(1);
 
         RoadSectionFragment roadSectionFragment = roadSection.getRoadSectionFragments().getFirst();

@@ -5,18 +5,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.converter.LineStringDeserializer;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.converter.LineStringSerializer;
+import org.hibernate.validator.constraints.Length;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
 public record AccessibilityNwbRoadSection(
-        @NotNull
         long roadSectionId,
 
-        @NotNull
         long fromNode,
 
-        @NotNull
         long toNode,
 
         Integer municipalityId,
@@ -26,10 +24,12 @@ public record AccessibilityNwbRoadSection(
         @JsonSerialize(using = LineStringSerializer.class)
         LineString geometry,
 
-        @NotNull
         boolean forwardAccessible,
 
+        boolean backwardAccessible,
+
         @NotNull
-        boolean backwardAccessible) {
+        @Length(min = 1, max = 1)
+        String functionalRoadClass) {
 
 }
