@@ -2,6 +2,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.nwb.service;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +53,13 @@ public class AccessibilityNwbRoadSectionService {
 
     public NwbData getLatestNwbData() {
         log.info("Fetching latest NWB data");
-        int nwbVersionId = nwbVersionCrudService.findLatestVersionId();
+
+        Integer nwbVersionId = nwbVersionCrudService.findLatestVersionId();
+
+        if(Objects.isNull(nwbVersionId)) {
+            return new NwbData(-1, List.of());
+        }
+
         var accessibilityNwbRoadSections = nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(
                         nwbVersionId,
                         CARRIAGE_WAY_TYPE_CODE_INCLUSIONS,
