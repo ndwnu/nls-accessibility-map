@@ -41,3 +41,10 @@ spec:
             timeoutSeconds: 1
             periodSeconds: 10
             failureThreshold: 12
+          volumeMounts:
+            - mountPath: /home/wiremock/mappings
+              name: mappings
+      volumes:
+        - name: mappings
+          configMap:
+            name: wiremock-import

@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-############################################
-# CONFIGURATION (override via env vars
-##########################################
+
 # AKS
-AKS_CLUSTER_NAME="nls-aks-pipeline-cluster"
 KUBE_CONTEXT="nls-aks-pipeline-cluster"
 
 # ACR
 ACR_NAME="ndwnls"
 ACR_LOGIN_SERVER="ndwnls.azurecr.io"
+
+############################################
+# CONFIGURATION (override via env vars)
+##########################################
 
 # Helm
 HELM_RELEASE_NAME="${HELM_RELEASE_NAME:-nls-accessibility-map-api}"
@@ -27,8 +28,6 @@ IMAGE_MAP="${IMAGE_MAP:-nls-accessibility-map-api=../docker/nls-accessibility-ma
 SKIP_DOCKER_BUILD="${SKIP_DOCKER_BUILD:-false}"
 PREDEFINED_IMAGE_TAG=${PREDEFINED_IMAGE_TAG:-}
 
-# Ports must match Images IMAGE_MAP
-APP_PORTS="${APP_PORTS:-8080 8081}"
 #to avoid container port conflicts usage service-name-a:8080:8888 service-name-b:8080:8888
 PORT_OVERRIDE_MAP="${PORT_OVERRIDE_MAP:-wiremock:8080:8888}"
 ############################################
