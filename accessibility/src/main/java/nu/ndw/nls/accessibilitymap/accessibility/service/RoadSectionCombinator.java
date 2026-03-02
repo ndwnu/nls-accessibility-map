@@ -42,6 +42,10 @@ public class RoadSectionCombinator {
                             directionalSegmentToCopyFrom.getRoadSectionFragment().getRoadSection().getId(),
                             roadSectionId -> RoadSection.builder()
                                     .id(roadSectionId)
+                                    .functionalRoadClass(directionalSegmentToCopyFrom
+                                            .getRoadSectionFragment()
+                                            .getRoadSection()
+                                            .getFunctionalRoadClass())
                                     .build());
 
                     RoadSectionFragment newRoadSectionFraction = roadSectionsFragmentsById.computeIfAbsent(

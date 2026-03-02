@@ -178,7 +178,8 @@ class NetworkDataServiceTest {
                         4,
                         lineString,
                         true,
-                        false)
+                        false,
+                        "1")
         );
     }
 }

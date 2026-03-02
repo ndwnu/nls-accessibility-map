@@ -87,6 +87,7 @@ public class AccessibilityResponseGeoJsonMapperV2 {
                         .geometry(mapLineString(directionalSegment.getLineString()))
                         .properties(RoadSectionSegmentFeaturePropertiesJson.builder()
                                 .roadSectionId(roadSection.getId())
+                                .functionalRoadClass(roadSection.getFunctionalRoadClass())
                                 .accessible(isAccessible(accessibilityRequestJson, directionalSegment))
                                 .direction(DirectionJson.valueOf(directionalSegment.getDirection().name().toUpperCase(Locale.ROOT)))
                                 .build())

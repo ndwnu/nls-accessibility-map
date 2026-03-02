@@ -65,7 +65,8 @@ class AccessibilityNwbRoadSectionToLinkMapperTest {
                 4,
                 lineString,
                 forwardAccessible,
-                backwardAccessible
+                backwardAccessible,
+                "1"
         );
     }
 }
