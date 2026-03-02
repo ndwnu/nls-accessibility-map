@@ -1,6 +1,6 @@
 services:
   nls-postgres:
-    image: ndwnls.azurecr.io/nls-postgres-it-container:20250726.2
+    image: ndwnls.azurecr.io/nls-postgres-it-container:20260225.4
     ports:
       - "5432:5432"
     environment:
@@ -46,7 +46,7 @@ services:
       - nls-accessibility-map-network
 
   nls-keycloak:
-    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.4.7
+    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.5.4
     command: start-dev --import-realm
     hostname: nls-keycloak
     environment:

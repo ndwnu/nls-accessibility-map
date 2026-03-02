@@ -91,4 +91,15 @@ class AccessibilityNwbRoadSectionServiceTest {
                 null,
                 250);
     }
+
+    @Test
+    void getLatestNwbData_emptyDatabase() {
+
+        when(nwbVersionCrudService.findLatestVersionId()).thenReturn(null);
+
+        var nwbData = accessibilityNwbRoadSectionService.getLatestNwbData();
+
+        assertThat(nwbData.getNwbVersionId()).isEqualTo(-1);
+        assertThat(nwbData.findAllAccessibilityNwbRoadSections()).isEmpty();
+    }
 }
