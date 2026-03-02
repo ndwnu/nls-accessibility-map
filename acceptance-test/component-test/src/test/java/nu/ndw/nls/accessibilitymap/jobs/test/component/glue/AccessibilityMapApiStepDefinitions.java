@@ -145,6 +145,8 @@ public class AccessibilityMapApiStepDefinitions {
                 responseFile + ".geojson");
 
         assertThatJson(actualResponse.bodyAsString())
+                // Ignore small floating point differences in coordinates local vs aks env
+                .withTolerance(1e-12)
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(expectedResponse);
     }
