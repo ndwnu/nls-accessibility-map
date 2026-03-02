@@ -23,6 +23,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 6,
+      "functionalRoadClass" : "1",
       "accessible" : false,
       "direction" : "backward"
     }
@@ -36,6 +37,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 13,
+      "functionalRoadClass" : "1",
       "accessible" : false,
       "direction" : "forward"
     }
