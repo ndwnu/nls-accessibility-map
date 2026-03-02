@@ -28,7 +28,7 @@
   <properties>
     <java.version>21</java.version>
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
-    <nls-springboot.logging.version>8.4.19</nls-springboot.logging.version>
+    <nls-springboot.logging.version>8.4.18</nls-springboot.logging.version>
     <nls-springboot.component-test.version>13.0.5</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>8.4.26</nls-springboot.monitoring.version>
     <nls-springboot.test.version>9.1.2</nls-springboot.test.version>
@@ -61,9 +61,6 @@
     <resilience4j-bom.version>2.3.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
     <wiremock-spring-boot.version>4.1.0</wiremock-spring-boot.version>
-
-    <!--    Override because of CVE GHSA-72hv-8253-57qq-->
-    <jackson-bom.version>2.21.1</jackson-bom.version>
   </properties>
   <distributionManagement>
     <repository>
