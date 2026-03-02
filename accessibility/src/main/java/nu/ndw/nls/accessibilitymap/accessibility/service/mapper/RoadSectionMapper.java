@@ -66,6 +66,11 @@ public class RoadSectionMapper {
                     roadSectionId,
                     id -> RoadSection.builder()
                             .id(Long.valueOf(id))
+                            .functionalRoadClass(accessibilityNetwork.getNetworkData()
+                                    .getNwbData()
+                                    .findAccessibilityNwbRoadSectionById(id)
+                                    .orElseThrow()
+                                    .functionalRoadClass())
                             .build());
 
             RoadSectionFragment roadSectionFragment = roadSectionFragmentById.computeIfAbsent(
