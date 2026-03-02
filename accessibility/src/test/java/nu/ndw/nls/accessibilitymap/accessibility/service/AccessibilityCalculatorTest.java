@@ -5,8 +5,10 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import ch.qos.logback.classic.Level;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.shapes.BBox;
+import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +22,13 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneSe
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.RoadSectionMapper;
-import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
+import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
+import nu.ndw.nls.springboot.test.logging.LoggerExtension;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,7 +51,7 @@ class AccessibilityCalculatorTest {
     private IsochroneService isochroneService;
 
     @Mock
-    private IsochroneMatch isochroneMatch;
+    private IsoLabel isoLabel;
 
     @Mock
     private Map<Integer, List<Restriction>> restrictionsByEdgeKey;
@@ -59,6 +64,9 @@ class AccessibilityCalculatorTest {
 
     @Mock
     private Set<Integer> blockedEdges;
+
+    @RegisterExtension
+    LoggerExtension loggerExtension = new LoggerExtension();
 
     private AccessibilityRequest accessibilityRequest;
 
@@ -89,15 +97,24 @@ class AccessibilityCalculatorTest {
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(2.0)
                         .build()))))
-                .thenReturn(List.of(isochroneMatch));
+                .thenReturn(List.of(isoLabel));
 
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch), restrictionsByEdgeKey)).thenReturn(List.of(roadSection));
+        when(roadSectionMapper.map(accessibilityNetwork, List.of(isoLabel), restrictionsByEdgeKey)).thenReturn(List.of(
+                roadSection));
 
         Collection<RoadSection> baseAccessibility = accessibilityCalculator.calculateWithoutRestrictions(
                 accessibilityRequest,
                 accessibilityNetwork);
 
         assertThat(baseAccessibility).containsExactly(roadSection);
+
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "Calculating accessibility without restrictions for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=null, municipalityId=1, addMissingRoadsSectionsFromNwb=false, maxSearchDistanceInMeters=2.0, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, fuelTypes=null, emissionClasses=null, transportTypes=null, trafficSignTypes=null, trafficSignTextSignTypes=null, excludeTrafficSignTextSignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
+        loggerExtension.containsLog(Level.DEBUG, "Found 1 isochrone labels");
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "Calculated accessibility without restrictions, found 1 road sections for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=null, municipalityId=1, addMissingRoadsSectionsFromNwb=false, maxSearchDistanceInMeters=2.0, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, fuelTypes=null, emissionClasses=null, transportTypes=null, trafficSignTypes=null, trafficSignTextSignTypes=null, excludeTrafficSignTextSignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
     }
 
     @Test
@@ -116,15 +133,23 @@ class AccessibilityCalculatorTest {
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(2.0)
                         .build()))))
-                .thenReturn(List.of(isochroneMatch));
+                .thenReturn(List.of(isoLabel));
 
-        when(roadSectionMapper.mapToRoadSections(List.of(isochroneMatch), restrictionsByEdgeKey)).thenReturn(List.of(roadSection));
+        when(roadSectionMapper.map(accessibilityNetwork, List.of(isoLabel), restrictionsByEdgeKey)).thenReturn(List.of(
+                roadSection));
 
         Collection<RoadSection> baseAccessibility = accessibilityCalculator.calculateWithRestrictions(
                 accessibilityRequest,
                 accessibilityNetwork);
 
         assertThat(baseAccessibility).containsExactly(roadSection);
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "Calculating accessibility with restrictions for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=null, municipalityId=1, addMissingRoadsSectionsFromNwb=false, maxSearchDistanceInMeters=2.0, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, fuelTypes=null, emissionClasses=null, transportTypes=null, trafficSignTypes=null, trafficSignTextSignTypes=null, excludeTrafficSignTextSignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
+        loggerExtension.containsLog(Level.DEBUG, "Found 1 isochrone labels");
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "Calculated accessibility with restrictions, found 1 road sections for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=null, municipalityId=1, addMissingRoadsSectionsFromNwb=false, maxSearchDistanceInMeters=2.0, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, fuelTypes=null, emissionClasses=null, transportTypes=null, trafficSignTypes=null, trafficSignTextSignTypes=null, excludeTrafficSignTextSignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
     }
 
     private record IsochroneArgumentMatcher(IsochroneArguments expected) implements
@@ -152,5 +177,33 @@ class AccessibilityCalculatorTest {
                 return Objects.equals(expectedWeighting, actualWeighting);
             }
         }
+    }
+
+    @Test
+    void calculateWithRestrictions_containsTimeAnnotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                accessibilityCalculator.getClass(),
+                Timed.class,
+                "calculateWithRestrictions",
+                annotation -> {
+                    assertThat(annotation).isNotNull();
+                    assertThat(annotation.value()).isEqualTo("accessibilitymap.accessibility.calculateWithRestrictions");
+                }
+        );
+    }
+
+    @Test
+    void calculateWithoutRestrictions_containsTimeAnnotation() {
+
+        AnnotationUtil.methodContainsAnnotation(
+                accessibilityCalculator.getClass(),
+                Timed.class,
+                "calculateWithoutRestrictions",
+                annotation -> {
+                    assertThat(annotation).isNotNull();
+                    assertThat(annotation.value()).isEqualTo("accessibilitymap.accessibility.calculateWithoutRestrictions");
+                }
+        );
     }
 }

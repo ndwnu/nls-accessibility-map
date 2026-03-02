@@ -94,6 +94,7 @@ public class AccessibilityService {
                             (roadsSectionsWithoutAppliedRestrictions, roadsSectionsWithAppliedRestrictions) -> {
                                 Collection<RoadSection> unroutableRoadSections = new ArrayList<>();
                                 if (accessibilityRequest.addMissingRoadsSectionsFromNwb()) {
+                                    log.debug("Adding missing road sections");
                                     unroutableRoadSections.addAll(missingRoadSectionProvider.findAll(
                                             networkData,
                                             accessibilityRequest.municipalityId(),
@@ -101,6 +102,7 @@ public class AccessibilityService {
                                             false,
                                             accessibilityRequest.requestArea()));
                                 }
+                                log.debug("Added {} missing road sections", unroutableRoadSections.size());
 
                                 Accessibility accessibility = buildAccessibility(
                                         accessibilityRequest,

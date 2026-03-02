@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
-import com.carrotsearch.hppc.IntArrayList;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
@@ -23,8 +22,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
-import nu.ndw.nls.routingmapmatcher.isochrone.mappers.IsochroneMatchMapper;
-import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +40,6 @@ class IsochroneServiceTest {
     private IsochroneService isochroneService;
 
     @Mock
-    private IsochroneMatchMapperFactory isochroneMatchMapperFactory;
-
-    @Mock
     private AccessibilityNetwork accessibilityNetwork;
 
     @Mock
@@ -58,13 +52,7 @@ class IsochroneServiceTest {
     private NetworkGraphHopper networkGraphHopper;
 
     @Mock
-    private IntArrayList closestEdges;
-
-    @Mock
     private EncodingManager encodingManager;
-
-    @Mock
-    private IsochroneMatchMapper isochroneMatchMapper;
 
     @Mock
     private QueryGraph queryGraph;
@@ -74,9 +62,6 @@ class IsochroneServiceTest {
 
     @Mock
     private Weighting weighting;
-
-    @Mock
-    private IsochroneMatch isochroneMatch;
 
     @Mock
     private BBox boundingBox;
@@ -97,7 +82,7 @@ class IsochroneServiceTest {
         isochroneShortestPathTreeFactoryMockedStatic = Mockito.mockStatic(IsochroneShortestPathTreeFactory.class);
         isochroneFilterMockedStatic = Mockito.mockStatic(IsochroneFilter.class);
 
-        isochroneService = new IsochroneService(isochroneMatchMapperFactory);
+        isochroneService = new IsochroneService();
     }
 
     @AfterEach
@@ -126,7 +111,6 @@ class IsochroneServiceTest {
         when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
-        when(isochroneMatchMapperFactory.create(encodingManager)).thenReturn(isochroneMatchMapper);
 
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
 
@@ -148,12 +132,12 @@ class IsochroneServiceTest {
 
         mockFiltersAndIsoLabelMapper(isoLabel, isochroneArguments, isNotRoot, isWithinMunicipality, isWithinBoundingBox);
 
-        List<IsochroneMatch> isochroneMatches = isochroneService.search(accessibilityNetwork, isochroneArguments);
+        List<IsoLabel> isoLabels = isochroneService.search(accessibilityNetwork, isochroneArguments);
 
         if (hasMatch) {
-            assertThat(isochroneMatches).containsExactly(isochroneMatch);
+            assertThat(isoLabels).containsExactly(isoLabel);
         } else {
-            assertThat(isochroneMatches).isEmpty();
+            assertThat(isoLabels).isEmpty();
         }
     }
 
@@ -188,13 +172,6 @@ class IsochroneServiceTest {
         }
         isochroneFilterMockedStatic.when(() -> IsochroneFilter.isWithinBoundingBox(queryGraph, isoLabel, isochroneArguments))
                 .thenReturn(isWithinBoundingBox);
-
-        if (!isWithinBoundingBox) {
-            return;
-        }
-        when(isochroneMatchMapper.mapToIsochroneMatch(isoLabel, Double.POSITIVE_INFINITY, queryGraph, fromClosestEdge, false))
-                .thenReturn(isochroneMatch);
-        when(from.getClosestEdge()).thenReturn(fromClosestEdge);
     }
 
     @SneakyThrows

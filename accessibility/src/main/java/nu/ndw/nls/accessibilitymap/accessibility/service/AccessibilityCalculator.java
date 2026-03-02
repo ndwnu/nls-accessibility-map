@@ -13,7 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneSe
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.RoadSectionMapper;
-import nu.ndw.nls.routingmapmatcher.model.IsochroneMatch;
+import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -47,11 +47,13 @@ public class AccessibilityCalculator {
             AccessibilityRequest accessibilityRequest,
             boolean applyRestrictions) {
 
+        log.debug("Calculating accessibility {} restrictions for {}", applyRestrictions ? "with" : "without", accessibilityRequest);
+
         RestrictionWeightingAdapter weighting = createWeighting(
                 accessibilityNetwork,
                 applyRestrictions ? accessibilityNetwork.getBlockedEdges() : Set.of());
 
-        List<IsochroneMatch> isochroneMatches = isochroneService.search(
+        List<IsoLabel> isoLabels = isochroneService.search(
                 accessibilityNetwork,
                 IsochroneArguments.builder()
                         .weighting(weighting)
@@ -59,11 +61,20 @@ public class AccessibilityCalculator {
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(accessibilityRequest.maxSearchDistanceInMeters())
                         .build());
+        log.debug("Found {} isochrone labels", isoLabels.size());
 
-        return roadSectionMapper.mapToRoadSections(
-                isochroneMatches,
+        Collection<RoadSection> roadSections = roadSectionMapper.map(
+                accessibilityNetwork,
+                isoLabels,
                 accessibilityNetwork.getRestrictionsByEdgeKey()
         );
+
+        log.debug("Calculated accessibility {} restrictions, found {} road sections for {}",
+                applyRestrictions ? "with" : "without",
+                roadSections.size(),
+                accessibilityRequest);
+
+        return roadSections;
     }
 
     private static @NonNull RestrictionWeightingAdapter createWeighting(
