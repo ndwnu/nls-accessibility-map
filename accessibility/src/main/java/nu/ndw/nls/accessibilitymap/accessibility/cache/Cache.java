@@ -60,19 +60,8 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    //    @Retryable(
-//            value = { RuntimeException.class },
-//            maxAttempts = 5,
-//            backoff = @Backoff(delay = 100)
-//    )
     public synchronized void read() {
         try {
-//            int retryCount = RetrySynchronizationManager.getContext() != null
-//                    ? RetrySynchronizationManager.getContext().getRetryCount()
-//                    : 0;
-//            if (retryCount > 0) {
-//                log.warn("Retry attempt #{} {}", retryCount, RetrySynchronizationManager.getContext().getLastThrowable());
-//            }
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
 
