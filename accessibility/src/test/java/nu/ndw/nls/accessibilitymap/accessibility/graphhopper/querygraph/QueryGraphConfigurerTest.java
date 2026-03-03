@@ -1,10 +1,13 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
+import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeExplorer;
@@ -44,6 +47,9 @@ class QueryGraphConfigurerTest {
     private QueryGraph queryGraph;
 
     @Mock
+    private EncodingManager encodingManager;
+
+    @Mock
     private Restriction restriction1;
 
     @Mock
@@ -57,6 +63,9 @@ class QueryGraphConfigurerTest {
 
     @Mock
     private EdgeIterator edgeIterator;
+
+    @Mock
+    private IntEncodedValue intEncodedValue;
 
     @Mock
     private GHPoint3D ghPoint;
@@ -108,8 +117,13 @@ class QueryGraphConfigurerTest {
         when(ghPoint.getLat()).thenReturn(2.0);
 
         when(restriction1.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
+        when(restriction1.roadSectionId()).thenReturn(1);
         when(restriction2.direction()).thenReturn(reversed ? Direction.BACKWARD : Direction.FORWARD);
+        when(restriction2.roadSectionId()).thenReturn(1);
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
+        when(edgeIterator.get(intEncodedValue)).thenReturn(1);
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+                encodingManager,
                 queryGraph,
                 List.of(
                         new SnapRestriction(snap, restriction1),
@@ -120,7 +134,7 @@ class QueryGraphConfigurerTest {
         loggerExtension.containsLog(
                 Level.INFO,
                 "Query graph configuration summary. "
-                + "Total restriction: 2. "
+                + "Total restrictions: 2. "
                 + "Total not assignable restrictions: 0. []");
     }
 
@@ -138,6 +152,7 @@ class QueryGraphConfigurerTest {
         when(restriction1.direction()).thenReturn(Direction.FORWARD);
 
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+                encodingManager,
                 queryGraph,
                 List.of(new SnapRestriction(snap, restriction1)));
 
@@ -145,7 +160,43 @@ class QueryGraphConfigurerTest {
         loggerExtension.containsLog(
                 Level.WARN,
                 "Query graph configuration summary. "
-                + "Total restriction: 1. "
+                + "Total restrictions: 1. "
+                + "Total not assignable restrictions: 1. [restriction1]");
+    }
+
+    @Test
+    void createEdgeRestrictions_noRestrictionAssigned_restrictionRoadSectionIdNotMatchingLinkId() {
+
+        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+        when(queryGraph.getNodes()).thenReturn(1);
+        when(queryGraph.getEdges()).thenReturn(1);
+        when(edgeExplorer.setBaseNode(24))
+                .thenReturn(edgeIterator)
+                .thenReturn(edgeIterator);
+        when(edgeIterator.next())
+                .thenReturn(true, false)
+                .thenReturn(true, false);
+        when(snap.getClosestNode()).thenReturn(24);
+
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
+
+        when(restriction1.direction()).thenReturn(Direction.FORWARD);
+        when(restriction1.roadSectionId()).thenReturn(1);
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
+        when(edgeIterator.get(intEncodedValue)).thenReturn(2);
+
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+                encodingManager,
+                queryGraph,
+                List.of(
+                        new SnapRestriction(snap, restriction1)
+                ));
+
+        assertThat(restrictionsByEdgeKey).isEmpty();
+        loggerExtension.containsLog(
+                Level.WARN,
+                "Query graph configuration summary. "
+                + "Total restrictions: 1. "
                 + "Total not assignable restrictions: 1. [restriction1]");
     }
 
@@ -161,6 +212,9 @@ class QueryGraphConfigurerTest {
 
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIterator)).thenReturn(false);
         when(restriction1.direction()).thenReturn(Direction.FORWARD);
+        when(restriction1.roadSectionId()).thenReturn(1);
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
+        when(edgeIterator.get(intEncodedValue)).thenReturn(1);
 
         when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
         when(pointList.toLineString(false)).thenReturn(lineString);
@@ -171,6 +225,7 @@ class QueryGraphConfigurerTest {
         when(ghPoint.getLat()).thenReturn(4.0);
 
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
+                encodingManager,
                 queryGraph,
                 List.of(new SnapRestriction(snap, restriction1)));
 
@@ -178,7 +233,7 @@ class QueryGraphConfigurerTest {
         loggerExtension.containsLog(
                 Level.WARN,
                 "Query graph configuration summary. "
-                + "Total restriction: 1. "
+                + "Total restrictions: 1. "
                 + "Total not assignable restrictions: 1. [restriction1]");
     }
 
