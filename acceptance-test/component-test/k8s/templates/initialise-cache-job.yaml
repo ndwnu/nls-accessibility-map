@@ -29,7 +29,7 @@ spec:
             - name: COMMAND
               value: initializeCache
             - name: JAVA_TOOL_OPTIONS
-              value: -Dspring.profiles.active=acceptance-test,pipeline,job-initialize-cache -DhostSuffix={{ .Values.hostSuffix }} {{ .Values.pods.jobs.container.env.javaOptions }}
+              value: -Dspring.profiles.active=acceptance-test,job-initialize-cache,pipeline -DhostSuffix={{ .Values.hostSuffix }} {{ .Values.pods.jobs.container.env.javaOptions }}
           volumeMounts:
             - mountPath: /application/cache
               name: cache
