@@ -3,8 +3,7 @@ hostDatabase: database.${hostSuffix}
 hostOauth: oauth.${hostSuffix}
 hostRabbitMQ: rabbitmq.${hostSuffix}
 hostWireMock: wiremock.${hostSuffix}
-server:
-  context-path: /api
+
 spring:
   rabbitmq:
     host: ${hostRabbitMQ}
@@ -28,18 +27,12 @@ nu:
               url: http://${hostWiremock}/api/area/ibbm/emission-zones/v1
           cache:
             folder: "./cache/trafficSigns/"
-
         network:
           cache:
             folder: "./cache/network"
-
       api:
         url: http://${hostWireMock}
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
-management:
-  datadog:
-    metrics:
-      export:
-        enabled: false
+
