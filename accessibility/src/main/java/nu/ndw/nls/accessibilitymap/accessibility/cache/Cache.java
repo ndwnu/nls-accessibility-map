@@ -19,9 +19,6 @@ import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.retry.support.RetrySynchronizationManager;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -62,19 +59,20 @@ public abstract class Cache<TYPE> {
             dataLock.unlock();
         }
     }
-    @Retryable(
-            value = { RuntimeException.class },
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 100)
-    )
+
+    //    @Retryable(
+//            value = { RuntimeException.class },
+//            maxAttempts = 5,
+//            backoff = @Backoff(delay = 100)
+//    )
     public synchronized void read() {
         try {
-            int retryCount = RetrySynchronizationManager.getContext() != null
-                    ? RetrySynchronizationManager.getContext().getRetryCount()
-                    : 0;
-            if (retryCount > 0) {
-                log.warn("Retry attempt #{} {}", retryCount, RetrySynchronizationManager.getContext().getLastThrowable());
-            }
+//            int retryCount = RetrySynchronizationManager.getContext() != null
+//                    ? RetrySynchronizationManager.getContext().getRetryCount()
+//                    : 0;
+//            if (retryCount > 0) {
+//                log.warn("Retry attempt #{} {}", retryCount, RetrySynchronizationManager.getContext().getLastThrowable());
+//            }
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
 
