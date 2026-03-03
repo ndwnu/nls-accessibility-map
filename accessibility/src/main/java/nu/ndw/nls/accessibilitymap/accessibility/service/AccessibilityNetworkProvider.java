@@ -63,7 +63,10 @@ public class AccessibilityNetworkProvider {
                 networkData,
                 queryGraph,
                 restrictions,
-                queryGraphConfigurer.createEdgeRestrictions(queryGraph, snapRestrictions),
+                queryGraphConfigurer.createEdgeRestrictions(
+                        networkData.getGraphHopperNetwork().network().getEncodingManager(),
+                        queryGraph,
+                        snapRestrictions),
                 fromSnap.get(),
                 destinationSnap.orElse(null));
     }

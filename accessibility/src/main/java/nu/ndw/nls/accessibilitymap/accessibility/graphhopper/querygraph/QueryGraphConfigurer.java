@@ -1,8 +1,11 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph;
 
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
+
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Sets;
 import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeExplorer;
@@ -38,9 +41,12 @@ public class QueryGraphConfigurer {
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
     @Timed(value = "accessibilitymap.queryGraph.createEdgeRestrictions")
-    public Map<Integer, List<Restriction>> createEdgeRestrictions(QueryGraph queryGraph, List<SnapRestriction> snapRestrictions) {
+    public Map<Integer, List<Restriction>> createEdgeRestrictions(
+            EncodingManager encodingManager,
+            QueryGraph queryGraph,
+            List<SnapRestriction> snapRestrictions) {
 
-        Map<Integer, List<Restriction> > edgeRestrictions = new HashMap<>();
+        Map<Integer, List<Restriction>> edgeRestrictions = new HashMap<>();
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
         Restrictions assignedRestrictions = new Restrictions();
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -54,8 +60,7 @@ public class QueryGraphConfigurer {
             EdgeIterator edgeIterator = edgeExplorer.setBaseNode(snap.getClosestNode());
 
             while (edgeIterator.next()) {
-                if (hasDirectionInSameDirectionAsCurrentEdge(edgeIterator, restriction)
-                    && isSnapInFrontOfEdge(edgeIterator, snap)) {
+                if (restrictionMatchesEdge(restriction, edgeIterator, encodingManager, snap)) {
                     edgeRestrictions.computeIfAbsent(edgeIterator.getEdgeKey(), integer -> new ArrayList<>());
                     edgeRestrictions.get(edgeIterator.getEdgeKey()).add(restriction);
                     assignedRestrictions.add(restriction);
@@ -69,7 +74,7 @@ public class QueryGraphConfigurer {
         log.atLevel(notAssigned.isEmpty() ? Level.INFO : Level.WARN)
                 .setMessage(
                         "Query graph configuration summary. "
-                        + "Total restriction: {}. "
+                        + "Total restrictions: {}. "
                         + "Total not assignable restrictions: {}. {}")
                 .addArgument(snapRestrictions.size())
                 .addArgument(notAssigned.size())
@@ -77,6 +82,16 @@ public class QueryGraphConfigurer {
                 .log();
         log.debug("Configured query graph in {} ms", stopwatch.elapsed().toMillis());
         return edgeRestrictions;
+    }
+
+    private boolean restrictionMatchesEdge(Restriction restriction, EdgeIterator edgeIterator, EncodingManager encodingManager, Snap snap) {
+        return hasDirectionInSameDirectionAsCurrentEdge(edgeIterator, restriction)
+               && matchesRestriction(encodingManager, edgeIterator, restriction)
+               && isSnapInFrontOfEdge(edgeIterator, snap);
+    }
+
+    private static boolean matchesRestriction(EncodingManager encodingManager, EdgeIterator edgeIterator, Restriction restriction) {
+        return edgeIterator.get(encodingManager.getIntEncodedValue(WAY_ID_KEY)) == restriction.roadSectionId();
     }
 
     private static boolean isSnapInFrontOfEdge(EdgeIteratorState edgeIteratorState, Snap snap) {
