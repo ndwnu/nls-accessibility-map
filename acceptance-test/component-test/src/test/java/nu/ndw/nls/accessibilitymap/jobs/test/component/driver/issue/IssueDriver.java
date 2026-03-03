@@ -40,8 +40,6 @@ public class IssueDriver {
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(HttpStatus.ACCEPTED.value())));
-
-
     }
 
     public void verifyIssueCreated(String issueFile) {

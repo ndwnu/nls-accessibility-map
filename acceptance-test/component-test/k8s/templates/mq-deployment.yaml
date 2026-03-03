@@ -24,18 +24,8 @@ spec:
             - containerPort: 5672
               name: amqp
               protocol: TCP
-            - containerPort: 25672
-              name: dist
-              protocol: TCP
             - containerPort: 15672
-              name: stats
-              protocol: TCP
-            - containerPort: 4369
-              name: epmd
-              protocol: TCP
-            - containerPort: 9419
-              name: metrics
-              protocol: TCP
+
           env:
             - name: RABBITMQ_USERNAME
               value: guest

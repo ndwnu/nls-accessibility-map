@@ -28,13 +28,11 @@ nu:
               url: http://${hostWiremock}/api/area/ibbm/emission-zones/v1
           cache:
             folder: "./cache/trafficSigns/"
-            load-data-on-startup: false
-            watch-for-updates: false
+
         network:
           cache:
             folder: "./cache/network"
-            load-data-on-startup: false
-            watch-for-updates: false
+
       api:
         url: http://${hostWireMock}
       springboot:
