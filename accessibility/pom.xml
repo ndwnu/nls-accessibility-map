@@ -80,12 +80,6 @@
       <artifactId>test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <artifactId>scala-reflect</artifactId>
-      <groupId>org.scala-lang</groupId>
-      <version>2.13.18</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>
