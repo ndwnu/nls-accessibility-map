@@ -18,4 +18,12 @@ public class MapGenerationJobDriverConfiguration {
     @Nonnull
     private File locationOnDisk;
 
+    @Nonnull
+    private Boolean downloadFromPod;
+
+    @Nonnull
+    private String downloadDirectory;
+
+    @Nonnull
+    private String serviceName;
 }

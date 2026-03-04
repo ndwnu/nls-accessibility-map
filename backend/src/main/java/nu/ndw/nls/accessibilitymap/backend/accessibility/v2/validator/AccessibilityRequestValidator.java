@@ -9,9 +9,9 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.BoundingBoxAreaReque
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeJson;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class AccessibilityRequestValidator {

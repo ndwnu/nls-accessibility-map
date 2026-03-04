@@ -1,0 +1,14 @@
+hostSuffix: "replaced_by_pipeline"
+hostDatabase: database.${hostSuffix}
+hostKeycloak: oauth.${hostSuffix}
+
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficSigns:
+          cache:
+            folder: "./cache/trafficSigns/"
+        network:
+          cache:
+            folder: "./cache/network"
