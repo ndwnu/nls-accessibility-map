@@ -11,7 +11,7 @@ spring:
     password: nls-maps
 nls:
   keycloak:
-    url: http://${hostOauth}:8000/auth
+    url: http://${hostKeycloak}:8000/auth
 
 nu:
   ndw:
@@ -33,3 +33,7 @@ nu:
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
+logging:
+  level:
+    root: TRACE
+    nu.ndw.nls: TRACE
