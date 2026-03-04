@@ -1,4 +1,6 @@
-host: localhost
+hostDatabase: localhost
+hostRabbitMQ: localhost
+hostWiremock: localhost
 
 server:
   port: 8081
@@ -9,11 +11,14 @@ spring:
       micrometer:
         enabled: false
   datasource:
-    url: jdbc:postgresql://${host}:5432/nls-maps?ApplicationName=nls-accessibility-map-job&stringtype=unspecified
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-job&stringtype=unspecified
     username: nls-maps
     password: nls-maps
   main:
     web-application-type: servlet
+  spring:
+    rabbitmq:
+      host: ${hostRabbitMQ}
 
 management:
   endpoints:
@@ -32,11 +37,6 @@ management:
     annotations:
       enabled: false
 
-logging:
-  level:
-    root: INFO
-    nu.ndw.nls: DEBUG
-
 nu:
   ndw:
     nls:
@@ -44,13 +44,14 @@ nu:
         jobs:
           generate:
             root-export-directory: "./.tmp/map-generation-destination"
+            prettyPrintJson: true
         trafficsignclient:
           api:
-            url: http://${host}:8888/api/rest/static-road-data/traffic-signs/v4
+            url: http://${hostWiremock}:8888/api/rest/static-road-data/traffic-signs/v4
         trafficSigns:
           emission-zone:
             client:
-              url: http://${host}:8888/api/area/ibbm/emission-zones/v1
+              url: http://${hostWiremock}:8888/api/area/ibbm/emission-zones/v1
           cache:
             folder: "./.tmp/trafficSigns/"
             load-data-on-startup: false
@@ -62,15 +63,20 @@ nu:
             watch-for-updates: false
       springboot:
         messaging:
-          broker-uri: amqp://guest:guest@${host}:5672?heartbeat=300
+          broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
         job:
           run-as-service: true
 
 keycloak:
-  server-url: http://${host}:8888/auth
+  server-url: http://${hostWiremock}:8888/auth
   client-id: nls-accessibility-map-api-service-account
   client-secret: cfe4793c-ddf7-405a-940f-51b43800aed4
 
 feign:
   client:
-    base-url: http://${host}:8888/api
+    base-url: http://${hostWiremock}:8888/api
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG

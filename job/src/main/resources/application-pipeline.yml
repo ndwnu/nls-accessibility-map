@@ -2,11 +2,6 @@ hostSuffix: "replaced_by_pipeline"
 hostDatabase: database.${hostSuffix}
 hostRabbitMQ: rabbitmq.${hostSuffix}
 hostWiremock: wiremock.${hostSuffix}
-spring:
-  rabbitmq:
-    host: ${hostRabbitMQ}
-  datasource:
-    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-fcd-travel-time-api&stringtype=unspecified
 
 nu:
   ndw:
@@ -15,29 +10,9 @@ nu:
         jobs:
           generate:
             root-export-directory: "/application/maps"
-        trafficsignclient:
-          api:
-            url: http://${hostWiremock}/api/rest/static-road-data/traffic-signs/v4
-        trafficSigns:
-          emission-zone:
-            client:
-              url: http://${hostWiremock}/api/area/ibbm/emission-zones/v1
           cache:
             folder: "./cache/trafficSigns"
 
         network:
           cache:
             folder: "./cache/network"
-
-      api:
-        url: http://${hostWireMock}
-      springboot:
-        messaging:
-          broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
-
-keycloak:
-  server-url: http://${hostWiremock}/auth
-feign:
-  client:
-    base-url: http://${hostWiremock}/api
-

@@ -1,38 +1,15 @@
 hostSuffix: "replaced_by_pipeline"
 hostDatabase: database.${hostSuffix}
-hostOauth: oauth.${hostSuffix}
-hostRabbitMQ: rabbitmq.${hostSuffix}
-hostWireMock: wiremock.${hostSuffix}
+hostKeycloak: oauth.${hostSuffix}
 
-spring:
-  rabbitmq:
-    host: ${hostRabbitMQ}
-  datasource:
-    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-api&stringtype=unspecified
-    username: nls-maps
-    password: nls-maps
-nls:
-  keycloak:
-    url: http://${hostOauth}/auth
 nu:
   ndw:
     nls:
       accessibilitymap:
-        trafficsignclient:
-          api:
-            url: http://${hostWiremock}/api/rest/static-road-data/traffic-signs/v4
         trafficSigns:
-          emission-zone:
-            client:
-              url: http://${hostWiremock}/api/area/ibbm/emission-zones/v1
           cache:
             folder: "./cache/trafficSigns/"
         network:
           cache:
             folder: "./cache/network"
-      api:
-        url: http://${hostWireMock}
-      springboot:
-        messaging:
-          broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
 

@@ -1,8 +1,22 @@
+hostDatabase: localhost
+hostKeycloak: localhost
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+
+nls:
+  keycloak:
+    url: http://${hostKeycloak}:8000/auth
+
 management:
   datadog:
     metrics:
       export:
         enabled: false
+
 nu:
   ndw:
     nls:
@@ -19,3 +33,8 @@ nu:
             folder: "./.tmp/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: TRACE
