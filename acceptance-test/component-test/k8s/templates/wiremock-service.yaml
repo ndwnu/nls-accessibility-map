@@ -4,7 +4,7 @@ metadata:
   name: wiremock
 spec:
   ports:
-    - port: 80
+    - port: 8888
       targetPort: 8080
   selector:
     app: wiremock
