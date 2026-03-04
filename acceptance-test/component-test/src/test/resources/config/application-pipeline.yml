@@ -13,8 +13,6 @@ nu:
         test:
           component:
             driver:
-              keycloak:
-                url: http://${hostOauth}/auth
               job:
                 job-configurations:
                   job:
