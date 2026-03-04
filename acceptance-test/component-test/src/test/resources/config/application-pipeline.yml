@@ -15,8 +15,6 @@ nu:
             driver:
               keycloak:
                 url: http://${hostOauth}/auth
-              wiremock:
-                port: 80
               job:
                 job-configurations:
                   job:
