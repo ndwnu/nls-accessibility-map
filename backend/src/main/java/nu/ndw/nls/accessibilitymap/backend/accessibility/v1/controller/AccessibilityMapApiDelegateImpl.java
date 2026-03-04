@@ -26,9 +26,9 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 @Slf4j
 @Component
