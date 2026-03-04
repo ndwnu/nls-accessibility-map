@@ -56,7 +56,12 @@ PIDS=()
 cleanup() {
   echo ""
   echo "Cleaning up..."
-  sed -i '' "s/${UNIQUE_TAG}/@docker.image.tag@/g" "${HELM_CHART_PATH}/Chart.yaml"
+  if [[ "$(uname)" == "Darwin" ]]; then
+     sed -i '' "s/${UNIQUE_TAG}/@docker.image.tag@/g" "${HELM_CHART_PATH}/Chart.yaml"
+  else
+     sed -i "s/${UNIQUE_TAG}/@docker.image.tag@/g" "${HELM_CHART_PATH}/Chart.yaml"
+  fi
+
   for PID in "${PIDS[@]:-}"; do
     kill "${PID}" 2>/dev/null || true
   done
@@ -142,7 +147,11 @@ HELM_SET_ARGS+=" --set hostSuffix=${NAMESPACE}.svc.cluster.local"
 HELM_SET_ARGS+=" --set buildNumber=${UNIQUE_TAG}"
 HELM_SET_ARGS+=" --set nameSpace=${UNIQUE_TAG}"
 
-sed -i '' "s/@docker.image.tag@/${UNIQUE_TAG}/g" "${HELM_CHART_PATH}/Chart.yaml"
+if [[ "$(uname)" == "Darwin" ]]; then
+   sed -i '' "s/@docker.image.tag@/${UNIQUE_TAG}/g" "${HELM_CHART_PATH}/Chart.yaml"
+else
+   sed -i "s/@docker.image.tag@/${UNIQUE_TAG}/g" "${HELM_CHART_PATH}/Chart.yaml"
+fi
 
 ############################################
 # DEPLOY
