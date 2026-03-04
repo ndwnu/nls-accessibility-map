@@ -1,14 +1,2 @@
-spring:
-  datasource:
-    url: jdbc:postgresql://nls-postgres:5432/nls-maps?ApplicationName=nls-accessibility-map&stringtype=unspecified
-    username: nls-maps
-    password: nls-maps
-
-nls:
-  keycloak:
-    url: http://nls-keycloak:8000/auth
-
-logging:
-  level:
-    root: INFO
-    nu.ndw.nls: DEBUG
+hostDatabase: nls-postgres
+hostKeycloak: nls-keycloak

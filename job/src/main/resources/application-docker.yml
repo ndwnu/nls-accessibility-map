@@ -1,4 +1,3 @@
 hostDatabase: nls-postgres
-hostEventBroker: nls-rabbitmq
+hostRabbitMQ: nls-rabbitmq
 hostWiremock: accessibility-wiremock
-

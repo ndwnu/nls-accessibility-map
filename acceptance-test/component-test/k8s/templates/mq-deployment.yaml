@@ -25,7 +25,8 @@ spec:
               name: amqp
               protocol: TCP
             - containerPort: 15672
-
+              name: stats
+              protocol: TCP
           env:
             - name: RABBITMQ_USERNAME
               value: guest
