@@ -12,6 +12,7 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.With;
+import org.hibernate.validator.constraints.Length;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
@@ -25,6 +26,10 @@ public final class RoadSection {
 
     @NotNull
     private final Long id;
+
+    @NotNull
+    @Length(min = 1, max = 1)
+    public String functionalRoadClass;
 
     @Default
     @NotEmpty
