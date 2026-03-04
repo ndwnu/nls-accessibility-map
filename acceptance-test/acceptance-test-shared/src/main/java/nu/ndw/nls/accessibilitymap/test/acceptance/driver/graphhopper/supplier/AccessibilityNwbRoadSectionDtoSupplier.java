@@ -14,6 +14,7 @@ public class AccessibilityNwbRoadSectionDtoSupplier extends NwbRoadSectionDtoSup
         NwbRoadSectionDto nwbRoadSectionDto = super.create(edge, nwbVersionDto);
 
         return nwbRoadSectionDto
+                .withFunctionalRoadClass("1")
                 .withMunicipalityId(1)
                 .withDrivingDirection("B")
                 .withRoadOperatorType(RoadOperatorType.MUNICIPALITY);

@@ -19,6 +19,15 @@ Feature: Accessibility V2
     Then we expect accessibility geojson response truck2MetersWide-destination3-7-onlyInaccessible
 
 
+  Scenario: Get - Dynamic restriction on node should only block edges with the same road section id
+    Given a simple network
+    And with traffic signs
+      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
+    When run TrafficSignUpdateCache
+    When request accessibility geojson for dynamicRestrictionOnNode
+    Then we expect accessibility geojson response dynamicRestrictionOnNode
+
+
   Scenario: Get - Vehicle emission class euro 3 - Destination unreachable
     Given a simple network
     And with traffic signs

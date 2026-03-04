@@ -23,6 +23,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 7,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -36,6 +37,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 7,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }
@@ -49,6 +51,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 8,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -62,6 +65,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 8,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }
@@ -75,6 +79,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 9,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -88,6 +93,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 9,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }
@@ -101,6 +107,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 9,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -114,6 +121,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 9,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }
@@ -127,6 +135,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 10,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -140,6 +149,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 10,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }
@@ -153,6 +163,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 10,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -166,6 +177,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 10,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }
@@ -179,6 +191,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 11,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -192,6 +205,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 11,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }
@@ -205,6 +219,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 12,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -218,6 +233,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 12,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }
@@ -231,6 +247,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 13,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "forward"
     }
@@ -244,6 +261,7 @@
     "properties" : {
       "type" : "roadSectionSegment",
       "roadSectionId" : 13,
+      "functionalRoadClass" : "1",
       "accessible" : true,
       "direction" : "backward"
     }

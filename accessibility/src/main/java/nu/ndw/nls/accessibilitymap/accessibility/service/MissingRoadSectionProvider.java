@@ -59,6 +59,7 @@ public class MissingRoadSectionProvider {
 
                     RoadSection roadSection = RoadSection.builder()
                             .id(accessibilityRoadSection.roadSectionId())
+                            .functionalRoadClass(accessibilityRoadSection.functionalRoadClass())
                             .build();
                     RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
                             .id(roadSectionFragmentIdSupplier.getAndIncrement())

@@ -93,8 +93,9 @@ paths:
                         - - 5
                           - 1
                     properties:
-                      roadSectionId: 1
                       type: roadSectionSegment
+                      roadSectionId: 1
+                      functionalRoadClass: 0
                       accessible: false
                       direction: forward
                   - type: Feature
@@ -107,8 +108,9 @@ paths:
                         - - 4.600000072202962
                           - 1
                     properties:
-                      roadSectionId: 1
                       type: roadSectionSegment
+                      roadSectionId: 1
+                      functionalRoadClass: 0
                       accessible: true
                       direction: backward
                   - type: Feature
@@ -121,8 +123,9 @@ paths:
                         - - 4.600000072202962
                           - 1
                     properties:
-                      roadSectionId: 1
                       type: roadSectionSegment
+                      roadSectionId: 1
+                      functionalRoadClass: 0
                       accessible: false
                       direction: forward
                   - type: Feature
@@ -135,8 +138,9 @@ paths:
                         - - 1.3999999358068789
                           - 1
                     properties:
-                      roadSectionId: 1
                       type: roadSectionSegment
+                      roadSectionId: 1
+                      functionalRoadClass: 0
                       accessible: false
                       direction: backward
                   - type: Feature
@@ -149,8 +153,9 @@ paths:
                         - - 1.3999999358068789
                           - 1
                     properties:
-                      roadSectionId: 1
                       type: roadSectionSegment
+                      roadSectionId: 1
+                      functionalRoadClass: 0
                       accessible: false
                       direction: forward
                   - type: Feature
@@ -163,8 +168,9 @@ paths:
                         - - 1
                           - 1
                     properties:
-                      roadSectionId: 1
                       type: roadSectionSegment
+                      roadSectionId: 1
+                      functionalRoadClass: 0
                       accessible: false
                       direction: backward
                   - type: Feature
@@ -177,8 +183,9 @@ paths:
                         - - 10
                           - 1
                     properties:
-                      roadSectionId: 2
                       type: roadSectionSegment
+                      roadSectionId: 2
+                      functionalRoadClass: 1
                       accessible: true
                       direction: forward
                   - type: Feature
@@ -191,8 +198,9 @@ paths:
                         - - 5
                           - 1
                     properties:
-                      roadSectionId: 2
                       type: roadSectionSegment
+                      roadSectionId: 2
+                      functionalRoadClass: 1
                       accessible: true
                       direction: backward
         "400":
@@ -565,6 +573,15 @@ components:
       format: "int64"
       example: 715923
       readOnly: true
+    FunctionalRoadClass:
+      type: "string"
+      example: "0"
+      maxLength: 1
+      description: "Functional road class is a classification of the road section type"
+      externalDocs:
+        url: "https://docs.ndw.nu/en/handleidingen/nwb/nwb-basisstructuur/overige-attributen/#functional-road-class"
+        description: "NDW - Functional road class documentation"
+      readOnly: true
     Accessible:
       type: "boolean"
       description: "Whether or not the road section is accessible"
@@ -892,11 +909,14 @@ components:
           description: "Road section GeoJSON properties"
           required:
             - roadSectionId
+            - functionalRoadClass
             - accessible
             - direction
           properties:
             roadSectionId:
               $ref: "#/components/schemas/RoadSectionId"
+            functionalRoadClass:
+              $ref: "#/components/schemas/FunctionalRoadClass"
             accessible:
               $ref: "#/components/schemas/Accessible"
             direction:

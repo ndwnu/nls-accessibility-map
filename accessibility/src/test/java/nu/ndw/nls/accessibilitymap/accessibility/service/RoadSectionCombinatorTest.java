@@ -56,6 +56,7 @@ class RoadSectionCombinatorTest {
 
         RoadSection roadSection = combinedRoadSections.stream().findFirst().get();
         assertThat(roadSection.getId()).isEqualTo(1);
+        assertThat(roadSection.getFunctionalRoadClass()).isEqualTo("1");
 
         assertThat(roadSection.getRoadSectionFragments())
                 .hasSize(3)
@@ -182,6 +183,7 @@ class RoadSectionCombinatorTest {
 
         RoadSection roadsection = RoadSection.builder()
                 .id(1L)
+                .functionalRoadClass("1")
                 .build();
 
         IntStream.range(0, 2)

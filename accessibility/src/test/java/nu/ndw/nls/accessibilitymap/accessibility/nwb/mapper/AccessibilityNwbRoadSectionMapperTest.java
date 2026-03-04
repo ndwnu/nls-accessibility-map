@@ -44,9 +44,10 @@ class AccessibilityNwbRoadSectionMapperTest {
         when(nwbRoadSectionDto.getMunicipalityId()).thenReturn(4);
         when(nwbRoadSectionDto.getDrivingDirection()).thenReturn(drivingDirection);
         when(nwbRoadSectionDto.getGeometry()).thenReturn(geometry);
+        when(nwbRoadSectionDto.getFunctionalRoadClass()).thenReturn("1");
 
         AccessibilityNwbRoadSection accessibilityNwbRoadSection = accessibleRoadSectionMapper.map(nwbRoadSectionDto);
         assertThat(accessibilityNwbRoadSection)
-                .isEqualTo(new AccessibilityNwbRoadSection(1, 2, 3, 4, geometry, forward, backward));
+                .isEqualTo(new AccessibilityNwbRoadSection(1, 2, 3, 4, geometry, forward, backward, "1"));
     }
 }
