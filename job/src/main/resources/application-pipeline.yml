@@ -10,6 +10,7 @@ nu:
         jobs:
           generate:
             root-export-directory: "/application/maps"
+        trafficSigns:
           cache:
             folder: "./cache/trafficSigns"
 
