@@ -91,36 +91,6 @@
             <artifactId>exec-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>docker-compose-down</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>down</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-up-infra</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>up</argument>
-                    <argument>--build</argument>
-                    <argument>-d</argument>
-                    <argument>nls-postgres</argument>
-                    <argument>nls-rabbitmq</argument>
-                    <argument>nls-keycloak</argument>
-                    <argument>accessibility-wiremock</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
                 <id>init-component-test</id>
                 <phase>pre-integration-test</phase>
                 <goals>
@@ -148,56 +118,6 @@
                     <argument>../../.tmp/trafficSigns</argument>
                   </arguments>
                   <executable>chmod</executable>
-                </configuration>
-              </execution>
-
-              <execution>
-                <id>wait-for-database</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <commandlineArgs>../../scripts/pg-isready.sh</commandlineArgs>
-                </configuration>
-              </execution>
-              <execution>
-                <id>wait-for-rabbitmq</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <commandlineArgs>../../scripts/rabbit-isready.sh</commandlineArgs>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-up-nls-accessibility-map-api</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>up</argument>
-                    <argument>-d</argument>
-                    <argument>--build</argument>
-                    <argument>nls-accessibility-map-api-component-test</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-down-after-tests</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>down</argument>
-                  </arguments>
                 </configuration>
               </execution>
             </executions>

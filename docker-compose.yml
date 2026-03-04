@@ -7,8 +7,16 @@ services:
       - POSTGRES_DB=nls-maps
       - POSTGRES_USER=nls-maps
       - POSTGRES_PASSWORD=nls-maps
-    volumes:
-      - ./docker/nls-postgres/sql/:/docker-entrypoint-initdb.d/sql/
+    networks:
+      - nls-accessibility-map-network
+
+  nls-nwb-schema-manager:
+    image: ndwnls.azurecr.io/nls-nwb-schema-manager:20260213.2
+    environment:
+      - SPRING_PROFILES_ACTIVE=build
+      - COMMAND=updateNwbSchema
+    depends_on:
+      - nls-postgres
     networks:
       - nls-accessibility-map-network
 

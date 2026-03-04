@@ -13,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGenerato
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.component.driver.job.dto.JobArgument;
+import nu.ndw.nls.springboot.test.component.driver.kubectl.KubectlDriver;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,8 @@ public class MapGenerationJobDriver implements StateManagement {
     private final FileService fileService;
 
     private final JobDriver jobDriver;
+
+    private final KubectlDriver kubectlDriver;
 
     private MapGeneratorJobConfiguration lastJobExecution;
 
@@ -60,19 +63,15 @@ public class MapGenerationJobDriver implements StateManagement {
                 .value(jobConfiguration.exportName())
                 .build());
 
-        jobConfiguration.trafficSignTypes().forEach(trafficSignType -> {
-            arguments.add(JobArgument.builder()
-                    .parameter("--traffic-sign")
-                    .value(trafficSignType)
-                    .build());
-        });
+        jobConfiguration.trafficSignTypes().forEach(trafficSignType -> arguments.add(JobArgument.builder()
+                .parameter("--traffic-sign")
+                .value(trafficSignType)
+                .build()));
 
-        jobConfiguration.exportTypes().forEach(exportType -> {
-            arguments.add(JobArgument.builder()
-                    .parameter("--export-type")
-                    .value(exportType)
-                    .build());
-        });
+        jobConfiguration.exportTypes().forEach(exportType -> arguments.add(JobArgument.builder()
+                .parameter("--export-type")
+                .value(exportType)
+                .build()));
 
         if (jobConfiguration.includeOnlyWindowSigns()) {
             arguments.add(JobArgument.builder().parameter("--include-only-time-windowed-signs").build());
@@ -93,7 +92,11 @@ public class MapGenerationJobDriver implements StateManagement {
     }
 
     public String getLastGeneratedGeoJson() {
-
+        if (mapGenerationJobDriverConfiguration.getDownloadFromPod()) {
+            kubectlDriver.download(mapGenerationJobDriverConfiguration.getServiceName(),
+                    mapGenerationJobDriverConfiguration.getDownloadDirectory(),
+                    String.valueOf(mapGenerationJobDriverConfiguration.getLocationOnDisk()));
+        }
         return fileService.readDataFromFile(
                 new File("%s/v1/windowTimes/%s/geojson/%s%s.geojson".formatted(
                         mapGenerationJobDriverConfiguration.getLocationOnDisk(),
@@ -104,7 +107,11 @@ public class MapGenerationJobDriver implements StateManagement {
     }
 
     public String getLastGeneratedPolygonGeoJson() {
-
+        if (mapGenerationJobDriverConfiguration.getDownloadFromPod()) {
+            kubectlDriver.download(mapGenerationJobDriverConfiguration.getServiceName(),
+                    mapGenerationJobDriverConfiguration.getDownloadDirectory(),
+                    String.valueOf(mapGenerationJobDriverConfiguration.getLocationOnDisk()));
+        }
         return fileService.readDataFromFile(
                 new File("%s/v1/windowTimes/%s/geojson/%s%s-polygon.geojson".formatted(
                         mapGenerationJobDriverConfiguration.getLocationOnDisk(),

@@ -1,7 +1,6 @@
-hostSuffix: "replaced_by_pipeline"
-hostDatabase: database.${hostSuffix}
-hostEventBroker: rabbitmq.${hostSuffix}
-hostWiremock: wiremock.${hostSuffix}
+hostDatabase: localhost
+hostRabbitMQ: localhost
+hostWiremock: localhost
 
 server:
   port: 8081
@@ -17,6 +16,10 @@ spring:
     password: nls-maps
   main:
     web-application-type: servlet
+  spring:
+    rabbitmq:
+      host: ${hostRabbitMQ}
+
 management:
   endpoints:
     web:
@@ -34,11 +37,6 @@ management:
     annotations:
       enabled: false
 
-logging:
-  level:
-    root: INFO
-    nu.ndw.nls: DEBUG
-
 nu:
   ndw:
     nls:
@@ -46,6 +44,7 @@ nu:
         jobs:
           generate:
             root-export-directory: "./.tmp/map-generation-destination"
+            prettyPrintJson: true
         trafficsignclient:
           api:
             url: http://${hostWiremock}:8888/api/rest/static-road-data/traffic-signs/v4
@@ -64,7 +63,7 @@ nu:
             watch-for-updates: false
       springboot:
         messaging:
-          broker-uri: amqp://guest:guest@${hostEventBroker}:5672?heartbeat=300
+          broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
         job:
           run-as-service: true
 
@@ -76,3 +75,8 @@ keycloak:
 feign:
   client:
     base-url: http://${hostWiremock}:8888/api
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG

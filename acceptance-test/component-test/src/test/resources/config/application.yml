@@ -1,7 +1,12 @@
 host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
-
+hostOauth: ${host}
+hostApplication: ${host}
+hostRabbit: ${host}
+hostJobs: ${host}
+kubernetes:
+  namespace: "replaced_by_pipeline"
 spring:
   application:
     name: nls-accessibility-map-generator-jobs-component-test
@@ -25,7 +30,7 @@ nu:
     nls:
       springboot:
         messaging:
-          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
+          broker-uri: amqp://guest:guest@${hostRabbit}:5672?heartbeat=300
           publish:
             - routingKey: ndw.nls.nwb.imported
               expectedEventType: NWB_IMPORTED_EVENT
@@ -41,12 +46,12 @@ nu:
                   job:
                     run-in-docker-container: false
                     service-configuration:
-                      host: ${host}
+                      host: ${hostJobs}
                       port: 8081
                     docker-configuration:
                       service-name: "nls-accessibility-map-job"
               keycloak:
-                url: "http://localhost:8000/auth"
+                url: http://${hostOauth}:8000/auth
                 realm: "ndw"
                 admin-username: "nls"
                 admin-password: "nls"
@@ -62,6 +67,8 @@ nu:
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
+              kubectl:
+                name-space: ${kubernetes.namespace}
       accessibilitymap:
         test:
           acceptance:
@@ -69,7 +76,7 @@ nu:
               general:
                 debugFolder: ".debug/"
               accessibility-map:
-                host: localhost
+                host: ${hostApplication}
                 port: 8080
               graph-hopper:
                 location-on-disk: "../../.tmp/network/active/graphHopper"
@@ -81,3 +88,6 @@ nu:
           driver:
             map-generation-job:
               location-on-disk: "../../.tmp/map-generation-destination"
+              download-from-pod: false
+              download-directory: "/application/maps"
+              service-name: "jobs"

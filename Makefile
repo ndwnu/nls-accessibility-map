@@ -13,7 +13,7 @@ stop:                                ## Stops the docker environment
 
 start-infra:
     ## Starts specific containers needed for local environment --adapt when needed
-	$(dc) up -d nls-keycloak nls-postgres accessibility-wiremock nls-rabbitmq
+	$(dc) up -d nls-keycloak nls-postgres accessibility-wiremock nls-rabbitmq nls-nwb-schema-manager
 	./scripts/prepare-files-component-test.sh
 
 update-data-traffic-signs:

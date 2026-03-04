@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: application
+  template:
+    metadata:
+      labels:
+        app: application
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+    spec:
+      containers:
+        - name: application
+          image: "ndwnls.azurecr.io/{{ .Chart.Name }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          resources:
+            {{ toYaml .Values.pods.application.container.resources | nindent 12 }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: -Dserver.port=8080 -Dspring.profiles.active=acceptance-test,pipeline -DhostSuffix={{ .Values.hostSuffix }} {{ .Values.pods.application.container.env.javaOptions}}
+          readinessProbe:
+            httpGet:
+              path: api/rest/static-road-data/accessibility-map/actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 12
+          livenessProbe:
+            httpGet:
+              path: api/rest/static-road-data/accessibility-map/actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 12
+          volumeMounts:
+            - mountPath: /application/cache
+              name: cache
+      volumes:
+        - name: cache
+          persistentVolumeClaim:
+            claimName: azure-cache-blob-claim
+
+
