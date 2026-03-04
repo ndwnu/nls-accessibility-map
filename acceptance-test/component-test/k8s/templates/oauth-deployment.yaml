@@ -30,7 +30,7 @@ spec:
             - name: KEYCLOAK_ADMIN_PASSWORD
               value: "nls"
             - name: KC_HOSTNAME
-              value: "http://oauth.{{ .Values.hostSuffix }}/auth"
+              value: "http://oauth.{{ .Values.hostSuffix }}:8000/auth"
             - name: KC_HOSTNAME_BACKCHANNEL_DYNAMIC
               value: "true"
             - name: KC_HTTP_PORT
