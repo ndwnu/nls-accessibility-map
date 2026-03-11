@@ -11,3 +11,6 @@ feign:
 
 keycloak:
   clientId: sa-nls-accessibility-map-api-staging
+
+keyVault:
+  url: "https://nls-key-vault-staging.vault.azure.net/"
