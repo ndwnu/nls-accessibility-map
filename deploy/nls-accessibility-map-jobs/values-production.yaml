@@ -12,5 +12,3 @@ feign:
 keycloak:
   clientId: sa-nls-accessibility-map-api-production
 
-keyVault:
-  url: "https://nls-key-vault-production.vault.azure.net/"

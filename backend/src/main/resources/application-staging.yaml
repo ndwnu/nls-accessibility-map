@@ -1,0 +1,9 @@
+environment: staging
+
+spring:
+  datasource:
+    url: jdbc:postgresql://nls-postgres-staging.postgres.database.azure.com:5432/nls-maps?ApplicationName=${spring.application.name}&stringtype=unspecified
+
+nls:
+  keycloak:
+    url: "https://iam.ndw.nu/auth"

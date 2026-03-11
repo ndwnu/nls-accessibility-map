@@ -256,7 +256,7 @@
       "nls-accessibility-map-api-service-account" : [ ],
       "security-admin-console" : [ ],
       "admin-cli" : [ ],
-      "nls-accessibility-map-api-local" : [ {
+      "app-nls-accessibility-map-api-local" : [ {
         "id" : "d6b38764-3088-4c20-a9b0-1bfee5a4ca93",
         "name" : "NLS-ACCESSIBILITY-MAP-API",
         "composite" : false,
@@ -405,17 +405,17 @@
   }, {
     "id" : "9d473d70-3858-4395-8d57-7402c7211357",
     "createdTimestamp" : 1612428122836,
-    "username" : "service-account-nls-accessibility-map-api-local",
+    "username" : "service-account-app-nls-accessibility-map-api-local",
     "enabled" : true,
     "totp" : false,
     "emailVerified" : false,
-    "serviceAccountClientId" : "nls-accessibility-map-api-local",
+    "serviceAccountClientId" : "app-nls-accessibility-map-api-local",
     "credentials" : [ ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
     "realmRoles" : [ "offline_access", "uma_authorization" ],
     "clientRoles" : {
-      "nls-accessibility-map-api-local" : [ "NLS-ACCESSIBILITY-MAP-API", "uma_protection" ],
+      "app-nls-accessibility-map-api-local" : [ "NLS-ACCESSIBILITY-MAP-API", "uma_protection" ],
       "account" : [ "manage-account", "view-profile" ]
     },
     "notBefore" : 0,
@@ -433,7 +433,7 @@
     "requiredActions" : [ ],
     "realmRoles" : [ "default-roles-ndwcloud-prod" ],
     "clientRoles" : {
-      "nls-accessibility-map-api-local" : [ "NLS-ACCESSIBILITY-MAP-API" ]
+      "app-nls-accessibility-map-api-local" : [ "NLS-ACCESSIBILITY-MAP-API" ]
     },
     "notBefore" : 0,
     "groups" : [ ]
@@ -726,7 +726,7 @@
     "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
   }, {
     "id" : "89a1c981-2942-4061-ac65-6dd8d1f24c47",
-    "clientId" : "nls-accessibility-map-api-local",
+    "clientId" : "app-nls-accessibility-map-api-local",
     "name" : "NLS NWB api",
     "rootUrl" : "",
     "adminUrl" : "https://localhost:8080",
