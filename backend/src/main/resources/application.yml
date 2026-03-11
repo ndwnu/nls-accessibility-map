@@ -9,16 +9,8 @@ server:
 spring:
   application:
     name: nls-accessibility-map-api
-  jackson:
-    default-property-inclusion: non_null
   config:
     import: "optional:configtree:/application/config/configtree/"
-  security:
-    oauth2:
-      resource-server:
-        jwt:
-          issuer-uri: ${nls.keycloak.url}/realms/ndw
-          jwk-set-uri: ${nls.keycloak.url}/realms/ndw/protocol/openid-connect/certs
   datasource:
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -27,8 +19,18 @@ spring:
       max-lifetime: 120000
       minimum-idle: 1
       auto-commit: false
+  jackson:
+    default-property-inclusion: non_null
   jooq:
     sql-dialect: Postgres
+  main:
+    banner-mode: off
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: ${nls.keycloak.url}/realms/ndw
+          jwk-set-uri: ${nls.keycloak.url}/realms/ndw/protocol/openid-connect/certs
 
 nu:
   ndw:
