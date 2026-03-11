@@ -53,6 +53,7 @@ extends:
     skipDocker: ${{ parameters.skipDocker }}
     skipDeployment: ${{ parameters.skipDeployment }}
     forceDeployment: ${{ parameters.forceDeployment }}
+    deployThroughGitOps: true
     cleanupNamespaces: ${{ parameters.cleanupNamespaces }}
     mavenDeployToNdwShared: true
     jdkVersion: 1.21
@@ -84,26 +85,8 @@ extends:
     deployment:
       environments:
         - name: "staging"
-          kubernetesNameSpace: "nls"
           autoDeployment: true
-          helmCharts:
-            - name: "nls-accessibility-map-api"
-              path: "deploy/nls-accessibility-map-api"
-            - name: "nls-accessibility-map-jobs"
-              path: "deploy/nls-accessibility-map-jobs"
-              forceDelete: true
-              arguments: >-
-                --wait-for-jobs --timeout 180s
         - name: "production"
           deployAfter:
             - "staging"
-          kubernetesNameSpace: "nls"
           autoDeployment: true
-          helmCharts:
-            - name: "nls-accessibility-map-api"
-              path: "deploy/nls-accessibility-map-api"
-            - name: "nls-accessibility-map-jobs"
-              path: "deploy/nls-accessibility-map-jobs"
-              forceDelete: true
-              arguments: >-
-                --wait-for-jobs --timeout 180s
