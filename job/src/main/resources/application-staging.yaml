@@ -1,0 +1,24 @@
+environment: staging
+
+spring:
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:postgresql://nls-postgres-production.postgres.database.azure.com:5432/nls-maps?ApplicationName=${spring.application.name}&stringtype=unspecified
+
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        trafficsignclient:
+          api:
+            url: https://data.staging.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+
+nls:
+  keycloak:
+    url: "https://nls-key-vault-staging.vault.azure.net/"
+
+feign:
+  client:
+    base:
+      url: https://nls.staging.ndw.nu/api

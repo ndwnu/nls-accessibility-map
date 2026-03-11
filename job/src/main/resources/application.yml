@@ -1,3 +1,5 @@
+environment: local
+
 jooq:
   schema-validation:
     schema-severity:
@@ -30,17 +32,17 @@ spring:
         registration:
           sa-nls-location-data-issues-api:
             authorization-grant-type: client_credentials
-            client-id: ${keycloak.client-id}
-            client-secret: ${keycloak.client-secret}
+            client-id: ${nls.keycloak.client-id}
+            client-secret: ${nls.keycloak.client-secret}
             provider: ndw-keycloak
           traffic-sign-area-backend:
             authorization-grant-type: client_credentials
-            client-id: ${keycloak.client-id}
-            client-secret: ${keycloak.client-secret}
+            client-id: ${nls.keycloak.client-id}
+            client-secret: ${nls.keycloak.client-secret}
             provider: ndw-keycloak
         provider:
           ndw-keycloak:
-            token-uri: ${keycloak.server-url}/realms/ndw/protocol/openid-connect/token
+            token-uri: ${nls.keycloak.url}/realms/ndw/protocol/openid-connect/token
   jmx:
     enabled: false
   jooq:
@@ -100,9 +102,6 @@ nu:
             add-road-segment-fragments-that-are-blocked-in-all-available-directions: true
             add-road-segment-fragments-that-are-accessible-in-all-available-directions: false
             write-road-segment-fragments-that-are-partially-accessible-as-accessible: true
-        trafficsignclient:
-          api:
-            url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
         network:
           cache:
             name: "Network"
@@ -137,6 +136,9 @@ management:
   observations:
     annotations:
       enabled: true
+    key-values:
+      service: ${spring.application.name}
+      environment: ${environment}
 
 logging:
   level:
