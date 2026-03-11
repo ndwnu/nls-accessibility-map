@@ -35,9 +35,6 @@ spec:
                   memory: {{ .memory }}
               image: ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}
               imagePullPolicy: Always
-              envFrom:
-                - configMapRef:
-                    name: nls-accessibility-map-job-config
               env:
                 - name: COMMAND
                   value: {{ .command }}
