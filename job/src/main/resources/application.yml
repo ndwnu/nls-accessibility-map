@@ -13,9 +13,6 @@ org:
 spring:
   application:
     name: nls-accessibility-map-job
-  # Disables netty webserver startup
-  main:
-    web-application-type: none
   config:
     import: "optional:configtree:/application/config/configtree/"
   datasource:
@@ -26,6 +23,14 @@ spring:
       max-lifetime: 120000
       minimum-idle: 1
       auto-commit: false
+  jmx:
+    enabled: false
+  jooq:
+    sql-dialect: Postgres
+  main:
+    banner-mode: off
+    # Disables netty webserver startup
+    web-application-type: none
   security:
     oauth2:
       client:
@@ -43,10 +48,6 @@ spring:
         provider:
           ndw-keycloak:
             token-uri: ${nls.keycloak.url}/realms/ndw/protocol/openid-connect/token
-  jmx:
-    enabled: false
-  jooq:
-    sql-dialect: Postgres
 
 nu:
   ndw:
