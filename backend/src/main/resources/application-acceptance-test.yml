@@ -1,3 +1,5 @@
+environment: local
+
 hostDatabase: localhost
 hostKeycloak: localhost
 
