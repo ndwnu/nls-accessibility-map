@@ -85,10 +85,8 @@ extends:
     deployment:
       environments:
         - name: "staging"
-          kubernetesNameSpace: "nls"
           autoDeployment: true
         - name: "production"
           deployAfter:
             - "staging"
-          kubernetesNameSpace: "nls"
           autoDeployment: true
