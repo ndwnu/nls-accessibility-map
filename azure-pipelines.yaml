@@ -91,4 +91,4 @@ extends:
           deployAfter:
             - "staging"
           kubernetesNameSpace: "nls"
-          autoDeployment: false
+          autoDeployment: true
