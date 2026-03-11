@@ -37,9 +37,6 @@ spec:
               memory: 5Gi
           ports:
             - containerPort: 8080
-          envFrom:
-            - configMapRef:
-                name: nls-accessibility-map-api-config
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: update-cache,{{ .Values.environment }}

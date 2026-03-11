@@ -8,7 +8,7 @@ server:
 
 spring:
   application:
-    name: nls-accessibility-map-api-local
+    name: nls-accessibility-map-api
   jackson:
     default-property-inclusion: non_null
   config:
@@ -44,7 +44,7 @@ nu:
             folder: "./cache/trafficSigns"
 nls:
   oauth2:
-    jwtResourceProperty: ${spring.application.name}
+    jwtResourceProperty: app-${spring.application.name}-${environment}
 
 management:
   endpoint:
@@ -60,6 +60,7 @@ management:
       enabled: true
     key-values:
       service: ${spring.application.name}
+      environment: ${environment}
 springdoc:
   api-docs:
     path: /api-docs
