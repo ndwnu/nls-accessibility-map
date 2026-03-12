@@ -18,4 +18,4 @@ nls:
 
 feign:
   client:
-    base-url: https://nls.ndw.nu/api
+    base-url: https://nls.staging.ndw.nu/api
