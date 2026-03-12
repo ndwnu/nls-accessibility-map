@@ -14,7 +14,7 @@ nu:
 
 nls:
   keycloak:
-    url: "https://nls-key-vault-staging.vault.azure.net/"
+    url: "https://iam.ndw.nu/auth"
 
 feign:
   client:
