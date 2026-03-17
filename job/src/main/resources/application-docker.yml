@@ -1,3 +1,0 @@
-hostDatabase: nls-postgres
-hostRabbitMQ: nls-rabbitmq
-hostWiremock: accessibility-wiremock
