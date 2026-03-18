@@ -58,7 +58,7 @@ nu:
                 await:
                   duration: PT1M
                 application-under-test:
-                  client-id: "nls-accessibility-map-api-local"
+                  client-id: "app-accessibility-map-api-local"
                   roles:
                     - "admin"
               maven:
