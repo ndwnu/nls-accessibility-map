@@ -94,7 +94,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private void setupGraphHopperNetwork() {
         RoadSectionsSimulationConfiguration roadSectionsSimulationConfiguration = this.getSimulationSpecificConfiguration();
-        graphHopperTestDataService.buildSimpleNetwork()
+      graphHopperTestDataService.buildSimpleNetwork()
                 .insertNwbData()
                 .rebuildCache();
         accessibilityMapServicesClient.reloadCaches();
