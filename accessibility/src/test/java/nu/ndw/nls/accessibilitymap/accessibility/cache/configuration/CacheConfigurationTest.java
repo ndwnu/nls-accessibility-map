@@ -28,7 +28,7 @@ public class CacheConfigurationTest extends ValidationTest {
 
         cacheConfiguration = new CacheConfiguration();
         assertThat(cacheConfiguration.isLoadDataOnStartup()).isTrue();
-        assertThat(cacheConfiguration.isFailOnCacheReadError()).isTrue();
+        assertThat(cacheConfiguration.isFailOnStartupCacheReadError()).isTrue();
         assertThat(cacheConfiguration.isWatchForUpdates()).isTrue();
         assertThat(cacheConfiguration.getFileWatcherInterval()).isEqualTo(Duration.ofSeconds(1));
         assertThat(cacheConfiguration.getAcceptableConsequentReadFailures()).isEqualTo(1);
