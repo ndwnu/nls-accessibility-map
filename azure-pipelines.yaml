@@ -31,7 +31,7 @@ parameters:
     default: false
   - name: skipPerformanceTesting
     type: boolean
-    default: true
+    default: false
   - name: forceDeployment
     type: boolean
     default: false
