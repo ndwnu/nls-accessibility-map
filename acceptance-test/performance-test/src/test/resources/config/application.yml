@@ -36,26 +36,6 @@ nu:
               expectedEventType: NWB_IMPORTED_EVENT
             - routingKey: ndw.nls.accessibility.routing.network.updated
               expectedEventType: ACCESSIBILITY_ROUTING_NETWORK_UPDATED
-
-          gatling:
-            test:
-              simulations:
-                - name: "RoadSections"
-                  configuration:
-                    simulation-class: "nu.ndw.nls.accessibilitymap.test.performance.simulation.roadsections.RoadSectionsSimulation"
-                    ramp-up-time: "PT5S"
-                    concurrent-users: 50
-                    simulation-specific-configuration:
-                      numberOfGraphNodes: 1000
-                      numberOfTrafficSigns: 1800
-                  assertions:
-                    scenario-duration-95th-percentile: "PT0.75S"
-                    successful-run-percentage: 100.0
-                    sections:
-                      - name: "InaccessibleRoadSections-Json"
-                        response-time-95th-percentile: "PT0.75S"
-                      - name: "InaccessibleRoadSections-GeoJson"
-                        response-time-95th-percentile: "PT0.75S"
         gatling:
           test:
             simulations:
@@ -76,7 +56,6 @@ nu:
                     - name: "InaccessibleRoadSections-GeoJson"
                       response-time-95th-percentile: "PT0.75S"
         test:
-
           component:
             driver:
               docker:
@@ -107,8 +86,6 @@ nu:
               wiremock:
                 host: ${hostWireMock}
                 port: 8888
-              kubectl:
-                name-space: ${kubernetes.namespace}
       accessibilitymap:
         test:
           acceptance:
@@ -123,11 +100,3 @@ nu:
               traffic-sign:
                 location-on-disk: "../../.tmp/trafficSigns"
                 file-name-active-version: "active"
-      test:
-        component:
-          driver:
-            map-generation-job:
-              location-on-disk: "../../.tmp/map-generation-destination"
-              download-from-pod: false
-              download-directory: "/application/maps"
-              service-name: "jobs"
