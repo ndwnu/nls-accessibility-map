@@ -11,8 +11,10 @@ import io.gatling.javaapi.core.PopulationBuilder;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
@@ -21,15 +23,18 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapServicesClient;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperTestDataService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignTestDataService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.state.StateManager;
+import nu.ndw.nls.springboot.test.graph.dto.Edge;
 import nu.ndw.nls.springboot.test.graph.dto.Graph;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -77,43 +82,44 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     @Override
     public void before() {
-
         super.before();
         stateManager.beforeScenario();
-
         setupGraphHopperNetwork();
         setupTrafficSigns();
     }
 
     @Override
     public void after() {
-
         super.after();
         stateManager.afterScenario();
     }
 
     private void setupGraphHopperNetwork() {
-        RoadSectionsSimulationConfiguration roadSectionsSimulationConfiguration = this.getSimulationSpecificConfiguration();
-      graphHopperTestDataService.buildSimpleNetwork()
-                .insertNwbData()
+        GraphHopperDriver graphHopperDriver = graphHopperTestDataService.buildSimpleNetwork();
+        graphHopperDriver.insertNwbData()
                 .rebuildCache();
+        graph = graphHopperDriver.getLastBuiltGraph();
         accessibilityMapServicesClient.reloadCaches();
     }
 
     private void setupTrafficSigns() {
-
-        var trafficSigns = List.of(TrafficSign.builder().id(UUID.randomUUID().toString())
-                        .startNodeId(5)
-                        .endNodeId(11)
-                        .fraction(0.5)
-                        .rvvCode(TrafficSignType.C12.getRvvCode())
-                        .directionType(DirectionType.FORTH).build(), TrafficSign.builder()
-                        .id(UUID.randomUUID().toString())
-                        .startNodeId(2)
-                        .endNodeId(8).rvvCode(TrafficSignType.C12.getRvvCode())
-                        .directionType(DirectionType.BACK).build()).stream()
-                .map(trafficSignTestDataService::createTrafficSignGeoJsonDto)
+        Random randomGenerator = new Random(Long.MAX_VALUE);
+        RoadSectionsSimulationConfiguration roadSectionsSimulationConfiguration = this.getSimulationSpecificConfiguration();
+        List<TrafficSignGeoJsonDto> trafficSigns = Stream.generate(
+                        () -> {
+                            Edge edge = graph.getEdges().get(randomGenerator.nextInt(0, graph.getEdges().size()));
+                            return trafficSignTestDataService.createTrafficSignGeoJsonDto(TrafficSign.builder()
+                                    .id(UUID.randomUUID().toString())
+                                    .startNodeId(edge.getFromNode().getId().intValue())
+                                    .endNodeId(edge.getToNode().getId().intValue())
+                                    .fraction(0.5)
+                                    .rvvCode(TrafficSignType.C12.getRvvCode())
+                                    .directionType(DirectionType.FORTH)
+                                    .build());
+                        })
+                .limit(roadSectionsSimulationConfiguration.numberOfTrafficSigns())
                 .toList();
+
         trafficSignDriver.stubTrafficSignRequest(trafficSigns);
         jobDriver.run("job", "rebuildTrafficSignCache");
         trafficSignsDataIsReloaded();
