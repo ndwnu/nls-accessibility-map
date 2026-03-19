@@ -9,7 +9,7 @@ kubernetes:
   namespace: "replaced_by_pipeline"
 spring:
   application:
-    name: nls-accessibility-map-generator-jobs-component-test
+    name: nls-accessibility-map-generator-jobs-performance-test
   datasource:
     url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps
