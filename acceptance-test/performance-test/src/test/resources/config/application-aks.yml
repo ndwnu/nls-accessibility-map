@@ -1,8 +1,0 @@
-nu:
-  ndw:
-    nls:
-      test:
-        component:
-          driver:
-            map-generation-job:
-              download-from-pod: true
