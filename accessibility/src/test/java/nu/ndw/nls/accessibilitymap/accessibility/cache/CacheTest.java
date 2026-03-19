@@ -293,12 +293,11 @@ class CacheTest {
             }
         };
 
-        assertThat(catchThrowable(() -> cache.loadDataOnStartup()))
+        assertThat(catchThrowable(cache::loadDataOnStartup))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("Failed to read %s".formatted(cacheConfiguration.getName()))
                 .hasRootCauseMessage("test");
         assertThat(cache.get()).isNull();
-
     }
 
     @Test
