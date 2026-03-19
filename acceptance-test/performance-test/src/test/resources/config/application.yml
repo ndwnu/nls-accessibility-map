@@ -1,15 +1,15 @@
 host: "localhost"
 hostWireMock: ${host}
 hostDatabase: ${host}
-
-jobEndpoints:
-  trafficSign:
-    host: ${host}
-    port: 8083
-
+hostOauth: ${host}
+hostApplication: ${host}
+hostRabbit: ${host}
+hostJobs: ${host}
+kubernetes:
+  namespace: "replaced_by_pipeline"
 spring:
   application:
-    name: nls-accessibility-map-generator-jobs-performance-test
+    name: nls-accessibility-map-generator-jobs-component-test
   datasource:
     url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps
@@ -30,45 +30,32 @@ nu:
     nls:
       springboot:
         messaging:
-          broker-uri: amqp://guest:guest@localhost:5672?heartbeat=300
+          broker-uri: amqp://guest:guest@${hostRabbit}:5672?heartbeat=300
           publish:
             - routingKey: ndw.nls.nwb.imported
               expectedEventType: NWB_IMPORTED_EVENT
             - routingKey: ndw.nls.accessibility.routing.network.updated
               expectedEventType: ACCESSIBILITY_ROUTING_NETWORK_UPDATED
-        test:
-          component:
-            driver:
-              docker:
-                compose-file: "../../docker-compose.yml"
-              job:
-                job-configurations:
-                  trafficSignUpdateCache:
-                    command: "update-cache"
-                    run-as-service: false
-                    service-configuration:
-                      host: ${jobEndpoints.trafficSign.host}
-                      port: ${jobEndpoints.trafficSign.port}
-                    docker-configuration:
-                      service-name: "nls-accessibility-map-traffic-sign-update-cache-job"
-              keycloak:
-                url: "http://localhost:8000/auth"
-                realm: "ndw"
-                admin-username: "nls"
-                admin-password: "nls"
-                await:
-                  duration: PT1M
-                application-under-test:
-                  client-id: "nls-accessibility-map-api-local"
-                  roles:
-                    - "admin"
-              maven:
-                rootPomRelativePath: "../../"
-                modulesUnderTest:
-                  - "jobs/traffic-sign"
-              wiremock:
-                host: ${hostWireMock}
-                port: 8888
+
+          gatling:
+            test:
+              simulations:
+                - name: "RoadSections"
+                  configuration:
+                    simulation-class: "nu.ndw.nls.accessibilitymap.test.performance.simulation.roadsections.RoadSectionsSimulation"
+                    ramp-up-time: "PT5S"
+                    concurrent-users: 50
+                    simulation-specific-configuration:
+                      numberOfGraphNodes: 1000
+                      numberOfTrafficSigns: 1800
+                  assertions:
+                    scenario-duration-95th-percentile: "PT0.75S"
+                    successful-run-percentage: 100.0
+                    sections:
+                      - name: "InaccessibleRoadSections-Json"
+                        response-time-95th-percentile: "PT0.75S"
+                      - name: "InaccessibleRoadSections-GeoJson"
+                        response-time-95th-percentile: "PT0.75S"
         gatling:
           test:
             simulations:
@@ -88,21 +75,59 @@ nu:
                       response-time-95th-percentile: "PT0.75S"
                     - name: "InaccessibleRoadSections-GeoJson"
                       response-time-95th-percentile: "PT0.75S"
+        test:
 
+          component:
+            driver:
+              docker:
+                compose-file: "../../docker-compose.yml"
+              job:
+                job-configurations:
+                  job:
+                    run-in-docker-container: false
+                    service-configuration:
+                      host: ${hostJobs}
+                      port: 8081
+                    docker-configuration:
+                      service-name: "nls-accessibility-map-job"
+              keycloak:
+                url: http://${hostOauth}:8000/auth
+                realm: "ndw"
+                admin-username: "nls"
+                admin-password: "nls"
+                await:
+                  duration: PT1M
+                application-under-test:
+                  client-id: "app-accessibility-map-api-local"
+                  roles:
+                    - "admin"
+              maven:
+                rootPomRelativePath: "../../"
+                modulesUnderTest: []
+              wiremock:
+                host: ${hostWireMock}
+                port: 8888
+              kubectl:
+                name-space: ${kubernetes.namespace}
       accessibilitymap:
         test:
           acceptance:
             driver:
               general:
-                debug-folder: ".debug/"
+                debugFolder: ".debug/"
               accessibility-map:
-                host: localhost
+                host: ${hostApplication}
                 port: 8080
               graph-hopper:
-                location-on-disk: "../../.tmp/graphhopper"
+                location-on-disk: "../../.tmp/network/active/graphHopper"
               traffic-sign:
                 location-on-disk: "../../.tmp/trafficSigns"
-
-logging:
-  level:
-    nu.ndw.nls.springboot.test.graph.route: WARN
+                file-name-active-version: "active"
+      test:
+        component:
+          driver:
+            map-generation-job:
+              location-on-disk: "../../.tmp/map-generation-destination"
+              download-from-pod: false
+              download-directory: "/application/maps"
+              service-name: "jobs"

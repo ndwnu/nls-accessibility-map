@@ -1,0 +1,35 @@
+hostSuffix: "replaced_by_pipeline"
+host: ${hostSuffix}
+hostWireMock: wiremock.${host}
+hostDatabase: database.${host}
+hostOauth: oauth.${host}
+hostApplication: application.${host}
+hostRabbit: rabbitmq.${host}
+hostJobs: jobs.${host}
+nu:
+  ndw:
+    nls:
+      springboot:
+        test:
+          component:
+            driver:
+              job:
+                job-configurations:
+                  job:
+                    service-configuration:
+                      port: 80
+      accessibilitymap:
+        test:
+          acceptance:
+            driver:
+              accessibility-map:
+                port: 80
+      test:
+        component:
+          driver:
+            map-generation-job:
+              download-from-pod: true
+
+
+
+
