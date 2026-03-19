@@ -43,7 +43,7 @@ public abstract class Cache<TYPE> {
     @EventListener(ApplicationStartedEvent.class)
     public void loadDataOnStartup() {
         if (cacheConfiguration.isLoadDataOnStartup()) {
-            this.read();
+            this.read(true);
         }
     }
 

@@ -154,7 +154,7 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
 
-        cacheConfiguration.setFailOnStartupCacheReadError(true);
+        cacheConfiguration.setFailOnStartupCacheReadError(false);
 
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
             @Override
@@ -168,10 +168,12 @@ class CacheTest {
             }
         };
 
-        assertThat(catchThrowable(() -> cache.read(true)))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Failed to read %s".formatted(cacheConfiguration.getName()))
-                .hasRootCauseMessage("test");
+        cache.read(true);
+        assertThat(cache.get()).isNull();
+        loggerExtension.containsLog(
+                Level.ERROR,
+                "Failed to read %s".formatted(cacheConfiguration.getName()),
+                "test");
     }
 
     @Test
@@ -200,6 +202,7 @@ class CacheTest {
                 "Failed to read %s".formatted(cacheConfiguration.getName()),
                 "test");
     }
+
     @Test
     void loadDataOnStartup() throws IOException {
 
@@ -241,6 +244,7 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
 
+        cacheConfiguration.setFailOnStartupCacheReadError(true);
         cacheConfiguration.setLoadDataOnStartup(false);
 
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
@@ -263,6 +267,38 @@ class CacheTest {
         cache.loadDataOnStartup();
 
         assertThat(cache.get()).isNull();
+    }
+
+    @Test
+    void loadDataOnStartup_error() throws IOException {
+
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+
+        Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
+
+        cacheConfiguration.setFailOnStartupCacheReadError(true);
+        cacheConfiguration.setLoadDataOnStartup(true);
+
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+            @Override
+            protected Object readData(Path activeVersion) {
+                throw new RuntimeException("test");
+            }
+
+            @Override
+            protected void writeData(Path target, Object data) {
+                // Do nothing
+            }
+        };
+
+        assertThat(catchThrowable(() -> cache.loadDataOnStartup()))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Failed to read %s".formatted(cacheConfiguration.getName()))
+                .hasRootCauseMessage("test");
+        assertThat(cache.get()).isNull();
+
     }
 
     @Test
