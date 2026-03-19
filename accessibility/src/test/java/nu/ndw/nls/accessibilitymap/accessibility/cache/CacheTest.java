@@ -112,7 +112,7 @@ class CacheTest {
         Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
 
         cacheConfiguration.setAcceptableConsequentReadFailures(1);
-        cacheConfiguration.setFailOnCacheReadError(false);
+        cacheConfiguration.setFailOnStartupCacheReadError(false);
 
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
             @Override
@@ -150,9 +150,11 @@ class CacheTest {
     }
 
     @Test
-    void read_error_failOnCacheReadError() {
+    void read_error_failOnCacheReadError() throws IOException {
 
-        cacheConfiguration.setFailOnCacheReadError(true);
+        Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
+
+        cacheConfiguration.setFailOnStartupCacheReadError(true);
 
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
             @Override
@@ -166,11 +168,38 @@ class CacheTest {
             }
         };
 
-        assertThat(catchThrowable(cache::read))
+        assertThat(catchThrowable(() -> cache.read(true)))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Failed to read %s".formatted(cacheConfiguration.getName()));
+                .hasMessage("Failed to read %s".formatted(cacheConfiguration.getName()))
+                .hasRootCauseMessage("test");
     }
 
+    @Test
+    void read_error_failOnCacheReadError_notTriggerdByStartup() throws IOException {
+
+        Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
+
+        cacheConfiguration.setFailOnStartupCacheReadError(true);
+
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+            @Override
+            protected Object readData(Path activeVersion) {
+                throw new RuntimeException("test");
+            }
+
+            @Override
+            protected void writeData(Path target, Object data) {
+                // Do nothing
+            }
+        };
+        cache.read();
+
+        assertThat(cache.get()).isNull();
+        loggerExtension.containsLog(
+                Level.ERROR,
+                "Failed to read %s".formatted(cacheConfiguration.getName()),
+                "test");
+    }
     @Test
     void loadDataOnStartup() throws IOException {
 
