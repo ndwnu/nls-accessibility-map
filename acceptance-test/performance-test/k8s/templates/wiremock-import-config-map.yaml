@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wiremock-import
+data:
+  default-mapping.json: |-
+{{ .Files.Get "data/wiremock/mappings/default-mapping.json" | indent 4}}

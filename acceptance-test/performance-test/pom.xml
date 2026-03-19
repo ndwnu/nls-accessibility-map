@@ -14,6 +14,12 @@
   </properties>
 
   <dependencies>
+    <!-- Add netty-all to avoid module issues with individual netty JARs -->
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>nu.ndw.nls.accessibilitymap</groupId>
       <artifactId>acceptance-test-shared</artifactId>
@@ -30,11 +36,8 @@
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
     </dependency>
-
   </dependencies>
-
   <profiles>
-
     <profile>
       <id>performance-test</id>
       <properties>
@@ -50,117 +53,7 @@
               <!-- Workaround required to run private Gatling code from our own Java code -->
               <argLine>
                 --add-opens=java.base/java.lang=ALL-UNNAMED
-                --add-opens=java.base/java.util=ALL-UNNAMED
               </argLine>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>docker-compose-down</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>down</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-up-infra</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>up</argument>
-                    <argument>--build</argument>
-                    <argument>-d</argument>
-                    <argument>nls-postgres</argument>
-                    <argument>nls-keycloak</argument>
-                    <argument>accessibility-wiremock</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>init-performance-test</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <commandlineArgs>../../scripts/prepare-files-component-test.sh ../../</commandlineArgs>
-                </configuration>
-              </execution>
-              <!-- Make sure that this folder is read write by all for the build pipeline to allow docker
-                   user 1000 to write on the volume mount. -->
-              <execution>
-                <id>chmod-777-maps</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments>
-                    <argument>-R</argument>
-                    <argument>777</argument>
-                    <argument>../../.tmp/graphhopper</argument>
-                    <argument>../../.tmp/trafficsigns</argument>
-                  </arguments>
-                  <executable>chmod</executable>
-                </configuration>
-              </execution>
-
-              <execution>
-                <id>wait-for-database</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <executable>bash</executable>
-                  <commandlineArgs>../../scripts/pg-isready.sh</commandlineArgs>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-up-nls-accessibility-map-api</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>up</argument>
-                    <argument>-d</argument>
-                    <argument>--build</argument>
-                    <argument>nls-accessibility-map-api-component-test</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>docker-compose-down-after-tests</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>exec</goal>
-                </goals>
-                <configuration>
-                  <arguments combine.children="append">
-                    <argument>down</argument>
-                  </arguments>
-                </configuration>
-              </execution>
-            </executions>
-            <configuration>
-              <arguments>
-                <argument>compose</argument>
-              </arguments>
-              <executable>docker</executable>
             </configuration>
           </plugin>
         </plugins>

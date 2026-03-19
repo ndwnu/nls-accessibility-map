@@ -1,0 +1,8 @@
+apiVersion: v2
+name: nls-accessibility-map-api
+description: nls-accessibility-map-api
+
+type: application
+
+version: 1.1773905659
+appVersion: "1773905659"
