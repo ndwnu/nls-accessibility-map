@@ -5,10 +5,12 @@ pods:
       resources:
         requests:
           memory: "768Mi"
-          cpu: "200m"
+          # CPU throttling causes slow initial response times
+#          cpu: "200m"
         limits:
           memory: "768Mi"
-          cpu: "1000m"
+          # CPU throttling causes slow initial response times
+#          cpu: "1000m"
       env:
         javaOptions: -XX:MaxRAMPercentage=70
   database:
