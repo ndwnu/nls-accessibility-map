@@ -86,6 +86,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         stateManager.beforeScenario();
         setupGraphHopperNetwork();
         setupTrafficSigns();
+        Response<Void, Void> response = accessibilityMapApiClient.reloadCache();
+        assertThat(response.status()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
     @Override
@@ -99,7 +101,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         graphHopperDriver.insertNwbData()
                 .rebuildCache();
         graph = graphHopperDriver.getLastBuiltGraph();
-        accessibilityMapServicesClient.reloadCaches();
     }
 
     private void setupTrafficSigns() {
@@ -122,7 +123,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
         trafficSignDriver.stubTrafficSignRequest(trafficSigns);
         jobDriver.run("job", "rebuildTrafficSignCache");
-        trafficSignsDataIsReloaded();
     }
 
     private void trafficSignsDataIsReloaded() {
