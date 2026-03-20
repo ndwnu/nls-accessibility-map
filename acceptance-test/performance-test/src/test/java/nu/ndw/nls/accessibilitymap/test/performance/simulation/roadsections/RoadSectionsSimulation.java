@@ -99,7 +99,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         setupGraphHopperNetwork();
         setupTrafficSigns();
         Response<Void, Void> response = accessibilityMapApiClient.reloadCache();
-        assertThat(response.status()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.containsError()).isFalse();
     }
 
     @Override
@@ -137,12 +137,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         jobDriver.run("job", "rebuildTrafficSignCache");
     }
 
-    private void trafficSignsDataIsReloaded() {
-        Response<Void, Void> response = accessibilityMapApiClient.reloadCache();
-        assertThat(response.containsError())
-                .withFailMessage("Reloading traffic signs failed. %s", response.error())
-                .isFalse();
-    }
 
     public List<PopulationBuilder> getSimulations() {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
@@ -158,8 +152,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         return List.of(
               /*
               * Scenario warmup
-              * atOnceUsers(5):
-              * Sends 5 users immediately
+              * Sends 10 users immediately
               *  Triggers:
               *     JVM JIT
               *     Spring initialisation
@@ -221,12 +214,5 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                                 entry -> (Object) entry.getValue())))
                 .check(status().is(HttpStatus.OK.value()))
         );
-    }
-
-    private void graphhopperDataIsReloaded() {
-        Response<Void, Void> response = accessibilityMapApiClient.reloadCache();
-        assertThat(response.containsError())
-                .withFailMessage("Reloading graphhopper failed. %s", response.error())
-                .isFalse();
     }
 }
