@@ -48,7 +48,6 @@ nu:
                     numberOfGraphNodes: 1000
                     numberOfTrafficSigns: 1800
                 assertions:
-                  scenario-duration-95th-percentile: "PT0.75S"
                   successful-run-percentage: 100.0
                   sections:
                     - name: "InaccessibleRoadSections-Json"

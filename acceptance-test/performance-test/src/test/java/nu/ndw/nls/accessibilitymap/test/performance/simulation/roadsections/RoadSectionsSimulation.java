@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.test.performance.simulation.roadsections;
 
+import static io.gatling.javaapi.core.CoreDsl.atOnceUsers;
 import static io.gatling.javaapi.core.CoreDsl.exec;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
@@ -15,6 +16,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
@@ -31,6 +33,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.Traffi
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
+import nu.ndw.nls.springboot.test.await.services.AwaitService;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.state.StateManager;
@@ -43,6 +46,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class RoadSectionsSimulation extends AbstractSimulation {
+
+    private static final String INACCESSIBLE_ROAD_SECTIONS_JSON = "InaccessibleRoadSections-Json";
+
+    private static final String WARMUP = "warmup";
 
     private final GraphHopperTestDataService graphHopperTestDataService;
 
@@ -58,6 +65,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private final AccessibilityMapServicesClient accessibilityMapServicesClient;
 
+    private final AwaitService awaitService;
+
     private Graph graph;
 
     public RoadSectionsSimulation(
@@ -66,7 +75,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
             GraphHopperTestDataService graphHopperTestDataService,
             TrafficSignDriver trafficSignDriver,
             TrafficSignTestDataService trafficSignTestDataService,
-            JobDriver jobDriver, AccessibilityMapServicesClient accessibilityMapServicesClient
+            JobDriver jobDriver, AccessibilityMapServicesClient accessibilityMapServicesClient,
+            AwaitService awaitService
     ) {
 
         super(RoadSectionsSimulationConfiguration.class);
@@ -78,8 +88,10 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         this.accessibilityMapApiClient = accessibilityMapApiClient;
         this.jobDriver = jobDriver;
         this.accessibilityMapServicesClient = accessibilityMapServicesClient;
+        this.awaitService = awaitService;
     }
 
+    @SneakyThrows
     @Override
     public void before() {
         super.before();
@@ -144,19 +156,35 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .build();
 
         return List.of(
-                scenario("InaccessibleRoadSections-Json")
-                        .group(getSimulationName()).on(
-                                InaccessibleRoadSectionsJson(accessibilityRequest)
+              /*
+              * Scenario warmup
+              * atOnceUsers(5):
+              * Sends 5 users immediately
+              *  Triggers:
+              *     JVM JIT
+              *     Spring initialisation
+              *     connection pools
+              */
+                scenario(WARMUP)
+                        .exec(
+                                InaccessibleRoadSectionsJson(WARMUP, accessibilityRequest)
                         )
-                        .injectOpen(getSimulationBehaviour())
-                        .protocols(List.of(getHttpProtocol())),
-
-                scenario("InaccessibleRoadSections-GeoJson")
-                        .group(getSimulationName()).on(
-                                InaccessibleRoadSectionsGeoJson(accessibilityRequest)
-                        )
-                        .injectOpen(getSimulationBehaviour())
+                        .injectOpen(atOnceUsers(10))
                         .protocols(List.of(getHttpProtocol()))
+                        .andThen(
+                                scenario(INACCESSIBLE_ROAD_SECTIONS_JSON)
+                                        .group(getSimulationName()).on(
+                                                InaccessibleRoadSectionsJson(INACCESSIBLE_ROAD_SECTIONS_JSON, accessibilityRequest)
+                                        )
+                                        .injectOpen(getSimulationBehaviour())
+                                        .protocols(List.of(getHttpProtocol())),
+
+                                scenario("InaccessibleRoadSections-GeoJson")
+                                        .group(getSimulationName()).on(
+                                                InaccessibleRoadSectionsGeoJson(accessibilityRequest)
+                                        )
+                                        .injectOpen(getSimulationBehaviour())
+                                        .protocols(List.of(getHttpProtocol())))
         );
     }
 
@@ -167,10 +195,10 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .contentTypeHeader(MediaType.APPLICATION_JSON_VALUE);
     }
 
-    private ChainBuilder InaccessibleRoadSectionsJson(AccessibilityRequest accessibilityRequest) {
+    private ChainBuilder InaccessibleRoadSectionsJson(String name, AccessibilityRequest accessibilityRequest) {
         Map<String, String> queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
 
-        return exec(http("InaccessibleRoadSections-Json")
+        return exec(http(name)
                 .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections"
                         .formatted(accessibilityRequest.municipalityId()))
                 .queryParamMap(queryParams.entrySet().stream()
