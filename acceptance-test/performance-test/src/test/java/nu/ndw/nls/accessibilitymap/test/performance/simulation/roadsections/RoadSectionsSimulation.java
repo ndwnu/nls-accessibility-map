@@ -63,10 +63,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private final JobDriver jobDriver;
 
-    private final AccessibilityMapServicesClient accessibilityMapServicesClient;
-
-    private final AwaitService awaitService;
-
     private Graph graph;
 
     public RoadSectionsSimulation(
@@ -87,8 +83,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         this.trafficSignTestDataService = trafficSignTestDataService;
         this.accessibilityMapApiClient = accessibilityMapApiClient;
         this.jobDriver = jobDriver;
-        this.accessibilityMapServicesClient = accessibilityMapServicesClient;
-        this.awaitService = awaitService;
     }
 
     @SneakyThrows
@@ -137,7 +131,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         jobDriver.run("job", "rebuildTrafficSignCache");
     }
 
-
     public List<PopulationBuilder> getSimulations() {
         AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
                 .municipalityId("GM0001")
@@ -150,14 +143,14 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .build();
 
         return List.of(
-              /*
-              * Scenario warmup
-              * Sends 10 users immediately
-              *  Triggers:
-              *     JVM JIT
-              *     Spring initialisation
-              *     connection pools
-              */
+                /*
+                 * Scenario warmup
+                 * Sends 10 users immediately
+                 *  Triggers:
+                 *     JVM JIT
+                 *     Spring initialisation
+                 *     connection pools
+                 */
                 scenario(WARMUP)
                         .exec(
                                 InaccessibleRoadSectionsJson(WARMUP, accessibilityRequest)
