@@ -145,7 +145,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         return List.of(
                 /*
                  * Scenario warmup
-                 * Sends 10 users immediately
+                 * Sends users immediately
                  *  Triggers:
                  *     JVM JIT
                  *     Spring initialisation
@@ -155,7 +155,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                         .exec(
                                 InaccessibleRoadSectionsJson(WARMUP, accessibilityRequest)
                         )
-                        .injectOpen(atOnceUsers(10))
+                        .injectOpen(atOnceUsers(20))
                         .protocols(List.of(getHttpProtocol()))
                         .andThen(
                                 scenario(INACCESSIBLE_ROAD_SECTIONS_JSON)
