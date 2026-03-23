@@ -4,5 +4,5 @@ description: nls-accessibility-map-api
 
 type: application
 
-version: 1.1774266449
-appVersion: "1774266449"
+version: 1.@docker.image.tag@
+appVersion: "@docker.image.tag@"
