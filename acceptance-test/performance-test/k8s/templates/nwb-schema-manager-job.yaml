@@ -4,7 +4,7 @@ kind: Job
 metadata:
   name:  nls-nwb-schema-manager-liquibase-update-job
 spec:
-  backoffLimit: 3
+  backoffLimit: 10
   template:
     metadata:
       labels:
