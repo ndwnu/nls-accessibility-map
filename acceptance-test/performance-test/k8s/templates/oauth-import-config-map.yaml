@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: oauth-import
-data:
-  realm-export-nls.json: |-
-{{ .Files.Get "data/keycloak/import/realm-export-nls.json" | indent 4}}

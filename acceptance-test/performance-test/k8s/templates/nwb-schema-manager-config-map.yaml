@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: nls-nwb-schema-manager-config
-data:
-  MANAGEMENT_OBSERVATIONS_KEYVALUES_ENVIRONMENT: {{ .Values.environment }}
-  SPRING_DATASOURCE_URL: jdbc:postgresql://database.{{ .Values.hostSuffix }}/nls-maps?ApplicationName=nls-nwb-schema-manager&stringtype=unspecified
-  SPRING_MAIN_BANNER-MODE: 'off'
-  SPRING_PROFILES_ACTIVE: "build"
