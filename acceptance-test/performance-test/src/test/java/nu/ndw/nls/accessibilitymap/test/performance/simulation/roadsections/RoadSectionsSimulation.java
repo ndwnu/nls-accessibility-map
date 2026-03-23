@@ -12,11 +12,11 @@ import io.gatling.javaapi.core.PopulationBuilder;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
@@ -33,7 +33,6 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.Traffi
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
-import nu.ndw.nls.springboot.test.await.services.AwaitService;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.state.StateManager;
@@ -71,8 +70,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
             GraphHopperTestDataService graphHopperTestDataService,
             TrafficSignDriver trafficSignDriver,
             TrafficSignTestDataService trafficSignTestDataService,
-            JobDriver jobDriver, AccessibilityMapServicesClient accessibilityMapServicesClient,
-            AwaitService awaitService
+            JobDriver jobDriver,
+            AccessibilityMapServicesClient accessibilityMapServicesClient
     ) {
 
         super(RoadSectionsSimulationConfiguration.class);
@@ -85,7 +84,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         this.jobDriver = jobDriver;
     }
 
-    @SneakyThrows
     @Override
     public void before() {
         super.before();
@@ -185,12 +183,12 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         Map<String, String> queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
 
         return exec(http(name)
-                .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections"
+                .get("/api/rest/static-road-data/accessibility-map/v2/municipalities/%s/road-sections"
                         .formatted(accessibilityRequest.municipalityId()))
                 .queryParamMap(queryParams.entrySet().stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                entry -> (Object) entry.getValue())))
+                                Entry::getValue)))
                 .check(status().is(HttpStatus.OK.value()))
         );
     }
@@ -199,12 +197,12 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         Map<String, String> queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
 
         return exec(http("InaccessibleRoadSections-GeoJson")
-                .get("/api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson"
+                .get("/api/rest/static-road-data/accessibility-map/v2/municipalities/%s/road-sections.geojson"
                         .formatted(accessibilityRequest.municipalityId()))
                 .queryParamMap(queryParams.entrySet().stream()
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey,
-                                entry -> (Object) entry.getValue())))
+                                Entry::getValue)))
                 .check(status().is(HttpStatus.OK.value()))
         );
     }
