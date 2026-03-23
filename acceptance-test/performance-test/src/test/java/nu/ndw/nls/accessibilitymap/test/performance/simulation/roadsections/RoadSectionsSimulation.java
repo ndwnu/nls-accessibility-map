@@ -12,18 +12,12 @@ import io.gatling.javaapi.core.ChainBuilder;
 import io.gatling.javaapi.core.PopulationBuilder;
 import io.gatling.javaapi.http.HttpProtocolBuilder;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapServicesClient;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperTestDataService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignDriver;
@@ -73,7 +67,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
             TrafficSignDriver trafficSignDriver,
             TrafficSignTestDataService trafficSignTestDataService,
             JobDriver jobDriver,
-            AccessibilityMapServicesClient accessibilityMapServicesClient,
             TestDataProvider testDataProvider
     ) {
 
@@ -134,15 +127,6 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     }
 
     public List<PopulationBuilder> getSimulations() {
-        AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder()
-                .municipalityId("GM0001")
-                .endLatitude(3D)
-                .endLongitude(7D)
-                .vehicleType(VehicleTypeJson.TRUCK)
-                .fuelTypes(List.of(FuelTypeJson.DIESEL))
-                .emissionClass(EmissionClassJson.EURO_3)
-                .vehicleWidthInMeters(2D)
-                .build();
 
         return List.of(
                 /*
@@ -155,14 +139,14 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                  */
                 scenario(WARMUP)
                         .exec(
-                                InaccessibleRoadSectionsGeoJson(WARMUP, accessibilityRequest)
+                                InaccessibleRoadSectionsGeoJson(WARMUP)
                         )
                         .injectOpen(atOnceUsers(1))
                         .protocols(List.of(getHttpProtocol()))
                         .andThen(
                                 scenario(INACCESSIBLE_ROAD_SECTIONS_GEO_JSON)
                                         .group(getSimulationName()).on(
-                                                InaccessibleRoadSectionsGeoJson(INACCESSIBLE_ROAD_SECTIONS_GEO_JSON, accessibilityRequest)
+                                                InaccessibleRoadSectionsGeoJson(INACCESSIBLE_ROAD_SECTIONS_GEO_JSON)
                                         )
                                         .injectOpen(getSimulationBehaviour())
                                         .protocols(List.of(getHttpProtocol()))
@@ -178,13 +162,11 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                 .contentTypeHeader(MediaType.APPLICATION_JSON_VALUE);
     }
 
-    private ChainBuilder InaccessibleRoadSectionsGeoJson(String name, AccessibilityRequest accessibilityRequest) {
-        Map<String, String> queryParams = AccessibilityMapApiClient.buildQueryParameters(accessibilityRequest).asSingleValueMap();
+    private ChainBuilder InaccessibleRoadSectionsGeoJson(String name) {
         String accessibilityRequestJson = testDataProvider.readFromFile(
                 "request",
                 "truck2MetersWide-destination3-7.json");
         return exec(http(name)
-
                 .post("/api/rest/static-road-data/accessibility-map/v2/accessibility.geojson")
                 .header("Content-Type", "application/json")
                 .body(StringBody(accessibilityRequestJson))
