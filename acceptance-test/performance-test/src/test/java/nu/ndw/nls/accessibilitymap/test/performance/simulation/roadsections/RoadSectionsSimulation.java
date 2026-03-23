@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.test.performance.simulation.roadsections;
 
 import static io.gatling.javaapi.core.CoreDsl.atOnceUsers;
 import static io.gatling.javaapi.core.CoreDsl.exec;
-import static io.gatling.javaapi.core.CoreDsl.nothingFor;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
@@ -156,7 +155,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                         .exec(
                                 InaccessibleRoadSectionsJson(WARMUP, accessibilityRequest)
                         )
-                        .injectOpen(atOnceUsers(5), nothingFor(5))
+                        .injectOpen(atOnceUsers(1))
                         .protocols(List.of(getHttpProtocol()))
                         .andThen(
                                 scenario(INACCESSIBLE_ROAD_SECTIONS_JSON)
