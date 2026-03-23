@@ -1,0 +1,14 @@
+{
+  "area": {
+    "type": "municipality",
+    "id": "GM0001"
+  },
+  "vehicle": {
+    "type": "truck",
+    "width": 2.0,
+    "emissionClass": "euro_3",
+    "fuelTypes": [
+      "diesel"
+    ]
+  }
+}

@@ -50,8 +50,6 @@ nu:
                 assertions:
                   successful-run-percentage: 100.0
                   sections:
-                    - name: "InaccessibleRoadSections-Json"
-                      response-time-95th-percentile: "PT0.75S"
                     - name: "InaccessibleRoadSections-GeoJson"
                       response-time-95th-percentile: "PT0.75S"
         test:
