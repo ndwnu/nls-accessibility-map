@@ -26,7 +26,7 @@ public class CacheConfiguration {
     private boolean loadDataOnStartup = true;
 
     @Default
-    private boolean failOnCacheReadError = true;
+    private boolean failOnStartupCacheReadError = true;
 
     @Default
     private boolean watchForUpdates = true;

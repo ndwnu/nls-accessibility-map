@@ -43,7 +43,7 @@ public abstract class Cache<TYPE> {
     @EventListener(ApplicationStartedEvent.class)
     public void loadDataOnStartup() {
         if (cacheConfiguration.isLoadDataOnStartup()) {
-            this.read();
+            this.read(true);
         }
     }
 
@@ -60,7 +60,11 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    public synchronized void read() {
+    public void read() {
+        read(false);
+    }
+
+    protected synchronized void read(boolean triggeredOnStartup) {
         try {
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
@@ -85,7 +89,7 @@ public abstract class Cache<TYPE> {
             if (consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures()) {
                 log.error("Failed to read {}", cacheConfiguration.getName(), exception);
             }
-            if (cacheConfiguration.isFailOnCacheReadError()) {
+            if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
         }
