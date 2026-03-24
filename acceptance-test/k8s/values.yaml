@@ -27,20 +27,20 @@ pods:
       resources:
         requests:
           memory: "256Mi"
-          cpu: "400m"
+          cpu: "300m"
         limits:
           memory: "256Mi"
-          cpu: "400m"
+          cpu: "300m"
   oauth:
     container:
       image: "ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.0"
       resources:
         requests:
           memory: "768Mi"
-          cpu: "300m"
+          cpu: "500m"
         limits:
           memory: "768Mi"
-          cpu: "300m"
+          cpu: "500m"
   wiremock:
     container:
       image: "ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.13.1-alpine"
