@@ -17,49 +17,49 @@ pods:
       resources:
         requests:
           memory: "512Mi"
-          cpu: "500m"
+          cpu: "200m"
         limits:
           memory: "512Mi"
-          cpu: "500m"
+          cpu: "200m"
   mq:
     container:
       image: "ndwnls.azurecr.io/docker.io/library/rabbitmq:4.2.2-management-alpine"
       resources:
         requests:
           memory: "256Mi"
-          cpu: "400m"
+          cpu: "100m"
         limits:
           memory: "256Mi"
-          cpu: "400m"
+          cpu: "100m"
   oauth:
     container:
       image: "ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.0"
       resources:
         requests:
           memory: "768Mi"
-          cpu: "500m"
+          cpu: "100m"
         limits:
           memory: "768Mi"
-          cpu: "500m"
+          cpu: "100m"
   wiremock:
     container:
       image: "ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.13.1-alpine"
       resources:
         requests:
           memory: "256Mi"
-          cpu: "500m"
+          cpu: "100m"
         limits:
           memory: "256Mi"
-          cpu: "500m"
+          cpu: "100m"
   jobs:
     container:
       resources:
         requests:
           memory: "768Mi"
-          cpu: "1000m"
+          cpu: "300m"
         limits:
           memory: "768Mi"
-          cpu: "1000m"
+          cpu: "300m"
       env:
         javaOptions: -XX:MaxRAMPercentage=70
 
