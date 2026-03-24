@@ -36,7 +36,7 @@
     <gatling.version>3.15.0</gatling.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <jackson-databind-nullable.version>0.2.9</jackson-databind-nullable.version>
+    <jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
     <keycloak-authz-client.version>26.0.8</keycloak-authz-client.version>
     <mapstruct.version>1.6.3</mapstruct.version>
@@ -48,7 +48,7 @@
     <nls-events.version>5.5.11</nls-events.version>
     <nls-nwb-data-access.version>9.5.12</nls-nwb-data-access.version>
     <nls-springboot.version>9.4.39</nls-springboot.version>
-    <nls-routing-map-matcher.version>20.0.1</nls-routing-map-matcher.version>
+    <nls-routing-map-matcher.version>20.0.2</nls-routing-map-matcher.version>
     <nls-geometry.version>5.4.2</nls-geometry.version>
     <nls-geojson-geometry.version>1.4.62</nls-geojson-geometry.version>
     <nls-springboot.test.graph.version>1.0.57</nls-springboot.test.graph.version>
