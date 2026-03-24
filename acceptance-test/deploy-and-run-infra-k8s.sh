@@ -15,7 +15,7 @@ ACR_LOGIN_SERVER="ndwnls.azurecr.io"
 
 # Helm
 HELM_RELEASE_NAME="${HELM_RELEASE_NAME:-nls-accessibility-map-api}"
-HELM_CHART_PATH="${HELM_CHART_PATH:-./component-test/k8s}"
+HELM_CHART_PATH="${HELM_CHART_PATH:-./k8s}"
 
 # Maven
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

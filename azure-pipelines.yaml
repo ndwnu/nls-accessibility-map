@@ -31,7 +31,7 @@ parameters:
     default: false
   - name: skipPerformanceTesting
     type: boolean
-    default: true
+    default: false
   - name: forceDeployment
     type: boolean
     default: false
@@ -76,12 +76,13 @@ extends:
     componentTests:
       - name: "all"
         module: "acceptance-test/component-test"
-        helmChartsFolder: "k8s"
+        helmChartsFolder: "../k8s"
         additionalMavenOptions: "-pl !backend,!job,!acceptance-test/performance-test"
-#    performanceTests:
-#      - name: "all"
-#        module: "acceptance-test/performance-test"
-#        additionalMavenOptions: "-pl !backend,!job,!acceptance-test/component-test"
+    performanceTests:
+      - name: "all"
+        helmChartsFolder: "../k8s"
+        module: "acceptance-test/performance-test"
+        additionalMavenOptions: "-pl !backend,!job,!acceptance-test/component-test"
     deployment:
       environments:
         - name: "staging"
