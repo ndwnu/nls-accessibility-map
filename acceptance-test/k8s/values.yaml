@@ -37,10 +37,10 @@ pods:
       resources:
         requests:
           memory: "768Mi"
-          cpu: "500m"
+          cpu: "300m"
         limits:
           memory: "768Mi"
-          cpu: "500m"
+          cpu: "300m"
   wiremock:
     container:
       image: "ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.13.1-alpine"
