@@ -21,8 +21,10 @@ spec:
           resources:
             limits:
               memory: 512Mi
+              cpu: "300m"
             requests:
               memory: 512Mi
+              cpu: "300m"
           image: "ndwnls.azurecr.io/nls-accessibility-map-job:{{ $.Chart.AppVersion }}"
           imagePullPolicy: Always
           env:
