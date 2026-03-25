@@ -1,9 +1,12 @@
 openapi: 3.0.0
 info:
-  title: "Accessibility map V1 API (Deprecated, scheduled for removal on June 30, 2026)"
+  title: Accessibility map V1 API
   description: >
-    Query the accessibility for vehicle characteristics within a municipality. More information available on 
-    https://docs.ndw.nu
+    <p><strong>(Deprecated, scheduled for removal on June 30, 2026)</strong></p>
+    <p>
+      Query the accessibility for vehicle characteristics within a municipality. More information available on 
+      <a href="https://docs.ndw.nu">docs.ndw.nu</a>
+    </p>
   version: '1'
 servers:
   - url: /api/rest/static-road-data/accessibility-map/v1
