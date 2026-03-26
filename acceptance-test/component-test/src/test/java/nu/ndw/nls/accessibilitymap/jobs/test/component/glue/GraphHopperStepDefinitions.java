@@ -48,20 +48,19 @@ public class GraphHopperStepDefinitions {
         GraphHopperDriver graphHopperDriver = graphHopperTestDataService.buildSimpleNetwork()
                 .insertNwbData();
 
-        nwbRoadSections.forEach(nwbRoadSection -> {
-            roadSectionRepository.save(RoadSection.builder()
-                    .primaryKey(new NwbRoadSectionPrimaryKey(1, nwbRoadSection.id()))
-                    .junctionIdFrom(nwbRoadSection.junctionIdFrom())
-                    .junctionIdTo(nwbRoadSection.junctionIdTo())
-                    .roadOperatorType("Municipality")
-                    .geometry(createRijksdriehoekLineString(geometryFactoryWgs84.createLineString(
-                            new Coordinate[]{
-                                    new Coordinate(50, 51),
-                                    new Coordinate(51, 51)
-                            }
-                    )))
-                    .build());
-        });
+        nwbRoadSections.forEach(nwbRoadSection -> roadSectionRepository.save(RoadSection.builder()
+                .primaryKey(new NwbRoadSectionPrimaryKey(1, nwbRoadSection.id()))
+                .junctionIdFrom(nwbRoadSection.junctionIdFrom())
+                .junctionIdTo(nwbRoadSection.junctionIdTo())
+                .roadOperatorType("Municipality")
+                .carriagewayTypeCode("RB")
+                .geometry(createRijksdriehoekLineString(geometryFactoryWgs84.createLineString(
+                        new Coordinate[]{
+                                new Coordinate(50, 51),
+                                new Coordinate(51, 51)
+                        }
+                )))
+                .build()));
 
         graphHopperDriver.rebuildCache();
         accessibilityMapServicesClient.reloadCaches();

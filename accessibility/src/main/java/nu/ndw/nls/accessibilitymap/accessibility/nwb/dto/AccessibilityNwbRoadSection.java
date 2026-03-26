@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.converter.LineStringDeserializer;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.converter.LineStringSerializer;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import org.hibernate.validator.constraints.Length;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +28,9 @@ public record AccessibilityNwbRoadSection(
         boolean forwardAccessible,
 
         boolean backwardAccessible,
+
+        @NotNull
+        CarriagewayTypeCode carriagewayTypeCode,
 
         @NotNull
         @Length(min = 1, max = 1)
