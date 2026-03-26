@@ -17,6 +17,7 @@ public class AccessibilityNwbRoadSectionDtoSupplier extends NwbRoadSectionDtoSup
                 .withFunctionalRoadClass("1")
                 .withMunicipalityId(1)
                 .withDrivingDirection("B")
+                .withCarriagewayTypeCode("RB")
                 .withRoadOperatorType(RoadOperatorType.MUNICIPALITY);
     }
 }

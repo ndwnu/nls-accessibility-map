@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,6 +67,7 @@ class AccessibilityNwbRoadSectionToLinkMapperTest {
                 lineString,
                 forwardAccessible,
                 backwardAccessible,
+                CarriagewayTypeCode.RB,
                 "1"
         );
     }

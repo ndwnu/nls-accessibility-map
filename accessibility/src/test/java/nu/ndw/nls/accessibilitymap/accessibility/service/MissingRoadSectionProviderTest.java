@@ -15,6 +15,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -152,9 +153,9 @@ class MissingRoadSectionProviderTest {
 
     private List<AccessibilityNwbRoadSection> buildRoadSections(boolean hasForwardSection, boolean hasBackwardSection) {
         return List.of(
-                new AccessibilityNwbRoadSection(1, 2, 3, 4, roadSection1LineString, true, true, "1"),
-                new AccessibilityNwbRoadSection(45648, 22, 23, 24, roadSection2LineString, hasForwardSection, hasBackwardSection, "1"),
-                new AccessibilityNwbRoadSection(45649, 32, 33, 34, roadSection3LineString, true, true, "1")
+                new AccessibilityNwbRoadSection(1, 2, 3, 4, roadSection1LineString, true, true, CarriagewayTypeCode.RB,"1"),
+                new AccessibilityNwbRoadSection(45648, 22, 23, 24, roadSection2LineString, hasForwardSection, hasBackwardSection, CarriagewayTypeCode.RB,"1"),
+                new AccessibilityNwbRoadSection(45649, 32, 33, 34, roadSection3LineString, true, true, CarriagewayTypeCode.RB,"1")
         );
     }
 

@@ -28,5 +28,7 @@ public class RoadSection {
 
     private String roadOperatorType;
 
+    private String carriagewayTypeCode;
+
     private LineString geometry;
 }
