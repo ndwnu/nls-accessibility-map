@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.nwb.dto;
 
 import java.util.List;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,7 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 lineString,
                 true,
                 true,
+                CarriagewayTypeCode.RB,
                 "1");
         validate(accessibilityNwbRoadSection, List.of(), List.of());
     }
@@ -38,6 +40,7 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 null,
                 true,
                 true,
+                CarriagewayTypeCode.RB,
                 "1");
         validate(accessibilityNwbRoadSection, List.of("geometry"), List.of("must not be null"));
     }
@@ -52,6 +55,7 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 lineString,
                 true,
                 true,
+                CarriagewayTypeCode.RB,
                 null
         );
         validate(accessibilityNwbRoadSection, List.of("functionalRoadClass"), List.of("must not be null"));
@@ -67,6 +71,7 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 lineString,
                 true,
                 true,
+                CarriagewayTypeCode.RB,
                 ""
         );
         validate(accessibilityNwbRoadSection, List.of("functionalRoadClass"), List.of("length must be between 1 and 1"));
@@ -79,6 +84,36 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 lineString,
                 true,
                 true,
+                CarriagewayTypeCode.RB,
+                "df"
+        );
+        validate(accessibilityNwbRoadSection, List.of("functionalRoadClass"), List.of("length must be between 1 and 1"));
+    }
+
+    @Test
+    void validate_carriagewayTypeCode_mustNotBeNull() {
+        AccessibilityNwbRoadSection accessibilityNwbRoadSection = new AccessibilityNwbRoadSection(
+                1,
+                2,
+                3,
+                4,
+                lineString,
+                true,
+                true,
+                null,
+                "1"
+        );
+        validate(accessibilityNwbRoadSection, List.of("carriagewayTypeCode"), List.of("must not be null"));
+
+        accessibilityNwbRoadSection = new AccessibilityNwbRoadSection(
+                1,
+                2,
+                3,
+                4,
+                lineString,
+                true,
+                true,
+                CarriagewayTypeCode.RB,
                 "df"
         );
         validate(accessibilityNwbRoadSection, List.of("functionalRoadClass"), List.of("length must be between 1 and 1"));
