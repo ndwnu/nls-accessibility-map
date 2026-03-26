@@ -19,13 +19,14 @@ public class AccessibilityNwbRoadSectionMapper {
         boolean reverseAccessible = drivingDirection.reverse();
 
         return new AccessibilityNwbRoadSection(
-                        nwbRoadSectionDto.getRoadSectionId(),
-                        nwbRoadSectionDto.getJunctionIdFrom(),
-                        nwbRoadSectionDto.getJunctionIdTo(),
-                        nwbRoadSectionDto.getMunicipalityId(),
-                        nwbRoadSectionDto.getGeometry(),
-                        forwardAccessible,
-                        reverseAccessible,
-                CarriagewayTypeCode.valueOf(nwbRoadSectionDto.getCarriagewayTypeCode()), nwbRoadSectionDto.getFunctionalRoadClass());
+                nwbRoadSectionDto.getRoadSectionId(),
+                nwbRoadSectionDto.getJunctionIdFrom(),
+                nwbRoadSectionDto.getJunctionIdTo(),
+                nwbRoadSectionDto.getMunicipalityId(),
+                nwbRoadSectionDto.getGeometry(),
+                forwardAccessible,
+                reverseAccessible,
+                CarriagewayTypeCode.valueOf(nwbRoadSectionDto.getCarriagewayTypeCode()),
+                nwbRoadSectionDto.getFunctionalRoadClass());
     }
 }
