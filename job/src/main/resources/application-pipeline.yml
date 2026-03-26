@@ -7,13 +7,7 @@ nu:
   ndw:
     nls:
       accessibilitymap:
-        jobs:
-          generate:
-            root-export-directory: "/application/maps"
-        trafficSigns:
-          cache:
-            folder: "./cache/trafficSigns"
 
         network:
           cache:
-            folder: "./cache/network"
+            folder: "./.tmp/network"
