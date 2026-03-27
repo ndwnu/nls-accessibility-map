@@ -41,7 +41,7 @@ services:
     image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.0.0-1
     volumes:
       - ./docker/accessibility-wiremock/extensions:/var/wiremock/extensions
-
+      - ./docker/accessibility-wiremock/mappings:/home/wiremock/mappings
     command: --port 8888 --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
     ports:
       - "8888:8888"
