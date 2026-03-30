@@ -21,7 +21,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetworkWithVersion;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToGeometryMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToRoadSectionIdMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -78,7 +78,7 @@ class RoadSectionMapperTest {
     private NetworkData networkData;
 
     @Mock
-    private GraphHopperNetwork graphHopperNetwork;
+    private GraphHopperNetworkWithVersion graphHopperNetworkWithVersion;
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
@@ -117,9 +117,7 @@ class RoadSectionMapperTest {
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
         when(queryGraph.getEdgeIteratorState(2, 1)).thenReturn(edgeIteratorState);
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
-        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+        when(networkData.getEncodingManager()).thenReturn(encodingManager);
 
         when(networkData.getNwbData()).thenReturn(nwbData);
         when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));

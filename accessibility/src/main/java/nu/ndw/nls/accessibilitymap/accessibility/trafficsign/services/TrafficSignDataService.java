@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class TrafficSignDataService extends Cache<TrafficSigns> {
+
+    private static final String TRAFFIC_SIGNS_JSON = "trafficSigns.json";
 
     private final ObjectMapper objectMapper;
 
@@ -39,7 +40,7 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
     @Override
     protected TrafficSigns readData(Path activeVersion) throws IOException {
         return objectMapper.readValue(
-                getCacheConfiguration().getActiveVersion().toPath().resolve("trafficSigns.json").toFile(),
+                getCacheConfiguration().getActiveVersion().toPath().resolve(TRAFFIC_SIGNS_JSON).toFile(),
                 TrafficSigns.class);
     }
 
@@ -47,12 +48,8 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
     protected void writeData(Path target, TrafficSigns data) throws IOException {
 
         FileUtils.writeStringToFile(
-                target.resolve(Path.of("trafficSigns.json")).toFile(),
+                target.resolve(Path.of(TRAFFIC_SIGNS_JSON)).toFile(),
                 objectMapper.writeValueAsString(data),
                 StandardCharsets.UTF_8);
-    }
-
-    public boolean dataExists() {
-        return Files.exists(getCacheConfiguration().getActiveVersion().toPath());
     }
 }

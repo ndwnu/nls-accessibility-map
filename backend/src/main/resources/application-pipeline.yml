@@ -9,6 +9,9 @@ nu:
         trafficSigns:
           cache:
             folder: "./cache/trafficSigns/"
+        roadChanges:
+          cache:
+            folder: "./cache/roadChanges/"
         network:
           cache:
             folder: "./cache/network"

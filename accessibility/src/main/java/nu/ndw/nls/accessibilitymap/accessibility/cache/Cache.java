@@ -154,4 +154,8 @@ public abstract class Cache<TYPE> {
             log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
         }
     }
+
+    public boolean dataExists() {
+        return Files.exists(getCacheConfiguration().getActiveVersion().toPath());
+    }
 }

@@ -44,6 +44,11 @@ nu:
           cache:
             name: "Traffic sign"
             folder: "./cache/trafficSigns"
+
+        roadChanges:
+          cache:
+            name: "Road changes"
+            folder: "./cache/roadChanges"
 nls:
   oauth2:
     jwtResourceProperty: app-${spring.application.name}-${environment}

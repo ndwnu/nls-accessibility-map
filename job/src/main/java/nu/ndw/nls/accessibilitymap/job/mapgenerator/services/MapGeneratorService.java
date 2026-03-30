@@ -8,6 +8,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
@@ -29,14 +31,17 @@ public class MapGeneratorService {
 
     private final NetworkDataService networkDataService;
 
+    private final RoadChangesDataService roadChangesDataService;
+
     private final MessageService messageService;
 
     public void generate(@Valid ExportProperties exportProperties) {
 
         log.info("Generating with the following properties: {}", exportProperties);
         NetworkData networkData = networkDataService.get();
+        RoadChanges roadChanges = roadChangesDataService.get();
         Accessibility accessibility = accessibilityService.calculateAccessibility(
-                networkData,
+                networkData, roadChanges,
                 exportProperties.accessibilityRequest());
 
         long roadSectionsWithTrafficSigns = accessibility.combinedAccessibility().stream()
@@ -59,7 +64,8 @@ public class MapGeneratorService {
 
     private void sendEventGeneratingDone(
             int nwbVersionId,
-            ExportProperties exportProperties) {
+            ExportProperties exportProperties
+    ) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
                 exportProperties.accessibilityRequest().trafficSignTypes().stream().toList(),

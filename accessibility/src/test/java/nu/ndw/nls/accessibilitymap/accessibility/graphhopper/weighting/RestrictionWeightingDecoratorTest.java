@@ -16,9 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class RestrictionWeightingAdapterTest {
+class RestrictionWeightingDecoratorTest {
 
-    private RestrictionWeightingAdapter restrictionWeightingAdapter;
+    private RestrictionWeightingDecorator restrictionWeightingDecorator;
 
     @Mock
     private Weighting sourceWeighting;
@@ -31,13 +31,13 @@ class RestrictionWeightingAdapterTest {
 
     @BeforeEach
     void setUp() {
-        restrictionWeightingAdapter = new RestrictionWeightingAdapter(sourceWeighting, blockedEdges);
+        restrictionWeightingDecorator = new RestrictionWeightingDecorator(sourceWeighting, blockedEdges);
     }
 
     @Test
     void calcMinWeightPerDistance() {
 
-        restrictionWeightingAdapter.calcMinWeightPerDistance();
+        restrictionWeightingDecorator.calcMinWeightPerDistance();
 
         verify(sourceWeighting).calcMinWeightPerDistance();
     }
@@ -49,7 +49,7 @@ class RestrictionWeightingAdapterTest {
         when(edgeIteratorState.getEdgeKey()).thenReturn(123);
         when(blockedEdges.contains(123)).thenReturn(true);
 
-        assertThat(restrictionWeightingAdapter.calcEdgeWeight(edgeIteratorState, reversed)).isEqualTo(Double.POSITIVE_INFINITY);
+        assertThat(restrictionWeightingDecorator.calcEdgeWeight(edgeIteratorState, reversed)).isEqualTo(Double.POSITIVE_INFINITY);
     }
 
     @ParameterizedTest
@@ -58,7 +58,7 @@ class RestrictionWeightingAdapterTest {
 
         when(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed)).thenReturn(234D);
 
-        assertThat(restrictionWeightingAdapter.calcEdgeWeight(edgeIteratorState, reversed)).isEqualTo(234D);
+        assertThat(restrictionWeightingDecorator.calcEdgeWeight(edgeIteratorState, reversed)).isEqualTo(234D);
     }
 
     @ParameterizedTest
@@ -67,7 +67,7 @@ class RestrictionWeightingAdapterTest {
 
         when(sourceWeighting.calcEdgeMillis(edgeIteratorState, reversed)).thenReturn(345L);
 
-        assertThat(restrictionWeightingAdapter.calcEdgeMillis(edgeIteratorState, reversed)).isEqualTo(345L);
+        assertThat(restrictionWeightingDecorator.calcEdgeMillis(edgeIteratorState, reversed)).isEqualTo(345L);
     }
 
     @Test
@@ -75,7 +75,7 @@ class RestrictionWeightingAdapterTest {
 
         when(sourceWeighting.calcTurnWeight(1, 2, 3)).thenReturn(4D);
 
-        assertThat(restrictionWeightingAdapter.calcTurnWeight(1, 2, 3)).isEqualTo(4D);
+        assertThat(restrictionWeightingDecorator.calcTurnWeight(1, 2, 3)).isEqualTo(4D);
     }
 
     @Test
@@ -83,13 +83,13 @@ class RestrictionWeightingAdapterTest {
 
         when(sourceWeighting.calcTurnMillis(1, 2, 3)).thenReturn(4L);
 
-        assertThat(restrictionWeightingAdapter.calcTurnMillis(1, 2, 3)).isEqualTo(4L);
+        assertThat(restrictionWeightingDecorator.calcTurnMillis(1, 2, 3)).isEqualTo(4L);
     }
 
     @Test
     void hasTurnCosts() {
 
-        restrictionWeightingAdapter.hasTurnCosts();
+        restrictionWeightingDecorator.hasTurnCosts();
 
         verify(sourceWeighting).hasTurnCosts();
     }
@@ -97,7 +97,7 @@ class RestrictionWeightingAdapterTest {
     @Test
     void getName() {
 
-        restrictionWeightingAdapter.getName();
+        restrictionWeightingDecorator.getName();
 
         verify(sourceWeighting).getName();
     }

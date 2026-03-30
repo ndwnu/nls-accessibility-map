@@ -28,6 +28,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebugger;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityException;
@@ -60,7 +61,9 @@ public class AccessibilityService {
     @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
             @Valid NetworkData networkData,
-            @Valid AccessibilityRequest accessibilityRequest) throws AccessibilityException {
+            @Valid RoadChanges roadChanges,
+            @Valid AccessibilityRequest accessibilityRequest
+    ) throws AccessibilityException {
 
         accessibilityDebugger.writeDebug(accessibilityRequest);
 
@@ -71,6 +74,7 @@ public class AccessibilityService {
         AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                 networkData,
                 restrictions,
+                roadChanges,
                 locationFactory.mapCoordinate(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude()),
                 locationFactory.mapCoordinate(accessibilityRequest.endLocationLatitude(), accessibilityRequest.endLocationLongitude()));
         accessibilityDebugger.writeDebug(accessibilityNetwork);
@@ -125,7 +129,8 @@ public class AccessibilityService {
             Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
             Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions,
             Collection<RoadSection> unroutableRoadSections,
-            AccessibilityNetwork accessibilityNetwork) {
+            AccessibilityNetwork accessibilityNetwork
+    ) {
 
         accessibleRoadsSectionsWithoutAppliedRestrictions.addAll(unroutableRoadSections);
         accessibleRoadSectionsWithAppliedRestrictions.addAll(unroutableRoadSections);
@@ -162,7 +167,8 @@ public class AccessibilityService {
     private Optional<RoadSection> findDestinationRoadSection(
             AccessibilityRequest accessibilityRequest,
             AccessibilityNetwork accessibilityNetwork,
-            Collection<RoadSection> combinedRoadSections) {
+            Collection<RoadSection> combinedRoadSections
+    ) {
 
         if (!accessibilityRequest.hasEndLocation()) {
             return Optional.empty();
@@ -179,7 +185,7 @@ public class AccessibilityService {
             return Optional.empty();
         }
 
-        var network = accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network();
+        var network = accessibilityNetwork.getNetworkData().getNetworkGraphHopper();
         int roadSectionId = destinationSnap.get()
                 .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
 
