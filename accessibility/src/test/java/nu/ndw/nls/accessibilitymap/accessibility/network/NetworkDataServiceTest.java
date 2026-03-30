@@ -11,13 +11,14 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetworkWithVersion;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -50,7 +51,11 @@ class NetworkDataServiceTest {
 
     private ObjectMapper objectMapper;
 
-    private GraphHopperNetwork graphHopperNetwork;
+    @Mock
+    private GraphHopperNetworkWithVersion graphHopperNetworkWithVersion;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
 
     private NwbData nwbData;
 
@@ -58,10 +63,6 @@ class NetworkDataServiceTest {
     void setUp() throws IOException {
 
         objectMapper = new ObjectMapper();
-        graphHopperNetwork = GraphHopperNetwork.builder()
-                .nwbVersion(1)
-                .network(null)
-                .build();
 
         nwbData = new NwbData(1, buildAccessibilityRoadSections());
 
@@ -106,14 +107,15 @@ class NetworkDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-
-        NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData);
+        when(graphHopperNetworkWithVersion.network()).thenReturn(networkGraphHopper);
+        when(graphHopperNetworkWithVersion.nwbVersion()).thenReturn(1);
+        NetworkData networkData = new NetworkData(graphHopperNetworkWithVersion, nwbData);
         networkDataService.write(networkData);
 
         NetworkData actualNetworkData = networkDataService.get();
 
         assertThat(networkData).isNotNull();
-        assertThat(networkData.getGraphHopperNetwork()).isEqualTo(graphHopperNetwork);
+        assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
         assertThat(actualNetworkData.getNwbData()).isEqualTo(nwbData);
     }
 
@@ -135,7 +137,8 @@ class NetworkDataServiceTest {
                         """.formatted(objectMapper.writeValueAsString(buildAccessibilityRoadSections())));
 
         when(graphHopperService.load(networkCacheConfiguration.getActiveVersion().toPath().resolve("graphHopper")))
-                .thenReturn(graphHopperNetwork);
+                .thenReturn(graphHopperNetworkWithVersion);
+        when(graphHopperNetworkWithVersion.nwbVersion()).thenReturn(1);
 
         networkDataService.read();
 
@@ -144,23 +147,23 @@ class NetworkDataServiceTest {
         NetworkData actualNetworkData = networkDataService.get();
 
         assertThat(networkData).isNotNull();
-        assertThat(networkData.getGraphHopperNetwork()).isEqualTo(graphHopperNetwork);
+        assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
         assertThat(actualNetworkData.getNwbData().getNwbVersionId()).isEqualTo(nwbData.getNwbVersionId());
         assertThat(actualNetworkData.getNwbData().getAccessibilityNwbRoadSections()).isEqualTo(buildAccessibilityRoadSections());
     }
 
     @Test
-    void networkExists() throws IOException {
+    void dataExists() throws IOException {
 
         Files.createDirectories(networkCacheConfiguration.getActiveVersion().toPath());
 
-        assertThat(networkDataService.networkExists()).isTrue();
+        assertThat(networkDataService.dataExists()).isTrue();
     }
 
     @Test
-    void networkExists_doesNotExist() {
+    void dataExists_doesNotExist() {
 
-        assertThat(networkDataService.networkExists()).isFalse();
+        assertThat(networkDataService.dataExists()).isFalse();
     }
 
     private static List<AccessibilityNwbRoadSection> buildAccessibilityRoadSections() {

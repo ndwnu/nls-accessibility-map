@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 
 import ch.qos.logback.classic.Level;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,9 @@ class CacheActuatorTest {
     @MockitoBean
     private TrafficSignDataService trafficSignDataService;
 
+    @MockitoBean
+    private RoadChangesDataService roadChangesDataService;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -55,6 +59,7 @@ class CacheActuatorTest {
 
         verify(networkDataService).read();
         verify(trafficSignDataService).read();
+        verify(roadChangesDataService).read();
 
         loggerExtension.containsLog(Level.INFO, "Cache reloaded");
     }

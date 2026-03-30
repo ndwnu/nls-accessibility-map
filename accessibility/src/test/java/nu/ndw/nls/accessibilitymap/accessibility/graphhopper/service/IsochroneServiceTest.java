@@ -10,19 +10,16 @@ import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.shapes.BBox;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.function.Consumer;
 import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,12 +43,6 @@ class IsochroneServiceTest {
     private NetworkData networkData;
 
     @Mock
-    private GraphHopperNetwork graphHopperNetwork;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
     private EncodingManager encodingManager;
 
     @Mock
@@ -68,9 +59,6 @@ class IsochroneServiceTest {
 
     @Mock
     private Snap from;
-
-    @Mock
-    private EdgeIteratorState fromClosestEdge;
 
     private MockedStatic<IsochroneShortestPathTreeFactory> isochroneShortestPathTreeFactoryMockedStatic;
 
@@ -103,15 +91,13 @@ class IsochroneServiceTest {
             boolean isNotRoot,
             boolean isWithinMunicipality,
             boolean isWithinBoundingBox,
-            boolean hasMatch) {
+            boolean hasMatch
+    ) {
 
         IsoLabel isoLabel = createIsoLabel();
 
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
-        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
-
+        when(accessibilityNetwork.getNetworkData().getEncodingManager()).thenReturn(encodingManager);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);
@@ -154,7 +140,8 @@ class IsochroneServiceTest {
             IsochroneArguments isochroneArguments,
             boolean isNotRoot,
             boolean isWithinMunicipality,
-            boolean isWithinBoundingBox) {
+            boolean isWithinBoundingBox
+    ) {
 
         isochroneFilterMockedStatic.when(() -> IsochroneFilter.isNotRoot(isoLabel)).thenReturn(isNotRoot);
 

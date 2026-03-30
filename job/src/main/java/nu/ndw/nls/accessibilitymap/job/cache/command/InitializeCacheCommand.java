@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import org.springframework.stereotype.Component;
@@ -21,9 +22,11 @@ public class InitializeCacheCommand implements Callable<Integer> {
 
     private final TrafficSignDataService trafficSignDataService;
 
+    private final RoadChangesDataService roadChangesDataService;
+
     @Override
     public Integer call() {
-        if (networkDataService.networkExists()) {
+        if (networkDataService.dataExists()) {
             log.info("Network cache already exists, skipping creation");
         } else {
             try {
@@ -41,6 +44,17 @@ public class InitializeCacheCommand implements Callable<Integer> {
                 rebuildTrafficSignCacheCommand.call();
             } catch (RuntimeException exception) {
                 log.error("An error occurred while creating traffic sign cache", exception);
+                return 1;
+            }
+        }
+
+        if (roadChangesDataService.dataExists()) {
+            log.info("Changed road sections cache already exists, skipping creation");
+        } else {
+            try {
+                roadChangesDataService.createEmptyCache();
+            } catch (RuntimeException exception) {
+                log.error("An error occurred while creating changed road sections cache", exception);
                 return 1;
             }
         }

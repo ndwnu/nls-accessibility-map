@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.request.AccessibilityRequestMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.response.AccessibilityResponseGeoJsonMapperV2;
@@ -30,16 +32,21 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
 
     private final NetworkDataService networkDataService;
 
+    private final RoadChangesDataService roadChangesDataService;
+
     @Override
     public ResponseEntity<AccessibilityResponseGeoJsonJson> getAccessibilityAsGeoJson(
             AccessibilityRequestJson accessibilityRequestJson,
-            String acceptEncoding) {
+            String acceptEncoding
+    ) {
 
         accessibilityRequestValidator.verify(accessibilityRequestJson);
 
         NetworkData networkData = networkDataService.get();
+        RoadChanges roadChanges = roadChangesDataService.get();
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 networkData,
+                roadChanges,
                 accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson));
 
         return ResponseEntity.ok(accessibilityResponseGeoJsonMapperV2.map(accessibilityRequestJson, accessibility));
