@@ -18,7 +18,8 @@ services:
       - SPRING_PROFILES_ACTIVE=build
       - COMMAND=updateNwbSchema
     depends_on:
-      - nls-postgres
+      nls-postgres:
+        condition: service_started
     networks:
       - nls-accessibility-map-network
 
@@ -47,6 +48,25 @@ services:
       - "8888:8888"
     networks:
       - nls-accessibility-map-network
+
+  initialise-cache-job:
+    build:
+      context: docker/nls-accessibility-map-job
+    environment:
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
+      - COMMAND=initializeCache
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
+    depends_on:
+      nls-postgres:
+        condition: service_started
+      nls-nwb-schema-manager:
+        condition: service_completed_successfully
+    volumes:
+      - ./.tmp:/application/cache
+    networks:
+      - nls-accessibility-map-network
+
 
   nls-keycloak:
     image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.5.4

@@ -17,6 +17,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.service.issue.mapper.IssueBuilder;
@@ -34,6 +36,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class NetworkAnalyserServiceTest {
+
+    private static final Pattern REPORT_ID_PATTERN = Pattern.compile(
+            "^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            Pattern.CASE_INSENSITIVE);
 
     private NetworkAnalyserService networkAnalyserService;
 
@@ -60,6 +66,12 @@ class NetworkAnalyserServiceTest {
 
     @Mock
     private RoadSection missingRoadSection;
+
+    @Mock
+    private RoadChangesDataService roadChangesDataService;
+
+    @Mock
+    private RoadChanges roadChanges;
 
     @Mock
     private CreateIssueJson issue;
@@ -102,7 +114,7 @@ class NetworkAnalyserServiceTest {
                 issueBuilder,
                 accessibilityService,
                 networkDataService,
-                clockService);
+                roadChangesDataService, clockService);
     }
 
     @Test
@@ -111,18 +123,17 @@ class NetworkAnalyserServiceTest {
                 eq(missingRoadSection),
                 eq(1234),
                 argThat(reportId -> {
-                    Pattern reportIdPattern = Pattern.compile(
-                            "^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                            Pattern.CASE_INSENSITIVE);
-                    Matcher reportIdMatcher = reportIdPattern.matcher(reportId);
+                    Matcher reportIdMatcher = REPORT_ID_PATTERN.matcher(reportId);
                     return reportIdMatcher.find();
                 }),
                 eq("UnreachableNetworkSegments")
         )).thenReturn(issue);
         when(networkDataService.get()).thenReturn(networkData);
+        when(roadChangesDataService.get()).thenReturn(roadChanges);
         when(networkData.getNwbVersion()).thenReturn(1234);
         when(accessibilityService.calculateAccessibility(
                 eq(networkData),
+                eq(roadChanges),
                 assertArg(actualAccessibilityRequest -> assertThat(actualAccessibilityRequest).isEqualTo(accessibilityRequest)))
         ).thenReturn(
                 Accessibility.builder()
@@ -134,16 +145,13 @@ class NetworkAnalyserServiceTest {
         verify(issueApiClient).createIssue(issue);
         verify(reportApiClient).reportComplete(
                 argThat(completeReportJson -> {
-                    Pattern pattern = Pattern.compile(
-                            "^Nwb-1234-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
-                            Pattern.CASE_INSENSITIVE);
-                    Matcher reportIdMatcher = pattern.matcher(completeReportJson.getReporterReportId());
+                    Matcher reportIdMatcher = REPORT_ID_PATTERN.matcher(completeReportJson.getReporterReportId());
                     return reportIdMatcher.find()
-                           && completeReportJson.getReporterReportGroupId()
-                                   .equals("UnreachableNetworkSegments");
+                            && completeReportJson.getReporterReportGroupId()
+                            .equals("UnreachableNetworkSegments");
                 }));
         loggerExtension.containsLog(
                 Level.INFO, "Analysing with the following properties: AnalyseNetworkConfiguration[name=name, "
-                            + "reportIssues=true, maxSearchDistanceInMeters=4.0, startLocationLatitude=2.0, startLocationLongitude=3.0]");
+                        + "reportIssues=true, maxSearchDistanceInMeters=4.0, startLocationLatitude=2.0, startLocationLongitude=3.0]");
     }
 }

@@ -139,6 +139,7 @@ class NetworkDataServiceTest {
         when(graphHopperService.load(networkCacheConfiguration.getActiveVersion().toPath().resolve("graphHopper")))
                 .thenReturn(graphHopperNetworkWithVersion);
         when(graphHopperNetworkWithVersion.nwbVersion()).thenReturn(1);
+        when(graphHopperNetworkWithVersion.network()).thenReturn(networkGraphHopper);
 
         networkDataService.read();
 
