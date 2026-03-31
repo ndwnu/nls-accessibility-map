@@ -1,0 +1,20 @@
+hostDatabase: nls-postgres
+hostRabbitMQ: nls-rabbitmq
+hostWiremock: accessibility-wiremock
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        network:
+          cache:
+            name: "Network"
+            folder: "./cache/network"
+        trafficSigns:
+          cache:
+            folder: "./cache/trafficSigns"
+        roadChanges:
+          cache:
+            folder: "./cache/roadChanges"
+      springboot:
+        job:
+          run-as-service: false

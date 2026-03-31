@@ -17,6 +17,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.dto.Excludes;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.dto.VehicleArguments;
@@ -94,6 +96,9 @@ class AccessibilityMapApiDelegateImpTest {
     @Mock
     private NetworkDataService networkDataService;
 
+    @Mock
+    private RoadChangesDataService roadChangesDataService;
+
     private AccessibilityMapApiDelegateImpl accessibilityMapApiDelegate;
 
     @Mock
@@ -110,6 +115,9 @@ class AccessibilityMapApiDelegateImpTest {
 
     @Mock
     private NetworkData networkData;
+
+    @Mock
+    private RoadChanges roadChanges;
     @BeforeEach
     void setup() {
 
@@ -120,7 +128,7 @@ class AccessibilityMapApiDelegateImpTest {
                 municipalityService,
                 accessibilityRequestMapper,
                 accessibilityService,
-                networkDataService);
+                networkDataService, roadChangesDataService);
     }
 
     @ParameterizedTest
@@ -289,7 +297,8 @@ class AccessibilityMapApiDelegateImpTest {
     private void setUpFixture(EmissionClassJson emissionClassJson, List<FuelTypeJson> fuelTypesJson) {
 
         when(networkDataService.get()).thenReturn(networkData);
-        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
+        when(roadChangesDataService.get()).thenReturn(roadChanges);
+        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibilityRequestMapper.map(
                 municipality,

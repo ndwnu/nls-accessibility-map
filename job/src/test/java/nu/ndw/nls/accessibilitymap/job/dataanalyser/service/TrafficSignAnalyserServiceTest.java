@@ -27,6 +27,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.dto.AnalyseAsymmetricTrafficSignsConfiguration;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.service.issue.mapper.IssueBuilder;
@@ -55,7 +57,13 @@ class TrafficSignAnalyserServiceTest {
     private NetworkDataService networkDataService;
 
     @Mock
+    private RoadChangesDataService roadChangesDataService;
+
+    @Mock
     private NetworkData networkData;
+
+    @Mock
+    private RoadChanges roadChanges;
 
     @Mock
     private IssueApiClient issueApiClient;
@@ -106,7 +114,7 @@ class TrafficSignAnalyserServiceTest {
                 issueApiClient,
                 reportApiClient,
                 accessibilityService,
-                networkDataService,
+                networkDataService, roadChangesDataService,
                 issueBuilder);
     }
 
@@ -119,7 +127,8 @@ class TrafficSignAnalyserServiceTest {
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(networkDataService.get()).thenReturn(networkData);
-        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
+        when(roadChangesDataService.get()).thenReturn(roadChanges);
+        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -150,10 +159,10 @@ class TrafficSignAnalyserServiceTest {
                     Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(completeReportJson.getReporterReportId());
             return matcher.find()
-                   && completeReportJson.getReporterReportGroupId()
-                           .equals("AsymmetricTrafficSignPlacement-%s-%s".formatted(
-                                   TrafficSignType.C21.getRvvCode(),
-                                   TrafficSignType.C22C.getRvvCode()));
+                    && completeReportJson.getReporterReportGroupId()
+                    .equals("AsymmetricTrafficSignPlacement-%s-%s".formatted(
+                            TrafficSignType.C21.getRvvCode(),
+                            TrafficSignType.C22C.getRvvCode()));
         }));
 
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseAsymmetricTrafficSignsConfiguration");
@@ -168,7 +177,8 @@ class TrafficSignAnalyserServiceTest {
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(networkDataService.get()).thenReturn(networkData);
-        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
+        when(roadChangesDataService.get()).thenReturn(roadChanges);
+        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -205,7 +215,8 @@ class TrafficSignAnalyserServiceTest {
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(networkDataService.get()).thenReturn(networkData);
-        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
+        when(roadChangesDataService.get()).thenReturn(roadChanges);
+        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -240,7 +251,8 @@ class TrafficSignAnalyserServiceTest {
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(networkDataService.get()).thenReturn(networkData);
-        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
+        when(roadChangesDataService.get()).thenReturn(roadChanges);
+        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
@@ -277,7 +289,8 @@ class TrafficSignAnalyserServiceTest {
         when(accessibilityRequest.trafficSignTypes()).thenReturn(Set.of(TrafficSignType.C21, TrafficSignType.C22C));
 
         when(networkDataService.get()).thenReturn(networkData);
-        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
+        when(roadChangesDataService.get()).thenReturn(roadChanges);
+        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
         when(roadSection.getRoadSectionFragments()).thenReturn(List.of(roadSectionFragment));
