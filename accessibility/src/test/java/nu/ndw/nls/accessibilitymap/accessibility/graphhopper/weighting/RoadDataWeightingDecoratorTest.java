@@ -1,17 +1,18 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting;
 
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.RB;
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeAccessHandler;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.LinkIdResolver;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,9 @@ class RoadDataWeightingDecoratorTest {
     private NwbData nwbData;
 
     @Mock
+    private IntEncodedValue intEncodedValue;
+
+    @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
 
     private RoadDataWeightingDecorator roadDataWeightingDecorator;
@@ -67,9 +71,9 @@ class RoadDataWeightingDecoratorTest {
             false,true
             """)
     void calcEdgeWeight_withRoadData(boolean isAccessible, boolean reversed) {
-        try (var linkIdResolver = Mockito.mockStatic(LinkIdResolver.class); var edgeAccessHandler = Mockito.mockStatic(EdgeAccessHandler.class)) {
-            linkIdResolver.when(() -> LinkIdResolver.resolveLinkId(edgeIteratorState, encodingManager, reversed))
-                    .thenReturn(LINK_ID);
+        try (var edgeAccessHandler = Mockito.mockStatic(EdgeAccessHandler.class)) {
+            when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
+            when(edgeIteratorState.get(intEncodedValue)).thenReturn(LINK_ID);
             when(accessibilityNwbRoadSection.carriagewayTypeCode()).thenReturn(RB);
             when(accessibilityNwbRoadSection.forwardAccessible()).thenReturn(true);
             when(accessibilityNwbRoadSection.backwardAccessible()).thenReturn(true);
@@ -88,14 +92,12 @@ class RoadDataWeightingDecoratorTest {
 
     @Test
     void calcEdgeWeight_withoutRoadData_exception() {
-        try (var linkIdResolver = Mockito.mockStatic(LinkIdResolver.class)) {
-            linkIdResolver.when(() -> LinkIdResolver.resolveLinkId(edgeIteratorState, encodingManager, true))
-                    .thenReturn(LINK_ID);
-            when(nwbData.findAccessibilityNwbRoadSectionById(LINK_ID)).thenReturn(Optional.empty());
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
+        when(edgeIteratorState.get(intEncodedValue)).thenReturn(LINK_ID);
+        when(nwbData.findAccessibilityNwbRoadSectionById(LINK_ID)).thenReturn(Optional.empty());
 
-            assertThatIllegalStateException().isThrownBy(() -> roadDataWeightingDecorator.calcEdgeWeight(edgeIteratorState, true))
-                    .withMessage("Road section not found for link id: " + LINK_ID);
-        }
+        assertThatIllegalStateException().isThrownBy(() -> roadDataWeightingDecorator.calcEdgeWeight(edgeIteratorState, true))
+                .withMessage("Road section not found for link id: " + LINK_ID);
     }
 
     @ParameterizedTest

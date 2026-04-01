@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
+package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

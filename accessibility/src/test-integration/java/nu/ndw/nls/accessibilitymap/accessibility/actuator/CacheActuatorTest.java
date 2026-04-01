@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import ch.qos.logback.classic.Level;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;

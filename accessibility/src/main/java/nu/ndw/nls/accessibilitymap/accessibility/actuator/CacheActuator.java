@@ -3,7 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.actuator;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
 import org.springframework.stereotype.Component;

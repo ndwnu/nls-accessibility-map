@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
+package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheWatcher;
