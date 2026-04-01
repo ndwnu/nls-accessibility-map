@@ -26,9 +26,9 @@ public class WeightingFactory {
         var restrictionWeightingDecorator = new RestrictionWeightingDecorator(baseWeighting,
                 applyRestrictions ? blockedEdges : java.util.Set.of());
         var roadDataWeightingDecorator = new RoadDataWeightingDecorator(restrictionWeightingDecorator,
-                networkData.getNwbData());
+                networkData.getNwbData(), networkData.getEncodingManager());
         var roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(roadDataWeightingDecorator,
-                roadChanges);
+                roadChanges, networkData.getEncodingManager());
         return queryGraph.wrapWeighting(roadChangesWeightingDecorator);
     }
 }
