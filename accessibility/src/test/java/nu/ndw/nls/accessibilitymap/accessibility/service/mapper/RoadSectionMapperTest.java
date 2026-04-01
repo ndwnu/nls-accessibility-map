@@ -125,7 +125,7 @@ class RoadSectionMapperTest {
 
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(isReversed);
         when(isoLabelToGeometryMapper.map(edgeIteratorState)).thenReturn(geometry);
-        when(isoLabelToRoadSectionIdMapper.map(edgeIteratorState, encodingManager, false)).thenReturn(1);
+        when(isoLabelToRoadSectionIdMapper.map(edgeIteratorState, encodingManager)).thenReturn(1);
 
         when(edgeIteratorState.getEdge()).thenReturn(2);
         when(edgeIteratorState.getEdgeKey()).thenReturn(3);

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services;
+package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeAccessHandler.isAccessible;
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.LinkIdResolver.resolveLinkId;
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
@@ -26,7 +26,8 @@ public class RoadDataWeightingDecorator implements Weighting {
 
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversed) {
-        int linkId = resolveLinkId(edgeIteratorState, encodingManager, reversed);
+        int linkId = getLinkId(edgeIteratorState, encodingManager);
+
         return nwbData.findAccessibilityNwbRoadSectionById(linkId)
                 .map(roadSection -> blockIfInaccessible(edgeIteratorState, reversed, roadSection))
                 .orElseThrow(() -> new IllegalStateException("Road section not found for link id: " + linkId));
@@ -62,5 +63,9 @@ public class RoadDataWeightingDecorator implements Weighting {
     @Override
     public String getName() {
         return sourceWeighting.getName();
+    }
+
+    private static int getLinkId(EdgeIteratorState edge, EncodingManager encodingManager) {
+        return edge.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
     }
 }
