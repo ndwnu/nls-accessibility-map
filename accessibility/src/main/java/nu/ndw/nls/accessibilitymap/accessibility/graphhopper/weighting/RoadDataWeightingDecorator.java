@@ -1,8 +1,13 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting;
 
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeAccessHandler.isAccessible;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.LinkIdResolver.resolveLinkId;
+
+import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 
 @RequiredArgsConstructor
@@ -12,6 +17,8 @@ public class RoadDataWeightingDecorator implements Weighting {
 
     private final NwbData nwbData;
 
+    private final EncodingManager encodingManager;
+
     @Override
     public double calcMinWeightPerDistance() {
         return sourceWeighting.calcMinWeightPerDistance();
@@ -19,7 +26,17 @@ public class RoadDataWeightingDecorator implements Weighting {
 
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversed) {
-        return sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed);
+        int linkId = resolveLinkId(edgeIteratorState, encodingManager, reversed);
+        return nwbData.findAccessibilityNwbRoadSectionById(linkId)
+                .map(roadSection -> blockIfInaccessible(edgeIteratorState, reversed, roadSection))
+                .orElseThrow(() -> new IllegalStateException("Road section not found for link id: " + linkId));
+    }
+
+    private double blockIfInaccessible(EdgeIteratorState edgeIteratorState, boolean reversed, AccessibilityNwbRoadSection roadSection) {
+        return isAccessible(roadSection.carriagewayTypeCode(),
+                roadSection.forwardAccessible(),
+                roadSection.backwardAccessible(),
+                reversed) ? sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed) : Double.POSITIVE_INFINITY;
     }
 
     @Override
