@@ -41,19 +41,18 @@ public class RoadChangesDataService extends Cache<RoadChanges> {
 
     @Override
     public void write(RoadChanges roadChanges) {
-        try {
-
-            if (dataExists()) {
+        if (dataExists()) {
+            try {
                 Path activeVersion = getCacheConfiguration().getActiveVersion().toPath().toAbsolutePath().toRealPath();
                 RoadChanges previousChanges = readData(activeVersion);
                 RoadChanges newRoadChanges =
                         previousChanges.isSameVersion(roadChanges) ? (previousChanges.merge(roadChanges)) : roadChanges;
                 super.write(newRoadChanges);
-            } else {
-                super.write(roadChanges);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
             }
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
+        } else {
+            super.write(roadChanges);
         }
     }
 
