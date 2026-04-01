@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
@@ -17,18 +16,13 @@ class AccessibilityLinkCarMapperTest {
     @Mock
     private AccessibilityLink link;
 
-    @Mock
-    private DirectionalDto<Boolean> accessibility;
-
     @InjectMocks
     private AccessibilityLinkCarMapper mapper;
 
     @Test
     void getAccessibility() {
 
-        when(link.getAccessibility()).thenReturn(accessibility);
-
-        assertThat(mapper.getAccessibility(link)).isEqualTo(accessibility);
+        assertThat(mapper.getAccessibility(link)).isEqualTo(new DirectionalDto<>(true, true));
     }
 
     @Test
