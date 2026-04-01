@@ -145,12 +145,10 @@ class NetworkDataServiceTest {
 
         NetworkData networkData = networkDataService.get();
 
-        NetworkData actualNetworkData = networkDataService.get();
-
         assertThat(networkData).isNotNull();
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
-        assertThat(actualNetworkData.getNwbData().getNwbVersionId()).isEqualTo(nwbData.getNwbVersionId());
-        assertThat(actualNetworkData.getNwbData().getAccessibilityNwbRoadSections()).isEqualTo(buildAccessibilityRoadSections());
+        assertThat(networkData.getNwbData().getNwbVersionId()).isEqualTo(nwbData.getNwbVersionId());
+        assertThat(networkData.getNwbData().getAccessibilityNwbRoadSections()).isEqualTo(buildAccessibilityRoadSections());
     }
 
     @Test

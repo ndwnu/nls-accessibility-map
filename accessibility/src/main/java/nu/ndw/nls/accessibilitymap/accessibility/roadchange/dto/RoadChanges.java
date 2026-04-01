@@ -64,8 +64,9 @@ public final class RoadChanges {
         if (!Objects.equals(other.nwbVersionId, this.nwbVersionId)) {
             throw new IllegalArgumentException("Cannot merge RoadChanges with different nwbVersionId");
         }
-        this.changedNwbRoadSections.addAll(other.changedNwbRoadSections);
-        return new RoadChanges(this.nwbVersionId, new ArrayList<>(this.changedNwbRoadSections));
+        List<ChangedNwbRoadSection> mergedChangedNwbRoadSections = new ArrayList<>(this.changedNwbRoadSections);
+        mergedChangedNwbRoadSections.addAll(other.changedNwbRoadSections);
+        return new RoadChanges(this.nwbVersionId, new ArrayList<>(mergedChangedNwbRoadSections));
     }
 
     public boolean isSameVersion(RoadChanges other) {

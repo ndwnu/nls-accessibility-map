@@ -12,8 +12,8 @@ public class RoadChangesCacheWatcher extends CacheWatcher<RoadChanges> {
 
     public RoadChangesCacheWatcher(
             RoadChangesCacheConfiguration roadChangesCacheConfiguration,
-            RoadChangesDataService trafficSignDataService
+            RoadChangesDataService roadChangesDataService
     ) {
-        super(roadChangesCacheConfiguration, trafficSignDataService);
+        super(roadChangesCacheConfiguration, roadChangesDataService);
     }
 }
