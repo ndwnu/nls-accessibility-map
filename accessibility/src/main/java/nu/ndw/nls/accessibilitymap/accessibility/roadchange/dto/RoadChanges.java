@@ -37,35 +37,44 @@ public final class RoadChanges {
     private final SortedMap<Long, ChangedNwbRoadSection> changedNwbRoadSectionsById;
 
     @JsonCreator
-    public RoadChanges(@JsonProperty("nwbVersionId") Integer nwbVersionId,
+    public RoadChanges(@NonNull @JsonProperty("nwbVersionId") Integer nwbVersionId,
             @NonNull @JsonProperty("changedNwbRoadSections") List<ChangedNwbRoadSection> changedNwbRoadSections
     ) {
         this.nwbVersionId = nwbVersionId;
-        this.changedNwbRoadSections = changedNwbRoadSections;
+
         this.changedNwbRoadSectionsById = changedNwbRoadSections.stream()
                 .collect(Collectors.toMap(
                         ChangedNwbRoadSection::roadSectionId,               // key mapper (id)
                         Function.identity(),           // value mapper (the object)
-                        (a, b) -> a,                   // merge function if duplicate ids occur (pick first; adjust if needed)
+                        ChangedNwbRoadSection::update,//merge function if duplicate ids occur update previous with new values
                         TreeMap::new
                 ));
-    }
 
-    public List<ChangedNwbRoadSection> findAllChangedNwbRoadSections() {
-        return changedNwbRoadSections;
+        this.changedNwbRoadSections = changedNwbRoadSectionsById.values().stream().toList();
     }
 
     public Optional<ChangedNwbRoadSection> findChangedNwbRoadSectionById(long roadSectionId) {
-
         return Optional.ofNullable(changedNwbRoadSectionsById.get(roadSectionId));
     }
 
     public RoadChanges merge(RoadChanges other) {
-        if (!Objects.equals(other.nwbVersionId, this.nwbVersionId)) {
-            throw new IllegalArgumentException("Cannot merge RoadChanges with different nwbVersionId");
+        if (!isSameVersion(other)) {
+            throw new IllegalArgumentException("Cannot merge road changes with different nwbVersionId (%s vs %s)".formatted(this.nwbVersionId,
+                    other.nwbVersionId));
         }
-        List<ChangedNwbRoadSection> mergedChangedNwbRoadSections = new ArrayList<>(this.changedNwbRoadSections);
-        mergedChangedNwbRoadSections.addAll(other.changedNwbRoadSections);
+
+        // update existing roadSections with new changes
+        List<ChangedNwbRoadSection> mergedChangedNwbRoadSections = new ArrayList<>(this.changedNwbRoadSections.stream()
+                .map(changedNwbRoadSection -> other.findChangedNwbRoadSectionById(changedNwbRoadSection.roadSectionId())
+                        .map(changedNwbRoadSection::update)
+                        .orElse(changedNwbRoadSection))
+                .toList());
+        // add only new changed roadSections
+        List<ChangedNwbRoadSection> newEntries = other.changedNwbRoadSections.stream()
+                .filter(r -> this.findChangedNwbRoadSectionById(r.roadSectionId()).isEmpty())
+                .toList();
+
+        mergedChangedNwbRoadSections.addAll(newEntries);
         return new RoadChanges(this.nwbVersionId, new ArrayList<>(mergedChangedNwbRoadSections));
     }
 

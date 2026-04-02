@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import com.graphhopper.routing.util.EncodingManager;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetworkWithVersion;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@SuppressWarnings("DataFlowIssue")
 @ExtendWith(MockitoExtension.class)
 class NetworkDataTest extends ValidationTest {
 
@@ -24,6 +26,9 @@ class NetworkDataTest extends ValidationTest {
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
+
+    @Mock
+    private EncodingManager encodingManager;
 
     @Mock
     private NwbData nwbData;
@@ -71,6 +76,14 @@ class NetworkDataTest extends ValidationTest {
         assertThatThrownBy(() -> new NetworkData(graphHopperNetworkWithVersion, null))
                 .hasMessage("nwbData is marked non-null but is null")
                 .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void getEncodingManager() {
+
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+
+        assertThat(networkData.getEncodingManager()).isNotNull().isEqualTo(encodingManager);
     }
 
     @Test
