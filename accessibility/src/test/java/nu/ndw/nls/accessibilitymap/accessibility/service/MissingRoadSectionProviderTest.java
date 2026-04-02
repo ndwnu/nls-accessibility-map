@@ -154,6 +154,7 @@ class MissingRoadSectionProviderTest {
     private List<AccessibilityNwbRoadSection> buildRoadSections(boolean hasForwardSection, boolean hasBackwardSection) {
         return List.of(
                 new AccessibilityNwbRoadSection(1, 2, 3, 4, roadSection1LineString, true, true, CarriagewayTypeCode.RB,"1"),
+                new AccessibilityNwbRoadSection(12, 23, 34, 4, roadSection1LineString, true, true, CarriagewayTypeCode.FP, "1"),
                 new AccessibilityNwbRoadSection(45648, 22, 23, 24, roadSection2LineString, hasForwardSection, hasBackwardSection, CarriagewayTypeCode.RB,"1"),
                 new AccessibilityNwbRoadSection(45649, 32, 33, 34, roadSection3LineString, true, true, CarriagewayTypeCode.RB,"1")
         );
