@@ -14,4 +14,12 @@ public record ChangedNwbRoadSection(
         @NotNull
         CarriagewayTypeCode carriagewayTypeCode) {
 
+    public ChangedNwbRoadSection update(ChangedNwbRoadSection other) {
+        return new ChangedNwbRoadSection(
+                roadSectionId,
+                other.forwardAccessible(),
+                other.backwardAccessible(),
+                other.carriagewayTypeCode());
+    }
+
 }
