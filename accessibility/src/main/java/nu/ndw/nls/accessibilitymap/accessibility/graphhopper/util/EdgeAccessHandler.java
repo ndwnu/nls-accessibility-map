@@ -34,7 +34,7 @@ import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 @UtilityClass
 public class EdgeAccessHandler {
 
-    private static final Set<CarriagewayTypeCode> CAR_ACCESSIBLE_ROADS = Set.of(
+    public static final Set<CarriagewayTypeCode> CAR_ACCESSIBLE_ROADS = Set.of(
             PAR,
             PP,
             WIS,
