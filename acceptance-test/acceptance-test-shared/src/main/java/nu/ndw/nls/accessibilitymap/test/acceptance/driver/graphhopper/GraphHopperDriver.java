@@ -1,11 +1,16 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper;
 
+import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.supplier.AccessibilityNwbRoadSectionDtoSupplier;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.rabbitmq.RabbitMQMessageDriver;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
+import nu.ndw.nls.springboot.test.graph.dto.Direction;
 import nu.ndw.nls.springboot.test.graph.dto.Graph;
 import nu.ndw.nls.springboot.test.graph.exporter.database.nwb.NwbDatabaseExporter;
 import nu.ndw.nls.springboot.test.graph.exporter.database.nwb.dto.NwbDataAccessSettings;
@@ -38,21 +43,32 @@ public class GraphHopperDriver {
         return this;
     }
 
+    public GraphHopperDriver createDirectionalRoad(long startNodeId, long endNodeId, Set<Direction> directions) {
+
+        graphDataBuilder.createEdge(startNodeId, endNodeId, directions);
+        return this;
+    }
+
     public GraphHopperDriver createNode(long id, double x, double y) {
 
         graphDataBuilder.createNode(id, y, x);
         return this;
     }
 
+    @SneakyThrows
     @SuppressWarnings("java:S3658")
     public GraphHopperDriver insertNwbData() {
+        return insertNwbDataWithCarriagewayOverrides(Map.of());
+    }
 
+    @SneakyThrows
+    @SuppressWarnings("java:S3658")
+    public GraphHopperDriver insertNwbDataWithCarriagewayOverrides(Map<Long, CarriagewayTypeCode> carriagewayOverrides) {
         lastBuiltGraph = graphDataBuilder.build();
-
         nwbDatabaseExporter.export(
                 lastBuiltGraph,
                 NwbDataAccessSettings.builder()
-                        .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier())
+                        .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier(carriagewayOverrides))
                         .build());
 
         return this;

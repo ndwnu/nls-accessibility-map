@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
 import nu.ndw.nls.accessibilitymap.accessibility.roadchange.configuration.RoadChangesCacheConfiguration;
@@ -36,7 +37,8 @@ public class RoadChangesDataService extends Cache<RoadChanges> {
     }
 
     public void createEmptyCache() {
-        write(new RoadChanges(nwbVersionCrudService.findLatestVersionId(), List.of()));
+        Integer versionId = nwbVersionCrudService.findLatestVersionId();
+        write(new RoadChanges(Objects.nonNull(versionId) ? versionId : 0, List.of()));
     }
 
     @Override

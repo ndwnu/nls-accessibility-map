@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeAccessHandler.CAR_ACCESSIBLE_ROADS;
+
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.graphhopper.util.PointList;
@@ -32,7 +34,8 @@ public class MissingRoadSectionProvider {
             Integer municipalityId,
             Collection<RoadSection> knownRoadSections,
             boolean missingRoadSectionsAreAccessible,
-            BBox searchArea) {
+            BBox searchArea
+    ) {
 
         List<AccessibilityNwbRoadSection> roadSections = getAllRoadSections(networkData, municipalityId);
 
@@ -40,6 +43,7 @@ public class MissingRoadSectionProvider {
                 .collect(Collectors.groupingBy(RoadSection::getId));
 
         Map<Long, List<AccessibilityNwbRoadSection>> allNwbRoadSectionById = roadSections.stream()
+                .filter(accessibilityNwbRoadSection -> CAR_ACCESSIBLE_ROADS.contains(accessibilityNwbRoadSection.carriagewayTypeCode()))
                 .collect(Collectors.groupingBy(AccessibilityNwbRoadSection::roadSectionId));
 
         SetView<Long> missingRoadSectionIds = Sets.difference(allNwbRoadSectionById.keySet(), roadSectionsById.keySet());
@@ -102,7 +106,8 @@ public class MissingRoadSectionProvider {
     }
 
     private static AtomicInteger newRoadSectionFragmentIdSupplier(
-            Collection<RoadSection> accessibleRoadSectionsWithoutAppliedRestrictions) {
+            Collection<RoadSection> accessibleRoadSectionsWithoutAppliedRestrictions
+    ) {
 
         AtomicInteger idSequenceSupplier = new AtomicInteger(accessibleRoadSectionsWithoutAppliedRestrictions.stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
@@ -115,7 +120,8 @@ public class MissingRoadSectionProvider {
     }
 
     private static AtomicInteger newDirectionIdSupplier(
-            Collection<RoadSection> accessibleRoadSectionsWithoutAppliedRestrictions) {
+            Collection<RoadSection> accessibleRoadSectionsWithoutAppliedRestrictions
+    ) {
 
         AtomicInteger idSequenceSupplier = new AtomicInteger(accessibleRoadSectionsWithoutAppliedRestrictions.stream()
                 .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
@@ -133,7 +139,8 @@ public class MissingRoadSectionProvider {
             int id,
             LineString accessibilityRoadSection,
             RoadSectionFragment roadSectionFragment,
-            boolean isAccessible) {
+            boolean isAccessible
+    ) {
 
         return DirectionalSegment.builder()
                 .id(id)
