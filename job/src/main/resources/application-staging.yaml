@@ -10,7 +10,7 @@ nu:
       accessibilitymap:
         trafficsignclient:
           api:
-            url: https://data.staging.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+            url: https://data.ndw.nu/api/rest/static-road-data/traffic-signs/v4
 
 nls:
   keycloak:

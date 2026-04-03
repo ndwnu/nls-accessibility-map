@@ -12,7 +12,7 @@ services:
       - nls-accessibility-map-network
 
   nls-nwb-schema-manager:
-    image: ndwnls.azurecr.io/nls-nwb-schema-manager:20260320.2
+    image: ndwnls.azurecr.io/nls-nwb-schema-manager:20260327.2
     platform: linux/amd64
     environment:
       - SPRING_PROFILES_ACTIVE=build
