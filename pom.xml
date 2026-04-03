@@ -47,16 +47,16 @@
     <swagger-annotations.version>2.2.46</swagger-annotations.version>
     <nls-events.version>5.5.11</nls-events.version>
     <nls-nwb-data-access.version>9.5.13</nls-nwb-data-access.version>
-    <nls-springboot.version>9.4.41</nls-springboot.version>
+    <nls-springboot.version>9.4.42</nls-springboot.version>
     <nls-routing-map-matcher.version>20.0.3</nls-routing-map-matcher.version>
     <nls-geometry.version>5.4.3</nls-geometry.version>
-    <nls-geojson-geometry.version>1.4.64</nls-geojson-geometry.version>
-    <nls-springboot.test.graph.version>1.0.61</nls-springboot.test.graph.version>
+    <nls-geojson-geometry.version>1.4.65</nls-geojson-geometry.version>
+    <nls-springboot.test.graph.version>1.0.62</nls-springboot.test.graph.version>
     <jackson-geojson.version>3.0</jackson-geojson.version>
     <jsurfer-jackson.version>1.6.5</jsurfer-jackson.version>
     <json-unit.version>5.1.1</json-unit.version>
     <cucumber.version>7.34.3</cucumber.version>
-    <location-data-issues.version>2.2.143</location-data-issues.version>
+    <location-data-issues.version>2.2.144</location-data-issues.version>
     <unirest-java.version>1.4.9</unirest-java.version>
     <resilience4j-bom.version>2.4.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
