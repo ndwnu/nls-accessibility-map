@@ -48,7 +48,6 @@ class AccessibilityNetworkTest {
 
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = Map.of(1, List.of(restriction));
 
-
         AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
                 networkData,
                 roadChanges,
@@ -60,6 +59,6 @@ class AccessibilityNetworkTest {
 
         assertThat(accessibilityNetwork)
                 .hasToString(
-                        "GraphHopperNetwork(networkData=networkData, restrictions=[restriction], restrictionsByEdgeKey={1=[restriction]}, blockedEdges=[1], from=from, destination=destination)");
+                        "GraphHopperNetwork(networkData=networkData, restrictions=[restriction], restrictionsByEdgeKey={1=[restriction]}, from=from, destination=destination)");
     }
 }

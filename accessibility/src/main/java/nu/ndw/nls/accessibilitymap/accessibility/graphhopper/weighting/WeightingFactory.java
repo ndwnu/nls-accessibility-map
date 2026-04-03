@@ -7,7 +7,6 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,8 +16,7 @@ public class WeightingFactory {
             NetworkData networkData,
             QueryGraph queryGraph,
             Set<Integer> blockedEdges,
-            RoadChanges roadChanges,
-            boolean applyRestrictions
+            RoadChanges roadChanges
     ) {
         NetworkGraphHopper networkGraphHopper = networkData.getNetworkGraphHopper();
         var baseWeighting = networkGraphHopper

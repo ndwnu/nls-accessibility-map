@@ -19,7 +19,9 @@ public class CacheActuator {
 
     private final RoadChangesDataService roadChangesDataService;
 
-    public CacheActuator(NetworkDataService networkDataService, TrafficSignDataService trafficSignDataService,
+    public CacheActuator(
+            NetworkDataService networkDataService,
+            TrafficSignDataService trafficSignDataService,
             RoadChangesDataService roadChangesDataService
     ) {
         this.networkDataService = networkDataService;

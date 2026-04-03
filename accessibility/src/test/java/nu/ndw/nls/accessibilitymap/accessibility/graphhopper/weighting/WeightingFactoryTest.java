@@ -34,8 +34,6 @@ class WeightingFactoryTest {
     @Mock
     private QueryGraph queryGraph;
 
-    private final Set<Integer> blockedEdges = Set.of(1, 2, 3);
-
     @Mock
     private RoadChanges roadChanges;
 
@@ -66,19 +64,19 @@ class WeightingFactoryTest {
     void createWeighting_withRestrictions(boolean applyRestrictions) {
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkData.getEncodingManager()).thenReturn(encodingManager);
-        when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), any(PMap.class)))
-                .thenReturn(baseWeighting);
+        when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), any(PMap.class))).thenReturn(baseWeighting);
         when(queryGraph.wrapWeighting(weightingCaptor.capture())).thenReturn(baseWeighting);
         when(networkData.getNwbData()).thenReturn(nwbData);
 
-        Weighting weighting = weightingFactory.createWeighting(networkData, queryGraph, blockedEdges, roadChanges, applyRestrictions);
+        Set<Integer> blockedEdges = applyRestrictions ? Set.of(1) : Set.of();
+        Weighting weighting = weightingFactory.createWeighting(networkData, queryGraph, blockedEdges, roadChanges);
 
         assertThat(weighting).isEqualTo(baseWeighting);
 
-        assertThatWeightingIsCorrectlyConstructed(applyRestrictions);
+        assertThatWeightingIsCorrectlyConstructed(blockedEdges);
     }
 
-    private void assertThatWeightingIsCorrectlyConstructed(boolean applyRestrictions) {
+    private void assertThatWeightingIsCorrectlyConstructed(Set<Integer> blockedEdges) {
         RoadChangesWeightingDecorator constructedWeighting = weightingCaptor.getValue();
         Weighting roadChangesSourceWeighting = (Weighting) ReflectionTestUtils.getField(constructedWeighting, "sourceWeighting");
         RoadChanges roadChangesInstance = (RoadChanges) ReflectionTestUtils.getField(constructedWeighting, "roadChanges");
@@ -106,7 +104,7 @@ class WeightingFactoryTest {
                 "sourceWeighting");
         @SuppressWarnings("unchecked") Set<Integer> blockedEdgesSet = (Set<Integer>) ReflectionTestUtils.getField(roadDataSourceWeighting,
                 "blockedEdges");
-        assertThat(blockedEdgesSet).isEqualTo(applyRestrictions ? blockedEdges : Set.of());
+        assertThat(blockedEdgesSet).isEqualTo(blockedEdges);
         assertThat(restrictionWeightingSourceWeighting).isEqualTo(baseWeighting);
     }
 }
