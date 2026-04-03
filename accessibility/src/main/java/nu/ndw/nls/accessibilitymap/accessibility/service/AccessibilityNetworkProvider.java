@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
@@ -67,26 +68,21 @@ public class AccessibilityNetworkProvider {
                 .toList();
 
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
-        Map<Integer, List<Restriction>> integerListMap = queryGraphConfigurer.createEdgeRestrictions(
+        Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
                 networkData.getEncodingManager(),
                 queryGraph,
                 snapRestrictions);
-        Weighting weightingWithRestrictions = weightingFactory.createWeighting(networkData,
-                queryGraph,
-                integerListMap.keySet(),
-                roadChanges,
-                true);
-        Weighting weightingWithoutRestrictions = weightingFactory.createWeighting(networkData,
-                queryGraph,
-                integerListMap.keySet(),
-                roadChanges,
-                false);
+
+        Set<Integer> blockedEdges = restrictionsByEdgeKey.keySet();
+        Weighting weightingWithRestrictions = weightingFactory.createWeighting(networkData, queryGraph, blockedEdges, roadChanges);
+        Weighting weightingWithoutRestrictions = weightingFactory.createWeighting(networkData, queryGraph, Set.of(), roadChanges);
 
         return new AccessibilityNetwork(
                 networkData,
                 roadChanges,
                 queryGraph,
-                restrictions, integerListMap,
+                restrictions,
+                restrictionsByEdgeKey,
                 fromSnap.get(),
                 destinationSnap.orElse(null),
                 weightingWithRestrictions,
