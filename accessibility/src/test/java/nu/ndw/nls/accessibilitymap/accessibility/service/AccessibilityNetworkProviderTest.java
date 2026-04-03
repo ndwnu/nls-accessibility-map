@@ -124,9 +124,9 @@ class AccessibilityNetworkProviderTest {
         try (var queryGraphMockStatic = Mockito.mockStatic(QueryGraph.class)) {
             queryGraphMockStatic.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
-            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet(), roadChanges, true))
+            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet(), roadChanges))
                     .thenReturn(weightingWithRestrictions);
-            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet(), roadChanges, false))
+            when(weightingFactory.createWeighting(networkData, queryGraph, Set.of(), roadChanges))
                     .thenReturn(weightingWithoutRestrictions);
 
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
@@ -140,7 +140,6 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
             assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(restrictionsById);
-            assertThat(accessibilityNetwork.getBlockedEdges()).isEqualTo(Set.of(1));
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
             assertThat(accessibilityNetwork.getRoadChanges()).isEqualTo(roadChanges);
@@ -165,7 +164,7 @@ class AccessibilityNetworkProviderTest {
                 destination)))
                 .isInstanceOf(AccessibilityLocationNotFoundException.class)
                 .hasMessage(("Location could not be resolved at %s, %s. Please try a different location that is closer to actual "
-                        + "road sections in the network.").formatted(from.latitude(), from.longitude()));
+                             + "road sections in the network.").formatted(from.latitude(), from.longitude()));
     }
 
     @Test
@@ -183,7 +182,7 @@ class AccessibilityNetworkProviderTest {
                 destination)))
                 .isInstanceOf(AccessibilityLocationNotFoundException.class)
                 .hasMessage(("Location could not be resolved at %s, %s. Please try a different location that is closer to actual "
-                        + "road sections in the network.").formatted(from.latitude(), from.longitude()));
+                             + "road sections in the network.").formatted(from.latitude(), from.longitude()));
     }
 
     @Test
@@ -211,9 +210,9 @@ class AccessibilityNetworkProviderTest {
         try (var queryGraphMockStatic = Mockito.mockStatic(QueryGraph.class)) {
             queryGraphMockStatic.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
-            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet(), roadChanges, true))
+            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet(), roadChanges))
                     .thenReturn(weightingWithRestrictions);
-            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet(), roadChanges, false))
+            when(weightingFactory.createWeighting(networkData, queryGraph, Set.of(), roadChanges))
                     .thenReturn(weightingWithoutRestrictions);
 
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
@@ -227,7 +226,6 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
             assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));
-            assertThat(accessibilityNetwork.getBlockedEdges()).isEqualTo(Set.of(1));
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
             assertThat(accessibilityNetwork.getRoadChanges()).isEqualTo(roadChanges);
@@ -268,7 +266,6 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
             assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));
-            assertThat(accessibilityNetwork.getBlockedEdges()).isEqualTo(Set.of(1));
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
         }
