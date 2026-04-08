@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeAccessHandler.CAR_ACCESSIBLE_ROADS;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.EdgeAccessHandler.CAR_ACCESSIBLE_ROADS;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;

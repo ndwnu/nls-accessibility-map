@@ -11,7 +11,6 @@ import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeAccessHandler;
 import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.ChangedNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
 import org.junit.jupiter.api.BeforeEach;

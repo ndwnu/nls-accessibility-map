@@ -24,7 +24,7 @@ public class WeightingFactory {
         var baseWeighting = networkGraphHopper
                 .createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
         var restrictionWeightingDecorator = new RestrictionWeightingDecorator(baseWeighting,
-                applyRestrictions ? blockedEdges : java.util.Set.of());
+                applyRestrictions ? blockedEdges : Set.of());
         var roadDataWeightingDecorator = new RoadDataWeightingDecorator(restrictionWeightingDecorator,
                 networkData.getNwbData(), networkData.getEncodingManager());
         var roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(roadDataWeightingDecorator,

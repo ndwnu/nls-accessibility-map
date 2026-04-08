@@ -53,6 +53,9 @@ public class NetworkDataService extends Cache<NetworkData> {
     public void recompileData() {
 
         NwbData nwbData = accessibilityNwbRoadSectionService.getLatestNwbData();
+        // roadChanges = roadChangesService.getLatestRoadChanges();
+        // read from disk if nwbData version != roadChanges version, flush roadChanges
+        // event listener always read nwb version from disk to verify it is up to date
         write(new NetworkData(
                 GraphHopperNetworkWithVersion.builder()
                         .nwbVersion(nwbData.getNwbVersionId())

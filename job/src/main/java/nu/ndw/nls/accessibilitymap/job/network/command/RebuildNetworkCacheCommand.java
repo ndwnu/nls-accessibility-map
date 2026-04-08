@@ -29,6 +29,8 @@ public class RebuildNetworkCacheCommand implements Callable<Integer> {
     private Integer start(NlsEvent nlsEvent) {
         try {
             networkDataService.recompileData();
+
+            //
             return 0;
         } catch (RuntimeException e) {
             log.error("And error occurred while creating or updating latest network", e);

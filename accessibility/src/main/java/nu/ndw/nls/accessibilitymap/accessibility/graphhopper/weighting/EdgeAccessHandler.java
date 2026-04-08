@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting;
 
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.AFR;
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.BVP;
@@ -27,6 +27,7 @@ import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VBW;
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.VDA;
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.WIS;
 
+import java.util.EnumSet;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
@@ -34,7 +35,7 @@ import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 @UtilityClass
 public class EdgeAccessHandler {
 
-    public static final Set<CarriagewayTypeCode> CAR_ACCESSIBLE_ROADS = Set.of(
+    public static final Set<CarriagewayTypeCode> CAR_ACCESSIBLE_ROADS = EnumSet.of(
             PAR,
             PP,
             WIS,

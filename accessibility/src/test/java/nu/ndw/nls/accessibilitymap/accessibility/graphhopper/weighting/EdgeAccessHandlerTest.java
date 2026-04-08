@@ -1,6 +1,6 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeAccessHandler.isAccessible;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.EdgeAccessHandler.isAccessible;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
