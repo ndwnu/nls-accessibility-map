@@ -18,15 +18,20 @@ public class WeightingFactory {
             Set<Integer> blockedEdges,
             RoadChanges roadChanges
     ) {
-        NetworkGraphHopper networkGraphHopper = networkData.getNetworkGraphHopper();
-        var baseWeighting = networkGraphHopper
-                .createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
-        var restrictionWeightingDecorator = new RestrictionWeightingDecorator(baseWeighting,
-                applyRestrictions ? blockedEdges : Set.of());
-        var roadDataWeightingDecorator = new RoadDataWeightingDecorator(restrictionWeightingDecorator,
-                networkData.getNwbData(), networkData.getEncodingManager());
-        var roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(roadDataWeightingDecorator,
-                roadChanges, networkData.getEncodingManager());
+        var baseWeighting = networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
+
+        var restrictionWeightingDecorator = new RestrictionWeightingDecorator(baseWeighting, blockedEdges);
+
+        var roadDataWeightingDecorator = new RoadDataWeightingDecorator(
+                restrictionWeightingDecorator,
+                networkData.getNwbData(),
+                networkData.getEncodingManager());
+
+        var roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(
+                roadDataWeightingDecorator,
+                roadChanges,
+                networkData.getEncodingManager());
+
         return queryGraph.wrapWeighting(roadChangesWeightingDecorator);
     }
 }
