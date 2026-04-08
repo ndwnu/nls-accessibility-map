@@ -21,11 +21,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RoadChangesDataService extends Cache<RoadChanges> {
 
+    private static final String NWB_CHANGED_ROAD_SECTIONS_JSON = "nwb_changed_road_sections.json";
+
     private final NwbVersionCrudService nwbVersionCrudService;
 
     private final ObjectMapper objectMapper;
-
-    private static final String NWB_CHANGED_ROAD_SECTIONS_JSON = "nwb_changed_road_sections.json";
 
     public RoadChangesDataService(RoadChangesCacheConfiguration cacheConfiguration,
             ClockService clockService,

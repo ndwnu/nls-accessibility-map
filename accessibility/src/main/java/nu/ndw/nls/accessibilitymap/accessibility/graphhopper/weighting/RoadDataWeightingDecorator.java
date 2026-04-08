@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeAccessHandler.isAccessible;
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.EdgeAccessHandler.isAccessible;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;

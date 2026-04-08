@@ -18,7 +18,14 @@ public class AccessibilityNwbRoadSectionDtoSupplier extends NwbRoadSectionDtoSup
     public NwbRoadSectionDto create(Edge edge, NwbVersionDto nwbVersionDto) {
 
         NwbRoadSectionDto nwbRoadSectionDto = super.create(edge, nwbVersionDto);
-        String drivingDirection = edge.isForward() && edge.isBackward() ? "B" : edge.isForward() ? "H" : "T";
+        String drivingDirection;
+        if (edge.isForward() && edge.isBackward()) {
+            drivingDirection = "B";
+        } else if (edge.isForward()) {
+            drivingDirection = "H";
+        } else {
+            drivingDirection = "T";
+        }
         return nwbRoadSectionDto
                 .withFunctionalRoadClass("1")
                 .withMunicipalityId(1)
