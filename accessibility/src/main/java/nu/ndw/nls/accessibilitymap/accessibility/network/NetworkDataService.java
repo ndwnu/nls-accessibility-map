@@ -1,8 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -124,10 +126,25 @@ public class NetworkDataService extends Cache<NetworkData> {
     @Override
     protected void writeData(Path target, NetworkData data) throws IOException {
 
-        FileUtils.writeStringToFile(
-                target.resolve(Path.of(NWB_ROAD_SECTIONS_JSON)).toFile(),
-                objectMapper.writeValueAsString(data.getNwbData()),
-                StandardCharsets.UTF_8);
+        Path nwbPath = target.resolve("nwb");
+        Path roadSectionsFile = nwbPath.resolve("roadSections.json");
+
+        if (!Files.exists(roadSectionsFile)) {
+            Files.createDirectories(nwbPath);
+            Files.createFile(roadSectionsFile);
+        }
+
+        try (JsonGenerator gen = objectMapper
+                .getFactory()
+                .createGenerator(Files.newOutputStream(target.resolve(Path.of(NWB_ROAD_SECTIONS_JSON))))) {
+
+            objectMapper.writeValue(gen, data.getNwbData());
+        }
+
+//        FileUtils.writeStringToFile(
+//                target.resolve(Path.of(NWB_ROAD_SECTIONS_JSON)).toFile(),
+//                objectMapper.writeValueAsString(data.getNwbData()),
+//                StandardCharsets.UTF_8);
 
         FileUtils.writeStringToFile(
                 target.resolve(Path.of(NWB_UPDATES_ROAD_SECTIONS_JSON)).toFile(),
