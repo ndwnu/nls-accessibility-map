@@ -1,13 +1,13 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network.dto;
 
-import com.graphhopper.routing.util.EncodingManager;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetworkWithVersion;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.validation.annotation.Validated;
 
@@ -26,21 +26,33 @@ public final class NetworkData {
     @Valid
     private final NwbData nwbData;
 
-    public EncodingManager getEncodingManager() {
-        return networkGraphHopper.getEncodingManager();
+    @NotNull
+    @Valid
+    private final NwbDataUpdates nwbDataUpdates;
+
+    public NetworkData(
+            @NonNull GraphHopperNetwork graphHopperNetwork,
+            @NonNull NwbData nwbData,
+            @NonNull NwbDataUpdates nwbDataUpdates
+    ) {
+
+        this.networkGraphHopper = graphHopperNetwork.network();
+        this.nwbData = nwbData;
+        this.nwbDataUpdates = nwbDataUpdates;
+
+        if (!graphHopperNetwork.nwbVersion().equals(nwbData.getNwbVersionId())) {
+            throw new IllegalArgumentException("Graph Hopper network and road sections do not match NWB versions.");
+        }
+        this.nwbVersion = graphHopperNetwork.nwbVersion();
     }
 
     public NetworkData(
-            @NonNull GraphHopperNetworkWithVersion graphHopperNetworkWithVersion,
-            @NonNull NwbData nwbData
+            @NonNull NetworkGraphHopper networkGraphHopper,
+            @NonNull NwbData nwbData,
+            @NonNull NwbDataUpdates nwbDataUpdates
     ) {
-
-        this.networkGraphHopper = graphHopperNetworkWithVersion.network();
-        this.nwbData = nwbData;
-
-        if (!graphHopperNetworkWithVersion.nwbVersion().equals(nwbData.getNwbVersionId())) {
-            throw new IllegalArgumentException("Graph Hopper network and road sections do not match NWB versions.");
-        }
-        this.nwbVersion = graphHopperNetworkWithVersion.nwbVersion();
+        this(GraphHopperNetwork.builder().network(networkGraphHopper).nwbVersion(nwbData.getNwbVersionId()).build(),
+                nwbData,
+                nwbDataUpdates);
     }
 }

@@ -6,7 +6,6 @@ import com.graphhopper.util.PMap;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,8 +14,7 @@ public class WeightingFactory {
     public Weighting createWeighting(
             NetworkData networkData,
             QueryGraph queryGraph,
-            Set<Integer> blockedEdges,
-            RoadChanges roadChanges
+            Set<Integer> blockedEdges
     ) {
         var baseWeighting = networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
 
@@ -25,12 +23,12 @@ public class WeightingFactory {
         var roadDataWeightingDecorator = new RoadDataWeightingDecorator(
                 restrictionWeightingDecorator,
                 networkData.getNwbData(),
-                networkData.getEncodingManager());
+                networkData.getNetworkGraphHopper().getEncodingManager());
 
         var roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(
                 roadDataWeightingDecorator,
-                roadChanges,
-                networkData.getEncodingManager());
+                networkData.getNwbDataUpdates(),
+                networkData.getNetworkGraphHopper().getEncodingManager());
 
         return queryGraph.wrapWeighting(roadChangesWeightingDecorator);
     }

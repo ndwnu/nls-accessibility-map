@@ -11,8 +11,8 @@ import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.ChangedNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class RoadChangesWeightingDecoratorTest {
+class NwbDataUpdatesWeightingDecoratorTest {
 
     private static final int LINK_ID = 123;
 
@@ -38,20 +38,20 @@ class RoadChangesWeightingDecoratorTest {
     private Weighting sourceWeighting;
 
     @Mock
-    private RoadChanges roadChanges;
+    private NwbDataUpdates nwbDataUpdates;
 
     @Mock
     private IntEncodedValue intEncodedValue;
 
     @Mock
-    private ChangedNwbRoadSection changedNwbRoadSection;
+    private AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate;
 
     private RoadChangesWeightingDecorator roadChangesWeightingDecorator;
 
     @BeforeEach
     void setUp() {
 
-        roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(sourceWeighting, roadChanges, encodingManager);
+        roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(sourceWeighting, nwbDataUpdates, encodingManager);
     }
 
     @Test
@@ -74,12 +74,12 @@ class RoadChangesWeightingDecoratorTest {
         try (var edgeAccessHandler = Mockito.mockStatic(EdgeAccessHandler.class)) {
             when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
             when(edgeIteratorState.get(intEncodedValue)).thenReturn(LINK_ID);
-            when(changedNwbRoadSection.carriagewayTypeCode()).thenReturn(RB);
-            when(changedNwbRoadSection.forwardAccessible()).thenReturn(true);
-            when(changedNwbRoadSection.backwardAccessible()).thenReturn(true);
+            when(accessibilityNwbRoadSectionUpdate.carriagewayTypeCode()).thenReturn(RB);
+            when(accessibilityNwbRoadSectionUpdate.forwardAccessible()).thenReturn(true);
+            when(accessibilityNwbRoadSectionUpdate.backwardAccessible()).thenReturn(true);
             edgeAccessHandler.when(() -> EdgeAccessHandler.isAccessible(RB, true, true, reversed))
                     .thenReturn(hasAccess);
-            when(roadChanges.findChangedNwbRoadSectionById(LINK_ID)).thenReturn(Optional.of(changedNwbRoadSection));
+            when(nwbDataUpdates.findChangedNwbRoadSectionById(LINK_ID)).thenReturn(Optional.of(accessibilityNwbRoadSectionUpdate));
             if (hasAccess) {
                 when(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed)).thenReturn(1.0);
             }
@@ -96,7 +96,7 @@ class RoadChangesWeightingDecoratorTest {
 
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(LINK_ID);
-        when(roadChanges.findChangedNwbRoadSectionById(LINK_ID)).thenReturn(Optional.empty());
+        when(nwbDataUpdates.findChangedNwbRoadSectionById(LINK_ID)).thenReturn(Optional.empty());
         when(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed)).thenReturn(1.0);
 
         double weight = roadChangesWeightingDecorator.calcEdgeWeight(edgeIteratorState, reversed);

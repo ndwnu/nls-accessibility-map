@@ -7,15 +7,15 @@ import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.ChangedNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 
 @RequiredArgsConstructor
 public class RoadChangesWeightingDecorator implements Weighting {
 
     private final Weighting sourceWeighting;
 
-    private final RoadChanges roadChanges;
+    private final NwbDataUpdates nwbDataUpdates;
 
     private final EncodingManager encodingManager;
 
@@ -27,15 +27,18 @@ public class RoadChangesWeightingDecorator implements Weighting {
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversed) {
         int linkId = getLinkId(edgeIteratorState, encodingManager);
-        return roadChanges.findChangedNwbRoadSectionById(linkId)
+        return nwbDataUpdates.findChangedNwbRoadSectionById(linkId)
                 .map(changedNwbRoadSection -> blockIfInaccessible(edgeIteratorState, reversed, changedNwbRoadSection))
                 .orElse(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed));
     }
 
-    private double blockIfInaccessible(EdgeIteratorState edgeIteratorState, boolean reversed, ChangedNwbRoadSection changedNwbRoadSection) {
-        return isAccessible(changedNwbRoadSection.carriagewayTypeCode(),
-                changedNwbRoadSection.forwardAccessible(),
-                changedNwbRoadSection.backwardAccessible(),
+    private double blockIfInaccessible(EdgeIteratorState edgeIteratorState,
+            boolean reversed,
+            AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate
+    ) {
+        return isAccessible(accessibilityNwbRoadSectionUpdate.carriagewayTypeCode(),
+                accessibilityNwbRoadSectionUpdate.forwardAccessible(),
+                accessibilityNwbRoadSectionUpdate.backwardAccessible(),
                 reversed) ? sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed) : Double.POSITIVE_INFINITY;
     }
 

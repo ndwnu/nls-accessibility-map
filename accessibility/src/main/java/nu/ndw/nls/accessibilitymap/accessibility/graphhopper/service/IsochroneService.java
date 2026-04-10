@@ -26,7 +26,7 @@ public class IsochroneService {
         List<IsoLabel> isoLabels = new ArrayList<>();
         isochroneByTimeDistanceAndWeight.search(accessibilityNetwork.getFrom().getClosestNode(), isoLabels::add);
 
-        EncodingManager encodingManager = accessibilityNetwork.getNetworkData().getEncodingManager();
+        EncodingManager encodingManager = accessibilityNetwork.getNetworkData().getNetworkGraphHopper().getEncodingManager();
         return isoLabels.stream()
                 .filter(IsochroneFilter::isNotRoot)
                 .filter(isoLabel -> IsochroneFilter.isWithinMunicipality(encodingManager, queryGraph, isoLabel, isochroneArguments))

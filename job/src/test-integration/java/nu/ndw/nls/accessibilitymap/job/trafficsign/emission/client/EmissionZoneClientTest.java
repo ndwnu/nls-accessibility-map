@@ -46,7 +46,8 @@ import org.wiremock.spring.EnableWireMock;
 @TestPropertySource(properties = {
         "nu.ndw.nls.accessibilitymap.trafficsigns.emission-zone.client.url=http://localhost:${wiremock.server.port}",
         "resilience4j.retry.instances.emissionZone.maxAttempts=2",
-        "resilience4j.retry.instances.emissionZone.waitDuration=1ms"
+        "resilience4j.retry.instances.emissionZone.waitDuration=1ms",
+        "spring.liquibase.enabled=false"
 })
 class EmissionZoneClientTest {
 

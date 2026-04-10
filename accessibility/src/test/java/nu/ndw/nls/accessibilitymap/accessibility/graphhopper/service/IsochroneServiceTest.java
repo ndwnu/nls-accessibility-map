@@ -20,6 +20,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsochroneByTimeDistanceAndWeight;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,6 +42,9 @@ class IsochroneServiceTest {
 
     @Mock
     private NetworkData networkData;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private EncodingManager encodingManager;
@@ -97,7 +101,8 @@ class IsochroneServiceTest {
         IsoLabel isoLabel = createIsoLabel();
 
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
-        when(accessibilityNetwork.getNetworkData().getEncodingManager()).thenReturn(encodingManager);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);

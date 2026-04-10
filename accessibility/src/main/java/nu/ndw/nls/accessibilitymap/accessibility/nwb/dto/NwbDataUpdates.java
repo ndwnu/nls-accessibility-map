@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto;
+package nu.ndw.nls.accessibilitymap.accessibility.nwb.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,7 +21,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 @ToString(of = {"nwbVersionId"})
-public final class RoadChanges {
+public final class NwbDataUpdates {
 
     @NotNull
     @Getter
@@ -30,55 +30,54 @@ public final class RoadChanges {
     @NotNull
     @JsonInclude(Include.ALWAYS)
     @Getter
-    private final List<ChangedNwbRoadSection> changedNwbRoadSections;
+    private final List<AccessibilityNwbRoadSectionUpdate> accessibilityNwbRoadSectionUpdates;
 
     @NotNull
     @JsonIgnore
-    private final SortedMap<Long, ChangedNwbRoadSection> changedNwbRoadSectionsById;
+    private final SortedMap<Long, AccessibilityNwbRoadSectionUpdate> changedNwbRoadSectionsById;
 
     @JsonCreator
-    public RoadChanges(@NonNull @JsonProperty("nwbVersionId") Integer nwbVersionId,
-            @NonNull @JsonProperty("changedNwbRoadSections") List<ChangedNwbRoadSection> changedNwbRoadSections
+    public NwbDataUpdates(@NonNull @JsonProperty("nwbVersionId") Integer nwbVersionId,
+            @NonNull @JsonProperty("changedNwbRoadSections") List<AccessibilityNwbRoadSectionUpdate> accessibilityNwbRoadSectionUpdates
     ) {
         this.nwbVersionId = nwbVersionId;
 
-        this.changedNwbRoadSectionsById = changedNwbRoadSections.stream()
+        this.changedNwbRoadSectionsById = accessibilityNwbRoadSectionUpdates.stream()
                 .collect(Collectors.toMap(
-                        ChangedNwbRoadSection::roadSectionId,               // key mapper (id)
+                        AccessibilityNwbRoadSectionUpdate::roadSectionId,               // key mapper (id)
                         Function.identity(),           // value mapper (the object)
-                        ChangedNwbRoadSection::update,//merge function if duplicate ids occur update previous with new values
+                        AccessibilityNwbRoadSectionUpdate::update,//merge function if duplicate ids occur update previous with new values
                         TreeMap::new
                 ));
 
-        this.changedNwbRoadSections = changedNwbRoadSectionsById.values().stream().toList();
+        this.accessibilityNwbRoadSectionUpdates = changedNwbRoadSectionsById.values().stream().toList();
     }
 
-    public Optional<ChangedNwbRoadSection> findChangedNwbRoadSectionById(long roadSectionId) {
+    public Optional<AccessibilityNwbRoadSectionUpdate> findChangedNwbRoadSectionById(long roadSectionId) {
         return Optional.ofNullable(changedNwbRoadSectionsById.get(roadSectionId));
     }
 
-    public RoadChanges merge(RoadChanges other) {
-        if (!isSameVersion(other)) {
-            throw new IllegalArgumentException("Cannot merge road changes with different nwbVersionId (%s vs %s)".formatted(this.nwbVersionId,
-                    other.nwbVersionId));
+    public NwbDataUpdates merge(NwbDataUpdates other) {
+        if (!isSameNwbVersion(other)) {
+            return other;
         }
 
         // update existing roadSections with new changes
-        List<ChangedNwbRoadSection> mergedChangedNwbRoadSections = new ArrayList<>(this.changedNwbRoadSections.stream()
+        List<AccessibilityNwbRoadSectionUpdate> mergedAccessibilityNwbRoadSectionUpdates = new ArrayList<>(this.accessibilityNwbRoadSectionUpdates.stream()
                 .map(changedNwbRoadSection -> other.findChangedNwbRoadSectionById(changedNwbRoadSection.roadSectionId())
                         .map(changedNwbRoadSection::update)
                         .orElse(changedNwbRoadSection))
                 .toList());
         // add only new changed roadSections
-        List<ChangedNwbRoadSection> newEntries = other.changedNwbRoadSections.stream()
+        List<AccessibilityNwbRoadSectionUpdate> newEntries = other.accessibilityNwbRoadSectionUpdates.stream()
                 .filter(r -> this.findChangedNwbRoadSectionById(r.roadSectionId()).isEmpty())
                 .toList();
 
-        mergedChangedNwbRoadSections.addAll(newEntries);
-        return new RoadChanges(this.nwbVersionId, new ArrayList<>(mergedChangedNwbRoadSections));
+        mergedAccessibilityNwbRoadSectionUpdates.addAll(newEntries);
+        return new NwbDataUpdates(this.nwbVersionId, new ArrayList<>(mergedAccessibilityNwbRoadSectionUpdates));
     }
 
-    public boolean isSameVersion(RoadChanges other) {
+    private boolean isSameNwbVersion(NwbDataUpdates other) {
         return Objects.equals(other.nwbVersionId, this.nwbVersionId);
     }
 }

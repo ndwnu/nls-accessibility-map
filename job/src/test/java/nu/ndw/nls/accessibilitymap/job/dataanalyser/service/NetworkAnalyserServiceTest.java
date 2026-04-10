@@ -17,8 +17,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.service.issue.mapper.IssueBuilder;
@@ -68,12 +66,6 @@ class NetworkAnalyserServiceTest {
     private RoadSection missingRoadSection;
 
     @Mock
-    private RoadChangesDataService roadChangesDataService;
-
-    @Mock
-    private RoadChanges roadChanges;
-
-    @Mock
     private CreateIssueJson issue;
 
     @RegisterExtension
@@ -114,7 +106,7 @@ class NetworkAnalyserServiceTest {
                 issueBuilder,
                 accessibilityService,
                 networkDataService,
-                roadChangesDataService, clockService);
+                clockService);
     }
 
     @Test
@@ -129,11 +121,9 @@ class NetworkAnalyserServiceTest {
                 eq("UnreachableNetworkSegments")
         )).thenReturn(issue);
         when(networkDataService.get()).thenReturn(networkData);
-        when(roadChangesDataService.get()).thenReturn(roadChanges);
         when(networkData.getNwbVersion()).thenReturn(1234);
         when(accessibilityService.calculateAccessibility(
                 eq(networkData),
-                eq(roadChanges),
                 assertArg(actualAccessibilityRequest -> assertThat(actualAccessibilityRequest).isEqualTo(accessibilityRequest)))
         ).thenReturn(
                 Accessibility.builder()

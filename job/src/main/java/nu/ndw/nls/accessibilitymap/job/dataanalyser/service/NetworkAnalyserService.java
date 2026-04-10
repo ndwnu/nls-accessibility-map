@@ -8,8 +8,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.dto.AnalyseNetworkConfiguration;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.service.issue.mapper.IssueBuilder;
@@ -31,8 +29,6 @@ public class NetworkAnalyserService extends IssueReporterService {
 
     private final NetworkDataService networkDataService;
 
-    private final RoadChangesDataService roadChangesDataService;
-
     private final ClockService clockService;
 
     public NetworkAnalyserService(
@@ -40,7 +36,7 @@ public class NetworkAnalyserService extends IssueReporterService {
             ReportApiClient reportApiClient,
             IssueBuilder issueBuilder,
             AccessibilityService accessibilityService,
-            NetworkDataService networkDataService, RoadChangesDataService roadChangesDataService,
+            NetworkDataService networkDataService,
             ClockService clockService
     ) {
 
@@ -49,7 +45,6 @@ public class NetworkAnalyserService extends IssueReporterService {
         this.issueBuilder = issueBuilder;
         this.accessibilityService = accessibilityService;
         this.networkDataService = networkDataService;
-        this.roadChangesDataService = roadChangesDataService;
         this.clockService = clockService;
     }
 
@@ -58,10 +53,8 @@ public class NetworkAnalyserService extends IssueReporterService {
         log.info("Analysing with the following properties: {}", analyseNetworkConfiguration);
 
         NetworkData networkData = networkDataService.get();
-        RoadChanges roadChanges = roadChangesDataService.get();
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 networkData,
-                roadChanges,
                 AccessibilityRequest.builder()
                         .timestamp(clockService.now())
                         .maxSearchDistanceInMeters(analyseNetworkConfiguration.maxSearchDistanceInMeters())

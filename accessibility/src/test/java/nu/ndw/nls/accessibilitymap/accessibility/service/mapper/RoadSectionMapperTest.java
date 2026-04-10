@@ -29,6 +29,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSec
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,6 +55,9 @@ class RoadSectionMapperTest {
 
     @Mock
     private AccessibilityNetwork accessibilityNetwork;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private IsoLabel isoLabel;
@@ -109,7 +113,8 @@ class RoadSectionMapperTest {
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
         when(queryGraph.getEdgeIteratorState(2, 1)).thenReturn(edgeIteratorState);
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
-        when(networkData.getEncodingManager()).thenReturn(encodingManager);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(1);
         when(networkData.getNwbData()).thenReturn(nwbData);

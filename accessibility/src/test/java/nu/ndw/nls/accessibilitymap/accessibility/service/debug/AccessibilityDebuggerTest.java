@@ -28,7 +28,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsectio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
@@ -76,7 +76,7 @@ class AccessibilityDebuggerTest {
     private LineString lineStringBackward;
 
     @Mock
-    private RoadChanges roadChanges;
+    private NwbDataUpdates nwbDataUpdates;
 
     private Path testDir;
 
@@ -548,7 +548,6 @@ class AccessibilityDebuggerTest {
 
         AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
                 networkData,
-                roadChanges,
                 null,
                 mock(Restrictions.class),
                 Map.of(),
@@ -611,7 +610,6 @@ class AccessibilityDebuggerTest {
 
         AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
                 networkData,
-                roadChanges,
                 null,
                 mock(Restrictions.class),
                 Map.of(),
