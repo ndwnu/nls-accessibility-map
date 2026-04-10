@@ -13,7 +13,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetworkWithVersion;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.AccessibilityNwbRoadSectionToLinkMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
@@ -43,20 +43,20 @@ public class GraphHopperService {
     private final ClockService clockService;
 
     @Timed(value = "accessibilitymap.graphHopper.load")
-    public GraphHopperNetworkWithVersion load(Path location) {
+    public GraphHopperNetwork load(Path location) {
         RoutingNetworkSettings<AccessibilityLink> routingNetworkSettings = defaultNetworkSettings(location);
         try {
             OffsetDateTime start = clockService.now();
 
             NetworkGraphHopper networkGraphHopper = graphHopperNetworkService.loadFromDisk(routingNetworkSettings);
 
-            GraphHopperNetworkWithVersion graphHopperNetworkWithVersion = GraphHopperNetworkWithVersion.builder()
+            GraphHopperNetwork graphHopperNetwork = GraphHopperNetwork.builder()
                     .network(networkGraphHopper)
                     .nwbVersion(loadMetaData(location).nwbVersion())
                     .build();
             log.info("GraphHopper network loaded from disk in {}ms", Duration.between(start, clockService.now()).toMillis());
 
-            return graphHopperNetworkWithVersion;
+            return graphHopperNetwork;
         } catch (GraphHopperNotImportedException exception) {
             throw new IllegalStateException(
                     "Could not load GraphHopper network from %s"

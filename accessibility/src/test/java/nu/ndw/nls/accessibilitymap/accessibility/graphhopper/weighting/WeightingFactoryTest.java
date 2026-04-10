@@ -13,7 +13,7 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ class WeightingFactoryTest {
     private QueryGraph queryGraph;
 
     @Mock
-    private RoadChanges roadChanges;
+    private NwbDataUpdates nwbDataUpdates;
 
     @Mock
     private NwbData nwbData;
@@ -63,13 +63,14 @@ class WeightingFactoryTest {
     @ValueSource(booleans = {true, false})
     void createWeighting_withRestrictions(boolean applyRestrictions) {
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(networkData.getEncodingManager()).thenReturn(encodingManager);
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), any(PMap.class))).thenReturn(baseWeighting);
         when(queryGraph.wrapWeighting(weightingCaptor.capture())).thenReturn(baseWeighting);
         when(networkData.getNwbData()).thenReturn(nwbData);
+        when(networkData.getNwbDataUpdates()).thenReturn(nwbDataUpdates);
 
         Set<Integer> blockedEdges = applyRestrictions ? Set.of(1) : Set.of();
-        Weighting weighting = weightingFactory.createWeighting(networkData, queryGraph, blockedEdges, roadChanges);
+        Weighting weighting = weightingFactory.createWeighting(networkData, queryGraph, blockedEdges);
 
         assertThat(weighting).isEqualTo(baseWeighting);
 
@@ -79,14 +80,14 @@ class WeightingFactoryTest {
     private void assertThatWeightingIsCorrectlyConstructed(Set<Integer> blockedEdges) {
         RoadChangesWeightingDecorator constructedWeighting = weightingCaptor.getValue();
         Weighting roadChangesSourceWeighting = (Weighting) ReflectionTestUtils.getField(constructedWeighting, "sourceWeighting");
-        RoadChanges roadChangesInstance = (RoadChanges) ReflectionTestUtils.getField(constructedWeighting, "roadChanges");
+        NwbDataUpdates nwbDataUpdatesInstance = (NwbDataUpdates) ReflectionTestUtils.getField(constructedWeighting, "nwbDataUpdates");
         EncodingManager roadChangesEncodingManager = (EncodingManager) ReflectionTestUtils.getField(constructedWeighting,
                 "encodingManager");
 
         assertThat(roadChangesSourceWeighting)
                 .isNotNull()
                 .isInstanceOf(RoadDataWeightingDecorator.class);
-        assertThat(roadChangesInstance).isEqualTo(roadChanges);
+        assertThat(nwbDataUpdatesInstance).isEqualTo(nwbDataUpdates);
         assertThat(roadChangesEncodingManager).isEqualTo(encodingManager);
 
         Weighting roadDataSourceWeighting = (Weighting) ReflectionTestUtils.getField(roadChangesSourceWeighting, "sourceWeighting");

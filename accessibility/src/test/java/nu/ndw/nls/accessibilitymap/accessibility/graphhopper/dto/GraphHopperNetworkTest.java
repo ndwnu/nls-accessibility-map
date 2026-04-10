@@ -12,9 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class GraphHopperNetworkWithVersionTest extends ValidationTest {
+class GraphHopperNetworkTest extends ValidationTest {
 
-    private GraphHopperNetworkWithVersion graphHopperNetworkWithVersion;
+    private GraphHopperNetwork graphHopperNetwork;
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
@@ -22,7 +22,7 @@ class GraphHopperNetworkWithVersionTest extends ValidationTest {
     @BeforeEach
     void setUp() {
 
-        graphHopperNetworkWithVersion = new GraphHopperNetworkWithVersion(
+        graphHopperNetwork = new GraphHopperNetwork(
                 networkGraphHopper,
                 1
         );
@@ -31,31 +31,31 @@ class GraphHopperNetworkWithVersionTest extends ValidationTest {
     @Test
     void validate() {
 
-        validate(graphHopperNetworkWithVersion, List.of(), List.of());
+        validate(graphHopperNetwork, List.of(), List.of());
     }
 
     @Test
     void validate_network_null() {
 
-        graphHopperNetworkWithVersion = graphHopperNetworkWithVersion.withNetwork(null);
-        validate(graphHopperNetworkWithVersion, List.of("network"), List.of("must not be null"));
+        graphHopperNetwork = graphHopperNetwork.withNetwork(null);
+        validate(graphHopperNetwork, List.of("network"), List.of("must not be null"));
     }
 
     @Test
     void validate_nwbVersion_null() {
 
-        graphHopperNetworkWithVersion = graphHopperNetworkWithVersion.withNwbVersion(null);
-        validate(graphHopperNetworkWithVersion, List.of("nwbVersion"), List.of("must not be null"));
+        graphHopperNetwork = graphHopperNetwork.withNwbVersion(null);
+        validate(graphHopperNetwork, List.of("nwbVersion"), List.of("must not be null"));
     }
 
     @Test
     void toStringTest() {
-        assertThat(graphHopperNetworkWithVersion)
+        assertThat(graphHopperNetwork)
                 .hasToString("GraphHopperNetwork(nwbVersion=1)");
     }
 
     @Override
     protected Class<?> getClassToTest() {
-        return graphHopperNetworkWithVersion.getClass();
+        return graphHopperNetwork.getClass();
     }
 }

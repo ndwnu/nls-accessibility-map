@@ -10,14 +10,18 @@ import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetworkWithVersion;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
+import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
@@ -52,12 +56,20 @@ class NetworkDataServiceTest {
     private ObjectMapper objectMapper;
 
     @Mock
-    private GraphHopperNetworkWithVersion graphHopperNetworkWithVersion;
+    private GraphHopperNetwork graphHopperNetwork;
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
 
+    @Mock
+    private DistributedLockService distributedLockService;
+
+    @Mock
+    private NwbVersionCrudService nwbVersionCrudService;
+
     private NwbData nwbData;
+
+    private NwbDataUpdates nwbDataUpdates;
 
     @BeforeEach
     void setUp() throws IOException {
@@ -65,7 +77,7 @@ class NetworkDataServiceTest {
         objectMapper = new ObjectMapper();
 
         nwbData = new NwbData(1, buildAccessibilityRoadSections());
-
+        nwbDataUpdates = new NwbDataUpdates(1, buildAccessibilityRoadSectionUpdates());
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
         networkCacheConfiguration = NetworkCacheConfiguration.builder()
                 .folder(testDir)
@@ -75,9 +87,10 @@ class NetworkDataServiceTest {
         networkDataService = new NetworkDataService(
                 networkCacheConfiguration,
                 clockService,
+                distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper);
+                objectMapper, nwbVersionCrudService);
     }
 
     @AfterEach
@@ -107,9 +120,9 @@ class NetworkDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        when(graphHopperNetworkWithVersion.network()).thenReturn(networkGraphHopper);
-        when(graphHopperNetworkWithVersion.nwbVersion()).thenReturn(1);
-        NetworkData networkData = new NetworkData(graphHopperNetworkWithVersion, nwbData);
+        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(graphHopperNetwork.nwbVersion()).thenReturn(1);
+        NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);
         networkDataService.write(networkData);
 
         NetworkData actualNetworkData = networkDataService.get();
@@ -127,6 +140,7 @@ class NetworkDataServiceTest {
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
         Path nwbDir = networkCacheConfiguration.getActiveVersion().toPath().resolve("nwb");
+
         Files.createDirectories(nwbDir);
         Files.writeString(
                 nwbDir.resolve("roadSections.json"), """
@@ -135,11 +149,16 @@ class NetworkDataServiceTest {
                            "accessibilityNwbRoadSections": %s
                         }
                         """.formatted(objectMapper.writeValueAsString(buildAccessibilityRoadSections())));
+        Path nwbUpdatesDir = networkCacheConfiguration.getActiveVersion().toPath().resolve("nwbUpdates");
+        Files.createDirectories(nwbUpdatesDir);
+        Files.writeString(nwbUpdatesDir.resolve("nwb_changed_road_sections.json"), """
+                {"nwbVersionId":1,"changedNwbRoadSections": %s}
+                """.formatted(objectMapper.writeValueAsString(buildAccessibilityRoadSectionUpdates())));
 
         when(graphHopperService.load(networkCacheConfiguration.getActiveVersion().toPath().resolve("graphHopper")))
-                .thenReturn(graphHopperNetworkWithVersion);
-        when(graphHopperNetworkWithVersion.nwbVersion()).thenReturn(1);
-        when(graphHopperNetworkWithVersion.network()).thenReturn(networkGraphHopper);
+                .thenReturn(graphHopperNetwork);
+        when(graphHopperNetwork.nwbVersion()).thenReturn(1);
+        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
 
         networkDataService.read();
 
@@ -149,6 +168,9 @@ class NetworkDataServiceTest {
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
         assertThat(networkData.getNwbData().getNwbVersionId()).isEqualTo(nwbData.getNwbVersionId());
         assertThat(networkData.getNwbData().getAccessibilityNwbRoadSections()).isEqualTo(buildAccessibilityRoadSections());
+        assertThat(networkData.getNwbDataUpdates().getNwbVersionId()).isEqualTo(nwbDataUpdates.getNwbVersionId());
+        assertThat(networkData.getNwbDataUpdates()
+                .getAccessibilityNwbRoadSectionUpdates()).isEqualTo(buildAccessibilityRoadSectionUpdates());
     }
 
     @Test
@@ -184,6 +206,16 @@ class NetworkDataServiceTest {
                         false,
                         CarriagewayTypeCode.RB,
                         "1")
+        );
+    }
+
+    private static List<AccessibilityNwbRoadSectionUpdate> buildAccessibilityRoadSectionUpdates() {
+        return List.of(
+                new AccessibilityNwbRoadSectionUpdate(
+                        123,
+                        false,
+                        true,
+                        CarriagewayTypeCode.RB)
         );
     }
 }

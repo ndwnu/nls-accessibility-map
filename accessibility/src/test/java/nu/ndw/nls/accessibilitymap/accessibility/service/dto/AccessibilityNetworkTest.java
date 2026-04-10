@@ -10,7 +10,6 @@ import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -27,9 +26,6 @@ class AccessibilityNetworkTest {
 
     @Mock
     private Weighting weighting;
-
-    @Mock
-    private RoadChanges roadChanges;
 
     @Mock
     private Snap from;
@@ -50,7 +46,6 @@ class AccessibilityNetworkTest {
 
         AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
                 networkData,
-                roadChanges,
                 queryGraph,
                 restrictions,
                 restrictionsByEdgeKey,

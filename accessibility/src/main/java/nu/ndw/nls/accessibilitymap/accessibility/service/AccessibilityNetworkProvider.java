@@ -18,7 +18,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGra
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.WeightingFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
@@ -37,7 +36,6 @@ public class AccessibilityNetworkProvider {
     public AccessibilityNetwork get(
             NetworkData networkData,
             Restrictions restrictions,
-            RoadChanges roadChanges,
             Location from,
             Location destination
     ) {
@@ -69,17 +67,16 @@ public class AccessibilityNetworkProvider {
 
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), snaps);
         Map<Integer, List<Restriction>> restrictionsByEdgeKey = queryGraphConfigurer.createEdgeRestrictions(
-                networkData.getEncodingManager(),
+                networkData.getNetworkGraphHopper().getEncodingManager(),
                 queryGraph,
                 snapRestrictions);
 
         Set<Integer> blockedEdges = restrictionsByEdgeKey.keySet();
-        Weighting weightingWithRestrictions = weightingFactory.createWeighting(networkData, queryGraph, blockedEdges, roadChanges);
-        Weighting weightingWithoutRestrictions = weightingFactory.createWeighting(networkData, queryGraph, Set.of(), roadChanges);
+        Weighting weightingWithRestrictions = weightingFactory.createWeighting(networkData, queryGraph, blockedEdges);
+        Weighting weightingWithoutRestrictions = weightingFactory.createWeighting(networkData, queryGraph, Set.of());
 
         return new AccessibilityNetwork(
                 networkData,
-                roadChanges,
                 queryGraph,
                 restrictions,
                 restrictionsByEdgeKey,

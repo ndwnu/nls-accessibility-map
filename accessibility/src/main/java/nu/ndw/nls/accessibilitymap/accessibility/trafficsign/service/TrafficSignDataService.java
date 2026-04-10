@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
@@ -25,9 +26,11 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
     public TrafficSignDataService(
             TrafficSignCacheConfiguration trafficSignCacheConfiguration,
             ClockService clockService,
-            ObjectMapper objectMapper) {
+            DistributedLockService distributedLockService,
+            ObjectMapper objectMapper
+    ) {
 
-        super(trafficSignCacheConfiguration, clockService);
+        super(trafficSignCacheConfiguration, clockService, distributedLockService);
 
         this.objectMapper = objectMapper;
     }

@@ -10,7 +10,6 @@ import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
@@ -40,13 +39,10 @@ public class AccessibilityNetwork {
     @NotNull
     private final Weighting weightingWithOutRestrictions;
 
-    @NotNull
-    private final RoadChanges roadChanges;
 
     @SuppressWarnings("java:S107")
     public AccessibilityNetwork(
             @NotNull NetworkData networkData,
-            @NotNull RoadChanges roadChanges,
             @NotNull QueryGraph queryGraph,
             @NotNull Restrictions restrictions,
             @NotNull Map<Integer, List<Restriction>> restrictionsByEdgeKey,
@@ -56,7 +52,6 @@ public class AccessibilityNetwork {
             Weighting weightingWithOutRestrictions
     ) {
         this.networkData = networkData;
-        this.roadChanges = roadChanges;
         this.queryGraph = queryGraph;
         this.restrictions = restrictions;
         this.restrictionsByEdgeKey = restrictionsByEdgeKey;

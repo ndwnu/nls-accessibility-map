@@ -28,7 +28,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebugger;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityException;
@@ -61,7 +60,6 @@ public class AccessibilityService {
     @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
             @Valid NetworkData networkData,
-            @Valid RoadChanges roadChanges,
             @Valid AccessibilityRequest accessibilityRequest
     ) throws AccessibilityException {
 
@@ -74,7 +72,6 @@ public class AccessibilityService {
         AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                 networkData,
                 restrictions,
-                roadChanges,
                 locationFactory.mapCoordinate(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude()),
                 locationFactory.mapCoordinate(accessibilityRequest.endLocationLatitude(), accessibilityRequest.endLocationLongitude()));
         accessibilityDebugger.writeDebug(accessibilityNetwork);

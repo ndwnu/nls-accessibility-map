@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @Builder
 @With
-public record GraphHopperNetworkWithVersion(
+public record GraphHopperNetwork(
         @NotNull NetworkGraphHopper network,
         @NotNull Integer nwbVersion
 ) {

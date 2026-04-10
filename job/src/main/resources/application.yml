@@ -15,6 +15,12 @@ spring:
     name: nls-accessibility-map-job
   config:
     import: "optional:configtree:/application/config/configtree/"
+  liquibase:
+    contexts: "main"
+    change-log: classpath:/db/changelog/changelog-master.xml
+    database-change-log-table: ACC_MAP_DATABASECHANGELOG
+    database-change-log-lock-table: ACC_MAP_DATABASECHANGELOGLOCK
+    default-schema: public
   datasource:
     driver-class-name: org.postgresql.Driver
     hikari:

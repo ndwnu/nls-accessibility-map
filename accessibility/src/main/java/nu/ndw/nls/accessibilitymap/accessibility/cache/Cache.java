@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -28,11 +29,15 @@ public abstract class Cache<TYPE> {
 
     private static final int SIZE_ROUNDING = 2;
 
+    private static final int MAX_LOCK_WAIT_TIME = 45;
+
     @Getter(AccessLevel.PROTECTED)
     private final CacheConfiguration cacheConfiguration;
 
     @Getter(AccessLevel.PROTECTED)
     private final ClockService clockService;
+
+    private final DistributedLockService distributedLockService;
 
     private TYPE data;
 
@@ -66,10 +71,12 @@ public abstract class Cache<TYPE> {
 
     protected synchronized void read(boolean triggeredOnStartup) {
         try {
+            distributedLockService.lockOrFail(cacheConfiguration.getName(), Duration.ofSeconds(MAX_LOCK_WAIT_TIME));
+
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
-
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
+
             TYPE newData = readData(activeVersion);
 
             dataLock.lock();
@@ -92,6 +99,8 @@ public abstract class Cache<TYPE> {
             if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
+        } finally {
+            distributedLockService.unlock(cacheConfiguration.getName());
         }
     }
 
@@ -100,10 +109,12 @@ public abstract class Cache<TYPE> {
         Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
         try {
-            Files.createDirectories(targetLocation);
+            distributedLockService.lockOrFail(cacheConfiguration.getName(), Duration.ofSeconds(MAX_LOCK_WAIT_TIME));
 
+            Files.createDirectories(targetLocation);
             log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
             writeData(targetLocation.toRealPath().toAbsolutePath(), data);
+
             log.info(
                     "Written {} data to `{}` with size {}MB in {} ms",
                     cacheConfiguration.getName(),
@@ -117,8 +128,10 @@ public abstract class Cache<TYPE> {
             dataLock.lock();
             this.data = data;
             dataLock.unlock();
-        } catch (IOException exception) {
+        } catch (IOException | InterruptedException exception) {
             log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
+        } finally {
+            distributedLockService.unlock(cacheConfiguration.getName());
         }
     }
 

@@ -1,11 +1,11 @@
-package nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto;
+package nu.ndw.nls.accessibilitymap.accessibility.nwb.dto;
 
 import jakarta.validation.constraints.NotNull;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-public record ChangedNwbRoadSection(
+public record AccessibilityNwbRoadSectionUpdate(
         long roadSectionId,
 
         boolean forwardAccessible,
@@ -14,8 +14,8 @@ public record ChangedNwbRoadSection(
         @NotNull
         CarriagewayTypeCode carriagewayTypeCode) {
 
-    public ChangedNwbRoadSection update(ChangedNwbRoadSection other) {
-        return new ChangedNwbRoadSection(
+    public AccessibilityNwbRoadSectionUpdate update(AccessibilityNwbRoadSectionUpdate other) {
+        return new AccessibilityNwbRoadSectionUpdate(
                 roadSectionId,
                 other.forwardAccessible(),
                 other.backwardAccessible(),

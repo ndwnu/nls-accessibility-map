@@ -19,7 +19,7 @@ import java.time.OffsetDateTime;
 import java.util.Iterator;
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetworkWithVersion;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.network.GraphhopperMetaData;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.AccessibilityNwbRoadSectionToLinkMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
@@ -124,10 +124,10 @@ class GraphHopperServiceTest {
         when(objectMapper.readValue(metaDataFile.toFile(), GraphhopperMetaData.class)).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(1);
 
-        GraphHopperNetworkWithVersion graphHopperNetworkWithVersion = graphHopperService.load(testDir);
+        GraphHopperNetwork graphHopperNetwork = graphHopperService.load(testDir);
 
-        assertThat(graphHopperNetworkWithVersion.network()).isEqualTo(networkGraphHopper);
-        assertThat(graphHopperNetworkWithVersion.nwbVersion()).isEqualTo(1);
+        assertThat(graphHopperNetwork.network()).isEqualTo(networkGraphHopper);
+        assertThat(graphHopperNetwork.nwbVersion()).isEqualTo(1);
 
         loggerExtension.containsLog(Level.INFO, "GraphHopper network loaded from disk in 1234ms");
         assertThat(testDir.resolve("latest"))

@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
@@ -29,6 +30,9 @@ class TrafficSignDataServiceTest {
 
     @Mock
     private ClockService clockService;
+
+    @Mock
+    private DistributedLockService distributedLockService;
 
     private TrafficSign trafficSign1;
 
@@ -51,7 +55,10 @@ class TrafficSignDataServiceTest {
                 .folder(testDir.resolve("testFolder"))
                 .build();
 
-        trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration, clockService, new ObjectMapper());
+        trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration,
+                clockService,
+                distributedLockService,
+                new ObjectMapper());
     }
 
     @AfterEach

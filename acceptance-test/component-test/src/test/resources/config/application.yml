@@ -10,6 +10,8 @@ kubernetes:
 spring:
   application:
     name: nls-accessibility-map-generator-jobs-component-test
+  liquibase:
+    enabled: false
   datasource:
     url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map-generator-jobs&stringtype=unspecified
     username: nls-maps

@@ -53,7 +53,8 @@ public class RoadSectionMapper {
                     isoLabel.getEdge(),
                     isoLabel.getNode());
             LineString lineString = isoLabelToGeometryMapper.map(currentEdge);
-            int roadSectionId = currentEdge.get(accessibilityNetwork.getNetworkData().getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+            int roadSectionId = currentEdge.get(accessibilityNetwork.getNetworkData().getNetworkGraphHopper().getEncodingManager()
+                    .getIntEncodedValue(WAY_ID_KEY));
 
             int roadSectionFragmentId = currentEdge.getEdge();
             int directionalSegmentId = currentEdge.getEdgeKey();

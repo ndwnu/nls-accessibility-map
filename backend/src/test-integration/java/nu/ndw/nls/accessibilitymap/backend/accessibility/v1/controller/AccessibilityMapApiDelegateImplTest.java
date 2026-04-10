@@ -18,8 +18,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.request.AccessibilityRequestMapper;
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.response.AccessibilityResponseMapper;
@@ -96,9 +94,6 @@ class AccessibilityMapApiDelegateImplTest {
     private NetworkDataService networkDataService;
 
     @MockitoBean
-    private RoadChangesDataService roadChangesDataService;
-
-    @MockitoBean
     private ClockService clockService;
 
     @Mock
@@ -117,8 +112,6 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Mock
     private NetworkData networkData;
-
-    private RoadChanges roadChanges;
 
     @BeforeEach
     void setUp() {
@@ -153,8 +146,7 @@ class AccessibilityMapApiDelegateImplTest {
                 eq(2.2D)
         )).thenReturn(accessibilityRequest);
         when(networkDataService.get()).thenReturn(networkData);
-        when(roadChangesDataService.get()).thenReturn(roadChanges);
-        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
 
         AccessibilityMapResponseJson accessibilityMapResponseJson = AccessibilityMapResponseJson.builder()
                 .inaccessibleRoadSections(List.of(
@@ -519,8 +511,7 @@ class AccessibilityMapApiDelegateImplTest {
                 eq(2.2D)
         )).thenReturn(accessibilityRequest);
         when(networkDataService.get()).thenReturn(networkData);
-        when(roadChangesDataService.get()).thenReturn(roadChanges);
-        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
         when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
@@ -596,8 +587,7 @@ class AccessibilityMapApiDelegateImplTest {
                 eq(2.2D)
         )).thenReturn(accessibilityRequest);
         when(networkDataService.get()).thenReturn(networkData);
-        when(roadChangesDataService.get()).thenReturn(roadChanges);
-        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
         when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);

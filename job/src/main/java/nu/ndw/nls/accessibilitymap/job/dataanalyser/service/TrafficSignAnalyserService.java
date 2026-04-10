@@ -12,8 +12,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.dto.AnalyseAsymmetricTrafficSignsConfiguration;
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.service.issue.mapper.IssueBuilder;
@@ -30,21 +28,19 @@ public class TrafficSignAnalyserService extends IssueReporterService {
 
     private final NetworkDataService networkDataService;
 
-    private final RoadChangesDataService roadChangesDataService;
-
     private final IssueBuilder issueBuilder;
 
     public TrafficSignAnalyserService(
             IssueApiClient issueApiClient,
             ReportApiClient reportApiClient,
             AccessibilityService accessibilityService,
-            NetworkDataService networkDataService, RoadChangesDataService roadChangesDataService,
-            IssueBuilder issueBuilder) {
+            NetworkDataService networkDataService,
+            IssueBuilder issueBuilder
+    ) {
 
         super(issueApiClient, reportApiClient);
         this.accessibilityService = accessibilityService;
         this.networkDataService = networkDataService;
-        this.roadChangesDataService = roadChangesDataService;
         this.issueBuilder = issueBuilder;
     }
 
@@ -53,10 +49,9 @@ public class TrafficSignAnalyserService extends IssueReporterService {
         log.info("Analysing with the following properties: {}", analyseAsymmetricTrafficSignsConfiguration);
 
         NetworkData networkData = networkDataService.get();
-        RoadChanges roadChanges = roadChangesDataService.get();
+
         var accessibility = accessibilityService.calculateAccessibility(
                 networkData,
-                roadChanges,
                 analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest());
 
         analyseTrafficSigns(accessibility, networkData, analyseAsymmetricTrafficSignsConfiguration);
@@ -65,7 +60,8 @@ public class TrafficSignAnalyserService extends IssueReporterService {
     private void analyseTrafficSigns(
             Accessibility accessibility,
             NetworkData networkData,
-            AnalyseAsymmetricTrafficSignsConfiguration analyseAsymmetricTrafficSignsConfiguration) {
+            AnalyseAsymmetricTrafficSignsConfiguration analyseAsymmetricTrafficSignsConfiguration
+    ) {
 
         String issueReportId = "Nwb-%s-%s".formatted(networkData.getNwbVersion(), UUID.randomUUID());
         String issueReportGroupId = "AsymmetricTrafficSignPlacement-%s".formatted(

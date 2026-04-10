@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -37,15 +36,11 @@ class InitializeCacheCommandTest {
     @Mock
     private TrafficSignDataService trafficSignDataService;
 
-    @Mock
-    private RoadChangesDataService roadChangesDataService;
-
     @BeforeEach
     void setUp() {
         initializeCacheCommand = new InitializeCacheCommand(networkDataService,
                 rebuildTrafficSignCacheCommand,
-                trafficSignDataService,
-                roadChangesDataService);
+                trafficSignDataService);
     }
 
     @RegisterExtension
@@ -60,8 +55,6 @@ class InitializeCacheCommandTest {
         verify(networkDataService).recompileData();
         verify(trafficSignDataService).dataExists();
         verify(rebuildTrafficSignCacheCommand).call();
-        verify(roadChangesDataService).dataExists();
-        verify(roadChangesDataService).createEmptyCache();
     }
 
     @SneakyThrows

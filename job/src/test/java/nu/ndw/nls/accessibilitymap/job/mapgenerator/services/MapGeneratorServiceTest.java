@@ -21,8 +21,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.dto.RoadChanges;
-import nu.ndw.nls.accessibilitymap.accessibility.roadchange.service.RoadChangesDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.AccessibilityService;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.event.AccessibilityGeoJsonGeneratedEventMapper;
@@ -54,9 +52,6 @@ class MapGeneratorServiceTest {
     private NetworkDataService networkDataService;
 
     @Mock
-    private RoadChangesDataService roadChangesDataService;
-
-    @Mock
     private GeoJsonPolygonWriter geoJsonPolygonWriter;
 
     @Mock
@@ -79,9 +74,6 @@ class MapGeneratorServiceTest {
 
     @Mock
     private NetworkData networkData;
-
-    @Mock
-    private RoadChanges roadChanges;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -107,7 +99,7 @@ class MapGeneratorServiceTest {
                 List.of(geoJsonPolygonWriter, geoJsonRoadSectionWriter),
                 accessibilityService,
                 networkDataService,
-                roadChangesDataService, messageService
+                messageService
         );
 
         roadSections = List.of(
@@ -137,8 +129,7 @@ class MapGeneratorServiceTest {
         when(geoJsonRoadSectionWriter.isEnabled(EXPORT_TYPES)).thenReturn(true);
         when(networkDataService.get()).thenReturn(networkData);
         when(networkData.getNwbVersion()).thenReturn(123);
-        when(roadChangesDataService.get()).thenReturn(roadChanges);
-        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(accessibilityGeoJsonGeneratedEventMapper.map(
@@ -170,8 +161,7 @@ class MapGeneratorServiceTest {
         exportProperties = exportProperties.withPublishEvents(false);
 
         when(networkDataService.get()).thenReturn(networkData);
-        when(roadChangesDataService.get()).thenReturn(roadChanges);
-        when(accessibilityService.calculateAccessibility(networkData, roadChanges, accessibilityRequest)).thenReturn(accessibility);
+        when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         mapGeneratorService.generate(exportProperties);
