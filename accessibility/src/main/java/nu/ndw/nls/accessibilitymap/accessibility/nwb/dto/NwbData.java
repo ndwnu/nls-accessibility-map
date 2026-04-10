@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -24,54 +23,31 @@ public final class NwbData {
 
     @NotNull
     @Getter
-    private Integer nwbVersionId;
+    private final Integer nwbVersionId;
 
     @NotNull
     @JsonInclude(Include.ALWAYS)
     @Getter
-    private List<AccessibilityNwbRoadSection> accessibilityNwbRoadSections;
+    private final List<AccessibilityNwbRoadSection> accessibilityNwbRoadSections;
 
+    @NotNull
     @JsonIgnore
-    private transient SortedMap<Long, AccessibilityNwbRoadSection> accessibilityNwbRoadSectionsById;
-
-    /**
-     * Kryo-compatible no-arg constructor
-     */
-    protected NwbData() {
-        // for Kryo
-    }
+    private final SortedMap<Long, AccessibilityNwbRoadSection> accessibilityNwbRoadSectionsById;
 
     @JsonCreator
     public NwbData(
             @JsonProperty("nwbVersionId") Integer nwbVersionId,
-            @NonNull @JsonProperty("accessibilityNwbRoadSections")
-            List<AccessibilityNwbRoadSection> accessibilityNwbRoadSections
-    ) {
-
+            @NonNull @JsonProperty("accessibilityNwbRoadSections")  List<AccessibilityNwbRoadSection> accessibilityNwbRoadSections) {
         this.nwbVersionId = nwbVersionId;
-        this.accessibilityNwbRoadSections = new ArrayList<>(accessibilityNwbRoadSections);
-        rebuildIndex();
-    }
+        this.accessibilityNwbRoadSections = accessibilityNwbRoadSections;
 
-    private void rebuildIndex() {
-        this.accessibilityNwbRoadSectionsById =
-                accessibilityNwbRoadSections.stream()
-                        .collect(Collectors.toMap(
-                                AccessibilityNwbRoadSection::roadSectionId,
-                                Function.identity(),
-                                (a, b) -> a,
-                                TreeMap::new
-                        ));
-    }
-
-    /**
-     * Lazy init to support Kryo deserialization
-     */
-    private SortedMap<Long, AccessibilityNwbRoadSection> getIndex() {
-        if (accessibilityNwbRoadSectionsById == null) {
-            rebuildIndex();
-        }
-        return accessibilityNwbRoadSectionsById;
+        accessibilityNwbRoadSectionsById = accessibilityNwbRoadSections.stream()
+                .collect(Collectors.toMap(
+                        AccessibilityNwbRoadSection::roadSectionId,               // key mapper (id)
+                        Function.identity(),           // value mapper (the object)
+                        (a, b) -> a,                   // merge function if duplicate ids occur (pick first; adjust if needed)
+                        TreeMap::new
+                ));
     }
 
     public List<AccessibilityNwbRoadSection> findAllAccessibilityNwbRoadSections() {
@@ -79,12 +55,13 @@ public final class NwbData {
     }
 
     public Optional<AccessibilityNwbRoadSection> findAccessibilityNwbRoadSectionById(long roadSectionId) {
-        return Optional.ofNullable(getIndex().get(roadSectionId));
+
+        return Optional.ofNullable(accessibilityNwbRoadSectionsById.get(roadSectionId));
     }
 
     public List<AccessibilityNwbRoadSection> findAllAccessibilityNwbRoadSectionByMunicipalityId(int municipalityId) {
         return accessibilityNwbRoadSections.stream()
-                .filter(s -> s.municipalityId().equals(municipalityId))
+                .filter(accessibilityNwbRoadSection -> accessibilityNwbRoadSection.municipalityId().equals(municipalityId))
                 .toList();
     }
 }

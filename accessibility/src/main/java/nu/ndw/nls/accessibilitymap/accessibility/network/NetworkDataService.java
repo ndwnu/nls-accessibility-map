@@ -1,14 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network;
 
-import com.esotericsoftware.kryo.kryo5.Kryo;
-import com.esotericsoftware.kryo.kryo5.io.Input;
-import com.esotericsoftware.kryo.kryo5.io.Output;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.OffsetDateTime;
@@ -39,8 +33,6 @@ public class NetworkDataService extends Cache<NetworkData> {
     public static final String NWB_ROAD_SECTIONS_JSON = "nwb/roadSections.json";
 
     private static final String NWB_UPDATES_ROAD_SECTIONS_JSON = "nwbUpdates/nwb_changed_road_sections.json";
-
-    public static final String NWB_ROAD_SECTIONS_BIN = "nwb/roadSections.bin";
 
     private final ObjectMapper objectMapper;
 
@@ -100,19 +92,8 @@ public class NetworkDataService extends Cache<NetworkData> {
     @Override
     protected NetworkData readData(Path activeVersion) throws IOException {
         OffsetDateTime start = getClockService().now();
-
-        Kryo kryo = new Kryo();
-        kryo.register(NwbData.class);
-        kryo.setRegistrationRequired(false);
-        kryo.register(org.locationtech.jts.geom.LineString.class, new LineStringSerializer());
-        Input input = new Input(new FileInputStream(getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_ROAD_SECTIONS_BIN)
-                .toFile()));
-        NwbData nwbData = kryo.readObject(input, NwbData.class);
-        input.close();
-
-        // NwbData nwbData = readNwbData();
+        NwbData nwbData = readNwbData();
         NwbDataUpdates nwbDataUpdates = readNwbDataUpdates();
-
         log.info("Nwb road sections loaded from disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
 
         GraphHopperNetwork graphHopperNetwork = graphHopperService.load(
@@ -142,26 +123,11 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     @Override
     protected void writeData(Path target, NetworkData data) throws IOException {
-        Path path = Path.of(NWB_ROAD_SECTIONS_BIN);
-        Path fullPath = target.resolve(path);
 
-        if (!Files.exists(fullPath)) {
-            Files.createDirectories(fullPath.getParent());
-            Files.createFile(fullPath);
-        }
-
-        Kryo kryo = new Kryo();
-        kryo.register(NwbData.class);
-        kryo.setRegistrationRequired(false);
-        kryo.register(org.locationtech.jts.geom.LineString.class, new LineStringSerializer());
-        Output output = new Output(new FileOutputStream(target.resolve(Path.of(NWB_ROAD_SECTIONS_BIN)).toFile()));
-        kryo.writeObject(output, data.getNwbData());
-        output.close();
-
-//        FileUtils.writeStringToFile(
-//                target.resolve(Path.of(NWB_ROAD_SECTIONS_JSON)).toFile(),
-//                objectMapper.writeValueAsString(data.getNwbData()),
-//                StandardCharsets.UTF_8);
+        FileUtils.writeStringToFile(
+                target.resolve(Path.of(NWB_ROAD_SECTIONS_JSON)).toFile(),
+                objectMapper.writeValueAsString(data.getNwbData()),
+                StandardCharsets.UTF_8);
 
         FileUtils.writeStringToFile(
                 target.resolve(Path.of(NWB_UPDATES_ROAD_SECTIONS_JSON)).toFile(),

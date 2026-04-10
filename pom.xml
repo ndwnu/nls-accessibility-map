@@ -61,7 +61,6 @@
     <resilience4j-bom.version>2.4.0</resilience4j-bom.version>
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
     <wiremock-spring-boot.version>4.2.1</wiremock-spring-boot.version>
-    <kryo5.version>5.6.2</kryo5.version>
     <netty.version>4.2.12.Final</netty.version>
   </properties>
   <distributionManagement>
@@ -125,11 +124,6 @@
         <version>${netty.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.esotericsoftware.kryo</groupId>
-        <artifactId>kryo5</artifactId>
-        <version>${kryo5.version}</version>
       </dependency>
       <dependency>
         <groupId>nu.ndw.nls.springboot.test.graph</groupId>
