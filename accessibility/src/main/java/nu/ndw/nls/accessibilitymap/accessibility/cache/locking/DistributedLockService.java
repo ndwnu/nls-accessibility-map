@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class DistributedLockService {
 
-    private static final Duration DEFAULT_LOCK_TTL = Duration.ofSeconds(30);
+    private static final Duration DEFAULT_LOCK_TTL = Duration.ofSeconds(120);
 
-    private static final Duration LOCK_RETRY_INTERVAL = Duration.ofMillis(100);
+    private static final Duration LOCK_RETRY_INTERVAL = Duration.ofMillis(500);
 
     private final DistributedLockRepository repository;
 

@@ -29,7 +29,7 @@ public abstract class Cache<TYPE> {
 
     private static final int SIZE_ROUNDING = 2;
 
-    private static final int MAX_LOCK_WAIT_TIME = 45;
+    private static final int MAX_LOCK_WAIT_TIME = 60;
 
     @Getter(AccessLevel.PROTECTED)
     private final CacheConfiguration cacheConfiguration;
@@ -71,8 +71,10 @@ public abstract class Cache<TYPE> {
 
     protected synchronized void read(boolean triggeredOnStartup) {
         try {
+            OffsetDateTime startLock = clockService.now();
             distributedLockService.lockOrFail(cacheConfiguration.getName(), Duration.ofSeconds(MAX_LOCK_WAIT_TIME));
-
+            OffsetDateTime endLock = clockService.now();
+            log.info("Acquiring a lock took {} ms", Duration.between(startLock, endLock).toMillis());
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
@@ -109,7 +111,10 @@ public abstract class Cache<TYPE> {
         Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
         try {
+            OffsetDateTime startLock = clockService.now();
             distributedLockService.lockOrFail(cacheConfiguration.getName(), Duration.ofSeconds(MAX_LOCK_WAIT_TIME));
+            OffsetDateTime endLock = clockService.now();
+            log.info("Acquiring a lock took {} ms", Duration.between(startLock, endLock).toMillis());
 
             Files.createDirectories(targetLocation);
             log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
