@@ -84,6 +84,8 @@ nu:
                 host: ${hostWireMock}
                 port: 8888
       accessibilitymap:
+        messaging:
+          stream-queue-name: nls_accessibility_map_update_road_section
         test:
           acceptance:
             driver:

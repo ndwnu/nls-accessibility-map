@@ -6,6 +6,7 @@ hostOauth: oauth.${host}
 hostApplication: application.${host}
 hostRabbit: rabbitmq.${host}
 hostJobs: jobs.${host}
+
 nu:
   ndw:
     nls:
@@ -29,7 +30,9 @@ nu:
           driver:
             map-generation-job:
               download-from-pod: true
-
-
-
+spring:
+  rabbitmq:
+    stream:
+      host: ${hostRabbit}
+    host: ${hostRabbit}
 

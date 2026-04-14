@@ -3,6 +3,7 @@ environment: local
 hostDatabase: localhost
 hostKeycloak: localhost
 
+
 spring:
   datasource:
     url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map&stringtype=unspecified
@@ -35,6 +36,11 @@ nu:
             folder: "./.tmp/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
+        messaging:
+          stream-queues:
+            updateRoadSection:
+              messages-to-skip:
+                id-skippable-message
 
 logging:
   level:

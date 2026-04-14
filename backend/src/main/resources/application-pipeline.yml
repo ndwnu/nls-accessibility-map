@@ -1,6 +1,13 @@
 hostSuffix: "replaced_by_pipeline"
 hostDatabase: database.${hostSuffix}
 hostKeycloak: oauth.${hostSuffix}
+hostRabbitMQ: rabbitmq.${hostSuffix}
+
+spring:
+  rabbitmq:
+    stream:
+      host: ${hostRabbitMQ}
+    host: ${hostRabbitMQ}
 
 nu:
   ndw:

@@ -29,7 +29,11 @@ nu:
           driver:
             map-generation-job:
               download-from-pod: true
-
+spring:
+  rabbitmq:
+    stream:
+      host: ${hostRabbit}
+    host: ${hostRabbit}
 
 
 
