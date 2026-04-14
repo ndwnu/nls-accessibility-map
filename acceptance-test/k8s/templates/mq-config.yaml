@@ -3,9 +3,13 @@ kind: ConfigMap
 metadata:
   name: mq-config
 data:
+  rabbitmq-plugins: |
+    [rabbitmq_management, rabbitmq_management_agent, rabbitmq_prometheus, rabbitmq_web_dispatch, rabbitmq_stream, rabbitmq_stream_management].
   rabbitmq.conf: |
     management.load_definitions = /etc/rabbitmq/load-definitions.json
     loopback_users = none
+    stream.advertised_host = rabbitmq.{{ .Values.hostSuffix }}
+    stream.advertised_port = 5552
   load-definitions.json: >-
     {
       "rabbit_version": "4.0.7",
