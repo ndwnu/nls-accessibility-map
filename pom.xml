@@ -44,7 +44,7 @@
     <picocli.version>4.7.7</picocli.version>
     <springdoc.version>2.8.14</springdoc.version>
     <stream-utils.version>1.3.1</stream-utils.version>
-    <swagger-annotations.version>2.2.47</swagger-annotations.version>
+    <swagger-annotations.version>2.2.48</swagger-annotations.version>
     <nls-events.version>5.5.11</nls-events.version>
     <nls-nwb-data-access.version>9.5.13</nls-nwb-data-access.version>
     <nls-springboot.version>9.4.42</nls-springboot.version>
