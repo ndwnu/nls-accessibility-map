@@ -26,7 +26,7 @@ class DistributedLockRepositoryIT {
     DistributedLockRepository repository;
 
     @Autowired
-    LockOwner lockOwner;
+    LockOwner lockInstance;
 
     @AfterEach
     void cleanDb() {
@@ -49,7 +49,7 @@ class DistributedLockRepositoryIT {
         );
 
         assertThat(record).isNotNull();
-        assertThat(record.get("owner_id")).isEqualTo(lockOwner.getLockOwnerId());
+        assertThat(record.get("owner_id")).isEqualTo(lockInstance.getLockOwnerId());
     }
 
     @Test
@@ -87,7 +87,7 @@ class DistributedLockRepositoryIT {
 
         assertThat(record).isNotNull()
                 .extracting(r -> r.get("owner_id"))
-                .isEqualTo(lockOwner.getLockOwnerId());
+                .isEqualTo(lockInstance.getLockOwnerId());
     }
 
     @Test

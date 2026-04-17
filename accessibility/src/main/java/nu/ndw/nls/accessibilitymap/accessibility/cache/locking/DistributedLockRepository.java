@@ -17,6 +17,8 @@ public class DistributedLockRepository {
 
     public static final String COLUMN_LOCK_EXPIRY = "lock_expiry";
 
+    private static final String DISTRIBUTED_LOCKS_TABLE = "distributed_locks";
+
     private final DSLContext dsl;
 
     private final LockOwner lockOwner;
@@ -34,7 +36,7 @@ public class DistributedLockRepository {
         this.lockOwner = lockOwner;
 
         var schema = DSL.schema("accessibility_map");
-        this.locksTable = DSL.table(DSL.name(schema.getName(), "distributed_locks"));
+        this.locksTable = DSL.table(DSL.name(schema.getName(), DISTRIBUTED_LOCKS_TABLE));
 
         this.lockNameField = DSL.field(DSL.name(COLUMN_LOCK_NAME), String.class);
         this.ownerIdField = DSL.field(DSL.name(COLUMN_OWNER_ID), String.class);
@@ -55,7 +57,7 @@ public class DistributedLockRepository {
                 .doUpdate()
                 .set(ownerIdField, ownerId)
                 .set(lockExpiryField, newExpiry)
-                .where(DSL.field(DSL.name("distributed_locks", "lock_expiry")).lt(now)) // ONLY steal if expired
+                .where(DSL.field(DSL.name(DISTRIBUTED_LOCKS_TABLE, COLUMN_LOCK_EXPIRY)).lt(now)) // ONLY steal if expired
                 .execute();
 
         return rows > 0;
@@ -71,5 +73,4 @@ public class DistributedLockRepository {
                 .and(ownerIdField.eq(lockOwner.getLockOwnerId()))
                 .execute();
     }
-
 }
