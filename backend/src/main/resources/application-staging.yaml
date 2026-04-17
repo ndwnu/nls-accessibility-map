@@ -3,7 +3,10 @@ environment: staging
 spring:
   datasource:
     url: jdbc:postgresql://nls-postgres-staging.postgres.database.azure.com:5432/nls-maps?ApplicationName=${spring.application.name}&stringtype=unspecified
-
+  rabbitmq:
+    stream:
+      host: eventbus.nls.staging.internal.ndw.nu
+    host: eventbus.nls.staging.internal.ndw.nu
 nls:
   keycloak:
     url: "https://iam.ndw.nu/auth"

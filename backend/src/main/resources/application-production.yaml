@@ -3,6 +3,10 @@ environment: production
 spring:
   datasource:
     url: jdbc:postgresql://nls-postgres-production.postgres.database.azure.com:5432/nls-maps?ApplicationName=${spring.application.name}&stringtype=unspecified
+  rabbitmq:
+    stream:
+      host: eventbus.nls.internal.ndw.nu
+    host: eventbus.nls.internal.ndw.nu
 
 nls:
   keycloak:

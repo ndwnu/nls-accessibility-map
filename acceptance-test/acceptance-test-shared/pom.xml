@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>acceptance-test</artifactId>
-    <version>5.3.39-SNAPSHOT</version>
+    <version>5.3.47-SNAPSHOT</version>
   </parent>
   <artifactId>acceptance-test-shared</artifactId>
   <name>NLS Accessibility Map - Acceptance test shared</name>
@@ -14,6 +14,20 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.rabbitmq</groupId>
+      <artifactId>stream-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.amqp</groupId>
+      <artifactId>spring-rabbit-stream</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.rabbitmq</groupId>
+          <artifactId>stream-client</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>messaging</artifactId>
