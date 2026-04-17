@@ -44,6 +44,8 @@ public class CacheConfiguration {
     @Default
     private int acceptableConsequentReadFailures = 1;
 
+    private Duration maxLockWaitTime = Duration.ofSeconds(60);
+
     public File getActiveVersion() {
         return folder.resolve(fileNameActiveVersion).toFile();
     }

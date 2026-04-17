@@ -18,14 +18,14 @@ public class WeightingFactory {
     ) {
         var baseWeighting = networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
 
-        var restrictionWeightingDecorator = new RestrictionWeightingDecorator(baseWeighting, blockedEdges);
+        var restrictionWeightingDecorator = new RestrictionWeighting(baseWeighting, blockedEdges);
 
-        var roadDataWeightingDecorator = new RoadDataWeightingDecorator(
+        var roadDataWeightingDecorator = new RoadDataWeighting(
                 restrictionWeightingDecorator,
                 networkData.getNwbData(),
                 networkData.getNetworkGraphHopper().getEncodingManager());
 
-        var roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(
+        var roadChangesWeightingDecorator = new RoadChangesWeighting(
                 roadDataWeightingDecorator,
                 networkData.getNwbDataUpdates(),
                 networkData.getNetworkGraphHopper().getEncodingManager());

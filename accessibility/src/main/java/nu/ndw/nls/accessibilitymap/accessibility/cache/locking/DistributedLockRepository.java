@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache.locking;
 import java.time.Instant;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Repository;
@@ -20,7 +19,7 @@ public class DistributedLockRepository {
 
     private final DSLContext dsl;
 
-    private final LockInfo lockInfo;
+    private final LockOwner lockOwner;
 
     private final Table<?> locksTable;
 
@@ -30,9 +29,9 @@ public class DistributedLockRepository {
 
     private final Field<Instant> lockExpiryField;
 
-    public DistributedLockRepository(DSLContext dsl, LockInfo lockInfo) {
+    public DistributedLockRepository(DSLContext dsl, LockOwner lockOwner) {
         this.dsl = dsl;
-        this.lockInfo = lockInfo;
+        this.lockOwner = lockOwner;
 
         var schema = DSL.schema("accessibility_map");
         this.locksTable = DSL.table(DSL.name(schema.getName(), "distributed_locks"));
@@ -47,7 +46,7 @@ public class DistributedLockRepository {
      */
     @Transactional
     public boolean tryAcquireLock(String lockName, Instant now, Instant newExpiry) {
-        String ownerId = lockInfo.getLockOwnerId();
+        String ownerId = lockOwner.getLockOwnerId();
 
         int rows = dsl.insertInto(locksTable)
                 .columns(lockNameField, ownerIdField, lockExpiryField)
@@ -56,7 +55,7 @@ public class DistributedLockRepository {
                 .doUpdate()
                 .set(ownerIdField, ownerId)
                 .set(lockExpiryField, newExpiry)
-                .where(DSL.field(DSL.name("distributed_locks", "lock_expiry")).lt(now)) // <- explicit table// ONLY steal if expired
+                .where(DSL.field(DSL.name("distributed_locks", "lock_expiry")).lt(now)) // ONLY steal if expired
                 .execute();
 
         return rows > 0;
@@ -69,30 +68,8 @@ public class DistributedLockRepository {
     public int releaseLock(String lockName) {
         return dsl.deleteFrom(locksTable)
                 .where(lockNameField.eq(lockName))
-                .and(ownerIdField.eq(lockInfo.getLockOwnerId()))
+                .and(ownerIdField.eq(lockOwner.getLockOwnerId()))
                 .execute();
     }
 
-    /**
-     * Extend lock expiry (auto-renew)
-     */
-    @Transactional
-    public int extendLock(String lockName, Instant newExpiry) {
-        return dsl.update(locksTable)
-                .set(lockExpiryField, newExpiry)
-                .where(lockNameField.eq(lockName))
-                .and(ownerIdField.eq(lockInfo.getLockOwnerId()))
-                .execute();
-    }
-
-    /**
-     * Optional: debugging only
-     */
-    @Transactional
-    public Record findLock(String lockName) {
-        return dsl.select()
-                .from(locksTable)
-                .where(lockNameField.eq(lockName))
-                .fetchOne();
-    }
 }

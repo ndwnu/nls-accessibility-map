@@ -47,11 +47,12 @@ public final class NetworkData {
     }
 
     public NetworkData(
-            @NonNull NetworkGraphHopper networkGraphHopper,
-            @NonNull NwbData nwbData,
-            @NonNull NwbDataUpdates nwbDataUpdates
+            NetworkGraphHopper networkGraphHopper,
+            NwbData nwbData,
+            NwbDataUpdates nwbDataUpdates
     ) {
-        this(GraphHopperNetwork.builder().network(networkGraphHopper).nwbVersion(nwbData.getNwbVersionId()).build(),
+        this(GraphHopperNetwork.builder().network(networkGraphHopper)
+                        .nwbVersion(nwbData.getNwbVersionId()).build(),
                 nwbData,
                 nwbDataUpdates);
     }

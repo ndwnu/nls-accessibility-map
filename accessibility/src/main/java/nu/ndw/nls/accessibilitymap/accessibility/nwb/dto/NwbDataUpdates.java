@@ -59,7 +59,7 @@ public final class NwbDataUpdates {
 
     public NwbDataUpdates merge(NwbDataUpdates other) {
         if (!isSameNwbVersion(other)) {
-            return other;
+            throw new IllegalArgumentException("Cannot merge updates from different NWB versions");
         }
 
         // update existing roadSections with new changes

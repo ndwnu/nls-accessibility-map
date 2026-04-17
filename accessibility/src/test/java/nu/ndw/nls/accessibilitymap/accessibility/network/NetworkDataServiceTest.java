@@ -10,9 +10,11 @@ import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
@@ -21,7 +23,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
-import nu.ndw.nls.db.nwb.jooq.services.NwbVersionCrudService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
@@ -64,9 +65,6 @@ class NetworkDataServiceTest {
     @Mock
     private DistributedLockService distributedLockService;
 
-    @Mock
-    private NwbVersionCrudService nwbVersionCrudService;
-
     private NwbData nwbData;
 
     private NwbDataUpdates nwbDataUpdates;
@@ -75,7 +73,7 @@ class NetworkDataServiceTest {
     void setUp() throws IOException {
 
         objectMapper = new ObjectMapper();
-
+        JsonWriter jsonWriter = new JsonWriter(objectMapper);
         nwbData = new NwbData(1, buildAccessibilityRoadSections());
         nwbDataUpdates = new NwbDataUpdates(1, buildAccessibilityRoadSectionUpdates());
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
@@ -90,13 +88,48 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper, nwbVersionCrudService);
+                objectMapper, jsonWriter);
     }
 
     @AfterEach
     void tearDown() throws IOException {
 
         FileUtils.deleteDirectory(testDir.toFile());
+    }
+
+    @SneakyThrows
+    @Test
+    void writeNwbDataUpdates() {
+        var updatedRoaSections = List.of(
+                new AccessibilityNwbRoadSectionUpdate(
+                        124,
+                        true,
+                        false,
+                        CarriagewayTypeCode.HR)
+        );
+
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(graphHopperNetwork.nwbVersion()).thenReturn(1);
+
+        NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);
+        networkDataService.write(networkData);
+        networkDataService.writeNwbDataUpdates(new NwbDataUpdates(1, updatedRoaSections));
+
+        NetworkData updatedNetworkData = networkDataService.get();
+
+        assertThat(updatedNetworkData.getNwbDataUpdates()
+                .getAccessibilityNwbRoadSectionUpdates()).isEqualTo(List.of(new AccessibilityNwbRoadSectionUpdate(
+                123,
+                false,
+                true,
+                CarriagewayTypeCode.RB), new AccessibilityNwbRoadSectionUpdate(
+                124,
+                true,
+                false,
+                CarriagewayTypeCode.HR)));
     }
 
     @Test
@@ -114,6 +147,7 @@ class NetworkDataServiceTest {
         assertThat(networkData).isNotNull();
     }
 
+    @SneakyThrows
     @Test
     void write() {
 
@@ -130,6 +164,8 @@ class NetworkDataServiceTest {
         assertThat(networkData).isNotNull();
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
         assertThat(actualNetworkData.getNwbData()).isEqualTo(nwbData);
+        assertThat(actualNetworkData.getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
+
     }
 
     @Test

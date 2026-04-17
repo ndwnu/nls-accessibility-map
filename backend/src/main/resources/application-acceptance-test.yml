@@ -35,12 +35,6 @@ nu:
             folder: "./.tmp/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
-        roadChanges:
-          cache:
-            name: "Road changes"
-            folder: "./.tmp/roadChanges"
-            load-data-on-startup: false
-            watch-for-updates: false
 
 logging:
   level:

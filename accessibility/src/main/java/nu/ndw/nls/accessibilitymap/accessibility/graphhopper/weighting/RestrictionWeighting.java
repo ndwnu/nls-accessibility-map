@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
  * computations to the source {@link Weighting}, except for blocked edges.
  */
 @RequiredArgsConstructor
-public class RestrictionWeightingDecorator implements Weighting {
+public class RestrictionWeighting implements Weighting {
 
     private final Weighting sourceWeighting;
 

@@ -2,23 +2,27 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache.locking;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.LockConfiguration;
+import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class DistributedLockService {
-
-    private static final Duration DEFAULT_LOCK_TTL = Duration.ofSeconds(120);
-
-    private static final Duration LOCK_RETRY_INTERVAL = Duration.ofMillis(500);
 
     private final DistributedLockRepository repository;
 
-    private final Duration lockTtl;
+    private final LockConfiguration lockConfiguration;
 
-    public DistributedLockService(DistributedLockRepository repository) {
-        this.repository = repository;
-        this.lockTtl = DEFAULT_LOCK_TTL;
-    }
+    private final ClockService clockService;
 
     /**
      * Try to acquire the lock immediately.
@@ -27,41 +31,48 @@ public class DistributedLockService {
      * @return true if lock acquired, false otherwise
      */
     public boolean tryLock(String lockName) {
-        Instant now = Instant.now();
-        Instant expiry = now.plus(lockTtl);
+        Instant now = clockService.now().toInstant();
+        Instant expiry = now.plus(lockConfiguration.getDefaultLockTtl());
         return repository.tryAcquireLock(lockName, now, expiry);
     }
 
     /**
-     * Acquire the lock, retrying until it succeeds.
-     *
-     * @param lockName name of the lock
-     * @throws InterruptedException if the thread is interrupted while waiting
-     */
-    public void lock(String lockName) throws InterruptedException {
-        while (!tryLock(lockName)) {
-            Thread.sleep(LOCK_RETRY_INTERVAL.toMillis());
-        }
-    }
-
-    /**
-     * Acquire the lock within a given timeout, else throw exception.
+     * Acquire the lock within a given timeout, else throw an exception.
      *
      * @param lockName name of the lock
      * @param timeout  maximum duration to wait
-     * @throws InterruptedException if thread is interrupted while waiting
      */
-    public void lockOrFail(String lockName, Duration timeout) throws InterruptedException {
-        Instant deadline = Instant.now().plus(timeout);
-        while (Instant.now().isBefore(deadline)) {
-            if (tryLock(lockName)) {
-                return;
+    public void lockOrFail(String lockName, Duration timeout) {
+        //noinspection resource - scheduler is shutdown when future completeExceptionally
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        CompletableFuture<Void> result = new CompletableFuture<>();
+        Instant deadline = clockService.now().toInstant().plus(timeout);
+        Runnable attempt = new Runnable() {
+            @Override
+            public void run() {
+                if (clockService.now().toInstant().isAfter(deadline)) {
+                    result.completeExceptionally(new IllegalStateException(
+                            "Could not acquire lock '" + lockName + "' within " + timeout.toSeconds() + " seconds"
+                    ));
+                }
+                if (tryLock(lockName)) {
+                    log.debug("Acquired lock '{}'", lockName);
+                    result.complete(null);
+                } else {
+                    scheduler.schedule(this,
+                            lockConfiguration.getLockRetryInterval().toMillis(),
+                            TimeUnit.MILLISECONDS);
+                }
             }
-            Thread.sleep(LOCK_RETRY_INTERVAL.toMillis());
+        };
+        scheduler.execute(attempt);
+        try {
+            result.join();
+        } catch (CompletionException e) {
+            throw mapException(e);
+        } finally {
+            scheduler.shutdownNow();
         }
-        throw new IllegalStateException(
-                "Could not acquire lock '" + lockName + "' within " + timeout.toSeconds() + " seconds"
-        );
     }
 
     /**
@@ -71,5 +82,15 @@ public class DistributedLockService {
      */
     public void unlock(String lockName) {
         repository.releaseLock(lockName);
+    }
+
+    private RuntimeException mapException(CompletionException e) {
+        Throwable cause = e.getCause();
+
+        if (cause instanceof IllegalStateException exception) {
+            return exception;
+        }
+
+        return new IllegalStateException("Unexpected error while acquiring lock", cause);
     }
 }

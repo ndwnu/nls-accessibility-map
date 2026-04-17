@@ -115,6 +115,7 @@ nu:
             folder: "./cache/network"
             load-data-on-startup: false
             watch-for-updates: false
+
         trafficSigns:
           emission-zone:
             client:
@@ -126,12 +127,7 @@ nu:
             folder: "./cache/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
-        roadChanges:
-          cache:
-            name: "Road changes"
-            folder: "./cache/roadChanges"
-            load-data-on-startup: false
-            watch-for-updates: false
+
 
 resilience4j.retry:
   instances:

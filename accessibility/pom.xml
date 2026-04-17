@@ -84,6 +84,7 @@
       <artifactId>test</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>
@@ -126,5 +127,95 @@
       </plugin>
     </plugins>
   </build>
-
+  <profiles>
+    <profile>
+      <id>integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <configuration>
+              <executable>docker</executable>
+              <arguments>
+                <argument>compose</argument>
+              </arguments>
+            </configuration>
+            <executions>
+              <execution>
+                <id>docker-compose-down</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <arguments combine.children="append">
+                    <argument>down</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>docker-compose-up-infra</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <arguments combine.children="append">
+                    <argument>up</argument>
+                    <argument>-d</argument>
+                    <argument>nls-postgres</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>wait-for-postgres</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>sh</executable>
+                  <arguments>
+                    <argument>-c</argument>
+                    <argument>
+                      echo "Waiting for Postgres...";
+                      until docker exec $(docker compose ps -q nls-postgres) pg_isready -U postgres;
+                      do
+                      sleep 1;
+                      done
+                    </argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>docker-compose-stop</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <arguments combine.children="append">
+                    <argument>stop</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
