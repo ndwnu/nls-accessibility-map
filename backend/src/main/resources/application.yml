@@ -17,7 +17,6 @@ spring:
     database-change-log-table: ACC_MAP_DATABASECHANGELOG
     database-change-log-lock-table: ACC_MAP_DATABASECHANGELOGLOCK
     default-schema: public
-    enabled: false
   datasource:
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -25,7 +24,6 @@ spring:
       idle-timeout: 60000
       max-lifetime: 120000
       minimum-idle: 1
-      auto-commit: false
   jackson:
     default-property-inclusion: non_null
   jooq:
@@ -43,6 +41,8 @@ nu:
   ndw:
     nls:
       accessibilitymap:
+        #        cache:
+        #          locking:
         network:
           cache:
             name: "Network"
@@ -52,10 +52,6 @@ nu:
             name: "Traffic sign"
             folder: "./cache/trafficSigns"
 
-        roadChanges:
-          cache:
-            name: "Road changes"
-            folder: "./cache/roadChanges"
 nls:
   oauth2:
     jwtResourceProperty: app-${spring.application.name}-${environment}

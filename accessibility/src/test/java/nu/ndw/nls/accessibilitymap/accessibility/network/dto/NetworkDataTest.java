@@ -49,7 +49,18 @@ class NetworkDataTest extends ValidationTest {
         assertThat(networkData.getNwbVersion()).isEqualTo(1);
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
         assertThat(networkData.getNwbData()).isEqualTo(nwbData);
+        assertThat(networkData.getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
     }
+
+    @Test
+    void constructor_overloaded() {
+        networkData = new NetworkData(networkGraphHopper, nwbData, nwbDataUpdates);
+        assertThat(networkData.getNwbVersion()).isEqualTo(1);
+        assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
+        assertThat(networkData.getNwbData()).isEqualTo(nwbData);
+        assertThat(networkData.getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
+    }
+
 
     @Test
     void constructor_notTheSameNwbVersion() {
@@ -75,6 +86,14 @@ class NetworkDataTest extends ValidationTest {
 
         assertThatThrownBy(() -> new NetworkData(graphHopperNetwork, null, nwbDataUpdates))
                 .hasMessage("nwbData is marked non-null but is null")
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void constructor_nwbDataUpdates_null() {
+
+        assertThatThrownBy(() -> new NetworkData(graphHopperNetwork, nwbData, null))
+                .hasMessage("nwbDataUpdates is marked non-null but is null")
                 .isInstanceOf(NullPointerException.class);
     }
 

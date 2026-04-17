@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.springboot.core.time.ClockService;
@@ -33,6 +34,9 @@ class TrafficSignDataServiceTest {
 
     @Mock
     private DistributedLockService distributedLockService;
+
+    @Mock
+    private JsonWriter jsonWriter;
 
     private TrafficSign trafficSign1;
 
@@ -58,7 +62,7 @@ class TrafficSignDataServiceTest {
         trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration,
                 clockService,
                 distributedLockService,
-                new ObjectMapper());
+                new ObjectMapper(), jsonWriter);
     }
 
     @AfterEach

@@ -13,13 +13,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingDecorator;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeighting;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.RoadSectionMapper;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
@@ -65,8 +64,6 @@ class AccessibilityCalculatorTest {
     @Mock
     private Weighting weightingWithoutRestrictions;
 
-    @Mock
-    private Set<Integer> blockedEdges;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -170,8 +167,8 @@ class AccessibilityCalculatorTest {
         }
 
         private boolean weightingEquals(Weighting expectedWeighting, Weighting actualWeighting) {
-            if (expected.weighting() instanceof RestrictionWeightingDecorator expectedWeightingAdapter
-                    && actualWeighting instanceof RestrictionWeightingDecorator actualWeightingAdapter) {
+            if (expected.weighting() instanceof RestrictionWeighting expectedWeightingAdapter
+                    && actualWeighting instanceof RestrictionWeighting actualWeightingAdapter) {
                 return Objects.equals(
                         expectedWeightingAdapter.getBlockedEdges(),
                         actualWeightingAdapter.getBlockedEdges());

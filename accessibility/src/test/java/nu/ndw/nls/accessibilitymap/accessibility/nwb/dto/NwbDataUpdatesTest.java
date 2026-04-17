@@ -64,7 +64,7 @@ class NwbDataUpdatesTest {
         var incomingRoadChanges = new NwbDataUpdates(2,
                 List.of());
 
-        assertThat(existingRoadChanges.merge(incomingRoadChanges))
-                .isEqualTo(incomingRoadChanges);
+        assertThatThrownBy(() -> existingRoadChanges.merge(incomingRoadChanges)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Cannot merge updates from different NWB versions");
     }
 }

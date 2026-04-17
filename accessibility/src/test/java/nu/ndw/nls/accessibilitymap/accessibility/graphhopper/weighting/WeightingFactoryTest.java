@@ -50,7 +50,7 @@ class WeightingFactoryTest {
     private EncodingManager encodingManager;
 
     @Captor
-    private ArgumentCaptor<RoadChangesWeightingDecorator> weightingCaptor;
+    private ArgumentCaptor<RoadChangesWeighting> weightingCaptor;
 
     private WeightingFactory weightingFactory;
 
@@ -78,7 +78,7 @@ class WeightingFactoryTest {
     }
 
     private void assertThatWeightingIsCorrectlyConstructed(Set<Integer> blockedEdges) {
-        RoadChangesWeightingDecorator constructedWeighting = weightingCaptor.getValue();
+        RoadChangesWeighting constructedWeighting = weightingCaptor.getValue();
         Weighting roadChangesSourceWeighting = (Weighting) ReflectionTestUtils.getField(constructedWeighting, "sourceWeighting");
         NwbDataUpdates nwbDataUpdatesInstance = (NwbDataUpdates) ReflectionTestUtils.getField(constructedWeighting, "nwbDataUpdates");
         EncodingManager roadChangesEncodingManager = (EncodingManager) ReflectionTestUtils.getField(constructedWeighting,
@@ -86,7 +86,7 @@ class WeightingFactoryTest {
 
         assertThat(roadChangesSourceWeighting)
                 .isNotNull()
-                .isInstanceOf(RoadDataWeightingDecorator.class);
+                .isInstanceOf(RoadDataWeighting.class);
         assertThat(nwbDataUpdatesInstance).isEqualTo(nwbDataUpdates);
         assertThat(roadChangesEncodingManager).isEqualTo(encodingManager);
 
@@ -97,7 +97,7 @@ class WeightingFactoryTest {
 
         assertThat(roadDataSourceWeighting)
                 .isNotNull()
-                .isInstanceOf(RestrictionWeightingDecorator.class);
+                .isInstanceOf(RestrictionWeighting.class);
         assertThat(nwbDataInstance).isEqualTo(nwbData);
         assertThat(roadDataEncodingManager).isEqualTo(encodingManager);
 

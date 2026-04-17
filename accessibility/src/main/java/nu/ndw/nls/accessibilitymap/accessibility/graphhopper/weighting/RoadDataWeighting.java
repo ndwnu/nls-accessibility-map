@@ -11,7 +11,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSec
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 
 @RequiredArgsConstructor
-public class RoadDataWeightingDecorator implements Weighting {
+public class RoadDataWeighting implements Weighting {
 
     private final Weighting sourceWeighting;
 

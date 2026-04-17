@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class RoadDataWeightingDecoratorTest {
+class RoadDataWeightingTest {
 
     private static final int LINK_ID = 123;
 
@@ -47,17 +47,17 @@ class RoadDataWeightingDecoratorTest {
     @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
 
-    private RoadDataWeightingDecorator roadDataWeightingDecorator;
+    private RoadDataWeighting roadDataWeighting;
 
     @BeforeEach
     void setUp() {
-        roadDataWeightingDecorator = new RoadDataWeightingDecorator(sourceWeighting, nwbData, encodingManager);
+        roadDataWeighting = new RoadDataWeighting(sourceWeighting, nwbData, encodingManager);
     }
 
     @Test
     void calcMinWeightPerDistance() {
 
-        roadDataWeightingDecorator.calcMinWeightPerDistance();
+        roadDataWeighting.calcMinWeightPerDistance();
 
         verify(sourceWeighting).calcMinWeightPerDistance();
     }
@@ -83,7 +83,7 @@ class RoadDataWeightingDecoratorTest {
                 when(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed)).thenReturn(1.0);
             }
 
-            double weight = roadDataWeightingDecorator.calcEdgeWeight(edgeIteratorState, reversed);
+            double weight = roadDataWeighting.calcEdgeWeight(edgeIteratorState, reversed);
 
             assertThat(weight).isEqualTo(isAccessible ? 1.0 : Double.POSITIVE_INFINITY);
         }
@@ -95,7 +95,7 @@ class RoadDataWeightingDecoratorTest {
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(LINK_ID);
         when(nwbData.findAccessibilityNwbRoadSectionById(LINK_ID)).thenReturn(Optional.empty());
 
-        assertThatIllegalStateException().isThrownBy(() -> roadDataWeightingDecorator.calcEdgeWeight(edgeIteratorState, true))
+        assertThatIllegalStateException().isThrownBy(() -> roadDataWeighting.calcEdgeWeight(edgeIteratorState, true))
                 .withMessage("Road section not found for link id: " + LINK_ID);
     }
 
@@ -106,7 +106,7 @@ class RoadDataWeightingDecoratorTest {
         long weight = 345L;
         when(sourceWeighting.calcEdgeMillis(edgeIteratorState, reversed)).thenReturn(weight);
 
-        assertThat(roadDataWeightingDecorator.calcEdgeMillis(edgeIteratorState, reversed)).isEqualTo(weight);
+        assertThat(roadDataWeighting.calcEdgeMillis(edgeIteratorState, reversed)).isEqualTo(weight);
     }
 
     @Test
@@ -114,7 +114,7 @@ class RoadDataWeightingDecoratorTest {
 
         when(sourceWeighting.calcTurnWeight(1, 2, 3)).thenReturn(4D);
 
-        assertThat(roadDataWeightingDecorator.calcTurnWeight(1, 2, 3)).isEqualTo(4D);
+        assertThat(roadDataWeighting.calcTurnWeight(1, 2, 3)).isEqualTo(4D);
     }
 
     @Test
@@ -122,13 +122,13 @@ class RoadDataWeightingDecoratorTest {
 
         when(sourceWeighting.calcTurnMillis(1, 2, 3)).thenReturn(4L);
 
-        assertThat(roadDataWeightingDecorator.calcTurnMillis(1, 2, 3)).isEqualTo(4L);
+        assertThat(roadDataWeighting.calcTurnMillis(1, 2, 3)).isEqualTo(4L);
     }
 
     @Test
     void hasTurnCosts() {
 
-        roadDataWeightingDecorator.hasTurnCosts();
+        roadDataWeighting.hasTurnCosts();
 
         verify(sourceWeighting).hasTurnCosts();
     }
@@ -136,7 +136,7 @@ class RoadDataWeightingDecoratorTest {
     @Test
     void getName() {
 
-        roadDataWeightingDecorator.getName();
+        roadDataWeighting.getName();
 
         verify(sourceWeighting).getName();
     }

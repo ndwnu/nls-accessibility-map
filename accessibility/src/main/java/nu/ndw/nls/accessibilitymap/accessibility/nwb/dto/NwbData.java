@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -30,7 +32,7 @@ public final class NwbData {
 
     @NotNull
     @JsonIgnore
-    private volatile Map<Long, AccessibilityNwbRoadSection> accessibilityNwbRoadSectionsById;
+    private final Map<Long, AccessibilityNwbRoadSection> accessibilityNwbRoadSectionsById;
 
     @JsonCreator
     public NwbData(
@@ -39,6 +41,14 @@ public final class NwbData {
     ) {
         this.nwbVersionId = nwbVersionId;
         this.accessibilityNwbRoadSections = accessibilityNwbRoadSections;
+
+        accessibilityNwbRoadSectionsById = accessibilityNwbRoadSections.stream()
+                .collect(Collectors.toMap(
+                        AccessibilityNwbRoadSection::roadSectionId,               // key mapper (id)
+                        Function.identity(),           // value mapper (the object)
+                        (a, b) -> a,                   // merge function if duplicate ids occur (pick first; adjust if needed)
+                        HashMap::new
+                ));
     }
 
     public List<AccessibilityNwbRoadSection> findAllAccessibilityNwbRoadSections() {
@@ -47,36 +57,12 @@ public final class NwbData {
 
     public Optional<AccessibilityNwbRoadSection> findAccessibilityNwbRoadSectionById(long roadSectionId) {
 
-        return Optional.ofNullable(getMap().get(roadSectionId));
+        return Optional.ofNullable(accessibilityNwbRoadSectionsById.get(roadSectionId));
     }
 
     public List<AccessibilityNwbRoadSection> findAllAccessibilityNwbRoadSectionByMunicipalityId(int municipalityId) {
         return accessibilityNwbRoadSections.stream()
                 .filter(accessibilityNwbRoadSection -> accessibilityNwbRoadSection.municipalityId().equals(municipalityId))
                 .toList();
-    }
-
-    private Map<Long, AccessibilityNwbRoadSection> getMap() {
-        Map<Long, AccessibilityNwbRoadSection> local = accessibilityNwbRoadSectionsById;
-
-        if (local == null) {
-            synchronized (this) {
-                local = accessibilityNwbRoadSectionsById;
-                if (local == null) {
-                    List<AccessibilityNwbRoadSection> list = accessibilityNwbRoadSections;
-                    Map<Long, AccessibilityNwbRoadSection> map =
-                            new HashMap<>((int) (list.size() / 0.75f) + 1);
-                    for (AccessibilityNwbRoadSection section : list) {
-                        long key = section.roadSectionId();
-
-                        // same merge logic as (a, b) -> a
-                        map.putIfAbsent(key, section);
-                    }
-                    accessibilityNwbRoadSectionsById = map;
-                    local = map;
-                }
-            }
-        }
-        return local;
     }
 }

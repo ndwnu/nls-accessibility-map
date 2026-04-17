@@ -46,18 +46,18 @@ class NwbDataUpdatesWeightingDecoratorTest {
     @Mock
     private AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate;
 
-    private RoadChangesWeightingDecorator roadChangesWeightingDecorator;
+    private RoadChangesWeighting roadChangesWeighting;
 
     @BeforeEach
     void setUp() {
 
-        roadChangesWeightingDecorator = new RoadChangesWeightingDecorator(sourceWeighting, nwbDataUpdates, encodingManager);
+        roadChangesWeighting = new RoadChangesWeighting(sourceWeighting, nwbDataUpdates, encodingManager);
     }
 
     @Test
     void calcMinWeightPerDistance() {
 
-        roadChangesWeightingDecorator.calcMinWeightPerDistance();
+        roadChangesWeighting.calcMinWeightPerDistance();
 
         verify(sourceWeighting).calcMinWeightPerDistance();
     }
@@ -84,7 +84,7 @@ class NwbDataUpdatesWeightingDecoratorTest {
                 when(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed)).thenReturn(1.0);
             }
 
-            double weight = roadChangesWeightingDecorator.calcEdgeWeight(edgeIteratorState, reversed);
+            double weight = roadChangesWeighting.calcEdgeWeight(edgeIteratorState, reversed);
 
             assertThat(weight).isEqualTo(hasAccess ? 1.0 : Double.POSITIVE_INFINITY);
         }
@@ -99,7 +99,7 @@ class NwbDataUpdatesWeightingDecoratorTest {
         when(nwbDataUpdates.findChangedNwbRoadSectionById(LINK_ID)).thenReturn(Optional.empty());
         when(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed)).thenReturn(1.0);
 
-        double weight = roadChangesWeightingDecorator.calcEdgeWeight(edgeIteratorState, reversed);
+        double weight = roadChangesWeighting.calcEdgeWeight(edgeIteratorState, reversed);
 
         assertThat(weight).isEqualTo(1.0);
     }
@@ -111,7 +111,7 @@ class NwbDataUpdatesWeightingDecoratorTest {
         long weight = 345L;
         when(sourceWeighting.calcEdgeMillis(edgeIteratorState, reversed)).thenReturn(weight);
 
-        assertThat(roadChangesWeightingDecorator.calcEdgeMillis(edgeIteratorState, reversed)).isEqualTo(weight);
+        assertThat(roadChangesWeighting.calcEdgeMillis(edgeIteratorState, reversed)).isEqualTo(weight);
     }
 
     @Test
@@ -119,7 +119,7 @@ class NwbDataUpdatesWeightingDecoratorTest {
 
         when(sourceWeighting.calcTurnWeight(1, 2, 3)).thenReturn(4D);
 
-        assertThat(roadChangesWeightingDecorator.calcTurnWeight(1, 2, 3)).isEqualTo(4D);
+        assertThat(roadChangesWeighting.calcTurnWeight(1, 2, 3)).isEqualTo(4D);
     }
 
     @Test
@@ -127,13 +127,13 @@ class NwbDataUpdatesWeightingDecoratorTest {
 
         when(sourceWeighting.calcTurnMillis(1, 2, 3)).thenReturn(4L);
 
-        assertThat(roadChangesWeightingDecorator.calcTurnMillis(1, 2, 3)).isEqualTo(4L);
+        assertThat(roadChangesWeighting.calcTurnMillis(1, 2, 3)).isEqualTo(4L);
     }
 
     @Test
     void hasTurnCosts() {
 
-        roadChangesWeightingDecorator.hasTurnCosts();
+        roadChangesWeighting.hasTurnCosts();
 
         verify(sourceWeighting).hasTurnCosts();
     }
@@ -141,7 +141,7 @@ class NwbDataUpdatesWeightingDecoratorTest {
     @Test
     void getName() {
 
-        roadChangesWeightingDecorator.getName();
+        roadChangesWeighting.getName();
 
         verify(sourceWeighting).getName();
     }
