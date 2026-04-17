@@ -36,11 +36,15 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+      - "5552:5552"
     volumes:
       - ./docker/nls-rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
       - ./docker/nls-rabbitmq/load-definitions.json:/etc/rabbitmq/load-definitions.json
     networks:
       - nls-accessibility-map-network
+    configs:
+      - source: rabbitmq-plugins
+        target: /etc/rabbitmq/enabled_plugins
 
   accessibility-wiremock:
     hostname: accessibility-wiremock
@@ -97,3 +101,8 @@ services:
 networks:
   nls-accessibility-map-network:
     name: nls-accessibility-map-network
+
+
+configs:
+  rabbitmq-plugins:
+    content: "[rabbitmq_management, rabbitmq_management_agent, rabbitmq_prometheus, rabbitmq_web_dispatch, rabbitmq_stream, rabbitmq_stream_management]."
