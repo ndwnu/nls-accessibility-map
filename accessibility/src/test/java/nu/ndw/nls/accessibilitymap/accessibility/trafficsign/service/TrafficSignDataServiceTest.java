@@ -77,7 +77,7 @@ class TrafficSignDataServiceTest {
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        trafficSignDataService.write(new TrafficSigns(trafficSign1, trafficSign2));
+        trafficSignDataService.write(() -> new TrafficSigns(trafficSign1, trafficSign2));
 
         Set<TrafficSign> trafficSigns = trafficSignDataService.findAll();
         assertThat(trafficSigns).containsExactlyInAnyOrder(trafficSign1, trafficSign2);
@@ -90,7 +90,7 @@ class TrafficSignDataServiceTest {
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        trafficSignDataService.write(new TrafficSigns(trafficSign1, trafficSign2));
+        trafficSignDataService.write(() -> new TrafficSigns(trafficSign1, trafficSign2));
         trafficSignDataService.read();
 
         Set<TrafficSign> trafficSigns = trafficSignDataService.findAll();

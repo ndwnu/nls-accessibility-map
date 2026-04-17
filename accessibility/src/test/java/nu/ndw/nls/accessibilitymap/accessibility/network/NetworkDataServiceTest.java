@@ -115,7 +115,7 @@ class NetworkDataServiceTest {
         when(graphHopperNetwork.nwbVersion()).thenReturn(1);
 
         NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);
-        networkDataService.write(networkData);
+        networkDataService.write(() -> networkData);
         networkDataService.writeNwbDataUpdates(new NwbDataUpdates(1, updatedRoaSections));
 
         NetworkData updatedNetworkData = networkDataService.get();
@@ -157,7 +157,7 @@ class NetworkDataServiceTest {
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(graphHopperNetwork.nwbVersion()).thenReturn(1);
         NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);
-        networkDataService.write(networkData);
+        networkDataService.write(() -> networkData);
 
         NetworkData actualNetworkData = networkDataService.get();
 

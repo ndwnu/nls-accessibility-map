@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -96,12 +97,10 @@ public abstract class Cache<TYPE> {
             if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
-        } finally {
-            distributedLockService.unlock(cacheConfiguration.getName());
         }
     }
 
-    public void write(TYPE data) {
+    public void write(Supplier<TYPE> networkDataSupplier) {
         OffsetDateTime start = clockService.now();
         Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
@@ -110,7 +109,7 @@ public abstract class Cache<TYPE> {
             distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
             OffsetDateTime endLock = clockService.now();
             log.info("Acquiring a lock took {} ms", Duration.between(startLock, endLock).toMillis());
-
+            TYPE data = networkDataSupplier.get();
             Files.createDirectories(targetLocation);
             log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
             writeData(targetLocation.toRealPath().toAbsolutePath(), data);

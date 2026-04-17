@@ -61,7 +61,7 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
 
             log.info("Downloaded {} traffic signs", trafficSigns.size());
 
-            trafficSignDataService.write(trafficSigns);
+            trafficSignDataService.write(() -> trafficSigns);
             return 0;
         } catch (Exception exception) {
             log.error("Failed updating traffic signs", exception);

@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
@@ -59,10 +60,15 @@ public class NetworkDataService extends Cache<NetworkData> {
     @Transactional
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
-        NetworkData networkData = get();
-        NwbDataUpdates previousChanges = networkData.getNwbDataUpdates();
-        NwbDataUpdates newNwbDataUpdates = previousChanges.merge(nwbDataUpdates);
-        super.write(new NetworkData(networkData.getNetworkGraphHopper(), networkData.getNwbData(), newNwbDataUpdates));
+        Supplier<NetworkData> networkDataSupplier = () -> {
+            // Read the current network data to get the latest version
+            read();
+            NetworkData networkData = get();
+            NwbDataUpdates previousChanges = networkData.getNwbDataUpdates();
+            NwbDataUpdates newNwbDataUpdates = previousChanges.merge(nwbDataUpdates);
+            return new NetworkData(networkData.getNetworkGraphHopper(), networkData.getNwbData(), newNwbDataUpdates);
+        };
+        super.write(networkDataSupplier);
     }
 
     @Transactional
@@ -74,7 +80,7 @@ public class NetworkDataService extends Cache<NetworkData> {
         Integer nwbVersionId = nwbData.getNwbVersionId();
         NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(nwbVersionId, List.of());
 
-        write(new NetworkData(
+        write(() -> new NetworkData(
                 GraphHopperNetwork.builder()
                         .nwbVersion(nwbData.getNwbVersionId())
                         .build(),

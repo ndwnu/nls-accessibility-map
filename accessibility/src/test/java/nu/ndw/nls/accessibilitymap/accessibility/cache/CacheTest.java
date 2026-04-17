@@ -21,6 +21,7 @@ import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -191,7 +192,7 @@ class CacheTest {
     }
 
     @Test
-    void read_error_failOnCacheReadError_notTriggerdByStartup() throws IOException {
+    void read_error_failOnCacheReadError_notTriggeredByStartup() throws IOException {
 
         Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
 
@@ -261,6 +262,13 @@ class CacheTest {
         cacheConfiguration.setFailOnStartupCacheReadError(true);
         cacheConfiguration.setLoadDataOnStartup(false);
 
+        Cache<Object> cache = getObjectCache();
+
+        assertThat(cache.get()).isNull();
+    }
+
+    @NotNull
+    private Cache<Object> getObjectCache() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             private int counter;
 
@@ -279,8 +287,7 @@ class CacheTest {
         };
 
         cache.loadDataOnStartup();
-
-        assertThat(cache.get()).isNull();
+        return cache;
     }
 
     @Test
@@ -378,7 +385,7 @@ class CacheTest {
 
         assertThat(Files.exists(cacheConfiguration.getFolder())).isFalse();
 
-        cache.write("testData1");
+        cache.write(() -> "testData1");
 
         loggerExtension.containsLog(
                 Level.INFO,
@@ -404,7 +411,7 @@ class CacheTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(timestamp3, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp4, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        cache.write("testData2");
+        cache.write(() -> "testData2");
         verify(distributedLockService).lockOrFail(cacheConfiguration.getName(), Duration.ofSeconds(30));
         verify(distributedLockService).unlock(cacheConfiguration.getName());
         loggerExtension.containsLog(
@@ -447,7 +454,7 @@ class CacheTest {
             }
         };
 
-        cache.write("testData1");
+        cache.write(() -> "testData1");
         assertThat(cache.get()).isNull();
 
         loggerExtension.containsLog(

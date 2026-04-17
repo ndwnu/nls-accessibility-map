@@ -137,8 +137,8 @@ class RebuildTrafficSignCacheCommandTest {
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
         verify(trafficSignDataService).write(argThat(trafficSigns ->
-                trafficSigns.size() == 3
-                && trafficSigns.containsAll(List.of(trafficSign1, trafficSign2, trafficSign3))));
+                trafficSigns.get().size() == 3
+                        && trafficSigns.get().containsAll(List.of(trafficSign1, trafficSign2, trafficSign3))));
 
         loggerExtension.containsLog(Level.INFO, "Updating traffic signs");
     }
