@@ -109,10 +109,10 @@ public abstract class Cache<TYPE> {
             distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
             OffsetDateTime endLock = clockService.now();
             log.info("Acquiring a lock took {} ms", Duration.between(startLock, endLock).toMillis());
-            TYPE data = networkDataSupplier.get();
+            TYPE newData = networkDataSupplier.get();
             Files.createDirectories(targetLocation);
             log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
-            writeData(targetLocation.toRealPath().toAbsolutePath(), data);
+            writeData(targetLocation.toRealPath().toAbsolutePath(), newData);
 
             log.info(
                     "Written {} data to `{}` with size {}MB in {} ms",
@@ -125,7 +125,7 @@ public abstract class Cache<TYPE> {
             switchSymLink(targetFolder);
 
             dataLock.lock();
-            this.data = data;
+            this.data = newData;
             dataLock.unlock();
         } catch (IOException exception) {
             log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);

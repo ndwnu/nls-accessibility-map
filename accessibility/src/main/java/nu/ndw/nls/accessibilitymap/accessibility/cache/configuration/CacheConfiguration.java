@@ -19,6 +19,8 @@ import org.springframework.validation.annotation.Validated;
 @SuperBuilder
 public class CacheConfiguration {
 
+    private static final int DEFAULT_CACHE_TTL = 60;
+
     @NotNull
     private String name;
 
@@ -44,7 +46,7 @@ public class CacheConfiguration {
     @Default
     private int acceptableConsequentReadFailures = 1;
 
-    private Duration maxLockWaitTime = Duration.ofSeconds(60);
+    private Duration maxLockWaitTime = Duration.ofSeconds(DEFAULT_CACHE_TTL);
 
     public File getActiveVersion() {
         return folder.resolve(fileNameActiveVersion).toFile();

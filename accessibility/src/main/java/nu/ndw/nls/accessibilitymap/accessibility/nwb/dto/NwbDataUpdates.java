@@ -63,7 +63,7 @@ public final class NwbDataUpdates {
         }
 
         // update existing roadSections with new changes
-        List<AccessibilityNwbRoadSectionUpdate> mergedAccessibilityNwbRoadSectionUpdates = new ArrayList<>(this.accessibilityNwbRoadSectionUpdates.stream()
+        List<AccessibilityNwbRoadSectionUpdate> updatedRoadSections = new ArrayList<>(this.accessibilityNwbRoadSectionUpdates.stream()
                 .map(changedNwbRoadSection -> other.findChangedNwbRoadSectionById(changedNwbRoadSection.roadSectionId())
                         .map(changedNwbRoadSection::update)
                         .orElse(changedNwbRoadSection))
@@ -73,8 +73,8 @@ public final class NwbDataUpdates {
                 .filter(r -> this.findChangedNwbRoadSectionById(r.roadSectionId()).isEmpty())
                 .toList();
 
-        mergedAccessibilityNwbRoadSectionUpdates.addAll(newEntries);
-        return new NwbDataUpdates(this.nwbVersionId, new ArrayList<>(mergedAccessibilityNwbRoadSectionUpdates));
+        updatedRoadSections.addAll(newEntries);
+        return new NwbDataUpdates(this.nwbVersionId, new ArrayList<>(updatedRoadSections));
     }
 
     private boolean isSameNwbVersion(NwbDataUpdates other) {
