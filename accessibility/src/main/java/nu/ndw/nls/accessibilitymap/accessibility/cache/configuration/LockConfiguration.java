@@ -16,7 +16,11 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 public class LockConfiguration {
 
-    Duration defaultLockTtl = Duration.ofSeconds(60);
+    private static final int LOCK_TIMEOUT_SECONDS = 60;
 
-    Duration lockRetryInterval = Duration.ofMillis(500);
+    private static final int RETRY_INTERVAL_MS = 500;
+
+    Duration defaultLockTtl = Duration.ofSeconds(LOCK_TIMEOUT_SECONDS);
+
+    Duration lockRetryInterval = Duration.ofMillis(RETRY_INTERVAL_MS);
 }

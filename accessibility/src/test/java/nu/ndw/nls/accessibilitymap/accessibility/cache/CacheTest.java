@@ -24,7 +24,6 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -34,8 +33,9 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
 class CacheTest {
+
+    private static final Duration MAX_LOCK_WAIT_TIME = Duration.ofSeconds(10);
 
     @Mock
     private ClockService clockService;
@@ -62,6 +62,7 @@ class CacheTest {
                 .name("testCache")
                 .folder(testDir.resolve("testFolder"))
                 .fileNameActiveVersion("active")
+                .maxLockWaitTime(MAX_LOCK_WAIT_TIME)
                 .build();
     }
 
@@ -104,9 +105,6 @@ class CacheTest {
         cache.read();
 
         assertThat(cache.get()).isEqualTo(data);
-
-        verify(distributedLockService, times(2)).lockOrFail(cacheConfiguration.getName(), Duration.ofSeconds(30));
-        verify(distributedLockService, times(2)).unlock(cacheConfiguration.getName());
 
         loggerExtension.containsLog(
                 Level.INFO,
@@ -361,6 +359,7 @@ class CacheTest {
     void write() {
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
         String timestamp2 = "2022-03-11T09:04:01.123-01:00";
+
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(timestamp1, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp2, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
@@ -412,8 +411,10 @@ class CacheTest {
                 .thenReturn(OffsetDateTime.parse(timestamp3, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp4, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         cache.write(() -> "testData2");
-        verify(distributedLockService).lockOrFail(cacheConfiguration.getName(), Duration.ofSeconds(30));
-        verify(distributedLockService).unlock(cacheConfiguration.getName());
+
+        verify(distributedLockService, times(2)).lockOrFail(cacheConfiguration.getName(), MAX_LOCK_WAIT_TIME);
+        verify(distributedLockService, times(2)).unlock(cacheConfiguration.getName());
+
         loggerExtension.containsLog(
                 Level.INFO,
                 "Writing %s to location: %s".formatted(
@@ -424,6 +425,7 @@ class CacheTest {
                 "Written %s data to `%s` with size 0.00MB in 60000 ms".formatted(
                         cacheConfiguration.getName(),
                         cacheConfiguration.getFolder().resolve(timestamp3).toRealPath().toAbsolutePath()));
+
         assertThat(cache.get()).isEqualTo("testData2");
 
         // verify we can load data from the disk
