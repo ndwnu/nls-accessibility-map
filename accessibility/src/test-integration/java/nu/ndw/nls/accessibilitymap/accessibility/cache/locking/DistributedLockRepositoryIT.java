@@ -43,13 +43,13 @@ class DistributedLockRepositoryIT {
 
         assertThat(result).isTrue();
 
-        var record = dsl.fetchOne(
+        var lockRecord = dsl.fetchOne(
                 "SELECT * FROM accessibility_map.distributed_locks WHERE lock_name = ?",
                 "lock-1"
         );
 
-        assertThat(record).isNotNull();
-        assertThat(record.get("owner_id")).isEqualTo(lockInstance.getLockOwnerId());
+        assertThat(lockRecord).isNotNull();
+        assertThat(lockRecord.get("owner_id")).isEqualTo(lockInstance.getLockOwnerId());
     }
 
     @Test
