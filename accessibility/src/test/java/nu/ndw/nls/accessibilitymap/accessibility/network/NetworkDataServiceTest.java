@@ -165,7 +165,6 @@ class NetworkDataServiceTest {
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
         assertThat(actualNetworkData.getNwbData()).isEqualTo(nwbData);
         assertThat(actualNetworkData.getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
-
     }
 
     @Test

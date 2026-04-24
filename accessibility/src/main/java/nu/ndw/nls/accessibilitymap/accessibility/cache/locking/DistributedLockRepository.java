@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache.locking;
 
 import java.time.Instant;
+import java.util.UUID;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Table;
@@ -27,7 +28,7 @@ public class DistributedLockRepository {
 
     private final Field<String> lockNameField;
 
-    private final Field<String> ownerIdField;
+    private final Field<UUID> ownerIdField;
 
     private final Field<Instant> lockExpiryField;
 
@@ -39,7 +40,7 @@ public class DistributedLockRepository {
         this.locksTable = DSL.table(DSL.name(schema.getName(), DISTRIBUTED_LOCKS_TABLE));
 
         this.lockNameField = DSL.field(DSL.name(COLUMN_LOCK_NAME), String.class);
-        this.ownerIdField = DSL.field(DSL.name(COLUMN_OWNER_ID), String.class);
+        this.ownerIdField = DSL.field(DSL.name(COLUMN_OWNER_ID), UUID.class);
         this.lockExpiryField = DSL.field(DSL.name(COLUMN_LOCK_EXPIRY), Instant.class);
     }
 
@@ -48,7 +49,7 @@ public class DistributedLockRepository {
      */
     @Transactional
     public boolean tryAcquireLock(String lockName, Instant now, Instant newExpiry) {
-        String ownerId = lockOwner.getLockOwnerId();
+        UUID ownerId = lockOwner.getLockOwnerId();
 
         int rows = dsl.insertInto(locksTable)
                 .columns(lockNameField, ownerIdField, lockExpiryField)
