@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class LockOwner {
 
-    private final String lockOwnerId;
+    private final UUID lockOwnerId;
 
     public LockOwner() {
-        this.lockOwnerId = "nls-accessibility-map-%s".formatted(UUID.randomUUID());
+        this.lockOwnerId = UUID.randomUUID();
     }
 }
+

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -57,24 +58,34 @@ public final class NwbDataUpdates {
         return Optional.ofNullable(changedNwbRoadSectionsById.get(roadSectionId));
     }
 
-    public NwbDataUpdates merge(NwbDataUpdates other) {
-        if (!isSameNwbVersion(other)) {
+    public NwbDataUpdates merge(NwbDataUpdates appendingNwbDataUpdates) {
+        if (!isSameNwbVersion(appendingNwbDataUpdates)) {
             throw new IllegalArgumentException("Cannot merge updates from different NWB versions");
         }
 
-        // update existing roadSections with new changes
-        List<AccessibilityNwbRoadSectionUpdate> updatedRoadSections = new ArrayList<>(this.accessibilityNwbRoadSectionUpdates.stream()
-                .map(changedNwbRoadSection -> other.findChangedNwbRoadSectionById(changedNwbRoadSection.roadSectionId())
-                        .map(changedNwbRoadSection::update)
-                        .orElse(changedNwbRoadSection))
-                .toList());
-        // add only new changed roadSections
-        List<AccessibilityNwbRoadSectionUpdate> newEntries = other.accessibilityNwbRoadSectionUpdates.stream()
-                .filter(r -> this.findChangedNwbRoadSectionById(r.roadSectionId()).isEmpty())
-                .toList();
+        var updatesByRoadSectionId = this.accessibilityNwbRoadSectionUpdates.stream()
+                .collect(Collectors.toMap(
+                        AccessibilityNwbRoadSectionUpdate::roadSectionId,
+                        Function.identity()));
 
-        updatedRoadSections.addAll(newEntries);
-        return new NwbDataUpdates(this.nwbVersionId, new ArrayList<>(updatedRoadSections));
+        mergeOrAddNewUpdate(appendingNwbDataUpdates, updatesByRoadSectionId);
+        return new NwbDataUpdates(this.nwbVersionId, new ArrayList<>(updatesByRoadSectionId.values()));
+    }
+
+    private static void mergeOrAddNewUpdate(
+            NwbDataUpdates appendingNwbDataUpdates,
+            Map<Long, AccessibilityNwbRoadSectionUpdate> updatesByRoadSectionId
+    ) {
+
+        appendingNwbDataUpdates.getAccessibilityNwbRoadSectionUpdates().forEach(newAccessibilityNwbRoadSectionUpdate -> {
+            var updatedValue = updatesByRoadSectionId.computeIfPresent(
+                    newAccessibilityNwbRoadSectionUpdate.roadSectionId(),
+                    (roadSectionId, existingUpdate) -> existingUpdate.update(newAccessibilityNwbRoadSectionUpdate));
+
+            if (Objects.isNull(updatedValue)) {
+                updatesByRoadSectionId.put(newAccessibilityNwbRoadSectionUpdate.roadSectionId(), newAccessibilityNwbRoadSectionUpdate);
+            }
+        });
     }
 
     private boolean isSameNwbVersion(NwbDataUpdates other) {
