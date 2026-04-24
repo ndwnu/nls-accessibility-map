@@ -45,38 +45,41 @@ public class RoadSectionUpdateListener implements ControllableMessageListener {
             queues = "nls_accessibility_map_update_road_section",
             containerFactory = "updateRoadSectionStreamFactory")
     public void handleMessage(Message message) {
-
-        NwbData nwbData = networkDataService.get().getNwbData();
         NwbRoadSectionUpdate nwbRoadSectionUpdate = toRoadSectionUpdate(message);
+        NwbData nwbData = networkDataService.get().getNwbData();
+        int updateMapVersion = nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion());
 
-        if (!messageHasSameMapVersion(nwbRoadSectionUpdate, nwbData)) {
-            if (messageMapVersionIsSmallerThanActiveVersion(nwbRoadSectionUpdate, nwbData)) {
+        if (updateMapVersionIsDifferentFromActiveMapVersion(updateMapVersion, nwbData.getNwbVersionId())) {
+
+            if (updateMapVersionIsEarlierThanActiveVersion(updateMapVersion, nwbData.getNwbVersionId())) {
+                messagesRejected.incrementAndGet();
                 return;
             } else {
+                messagesRejected.incrementAndGet();
                 throw new IllegalArgumentException("Map version is newer than the one currently in use");
             }
         }
 
         AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate = nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate);
-        NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(
-                nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion()),
+        NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(updateMapVersion,
                 List.of(accessibilityNwbRoadSectionUpdate));
         networkDataService.writeNwbDataUpdates(nwbDataUpdates);
         messagesProcessed.incrementAndGet();
     }
 
-    private boolean messageHasSameMapVersion(NwbRoadSectionUpdate incomingUpdate, NwbData nwbData) {
-        return Objects.equals(nwbData.getNwbVersionId(), nwbVersionIdMapper.mapFromReferenceDate(incomingUpdate.nwbVersion()));
+    private boolean updateMapVersionIsDifferentFromActiveMapVersion(int updateMapVersion, int activeMapVersion) {
+        return !Objects.equals(updateMapVersion, activeMapVersion);
     }
 
-    private boolean messageMapVersionIsSmallerThanActiveVersion(NwbRoadSectionUpdate incomingUpdate, NwbData nwbData) {
-        return nwbData.getNwbVersionId() < nwbVersionIdMapper.mapFromReferenceDate(incomingUpdate.nwbVersion());
+    private boolean updateMapVersionIsEarlierThanActiveVersion(int updateMapVersion, int activeMapVersion) {
+        return updateMapVersion < activeMapVersion;
     }
 
     private NwbRoadSectionUpdate toRoadSectionUpdate(Message message) {
         try {
             return objectMapper.readValue(message.getBodyAsBinary(), NwbRoadSectionUpdate.class);
         } catch (IOException e) {
+            messagesRejected.incrementAndGet();
             throw new IllegalArgumentException(e);
         }
     }
