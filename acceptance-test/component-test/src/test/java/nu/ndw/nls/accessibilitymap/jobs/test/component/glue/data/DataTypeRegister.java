@@ -9,6 +9,7 @@ import io.cucumber.java.DefaultDataTableEntryTransformer;
 import io.cucumber.java.DefaultParameterTransformer;
 import jakarta.validation.Valid;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
@@ -23,6 +24,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BaseNetworkAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.NwbVersion;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
@@ -105,6 +107,14 @@ public class DataTypeRegister {
     private static Double mapDoubleValue(String key, Map<String, String> entry) {
 
         return entry.containsKey(key) ? Double.parseDouble(entry.get(key)) : null;
+    }
+
+    @DataTableType
+    public @Valid NwbVersion matToNwbVersion(Map<String, String> entry) {
+        return NwbVersion.builder()
+                .versionId(Integer.parseInt(entry.get("versionId")))
+                .versionDate(LocalDate.parse(entry.get("versionDate")))
+                .build();
     }
 
     @DataTableType

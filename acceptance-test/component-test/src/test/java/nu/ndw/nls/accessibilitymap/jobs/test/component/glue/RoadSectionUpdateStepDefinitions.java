@@ -8,6 +8,7 @@ import io.cucumber.java.en.When;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapApiClient;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.MessagingStatus;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.rabbitmq.RabbitMQStreamDriver;
@@ -17,7 +18,10 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.rabbitmq.RabbitMQStrea
 public class RoadSectionUpdateStepDefinitions {
 
     private final RabbitMQStreamDriver rabbitMQStreamDriver;
+
     private final AccessibilityMapApiClient accessibilityMapApiClient;
+
+    private final FileService fileService;
 
     @Given("reset listener counts")
     public void resetListenerCounts() {
@@ -25,7 +29,8 @@ public class RoadSectionUpdateStepDefinitions {
     }
 
     @Given("a road section update event {word}")
-    public void aRoadSectionUpdateEvent(String message) {
+    public void aRoadSectionUpdateEvent(String messageFile) {
+        String message = fileService.readTestDataFromFile("nwb-updates", messageFile, "json");
         rabbitMQStreamDriver.publishEvent(message);
     }
 

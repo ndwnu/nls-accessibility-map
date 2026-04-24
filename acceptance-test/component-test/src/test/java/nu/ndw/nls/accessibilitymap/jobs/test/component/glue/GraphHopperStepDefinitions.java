@@ -1,17 +1,21 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
 
 import io.cucumber.java.en.Given;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.NwbRoadSection;
+import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.NwbVersion;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.AccessibilityMapServicesClient;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.NwbRoadSectionPrimaryKey;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.RoadSection;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.repository.RoadSectionRepository;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperTestDataService;
+import nu.ndw.nls.data.api.dto.VersionStatus;
+import nu.ndw.nls.data.api.nwb.dtos.NwbVersionDto;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.geometry.crs.CrsTransformer;
 import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
@@ -40,6 +44,21 @@ public class GraphHopperStepDefinitions {
 
         graphHopperTestDataService.buildSimpleNetwork()
                 .insertNwbData()
+                .rebuildCache();
+        accessibilityMapServicesClient.reloadCaches();
+    }
+
+    @Given("a simple network with nwb version")
+    public void graphHopperNetworkWithNwbVersion(NwbVersion nwbVersion) {
+        NwbVersionDto nwbVersionDto = NwbVersionDto.builder()
+                .versionId(nwbVersion.versionId())
+                .imported(Instant.now())
+                .referenceDate(nwbVersion.versionDate())
+                .status(VersionStatus.OK)
+                .revision(Instant.now())
+                .build();
+        graphHopperTestDataService.buildSimpleNetwork()
+                .insertNwbDataWithVersion(nwbVersionDto)
                 .rebuildCache();
         accessibilityMapServicesClient.reloadCaches();
     }

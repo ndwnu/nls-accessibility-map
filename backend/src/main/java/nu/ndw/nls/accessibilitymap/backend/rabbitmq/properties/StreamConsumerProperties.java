@@ -17,9 +17,6 @@ public class StreamConsumerProperties {
     @Positive
     private int messageCountBeforeStorage;
 
-    @Positive
-    private int batchSize;
-
     @NotNull
     private StreamConsumerExponentialBackoffProperties exponentialBackoff;
 }
