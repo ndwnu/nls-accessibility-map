@@ -105,10 +105,7 @@ public abstract class Cache<TYPE> {
         Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
         try {
-            OffsetDateTime startLock = clockService.now();
             distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
-            OffsetDateTime endLock = clockService.now();
-            log.info("Acquiring a lock took {} ms", Duration.between(startLock, endLock).toMillis());
             TYPE newData = networkDataSupplier.get();
             Files.createDirectories(targetLocation);
             log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());

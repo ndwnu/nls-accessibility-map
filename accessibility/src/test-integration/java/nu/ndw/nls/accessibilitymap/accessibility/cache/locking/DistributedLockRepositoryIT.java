@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.junit.jupiter.api.AfterEach;
@@ -67,14 +68,13 @@ class DistributedLockRepositoryIT {
     @Test
     void shouldStealLock_whenExpired() {
         Instant now = Instant.now();
-
         Instant expired = now.minus(10, ChronoUnit.SECONDS);
         Instant newExpiry = now.plus(30, ChronoUnit.SECONDS);
-
+        UUID otherOwnerId = UUID.randomUUID();
         dsl.execute("""
                     INSERT INTO accessibility_map.distributed_locks(lock_name, owner_id, lock_expiry)
                     VALUES (?, ?, ?)
-                """, "lock-1", "old-owner", expired);
+                """, "lock-1", otherOwnerId, expired);
 
         boolean result = repository.tryAcquireLock("lock-1", now, newExpiry);
 
@@ -105,11 +105,11 @@ class DistributedLockRepositoryIT {
     @Test
     void shouldNotReleaseLock_whenNotOwned() {
         Instant now = Instant.now();
-
+        UUID otherOwnerId = UUID.randomUUID();
         dsl.execute("""
                     INSERT INTO accessibility_map.distributed_locks(lock_name, owner_id, lock_expiry)
                     VALUES (?, ?, ?)
-                """, "lock-1", "someone-else", now.plusSeconds(60));
+                """, "lock-1", otherOwnerId, now.plusSeconds(60));
 
         int deleted = repository.releaseLock("lock-1");
 
