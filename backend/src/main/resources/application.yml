@@ -61,6 +61,7 @@ nu:
               consumer:
                 flushInterval-in-seconds: 2
                 messageCountBeforeStorage: 1
+                batch-size: 25
                 exponential-backoff:
                   initial-interval-in-seconds: 1
                   multiplier: 1.5
