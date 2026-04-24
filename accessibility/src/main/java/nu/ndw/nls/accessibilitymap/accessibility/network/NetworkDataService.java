@@ -118,8 +118,8 @@ public class NetworkDataService extends Cache<NetworkData> {
     protected void writeData(Path target, NetworkData data) throws IOException {
         Path nwbPath = target.resolve("nwb");
         Path nwbUpdatesPath = target.resolve("nwbUpdates");
-        jsonWriter.writeJsonToFile(target, nwbPath, "roadSections.json", data.getNwbData());
-        jsonWriter.writeJsonToFile(target, nwbUpdatesPath, "nwb_changed_road_sections.json", data.getNwbDataUpdates());
+        jsonWriter.writeJsonToFile(nwbPath, "roadSections.json", data.getNwbData());
+        jsonWriter.writeJsonToFile(nwbUpdatesPath, "nwb_changed_road_sections.json", data.getNwbDataUpdates());
         graphHopperService.save(
                 target.resolve(GRAPH_HOPPER_FOLDER),
                 data.getNwbData());

@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache.locking;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executors;
@@ -43,35 +44,36 @@ public class DistributedLockService {
      * @param timeout  maximum duration to wait
      */
     public void lockOrFail(String lockName, Duration timeout) {
-        //noinspection resource - scheduler is shutdown when future completeExceptionally
-        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-        CompletableFuture<Void> result = new CompletableFuture<>();
-        Instant deadline = clockService.now().toInstant().plus(timeout);
-        Runnable attempt = new Runnable() {
-            @Override
-            public void run() {
-                if (clockService.now().toInstant().isAfter(deadline)) {
-                    result.completeExceptionally(new IllegalStateException(
-                            "Could not acquire lock '" + lockName + "' within " + timeout.toSeconds() + " seconds"
-                    ));
+        try (ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor()) {
+            OffsetDateTime startLock = clockService.now();
+            CompletableFuture<Void> result = new CompletableFuture<>();
+            Instant deadline = clockService.now().toInstant().plus(timeout);
+            Runnable attempt = new Runnable() {
+                @Override
+                public void run() {
+                    if (clockService.now().toInstant().isAfter(deadline)) {
+                        result.completeExceptionally(new IllegalStateException(
+                                "Could not acquire lock '" + lockName + "' within " + timeout.toSeconds() + " seconds"
+                        ));
+                    }
+                    if (tryLock(lockName)) {
+                        log.debug("Acquired lock '{}'", lockName);
+                        result.complete(null);
+                    } else {
+                        scheduler.schedule(this,
+                                lockConfiguration.getLockRetryInterval().toMillis(),
+                                TimeUnit.MILLISECONDS);
+                    }
                 }
-                if (tryLock(lockName)) {
-                    log.debug("Acquired lock '{}'", lockName);
-                    result.complete(null);
-                } else {
-                    scheduler.schedule(this,
-                            lockConfiguration.getLockRetryInterval().toMillis(),
-                            TimeUnit.MILLISECONDS);
-                }
+            };
+            scheduler.execute(attempt);
+            try {
+                result.join();
+                OffsetDateTime endLock = clockService.now();
+                log.info("Acquiring a lock took {} ms", Duration.between(startLock, endLock).toMillis());
+            } catch (CompletionException e) {
+                throw mapException(e);
             }
-        };
-        scheduler.execute(attempt);
-        try {
-            result.join();
-        } catch (CompletionException e) {
-            throw mapException(e);
-        } finally {
-            scheduler.shutdownNow();
         }
     }
 

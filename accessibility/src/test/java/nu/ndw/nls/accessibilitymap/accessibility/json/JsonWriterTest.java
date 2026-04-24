@@ -35,32 +35,15 @@ class JsonWriterTest {
 
     @SneakyThrows
     @Test
-    void writeJsonToFile_with_sub_folder() {
-        Data data = new Data("test");
-        Path subFolder = testDir.resolve("subfolder");
-
-        jsonWriter.writeJsonToFile(testDir.toAbsolutePath(), subFolder, "test.json", data);
-
-        File writtenFile = new File(subFolder.toFile(), "test.json");
-        String writtenJson = FileUtils.readFileToString(writtenFile, StandardCharsets.UTF_8);
-        String expectedJson = """
-                {key:"test"}
-                """;
-        assertThatJson(writtenJson).isEqualTo(expectedJson);
-    }
-
-    @SneakyThrows
-    @Test
     void writeJsonToFile_files_exist() {
         Data data = new Data("test");
-        Path subFolder = testDir.resolve("subfolder");
         String jsonFileName = "test.json";
-        Files.createDirectories(subFolder);
-        Files.createFile(subFolder.resolve(jsonFileName));
+        Files.createDirectories(testDir);
+        Files.createFile(testDir.resolve(jsonFileName));
 
-        jsonWriter.writeJsonToFile(testDir.toAbsolutePath(), subFolder, jsonFileName, data);
+        jsonWriter.writeJsonToFile(testDir.toAbsolutePath(), jsonFileName, data);
 
-        File writtenFile = new File(subFolder.toFile(), jsonFileName);
+        File writtenFile = new File(testDir.toFile(), jsonFileName);
         String writtenJson = FileUtils.readFileToString(writtenFile, StandardCharsets.UTF_8);
         String expectedJson = """
                 {key:"test"}
@@ -70,10 +53,10 @@ class JsonWriterTest {
 
     @SneakyThrows
     @Test
-    void writeJsonToFile_without_sub_folder() {
+    void writeJsonToFile() {
         Data data = new Data("test");
 
-        jsonWriter.writeJsonToFile(testDir.toAbsolutePath(), null, "test.json", data);
+        jsonWriter.writeJsonToFile(testDir.toAbsolutePath(), "test.json", data);
 
         File writtenFile = new File(testDir.toAbsolutePath().toFile(), "test.json");
         String writtenJson = FileUtils.readFileToString(writtenFile, StandardCharsets.UTF_8);
