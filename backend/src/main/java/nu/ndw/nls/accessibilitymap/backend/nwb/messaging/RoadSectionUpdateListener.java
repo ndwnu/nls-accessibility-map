@@ -1,10 +1,21 @@
 package nu.ndw.nls.accessibilitymap.backend.nwb.messaging;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.stream.Message;
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectionUpdate;
+import nu.ndw.nls.accessibilitymap.backend.nwb.messaging.mapper.NwbRoadSectionUpdateMapper;
 import nu.ndw.nls.accessibilitymap.backend.rabbitmq.actuators.ControllableMessageListener;
+import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
@@ -22,21 +33,52 @@ public class RoadSectionUpdateListener implements ControllableMessageListener {
 
     private final AtomicInteger messagesRejected = new AtomicInteger();
 
+    private final NetworkDataService networkDataService;
+
+    private final NwbVersionIdMapper nwbVersionIdMapper;
+
+    private final NwbRoadSectionUpdateMapper nwbRoadSectionUpdateMapper;
+
+    private final ObjectMapper objectMapper;
+
     @RabbitListener(id = LISTENER_ID,
             queues = "nls_accessibility_map_update_road_section",
             containerFactory = "updateRoadSectionStreamFactory")
     public void handleMessage(Message message) {
-        try {
-            log.info("handle message: {}", message.getBody());
-            // for now to test if skipping of the message processing works it checks for the content to contain broken
-            if (new String(message.getBodyAsBinary()).contains("broken")) {
-                throw new IllegalStateException("Failed processing message");
+
+        NwbData nwbData = networkDataService.get().getNwbData();
+        NwbRoadSectionUpdate nwbRoadSectionUpdate = toRoadSectionUpdate(message);
+
+        if (!messageHasSameMapVersion(nwbRoadSectionUpdate, nwbData)) {
+            if (messageMapVersionIsSmallerThanActiveVersion(nwbRoadSectionUpdate, nwbData)) {
+                return;
+            } else {
+                throw new IllegalArgumentException("Map version is newer than the one currently in use");
             }
-        } catch (RuntimeException e) {
-            messagesRejected.incrementAndGet();
-            throw e;
         }
+
+        AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate = nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate);
+        NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(
+                nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion()),
+                List.of(accessibilityNwbRoadSectionUpdate));
+        networkDataService.writeNwbDataUpdates(nwbDataUpdates);
         messagesProcessed.incrementAndGet();
+    }
+
+    private boolean messageHasSameMapVersion(NwbRoadSectionUpdate incomingUpdate, NwbData nwbData) {
+        return Objects.equals(nwbData.getNwbVersionId(), nwbVersionIdMapper.mapFromReferenceDate(incomingUpdate.nwbVersion()));
+    }
+
+    private boolean messageMapVersionIsSmallerThanActiveVersion(NwbRoadSectionUpdate incomingUpdate, NwbData nwbData) {
+        return nwbData.getNwbVersionId() < nwbVersionIdMapper.mapFromReferenceDate(incomingUpdate.nwbVersion());
+    }
+
+    private NwbRoadSectionUpdate toRoadSectionUpdate(Message message) {
+        try {
+            return objectMapper.readValue(message.getBodyAsBinary(), NwbRoadSectionUpdate.class);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     @Override
