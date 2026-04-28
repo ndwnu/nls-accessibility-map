@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
@@ -67,6 +67,10 @@
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-spatial</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
@@ -78,6 +82,7 @@
       <artifactId>wiremock-spring-boot</artifactId>
       <scope>compile</scope>
     </dependency>
+
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>test</artifactId>

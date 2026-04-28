@@ -54,4 +54,9 @@ public class RoadSectionUpdateStepDefinitions {
                     assertThat(status.messagesRejected()).isEqualTo(rejected);
                 });
     }
+
+    @When("a new nwb version is imported")
+    public void aNewNwbVersionIsPublished() {
+
+    }
 }

@@ -4,6 +4,6 @@ import java.time.LocalDate;
 import lombok.Builder;
 
 @Builder
-public record NwbVersion(int versionId, LocalDate versionDate) {
+public record NwbVersion(int versionId, LocalDate versionDate, boolean isCurrent) {
 
 }
