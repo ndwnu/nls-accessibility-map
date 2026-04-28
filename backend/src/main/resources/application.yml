@@ -41,8 +41,6 @@ nu:
   ndw:
     nls:
       accessibilitymap:
-        #        cache:
-        #          locking:
         network:
           cache:
             name: "Network"

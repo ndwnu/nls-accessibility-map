@@ -20,6 +20,7 @@ import nu.ndw.nls.springboot.test.graph.exporter.database.nwb.dto.NwbDataAccessS
 import nu.ndw.nls.springboot.test.graph.service.GraphDataBuilder;
 import nu.ndw.nls.springboot.test.graph.service.GraphGeneratorService;
 import nu.ndw.nls.springboot.test.graph.service.dto.GenerateSpecification;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -66,12 +67,12 @@ public class GraphHopperDriver {
 
     @SneakyThrows
     @SuppressWarnings("java:S3658")
-    public GraphHopperDriver insertNwbDataWithVersion(NwbVersionDto nwbVersion) {
+    public GraphHopperDriver insertNwbDataWithVersion(List<ImmutablePair<Boolean, NwbVersionDto>> nwbVersionData) {
         lastBuiltGraph = graphDataBuilder.build();
         nwbDatabaseExporter.export(
                 lastBuiltGraph,
                 NwbDataAccessSettings.builder()
-                        .versionDtoSupplier(new AccessibilityVersionSupplier(List.of(nwbVersion)))
+                        .versionDtoSupplier(new AccessibilityVersionSupplier(nwbVersionData))
                         .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier(Map.of()))
                         .build());
 

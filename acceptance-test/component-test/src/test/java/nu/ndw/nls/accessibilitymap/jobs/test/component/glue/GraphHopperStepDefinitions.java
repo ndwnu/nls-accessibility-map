@@ -20,6 +20,7 @@ import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.geometry.crs.CrsTransformer;
 import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
@@ -48,17 +49,21 @@ public class GraphHopperStepDefinitions {
         accessibilityMapServicesClient.reloadCaches();
     }
 
-    @Given("a simple network with nwb version")
-    public void graphHopperNetworkWithNwbVersion(NwbVersion nwbVersion) {
-        NwbVersionDto nwbVersionDto = NwbVersionDto.builder()
-                .versionId(nwbVersion.versionId())
-                .imported(Instant.now())
-                .referenceDate(nwbVersion.versionDate())
-                .status(VersionStatus.OK)
-                .revision(Instant.now())
-                .build();
+    @Given("a simple network with nwb versions")
+    public void graphHopperNetworkWithNwbVersion(List<NwbVersion> nwbVersions) {
+
+        List<ImmutablePair<Boolean, NwbVersionDto>> nwbVersionData = nwbVersions.stream()
+                .map(nwbVersion -> new ImmutablePair<>(nwbVersion.isCurrent(), NwbVersionDto.builder()
+                        .versionId(nwbVersion.versionId())
+                        .imported(Instant.now())
+                        .referenceDate(nwbVersion.versionDate())
+                        .status(VersionStatus.OK)
+                        .revision(Instant.now())
+                        .build()))
+                .toList();
+
         graphHopperTestDataService.buildSimpleNetwork()
-                .insertNwbDataWithVersion(nwbVersionDto)
+                .insertNwbDataWithVersion(nwbVersionData)
                 .rebuildCache();
         accessibilityMapServicesClient.reloadCaches();
     }

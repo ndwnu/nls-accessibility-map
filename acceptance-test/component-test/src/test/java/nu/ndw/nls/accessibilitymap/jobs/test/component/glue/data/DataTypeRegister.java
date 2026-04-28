@@ -110,10 +110,11 @@ public class DataTypeRegister {
     }
 
     @DataTableType
-    public @Valid NwbVersion matToNwbVersion(Map<String, String> entry) {
+    public @Valid NwbVersion mapToNwbVersion(Map<String, String> entry) {
         return NwbVersion.builder()
                 .versionId(Integer.parseInt(entry.get("versionId")))
                 .versionDate(LocalDate.parse(entry.get("versionDate")))
+                .isCurrent(Boolean.parseBoolean(entry.get("isCurrent")))
                 .build();
     }
 

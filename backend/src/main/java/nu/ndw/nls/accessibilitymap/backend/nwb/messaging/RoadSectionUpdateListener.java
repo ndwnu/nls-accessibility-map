@@ -55,7 +55,6 @@ public class RoadSectionUpdateListener implements ControllableMessageListener {
                 messagesRejected.incrementAndGet();
                 return;
             } else {
-                messagesRejected.incrementAndGet();
                 throw new IllegalArgumentException("Map version is newer than the one currently in use");
             }
         }
