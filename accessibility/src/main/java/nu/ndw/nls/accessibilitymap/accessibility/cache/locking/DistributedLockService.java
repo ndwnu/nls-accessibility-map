@@ -71,8 +71,8 @@ public class DistributedLockService {
                 result.join();
                 OffsetDateTime endLock = clockService.now();
                 log.info("Acquiring a lock took {} ms", Duration.between(startLock, endLock).toMillis());
-            } catch (CompletionException e) {
-                throw mapException(e);
+            } catch (CompletionException exception) {
+                throw mapException(exception);
             }
         }
     }

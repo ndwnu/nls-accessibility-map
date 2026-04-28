@@ -19,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
 @SuperBuilder
 public class CacheConfiguration {
 
-    private static final int MAX_LOCK_WAIT_TIME = 60;
+    private static final int DEFAULT_MAX_LOCK_WAIT_TIME = 60;
 
     @NotNull
     private String name;
@@ -46,7 +46,7 @@ public class CacheConfiguration {
     @Default
     private int acceptableConsequentReadFailures = 1;
 
-    private Duration maxLockWaitTime = Duration.ofSeconds(MAX_LOCK_WAIT_TIME);
+    private Duration maxLockWaitTime = Duration.ofSeconds(DEFAULT_MAX_LOCK_WAIT_TIME);
 
     public File getActiveVersion() {
         return folder.resolve(fileNameActiveVersion).toFile();
