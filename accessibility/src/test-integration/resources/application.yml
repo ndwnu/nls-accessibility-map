@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: nls-accessibility-map-api
+  config:
+    import: "optional:configtree:/application/config/configtree/"
+  liquibase:
+    contexts: "main"
+    change-log: classpath:/db/changelog/changelog-master.xml
+    database-change-log-table: ACC_MAP_DATABASECHANGELOG
+    database-change-log-lock-table: ACC_MAP_DATABASECHANGELOGLOCK
+    default-schema: public
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/nls-maps?ApplicationName=nls-accessibility-map&stringtype=unspecified
+    username: nls-maps
+    password: nls-maps
+    hikari:
+      connection-init-sql: SELECT 1;
+      idle-timeout: 60000
+      max-lifetime: 120000
+      minimum-idle: 1
+  jooq:
+    sql-dialect: Postgres
+  main:
+    banner-mode: off
+nu:
+  ndw:
+    nls:
+      springboot:
+        test:
+          component:
+            driver:
+              docker:
+                compose-file: "../docker-compose.yml"
+      accessibilitymap:
+        network:
+          cache:
+            locking:
+              default-lock-ttl: 5s
+management:
+  datadog:
+    metrics:
+      export:
+        enabled: false
+
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: TRACE
+
+
+

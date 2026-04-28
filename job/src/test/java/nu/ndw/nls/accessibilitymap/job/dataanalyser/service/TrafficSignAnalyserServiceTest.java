@@ -150,10 +150,10 @@ class TrafficSignAnalyserServiceTest {
                     Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(completeReportJson.getReporterReportId());
             return matcher.find()
-                   && completeReportJson.getReporterReportGroupId()
-                           .equals("AsymmetricTrafficSignPlacement-%s-%s".formatted(
-                                   TrafficSignType.C21.getRvvCode(),
-                                   TrafficSignType.C22C.getRvvCode()));
+                    && completeReportJson.getReporterReportGroupId()
+                    .equals("AsymmetricTrafficSignPlacement-%s-%s".formatted(
+                            TrafficSignType.C21.getRvvCode(),
+                            TrafficSignType.C22C.getRvvCode()));
         }));
 
         loggerExtension.containsLog(Level.INFO, "Analysing with the following properties: analyseAsymmetricTrafficSignsConfiguration");

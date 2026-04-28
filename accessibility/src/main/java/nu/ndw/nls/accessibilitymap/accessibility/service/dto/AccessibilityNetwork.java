@@ -3,16 +3,12 @@ package nu.ndw.nls.accessibilitymap.accessibility.service.dto;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.PMap;
 import jakarta.validation.constraints.NotNull;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import org.springframework.validation.annotation.Validated;
 
@@ -33,15 +29,16 @@ public class AccessibilityNetwork {
     private final Map<Integer, List<Restriction>> restrictionsByEdgeKey;
 
     @NotNull
-    private final Set<Integer> blockedEdges;
-
-    @NotNull
     private final Snap from;
 
     private final Snap destination;
 
     @NotNull
-    private final Weighting weighting;
+    private final Weighting weightingWithRestrictions;
+
+    @NotNull
+    private final Weighting weightingWithOutRestrictions;
+
 
     @SuppressWarnings("java:S107")
     public AccessibilityNetwork(
@@ -50,28 +47,28 @@ public class AccessibilityNetwork {
             @NotNull Restrictions restrictions,
             @NotNull Map<Integer, List<Restriction>> restrictionsByEdgeKey,
             @NotNull Snap from,
-            Snap destination) {
+            Snap destination,
+            Weighting weightingWithRestrictions,
+            Weighting weightingWithOutRestrictions
+    ) {
         this.networkData = networkData;
-
         this.queryGraph = queryGraph;
         this.restrictions = restrictions;
-        this.blockedEdges = new HashSet<>(restrictionsByEdgeKey.keySet());
         this.restrictionsByEdgeKey = restrictionsByEdgeKey;
         this.from = from;
         this.destination = destination;
-
-        weighting = networkData.getGraphHopperNetwork().network().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
+        this.weightingWithRestrictions = weightingWithRestrictions;
+        this.weightingWithOutRestrictions = weightingWithOutRestrictions;
     }
 
     @Override
     public String toString() {
         return "GraphHopperNetwork(" +
-               "networkData=" + networkData + ", " +
-               "restrictions=" + restrictions + ", " +
-               "restrictionsByEdgeKey=" + restrictionsByEdgeKey + ", " +
-               "blockedEdges=" + blockedEdges + ", " +
-               "from=" + from + ", " +
-               "destination=" + destination +
-               ')';
+                "networkData=" + networkData + ", " +
+                "restrictions=" + restrictions + ", " +
+                "restrictionsByEdgeKey=" + restrictionsByEdgeKey + ", " +
+                "from=" + from + ", " +
+                "destination=" + destination +
+                ')';
     }
 }

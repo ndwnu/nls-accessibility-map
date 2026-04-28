@@ -10,11 +10,13 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -33,6 +35,8 @@ public abstract class Cache<TYPE> {
 
     @Getter(AccessLevel.PROTECTED)
     private final ClockService clockService;
+
+    private final DistributedLockService distributedLockService;
 
     private TYPE data;
 
@@ -66,10 +70,11 @@ public abstract class Cache<TYPE> {
 
     protected synchronized void read(boolean triggeredOnStartup) {
         try {
+
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
-
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
+
             TYPE newData = readData(activeVersion);
 
             dataLock.lock();
@@ -95,15 +100,17 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    public void write(TYPE data) {
+    public void write(Supplier<TYPE> networkDataSupplier) {
         OffsetDateTime start = clockService.now();
         Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
         try {
+            distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
+            TYPE newData = networkDataSupplier.get();
             Files.createDirectories(targetLocation);
-
             log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
-            writeData(targetLocation.toRealPath().toAbsolutePath(), data);
+            writeData(targetLocation.toRealPath().toAbsolutePath(), newData);
+
             log.info(
                     "Written {} data to `{}` with size {}MB in {} ms",
                     cacheConfiguration.getName(),
@@ -115,10 +122,12 @@ public abstract class Cache<TYPE> {
             switchSymLink(targetFolder);
 
             dataLock.lock();
-            this.data = data;
+            this.data = newData;
             dataLock.unlock();
         } catch (IOException exception) {
             log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
+        } finally {
+            distributedLockService.unlock(cacheConfiguration.getName());
         }
     }
 
@@ -153,5 +162,9 @@ public abstract class Cache<TYPE> {
             FileUtils.deleteDirectory(oldTarget.toFile());
             log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
         }
+    }
+
+    public boolean dataExists() {
+        return Files.exists(getCacheConfiguration().getActiveVersion().toPath());
     }
 }

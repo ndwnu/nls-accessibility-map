@@ -12,3 +12,8 @@ nu:
             load-data-on-startup: false
             fail-on-startup-cache-read-error: false
             watch-for-updates: false
+        roadChanges:
+          cache:
+            load-data-on-startup: false
+            fail-on-startup-cache-read-error: false
+            watch-for-updates: false

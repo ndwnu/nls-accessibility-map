@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -38,7 +38,9 @@ class InitializeCacheCommandTest {
 
     @BeforeEach
     void setUp() {
-        initializeCacheCommand = new InitializeCacheCommand(networkDataService, rebuildTrafficSignCacheCommand, trafficSignDataService);
+        initializeCacheCommand = new InitializeCacheCommand(networkDataService,
+                rebuildTrafficSignCacheCommand,
+                trafficSignDataService);
     }
 
     @RegisterExtension
@@ -49,15 +51,16 @@ class InitializeCacheCommandTest {
     void call() {
 
         assertThat(new CommandLine(initializeCacheCommand).execute()).isZero();
-
+        verify(networkDataService).dataExists();
         verify(networkDataService).recompileData();
         verify(trafficSignDataService).dataExists();
+        verify(rebuildTrafficSignCacheCommand).call();
     }
 
     @SneakyThrows
     @Test
     void call_networkCache_exists() {
-        when(networkDataService.networkExists()).thenReturn(true);
+        when(networkDataService.dataExists()).thenReturn(true);
 
         assertThat(new CommandLine(initializeCacheCommand).execute()).isZero();
 

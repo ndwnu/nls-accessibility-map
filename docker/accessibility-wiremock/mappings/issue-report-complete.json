@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/rest/static-road-data/location-data-issues/v1/report/complete"
+  },
+  "response": {
+    "status": 202
+  }
+}

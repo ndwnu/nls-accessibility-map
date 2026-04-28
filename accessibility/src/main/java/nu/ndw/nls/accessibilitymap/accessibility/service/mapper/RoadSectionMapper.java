@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
 
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
+
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import io.micrometer.core.annotation.Timed;
@@ -19,7 +21,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToGeometryMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToRoadSectionIdMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
 import org.locationtech.jts.geom.LineString;
@@ -30,8 +31,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RoadSectionMapper {
 
-    private final IsoLabelToRoadSectionIdMapper isoLabelToRoadSectionIdMapper;
-
     private final IsoLabelToGeometryMapper isoLabelToGeometryMapper;
 
     private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
@@ -41,7 +40,8 @@ public class RoadSectionMapper {
     public @Valid Collection<RoadSection> map(
             AccessibilityNetwork accessibilityNetwork,
             List<IsoLabel> isoLabels,
-            Map<Integer, List<Restriction>> restrictionsByEdgeKey) {
+            Map<Integer, List<Restriction>> restrictionsByEdgeKey
+    ) {
 
         log.debug("Mapping iso labels to road sections");
 
@@ -53,11 +53,8 @@ public class RoadSectionMapper {
                     isoLabel.getEdge(),
                     isoLabel.getNode());
             LineString lineString = isoLabelToGeometryMapper.map(currentEdge);
-            int roadSectionId = isoLabelToRoadSectionIdMapper.map(
-                    currentEdge,
-                    accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network().getEncodingManager(),
-                    false
-            );
+            int roadSectionId = currentEdge.get(accessibilityNetwork.getNetworkData().getNetworkGraphHopper().getEncodingManager()
+                    .getIntEncodedValue(WAY_ID_KEY));
 
             int roadSectionFragmentId = currentEdge.getEdge();
             int directionalSegmentId = currentEdge.getEdgeKey();
@@ -106,7 +103,8 @@ public class RoadSectionMapper {
             LineString lineString,
             int directionalSegmentId,
             SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById,
-            List<Restriction> restrictions) {
+            List<Restriction> restrictions
+    ) {
 
         if (isReversed) {
             roadSectionFragment.setBackwardSegment(
@@ -132,7 +130,8 @@ public class RoadSectionMapper {
             Direction direction,
             LineString lineString,
             RoadSectionFragment roadSectionFragment,
-            List<Restriction> restrictions) {
+            List<Restriction> restrictions
+    ) {
 
         return DirectionalSegment.builder()
                 .id(id)

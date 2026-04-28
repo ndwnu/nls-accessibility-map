@@ -2,6 +2,11 @@ services:
   nls-postgres:
     image: ndwnls.azurecr.io/nls-postgres-it-container:20260225.4
     platform: linux/amd64
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     ports:
       - "5432:5432"
     environment:
@@ -18,7 +23,8 @@ services:
       - SPRING_PROFILES_ACTIVE=build
       - COMMAND=updateNwbSchema
     depends_on:
-      - nls-postgres
+      nls-postgres:
+        condition: service_started
     networks:
       - nls-accessibility-map-network
 
@@ -45,12 +51,31 @@ services:
     image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.0.0-1
     volumes:
       - ./docker/accessibility-wiremock/extensions:/var/wiremock/extensions
-
+      - ./docker/accessibility-wiremock/mappings:/home/wiremock/mappings
     command: --port 8888 --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
     ports:
       - "8888:8888"
     networks:
       - nls-accessibility-map-network
+
+  initialise-cache-job:
+    build:
+      context: docker/nls-accessibility-map-job
+    environment:
+      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
+      - COMMAND=initializeCache
+      - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
+      - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
+    depends_on:
+      nls-postgres:
+        condition: service_started
+      nls-nwb-schema-manager:
+        condition: service_completed_successfully
+    volumes:
+      - ./.tmp:/application/cache
+    networks:
+      - nls-accessibility-map-network
+
 
   nls-keycloak:
     image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.5.4

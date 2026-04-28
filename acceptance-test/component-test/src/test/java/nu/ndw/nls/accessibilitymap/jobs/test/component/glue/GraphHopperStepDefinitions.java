@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
 
 import io.cucumber.java.en.Given;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.NwbRoadSection;
@@ -11,6 +12,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.entity.RoadSe
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.database.repository.RoadSectionRepository;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperTestDataService;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.geometry.crs.CrsTransformer;
 import nu.ndw.nls.geometry.factories.GeometryFactoryRijksdriehoek;
 import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
@@ -39,6 +41,14 @@ public class GraphHopperStepDefinitions {
         graphHopperTestDataService.buildSimpleNetwork()
                 .insertNwbData()
                 .rebuildCache();
+        accessibilityMapServicesClient.reloadCaches();
+    }
+
+    @Given("a simple network with uni-directional road sections and car inaccessible carriageway types")
+    public void graphHopperNetworkWithUniDirectionalRoadSectionsAndCarInaccessibleCarriagewayType() {
+        GraphHopperDriver graphHopperDriver = graphHopperTestDataService.buildDirectionalNetworkWithCarInaccessibleLinks()
+                .insertNwbDataWithCarriagewayOverrides(Map.of(3L, CarriagewayTypeCode.FP));
+        graphHopperDriver.rebuildCache();
         accessibilityMapServicesClient.reloadCaches();
     }
 

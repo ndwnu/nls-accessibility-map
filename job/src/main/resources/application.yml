@@ -15,6 +15,12 @@ spring:
     name: nls-accessibility-map-job
   config:
     import: "optional:configtree:/application/config/configtree/"
+  liquibase:
+    contexts: "main"
+    change-log: classpath:/db/changelog/changelog-master.xml
+    database-change-log-table: ACCESSIBILITY_MAP_DATABASECHANGELOG
+    database-change-log-lock-table: ACCESSIBILITY_MAP_DATABASECHANGELOGLOCK
+    default-schema: public
   datasource:
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -109,6 +115,7 @@ nu:
             folder: "./cache/network"
             load-data-on-startup: false
             watch-for-updates: false
+
         trafficSigns:
           emission-zone:
             client:
@@ -120,6 +127,7 @@ nu:
             folder: "./cache/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
+
 
 resilience4j.retry:
   instances:

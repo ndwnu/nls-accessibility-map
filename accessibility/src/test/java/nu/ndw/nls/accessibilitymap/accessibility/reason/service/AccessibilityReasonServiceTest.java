@@ -19,7 +19,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.AccessibilityReasonsTrafficSignRestrictionMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +33,6 @@ class AccessibilityReasonServiceTest {
 
     private AccessibilityReasonService accessibilityReasonService;
 
-    @Mock
-    private AccessibilityReasonsTrafficSignRestrictionMapper accessibilityReasonsTrafficSignRestrictionMapper;
 
     @Mock
     private RoutingAlgorithmFactory routingAlgorithmFactory;
@@ -92,7 +89,7 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeightingWithOutRestrictions()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
@@ -138,7 +135,7 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeightingWithOutRestrictions()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
@@ -167,7 +164,7 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeightingWithOutRestrictions()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->

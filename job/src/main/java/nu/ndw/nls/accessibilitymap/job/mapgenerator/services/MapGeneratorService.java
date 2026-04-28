@@ -35,6 +35,7 @@ public class MapGeneratorService {
 
         log.info("Generating with the following properties: {}", exportProperties);
         NetworkData networkData = networkDataService.get();
+
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 networkData,
                 exportProperties.accessibilityRequest());
@@ -59,7 +60,8 @@ public class MapGeneratorService {
 
     private void sendEventGeneratingDone(
             int nwbVersionId,
-            ExportProperties exportProperties) {
+            ExportProperties exportProperties
+    ) {
 
         NlsEvent nlsEvent = accessibilityGeoJsonGeneratedEventMapper.map(
                 exportProperties.accessibilityRequest().trafficSignTypes().stream().toList(),
