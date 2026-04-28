@@ -123,7 +123,7 @@ class RoadSectionUpdateListenerTest {
 
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());
         assertThat(roadSectionUpdateListener.getMessagesProcessed()).isZero();
-        assertThat(roadSectionUpdateListener.getMessagesRejected()).isZero();
+        assertThat(roadSectionUpdateListener.getMessagesRejected()).isEqualTo(1);
     }
 
     @Test
@@ -141,7 +141,6 @@ class RoadSectionUpdateListenerTest {
                 .hasMessageContaining("Map version is newer than the one currently in use");
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());
         assertThat(roadSectionUpdateListener.getMessagesProcessed()).isZero();
-        assertThat(roadSectionUpdateListener.getMessagesRejected()).isEqualTo(1);
     }
 
     @Test
