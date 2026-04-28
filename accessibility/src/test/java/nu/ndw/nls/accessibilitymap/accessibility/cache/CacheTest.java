@@ -2,20 +2,26 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +35,13 @@ import org.springframework.context.event.EventListener;
 @ExtendWith(MockitoExtension.class)
 class CacheTest {
 
+    private static final Duration MAX_LOCK_WAIT_TIME = Duration.ofSeconds(10);
+
     @Mock
     private ClockService clockService;
+
+    @Mock
+    private DistributedLockService distributedLockService;
 
     private Path testDir;
 
@@ -51,6 +62,7 @@ class CacheTest {
                 .name("testCache")
                 .folder(testDir.resolve("testFolder"))
                 .fileNameActiveVersion("active")
+                .maxLockWaitTime(MAX_LOCK_WAIT_TIME)
                 .build();
     }
 
@@ -59,8 +71,9 @@ class CacheTest {
         FileUtils.deleteDirectory(testDir.toFile());
     }
 
+    @SneakyThrows
     @Test
-    void read() throws IOException {
+    void read() {
 
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
@@ -70,7 +83,7 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             private int counter;
 
             @Override
@@ -114,7 +127,7 @@ class CacheTest {
         cacheConfiguration.setAcceptableConsequentReadFailures(1);
         cacheConfiguration.setFailOnStartupCacheReadError(false);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
                 throw new RuntimeException("test");
@@ -156,7 +169,7 @@ class CacheTest {
 
         cacheConfiguration.setFailOnStartupCacheReadError(false);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
                 throw new RuntimeException("test");
@@ -177,13 +190,13 @@ class CacheTest {
     }
 
     @Test
-    void read_error_failOnCacheReadError_notTriggerdByStartup() throws IOException {
+    void read_error_failOnCacheReadError_notTriggeredByStartup() throws IOException {
 
         Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
 
         cacheConfiguration.setFailOnStartupCacheReadError(true);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
                 throw new RuntimeException("test");
@@ -214,7 +227,7 @@ class CacheTest {
 
         cacheConfiguration.setLoadDataOnStartup(true);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
                 return data;
@@ -247,7 +260,14 @@ class CacheTest {
         cacheConfiguration.setFailOnStartupCacheReadError(true);
         cacheConfiguration.setLoadDataOnStartup(false);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<Object> cache = getObjectCache();
+
+        assertThat(cache.get()).isNull();
+    }
+
+    @NotNull
+    private Cache<Object> getObjectCache() {
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             private int counter;
 
             @Override
@@ -265,8 +285,7 @@ class CacheTest {
         };
 
         cache.loadDataOnStartup();
-
-        assertThat(cache.get()).isNull();
+        return cache;
     }
 
     @Test
@@ -281,7 +300,7 @@ class CacheTest {
         cacheConfiguration.setFailOnStartupCacheReadError(true);
         cacheConfiguration.setLoadDataOnStartup(true);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
                 throw new RuntimeException("test");
@@ -309,7 +328,7 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             private int counter;
 
             @Override
@@ -335,15 +354,17 @@ class CacheTest {
                         .getAbsolutePath()));
     }
 
+    @SneakyThrows
     @Test
-    void write() throws IOException {
+    void write() {
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
         String timestamp2 = "2022-03-11T09:04:01.123-01:00";
+
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(timestamp1, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp2, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        Cache<String> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<String> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected String readData(Path activeVersion) {
 
@@ -363,7 +384,7 @@ class CacheTest {
 
         assertThat(Files.exists(cacheConfiguration.getFolder())).isFalse();
 
-        cache.write("testData1");
+        cache.write(() -> "testData1");
 
         loggerExtension.containsLog(
                 Level.INFO,
@@ -389,7 +410,10 @@ class CacheTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(timestamp3, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp4, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        cache.write("testData2");
+        cache.write(() -> "testData2");
+
+        verify(distributedLockService, times(2)).lockOrFail(cacheConfiguration.getName(), MAX_LOCK_WAIT_TIME);
+        verify(distributedLockService, times(2)).unlock(cacheConfiguration.getName());
 
         loggerExtension.containsLog(
                 Level.INFO,
@@ -401,12 +425,12 @@ class CacheTest {
                 "Written %s data to `%s` with size 0.00MB in 60000 ms".formatted(
                         cacheConfiguration.getName(),
                         cacheConfiguration.getFolder().resolve(timestamp3).toRealPath().toAbsolutePath()));
+
         assertThat(cache.get()).isEqualTo("testData2");
 
         // verify we can load data from the disk
         cache.read();
         assertThat(cache.get()).isEqualTo("testData2");
-
         verifySymLink(timestamp3);
     }
 
@@ -420,7 +444,7 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getActiveVersion().toPath());
 
-        Cache<String> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<String> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected String readData(Path activeVersion) {
                 return null;
@@ -432,7 +456,7 @@ class CacheTest {
             }
         };
 
-        cache.write("testData1");
+        cache.write(() -> "testData1");
         assertThat(cache.get()).isNull();
 
         loggerExtension.containsLog(
@@ -445,7 +469,7 @@ class CacheTest {
     @Test
     void getSizeInBytes() throws IOException {
 
-        Cache<String> cache = new Cache<>(cacheConfiguration, clockService) {
+        Cache<String> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected String readData(Path activeVersion) {
                 return null;

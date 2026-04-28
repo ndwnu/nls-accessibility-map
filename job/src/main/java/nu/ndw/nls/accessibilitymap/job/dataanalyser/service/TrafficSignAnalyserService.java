@@ -35,7 +35,8 @@ public class TrafficSignAnalyserService extends IssueReporterService {
             ReportApiClient reportApiClient,
             AccessibilityService accessibilityService,
             NetworkDataService networkDataService,
-            IssueBuilder issueBuilder) {
+            IssueBuilder issueBuilder
+    ) {
 
         super(issueApiClient, reportApiClient);
         this.accessibilityService = accessibilityService;
@@ -48,6 +49,7 @@ public class TrafficSignAnalyserService extends IssueReporterService {
         log.info("Analysing with the following properties: {}", analyseAsymmetricTrafficSignsConfiguration);
 
         NetworkData networkData = networkDataService.get();
+
         var accessibility = accessibilityService.calculateAccessibility(
                 networkData,
                 analyseAsymmetricTrafficSignsConfiguration.accessibilityRequest());
@@ -58,7 +60,8 @@ public class TrafficSignAnalyserService extends IssueReporterService {
     private void analyseTrafficSigns(
             Accessibility accessibility,
             NetworkData networkData,
-            AnalyseAsymmetricTrafficSignsConfiguration analyseAsymmetricTrafficSignsConfiguration) {
+            AnalyseAsymmetricTrafficSignsConfiguration analyseAsymmetricTrafficSignsConfiguration
+    ) {
 
         String issueReportId = "Nwb-%s-%s".formatted(networkData.getNwbVersion(), UUID.randomUUID());
         String issueReportGroupId = "AsymmetricTrafficSignPlacement-%s".formatted(

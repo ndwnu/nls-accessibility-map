@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.BaseGraph;
 import com.graphhopper.storage.index.Snap;
 import java.util.List;
@@ -18,9 +19,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.WeightingFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
@@ -47,9 +48,6 @@ class AccessibilityNetworkProviderTest {
     private NetworkData networkData;
 
     @Mock
-    private GraphHopperNetwork graphHopperNetwork;
-
-    @Mock
     private NetworkGraphHopper networkGraphHopper;
 
     @Mock
@@ -73,6 +71,16 @@ class AccessibilityNetworkProviderTest {
     @Mock
     private QueryGraph queryGraph;
 
+    @Mock
+    private WeightingFactory weightingFactory;
+
+
+    @Mock
+    private Weighting weightingWithRestrictions;
+
+    @Mock
+    private Weighting weightingWithoutRestrictions;
+
     private Location from;
 
     private Location destination;
@@ -80,7 +88,7 @@ class AccessibilityNetworkProviderTest {
     @BeforeEach
     void setUp() {
 
-        accessibilityNetworkProvider = new AccessibilityNetworkProvider(queryGraphConfigurer, snapper);
+        accessibilityNetworkProvider = new AccessibilityNetworkProvider(queryGraphConfigurer, snapper, weightingFactory);
 
         from = new Location(52.0, 4.0, null);
         destination = new Location(52.1, 4.1, null);
@@ -90,15 +98,16 @@ class AccessibilityNetworkProviderTest {
     void get() {
 
         Restrictions restrictions = new Restrictions(List.of(restriction));
+        Map<Integer, List<Restriction>> restrictionsById = Map.of(1, List.of(restriction));
 
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
         when(snapper.snapLocation(networkGraphHopper, destination)).thenReturn(Optional.of(destinationSnap));
 
         when(snapper.snapRestriction(networkGraphHopper, restriction)).thenReturn(Optional.of(restrictionSnap));
+
         when(queryGraphConfigurer.createEdgeRestrictions(
                 eq(encodingManager),
                 eq(queryGraph),
@@ -107,11 +116,15 @@ class AccessibilityNetworkProviderTest {
                     SnapRestriction snapRestriction = snapRestrictions.getFirst();
                     assertThat(snapRestriction.snap()).isEqualTo(restrictionSnap);
                     assertThat(snapRestriction.restriction()).isEqualTo(restriction);
-                }))).thenReturn(Map.of(1, List.of(restriction)));
+                }))).thenReturn(restrictionsById);
 
         try (var queryGraphMockStatic = Mockito.mockStatic(QueryGraph.class)) {
             queryGraphMockStatic.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
+            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet()))
+                    .thenReturn(weightingWithRestrictions);
+            when(weightingFactory.createWeighting(networkData, queryGraph, Set.of()))
+                    .thenReturn(weightingWithoutRestrictions);
 
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                     networkData,
@@ -122,10 +135,11 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getNetworkData()).isEqualTo(networkData);
             assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
             assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
-            assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));
-            assertThat(accessibilityNetwork.getBlockedEdges()).isEqualTo(Set.of(1));
+            assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(restrictionsById);
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
+            assertThat(accessibilityNetwork.getWeightingWithRestrictions()).isEqualTo(weightingWithRestrictions);
+            assertThat(accessibilityNetwork.getWeightingWithOutRestrictions()).isEqualTo(weightingWithoutRestrictions);
         }
     }
 
@@ -133,8 +147,7 @@ class AccessibilityNetworkProviderTest {
     void get_fromLocationCouldNotBeSnapped() {
         Restrictions restrictions = new Restrictions(List.of(restriction));
 
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
         when(snapper.snapLocation(networkGraphHopper, destination)).thenReturn(Optional.empty());
 
@@ -152,8 +165,7 @@ class AccessibilityNetworkProviderTest {
     void get_destinationLocationCouldNotBeSnapped() {
         Restrictions restrictions = new Restrictions(List.of(restriction));
 
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.empty());
 
         assertThat(catchThrowable(() -> accessibilityNetworkProvider.get(
@@ -170,14 +182,13 @@ class AccessibilityNetworkProviderTest {
     void get_noDestination() {
 
         Restrictions restrictions = new Restrictions(List.of(restriction));
+        Map<Integer, List<Restriction>> restrictionsById = Map.of(1, List.of(restriction));
 
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
-        when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+        when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
         when(snapper.snapLocation(networkGraphHopper, null)).thenReturn(Optional.of(destinationSnap));
-
         when(snapper.snapRestriction(networkGraphHopper, restriction)).thenReturn(Optional.of(restrictionSnap));
         when(queryGraphConfigurer.createEdgeRestrictions(
                 eq(encodingManager),
@@ -192,6 +203,10 @@ class AccessibilityNetworkProviderTest {
         try (var queryGraphMockStatic = Mockito.mockStatic(QueryGraph.class)) {
             queryGraphMockStatic.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
+            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet()))
+                    .thenReturn(weightingWithRestrictions);
+            when(weightingFactory.createWeighting(networkData, queryGraph, Set.of()))
+                    .thenReturn(weightingWithoutRestrictions);
 
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                     networkData,
@@ -203,9 +218,10 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
             assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));
-            assertThat(accessibilityNetwork.getBlockedEdges()).isEqualTo(Set.of(1));
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
+            assertThat(accessibilityNetwork.getWeightingWithRestrictions()).isEqualTo(weightingWithRestrictions);
+            assertThat(accessibilityNetwork.getWeightingWithOutRestrictions()).isEqualTo(weightingWithoutRestrictions);
         }
     }
 
@@ -214,13 +230,11 @@ class AccessibilityNetworkProviderTest {
 
         Restrictions restrictions = new Restrictions(List.of(restriction));
 
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
         when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
         when(snapper.snapLocation(networkGraphHopper, destination)).thenReturn(Optional.of(destinationSnap));
-
         when(snapper.snapRestriction(networkGraphHopper, restriction)).thenReturn(Optional.empty());
         when(queryGraphConfigurer.createEdgeRestrictions(
                 eq(encodingManager),
@@ -242,7 +256,6 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getQueryGraph()).isEqualTo(queryGraph);
             assertThat(accessibilityNetwork.getRestrictions()).isEqualTo(restrictions);
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));
-            assertThat(accessibilityNetwork.getBlockedEdges()).isEqualTo(Set.of(1));
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
         }

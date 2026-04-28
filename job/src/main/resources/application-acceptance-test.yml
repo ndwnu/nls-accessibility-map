@@ -61,6 +61,11 @@ nu:
             folder: "./.tmp/network"
             load-data-on-startup: false
             watch-for-updates: false
+        roadChanges:
+          cache:
+            folder: "./.tmp/roadChanges"
+            load-data-on-startup: false
+            watch-for-updates: false
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300

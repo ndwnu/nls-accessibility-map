@@ -37,7 +37,8 @@ public class NetworkAnalyserService extends IssueReporterService {
             IssueBuilder issueBuilder,
             AccessibilityService accessibilityService,
             NetworkDataService networkDataService,
-            ClockService clockService) {
+            ClockService clockService
+    ) {
 
         super(issueApiClient, reportApiClient);
 

@@ -3,8 +3,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.assertArg;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,9 +27,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
@@ -41,7 +38,6 @@ import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geojson.geometry.model.PolygonJson;
-import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.apache.commons.io.FileUtils;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.AfterEach;
@@ -79,16 +75,13 @@ class AccessibilityDebuggerTest {
     @Mock
     private LineString lineStringBackward;
 
+    @Mock
+    private NwbDataUpdates nwbDataUpdates;
+
     private Path testDir;
 
     @Mock
     private NetworkData networkData;
-
-    @Mock
-    private  GraphHopperNetwork graphHopperNetwork;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private Weighting weighting;
@@ -217,9 +210,7 @@ class AccessibilityDebuggerTest {
     @Test
     void writeDebug_accessibility_disabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
-
-        Accessibility accessibility = null;
-        accessibilityDebugger.writeDebug(accessibility);
+        accessibilityDebugger.writeDebug((Accessibility) null);
 
         assertThat(testDir.resolve("accessibility.roadSectionsWithoutRestrictions.geojson")).doesNotExist();
         assertThat(testDir.resolve("accessibility.roadSectionsWithRestrictions.geojson")).doesNotExist();
@@ -417,8 +408,7 @@ class AccessibilityDebuggerTest {
     void writeDebug_restrictions_disabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
 
-        Restrictions restrictions = null;
-        accessibilityDebugger.writeDebug(restrictions);
+        accessibilityDebugger.writeDebug((Restrictions) null);
 
         assertThat(testDir.resolve("activeRestriction.geojson")).doesNotExist();
     }
@@ -542,8 +532,7 @@ class AccessibilityDebuggerTest {
     void writeDebug_accessibilityRequest_disabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
 
-        AccessibilityRequest accessibilityRequest = null;
-        accessibilityDebugger.writeDebug(accessibilityRequest);
+        accessibilityDebugger.writeDebug((AccessibilityRequest) null);
 
         assertThat(testDir.resolve("accessibilityRequest.geojson")).doesNotExist();
     }
@@ -557,15 +546,13 @@ class AccessibilityDebuggerTest {
         Snap destination = mock(Snap.class);
         when(destination.getSnappedPoint()).thenReturn(new GHPoint3D(3D, 4D, 0));
 
-        prepareNetworkData();
-
         AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
                 networkData,
                 null,
                 mock(Restrictions.class),
                 Map.of(),
                 from,
-                destination);
+                destination, weighting, weighting);
 
         when(jtsPointJsonMapper.map(any(Point.class))).thenAnswer(invocation -> {
             Point p = invocation.getArgument(0, Point.class);
@@ -621,15 +608,13 @@ class AccessibilityDebuggerTest {
         Snap from = mock(Snap.class);
         when(from.getSnappedPoint()).thenReturn(new GHPoint3D(1D, 2D, 0));
 
-        prepareNetworkData();
-
         AccessibilityNetwork accessibilityNetwork = new AccessibilityNetwork(
                 networkData,
                 null,
                 mock(Restrictions.class),
                 Map.of(),
                 from,
-                null);
+                null, weighting, weighting);
 
         when(jtsPointJsonMapper.map(any(Point.class))).thenAnswer(invocation -> {
             Point p = invocation.getArgument(0, Point.class);
@@ -665,21 +650,11 @@ class AccessibilityDebuggerTest {
                         """);
     }
 
-    private void prepareNetworkData() {
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
-        when(networkGraphHopper.createWeighting(
-                eq(NetworkConstants.CAR_PROFILE),
-                assertArg(pMap -> assertThat(pMap).hasToString("{}")))
-        ).thenReturn(weighting);
-    }
-
     @Test
     void writeDebug_accessibilityNetwork_disabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
 
-        AccessibilityNetwork accessibilityNetwork = null;
-        accessibilityDebugger.writeDebug(accessibilityNetwork);
+        accessibilityDebugger.writeDebug((AccessibilityNetwork) null);
 
         assertThat(testDir.resolve("accessibilityNetwork.geojson")).doesNotExist();
     }

@@ -13,13 +13,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeightingAdapter;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.RestrictionWeighting;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.mapper.RoadSectionMapper;
 import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
@@ -60,10 +59,11 @@ class AccessibilityCalculatorTest {
     private BBox requestArea;
 
     @Mock
-    private Weighting weighting;
+    private Weighting weightingWithRestrictions;
 
     @Mock
-    private Set<Integer> blockedEdges;
+    private Weighting weightingWithoutRestrictions;
+
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -85,14 +85,14 @@ class AccessibilityCalculatorTest {
     @Test
     void calculateWithoutRestrictions() {
 
-        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeightingWithOutRestrictions()).thenReturn(weightingWithoutRestrictions);
         when(accessibilityNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
 
         when(isochroneService.search(
                 eq(accessibilityNetwork),
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments
                         .builder()
-                        .weighting(new RestrictionWeightingAdapter(weighting, Set.of()))
+                        .weighting(weightingWithoutRestrictions)
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(2.0)
@@ -120,15 +120,14 @@ class AccessibilityCalculatorTest {
     @Test
     void calculateWithRestrictions() {
 
-        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeightingWithRestrictions()).thenReturn(weightingWithRestrictions);
         when(accessibilityNetwork.getRestrictionsByEdgeKey()).thenReturn(restrictionsByEdgeKey);
-        when(accessibilityNetwork.getBlockedEdges()).thenReturn(blockedEdges);
 
         when(isochroneService.search(
                 eq(accessibilityNetwork),
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments
                         .builder()
-                        .weighting(new RestrictionWeightingAdapter(weighting, blockedEdges))
+                        .weighting(weightingWithRestrictions)
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(2.0)
@@ -168,8 +167,8 @@ class AccessibilityCalculatorTest {
         }
 
         private boolean weightingEquals(Weighting expectedWeighting, Weighting actualWeighting) {
-            if (expected.weighting() instanceof RestrictionWeightingAdapter expectedWeightingAdapter
-                && actualWeighting instanceof RestrictionWeightingAdapter actualWeightingAdapter) {
+            if (expected.weighting() instanceof RestrictionWeighting expectedWeightingAdapter
+                    && actualWeighting instanceof RestrictionWeighting actualWeightingAdapter) {
                 return Objects.equals(
                         expectedWeightingAdapter.getBlockedEdges(),
                         actualWeightingAdapter.getBlockedEdges());

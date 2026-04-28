@@ -56,6 +56,7 @@ extends:
     deployThroughGitOps: true
     cleanupNamespaces: ${{ parameters.cleanupNamespaces }}
     mavenDeployToNdwShared: true
+    mavenAdditionalBuildOptions: '-Pintegration-test'
     jdkVersion: 1.21
     sonarOptionalCoverageExclusions: '**/generated/**,acceptance-test/acceptance-test-shared/**'
     sonarOptionalExclusions: '**/generated/**'

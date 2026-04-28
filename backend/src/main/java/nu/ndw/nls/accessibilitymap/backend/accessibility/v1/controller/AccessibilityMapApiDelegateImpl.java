@@ -64,14 +64,17 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             EmissionClassJson emissionClass,
             List<FuelTypeJson> fuelTypes,
             List<String> excludeEmissionZoneIds,
-            List<EmissionZoneTypeJson> excludeEmissionZoneTypes) {
+            List<EmissionZoneTypeJson> excludeEmissionZoneTypes
+    ) {
 
         AccessibilityRequest accessibilityRequest = buildAndValidateAccessibilityRequest(
                 municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
                 vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
                 excludeEmissionZoneTypes, latitude, longitude);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(networkDataService.get(), accessibilityRequest);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(networkDataService.get(),
+
+                accessibilityRequest);
 
         return ResponseEntity.ok(accessibilityResponseMapper.map(accessibility));
     }
@@ -92,14 +95,16 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             EmissionClassJson emissionClass,
             List<FuelTypeJson> fuelTypes,
             List<String> excludeEmissionZoneIds,
-            List<EmissionZoneTypeJson> excludeEmissionZoneTypes) {
+            List<EmissionZoneTypeJson> excludeEmissionZoneTypes
+    ) {
 
         AccessibilityRequest accessibilityRequest = buildAndValidateAccessibilityRequest(
                 municipalityId, vehicleType, vehicleLength, vehicleWidth, vehicleHeight, vehicleWeight,
                 vehicleAxleLoad, vehicleHasTrailer, emissionClass, fuelTypes, excludeEmissionZoneIds,
                 excludeEmissionZoneTypes, latitude, longitude);
 
-        Accessibility accessibility = accessibilityService.calculateAccessibility(networkDataService.get(), accessibilityRequest);
+        Accessibility accessibility = accessibilityService.calculateAccessibility(networkDataService.get(),
+                accessibilityRequest);
 
         return ResponseEntity.ok(
                 roadSectionFeatureCollectionMapper.map(
@@ -124,7 +129,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
             List<String> excludeEmissionZoneIds,
             List<EmissionZoneTypeJson> excludeEmissionZoneTypes,
             Double endPointLatitude,
-            Double endPointLongitude) {
+            Double endPointLongitude
+    ) {
 
         pointValidator.validateConsistentValues(endPointLatitude, endPointLongitude);
 
@@ -163,7 +169,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
     private void ensureEnvironmentalZoneParameterConsistency(EmissionClassJson emissionClass, List<FuelTypeJson> fuelTypes) {
 
         if ((Objects.isNull(emissionClass) && !CollectionUtils.isEmpty(fuelTypes))
-            || (CollectionUtils.isEmpty(fuelTypes) && Objects.nonNull(emissionClass))) {
+                || (CollectionUtils.isEmpty(fuelTypes) && Objects.nonNull(emissionClass))) {
             throw new IncompleteArgumentsException("If one of the environmental zone parameters is set, the other must be set as well.");
         }
     }

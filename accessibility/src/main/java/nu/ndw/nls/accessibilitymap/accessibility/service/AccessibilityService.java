@@ -60,7 +60,8 @@ public class AccessibilityService {
     @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
             @Valid NetworkData networkData,
-            @Valid AccessibilityRequest accessibilityRequest) throws AccessibilityException {
+            @Valid AccessibilityRequest accessibilityRequest
+    ) throws AccessibilityException {
 
         accessibilityDebugger.writeDebug(accessibilityRequest);
 
@@ -125,7 +126,8 @@ public class AccessibilityService {
             Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
             Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions,
             Collection<RoadSection> unroutableRoadSections,
-            AccessibilityNetwork accessibilityNetwork) {
+            AccessibilityNetwork accessibilityNetwork
+    ) {
 
         accessibleRoadsSectionsWithoutAppliedRestrictions.addAll(unroutableRoadSections);
         accessibleRoadSectionsWithAppliedRestrictions.addAll(unroutableRoadSections);
@@ -162,7 +164,8 @@ public class AccessibilityService {
     private Optional<RoadSection> findDestinationRoadSection(
             AccessibilityRequest accessibilityRequest,
             AccessibilityNetwork accessibilityNetwork,
-            Collection<RoadSection> combinedRoadSections) {
+            Collection<RoadSection> combinedRoadSections
+    ) {
 
         if (!accessibilityRequest.hasEndLocation()) {
             return Optional.empty();
@@ -179,7 +182,7 @@ public class AccessibilityService {
             return Optional.empty();
         }
 
-        var network = accessibilityNetwork.getNetworkData().getGraphHopperNetwork().network();
+        var network = accessibilityNetwork.getNetworkData().getNetworkGraphHopper();
         int roadSectionId = destinationSnap.get()
                 .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
 

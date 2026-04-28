@@ -1,10 +1,12 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.mapper;
 
+import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
+import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
@@ -21,9 +23,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToGeometryMapper;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToRoadSectionIdMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
@@ -48,9 +48,6 @@ class RoadSectionMapperTest {
     private RoadSectionMapper roadSectionMapper;
 
     @Mock
-    private IsoLabelToRoadSectionIdMapper isoLabelToRoadSectionIdMapper;
-
-    @Mock
     private IsoLabelToGeometryMapper isoLabelToGeometryMapper;
 
     @Mock
@@ -58,6 +55,9 @@ class RoadSectionMapperTest {
 
     @Mock
     private AccessibilityNetwork accessibilityNetwork;
+
+    @Mock
+    private NetworkGraphHopper networkGraphHopper;
 
     @Mock
     private IsoLabel isoLabel;
@@ -78,13 +78,10 @@ class RoadSectionMapperTest {
     private NetworkData networkData;
 
     @Mock
-    private GraphHopperNetwork graphHopperNetwork;
-
-    @Mock
-    private NetworkGraphHopper networkGraphHopper;
-
-    @Mock
     private EncodingManager encodingManager;
+
+    @Mock
+    private IntEncodedValue intEncodedValue;
 
     @Mock
     private NwbData nwbData;
@@ -98,7 +95,6 @@ class RoadSectionMapperTest {
     @BeforeEach
     void setUp() {
         roadSectionMapper = new RoadSectionMapper(
-                isoLabelToRoadSectionIdMapper,
                 isoLabelToGeometryMapper,
                 edgeIteratorStateReverseExtractor);
     }
@@ -117,17 +113,16 @@ class RoadSectionMapperTest {
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
         when(queryGraph.getEdgeIteratorState(2, 1)).thenReturn(edgeIteratorState);
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
-        when(networkData.getGraphHopperNetwork()).thenReturn(graphHopperNetwork);
-        when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
-
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
+        when(edgeIteratorState.get(intEncodedValue)).thenReturn(1);
         when(networkData.getNwbData()).thenReturn(nwbData);
         when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
         when(accessibilityNwbRoadSection.functionalRoadClass()).thenReturn("2");
 
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(isReversed);
         when(isoLabelToGeometryMapper.map(edgeIteratorState)).thenReturn(geometry);
-        when(isoLabelToRoadSectionIdMapper.map(edgeIteratorState, encodingManager, false)).thenReturn(1);
 
         when(edgeIteratorState.getEdge()).thenReturn(2);
         when(edgeIteratorState.getEdgeKey()).thenReturn(3);

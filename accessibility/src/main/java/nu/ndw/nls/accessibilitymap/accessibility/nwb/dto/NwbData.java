@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -32,12 +32,13 @@ public final class NwbData {
 
     @NotNull
     @JsonIgnore
-    private final SortedMap<Long, AccessibilityNwbRoadSection> accessibilityNwbRoadSectionsById;
+    private final Map<Long, AccessibilityNwbRoadSection> accessibilityNwbRoadSectionsById;
 
     @JsonCreator
     public NwbData(
             @JsonProperty("nwbVersionId") Integer nwbVersionId,
-            @NonNull @JsonProperty("accessibilityNwbRoadSections")  List<AccessibilityNwbRoadSection> accessibilityNwbRoadSections) {
+            @NonNull @JsonProperty("accessibilityNwbRoadSections") List<AccessibilityNwbRoadSection> accessibilityNwbRoadSections
+    ) {
         this.nwbVersionId = nwbVersionId;
         this.accessibilityNwbRoadSections = accessibilityNwbRoadSections;
 
@@ -46,7 +47,7 @@ public final class NwbData {
                         AccessibilityNwbRoadSection::roadSectionId,               // key mapper (id)
                         Function.identity(),           // value mapper (the object)
                         (a, b) -> a,                   // merge function if duplicate ids occur (pick first; adjust if needed)
-                        TreeMap::new
+                        HashMap::new
                 ));
     }
 

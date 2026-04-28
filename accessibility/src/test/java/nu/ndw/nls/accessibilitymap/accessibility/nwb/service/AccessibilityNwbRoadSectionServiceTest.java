@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.EnumSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,18 +50,6 @@ class AccessibilityNwbRoadSectionServiceTest {
                 accessibilityNwbRoadSectionMapper);
 
         carriageWayTypeCodeInclusions = Stream.of(CarriagewayTypeCode.values())
-                .filter(carriagewayTypeCode -> !EnumSet.of(
-                        CarriagewayTypeCode.BU,
-                        CarriagewayTypeCode.BUS,
-                        CarriagewayTypeCode.FP,
-                        CarriagewayTypeCode.VP,
-                        CarriagewayTypeCode.VZ,
-                        CarriagewayTypeCode.OVB,
-                        CarriagewayTypeCode.CADO,
-                        CarriagewayTypeCode.RP,
-                        CarriagewayTypeCode.VV,
-                        CarriagewayTypeCode.VDF,
-                        CarriagewayTypeCode.VDV).contains(carriagewayTypeCode))
                 .collect(Collectors.toSet());
         carriageWayTypeCodeInclusions.add(null);
     }

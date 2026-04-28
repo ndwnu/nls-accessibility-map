@@ -110,6 +110,7 @@ class AccessibilityMapApiDelegateImpTest {
 
     @Mock
     private NetworkData networkData;
+
     @BeforeEach
     void setup() {
 
@@ -128,7 +129,8 @@ class AccessibilityMapApiDelegateImpTest {
     @SuppressWarnings("java:S5778")
     void getInaccessibleRoadSections_shouldThrowIncompleteArgumentsException(
             EmissionClassJson emissionClassJson,
-            List<FuelTypeJson> fuelTypesJson) {
+            List<FuelTypeJson> fuelTypesJson
+    ) {
 
         assertThatThrownBy(() -> accessibilityMapApiDelegate.getInaccessibleRoadSections(
                 MUNICIPALITY_ID,

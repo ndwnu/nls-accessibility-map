@@ -33,11 +33,13 @@ public class AccessibilityV2ApiDelegateImpl implements AccessibilityV2ApiDelegat
     @Override
     public ResponseEntity<AccessibilityResponseGeoJsonJson> getAccessibilityAsGeoJson(
             AccessibilityRequestJson accessibilityRequestJson,
-            String acceptEncoding) {
+            String acceptEncoding
+    ) {
 
         accessibilityRequestValidator.verify(accessibilityRequestJson);
 
         NetworkData networkData = networkDataService.get();
+
         Accessibility accessibility = accessibilityService.calculateAccessibility(
                 networkData,
                 accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson));

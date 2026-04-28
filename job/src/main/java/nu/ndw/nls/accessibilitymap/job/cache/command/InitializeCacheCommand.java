@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.services.TrafficSignDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -23,7 +23,7 @@ public class InitializeCacheCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        if (networkDataService.networkExists()) {
+        if (networkDataService.dataExists()) {
             log.info("Network cache already exists, skipping creation");
         } else {
             try {
@@ -44,6 +44,7 @@ public class InitializeCacheCommand implements Callable<Integer> {
                 return 1;
             }
         }
+
         return 0;
     }
 }

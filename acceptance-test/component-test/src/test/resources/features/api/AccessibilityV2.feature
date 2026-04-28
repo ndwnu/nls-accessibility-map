@@ -65,3 +65,11 @@ Feature: Accessibility V2
     When request accessibility geojson for boundingBox-destination3-7-unreachable
     Then we expect accessibility geojson response boundingBox-destination3-7-unreachable
 
+  Scenario: Get - network with uni-directional roads and car inaccessible roads sections will not be included
+    Given a simple network with uni-directional road sections and car inaccessible carriageway types
+    And with traffic signs
+      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id |
+
+    When run TrafficSignUpdateCache
+    When request accessibility geojson for truck2MetersWide-destination3-7
+    Then we expect accessibility geojson response truck2MetersWide-destination3-7-network-has-missing-roads
