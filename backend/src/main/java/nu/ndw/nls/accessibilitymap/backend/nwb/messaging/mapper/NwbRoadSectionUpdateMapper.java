@@ -28,17 +28,21 @@ public class NwbRoadSectionUpdateMapper {
                         "Road update road-section: %d is not present is active version".formatted(nwbRoadSectionUpdate.roadSectionId())));
     }
 
-    private static AccessibilityNwbRoadSectionUpdate mergeWithExistingRoadSection(NwbRoadSectionUpdate nwbRoadSectionUpdate,
+    private static AccessibilityNwbRoadSectionUpdate mergeWithExistingRoadSection(
+            NwbRoadSectionUpdate nwbRoadSectionUpdate,
             AccessibilityNwbRoadSection accessibilityNwbRoadSection
     ) {
         CarriagewayTypeCode carriagewayTypeCode =
-                Objects.nonNull(nwbRoadSectionUpdate.carriagewayTypeCode()) ? nwbRoadSectionUpdate.carriagewayTypeCode()
+                Objects.nonNull(nwbRoadSectionUpdate.carriagewayTypeCode())
+                        ? nwbRoadSectionUpdate.carriagewayTypeCode()
                         : accessibilityNwbRoadSection.carriagewayTypeCode();
         boolean forwardAccessible =
-                Objects.nonNull(nwbRoadSectionUpdate.drivingDirection()) ? nwbRoadSectionUpdate.drivingDirection().isForwardAccessible()
+                Objects.nonNull(nwbRoadSectionUpdate.drivingDirection())
+                        ? nwbRoadSectionUpdate.drivingDirection().isForwardAccessible()
                         : accessibilityNwbRoadSection.forwardAccessible();
         boolean backwardAccessible =
-                Objects.nonNull(nwbRoadSectionUpdate.drivingDirection()) ? nwbRoadSectionUpdate.drivingDirection().isBackwardAccessible()
+                Objects.nonNull(nwbRoadSectionUpdate.drivingDirection())
+                        ? nwbRoadSectionUpdate.drivingDirection().isBackwardAccessible()
                         : accessibilityNwbRoadSection.backwardAccessible();
         return new AccessibilityNwbRoadSectionUpdate(
                 nwbRoadSectionUpdate.roadSectionId(),
