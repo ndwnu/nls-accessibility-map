@@ -103,8 +103,6 @@ class RoadSectionUpdateListenerTest {
         NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(NWB_VERSION_INT, List.of(accessibilityNwbRoadSectionUpdate));
         verify(networkDataService).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());
         assertThat(nwbDataUpdatesCaptor.getValue()).usingRecursiveComparison().isEqualTo(nwbDataUpdates);
-        assertThat(roadSectionUpdateListener.getMessagesProcessed()).isEqualTo(1);
-        assertThat(roadSectionUpdateListener.getMessagesRejected()).isZero();
     }
 
     @SneakyThrows
@@ -122,8 +120,6 @@ class RoadSectionUpdateListenerTest {
         roadSectionUpdateListener.handleMessage(message);
 
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());
-        assertThat(roadSectionUpdateListener.getMessagesProcessed()).isZero();
-        assertThat(roadSectionUpdateListener.getMessagesRejected()).isEqualTo(1);
     }
 
     @Test
@@ -140,7 +136,6 @@ class RoadSectionUpdateListenerTest {
         assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Map version is newer than the one currently in use");
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());
-        assertThat(roadSectionUpdateListener.getMessagesProcessed()).isZero();
     }
 
     @Test
@@ -151,32 +146,7 @@ class RoadSectionUpdateListenerTest {
 
         assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class);
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());
-        assertThat(roadSectionUpdateListener.getMessagesProcessed()).isZero();
-        assertThat(roadSectionUpdateListener.getMessagesRejected()).isEqualTo(1);
-    }
-
-    @SneakyThrows
-    @Test
-    void resetCounters_ok() {
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
-        when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(LATER_NWB_VERSION_DATE);
-        when(networkDataService.get()).thenReturn(networkData);
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.getNwbVersionId()).thenReturn(NWB_VERSION_INT);
-        when(nwbVersionIdMapper.mapFromReferenceDate(LATER_NWB_VERSION_DATE)).thenReturn(LATER_NWB_VERSION_INT);
-
-        assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Map version is newer than the one currently in use");
-
-        roadSectionUpdateListener.resetCounters();
-
-        assertThat(roadSectionUpdateListener.getMessagesProcessed()).isZero();
-        assertThat(roadSectionUpdateListener.getMessagesRejected()).isZero();
-    }
-
-    @Test
-    void getListenerId() {
-        assertThat(roadSectionUpdateListener.getListenerId()).isEqualTo("updateRoadSectionStreamListener");
     }
 }
+
+
