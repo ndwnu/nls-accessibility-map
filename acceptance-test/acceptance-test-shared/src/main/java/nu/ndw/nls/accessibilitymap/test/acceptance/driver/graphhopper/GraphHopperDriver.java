@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.supplier.AccessibilityNwbRoadSectionDtoSupplier;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.supplier.AccessibilityVersionSupplier;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.rabbitmq.RabbitMQMessageDriver;
-import nu.ndw.nls.data.api.nwb.dtos.NwbVersionDto;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.graph.dto.Direction;
@@ -20,7 +18,6 @@ import nu.ndw.nls.springboot.test.graph.exporter.database.nwb.dto.NwbDataAccessS
 import nu.ndw.nls.springboot.test.graph.service.GraphDataBuilder;
 import nu.ndw.nls.springboot.test.graph.service.GraphGeneratorService;
 import nu.ndw.nls.springboot.test.graph.service.dto.GenerateSpecification;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -67,12 +64,12 @@ public class GraphHopperDriver {
 
     @SneakyThrows
     @SuppressWarnings("java:S3658")
-    public GraphHopperDriver insertNwbDataWithVersion(List<ImmutablePair<Boolean, NwbVersionDto>> nwbVersionData) {
+    public GraphHopperDriver insertNwbDataWithVersion(String version) {
         lastBuiltGraph = graphDataBuilder.build();
         nwbDatabaseExporter.export(
                 lastBuiltGraph,
                 NwbDataAccessSettings.builder()
-                        .versionDtoSupplier(new AccessibilityVersionSupplier(nwbVersionData))
+                        .versionDtoSupplier(new AccessibilityVersionSupplier(version))
                         .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier(Map.of()))
                         .build());
 
