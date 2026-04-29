@@ -2,11 +2,13 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -149,5 +151,42 @@ public class AccessibilityMapApiStepDefinitions {
                 .withTolerance(1e-12)
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(expectedResponse);
+    }
+
+    @When("request accessibility geojson for {word} and expect result {word}")
+    public void requestAccessibilityGeoJsonForV2AnVerifyTheResult(String requestFile, String responseFile) {
+        await()
+                .atMost(Duration.ofSeconds(10))
+                .pollInterval(Duration.ofMillis(500))
+                .untilAsserted(() -> {
+                    AccessibilityRequestJson accessibilityRequest = testDataProvider.readFromFile(
+                            "api/accessibility/v2/request/",
+                            requestFile + ".json",
+                            AccessibilityRequestJson.class);
+                    Response<AccessibilityRequestJson, String> response = accessibilityMapApiClient.getAccessibilityGeoJson(
+                            accessibilityRequest);
+
+                    assertThat(response.containsError())
+                            .withFailMessage(
+                                    "Failed to get accessibility geojson. Error: %s with body: %s",
+                                    response.error(),
+                                    response.body())
+                            .isFalse();
+
+                    Response<AccessibilityRequestJson, String> actualResponse =
+                            accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJson();
+
+                    assertThat(actualResponse.headers())
+                            .containsEntry(HttpHeaders.CONTENT_ENCODING, List.of("gzip"));
+
+                    String expectedResponse = testDataProvider.readFromFile(
+                            "api/accessibility/v2/response",
+                            responseFile + ".geojson");
+
+                    assertThatJson(actualResponse.bodyAsString())
+                            .withTolerance(1e-12)
+                            .withOptions(Option.IGNORING_ARRAY_ORDER)
+                            .isEqualTo(expectedResponse);
+                });
     }
 }
