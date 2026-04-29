@@ -34,14 +34,6 @@ public class RoadSectionUpdateStepDefinitions {
         rabbitMQStreamDriver.publishEvent(message);
     }
 
-    @Given("a road section update event {word} with messageId {word}")
-    public void aRoadSectionUpdateEventWithMessageId(String message, String messageId) {
-        if (messageId.equals("null")) {
-            rabbitMQStreamDriver.publishEvent(message, null);
-        } else {
-            rabbitMQStreamDriver.publishEvent(message, messageId);
-        }
-    }
 
     @When("message is processed and processed success count is {int} and rejected count is {int}")
     public void eventIsProcessed(int success, int rejected) {
@@ -55,8 +47,4 @@ public class RoadSectionUpdateStepDefinitions {
                 });
     }
 
-    @When("a new nwb version is imported")
-    public void aNewNwbVersionIsPublished() {
-
-    }
 }

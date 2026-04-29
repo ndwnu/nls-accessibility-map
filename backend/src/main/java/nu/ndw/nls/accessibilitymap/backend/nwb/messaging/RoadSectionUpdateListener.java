@@ -60,8 +60,7 @@ public class RoadSectionUpdateListener implements ControllableMessageListener {
         }
 
         AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate = nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate);
-        NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(updateMapVersion,
-                List.of(accessibilityNwbRoadSectionUpdate));
+        NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(updateMapVersion, List.of(accessibilityNwbRoadSectionUpdate));
         networkDataService.writeNwbDataUpdates(nwbDataUpdates);
         messagesProcessed.incrementAndGet();
     }
