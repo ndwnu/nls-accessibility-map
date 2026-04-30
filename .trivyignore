@@ -1,1 +1,3 @@
 # Added CVE exclusions here. Example: CVE-2024-56171 exp:2025-03-21
+CVE-2026-29062 exp:2026-05-15
+GHSA-2m67-wjpj-xhg9 exp:2026-05-15
