@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.scheduling.TaskScheduler;
 
 @ExtendWith(MockitoExtension.class)
 class TrafficSignCacheWatcherTest {
@@ -20,10 +21,13 @@ class TrafficSignCacheWatcherTest {
     @Mock
     private TrafficSignDataService trafficSignDataService;
 
+    @Mock
+    private TaskScheduler taskScheduler;
+
     @Test
     void constructor() {
 
-        var trafficSignCacheWatcher = new TrafficSignCacheWatcher(trafficSignCacheConfiguration, trafficSignDataService) {
+        var trafficSignCacheWatcher = new TrafficSignCacheWatcher(trafficSignCacheConfiguration, trafficSignDataService, taskScheduler) {
             @Override
             public CacheConfiguration getCacheConfiguration() {
 
