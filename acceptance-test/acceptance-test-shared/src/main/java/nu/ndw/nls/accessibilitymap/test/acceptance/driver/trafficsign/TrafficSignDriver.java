@@ -26,6 +26,8 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfigura
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonFeatureCollectionDto;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
+import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
+import nu.ndw.nls.springboot.test.component.state.StateManagement;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Feature;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.FeatureCollection;
 import org.locationtech.jts.geom.Coordinate;
@@ -37,7 +39,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class TrafficSignDriver {
+public class TrafficSignDriver implements StateManagement {
 
     private final DriverGeneralConfiguration driverGeneralConfiguration;
 
@@ -48,6 +50,8 @@ public class TrafficSignDriver {
     private final JtsPointJsonMapper jtsPointJsonMapper;
 
     private final GeometryFactory geometryFactory = new GeometryFactory();
+
+    private final JobDriver jobDriver;
 
     @SuppressWarnings("java:S3658")
     public void stubTrafficSignRequest(List<TrafficSignGeoJsonDto> trafficSigns) {
@@ -113,5 +117,11 @@ public class TrafficSignDriver {
         } catch (JsonProcessingException exception) {
             fail(exception);
         }
+    }
+
+    @Override
+    public void clearState() {
+        // create empty traffic signs cache
+        jobDriver.run("job", "rebuildTrafficSignCache");
     }
 }
