@@ -109,7 +109,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "getAccessibilityForMunicipality".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.GET),
+                                && response.request().method().equals(HttpMethod.GET),
                         Void.class, AccessibilityMapResponseJson.class)
                 .getLast();
     }
@@ -162,7 +162,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "getAccessibilityGeoJson".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.POST),
+                                && response.request().method().equals(HttpMethod.POST),
                         AccessibilityRequestJson.class, String.class)
                 .getLast();
     }
@@ -195,7 +195,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "getAccessibilityGeoJsonForMunicipality".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.GET),
+                                && response.request().method().equals(HttpMethod.GET),
                         Void.class, RoadSectionFeatureCollectionJson.class)
                 .getLast();
     }
@@ -217,7 +217,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "genericRequest".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.GET),
+                                && response.request().method().equals(HttpMethod.GET),
                         Void.class, String.class)
                 .getLast();
     }
@@ -347,7 +347,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "getMunicipalities".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.GET),
+                                && response.request().method().equals(HttpMethod.GET),
                         Void.class, String.class)
                 .getLast();
     }
@@ -371,7 +371,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
         return responseWebCache().findResponsesByFilter(
                         response ->
                                 "getRoadOperators".equals(response.request().id())
-                                        && response.request().method().equals(HttpMethod.GET),
+                                && response.request().method().equals(HttpMethod.GET),
                         Void.class, String.class)
                 .getLast();
     }

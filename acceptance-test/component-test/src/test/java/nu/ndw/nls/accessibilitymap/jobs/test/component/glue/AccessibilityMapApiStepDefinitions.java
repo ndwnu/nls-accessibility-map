@@ -160,34 +160,8 @@ public class AccessibilityMapApiStepDefinitions {
                 .atMost(Duration.ofSeconds(10))
                 .pollInterval(Duration.ofMillis(500))
                 .untilAsserted(() -> {
-                    AccessibilityRequestJson accessibilityRequest = testDataProvider.readFromFile(
-                            "api/accessibility/v2/request/",
-                            requestFile + ".json",
-                            AccessibilityRequestJson.class);
-                    Response<AccessibilityRequestJson, String> response = accessibilityMapApiClient.getAccessibilityGeoJson(
-                            accessibilityRequest);
-
-                    assertThat(response.containsError())
-                            .withFailMessage(
-                                    "Failed to get accessibility geojson. Error: %s with body: %s",
-                                    response.error(),
-                                    response.body())
-                            .isFalse();
-
-                    Response<AccessibilityRequestJson, String> actualResponse =
-                            accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJson();
-
-                    assertThat(actualResponse.headers())
-                            .containsEntry(HttpHeaders.CONTENT_ENCODING, List.of("gzip"));
-
-                    String expectedResponse = testDataProvider.readFromFile(
-                            "api/accessibility/v2/response",
-                            responseFile + ".geojson");
-
-                    assertThatJson(actualResponse.bodyAsString())
-                            .withTolerance(1e-12)
-                            .withOptions(Option.IGNORING_ARRAY_ORDER)
-                            .isEqualTo(expectedResponse);
+                    requestAccessibilityGeoJsonForV2(requestFile);
+                    expectAccessibilityGeoJsonResponseV2(responseFile);
                 });
     }
 }
