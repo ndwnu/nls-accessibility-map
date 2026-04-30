@@ -35,6 +35,7 @@ public class GraphHopperStepDefinitions {
 
     private final AccessibilityMapServicesClient accessibilityMapServicesClient;
 
+
     @Given("a simple network")
     public void graphHopperNetwork() {
 

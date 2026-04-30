@@ -1,5 +1,7 @@
 Feature: Handle events to update road sections
 
+  Background:
+    Given no traffic signs
 
   Scenario: update road section for an active nwb version will result in roads getting blocked
     Given a simple network with nwb version 2026-03-01

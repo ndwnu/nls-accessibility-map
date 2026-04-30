@@ -155,6 +155,7 @@ public class AccessibilityMapApiStepDefinitions {
 
     @When("request accessibility geojson for {word} and expect result {word}")
     public void requestAccessibilityGeoJsonForV2AnVerifyTheResult(String requestFile, String responseFile) {
+
         await()
                 .atMost(Duration.ofSeconds(10))
                 .pollInterval(Duration.ofMillis(500))
