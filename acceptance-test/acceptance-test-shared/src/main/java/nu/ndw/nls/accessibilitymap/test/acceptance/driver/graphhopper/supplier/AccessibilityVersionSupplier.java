@@ -14,6 +14,10 @@ public class AccessibilityVersionSupplier extends VersionDtoSupplier {
 
     @Override
     public NwbVersionDto create() {
+        return create(version);
+    }
+
+    public static NwbVersionDto create(String version) {
         int versionId = Integer.parseInt(version.replace("-", ""));
 
         return NwbVersionDto.builder()
