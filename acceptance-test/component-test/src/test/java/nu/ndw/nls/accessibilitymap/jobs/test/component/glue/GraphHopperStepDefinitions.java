@@ -35,11 +35,21 @@ public class GraphHopperStepDefinitions {
 
     private final AccessibilityMapServicesClient accessibilityMapServicesClient;
 
+
     @Given("a simple network")
     public void graphHopperNetwork() {
 
         graphHopperTestDataService.buildSimpleNetwork()
                 .insertNwbData()
+                .rebuildCache();
+        accessibilityMapServicesClient.reloadCaches();
+    }
+
+    @Given("a simple network with nwb version {word}")
+    public void graphHopperNetworkWithNwbVersion(String version) {
+
+        graphHopperTestDataService.buildSimpleNetwork()
+                .insertNwbDataWithVersion(version)
                 .rebuildCache();
         accessibilityMapServicesClient.reloadCaches();
     }

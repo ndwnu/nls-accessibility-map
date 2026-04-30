@@ -23,9 +23,6 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.GetMessagingStatus;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.MessagingStatus;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.UpdateMessageCounter;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
 import nu.ndw.nls.springboot.test.await.services.AwaitService;
 import nu.ndw.nls.springboot.test.await.services.predicates.AwaitResponseStatusOkPredicate;
@@ -69,44 +66,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     private final JtsPointJsonMapper jtsPointJsonMapper;
 
     private final GeometryFactory geometryFactory = new GeometryFactory();
-
-    @SneakyThrows
-    public Response<GetMessagingStatus, MessagingStatus> getMessagingStatus(String listenerId) {
-        Request<GetMessagingStatus> request = Request.<GetMessagingStatus>builder()
-                .id("messagingStatus")
-                .method(HttpMethod.GET)
-                .path("api/rest/static-road-data/accessibility-map/actuator/messaging")
-                .queryParameters(Map.of("listenerId", List.of(listenerId)))
-                .headers(Map.of(
-                        HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE,
-                        HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
-                ))
-                .build();
-
-        return request(
-                request, new ParameterizedTypeReference<>() {
-                });
-    }
-
-    @SneakyThrows
-    public Response<UpdateMessageCounter, MessagingStatus> resetListenerCounter(String listenerId) {
-        Request<UpdateMessageCounter> request = Request.<UpdateMessageCounter>builder()
-                .id("messagingStatus")
-                .method(HttpMethod.POST)
-                .path("api/rest/static-road-data/accessibility-map/actuator/messaging")
-                .body(UpdateMessageCounter.builder().listenerId(listenerId).build())
-                .headers(Map.of(
-                        HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE,
-                        HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
-                        HttpHeaders.AUTHORIZATION, keycloakDriver.getActiveClient().obtainBearerToken()
-                ))
-                .build();
-
-        return request(
-                request, new ParameterizedTypeReference<>() {
-                });
-    }
 
     @SneakyThrows
     public Response<Void, Void> reloadCache() {

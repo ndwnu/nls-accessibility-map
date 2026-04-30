@@ -1,10 +1,19 @@
 package nu.ndw.nls.accessibilitymap.backend.nwb.messaging;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.stream.Message;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.backend.rabbitmq.actuators.ControllableMessageListener;
+import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectionUpdate;
+import nu.ndw.nls.accessibilitymap.backend.nwb.messaging.mapper.NwbRoadSectionUpdateMapper;
+import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
@@ -14,49 +23,53 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 // Depends on the template to create the stream queue if it does not exist.
 @DependsOn("updateRoadSectionStreamTemplate")
-public class RoadSectionUpdateListener implements ControllableMessageListener {
+public class RoadSectionUpdateListener {
 
     private static final String LISTENER_ID = "updateRoadSectionStreamListener";
 
-    private final AtomicInteger messagesProcessed = new AtomicInteger();
+    private final NetworkDataService networkDataService;
 
-    private final AtomicInteger messagesRejected = new AtomicInteger();
+    private final NwbVersionIdMapper nwbVersionIdMapper;
+
+    private final NwbRoadSectionUpdateMapper nwbRoadSectionUpdateMapper;
+
+    private final ObjectMapper objectMapper;
 
     @RabbitListener(id = LISTENER_ID,
             queues = "nls_accessibility_map_update_road_section",
             containerFactory = "updateRoadSectionStreamFactory")
     public void handleMessage(Message message) {
-        try {
-            log.info("handle message: {}", message.getBody());
-            // for now to test if skipping of the message processing works it checks for the content to contain broken
-            if (new String(message.getBodyAsBinary()).contains("broken")) {
-                throw new IllegalStateException("Failed processing message");
+        NwbRoadSectionUpdate nwbRoadSectionUpdate = toRoadSectionUpdate(message);
+        NwbData nwbData = networkDataService.get().getNwbData();
+        int updateMapVersion = nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion());
+
+        if (updateMapVersionIsDifferentFromActiveMapVersion(updateMapVersion, nwbData.getNwbVersionId())) {
+
+            if (updateMapVersionIsEarlierThanActiveVersion(updateMapVersion, nwbData.getNwbVersionId())) {
+                return;
+            } else {
+                throw new IllegalArgumentException("Map version is newer than the one currently in use");
             }
-        } catch (RuntimeException e) {
-            messagesRejected.incrementAndGet();
-            throw e;
         }
-        messagesProcessed.incrementAndGet();
+
+        AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate = nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate);
+        NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(updateMapVersion, List.of(accessibilityNwbRoadSectionUpdate));
+        networkDataService.writeNwbDataUpdates(nwbDataUpdates);
     }
 
-    @Override
-    public String getListenerId() {
-        return LISTENER_ID;
+    private boolean updateMapVersionIsDifferentFromActiveMapVersion(int updateMapVersion, int activeMapVersion) {
+        return !Objects.equals(updateMapVersion, activeMapVersion);
     }
 
-    @Override
-    public void resetCounters() {
-        messagesRejected.set(0);
-        messagesProcessed.set(0);
+    private boolean updateMapVersionIsEarlierThanActiveVersion(int updateMapVersion, int activeMapVersion) {
+        return updateMapVersion < activeMapVersion;
     }
 
-    @Override
-    public int getMessagesProcessed() {
-        return messagesProcessed.get();
-    }
-
-    @Override
-    public int getMessagesRejected() {
-        return messagesRejected.get();
+    private NwbRoadSectionUpdate toRoadSectionUpdate(Message message) {
+        try {
+            return objectMapper.readValue(message.getBodyAsBinary(), NwbRoadSectionUpdate.class);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

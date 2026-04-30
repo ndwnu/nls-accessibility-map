@@ -63,6 +63,7 @@
     <wiremock-spring-boot.version>4.2.1</wiremock-spring-boot.version>
     <netty.version>4.2.12.Final</netty.version>
     <rabbitmq-stream-client.version>1.6.0</rabbitmq-stream-client.version>
+    <apache.commons.version>3.20.0</apache.commons.version>
   </properties>
   <distributionManagement>
     <repository>
@@ -294,7 +295,11 @@
         <artifactId>routing-map-matcher-library</artifactId>
         <version>${nls-routing-map-matcher.version}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${apache.commons.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.github.jsurfer</groupId>
         <artifactId>jsurfer-jackson</artifactId>
