@@ -13,7 +13,8 @@ public class NetworkCacheWatcher extends CacheWatcher<NetworkData> {
 
     public NetworkCacheWatcher(
             NetworkCacheConfiguration networkCacheConfiguration,
-            NetworkDataService networkDataService, TaskScheduler taskScheduler
+            NetworkDataService networkDataService,
+            TaskScheduler taskScheduler
     ) {
 
         super(networkCacheConfiguration, networkDataService, taskScheduler);

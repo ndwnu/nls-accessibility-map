@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TrafficSignCacheWatcher extends CacheWatcher<TrafficSigns> {
 
-
     public TrafficSignCacheWatcher(
             TrafficSignCacheConfiguration trafficSignCacheConfiguration,
-            TrafficSignDataService trafficSignDataService, TaskScheduler taskScheduler
+            TrafficSignDataService trafficSignDataService,
+            TaskScheduler taskScheduler
     ) {
 
         super(trafficSignCacheConfiguration, trafficSignDataService, taskScheduler);

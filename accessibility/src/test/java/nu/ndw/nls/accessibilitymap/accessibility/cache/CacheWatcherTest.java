@@ -118,11 +118,6 @@ class CacheWatcherTest {
     }
 
     @Test
-    void watchFileChanges_exception() {
-
-    }
-
-    @Test
     void watchFileChanges_annotations() {
         AnnotationUtil.methodContainsAnnotation(
                 CacheWatcher.class,
