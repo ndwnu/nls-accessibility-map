@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache;
 import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicLong;
 import lombok.AccessLevel;
@@ -41,31 +42,27 @@ public class CacheWatcher<TYPE> {
         log.info("Watching file changes on {}", cacheConfiguration.getActiveVersion());
 
         scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
-            try {
 
-                long currentLastModified = cacheConfiguration.getActiveVersion().lastModified();
+            long currentLastModified = cacheConfiguration.getActiveVersion().lastModified();
 
-                if (lastModified.get() == -1) {
-                    lastModified.set(currentLastModified);
-                    return;
-                }
+            if (lastModified.get() == -1) {
+                lastModified.set(currentLastModified);
+                return;
+            }
 
-                if (lastModified.get() != currentLastModified) {
-                    lastModified.set(currentLastModified);
-
-                    log.info("Triggering update");
-                    cache.read();
-                    log.info("Finished update");
-                }
-            } catch (Throwable t) {
-                log.error("Failed to watch file changes", t.getCause());
+            if (lastModified.get() != currentLastModified) {
+                lastModified.set(currentLastModified);
+                log.info("Triggering update");
+                cache.read();
+                log.info("Finished update");
             }
         }, cacheConfiguration.getFileWatcherInterval());
     }
 
     @PreDestroy
     public void destroy() {
-        if (scheduledTask != null) {
+        if (Objects.nonNull(scheduledTask)) {
+            log.info("Stopping file watcher");
             scheduledTask.cancel(true);
         }
     }
