@@ -1,7 +1,12 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 import ch.qos.logback.classic.Level;
@@ -9,13 +14,16 @@ import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.atomic.AtomicReference;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.apache.commons.io.FileUtils;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +33,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.TaskScheduler;
 
 @ExtendWith(MockitoExtension.class)
 class CacheWatcherTest {
@@ -35,6 +44,12 @@ class CacheWatcherTest {
 
     @Mock
     private Cache<Object> cache;
+
+    @Mock
+    private TaskScheduler taskScheduler;
+
+    @Mock
+    private ScheduledFuture<?> scheduledFuture;
 
     private Path testDir;
 
@@ -53,9 +68,7 @@ class CacheWatcherTest {
                 .fileWatcherInterval(Duration.ofMillis(1))
                 .build();
 
-        cacheWatcher = new CacheWatcher<>(cacheConfiguration, cache) {
-
-        };
+        cacheWatcher = new CacheWatcher<>(cacheConfiguration, cache, taskScheduler);
     }
 
     @AfterEach
@@ -65,39 +78,58 @@ class CacheWatcherTest {
     }
 
     @Test
-    @SuppressWarnings("java:S2925")
     void watchFileChanges_fileChanges() throws IOException {
-        Files.createDirectories(cacheConfiguration.getFolder());
-        Files.createFile(cacheConfiguration.getActiveVersion().toPath());
-        Awaitility.await().atMost(Duration.ofSeconds(5))
-                .until(() -> Files.exists(cacheConfiguration.getActiveVersion().toPath()));
+
+        Path folder = cacheConfiguration.getFolder();
+        Path activeFile = cacheConfiguration.getActiveVersion().toPath();
+
+        Files.createDirectories(folder);
+        Files.createFile(activeFile);
+
+        AtomicReference<Runnable> capturedTask = new AtomicReference<>();
+
+        doAnswer(invocation -> {
+            Runnable task = invocation.getArgument(0);
+            capturedTask.set(task);
+            return scheduledFuture;
+        }).when(taskScheduler)
+                .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
 
         cacheWatcher.watchFileChanges();
 
-        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> loggerExtension.containsLog(
+        loggerExtension.containsLog(
                 Level.INFO,
-                "Watching file changes on %s".formatted(cacheConfiguration.getActiveVersion())));
+                "Watching file changes on %s".formatted(activeFile)
+        );
 
-        Files.writeString(cacheConfiguration.getActiveVersion().toPath(), "changed");
+        capturedTask.get().run();
 
-        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
-            loggerExtension.containsLog(Level.INFO, "Triggering update", VerificationMode.atLeastOnce());
-            loggerExtension.containsLog(Level.INFO, "Finished update", VerificationMode.atLeastOnce());
-            verify(cache, atLeast(1)).read();
-        });
+        Files.writeString(activeFile, "changed");
 
-        assertThat(cacheWatcher.fileWatcherThread.isInterrupted()).isFalse();
+        Files.setLastModifiedTime(
+                activeFile,
+                FileTime.from(Instant.now().plusSeconds(2))
+        );
+
+        await()
+                .atMost(2, SECONDS)
+                .untilAsserted(() -> {
+                    capturedTask.get().run();
+                    loggerExtension.containsLog(Level.INFO, "Triggering update", VerificationMode.atLeastOnce());
+                    loggerExtension.containsLog(Level.INFO, "Finished update", VerificationMode.atLeastOnce());
+                    verify(cache, atLeast(1)).read();
+                });
     }
 
     @Test
-    @SuppressWarnings("java:S2925")
     void watchFileChanges_notWatchingForChanges() throws IOException {
 
         cacheConfiguration.setWatchForUpdates(false);
 
         cacheWatcher.watchFileChanges();
 
-        assertThat(cacheWatcher.fileWatcherThread).isNull();
+        verify(taskScheduler, org.mockito.Mockito.never())
+                .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
     }
 
     @Test
@@ -106,7 +138,8 @@ class CacheWatcherTest {
                 CacheWatcher.class,
                 EventListener.class,
                 "watchFileChanges",
-                eventListener -> assertThat(eventListener.value()).containsExactly(ApplicationStartedEvent.class));
+                eventListener -> assertThat(eventListener.value())
+                        .containsExactly(ApplicationStartedEvent.class));
     }
 
     @Test
