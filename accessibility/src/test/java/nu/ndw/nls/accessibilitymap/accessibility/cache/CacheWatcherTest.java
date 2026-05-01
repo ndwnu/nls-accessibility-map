@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
@@ -83,13 +84,10 @@ class CacheWatcherTest {
         doAnswer(invocation -> {
             Runnable task = invocation.getArgument(0);
             capturedTask.set(task);
-
-            // first execution = baseline init
             task.run();
-
             return scheduledFuture;
         }).when(taskScheduler)
-                .scheduleWithFixedDelay(any(Runnable.class), any(Duration.class));
+                .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
 
         cacheWatcher.watchFileChanges();
 
@@ -97,7 +95,6 @@ class CacheWatcherTest {
                 Level.INFO,
                 "Watching file changes on %s".formatted(cacheConfiguration.getActiveVersion())
         );
-
 
         Files.writeString(cacheConfiguration.getActiveVersion().toPath(), "changed");
 
@@ -117,7 +114,12 @@ class CacheWatcherTest {
         cacheWatcher.watchFileChanges();
 
         verify(taskScheduler, org.mockito.Mockito.never())
-                .scheduleWithFixedDelay(any(Runnable.class), any(Duration.class));
+                .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
+    }
+
+    @Test
+    void watchFileChanges_exception() {
+
     }
 
     @Test
