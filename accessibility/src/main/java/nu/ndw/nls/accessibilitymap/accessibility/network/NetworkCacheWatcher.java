@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.network;
 
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheWatcher;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.TaskSchedulerFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,9 @@ public class NetworkCacheWatcher extends CacheWatcher<NetworkData> {
 
     public NetworkCacheWatcher(
             NetworkCacheConfiguration networkCacheConfiguration,
-            NetworkDataService networkDataService) {
-
-        super(networkCacheConfiguration, networkDataService);
+            NetworkDataService networkDataService,
+            TaskSchedulerFactory taskSchedulerFactory
+    ) {
+        super(networkCacheConfiguration, networkDataService, taskSchedulerFactory.createTaskScheduler());
     }
 }
