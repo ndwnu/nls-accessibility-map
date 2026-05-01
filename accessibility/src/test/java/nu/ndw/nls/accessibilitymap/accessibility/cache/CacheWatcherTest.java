@@ -1,6 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
@@ -12,7 +14,9 @@ import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
@@ -76,15 +80,17 @@ class CacheWatcherTest {
     @Test
     void watchFileChanges_fileChanges() throws IOException {
 
-        Files.createDirectories(cacheConfiguration.getFolder());
-        Files.createFile(cacheConfiguration.getActiveVersion().toPath());
+        Path folder = cacheConfiguration.getFolder();
+        Path activeFile = cacheConfiguration.getActiveVersion().toPath();
+
+        Files.createDirectories(folder);
+        Files.createFile(activeFile);
 
         AtomicReference<Runnable> capturedTask = new AtomicReference<>();
 
         doAnswer(invocation -> {
             Runnable task = invocation.getArgument(0);
             capturedTask.set(task);
-            task.run();
             return scheduledFuture;
         }).when(taskScheduler)
                 .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
@@ -93,17 +99,26 @@ class CacheWatcherTest {
 
         loggerExtension.containsLog(
                 Level.INFO,
-                "Watching file changes on %s".formatted(cacheConfiguration.getActiveVersion())
+                "Watching file changes on %s".formatted(activeFile)
         );
-
-        Files.writeString(cacheConfiguration.getActiveVersion().toPath(), "changed");
 
         capturedTask.get().run();
 
-        loggerExtension.containsLog(Level.INFO, "Triggering update", VerificationMode.atLeastOnce());
-        loggerExtension.containsLog(Level.INFO, "Finished update", VerificationMode.atLeastOnce());
+        Files.writeString(activeFile, "changed");
 
-        verify(cache, atLeast(1)).read();
+        Files.setLastModifiedTime(
+                activeFile,
+                FileTime.from(Instant.now().plusSeconds(2))
+        );
+
+        await()
+                .atMost(2, SECONDS)
+                .untilAsserted(() -> {
+                    capturedTask.get().run();
+                    loggerExtension.containsLog(Level.INFO, "Triggering update", VerificationMode.atLeastOnce());
+                    loggerExtension.containsLog(Level.INFO, "Finished update", VerificationMode.atLeastOnce());
+                    verify(cache, atLeast(1)).read();
+                });
     }
 
     @Test
