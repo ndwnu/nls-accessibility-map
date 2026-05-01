@@ -2,9 +2,9 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service;
 
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheWatcher;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.TaskSchedulerFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,9 +14,9 @@ public class TrafficSignCacheWatcher extends CacheWatcher<TrafficSigns> {
     public TrafficSignCacheWatcher(
             TrafficSignCacheConfiguration trafficSignCacheConfiguration,
             TrafficSignDataService trafficSignDataService,
-            TaskScheduler taskScheduler
+            TaskSchedulerFactory taskSchedulerFactory
     ) {
 
-        super(trafficSignCacheConfiguration, trafficSignDataService, taskScheduler);
+        super(trafficSignCacheConfiguration, trafficSignDataService, taskSchedulerFactory.createTaskScheduler());
     }
 }
