@@ -10,3 +10,7 @@ spring:
 nls:
   keycloak:
     url: "https://iam.ndw.nu/auth"
+logging:
+  level:
+    root: INFO
+    nu.ndw.nls: DEBUG

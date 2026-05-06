@@ -2,9 +2,9 @@ package nu.ndw.nls.accessibilitymap.backend.nwb.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.stream.Message;
+import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
@@ -38,11 +38,13 @@ public class RoadSectionUpdateListener {
     @RabbitListener(id = LISTENER_ID,
             queues = "nls_accessibility_map_update_road_section",
             containerFactory = "updateRoadSectionStreamFactory")
+    @Timed(description = "time spend processing road section changes")
     public void handleMessage(Message message) {
         NwbRoadSectionUpdate nwbRoadSectionUpdate = toRoadSectionUpdate(message);
+        log.debug("Received road section update: {}", nwbRoadSectionUpdate);
         NwbData nwbData = networkDataService.get().getNwbData();
         int updateMapVersion = nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion());
-
+        log.debug("Active nwb map version: {}", updateMapVersion);
         if (updateMapVersionIsDifferentFromActiveMapVersion(updateMapVersion, nwbData.getNwbVersionId())) {
 
             if (updateMapVersionIsEarlierThanActiveVersion(updateMapVersion, nwbData.getNwbVersionId())) {
@@ -58,7 +60,7 @@ public class RoadSectionUpdateListener {
     }
 
     private boolean updateMapVersionIsDifferentFromActiveMapVersion(int updateMapVersion, int activeMapVersion) {
-        return !Objects.equals(updateMapVersion, activeMapVersion);
+        return updateMapVersion != activeMapVersion;
     }
 
     private boolean updateMapVersionIsEarlierThanActiveVersion(int updateMapVersion, int activeMapVersion) {
