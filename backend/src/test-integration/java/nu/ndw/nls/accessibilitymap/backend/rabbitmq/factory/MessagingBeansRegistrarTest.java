@@ -88,7 +88,7 @@ class MessagingBeansRegistrarTest {
 
     private AutoTrackingStrategy setupConsumerBuilderMock(ConsumerBuilder consumerBuilder) {
         when(consumerBuilder.stream("nls_accessibility_map_update_road_section")).thenReturn(consumerBuilder);
-        when(consumerBuilder.name("nls-accessibility-map-api-listener-v1")).thenReturn(consumerBuilder);
+        when(consumerBuilder.name("nls-accessibility-map-api-listener-v2")).thenReturn(consumerBuilder);
         when(consumerBuilder.singleActiveConsumer()).thenReturn(consumerBuilder);
         when(consumerBuilder.offset(first())).thenReturn(consumerBuilder);
         AutoTrackingStrategy autoTrackingStrategy = mock(AutoTrackingStrategy.class);
@@ -101,7 +101,7 @@ class MessagingBeansRegistrarTest {
 
     private void verifyConsumerBuilderMock(ConsumerBuilder consumerBuilder, AutoTrackingStrategy autoTrackingStrategy) {
         verify(consumerBuilder).stream("nls_accessibility_map_update_road_section");
-        verify(consumerBuilder).name("nls-accessibility-map-api-listener-v1");
+        verify(consumerBuilder).name("nls-accessibility-map-api-listener-v2");
         verify(consumerBuilder).singleActiveConsumer();
         verify(consumerBuilder).offset(first());
         verify(autoTrackingStrategy).flushInterval(Duration.ofSeconds(2));
