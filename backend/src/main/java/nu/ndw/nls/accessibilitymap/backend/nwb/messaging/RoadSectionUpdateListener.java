@@ -48,6 +48,9 @@ public class RoadSectionUpdateListener {
         if (updateMapVersionIsDifferentFromActiveMapVersion(updateMapVersion, nwbData.getNwbVersionId())) {
 
             if (updateMapVersionIsEarlierThanActiveVersion(updateMapVersion, nwbData.getNwbVersionId())) {
+                log.warn("Received road section update for previous map version active: {} message: {}",
+                        updateMapVersion,
+                        nwbRoadSectionUpdate);
                 return;
             } else {
                 throw new IllegalArgumentException("Map version is newer than the one currently in use");
