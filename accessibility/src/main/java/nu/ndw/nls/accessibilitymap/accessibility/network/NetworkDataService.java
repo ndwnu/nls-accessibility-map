@@ -98,7 +98,8 @@ public class NetworkDataService extends Cache<NetworkData> {
             Path targetLocation = getCacheConfiguration().getFolder().resolve(targetFolder);
             Files.createDirectories(targetLocation);
             Path activeVersion = getCacheConfiguration().getActiveVersion().toPath().toAbsolutePath().toRealPath();
-            FileUtils.copyDirectory(activeVersion.toFile(), targetLocation.toFile());
+            boolean preserveFileDate = false;
+            FileUtils.copyDirectory(activeVersion.toFile(), targetLocation.toFile(), null, preserveFileDate);
             log.info("Copied active version to {}", targetLocation.toAbsolutePath());
 
             Path nwbUpdatesPath = targetLocation.resolve(NWB_UPDATE_DIRECTORY);
