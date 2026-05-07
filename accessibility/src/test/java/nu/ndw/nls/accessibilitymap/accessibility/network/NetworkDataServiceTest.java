@@ -17,6 +17,7 @@ import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.json.JsonNwbDataStreamReader;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -81,6 +82,7 @@ class NetworkDataServiceTest {
 
         objectMapper = new ObjectMapper();
         JsonWriter jsonWriter = new JsonWriter(objectMapper);
+        JsonNwbDataStreamReader jsonNwbDataStreamReader = new JsonNwbDataStreamReader(objectMapper);
         nwbData = new NwbData(1, buildAccessibilityRoadSections());
         nwbDataUpdates = new NwbDataUpdates(1, buildAccessibilityRoadSectionUpdates());
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
@@ -96,7 +98,7 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper, jsonWriter);
+                objectMapper, jsonWriter, jsonNwbDataStreamReader);
     }
 
     @AfterEach

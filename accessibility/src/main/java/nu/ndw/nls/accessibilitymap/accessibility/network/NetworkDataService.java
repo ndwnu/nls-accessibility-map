@@ -10,9 +10,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.DataStaleException;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.json.JsonNwbDataStreamReader;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -21,6 +23,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,13 +51,15 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private final JsonWriter jsonWriter;
 
+    private final JsonNwbDataStreamReader jsonNwbDataStreamReader;
+
     public NetworkDataService(
             NetworkCacheConfiguration networkCacheConfiguration,
             ClockService clockService,
             DistributedLockService distributedLockService,
             GraphHopperService graphHopperService,
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
-            ObjectMapper objectMapper, JsonWriter jsonWriter
+            ObjectMapper objectMapper, JsonWriter jsonWriter, JsonNwbDataStreamReader jsonNwbDataStreamReader
     ) {
 
         super(networkCacheConfiguration, clockService, distributedLockService);
@@ -61,16 +68,21 @@ public class NetworkDataService extends Cache<NetworkData> {
         this.graphHopperService = graphHopperService;
         this.accessibilityNwbRoadSectionService = accessibilityNwbRoadSectionService;
         this.jsonWriter = jsonWriter;
+        this.jsonNwbDataStreamReader = jsonNwbDataStreamReader;
     }
 
+    @Retryable(
+            retryFor = DataStaleException.class,
+            maxAttempts = 15,
+            backoff = @Backoff(delay = 5000)
+    )
     @Transactional
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
         try {
             if (isDataStale()) {
                 log.warn("NetworkData is stale, not writing to disk waiting 5 seconds");
-                Thread.sleep(5000);
-                writeNwbDataUpdates(nwbDataUpdates);
+                throw new DataStaleException("NetworkData is stale");
             }
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
             NetworkData networkData = get();
@@ -98,12 +110,25 @@ public class NetworkDataService extends Cache<NetworkData> {
             setData(updatedNetworkData);
             getDataLock().unlock();
             log.info("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
-        } catch (IOException | InterruptedException exception) {
+        } catch (IOException exception) {
             log.error("Failed to write nwbDataUpdates to disk", exception);
             throw new IllegalStateException(exception);
         } finally {
             getDistributedLockService().unlock(getCacheConfiguration().getName());
         }
+    }
+
+    @Recover
+    public void recover(DataStaleException exception,
+            NwbDataUpdates nwbDataUpdates
+    ) {
+
+        log.error(
+                "Retries exhausted while writing nwbDataUpdates {} to disk", nwbDataUpdates
+                , exception
+        );
+
+        throw exception;
     }
 
     @Transactional
@@ -143,10 +168,9 @@ public class NetworkDataService extends Cache<NetworkData> {
                 NwbDataUpdates.class);
     }
 
-    private NwbData readNwbData() throws IOException {
-        return objectMapper.readValue(
-                getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_ROAD_SECTIONS_JSON).toFile(),
-                NwbData.class);
+    private NwbData readNwbData() {
+        final Path nwbDataFilePath = getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_ROAD_SECTIONS_JSON);
+        return jsonNwbDataStreamReader.readData(nwbDataFilePath);
     }
 
     @Override
