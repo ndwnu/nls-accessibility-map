@@ -113,8 +113,8 @@ public abstract class Cache<TYPE> {
         Path activeVersionOnDisk = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
         String activeCurrent = activeVersionOnDisk.getFileName().toString();
         log.debug("Active version on disk: {}", activeCurrent);
-        String activeVersion = this.activeVersion;
-        return !activeCurrent.equals(activeVersion);
+        log.debug("Active version in cache: {}", this.activeVersion);
+        return !activeCurrent.equals(this.activeVersion);
     }
 
     public void write(Supplier<TYPE> networkDataSupplier) {
