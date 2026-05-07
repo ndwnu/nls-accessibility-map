@@ -65,8 +65,6 @@ public class NetworkDataService extends Cache<NetworkData> {
     @Transactional
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
-        // Write only the new nwbDataUpdates to disk
-
         try {
 
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
