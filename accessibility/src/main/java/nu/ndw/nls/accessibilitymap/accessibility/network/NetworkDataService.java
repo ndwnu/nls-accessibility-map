@@ -76,22 +76,25 @@ public class NetworkDataService extends Cache<NetworkData> {
             NetworkData updatedNetworkData = new NetworkData(networkData.getNetworkGraphHopper(),
                     networkData.getNwbData(),
                     newNwbDataUpdates);
+            log.debug("NwbDataUpdates merged: {}", newNwbDataUpdates);
 
             OffsetDateTime start = getClockService().now();
             Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
             Path targetLocation = getCacheConfiguration().getFolder().resolve(targetFolder);
             Files.createDirectories(targetLocation);
-
             Path activeVersion = getCacheConfiguration().getActiveVersion().toPath().toAbsolutePath().toRealPath();
             FileUtils.copyDirectory(activeVersion.toFile(), targetLocation.toFile());
+            log.info("Copied active version to {}", targetLocation.toAbsolutePath());
 
             Path nwbUpdatesPath = targetLocation.resolve(NWB_UPDATE_DIRECTORY);
             jsonWriter.writeJsonToFile(nwbUpdatesPath, NWB_CHANGED_ROAD_SECTIONS_FILE, newNwbDataUpdates);
+            log.info("Wrote nwbDataUpdates to {}", nwbUpdatesPath);
 
             switchSymLink(targetFolder);
             getDataLock().lock();
             setData(updatedNetworkData);
             getDataLock().unlock();
+            log.info("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
         } catch (IOException exception) {
             log.error("Failed to write nwbDataUpdates to disk", exception);
             throw new IllegalStateException(exception);
