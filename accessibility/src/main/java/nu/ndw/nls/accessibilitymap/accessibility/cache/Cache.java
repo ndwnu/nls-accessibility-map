@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
@@ -36,12 +37,15 @@ public abstract class Cache<TYPE> {
     @Getter(AccessLevel.PROTECTED)
     private final ClockService clockService;
 
+    @Getter(AccessLevel.PROTECTED)
     private final DistributedLockService distributedLockService;
 
+    @Setter(AccessLevel.PROTECTED)
     private TYPE data;
 
     private int consecutiveReadFailures;
 
+    @Getter(AccessLevel.PROTECTED)
     private final ReentrantLock dataLock = new ReentrantLock();
 
     @EventListener(ApplicationStartedEvent.class)
@@ -143,7 +147,7 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    private void switchSymLink(Path target) throws IOException {
+    protected void switchSymLink(Path target) throws IOException {
 
         Path symlink = cacheConfiguration.getActiveVersion().toPath();
         Path oldTarget = null;
