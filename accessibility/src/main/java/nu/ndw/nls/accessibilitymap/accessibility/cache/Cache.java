@@ -139,6 +139,7 @@ public abstract class Cache<TYPE> {
             switchSymLink(targetFolder);
 
             dataLock.lock();
+            this.activeVersion = targetLocation.getFileName().toString();
             this.data = newData;
             dataLock.unlock();
         } catch (IOException exception) {
