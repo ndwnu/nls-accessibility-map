@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
@@ -42,6 +43,8 @@ public abstract class Cache<TYPE> {
 
     @Setter(AccessLevel.PROTECTED)
     private TYPE data;
+
+    private String activeVersion;
 
     private int consecutiveReadFailures;
 
@@ -82,6 +85,7 @@ public abstract class Cache<TYPE> {
             TYPE newData = readData(activeVersion);
 
             dataLock.lock();
+            this.activeVersion = activeVersion.getFileName().toString();
             this.data = newData;
             dataLock.unlock();
 
@@ -102,6 +106,15 @@ public abstract class Cache<TYPE> {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
         }
+    }
+
+    @SneakyThrows
+    protected boolean isDataStale() {
+        Path activeVersionOnDisk = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
+        String activeCurrent = activeVersionOnDisk.getFileName().toString();
+        log.debug("Active version on disk: {}", activeCurrent);
+        String activeVersion = this.activeVersion;
+        return !activeCurrent.equals(activeVersion);
     }
 
     public void write(Supplier<TYPE> networkDataSupplier) {

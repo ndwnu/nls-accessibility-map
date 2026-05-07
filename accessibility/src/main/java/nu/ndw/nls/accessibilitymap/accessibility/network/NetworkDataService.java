@@ -67,9 +67,12 @@ public class NetworkDataService extends Cache<NetworkData> {
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
         try {
-
+            if (isDataStale()) {
+                log.warn("NetworkData is stale, not writing to disk waiting 5 seconds");
+                Thread.sleep(5000);
+                writeNwbDataUpdates(nwbDataUpdates);
+            }
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
-            read();
             NetworkData networkData = get();
             NwbDataUpdates previousChanges = networkData.getNwbDataUpdates();
             NwbDataUpdates newNwbDataUpdates = previousChanges.merge(nwbDataUpdates);
@@ -95,7 +98,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             setData(updatedNetworkData);
             getDataLock().unlock();
             log.info("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
-        } catch (IOException exception) {
+        } catch (IOException | InterruptedException exception) {
             log.error("Failed to write nwbDataUpdates to disk", exception);
             throw new IllegalStateException(exception);
         } finally {
