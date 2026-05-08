@@ -26,6 +26,16 @@
       <artifactId>accessibility</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-smile</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-blackbird</artifactId>
+    </dependency>
+
     <!--Spring dependencies-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
