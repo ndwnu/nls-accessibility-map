@@ -10,11 +10,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.DataStaleException;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
-import nu.ndw.nls.accessibilitymap.accessibility.json.JsonNwbDataStreamReader;
+import nu.ndw.nls.accessibilitymap.accessibility.json.JsonNwbDataStreamReaderWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -23,6 +25,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoadSectionService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -51,7 +54,9 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private final JsonWriter jsonWriter;
 
-    private final JsonNwbDataStreamReader jsonNwbDataStreamReader;
+    private final JsonNwbDataStreamReaderWriter jsonNwbDataStreamReader;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public NetworkDataService(
             NetworkCacheConfiguration networkCacheConfiguration,
@@ -59,7 +64,8 @@ public class NetworkDataService extends Cache<NetworkData> {
             DistributedLockService distributedLockService,
             GraphHopperService graphHopperService,
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
-            ObjectMapper objectMapper, JsonWriter jsonWriter, JsonNwbDataStreamReader jsonNwbDataStreamReader
+            ObjectMapper objectMapper, JsonWriter jsonWriter, JsonNwbDataStreamReaderWriter jsonNwbDataStreamReader,
+            ApplicationEventPublisher applicationEventPublisher
     ) {
 
         super(networkCacheConfiguration, clockService, distributedLockService);
@@ -69,6 +75,7 @@ public class NetworkDataService extends Cache<NetworkData> {
         this.accessibilityNwbRoadSectionService = accessibilityNwbRoadSectionService;
         this.jsonWriter = jsonWriter;
         this.jsonNwbDataStreamReader = jsonNwbDataStreamReader;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Retryable(
@@ -105,11 +112,8 @@ public class NetworkDataService extends Cache<NetworkData> {
             Path nwbUpdatesPath = targetLocation.resolve(NWB_UPDATE_DIRECTORY);
             jsonWriter.writeJsonToFile(nwbUpdatesPath, NWB_CHANGED_ROAD_SECTIONS_FILE, newNwbDataUpdates);
             log.info("Wrote nwbDataUpdates to {}", nwbUpdatesPath);
-
             switchSymLink(targetFolder);
-            getDataLock().lock();
-            setData(updatedNetworkData);
-            getDataLock().unlock();
+            setData(updatedNetworkData, targetLocation);
             log.info("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
         } catch (IOException exception) {
             log.error("Failed to write nwbDataUpdates to disk", exception);
@@ -120,15 +124,8 @@ public class NetworkDataService extends Cache<NetworkData> {
     }
 
     @Recover
-    public void recover(DataStaleException exception,
-            NwbDataUpdates nwbDataUpdates
-    ) {
-
-        log.error(
-                "Retries exhausted while writing nwbDataUpdates {} to disk", nwbDataUpdates
-                , exception
-        );
-
+    public void recover(DataStaleException exception, NwbDataUpdates nwbDataUpdates) {
+        log.error("Retries exhausted while writing nwbDataUpdates {} to disk", nwbDataUpdates, exception);
         throw exception;
     }
 
@@ -171,7 +168,7 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private NwbData readNwbData() {
         final Path nwbDataFilePath = getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_ROAD_SECTIONS_JSON);
-        return jsonNwbDataStreamReader.readData(nwbDataFilePath);
+        return jsonNwbDataStreamReader.readJsonData(nwbDataFilePath);
     }
 
     @Override
@@ -183,5 +180,11 @@ public class NetworkDataService extends Cache<NetworkData> {
         graphHopperService.save(
                 target.resolve(GRAPH_HOPPER_FOLDER),
                 data.getNwbData());
+    }
+
+    @Override
+    protected void publishCacheLoadedEvent() {
+        applicationEventPublisher.publishEvent(CacheLoadedEvent.builder().type(Type.NETWORK_DATA)
+                .build());
     }
 }

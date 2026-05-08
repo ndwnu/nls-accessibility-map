@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
@@ -41,7 +40,6 @@ public abstract class Cache<TYPE> {
     @Getter(AccessLevel.PROTECTED)
     private final DistributedLockService distributedLockService;
 
-    @Setter(AccessLevel.PROTECTED)
     private TYPE data;
 
     private String activeVersion;
@@ -85,11 +83,7 @@ public abstract class Cache<TYPE> {
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
 
             TYPE newData = readData(activeVersion);
-
-            dataLock.lock();
-            this.activeVersion = activeVersion.getFileName().toString();
-            this.data = newData;
-            dataLock.unlock();
+            setData(newData, activeVersion);
 
             log.info(
                     "Read {} data from `{}` with size {}MB in {} ms",
@@ -107,7 +101,16 @@ public abstract class Cache<TYPE> {
             if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
+        } finally {
+            publishCacheLoadedEvent();
         }
+    }
+
+    protected void setData(TYPE data, Path activeVersion) {
+        dataLock.lock();
+        this.activeVersion = activeVersion.getFileName().toString();
+        this.data = data;
+        dataLock.unlock();
     }
 
     @SneakyThrows
@@ -139,11 +142,7 @@ public abstract class Cache<TYPE> {
                     Duration.between(start, clockService.now()).toMillis());
 
             switchSymLink(targetFolder);
-
-            dataLock.lock();
-            this.activeVersion = targetLocation.getFileName().toString();
-            this.data = newData;
-            dataLock.unlock();
+            setData(newData, targetLocation);
         } catch (IOException exception) {
             log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
         } finally {
@@ -154,6 +153,8 @@ public abstract class Cache<TYPE> {
     protected abstract TYPE readData(Path activeVersion) throws IOException;
 
     protected abstract void writeData(Path target, TYPE data) throws IOException;
+
+    protected abstract void publishCacheLoadedEvent();
 
     protected long getSizeInBytes(Path path) {
         if (Files.isDirectory(path)) {

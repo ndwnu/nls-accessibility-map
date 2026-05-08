@@ -18,6 +18,9 @@ public class StreamQueueProperties {
     @NotBlank
     private String streamTrackingName;
 
+    @NotNull
+    private Boolean listenerAutoStart;
+
     @NotBlank
     private String streamQueueName;
 

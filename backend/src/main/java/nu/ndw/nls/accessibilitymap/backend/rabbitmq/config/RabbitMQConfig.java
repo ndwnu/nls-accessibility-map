@@ -3,6 +3,8 @@ package nu.ndw.nls.accessibilitymap.backend.rabbitmq.config;
 import com.rabbitmq.stream.Environment;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,12 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class RabbitMQConfig {
 
+    @Bean
+    ApplicationRunner runner(RabbitListenerEndpointRegistry registry) {
+        return args -> {
+            System.out.println(registry.getListenerContainerIds());
+        };
+    }
     @Bean
     public ScheduledExecutorService rabbitStreamExecutor() {
         return Executors.newSingleThreadScheduledExecutor(r -> {
@@ -29,7 +37,6 @@ public class RabbitMQConfig {
                 .port(rabbitProperties.getStream().getPort())
                 .username(rabbitProperties.getUsername())
                 .password(rabbitProperties.getPassword())
-                .virtualHost(rabbitProperties.getVirtualHost())
                 .scheduledExecutorService(rabbitStreamExecutor)
                 .build();
     }
