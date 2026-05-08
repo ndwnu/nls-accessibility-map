@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
@@ -15,7 +16,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectio
 import nu.ndw.nls.accessibilitymap.backend.nwb.messaging.mapper.NwbRoadSectionUpdateMapper;
 import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +29,7 @@ import org.springframework.stereotype.Service;
 @DependsOn("updateRoadSectionStreamTemplate")
 public class RoadSectionUpdateListener {
 
-    private static final String LISTENER_ID = "updateRoadSectionStreamListener";
+    public static final String LISTENER_ID = "updateRoadSectionStreamListener";
 
     private final NetworkDataService networkDataService;
 
@@ -35,9 +39,16 @@ public class RoadSectionUpdateListener {
 
     private final ObjectMapper objectMapper;
 
+    private final RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
+
+    @Value("${nu.ndw.nls.accessibilitymap.messaging.stream-queues.updateRoadSection.listener-auto-start:true}")
+    private Boolean autoStartup;
+
     @RabbitListener(id = LISTENER_ID,
             queues = "nls_accessibility_map_update_road_section",
-            containerFactory = "updateRoadSectionStreamFactory")
+            containerFactory = "updateRoadSectionStreamFactory",
+            autoStartup = "${nu.ndw.nls.accessibilitymap.messaging.stream-queues.updateRoadSection.listener-auto-start:true}"
+    )
     @Timed(description = "time spend processing road section changes")
     public void handleMessage(Message message) {
         NwbRoadSectionUpdate nwbRoadSectionUpdate = toRoadSectionUpdate(message);
@@ -75,6 +86,17 @@ public class RoadSectionUpdateListener {
             return objectMapper.readValue(message.getBodyAsBinary(), NwbRoadSectionUpdate.class);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    @EventListener
+    void startListener(CacheLoadedEvent cacheLoadedEvent) {
+        if (cacheLoadedEvent.getType() == CacheLoadedEvent.Type.NETWORK_DATA) {
+            log.info("autoStartup is set to: {}", autoStartup);
+            if (!autoStartup) {
+                log.info("Starting listener, autoStartup is set to: {}", autoStartup);
+                rabbitListenerEndpointRegistry.getListenerContainer(LISTENER_ID).start();
+            }
         }
     }
 }

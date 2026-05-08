@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class JsonNwbDataStreamReader {
+public class JsonNwbDataStreamReaderWriter {
 
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public NwbData readData(Path jsonFile) {
+    public NwbData readJsonData(Path jsonFile) {
         List<AccessibilityNwbRoadSection> accessibilityNwbRoadSections = new ArrayList<>();
         Integer versionId = null;
         try (InputStream is = Files.newInputStream(jsonFile); JsonParser parser = objectMapper.getFactory().createParser(is)) {
