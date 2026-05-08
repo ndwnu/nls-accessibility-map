@@ -92,7 +92,7 @@ public class RoadSectionUpdateListener {
     @EventListener
     void startListener(CacheLoadedEvent cacheLoadedEvent) {
         if (cacheLoadedEvent.getType() == CacheLoadedEvent.Type.NETWORK_DATA) {
-            log.info("autoStartup is set to: {}", autoStartup);
+            log.info("network data loaded autoStartup is set to: {}", autoStartup);
             if (!autoStartup) {
                 log.info("Starting listener, autoStartup is set to: {}", autoStartup);
                 rabbitListenerEndpointRegistry.getListenerContainer(LISTENER_ID).start();

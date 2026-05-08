@@ -77,7 +77,7 @@ public class JsonNwbDataStreamReaderWriter {
     }
 
     public void writeJsonBData(NwbData nwbData, Path jsonFile) {
-        try (OutputStream os = Files.newOutputStream(Path.of("roads.smile"))) {
+        try (OutputStream os = Files.newOutputStream(jsonFile)) {
             ObjectMapper mapper = new ObjectMapper(new SmileFactory());
             JsonGenerator gen = mapper.getFactory().createGenerator(os);
             gen.writeStartObject();

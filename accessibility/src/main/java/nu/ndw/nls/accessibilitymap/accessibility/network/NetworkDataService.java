@@ -54,7 +54,7 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private final JsonWriter jsonWriter;
 
-    private final JsonNwbDataStreamReaderWriter jsonNwbDataStreamReader;
+    private final JsonNwbDataStreamReaderWriter jsonNwbDataStreamReaderWriter;
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -64,7 +64,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             DistributedLockService distributedLockService,
             GraphHopperService graphHopperService,
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
-            ObjectMapper objectMapper, JsonWriter jsonWriter, JsonNwbDataStreamReaderWriter jsonNwbDataStreamReader,
+            ObjectMapper objectMapper, JsonWriter jsonWriter, JsonNwbDataStreamReaderWriter jsonNwbDataStreamReaderWriter,
             ApplicationEventPublisher applicationEventPublisher
     ) {
 
@@ -74,7 +74,7 @@ public class NetworkDataService extends Cache<NetworkData> {
         this.graphHopperService = graphHopperService;
         this.accessibilityNwbRoadSectionService = accessibilityNwbRoadSectionService;
         this.jsonWriter = jsonWriter;
-        this.jsonNwbDataStreamReader = jsonNwbDataStreamReader;
+        this.jsonNwbDataStreamReaderWriter = jsonNwbDataStreamReaderWriter;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -168,7 +168,7 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private NwbData readNwbData() {
         final Path nwbDataFilePath = getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_ROAD_SECTIONS_JSON);
-        return jsonNwbDataStreamReader.readJsonData(nwbDataFilePath);
+        return jsonNwbDataStreamReaderWriter.readJsonData(nwbDataFilePath);
     }
 
     @Override

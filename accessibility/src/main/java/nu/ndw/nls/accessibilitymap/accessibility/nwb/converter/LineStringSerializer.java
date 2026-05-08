@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.io.Serial;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 
 public class LineStringSerializer extends StdSerializer<LineString> {
@@ -24,21 +22,26 @@ public class LineStringSerializer extends StdSerializer<LineString> {
 
 
     @Override
-    public void serialize(LineString lineString, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(
+            LineString lineString,
+            JsonGenerator gen,
+            SerializerProvider serializers
+    ) throws IOException {
 
-        List<double[]> coordinates = Arrays.stream(lineString.getCoordinates())
-                .map(coordinate -> new double[]{coordinate.getX(), coordinate.getY()})
-                .toList();
-        jsonGenerator.writeRawValue(getObjectMapper().writeValueAsString(coordinates));
-    }
+        Coordinate[] coords = lineString.getCoordinates();
 
+        gen.writeStartArray();
 
-    private ObjectMapper getObjectMapper() {
-        if (Objects.isNull(objectMapper)) {
-            objectMapper = new ObjectMapper();
+        for (int i = 0; i < coords.length; i++) {
+            Coordinate c = coords[i];
+
+            gen.writeStartArray(2);
+            gen.writeNumber(c.getX());
+            gen.writeNumber(c.getY());
+            gen.writeEndArray();
         }
-        return objectMapper;
-    }
 
+        gen.writeEndArray();
+    }
 
 }

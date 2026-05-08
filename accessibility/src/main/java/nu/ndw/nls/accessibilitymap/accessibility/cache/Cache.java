@@ -22,6 +22,7 @@ import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.retry.support.RetryTemplate;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -39,6 +40,11 @@ public abstract class Cache<TYPE> {
 
     @Getter(AccessLevel.PROTECTED)
     private final DistributedLockService distributedLockService;
+
+    private RetryTemplate retryTemplate = RetryTemplate.builder()
+            .maxAttempts(5)
+            .fixedBackoff(1000)
+            .build();
 
     private TYPE data;
 
@@ -165,29 +171,32 @@ public abstract class Cache<TYPE> {
     }
 
     protected void switchSymLink(Path target) throws IOException {
-
-        cacheSwitchLock.lock();
-        try {
-            Path symlink = cacheConfiguration.getActiveVersion().toPath();
-            Path oldTarget = null;
-
-            if (Files.isSymbolicLink(symlink)) {
-                if (Files.exists(symlink)) {
-                    oldTarget = symlink.toRealPath();
+        retryTemplate.execute(context -> {
+            cacheSwitchLock.lock();
+            try {
+                Path symlink = cacheConfiguration.getActiveVersion().toPath();
+                Path oldTarget = null;
+                if (Files.isSymbolicLink(symlink)) {
+                    if (Files.exists(symlink)) {
+                        oldTarget = symlink.toRealPath();
+                    }
+                    Files.delete(symlink);
                 }
-                Files.delete(symlink);
-            }
 
-            Files.createSymbolicLink(symlink, target);
-            log.debug("Updated symlink: {}", cacheConfiguration.getActiveVersion().getAbsolutePath());
+                Files.createSymbolicLink(symlink, target);
+                log.debug("Updated symlink: {}", cacheConfiguration.getActiveVersion().getAbsolutePath());
 
-            if (Objects.nonNull(oldTarget)) {
-                FileUtils.deleteDirectory(oldTarget.toFile());
-                log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
+                if (Objects.nonNull(oldTarget)) {
+                    FileUtils.deleteDirectory(oldTarget.toFile());
+                    log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
+                }
+            } catch (IOException exception) {
+                throw new IllegalStateException("Failed to update symlink", exception);
+            } finally {
+                cacheSwitchLock.unlock();
             }
-        } finally {
-            cacheSwitchLock.unlock();
-        }
+            return null;
+        });
     }
 
     public boolean dataExists() {
