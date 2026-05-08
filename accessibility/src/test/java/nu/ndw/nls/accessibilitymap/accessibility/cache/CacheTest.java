@@ -98,6 +98,11 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
+            }
         };
 
         assertThat(cache.get()).isNull();
@@ -137,6 +142,11 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
+            }
         };
 
         cache.read();
@@ -169,6 +179,16 @@ class CacheTest {
 
         cacheConfiguration.setFailOnStartupCacheReadError(false);
 
+        final Cache<Object> cache = getCache();
+        assertThat(cache.get()).isNull();
+        loggerExtension.containsLog(
+                Level.ERROR,
+                "Failed to read %s".formatted(cacheConfiguration.getName()),
+                "test");
+    }
+
+    @NotNull
+    private Cache<Object> getCache() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
@@ -179,14 +199,15 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
+            }
         };
 
         cache.read(true);
-        assertThat(cache.get()).isNull();
-        loggerExtension.containsLog(
-                Level.ERROR,
-                "Failed to read %s".formatted(cacheConfiguration.getName()),
-                "test");
+        return cache;
     }
 
     @Test
@@ -205,6 +226,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
             }
         };
         cache.read();
@@ -227,6 +253,17 @@ class CacheTest {
 
         cacheConfiguration.setLoadDataOnStartup(true);
 
+        final Cache<Object> cache = getObjectCache1();
+
+        assertThat(cache.get()).isEqualTo(data);
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Read testCache data from `%s` with size 0.00MB in 310 ms".formatted(cacheConfiguration.getActiveVersion()
+                        .getAbsolutePath()));
+    }
+
+    @NotNull
+    private Cache<Object> getObjectCache1() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
@@ -237,15 +274,15 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
+            }
         };
 
         cache.loadDataOnStartup();
-
-        assertThat(cache.get()).isEqualTo(data);
-        loggerExtension.containsLog(
-                Level.INFO,
-                "Read testCache data from `%s` with size 0.00MB in 310 ms".formatted(cacheConfiguration.getActiveVersion()
-                        .getAbsolutePath()));
+        return cache;
     }
 
     @Test
@@ -282,6 +319,11 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
+            }
         };
 
         cache.loadDataOnStartup();
@@ -309,6 +351,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
             }
         };
 
@@ -342,6 +389,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
             }
         };
 
@@ -379,6 +431,11 @@ class CacheTest {
             protected void writeData(Path target, String data) throws IOException {
 
                 Files.writeString(target.resolve("file1.txt"), data);
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
             }
         };
 
@@ -454,6 +511,11 @@ class CacheTest {
             protected void writeData(Path target, String data) throws IOException {
                 throw new IOException("error");
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
+            }
         };
 
         cache.write(() -> "testData1");
@@ -478,6 +540,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, String data) {
                 // to nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+
             }
         };
 
