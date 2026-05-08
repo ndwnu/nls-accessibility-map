@@ -51,6 +51,8 @@ public abstract class Cache<TYPE> {
     @Getter(AccessLevel.PROTECTED)
     private final ReentrantLock dataLock = new ReentrantLock();
 
+    private final ReentrantLock cacheSwitchLock = new ReentrantLock();
+
     @EventListener(ApplicationStartedEvent.class)
     public void loadDataOnStartup() {
         if (cacheConfiguration.isLoadDataOnStartup()) {
@@ -163,22 +165,27 @@ public abstract class Cache<TYPE> {
 
     protected void switchSymLink(Path target) throws IOException {
 
-        Path symlink = cacheConfiguration.getActiveVersion().toPath();
-        Path oldTarget = null;
+        cacheSwitchLock.lock();
+        try {
+            Path symlink = cacheConfiguration.getActiveVersion().toPath();
+            Path oldTarget = null;
 
-        if (Files.isSymbolicLink(symlink)) {
-            if (Files.exists(symlink)) {
-                oldTarget = symlink.toRealPath();
+            if (Files.isSymbolicLink(symlink)) {
+                if (Files.exists(symlink)) {
+                    oldTarget = symlink.toRealPath();
+                }
+                Files.delete(symlink);
             }
-            Files.delete(symlink);
-        }
 
-        Files.createSymbolicLink(symlink, target);
-        log.debug("Updated symlink: {}", cacheConfiguration.getActiveVersion().getAbsolutePath());
+            Files.createSymbolicLink(symlink, target);
+            log.debug("Updated symlink: {}", cacheConfiguration.getActiveVersion().getAbsolutePath());
 
-        if (Objects.nonNull(oldTarget)) {
-            FileUtils.deleteDirectory(oldTarget.toFile());
-            log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
+            if (Objects.nonNull(oldTarget)) {
+                FileUtils.deleteDirectory(oldTarget.toFile());
+                log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
+            }
+        } finally {
+            cacheSwitchLock.unlock();
         }
     }
 
