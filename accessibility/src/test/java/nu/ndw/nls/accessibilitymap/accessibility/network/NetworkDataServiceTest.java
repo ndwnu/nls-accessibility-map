@@ -39,6 +39,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class NetworkDataServiceTest {
@@ -73,6 +74,9 @@ class NetworkDataServiceTest {
     @Mock
     private DistributedLockService distributedLockService;
 
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
+
     private NwbData nwbData;
 
     private NwbDataUpdates nwbDataUpdates;
@@ -98,7 +102,8 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper, jsonWriter, jsonNwbDataStreamReader);
+                objectMapper, jsonWriter, jsonNwbDataStreamReader,
+                applicationEventPublisher);
     }
 
     @AfterEach
