@@ -27,6 +27,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 
 @ExtendWith(MockitoExtension.class)
 class RoadSectionUpdateListenerTest {
@@ -72,6 +73,9 @@ class RoadSectionUpdateListenerTest {
     @Mock
     private NwbData nwbData;
 
+    @Mock
+    private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
+
     @Captor
     private ArgumentCaptor<NwbDataUpdates> nwbDataUpdatesCaptor;
 
@@ -82,7 +86,7 @@ class RoadSectionUpdateListenerTest {
         roadSectionUpdateListener = new RoadSectionUpdateListener(networkDataService,
                 nwbVersionIdMapper,
                 nwbRoadSectionUpdateMapper,
-                objectMapper);
+                objectMapper, rabbitListenerEndpointRegistry);
     }
 
     @SneakyThrows
