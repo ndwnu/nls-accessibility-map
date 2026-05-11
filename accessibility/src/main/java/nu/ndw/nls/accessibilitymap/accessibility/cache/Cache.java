@@ -171,32 +171,35 @@ public abstract class Cache<TYPE> {
     }
 
     protected void switchSymLink(Path target) throws IOException {
-        retryTemplate.execute(context -> {
+        try {
             cacheSwitchLock.lock();
-            try {
-                Path symlink = cacheConfiguration.getActiveVersion().toPath();
-                Path oldTarget = null;
-                if (Files.isSymbolicLink(symlink)) {
-                    if (Files.exists(symlink)) {
-                        oldTarget = symlink.toRealPath();
+            retryTemplate.execute(context -> {
+                try {
+                    Path symlink = cacheConfiguration.getActiveVersion().toPath();
+                    Path oldTarget = null;
+                    if (Files.isSymbolicLink(symlink)) {
+                        if (Files.exists(symlink)) {
+                            oldTarget = symlink.toRealPath();
+                        }
+                        Files.delete(symlink);
                     }
-                    Files.delete(symlink);
-                }
 
-                Files.createSymbolicLink(symlink, target);
-                log.debug("Updated symlink: {}", cacheConfiguration.getActiveVersion().getAbsolutePath());
-
-                if (Objects.nonNull(oldTarget)) {
-                    FileUtils.deleteDirectory(oldTarget.toFile());
-                    log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
+                    Files.createSymbolicLink(symlink, target);
+                    log.debug("Updated symlink: {}", cacheConfiguration.getActiveVersion().getAbsolutePath());
+                    log.debug("Update symlink old {} new {}", oldTarget, target);
+                    if (Objects.nonNull(oldTarget)) {
+                        FileUtils.deleteDirectory(oldTarget.toFile());
+                        log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
+                    }
+                } catch (IOException exception) {
+                    log.debug("Failed to update symlink ", exception);
+                    throw new IllegalStateException("Failed to update symlink", exception);
                 }
-            } catch (IOException exception) {
-                throw new IllegalStateException("Failed to update symlink", exception);
-            } finally {
-                cacheSwitchLock.unlock();
-            }
-            return null;
-        });
+                return null;
+            });
+        } finally {
+            cacheSwitchLock.unlock();
+        }
     }
 
     public boolean dataExists() {
