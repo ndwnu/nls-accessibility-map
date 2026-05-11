@@ -87,11 +87,14 @@ public class NetworkDataService extends Cache<NetworkData> {
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
         try {
-            if (isDataStale()) {
-                log.warn("NetworkData is stale, not writing to disk waiting 5 seconds");
-                throw new DataStaleException("NetworkData is stale");
-            }
+
+//            if (isDataStale()) {
+//                log.info("Data is stale, reading from disk");
+//                read();
+//            }
+
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
+            read();
             NetworkData networkData = get();
             NwbDataUpdates previousChanges = networkData.getNwbDataUpdates();
             NwbDataUpdates newNwbDataUpdates = previousChanges.merge(nwbDataUpdates);
