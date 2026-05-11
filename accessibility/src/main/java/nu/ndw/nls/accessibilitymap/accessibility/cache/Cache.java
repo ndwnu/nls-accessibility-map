@@ -83,7 +83,7 @@ public abstract class Cache<TYPE> {
 
     protected synchronized void read(boolean triggeredOnStartup) {
         try {
-
+            distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
@@ -109,6 +109,7 @@ public abstract class Cache<TYPE> {
             }
         } finally {
             publishCacheLoadedEvent();
+            distributedLockService.unlock(cacheConfiguration.getName());
         }
     }
 
