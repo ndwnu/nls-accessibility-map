@@ -12,11 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.DataStaleException;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
-import nu.ndw.nls.accessibilitymap.accessibility.json.JsonNwbDataStreamReaderWriter;
+import nu.ndw.nls.accessibilitymap.accessibility.json.JsonNwbDataStreamReader;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -26,9 +25,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoa
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +50,7 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private final JsonWriter jsonWriter;
 
-    private final JsonNwbDataStreamReaderWriter jsonNwbDataStreamReaderWriter;
+    private final JsonNwbDataStreamReader jsonNwbDataStreamReader;
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -64,7 +60,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             DistributedLockService distributedLockService,
             GraphHopperService graphHopperService,
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
-            ObjectMapper objectMapper, JsonWriter jsonWriter, JsonNwbDataStreamReaderWriter jsonNwbDataStreamReaderWriter,
+            ObjectMapper objectMapper, JsonWriter jsonWriter, JsonNwbDataStreamReader jsonNwbDataStreamReader,
             ApplicationEventPublisher applicationEventPublisher
     ) {
 
@@ -74,24 +70,14 @@ public class NetworkDataService extends Cache<NetworkData> {
         this.graphHopperService = graphHopperService;
         this.accessibilityNwbRoadSectionService = accessibilityNwbRoadSectionService;
         this.jsonWriter = jsonWriter;
-        this.jsonNwbDataStreamReaderWriter = jsonNwbDataStreamReaderWriter;
+        this.jsonNwbDataStreamReader = jsonNwbDataStreamReader;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    @Retryable(
-            retryFor = DataStaleException.class,
-            maxAttempts = 15,
-            backoff = @Backoff(delay = 5000)
-    )
     @Transactional
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
         try {
-
-//            if (isDataStale()) {
-//                log.info("Data is stale, reading from disk");
-//                read();
-//            }
 
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
             read();
@@ -124,12 +110,6 @@ public class NetworkDataService extends Cache<NetworkData> {
         } finally {
             getDistributedLockService().unlock(getCacheConfiguration().getName());
         }
-    }
-
-    @Recover
-    public void recover(DataStaleException exception, NwbDataUpdates nwbDataUpdates) {
-        log.error("Retries exhausted while writing nwbDataUpdates {} to disk", nwbDataUpdates, exception);
-        throw exception;
     }
 
     @Transactional
@@ -171,7 +151,7 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private NwbData readNwbData() {
         final Path nwbDataFilePath = getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_ROAD_SECTIONS_JSON);
-        return jsonNwbDataStreamReaderWriter.readJsonData(nwbDataFilePath);
+        return jsonNwbDataStreamReader.readJsonData(nwbDataFilePath);
     }
 
     @Override
