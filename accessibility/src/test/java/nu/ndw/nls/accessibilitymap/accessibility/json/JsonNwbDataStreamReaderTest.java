@@ -8,13 +8,13 @@ import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import org.junit.jupiter.api.Test;
 
-class JsonNwbDataStreamReaderWriterTest {
+class JsonNwbDataStreamReaderTest {
 
     @SneakyThrows
     @Test
     void readJsonData() {
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNwbDataStreamReaderWriter reader = new JsonNwbDataStreamReaderWriter(objectMapper);
+        JsonNwbDataStreamReader reader = new JsonNwbDataStreamReader(objectMapper);
         Path path = Paths.get(
                 Objects.requireNonNull(
                         getClass().getClassLoader()
