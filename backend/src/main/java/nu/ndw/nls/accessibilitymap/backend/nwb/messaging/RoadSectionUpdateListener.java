@@ -16,6 +16,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectio
 import nu.ndw.nls.accessibilitymap.backend.nwb.messaging.mapper.NwbRoadSectionUpdateMapper;
 import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
@@ -93,9 +94,10 @@ public class RoadSectionUpdateListener {
     void startListener(CacheLoadedEvent cacheLoadedEvent) {
         if (cacheLoadedEvent.getType() == CacheLoadedEvent.Type.NETWORK_DATA) {
             log.info("network data loaded autoStartup is set to: {}", autoStartup);
-            if (!autoStartup) {
-                log.info("Starting listener, autoStartup is set to: {}", autoStartup);
-                rabbitListenerEndpointRegistry.getListenerContainer(LISTENER_ID).start();
+            MessageListenerContainer messageListenerContainer = rabbitListenerEndpointRegistry.getListenerContainer(LISTENER_ID);
+            if (!autoStartup && !messageListenerContainer.isRunning()) {
+                log.info("Initial network data loaded Starting listener");
+                messageListenerContainer.start();
             }
         }
     }

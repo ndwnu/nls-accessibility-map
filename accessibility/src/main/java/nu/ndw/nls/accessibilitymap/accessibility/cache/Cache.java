@@ -82,8 +82,9 @@ public abstract class Cache<TYPE> {
     }
 
     protected synchronized void read(boolean triggeredOnStartup) {
+        boolean success = false;
         try {
-            distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
+            //  distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
@@ -99,6 +100,7 @@ public abstract class Cache<TYPE> {
                             .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
                     Duration.between(start, clockService.now()).toMillis());
             consecutiveReadFailures = 0;
+            success = true;
         } catch (Exception exception) {
             consecutiveReadFailures += 1;
             if (consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures()) {
@@ -108,8 +110,11 @@ public abstract class Cache<TYPE> {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
         } finally {
-            publishCacheLoadedEvent();
-            distributedLockService.unlock(cacheConfiguration.getName());
+            if (success) {
+                publishCacheLoadedEvent();
+            }
+
+            //distributedLockService.unlock(cacheConfiguration.getName());
         }
     }
 
