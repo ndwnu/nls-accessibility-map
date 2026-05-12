@@ -69,7 +69,7 @@ class AccessibilityNwbRoadSectionToLinkMapperTest {
                 2,
                 3,
                 4,
-                lineString,
+                //  lineString,
                 forwardAccessible,
                 backwardAccessible,
                 CarriagewayTypeCode.RB,
