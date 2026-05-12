@@ -49,7 +49,8 @@ class AccessibilityNwbRoadSectionMapperTest {
         when(nwbRoadSectionDto.getFunctionalRoadClass()).thenReturn("1");
         when(nwbRoadSectionDto.getCarriagewayTypeCode()).thenReturn("RB");
         AccessibilityNwbRoadSection accessibilityNwbRoadSection = accessibleRoadSectionMapper.map(nwbRoadSectionDto);
+        // geometry
         assertThat(accessibilityNwbRoadSection)
-                .isEqualTo(new AccessibilityNwbRoadSection(1, 2, 3, 4, geometry, true, false, CarriagewayTypeCode.RB, "1"));
+                .isEqualTo(new AccessibilityNwbRoadSection(1, 2, 3, 4, true, false, CarriagewayTypeCode.RB, "1"));
     }
 }

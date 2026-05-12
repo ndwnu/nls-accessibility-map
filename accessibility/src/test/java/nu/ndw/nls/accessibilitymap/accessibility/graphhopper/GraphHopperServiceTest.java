@@ -195,7 +195,7 @@ class GraphHopperServiceTest {
 
         when(nwbData.getNwbVersionId()).thenReturn(1);
         when(nwbData.findAllAccessibilityNwbRoadSections()).thenReturn(List.of(accessibilityNwbRoadSection));
-        when(accessibilityNwbRoadSectionToLinkMapper.map(accessibilityNwbRoadSection)).thenReturn(accessibilityLink);
+        when(accessibilityNwbRoadSectionToLinkMapper.map(1, accessibilityNwbRoadSection)).thenReturn(accessibilityLink);
 
         graphHopperService.save(testDir, nwbData);
 
@@ -232,7 +232,7 @@ class GraphHopperServiceTest {
 
         when(nwbData.getNwbVersionId()).thenReturn(1);
         when(nwbData.findAllAccessibilityNwbRoadSections()).thenReturn(List.of(accessibilityNwbRoadSection));
-        when(accessibilityNwbRoadSectionToLinkMapper.map(accessibilityNwbRoadSection)).thenReturn(accessibilityLink);
+        when(accessibilityNwbRoadSectionToLinkMapper.map(1, accessibilityNwbRoadSection)).thenReturn(accessibilityLink);
 
         doThrow(ioException).when(objectMapper).writeValue(metaDataFile.toFile(), new GraphhopperMetaData(1));
 
