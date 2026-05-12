@@ -11,6 +11,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsectio
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.repository.NwbRoadSectionGeometryRepository;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRoadSectionRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
@@ -59,6 +60,9 @@ class AccessibilityRequestRestrictionMapperTest {
     private CoordinateAndBearing coordinateAndBearing;
 
     @Mock
+    private NwbRoadSectionGeometryRepository nwbRoadSectionGeometryRepository;
+
+    @Mock
     private Coordinate coordinate;
 
     @BeforeEach
@@ -66,7 +70,7 @@ class AccessibilityRequestRestrictionMapperTest {
 
         accessibilityRequestRestrictionMapper = new AccessibilityRequestRestrictionMapper(
                 accessibilityRequestDirectionMapper,
-                fractionAndDistanceCalculator);
+                fractionAndDistanceCalculator, nwbRoadSectionGeometryRepository);
     }
 
     @ParameterizedTest
@@ -75,13 +79,14 @@ class AccessibilityRequestRestrictionMapperTest {
 
         when(networkData.getNwbData()).thenReturn(nwbData);
         when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
-        when(accessibilityNwbRoadSection.geometry()).thenReturn(roadSectionLineString);
+        //when(accessibilityNwbRoadSection.geometry()).thenReturn(roadSectionLineString);
 
         if (directionJson == DirectionJson.FORWARD) {
             when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineString, 2.0f)).thenReturn(coordinateAndBearing);
         } else {
             when(roadSectionLineString.reverse()).thenReturn(roadSectionLineStringReversed);
-            when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineStringReversed, 2.0f)).thenReturn(coordinateAndBearing);
+            when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineStringReversed,
+                    2.0f)).thenReturn(coordinateAndBearing);
             when(accessibilityRequestDirectionMapper.map(DirectionJson.BACKWARD)).thenReturn(Direction.BACKWARD);
         }
 
@@ -130,7 +135,7 @@ class AccessibilityRequestRestrictionMapperTest {
             assertThat(exception.getTitle()).isEqualTo("Invalid restriction type");
             assertThat(exception.getDescription())
                     .isEqualTo("Restriction type 'AccessibilityRequestRestrictionJson' is not a valid restriction type."
-                               + " Please check the api specification for valid options.");
+                            + " Please check the api specification for valid options.");
         }
     }
 

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.repository.NwbRoadSectionGeometryRepository;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,12 +25,16 @@ class AccessibilityNwbRoadSectionToLinkMapperTest {
     private FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Mock
+    private NwbRoadSectionGeometryRepository nwbRoadSectionGeometryRepository;
+
+    @Mock
     private LineString lineString;
 
     @BeforeEach
     void setUp() {
 
-        accessibilityNwbRoadSectionToLinkMapper = new AccessibilityNwbRoadSectionToLinkMapper(fractionAndDistanceCalculator);
+        accessibilityNwbRoadSectionToLinkMapper = new AccessibilityNwbRoadSectionToLinkMapper(fractionAndDistanceCalculator,
+                nwbRoadSectionGeometryRepository);
     }
 
     @ParameterizedTest
@@ -45,7 +50,7 @@ class AccessibilityNwbRoadSectionToLinkMapperTest {
         when(fractionAndDistanceCalculator.calculateLengthInMeters(lineString)).thenReturn(123.12);
 
         AccessibilityNwbRoadSection roadSection = createRoadSection(forwardAccessible, backwardAccessible);
-        AccessibilityLink link = accessibilityNwbRoadSectionToLinkMapper.map(roadSection);
+        AccessibilityLink link = accessibilityNwbRoadSectionToLinkMapper.map(1, roadSection);
 
         assertThat(link.getId()).isEqualTo(roadSection.roadSectionId());
         assertThat(link.getFromNodeId()).isEqualTo(roadSection.fromNode());

@@ -72,7 +72,8 @@ public class GraphHopperService {
         Files.createDirectories(graphHopperLocation);
 
         List<AccessibilityLink> accessibilityLinks = nwbData.findAllAccessibilityNwbRoadSections().stream()
-                .map(accessibilityNwbRoadSectionToLinkMapper::map)
+                .map(accessibilityNwbRoadSection -> accessibilityNwbRoadSectionToLinkMapper
+                        .map(nwbData.getNwbVersionId(), accessibilityNwbRoadSection))
                 .toList();
 
         var accessibilityLinkRoutingNetworkSettings = networkSettingsWithData(location, accessibilityLinks, start);
