@@ -21,6 +21,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.repository.NwbRoadSectionGeometryRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.TrafficSignBuilder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
@@ -95,6 +96,9 @@ class RebuildTrafficSignCacheCommandTest {
     @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
 
+    @Mock
+    private NwbRoadSectionGeometryRepository nwbRoadSectionGeometryRepository;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -105,7 +109,7 @@ class RebuildTrafficSignCacheCommandTest {
                 trafficSignDataService,
                 trafficSignService,
                 trafficSignBuilder,
-                networkDataService);
+                networkDataService, nwbRoadSectionGeometryRepository);
     }
 
     @Test
@@ -127,7 +131,7 @@ class RebuildTrafficSignCacheCommandTest {
         when(networkDataService.get()).thenReturn(networkData);
         when(networkData.getNwbData()).thenReturn(nwbData);
         when(nwbData.findAccessibilityNwbRoadSectionById(123L)).thenReturn(Optional.of(accessibilityNwbRoadSection));
-        when(accessibilityNwbRoadSection.geometry()).thenReturn(lineString);
+        // when(accessibilityNwbRoadSection.geometry()).thenReturn(lineString);
 
         mockMapperCalls(trafficSignGeoJsonDto1, trafficSign1);
         mockMapperCalls(trafficSignGeoJsonDto2, trafficSign2);

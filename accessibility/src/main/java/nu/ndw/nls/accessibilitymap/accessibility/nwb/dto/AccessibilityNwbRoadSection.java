@@ -1,13 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.nwb.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.converter.LineStringDeserializer;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.converter.LineStringSerializer;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import org.hibernate.validator.constraints.Length;
-import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
@@ -20,10 +15,10 @@ public record AccessibilityNwbRoadSection(
 
         Integer municipalityId,
 
-        @NotNull
-        @JsonDeserialize(using = LineStringDeserializer.class)
-        @JsonSerialize(using = LineStringSerializer.class)
-        LineString geometry,
+//        @NotNull
+//        @JsonDeserialize(using = LineStringDeserializer.class)
+//        @JsonSerialize(using = LineStringSerializer.class)
+//        LineString geometry,
 
         boolean forwardAccessible,
 
