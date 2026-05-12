@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.stereotype.Service;
 
 @ExtendWith(MockitoExtension.class)
-class RoadOperatorServiceTest {
+class RoadOperatorMapperRoadOperatorServiceTest {
 
     private RoadOperatorService roadOperatorService;
 
