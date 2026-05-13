@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.json;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,9 +21,7 @@ public class JsonWriter {
             Files.createDirectories(target);
             Files.createFile(jsonFilePath);
         }
-        try (JsonGenerator jsonGenerator = objectMapper
-                .getFactory()
-                .createGenerator(Files.newOutputStream(jsonFilePath))) {
+        try (JsonGenerator jsonGenerator = objectMapper.createGenerator(Files.newOutputStream(jsonFilePath))) {
 
             objectMapper.writeValue(jsonGenerator, data);
         }

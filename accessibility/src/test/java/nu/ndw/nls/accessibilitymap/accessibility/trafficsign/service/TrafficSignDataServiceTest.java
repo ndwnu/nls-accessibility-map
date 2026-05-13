@@ -3,7 +3,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,7 +63,7 @@ class TrafficSignDataServiceTest {
         trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration,
                 clockService,
                 distributedLockService,
-                new ObjectMapper(), jsonWriter);
+                new JsonMapper(), jsonWriter);
     }
 
     @AfterEach

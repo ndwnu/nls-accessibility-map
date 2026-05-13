@@ -1,9 +1,8 @@
 package nu.ndw.nls.accessibilitymap.backend.nwb.messaging;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.rabbitmq.stream.Message;
 import io.micrometer.core.annotation.Timed;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +16,7 @@ import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
 
 @Service
 @Slf4j
@@ -73,7 +73,7 @@ public class RoadSectionUpdateListener {
     private NwbRoadSectionUpdate toRoadSectionUpdate(Message message) {
         try {
             return objectMapper.readValue(message.getBodyAsBinary(), NwbRoadSectionUpdate.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new IllegalArgumentException(e);
         }
     }

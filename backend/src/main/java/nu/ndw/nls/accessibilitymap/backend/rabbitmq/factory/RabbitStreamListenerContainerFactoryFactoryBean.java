@@ -2,9 +2,9 @@ package nu.ndw.nls.accessibilitymap.backend.rabbitmq.factory;
 
 import com.rabbitmq.stream.Environment;
 import com.rabbitmq.stream.Message;
+import com.rabbitmq.stream.OffsetSpecification;
 import com.rabbitmq.stream.codec.QpidProtonCodec;
 import java.time.Duration;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.StreamConsumerExponentialBackoffProperties;
@@ -13,21 +13,20 @@ import nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.StreamQueueProper
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.core.retry.RetryListener;
+import org.springframework.core.retry.RetryPolicy;
+import org.springframework.core.retry.RetryState;
+import org.springframework.core.retry.RetryTemplate;
+import org.springframework.core.retry.Retryable;
 import org.springframework.rabbit.stream.config.StreamRabbitListenerContainerFactory;
 import org.springframework.rabbit.stream.listener.ConsumerCustomizer;
 import org.springframework.rabbit.stream.listener.StreamListenerContainer;
-import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.listener.MethodInvocationRetryListenerSupport;
-import org.springframework.retry.support.Args;
-import org.springframework.retry.support.RetryTemplate;
+import org.springframework.util.backoff.ExponentialBackOff;
 
 @RequiredArgsConstructor
 @Slf4j
 public class RabbitStreamListenerContainerFactoryFactoryBean
         implements FactoryBean<RabbitListenerContainerFactory<StreamListenerContainer>> {
-
-    private static final String METHOD_ARGS_ATTRIBUTE = "methodArgs";
 
     private final StreamQueueProperties queueConfig;
 
@@ -37,22 +36,29 @@ public class RabbitStreamListenerContainerFactoryFactoryBean
     public RabbitListenerContainerFactory<StreamListenerContainer> getObject() {
         StreamConsumerExponentialBackoffProperties exponentialBackoffConfig = queueConfig.getConsumer().getExponentialBackoff();
 
+        ExponentialBackOff exponentialBackOff = new ExponentialBackOff(
+                exponentialBackoffConfig.getInitialIntervalInSeconds(),
+                exponentialBackoffConfig.getMultiplier());
+        exponentialBackOff.setMaxInterval(exponentialBackoffConfig.getMaxIntervalInSeconds());
+
+        RetryPolicy retryPolicy = RetryPolicy.builder()
+                .maxRetries(Integer.MAX_VALUE)
+                .backOff(exponentialBackOff)
+                .build();
+
+//        RetryTemplate retryTemplate = new RetryTemplate();
+//        retryTemplate.setRetryPolicy(retryPolicy);
+//        retryTemplate.setRetryListener(skippableMessageRetryListener(queueConfig));
+
         StreamRabbitListenerContainerFactory factory = new StreamRabbitListenerContainerFactory(environment);
         factory.setNativeListener(true);
         factory.setAdviceChain(
                 RetryInterceptorBuilder
                         .stateless()
-                        .retryOperations(
-                                RetryTemplate.builder()
-                                        .infiniteRetry()
-                                        .exponentialBackoff(
-                                                Duration.ofSeconds(exponentialBackoffConfig.getInitialIntervalInSeconds()),
-                                                exponentialBackoffConfig.getMultiplier(),
-                                                Duration.ofSeconds(exponentialBackoffConfig.getMaxIntervalInSeconds()))
-                                        .withListener(skippableMessageRetryListener(queueConfig))
-                                        .build())
+                        .retryPolicy(retryPolicy)
                         .build());
         factory.setConsumerCustomizer(createConsumerCustomizer());
+
         return factory;
     }
 
@@ -61,34 +67,50 @@ public class RabbitStreamListenerContainerFactoryFactoryBean
         return RabbitListenerContainerFactory.class;
     }
 
-    MethodInvocationRetryListenerSupport skippableMessageRetryListener(
-            StreamQueueProperties streamQueueConfig) {
-        return new MethodInvocationRetryListenerSupport() {
+    RetryListener skippableMessageRetryListener(StreamQueueProperties streamQueueConfig) {
+        return new RetryListener() {
             @Override
-            public <T, E extends Throwable> void onError(
-                    RetryContext context, RetryCallback<T, E> callback,
-                    Throwable throwable) {
-                Message message = getMessage(context);
+            public void onRetryableExecution(
+                    RetryPolicy retryPolicy,
+                    Retryable retryable,
+                    RetryState retryState) {
+
+                if (retryState.isSuccessful()) {
+                    return;
+                }
+
+                Message message = getMessage(retryable);
+                Object messageId = message.getProperties().getMessageId();
+
                 log.warn(
                         "Failed to process stream message: '{}' for the {} time",
-                        message.getProperties().getMessageId(),
-                        context.getRetryCount(),
-                        context.getLastThrowable());
-                if (streamQueueConfig.isMessageToSkip(message.getProperties().getMessageId())) {
-                    log.info("Skip stream message with messageId: '{}'", message.getProperties().getMessageId());
-                    context.setExhaustedOnly();
+                        messageId,
+                        retryState.getRetryCount(),
+                        retryState.getLastException());
+
+                if (streamQueueConfig.isMessageToSkip(messageId)) {
+                    log.info("Skip stream message with messageId: '{}'", messageId);
+//                    retryState.r();
                 }
             }
         };
     }
 
-    private Message getMessage(RetryContext context) {
-        Object methodArgs = context.getAttribute(METHOD_ARGS_ATTRIBUTE);
-        if (Objects.isNull(methodArgs) || !(methodArgs instanceof Args args)) {
-            log.warn("No message provided in message listener retry handler with context: {}", context);
-            return new QpidProtonCodec().messageBuilder().properties().messageBuilder().build();
-        }
-        return (Message) args.getArgs()[0];
+    private Message getMessage(Retryable retryable) {
+//
+//        Object[] arguments = retryable.getArguments();
+//
+//        if (arguments == null || arguments.length == 0 || !(arguments[0] instanceof Message message)) {
+//            log.warn("No message provided in message listener retry handler for retryable: {}", retryable);
+//            return new QpidProtonCodec()
+//                    .messageBuilder()
+//                    .properties()
+//                    .messageBuilder()
+//                    .build();
+//        }
+//
+//        return message;
+        return null;
     }
 
     private ConsumerCustomizer createConsumerCustomizer() {
@@ -98,7 +120,7 @@ public class RabbitStreamListenerContainerFactoryFactoryBean
                 .name(queueConfig.getStreamTrackingName())
                 .stream(queueConfig.getStreamQueueName())
                 .singleActiveConsumer()
-                .offset(com.rabbitmq.stream.OffsetSpecification.first())
+                .offset(OffsetSpecification.first())
                 .autoTrackingStrategy()
                 .flushInterval(Duration.ofSeconds(consumerConfig.getFlushIntervalInSeconds()))
                 .messageCountBeforeStorage(consumerConfig.getMessageCountBeforeStorage())

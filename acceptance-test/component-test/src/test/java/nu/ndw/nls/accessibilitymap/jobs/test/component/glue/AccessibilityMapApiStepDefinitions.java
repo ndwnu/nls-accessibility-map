@@ -4,8 +4,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.time.Duration;
@@ -23,6 +22,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.A
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 import org.springframework.http.HttpHeaders;
+import tools.jackson.core.JacksonException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -62,7 +62,7 @@ public class AccessibilityMapApiStepDefinitions {
             String forwardAccessible,
             String backwardAccessible,
             List<BlockedRoadSection> blockedRoadSections
-    ) throws JsonProcessingException {
+    ) throws JacksonException {
 
         weExpectTheFollowingBlockedRoadSectionsWithReasons(
                 matchedRoadSectionId,
@@ -79,7 +79,7 @@ public class AccessibilityMapApiStepDefinitions {
             String backwardAccessible,
             String reasonsFile,
             List<BlockedRoadSection> blockedRoadSections
-    ) throws JsonProcessingException {
+    ) throws JacksonException {
         Response<Void, AccessibilityMapResponseJson> response = accessibilityMapApiClient.getLastResponseForGetAccessibilityForMunicipality();
 
         String reasons = Objects.isNull(reasonsFile)

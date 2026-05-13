@@ -8,9 +8,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import java.util.Arrays;
@@ -36,6 +35,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JacksonException;
 
 @RequiredArgsConstructor
 @Component
@@ -45,7 +45,7 @@ public class TrafficSignDriver implements StateManagement {
 
     private final FileService fileService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new tools.jackson.databind.json.JsonMapper();
 
     private final JtsPointJsonMapper jtsPointJsonMapper;
 
@@ -78,7 +78,7 @@ public class TrafficSignDriver implements StateManagement {
                                             TrafficSignGeoJsonFeatureCollectionDto.builder()
                                                     .features(trafficSigns)
                                                     .build()))));
-        } catch (JsonProcessingException exception) {
+        } catch (JacksonException exception) {
             fail(exception);
         }
     }
@@ -114,7 +114,7 @@ public class TrafficSignDriver implements StateManagement {
             fileService.writeDataToFile(
                     driverGeneralConfiguration.getDebugFolder().resolve("trafficSigns.geojson").toFile(),
                     mapper.writeValueAsString(featureCollection));
-        } catch (JsonProcessingException exception) {
+        } catch (JacksonException exception) {
             fail(exception);
         }
     }

@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.job.mapgenerator.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
@@ -17,12 +16,13 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers.Featu
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers.GeoJsonObjectMapperFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
+import tools.jackson.core.JacksonException;
 
 public class GeoJsonConverter {
 
     public static String createPolygon(
             MultiPolygon multiPolygon,
-            List<RoadSectionFragment> roadSectionFragments) throws JsonProcessingException {
+            List<RoadSectionFragment> roadSectionFragments) throws JacksonException {
 
         ObjectMapper geoJsonObjectMapper = new GeoJsonObjectMapperFactory().create(
                 GenerateConfiguration.builder()

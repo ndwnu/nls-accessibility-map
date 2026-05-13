@@ -1,8 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.shapes.BBox;
 import java.io.IOException;
@@ -33,6 +32,7 @@ import org.apache.commons.io.FileUtils;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
 
 @Service
 @Slf4j
@@ -162,8 +162,7 @@ public class AccessibilityDebugger {
                                         accessibilityRequest.startLocationLongitude(),
                                         accessibilityRequest.maxSearchDistanceInMeters())
                         )
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
+                        .flatMap(Optional::stream)
                         .toList())
                 .build();
 
@@ -190,8 +189,7 @@ public class AccessibilityDebugger {
                                         Objects.nonNull(destination) ? destination.getSnappedPoint().getLat() : null,
                                         Objects.nonNull(destination) ? destination.getSnappedPoint().getLon() : null)
                         )
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
+                        .flatMap(Optional::stream)
                         .toList())
                 .build();
 
@@ -304,7 +302,7 @@ public class AccessibilityDebugger {
                     debugConfiguration.getDebugFolder().resolve(name + ".geojson").toFile(),
                     mapper.writeValueAsString(featureCollection),
                     StandardCharsets.UTF_8.toString());
-        } catch (JsonProcessingException exception) {
+        } catch (JacksonException exception) {
             log.error("Failed to write accessibility request data to file.", exception);
         } catch (IOException exception) {
             log.error("Failed to write file.", exception);
