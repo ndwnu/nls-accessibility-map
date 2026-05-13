@@ -21,7 +21,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.repository.NwbRoadSectionGeometryRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.TrafficSignBuilder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
@@ -96,8 +95,6 @@ class RebuildTrafficSignCacheCommandTest {
     @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
 
-    @Mock
-    private NwbRoadSectionGeometryRepository nwbRoadSectionGeometryRepository;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -109,7 +106,7 @@ class RebuildTrafficSignCacheCommandTest {
                 trafficSignDataService,
                 trafficSignService,
                 trafficSignBuilder,
-                networkDataService, nwbRoadSectionGeometryRepository);
+                networkDataService);
     }
 
     @Test
