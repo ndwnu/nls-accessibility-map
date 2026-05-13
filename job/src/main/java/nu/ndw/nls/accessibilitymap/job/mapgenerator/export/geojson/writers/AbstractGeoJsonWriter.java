@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import tools.jackson.databind.ObjectMapper;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
@@ -15,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfig
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.Exporter;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
+import tools.jackson.core.JacksonException;
 
 @Slf4j
 @Getter(AccessLevel.PROTECTED)
@@ -56,7 +56,7 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
 
             log.debug("Started writing geojson to temp file: %s".formatted(tempFile.toAbsolutePath()));
             getGeoJsonObjectMapper().writeValue(tempFile.toFile(), geoJson);
-        } catch (IOException exception) {
+        } catch (JacksonException exception) {
             throw new IllegalStateException("Failed to serialize geojson to file: %s"
                     .formatted(tempFile.toAbsolutePath()), exception);
         }

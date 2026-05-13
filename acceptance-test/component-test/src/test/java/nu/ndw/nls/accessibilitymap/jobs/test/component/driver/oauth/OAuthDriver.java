@@ -27,15 +27,15 @@ public class OAuthDriver implements StateManagement {
                         .withStatus(HttpStatus.OK.value())
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withHeader(HttpHeaders.AUTHORIZATION, "Bearer xyz123")
-                        .withBody(String.format("""
-                                {
-                                  "access_token":"%s",
-                                  "token_type":"Bearer",
-                                  "expires_in":3600,
-                                  "refresh_token":"IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
-                                  "scope":"create"
-                                }
-                                """, SIMULATED_BEARER_TOKEN))));
+                        .withBody("""
+                {
+                  "access_token":"%s",
+                  "token_type":"Bearer",
+                  "expires_in":3600,
+                  "refresh_token":"IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
+                  "scope":"create"
+                }
+                """.formatted(SIMULATED_BEARER_TOKEN))));
     }
 
     @Override

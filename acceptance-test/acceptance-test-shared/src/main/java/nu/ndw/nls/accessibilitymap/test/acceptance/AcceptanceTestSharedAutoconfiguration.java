@@ -6,7 +6,7 @@ import nu.ndw.nls.springboot.test.component.driver.keycloak.EnableKeycloakDriver
 import nu.ndw.nls.springboot.test.component.driver.maven.EnableMavenDriver;
 import nu.ndw.nls.springboot.test.component.driver.wiremock.EnableWireMockDriver;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

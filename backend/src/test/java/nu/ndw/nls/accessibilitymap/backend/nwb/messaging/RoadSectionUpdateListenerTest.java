@@ -6,7 +6,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.rabbitmq.stream.Message;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -142,7 +143,7 @@ class RoadSectionUpdateListenerTest {
     @SneakyThrows
     void handleMessage_invalid_message_content_throws_exception() {
         when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenThrow(IOException.class);
+        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenThrow(JacksonException.class);
 
         assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class);
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());

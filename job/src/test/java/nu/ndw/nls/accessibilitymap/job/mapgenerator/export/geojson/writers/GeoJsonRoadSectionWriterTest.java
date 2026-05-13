@@ -11,7 +11,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -231,8 +232,7 @@ class GeoJsonRoadSectionWriterTest {
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
 
-            doThrow(new IOException("some exception")).when(goeJsonObjectMapper)
-                    .writeValue(any(File.class), any(Object.class));
+            doThrow(JacksonException.class).when(goeJsonObjectMapper).writeValue(any(File.class), any(Object.class));
             prepareCreateFeaturesForDirectionalSegment(directionalSegmentForward1, 11, false);
 
             assertThat(

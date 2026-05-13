@@ -55,8 +55,7 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
                                             getNwbRoadSectionGeometry(trafficSignGeoJsonDto),
                                             trafficSignGeoJsonDto,
                                             idSupplier))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
+                            .flatMap(Optional::stream)
                             .toList());
 
             log.info("Downloaded {} traffic signs", trafficSigns.size());

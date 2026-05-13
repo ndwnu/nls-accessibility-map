@@ -2,7 +2,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -21,8 +22,9 @@ class NwbRoadSectionUpdateTest extends ValidationTest {
 
     @BeforeEach
     void setUp() {
-        objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
+        objectMapper = JsonMapper.builder()
+                .findAndAddModules()
+                .build();
     }
 
     @SneakyThrows

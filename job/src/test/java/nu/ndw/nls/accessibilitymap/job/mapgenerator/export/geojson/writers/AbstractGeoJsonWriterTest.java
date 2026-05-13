@@ -11,7 +11,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -79,7 +81,7 @@ class AbstractGeoJsonWriterTest {
             """)
     void export(boolean includeOnlyTimeWindowedSigns) throws IOException {
 
-        when(geoJsonObjectMapperFactory.create(generateConfiguration)).thenReturn(new ObjectMapper());
+        when(geoJsonObjectMapperFactory.create(generateConfiguration)).thenReturn(new JsonMapper());
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
         ExportProperties exportProperties = buildExportProperties(includeOnlyTimeWindowedSigns);
@@ -133,7 +135,7 @@ class AbstractGeoJsonWriterTest {
     void export_ioException() throws IOException {
 
         ObjectMapper objectMapper = mock(ObjectMapper.class);
-        doThrow(new IOException("some exception")).when(objectMapper).writeValue(any(File.class), any(Object.class));
+        doThrow(JacksonException.class).when(objectMapper).writeValue(any(File.class), any(Object.class));
         when(geoJsonObjectMapperFactory.create(generateConfiguration)).thenReturn(objectMapper);
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);

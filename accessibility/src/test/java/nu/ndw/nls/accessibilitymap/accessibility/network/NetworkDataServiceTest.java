@@ -3,7 +3,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.network;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,7 +73,7 @@ class NetworkDataServiceTest {
     @BeforeEach
     void setUp() throws IOException {
 
-        objectMapper = new ObjectMapper();
+        objectMapper = new JsonMapper();
         JsonWriter jsonWriter = new JsonWriter(objectMapper);
         nwbData = new NwbData(1, buildAccessibilityRoadSections());
         nwbDataUpdates = new NwbDataUpdates(1, buildAccessibilityRoadSectionUpdates());

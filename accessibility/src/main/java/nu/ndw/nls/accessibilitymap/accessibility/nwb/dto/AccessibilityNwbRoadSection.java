@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.nwb.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 import jakarta.validation.constraints.NotNull;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.converter.LineStringDeserializer;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.converter.LineStringSerializer;

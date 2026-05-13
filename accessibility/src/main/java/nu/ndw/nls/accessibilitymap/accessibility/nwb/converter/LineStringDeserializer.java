@@ -1,10 +1,9 @@
 package nu.ndw.nls.accessibilitymap.accessibility.nwb.converter;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import java.io.IOException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.deser.std.StdDeserializer;
 import java.io.Serial;
 import java.util.List;
 import org.locationtech.jts.geom.Coordinate;
@@ -21,11 +20,11 @@ public class LineStringDeserializer extends StdDeserializer<LineString> {
     }
 
     @Override
-    public LineString deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public LineString deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) {
         TypeReference<List<double[]>> typeRef = new TypeReference<>() {
         };
 
-        List<double[]> coordinates = jsonParser.getCodec().readValue(jsonParser, typeRef);
+        List<double[]> coordinates = jsonParser.objectReadContext().readValue(jsonParser, typeRef);
 
         GeometryFactory geometryFactory = new GeometryFactory();
 

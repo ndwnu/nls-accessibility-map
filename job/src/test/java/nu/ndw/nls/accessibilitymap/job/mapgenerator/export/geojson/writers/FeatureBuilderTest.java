@@ -5,8 +5,8 @@ import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.LINE_STRIN
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.core.JacksonException;
 
 @ExtendWith(MockitoExtension.class)
 class FeatureBuilderTest {
@@ -69,7 +70,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSigns() throws JsonProcessingException {
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSigns() throws JacksonException {
 
         prepareDirectionsSegments(true, true, true);
 
@@ -95,7 +96,7 @@ class FeatureBuilderTest {
 
     @Test
     void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsNoTrafficSigns()
-            throws JsonProcessingException {
+            throws JacksonException {
 
         prepareDirectionsSegments(true, true, false);
 
@@ -121,7 +122,7 @@ class FeatureBuilderTest {
 
     @Test
     void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignLineString()
-            throws JsonProcessingException {
+            throws JacksonException {
 
         prepareDirectionsSegments(true, true, true);
 
@@ -147,7 +148,7 @@ class FeatureBuilderTest {
 
     @Test
     void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignPoint()
-            throws JsonProcessingException {
+            throws JacksonException {
 
         prepareDirectionsSegments(true, true, true);
 
@@ -180,7 +181,7 @@ class FeatureBuilderTest {
     void createLineStringsAndTrafficSigns_accessibleInAllAvailableDirections(
             boolean addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections,
             boolean accessible,
-            boolean expectRoadSection) throws JsonProcessingException {
+            boolean expectRoadSection) throws JacksonException {
 
         prepareDirectionsSegments(accessible, accessible, true);
 
@@ -214,7 +215,7 @@ class FeatureBuilderTest {
     void createLineStringsAndTrafficSigns_notAccessibleInAllAvailableDirections_blockedInAllDirections(
             boolean addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections,
             boolean accessible,
-            boolean expectRoadSection) throws JsonProcessingException {
+            boolean expectRoadSection) throws JacksonException {
 
         prepareDirectionsSegments(accessible, accessible, true);
 
@@ -251,7 +252,7 @@ class FeatureBuilderTest {
             boolean forwardAccessible,
             boolean backwardAccessible,
             boolean roadSectionAccessible,
-            boolean trafficSignAccessible) throws JsonProcessingException {
+            boolean trafficSignAccessible) throws JacksonException {
 
         prepareDirectionsSegments(forwardAccessible, backwardAccessible, true);
 
@@ -278,7 +279,7 @@ class FeatureBuilderTest {
 
     @Test
     void createPolygon()
-            throws JsonProcessingException {
+            throws JacksonException {
 
         Geometry polygonGeometry = mock(Geometry.class);
         when(polygonGeometry.getCoordinates()).thenReturn(new Coordinate[]{
@@ -304,7 +305,7 @@ class FeatureBuilderTest {
                 restrictions,
                 relevantRoadSectionIds);
 
-        assertThatJson(new ObjectMapper().writeValueAsString(polygonFeature))
+        assertThatJson(new JsonMapper().writeValueAsString(polygonFeature))
                 .isEqualTo("""
                         {
                            "id":1,
@@ -332,7 +333,7 @@ class FeatureBuilderTest {
             boolean expectedRoadSection,
             boolean expectedTrafficSignLineString,
             boolean expectedTrafficSignPoint)
-            throws JsonProcessingException {
+            throws JacksonException {
 
         AtomicLong featureIdSupplier = new AtomicLong(1);
         String roadSegmentFeature = """
@@ -413,7 +414,7 @@ class FeatureBuilderTest {
         if (expectedTrafficSignPoint) {
             expectedFeatures.add(trafficSignPointFeature);
         }
-        assertThatJson(new ObjectMapper().writeValueAsString(features))
+        assertThatJson(new JsonMapper().writeValueAsString(features))
                 .isEqualTo("[%s]".formatted(String.join(",", expectedFeatures)));
     }
 

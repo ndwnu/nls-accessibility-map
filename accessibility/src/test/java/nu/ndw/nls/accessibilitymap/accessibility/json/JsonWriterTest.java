@@ -2,7 +2,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.json;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -24,7 +25,7 @@ class JsonWriterTest {
     @BeforeEach
     void setUp() {
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
-        jsonWriter = new JsonWriter(new ObjectMapper());
+        jsonWriter = new JsonWriter(new JsonMapper());
     }
 
     @SneakyThrows
