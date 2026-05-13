@@ -236,7 +236,7 @@
         "coordinates": [
           [
             5.0000007,
-            1.5000023
+            1.5000021
           ],
           [
             5.0000008,
@@ -263,7 +263,7 @@
           ],
           [
             5.0000007,
-            1.5000023
+            1.5000021
           ]
         ],
         "type": "LineString"
@@ -286,7 +286,7 @@
           ],
           [
             5.0000007,
-            1.5000023
+            1.5000021
           ]
         ],
         "type": "LineString"
@@ -305,7 +305,7 @@
         "coordinates": [
           [
             5.0000007,
-            1.5000023
+            1.5000021
           ],
           [
             5.0000007,
@@ -328,22 +328,22 @@
         "coordinates": [
           [
             5.0000007,
-            1.5000023
+            1.5000021
           ],
           [
             5.0000007,
-            1.5000113
+            1.5000112
           ]
         ],
         "type": "LineString"
       },
       "properties": {
         "nwbRoadSectionId": 12,
-        "trafficSignId": "00000000-0000-4000-0000-000000000002",
+        "trafficSignId": "00000000-0000-4000-0000-000000000004",
         "accessible": false,
         "direction": "BACKWARD",
-        "trafficSignType": "C12",
-        "windowTimes": "window 2",
+        "trafficSignType": "C7",
+        "windowTimes": "window 4",
         "trafficSign": true
       },
       "type": "Feature"
@@ -354,14 +354,34 @@
         "coordinates": [
           [
             5.0000007,
-            1.5000023
+            1.5000021
           ],
           [
             5.0000007,
-            1.5000113
+            1.5000112
           ]
         ],
         "type": "LineString"
+      },
+      "properties": {
+        "nwbRoadSectionId": 12,
+        "trafficSignId": "00000000-0000-4000-0000-000000000002",
+        "accessible": false,
+        "direction": "BACKWARD",
+        "trafficSignType": "C12",
+        "windowTimes": "window 2",
+        "trafficSign": true
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 17,
+      "geometry": {
+        "coordinates": [
+          5.0000007,
+          1.5000021
+        ],
+        "type": "Point"
       },
       "properties": {
         "nwbRoadSectionId": 12,
@@ -375,11 +395,11 @@
       "type": "Feature"
     },
     {
-      "id": 17,
+      "id": 18,
       "geometry": {
         "coordinates": [
           5.0000007,
-          1.5000023
+          1.5000021
         ],
         "type": "Point"
       },
@@ -395,32 +415,12 @@
       "type": "Feature"
     },
     {
-      "id": 18,
-      "geometry": {
-        "coordinates": [
-          5.0000007,
-          1.5000023
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "nwbRoadSectionId": 12,
-        "trafficSignId": "00000000-0000-4000-0000-000000000004",
-        "accessible": false,
-        "direction": "BACKWARD",
-        "trafficSignType": "C7",
-        "windowTimes": "window 4",
-        "trafficSign": true
-      },
-      "type": "Feature"
-    },
-    {
       "id": 19,
       "geometry": {
         "coordinates": [
           [
             5.0000005,
-            9.000028
+            9.0000281
           ],
           [
             5.0000005,
@@ -443,22 +443,22 @@
         "coordinates": [
           [
             5.0000005,
-            9.000028
+            9.0000281
           ],
           [
             5.0000005,
-            9.0000189
+            9.000019
           ]
         ],
         "type": "LineString"
       },
       "properties": {
         "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000003",
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "accessible": false,
         "direction": "FORWARD",
-        "trafficSignType": "C7",
-        "windowTimes": "window 3",
+        "trafficSignType": "C12",
+        "windowTimes": "window 1",
         "trafficSign": true
       },
       "type": "Feature"
@@ -469,34 +469,14 @@
         "coordinates": [
           [
             5.0000005,
-            9.000028
+            9.0000281
           ],
           [
             5.0000005,
-            9.0000189
+            9.000019
           ]
         ],
         "type": "LineString"
-      },
-      "properties": {
-        "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000001",
-        "accessible": false,
-        "direction": "FORWARD",
-        "trafficSignType": "C12",
-        "windowTimes": "window 1",
-        "trafficSign": true
-      },
-      "type": "Feature"
-    },
-    {
-      "id": 22,
-      "geometry": {
-        "coordinates": [
-          5.0000005,
-          9.000028
-        ],
-        "type": "Point"
       },
       "properties": {
         "nwbRoadSectionId": 13,
@@ -510,11 +490,11 @@
       "type": "Feature"
     },
     {
-      "id": 23,
+      "id": 22,
       "geometry": {
         "coordinates": [
           5.0000005,
-          9.000028
+          9.0000281
         ],
         "type": "Point"
       },
@@ -525,6 +505,26 @@
         "direction": "FORWARD",
         "trafficSignType": "C12",
         "windowTimes": "window 1",
+        "trafficSign": true
+      },
+      "type": "Feature"
+    },
+    {
+      "id": 23,
+      "geometry": {
+        "coordinates": [
+          5.0000005,
+          9.0000281
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "nwbRoadSectionId": 13,
+        "trafficSignId": "00000000-0000-4000-0000-000000000003",
+        "accessible": false,
+        "direction": "FORWARD",
+        "trafficSignType": "C7",
+        "windowTimes": "window 3",
         "trafficSign": true
       },
       "type": "Feature"
@@ -539,7 +539,7 @@
           ],
           [
             5.0000005,
-            9.000028
+            9.0000281
           ]
         ],
         "type": "LineString"
@@ -562,7 +562,7 @@
           ],
           [
             5.0000005,
-            9.000028
+            9.0000281
           ]
         ],
         "type": "LineString"
@@ -581,7 +581,7 @@
         "coordinates": [
           [
             5.0000005,
-            9.000028
+            9.0000281
           ],
           [
             5.0000005,

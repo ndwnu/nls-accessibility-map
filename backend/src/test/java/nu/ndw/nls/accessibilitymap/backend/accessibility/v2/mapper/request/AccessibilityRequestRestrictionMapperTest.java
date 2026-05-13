@@ -11,7 +11,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsectio
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.repository.NwbRoadSectionGeometryRepository;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRoadSectionRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
@@ -59,8 +58,6 @@ class AccessibilityRequestRestrictionMapperTest {
     @Mock
     private CoordinateAndBearing coordinateAndBearing;
 
-    @Mock
-    private NwbRoadSectionGeometryRepository nwbRoadSectionGeometryRepository;
 
     @Mock
     private Coordinate coordinate;
@@ -70,7 +67,7 @@ class AccessibilityRequestRestrictionMapperTest {
 
         accessibilityRequestRestrictionMapper = new AccessibilityRequestRestrictionMapper(
                 accessibilityRequestDirectionMapper,
-                fractionAndDistanceCalculator, nwbRoadSectionGeometryRepository);
+                fractionAndDistanceCalculator);
     }
 
     @ParameterizedTest

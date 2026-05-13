@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network.dto;
 
+import com.graphhopper.util.FetchMode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetw
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
 @Getter
@@ -55,5 +57,15 @@ public final class NetworkData {
                         .nwbVersion(nwbData.getNwbVersionId()).build(),
                 nwbData,
                 nwbDataUpdates);
+    }
+
+    public LineString getGeometryFromNetwork(long roadSectionId) {
+        int edgeKey = networkGraphHopper.getWayIdToEdgeKey()
+                .get(roadSectionId);
+        return networkGraphHopper
+                .getBaseGraph()
+                .getEdgeIteratorStateForKey(edgeKey)
+                .fetchWayGeometry(FetchMode.ALL)
+                .toLineString(false);
     }
 }

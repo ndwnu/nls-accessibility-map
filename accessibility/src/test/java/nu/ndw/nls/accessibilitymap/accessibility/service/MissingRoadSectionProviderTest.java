@@ -15,7 +15,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.repository.NwbRoadSectionGeometryRepository;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +41,6 @@ class MissingRoadSectionProviderTest {
 
     @Mock
     private BBox searchArea;
-
-    @Mock
-    private NwbRoadSectionGeometryRepository roadSectionGeometryRepository;
 
     private LineString roadSection1LineString;
 
@@ -79,7 +75,7 @@ class MissingRoadSectionProviderTest {
                 ))
                 .build();
 
-        missingRoadSectionProvider = new MissingRoadSectionProvider(roadSectionGeometryRepository);
+        missingRoadSectionProvider = new MissingRoadSectionProvider();
     }
 
     @ParameterizedTest

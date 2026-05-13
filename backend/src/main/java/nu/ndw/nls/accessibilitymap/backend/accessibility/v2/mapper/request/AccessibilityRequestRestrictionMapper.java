@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.repository.NwbRoadSectionGeometryRepository;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRoadSectionRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
@@ -23,8 +22,6 @@ public class AccessibilityRequestRestrictionMapper {
     private final AccessibilityRequestDirectionMapper accessibilityRequestDirectionMapper;
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
-
-    private final NwbRoadSectionGeometryRepository nwbRoadSectionGeometryRepository;
 
     public Restriction map(
             NetworkData networkData,
@@ -57,8 +54,8 @@ public class AccessibilityRequestRestrictionMapper {
             AccessibilityRequestRoadSectionRestrictionJson roadSectionRestrictionJson
     ) {
 
-        LineString geometry = nwbRoadSectionGeometryRepository.findGeometryById(networkData.getNwbVersion(),
-                roadSectionRestrictionJson.getId());
+        LineString geometry = networkData.getGeometryFromNetwork(roadSectionRestrictionJson.getId());
+
         return fractionAndDistanceCalculator.getCoordinateAndBearing(
                 roadSectionRestrictionJson.getDirection() == DirectionJson.FORWARD ? geometry : geometry.reverse(),
                 roadSectionRestrictionJson.getFraction().doubleValue());

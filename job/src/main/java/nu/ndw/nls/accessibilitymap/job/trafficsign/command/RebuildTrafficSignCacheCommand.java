@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.repository.NwbRoadSectionGeometryRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.TrafficSignBuilder;
@@ -34,8 +33,6 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
     private final TrafficSignBuilder trafficSignBuilder;
 
     private final NetworkDataService networkDataService;
-
-    private final NwbRoadSectionGeometryRepository nwbRoadSectionGeometryRepository;
 
     @Override
     public Integer call() {
@@ -74,10 +71,9 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
     @SuppressWarnings("java:S2637")
     private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
         try {
-            int versionId = networkDataService.get().getNwbData().getNwbVersionId();
-            return nwbRoadSectionGeometryRepository.findGeometryById(versionId, trafficSignGeoJsonDto.getProperties().getRoadSectionId());
-        } catch (IllegalStateException exception) {
-            log.warn("Failed to find road section geometry for traffic sign with id '{}'", trafficSignGeoJsonDto.getId());
+            return networkDataService.get().getGeometryFromNetwork(trafficSignGeoJsonDto.getProperties().getRoadSectionId());
+        } catch (Exception exception) {
+            log.warn("Failed to find road section geometry for traffic sign with id '{}'", trafficSignGeoJsonDto.getId(), exception);
             return null;
         }
     }
