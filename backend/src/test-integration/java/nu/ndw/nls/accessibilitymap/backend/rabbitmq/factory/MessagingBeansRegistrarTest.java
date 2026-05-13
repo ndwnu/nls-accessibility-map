@@ -36,23 +36,23 @@ class MessagingBeansRegistrarTest {
     @Autowired
     private ApplicationContext applicationContext;
 
-//    @Test
-//    void whenContextLoads_thenStreamFactoryIsRegistered() {
-//        ConsumerBuilder consumerBuilder = mock(ConsumerBuilder.class);
-//        AutoTrackingStrategy autoTrackingStrategy = setupConsumerBuilderMock(consumerBuilder);
-//        when(environment.consumerBuilder()).thenReturn(consumerBuilder);
-//
-//        BeanDefinitionRegistry registry = (BeanDefinitionRegistry) applicationContext;
-//        assertThat(registry.containsBeanDefinition("updateRoadSectionStreamFactory")).isTrue();
-//
-//        RabbitListenerContainerFactory<StreamListenerContainer> rabbitListenerContainerFactory =
-//                applicationContext.getBean("updateRoadSectionStreamFactory", RabbitListenerContainerFactory.class);
-//        MessageListenerContainer container = rabbitListenerContainerFactory.createListenerContainer();
-//        container.start();
-//
-//        assertThat(container).isNotNull();
-//        verifyConsumerBuilderMock(consumerBuilder, autoTrackingStrategy);
-//    }
+    @Test
+    void whenContextLoads_thenStreamFactoryIsRegistered() {
+        ConsumerBuilder consumerBuilder = mock(ConsumerBuilder.class);
+        AutoTrackingStrategy autoTrackingStrategy = setupConsumerBuilderMock(consumerBuilder);
+        when(environment.consumerBuilder()).thenReturn(consumerBuilder);
+
+        BeanDefinitionRegistry registry = (BeanDefinitionRegistry) applicationContext;
+        assertThat(registry.containsBeanDefinition("updateRoadSectionStreamFactory")).isTrue();
+
+        RabbitListenerContainerFactory<StreamListenerContainer> rabbitListenerContainerFactory =
+                applicationContext.getBean("updateRoadSectionStreamFactory", RabbitListenerContainerFactory.class);
+        MessageListenerContainer container = rabbitListenerContainerFactory.createListenerContainer();
+        container.start();
+
+        assertThat(container).isNotNull();
+        verifyConsumerBuilderMock(consumerBuilder, autoTrackingStrategy);
+    }
 
     @Test
     void whenContextLoads_thenStreamTemplateIsRegistered() {
