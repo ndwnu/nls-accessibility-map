@@ -254,7 +254,7 @@ class NetworkDataServiceTest {
                         2L,
                         3L,
                         4,
-                        //    lineString,
+                        lineString,
                         true,
                         false,
                         CarriagewayTypeCode.RB,

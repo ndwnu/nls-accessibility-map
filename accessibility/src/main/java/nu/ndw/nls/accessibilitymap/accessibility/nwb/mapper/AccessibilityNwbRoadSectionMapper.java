@@ -23,7 +23,7 @@ public class AccessibilityNwbRoadSectionMapper {
                 nwbRoadSectionDto.getJunctionIdFrom(),
                 nwbRoadSectionDto.getJunctionIdTo(),
                 nwbRoadSectionDto.getMunicipalityId(),
-                //nwbRoadSectionDto.getGeometry(),
+                nwbRoadSectionDto.getGeometry(),
                 forwardAccessible,
                 reverseAccessible,
                 CarriagewayTypeCode.valueOf(nwbRoadSectionDto.getCarriagewayTypeCode()),
