@@ -18,4 +18,12 @@ public class StreamConsumerExponentialBackoffProperties {
 
     @Positive
     private int maxIntervalInSeconds;
+
+    public long getMaxIntervalInMilliSeconds() {
+        return this.maxIntervalInSeconds * 1000L;
+    }
+
+    public long getInitialIntervalInMilliSeconds() {
+        return this.initialIntervalInSeconds * 1000L;
+    }
 }

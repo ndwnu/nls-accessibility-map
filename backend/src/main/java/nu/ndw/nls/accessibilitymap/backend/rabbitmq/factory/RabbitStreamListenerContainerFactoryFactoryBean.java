@@ -1,23 +1,20 @@
 package nu.ndw.nls.accessibilitymap.backend.rabbitmq.factory;
 
 import com.rabbitmq.stream.Environment;
-import com.rabbitmq.stream.Message;
 import com.rabbitmq.stream.OffsetSpecification;
-import com.rabbitmq.stream.codec.QpidProtonCodec;
 import java.time.Duration;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.StreamConsumerExponentialBackoffProperties;
 import nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.StreamConsumerProperties;
 import nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.StreamQueueProperties;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.support.ListenerExecutionFailedException;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.core.retry.RetryListener;
 import org.springframework.core.retry.RetryPolicy;
-import org.springframework.core.retry.RetryState;
-import org.springframework.core.retry.RetryTemplate;
-import org.springframework.core.retry.Retryable;
 import org.springframework.rabbit.stream.config.StreamRabbitListenerContainerFactory;
 import org.springframework.rabbit.stream.listener.ConsumerCustomizer;
 import org.springframework.rabbit.stream.listener.StreamListenerContainer;
@@ -34,31 +31,21 @@ public class RabbitStreamListenerContainerFactoryFactoryBean
 
     @Override
     public RabbitListenerContainerFactory<StreamListenerContainer> getObject() {
-        StreamConsumerExponentialBackoffProperties exponentialBackoffConfig = queueConfig.getConsumer().getExponentialBackoff();
-
-        ExponentialBackOff exponentialBackOff = new ExponentialBackOff(
-                exponentialBackoffConfig.getInitialIntervalInSeconds(),
-                exponentialBackoffConfig.getMultiplier());
-        exponentialBackOff.setMaxInterval(exponentialBackoffConfig.getMaxIntervalInSeconds());
-
-        RetryPolicy retryPolicy = RetryPolicy.builder()
-                .maxRetries(Integer.MAX_VALUE)
-                .backOff(exponentialBackOff)
-                .build();
-
-//        RetryTemplate retryTemplate = new RetryTemplate();
-//        retryTemplate.setRetryPolicy(retryPolicy);
-//        retryTemplate.setRetryListener(skippableMessageRetryListener(queueConfig));
+        ExponentialBackOff backOff = getExponentialBackOff();
 
         StreamRabbitListenerContainerFactory factory = new StreamRabbitListenerContainerFactory(environment);
         factory.setNativeListener(true);
         factory.setAdviceChain(
                 RetryInterceptorBuilder
-                        .stateless()
-                        .retryPolicy(retryPolicy)
+                        .stateful()
+                        .retryPolicy(
+                                RetryPolicy.builder()
+                                        .predicate(this::shouldRetry)
+                                        .backOff(backOff)
+                                        .build()
+                        )
                         .build());
         factory.setConsumerCustomizer(createConsumerCustomizer());
-
         return factory;
     }
 
@@ -67,50 +54,36 @@ public class RabbitStreamListenerContainerFactoryFactoryBean
         return RabbitListenerContainerFactory.class;
     }
 
-    RetryListener skippableMessageRetryListener(StreamQueueProperties streamQueueConfig) {
-        return new RetryListener() {
-            @Override
-            public void onRetryableExecution(
-                    RetryPolicy retryPolicy,
-                    Retryable retryable,
-                    RetryState retryState) {
+    private ExponentialBackOff getExponentialBackOff() {
+        StreamConsumerExponentialBackoffProperties exponentialBackoffConfig = queueConfig.getConsumer().getExponentialBackoff();
 
-                if (retryState.isSuccessful()) {
-                    return;
-                }
-
-                Message message = getMessage(retryable);
-                Object messageId = message.getProperties().getMessageId();
-
-                log.warn(
-                        "Failed to process stream message: '{}' for the {} time",
-                        messageId,
-                        retryState.getRetryCount(),
-                        retryState.getLastException());
-
-                if (streamQueueConfig.isMessageToSkip(messageId)) {
-                    log.info("Skip stream message with messageId: '{}'", messageId);
-//                    retryState.r();
-                }
-            }
-        };
+        ExponentialBackOff backOff = new ExponentialBackOff();
+        backOff.setMaxInterval(exponentialBackoffConfig.getMaxIntervalInMilliSeconds());
+        backOff.setInitialInterval(exponentialBackoffConfig.getInitialIntervalInMilliSeconds());
+        backOff.setMultiplier(exponentialBackoffConfig.getMultiplier());
+        return backOff;
     }
 
-    private Message getMessage(Retryable retryable) {
-//
-//        Object[] arguments = retryable.getArguments();
-//
-//        if (arguments == null || arguments.length == 0 || !(arguments[0] instanceof Message message)) {
-//            log.warn("No message provided in message listener retry handler for retryable: {}", retryable);
-//            return new QpidProtonCodec()
-//                    .messageBuilder()
-//                    .properties()
-//                    .messageBuilder()
-//                    .build();
-//        }
-//
-//        return message;
+    private boolean shouldRetry(Throwable exception) {
+        log.warn("Failed to process stream message", exception);
+        String messageId = getFailedMessageId(exception);
+        if (queueConfig.isMessageToSkip(messageId)) {
+            log.info("Skip stream message with messageId: '{}'", messageId);
+            return false;
+        }
+        return true;
+    }
+
+    private String getFailedMessageId(Throwable exception) {
+        if (exception instanceof ListenerExecutionFailedException listenerExecutionFailedException) {
+            return getMessageId(listenerExecutionFailedException);
+        }
         return null;
+    }
+
+    private String getMessageId(ListenerExecutionFailedException exception) {
+        Message failedMessage = exception.getFailedMessage();
+        return Objects.isNull(failedMessage) ? null : failedMessage.getMessageProperties().getMessageId();
     }
 
     private ConsumerCustomizer createConsumerCustomizer() {
