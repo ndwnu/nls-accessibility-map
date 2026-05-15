@@ -71,15 +71,13 @@ public abstract class Cache<TYPE> {
     }
 
     protected synchronized void read(boolean triggeredOnStartup) {
-        boolean success = false;
+
         try {
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
-
             TYPE newData = readData(activeVersion);
             setData(newData);
-
             log.info(
                     "Read {} data from `{}` with size {}MB in {} ms",
                     cacheConfiguration.getName(),
@@ -88,7 +86,7 @@ public abstract class Cache<TYPE> {
                             .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
                     Duration.between(start, clockService.now()).toMillis());
             consecutiveReadFailures = 0;
-            success = true;
+            publishCacheLoadedEvent();
         } catch (Exception exception) {
             consecutiveReadFailures += 1;
             if (consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures()) {
@@ -96,10 +94,6 @@ public abstract class Cache<TYPE> {
             }
             if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
-            }
-        } finally {
-            if (success) {
-                publishCacheLoadedEvent();
             }
         }
     }
