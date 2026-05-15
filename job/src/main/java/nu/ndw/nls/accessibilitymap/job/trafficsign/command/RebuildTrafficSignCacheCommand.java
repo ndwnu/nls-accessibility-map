@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.job.trafficsign.command;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.TrafficSignBuilder;
@@ -69,6 +71,11 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
     }
 
     private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
+        NetworkData networkData = networkDataService.get();
+        if (Objects.isNull(networkData.getNetworkGraphHopper())) {
+            log.warn("Network graph hopper is not initialized, reading network data");
+            networkDataService.read();
+        }
         return networkDataService.get().findGeometryInNetwork(trafficSignGeoJsonDto.getProperties().getRoadSectionId()).orElse(null);
     }
 }
