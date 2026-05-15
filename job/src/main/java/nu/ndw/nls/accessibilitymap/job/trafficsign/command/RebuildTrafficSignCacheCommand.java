@@ -68,13 +68,7 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
         }
     }
 
-    @SuppressWarnings("java:S2637")
     private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
-        try {
-            return networkDataService.get().getGeometryFromNetwork(trafficSignGeoJsonDto.getProperties().getRoadSectionId());
-        } catch (Exception exception) {
-            log.warn("Failed to find road section geometry for traffic sign with id '{}'", trafficSignGeoJsonDto.getId(), exception);
-            return null;
-        }
+        return networkDataService.get().findGeometryInNetwork(trafficSignGeoJsonDto.getProperties().getRoadSectionId()).orElse(null);
     }
 }

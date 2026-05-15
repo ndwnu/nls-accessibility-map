@@ -13,7 +13,7 @@ public class AccessibilityNwbRoadSectionToLinkMapper {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
-    public AccessibilityLink map(int versionId, AccessibilityNwbRoadSection accessibilityNwbRoadSection) {
+    public AccessibilityLink map(AccessibilityNwbRoadSection accessibilityNwbRoadSection) {
 
         return AccessibilityLink.builder()
                 .id(accessibilityNwbRoadSection.roadSectionId())

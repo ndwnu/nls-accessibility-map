@@ -95,7 +95,7 @@ public class RoadSectionUpdateListener {
         if (cacheLoadedEvent.getType() == CacheLoadedEvent.Type.NETWORK_DATA) {
             MessageListenerContainer messageListenerContainer = rabbitListenerEndpointRegistry.getListenerContainer(LISTENER_ID);
             if (!autoStartup && !messageListenerContainer.isRunning()) {
-                log.info("Initial network data loaded Starting listener");
+                log.info("Initial network data loaded starting RoadSectionUpdateListener");
                 messageListenerContainer.start();
             }
         }

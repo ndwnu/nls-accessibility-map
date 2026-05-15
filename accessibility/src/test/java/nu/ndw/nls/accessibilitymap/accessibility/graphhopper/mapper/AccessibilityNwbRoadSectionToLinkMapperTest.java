@@ -45,7 +45,7 @@ class AccessibilityNwbRoadSectionToLinkMapperTest {
         when(fractionAndDistanceCalculator.calculateLengthInMeters(lineString)).thenReturn(123.12);
 
         AccessibilityNwbRoadSection roadSection = createRoadSection(forwardAccessible, backwardAccessible);
-        AccessibilityLink link = accessibilityNwbRoadSectionToLinkMapper.map(1, roadSection);
+        AccessibilityLink link = accessibilityNwbRoadSectionToLinkMapper.map(roadSection);
 
         assertThat(link.getId()).isEqualTo(roadSection.roadSectionId());
         assertThat(link.getFromNodeId()).isEqualTo(roadSection.fromNode());

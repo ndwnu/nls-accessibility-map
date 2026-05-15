@@ -15,7 +15,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
-import nu.ndw.nls.accessibilitymap.accessibility.json.JsonNwbDataStreamReader;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -50,8 +49,6 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private final JsonWriter jsonWriter;
 
-    private final JsonNwbDataStreamReader jsonNwbDataStreamReader;
-
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public NetworkDataService(
@@ -60,8 +57,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             DistributedLockService distributedLockService,
             GraphHopperService graphHopperService,
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
-            ObjectMapper objectMapper, JsonWriter jsonWriter, JsonNwbDataStreamReader jsonNwbDataStreamReader,
-            ApplicationEventPublisher applicationEventPublisher
+            ObjectMapper objectMapper, JsonWriter jsonWriter, ApplicationEventPublisher applicationEventPublisher
     ) {
 
         super(networkCacheConfiguration, clockService, distributedLockService);
@@ -70,7 +66,6 @@ public class NetworkDataService extends Cache<NetworkData> {
         this.graphHopperService = graphHopperService;
         this.accessibilityNwbRoadSectionService = accessibilityNwbRoadSectionService;
         this.jsonWriter = jsonWriter;
-        this.jsonNwbDataStreamReader = jsonNwbDataStreamReader;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -102,7 +97,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             jsonWriter.writeJsonToFile(nwbUpdatesPath, NWB_CHANGED_ROAD_SECTIONS_FILE, newNwbDataUpdates);
             log.info("Wrote nwbDataUpdates to {}", nwbUpdatesPath);
             switchSymLink(targetFolder);
-            setData(updatedNetworkData, targetLocation);
+            setData(updatedNetworkData);
             log.info("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
         } catch (IOException exception) {
             log.error("Failed to write nwbDataUpdates to disk", exception);
@@ -149,9 +144,11 @@ public class NetworkDataService extends Cache<NetworkData> {
                 NwbDataUpdates.class);
     }
 
-    private NwbData readNwbData() {
+    private NwbData readNwbData() throws IOException {
         final Path nwbDataFilePath = getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_ROAD_SECTIONS_JSON);
-        return jsonNwbDataStreamReader.readJsonData(nwbDataFilePath);
+        return objectMapper.readValue(
+                nwbDataFilePath.toFile(),
+                NwbData.class);
     }
 
     @Override

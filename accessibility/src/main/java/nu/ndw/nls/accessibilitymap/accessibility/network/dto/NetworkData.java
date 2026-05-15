@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.network.dto;
 import com.graphhopper.util.FetchMode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -59,13 +60,22 @@ public final class NetworkData {
                 nwbDataUpdates);
     }
 
-    public LineString getGeometryFromNetwork(long roadSectionId) {
+    /**
+     * Retrieves the geometric representation of a road section from the network using its unique identifier.
+     *
+     * @param roadSectionId the unique identifier of the road section in the network
+     * @return a LineString object representing the geometry of the specified road section
+     */
+    public Optional<LineString> findGeometryInNetwork(long roadSectionId) {
+        if (!networkGraphHopper.getWayIdToEdgeKey().containsKey(roadSectionId)) {
+            return Optional.empty();
+        }
         int edgeKey = networkGraphHopper.getWayIdToEdgeKey()
                 .get(roadSectionId);
-        return networkGraphHopper
+        return Optional.of(networkGraphHopper
                 .getBaseGraph()
                 .getEdgeIteratorStateForKey(edgeKey)
                 .fetchWayGeometry(FetchMode.ALL)
-                .toLineString(false);
+                .toLineString(false));
     }
 }

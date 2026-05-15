@@ -8,7 +8,7 @@ public class CacheLoadedEvent {
 
     public enum Type {
         NETWORK_DATA,
-        TRAFFIC_TYPES
+        TRAFFIC_SIGNS
     }
 
     @Getter
