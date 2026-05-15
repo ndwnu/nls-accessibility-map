@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
@@ -22,7 +21,6 @@ import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.retry.support.RetryTemplate;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -41,21 +39,13 @@ public abstract class Cache<TYPE> {
     @Getter(AccessLevel.PROTECTED)
     private final DistributedLockService distributedLockService;
 
-    private RetryTemplate retryTemplate = RetryTemplate.builder()
-            .maxAttempts(5)
-            .fixedBackoff(1000)
-            .build();
-
     private TYPE data;
-
-    private String activeVersion;
 
     private int consecutiveReadFailures;
 
     @Getter(AccessLevel.PROTECTED)
     private final ReentrantLock dataLock = new ReentrantLock();
 
-    private final ReentrantLock cacheSwitchLock = new ReentrantLock();
 
     @EventListener(ApplicationStartedEvent.class)
     public void loadDataOnStartup() {
@@ -84,13 +74,12 @@ public abstract class Cache<TYPE> {
     protected synchronized void read(boolean triggeredOnStartup) {
         boolean success = false;
         try {
-            // distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
             OffsetDateTime start = clockService.now();
             Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
 
             TYPE newData = readData(activeVersion);
-            setData(newData, activeVersion);
+            setData(newData);
 
             log.info(
                     "Read {} data from `{}` with size {}MB in {} ms",
@@ -113,24 +102,13 @@ public abstract class Cache<TYPE> {
             if (success) {
                 publishCacheLoadedEvent();
             }
-            // distributedLockService.unlock(cacheConfiguration.getName());
         }
     }
 
-    protected void setData(TYPE data, Path activeVersion) {
+    protected void setData(TYPE data) {
         dataLock.lock();
-        this.activeVersion = activeVersion.getFileName().toString();
         this.data = data;
         dataLock.unlock();
-    }
-
-    @SneakyThrows
-    protected boolean isDataStale() {
-        Path activeVersionOnDisk = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
-        String activeCurrent = activeVersionOnDisk.getFileName().toString();
-        log.debug("Active version on disk: {}", activeCurrent);
-        log.debug("Active version in cache: {}", this.activeVersion);
-        return !activeCurrent.equals(this.activeVersion);
     }
 
     public void write(Supplier<TYPE> networkDataSupplier) {
@@ -153,7 +131,7 @@ public abstract class Cache<TYPE> {
                     Duration.between(start, clockService.now()).toMillis());
 
             switchSymLink(targetFolder);
-            setData(newData, targetLocation);
+            setData(newData);
         } catch (IOException exception) {
             log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
         } finally {

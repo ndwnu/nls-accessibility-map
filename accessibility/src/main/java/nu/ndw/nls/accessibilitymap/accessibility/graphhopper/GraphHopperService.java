@@ -72,8 +72,7 @@ public class GraphHopperService {
         Files.createDirectories(graphHopperLocation);
 
         List<AccessibilityLink> accessibilityLinks = nwbData.findAllAccessibilityNwbRoadSections().stream()
-                .map(accessibilityNwbRoadSection -> accessibilityNwbRoadSectionToLinkMapper
-                        .map(nwbData.getNwbVersionId(), accessibilityNwbRoadSection))
+                .map(accessibilityNwbRoadSectionToLinkMapper::map)
                 .toList();
 
         var accessibilityLinkRoutingNetworkSettings = networkSettingsWithData(location, accessibilityLinks, start);
@@ -92,7 +91,8 @@ public class GraphHopperService {
     private RoutingNetworkSettings<AccessibilityLink> networkSettingsWithData(
             Path location,
             List<AccessibilityLink> accessibilityLinks,
-            OffsetDateTime timestamp) {
+            OffsetDateTime timestamp
+    ) {
 
         return defaultNetworkSettingsBuilder(location)
                 .indexed(true)

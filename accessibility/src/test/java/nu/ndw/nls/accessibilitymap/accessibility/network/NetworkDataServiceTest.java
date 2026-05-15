@@ -14,10 +14,11 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
-import nu.ndw.nls.accessibilitymap.accessibility.json.JsonNwbDataStreamReader;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -34,9 +35,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
@@ -77,6 +77,9 @@ class NetworkDataServiceTest {
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
 
+    @Captor
+    private ArgumentCaptor<CacheLoadedEvent> cacheLoadedEventCaptor;
+
     private NwbData nwbData;
 
     private NwbDataUpdates nwbDataUpdates;
@@ -86,7 +89,6 @@ class NetworkDataServiceTest {
 
         objectMapper = new ObjectMapper();
         JsonWriter jsonWriter = new JsonWriter(objectMapper);
-        JsonNwbDataStreamReader jsonNwbDataStreamReader = new JsonNwbDataStreamReader(objectMapper);
         nwbData = new NwbData(1, buildAccessibilityRoadSections());
         nwbDataUpdates = new NwbDataUpdates(1, buildAccessibilityRoadSectionUpdates());
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
@@ -102,7 +104,7 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper, jsonWriter, jsonNwbDataStreamReader,
+                objectMapper, jsonWriter,
                 applicationEventPublisher);
     }
 
@@ -224,6 +226,8 @@ class NetworkDataServiceTest {
         assertThat(networkData.getNwbDataUpdates().getNwbVersionId()).isEqualTo(nwbDataUpdates.getNwbVersionId());
         assertThat(networkData.getNwbDataUpdates()
                 .getAccessibilityNwbRoadSectionUpdates()).isEqualTo(buildAccessibilityRoadSectionUpdates());
+        verify(applicationEventPublisher).publishEvent(cacheLoadedEventCaptor.capture());
+        assertThat(cacheLoadedEventCaptor.getValue().getType()).isEqualTo(Type.NETWORK_DATA);
     }
 
     @Test
@@ -241,12 +245,6 @@ class NetworkDataServiceTest {
     }
 
     private static List<AccessibilityNwbRoadSection> buildAccessibilityRoadSections() {
-        GeometryFactory geometryFactory = new GeometryFactory();
-
-        LineString lineString = geometryFactory.createLineString(new Coordinate[]{
-                new Coordinate(12.3, 12.4),
-                new Coordinate(22.3, 22.4)
-        });
 
         return List.of(
                 new AccessibilityNwbRoadSection(
@@ -254,7 +252,7 @@ class NetworkDataServiceTest {
                         2L,
                         3L,
                         4,
-                        lineString,
+                        null,
                         true,
                         false,
                         CarriagewayTypeCode.RB,
