@@ -356,7 +356,7 @@ class CacheTest {
 
             @Override
             protected void publishCacheLoadedEvent() {
-
+                // not implemented
             }
         };
 
@@ -545,7 +545,7 @@ class CacheTest {
 
             @Override
             protected void publishCacheLoadedEvent() {
-
+                // not implemented
             }
         };
 
