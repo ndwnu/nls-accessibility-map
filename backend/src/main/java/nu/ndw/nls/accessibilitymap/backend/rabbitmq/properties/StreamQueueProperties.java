@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,12 +36,13 @@ public class StreamQueueProperties {
     private StreamConsumerProperties consumer;
 
     @Valid
-    private Collection<String> messagesToSkip;
+    @Builder.Default
+    private Collection<String> messagesToSkip = new HashSet<>();
 
     public boolean isMessageToSkip(Object id) {
         // Skip messages without a messageId
         // or check the list from the configuration if the message should be skipped
         return Objects.isNull(id)
-               || (messagesToSkip.contains(id.toString()));
+                || (messagesToSkip.contains(id.toString()));
     }
 }
