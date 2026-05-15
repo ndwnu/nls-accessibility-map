@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsException;
 import nu.ndw.nls.accessibilitymap.backend.exception.ResourceNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.APIErrorJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.APIErrorJson;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.core.Ordered;

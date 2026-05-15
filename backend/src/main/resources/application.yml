@@ -91,11 +91,15 @@ springdoc:
     urls:
       - name: V2 / Latest
         url: /api-docs/v2.yaml
+      - name: V1 (Deprecated)
+        url: /api-docs/v1.yaml
     path: /api-docs
     show-extensions: true
     show-common-extensions: true
 
 openapi:
+  accessibilityMapV1:
+    base-path: /v1
   accessibilityMapV2:
     base-path: /v2
 
