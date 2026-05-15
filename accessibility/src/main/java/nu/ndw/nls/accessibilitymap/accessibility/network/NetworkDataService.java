@@ -57,7 +57,9 @@ public class NetworkDataService extends Cache<NetworkData> {
             DistributedLockService distributedLockService,
             GraphHopperService graphHopperService,
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
-            ObjectMapper objectMapper, JsonWriter jsonWriter, ApplicationEventPublisher applicationEventPublisher
+            ObjectMapper objectMapper,
+            JsonWriter jsonWriter,
+            ApplicationEventPublisher applicationEventPublisher
     ) {
 
         super(networkCacheConfiguration, clockService, distributedLockService);

@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.request;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -16,11 +17,13 @@ import org.locationtech.jts.geom.LineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AccessibilityRequestRestrictionMapper {
 
-    private static final String INVALID_ROAD_SECTION_ERR_MESSAGE = "Road section with id '%s' available in NWB version '%s'. Please try a different road section.";
+    private static final String INVALID_ROAD_SECTION_ERR_MESSAGE = "Road section with id '%s' available in NWB version '%s'. "
+            + "Please try a different road section.";
 
     private static final String ROAD_SECTION_NOT_FOUND_MESSAGE = "Road section with id '%s' not found in NWB version '%s'.";
 
@@ -60,12 +63,17 @@ public class AccessibilityRequestRestrictionMapper {
     ) {
 
         LineString geometry = networkData.findGeometryInNetwork(roadSectionRestrictionJson.getId())
-                .orElseThrow(() -> createApiException(networkData, roadSectionRestrictionJson, ROAD_SECTION_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> createApiException(
+                        networkData,
+                        roadSectionRestrictionJson,
+                        ROAD_SECTION_NOT_FOUND_MESSAGE)
+                );
         try {
             return fractionAndDistanceCalculator.getCoordinateAndBearing(
                     roadSectionRestrictionJson.getDirection() == DirectionJson.FORWARD ? geometry : geometry.reverse(),
                     roadSectionRestrictionJson.getFraction().doubleValue());
         } catch (Exception e) {
+            log.debug("Failed to get road section snapped to geometry coordinates", e);
             throw createApiException(networkData, roadSectionRestrictionJson, INVALID_ROAD_SECTION_ERR_MESSAGE);
         }
     }
