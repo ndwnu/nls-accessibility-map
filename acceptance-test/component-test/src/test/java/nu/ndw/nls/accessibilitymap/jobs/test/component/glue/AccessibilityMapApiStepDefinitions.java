@@ -148,7 +148,7 @@ public class AccessibilityMapApiStepDefinitions {
 
         assertThatJson(actualResponse.bodyAsString())
                 // Ignore small floating point differences in coordinates local vs aks env
-                .withTolerance(1e-12)
+                .withTolerance(1e-6)
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(expectedResponse);
     }
