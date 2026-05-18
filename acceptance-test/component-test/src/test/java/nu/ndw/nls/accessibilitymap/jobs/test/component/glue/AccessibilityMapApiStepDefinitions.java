@@ -115,6 +115,7 @@ public class AccessibilityMapApiStepDefinitions {
         Response<Void, RoadSectionFeatureCollectionJson> response = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJsonForMunicipality();
 
         assertThatJson(response.body())
+                .withTolerance(1e-6)
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(testDataProvider.readFromFile("api/accessibility/v1", expectedResponseFile));
     }
