@@ -1,16 +1,21 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
@@ -30,14 +35,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class NetworkDataServiceTest {
+
+    private static final String TEST_CACHE_NAME = "testCache";
+
+    private static final Duration MAX_LOCK_WAIT_TIME = Duration.ofSeconds(10);
 
     private NetworkDataService networkDataService;
 
@@ -65,6 +74,12 @@ class NetworkDataServiceTest {
     @Mock
     private DistributedLockService distributedLockService;
 
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    @Captor
+    private ArgumentCaptor<CacheLoadedEvent> cacheLoadedEventCaptor;
+
     private NwbData nwbData;
 
     private NwbDataUpdates nwbDataUpdates;
@@ -79,7 +94,8 @@ class NetworkDataServiceTest {
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
         networkCacheConfiguration = NetworkCacheConfiguration.builder()
                 .folder(testDir)
-                .name("testCache")
+                .name(TEST_CACHE_NAME)
+                .maxLockWaitTime(MAX_LOCK_WAIT_TIME)
                 .build();
 
         networkDataService = new NetworkDataService(
@@ -88,7 +104,8 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper, jsonWriter);
+                objectMapper, jsonWriter,
+                applicationEventPublisher);
     }
 
     @AfterEach
@@ -100,7 +117,7 @@ class NetworkDataServiceTest {
     @SneakyThrows
     @Test
     void writeNwbDataUpdates() {
-        var updatedRoaSections = List.of(
+        var updatedRoadSections = List.of(
                 new AccessibilityNwbRoadSectionUpdate(
                         124,
                         true,
@@ -116,7 +133,7 @@ class NetworkDataServiceTest {
 
         NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);
         networkDataService.write(() -> networkData);
-        networkDataService.writeNwbDataUpdates(new NwbDataUpdates(1, updatedRoaSections));
+        networkDataService.writeNwbDataUpdates(new NwbDataUpdates(1, updatedRoadSections));
 
         NetworkData updatedNetworkData = networkDataService.get();
 
@@ -130,6 +147,9 @@ class NetworkDataServiceTest {
                 true,
                 false,
                 CarriagewayTypeCode.HR)));
+
+        verify(distributedLockService, times(2)).lockOrFail(TEST_CACHE_NAME, MAX_LOCK_WAIT_TIME);
+        verify(distributedLockService, times(2)).unlock(TEST_CACHE_NAME);
     }
 
     @Test
@@ -206,6 +226,8 @@ class NetworkDataServiceTest {
         assertThat(networkData.getNwbDataUpdates().getNwbVersionId()).isEqualTo(nwbDataUpdates.getNwbVersionId());
         assertThat(networkData.getNwbDataUpdates()
                 .getAccessibilityNwbRoadSectionUpdates()).isEqualTo(buildAccessibilityRoadSectionUpdates());
+        verify(applicationEventPublisher).publishEvent(cacheLoadedEventCaptor.capture());
+        assertThat(cacheLoadedEventCaptor.getValue().getType()).isEqualTo(Type.NETWORK_DATA);
     }
 
     @Test
@@ -223,12 +245,6 @@ class NetworkDataServiceTest {
     }
 
     private static List<AccessibilityNwbRoadSection> buildAccessibilityRoadSections() {
-        GeometryFactory geometryFactory = new GeometryFactory();
-
-        LineString lineString = geometryFactory.createLineString(new Coordinate[]{
-                new Coordinate(12.3, 12.4),
-                new Coordinate(22.3, 22.4)
-        });
 
         return List.of(
                 new AccessibilityNwbRoadSection(
@@ -236,7 +252,7 @@ class NetworkDataServiceTest {
                         2L,
                         3L,
                         4,
-                        lineString,
+                        null,
                         true,
                         false,
                         CarriagewayTypeCode.RB,

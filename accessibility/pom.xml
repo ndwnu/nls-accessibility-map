@@ -9,7 +9,6 @@
   <artifactId>accessibility</artifactId>
   <name>NLS Accessibility library</name>
   <dependencies>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>

@@ -30,20 +30,6 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
         validate(accessibilityNwbRoadSection, List.of(), List.of());
     }
 
-    @Test
-    void validate_geometry_null() {
-        AccessibilityNwbRoadSection accessibilityNwbRoadSection = new AccessibilityNwbRoadSection(
-                1,
-                2,
-                3,
-                4,
-                null,
-                true,
-                true,
-                CarriagewayTypeCode.RB,
-                "1");
-        validate(accessibilityNwbRoadSection, List.of("geometry"), List.of("must not be null"));
-    }
 
     @Test
     void validate_functionalRoadClass_null() {
