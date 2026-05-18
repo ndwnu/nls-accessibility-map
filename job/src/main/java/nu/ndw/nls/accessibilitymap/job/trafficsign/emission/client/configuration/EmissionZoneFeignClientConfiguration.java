@@ -3,13 +3,14 @@ package nu.ndw.nls.accessibilitymap.job.trafficsign.emission.client.configuratio
 import feign.RequestInterceptor;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.springboot.client.feign.configuration.NlsClientConfiguration;
 import nu.ndw.nls.springboot.security.oauth2.client.services.OAuth2ClientCredentialsTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 
-@AllArgsConstructor
 @Slf4j
-public class EmissionZoneFeignClientConfiguration {
+@AllArgsConstructor
+public class EmissionZoneFeignClientConfiguration extends NlsClientConfiguration {
 
     @Bean(name = "emissionZoneApiRequestInterceptor")
     public RequestInterceptor requestInterceptor(
