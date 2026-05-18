@@ -36,12 +36,14 @@ public abstract class Cache<TYPE> {
     @Getter(AccessLevel.PROTECTED)
     private final ClockService clockService;
 
+    @Getter(AccessLevel.PROTECTED)
     private final DistributedLockService distributedLockService;
 
     private TYPE data;
 
     private int consecutiveReadFailures;
 
+    @Getter(AccessLevel.PROTECTED)
     private final ReentrantLock dataLock = new ReentrantLock();
 
     @EventListener(ApplicationStartedEvent.class)
@@ -68,36 +70,8 @@ public abstract class Cache<TYPE> {
         read(false);
     }
 
-    protected synchronized void read(boolean triggeredOnStartup) {
-        try {
-
-            OffsetDateTime start = clockService.now();
-            Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
-            log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
-
-            TYPE newData = readData(activeVersion);
-
-            dataLock.lock();
-            this.data = newData;
-            dataLock.unlock();
-
-            log.info(
-                    "Read {} data from `{}` with size {}MB in {} ms",
-                    cacheConfiguration.getName(),
-                    activeVersion,
-                    BigDecimal.valueOf(getSizeInBytes(activeVersion))
-                            .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
-                    Duration.between(start, clockService.now()).toMillis());
-            consecutiveReadFailures = 0;
-        } catch (Exception exception) {
-            consecutiveReadFailures += 1;
-            if (consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures()) {
-                log.error("Failed to read {}", cacheConfiguration.getName(), exception);
-            }
-            if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
-                throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
-            }
-        }
+    public boolean dataExists() {
+        return Files.exists(getCacheConfiguration().getActiveVersion().toPath());
     }
 
     public void write(Supplier<TYPE> networkDataSupplier) {
@@ -120,10 +94,7 @@ public abstract class Cache<TYPE> {
                     Duration.between(start, clockService.now()).toMillis());
 
             switchSymLink(targetFolder);
-
-            dataLock.lock();
-            this.data = newData;
-            dataLock.unlock();
+            setData(newData);
         } catch (IOException exception) {
             log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
         } finally {
@@ -131,9 +102,45 @@ public abstract class Cache<TYPE> {
         }
     }
 
+    protected synchronized void read(boolean triggeredOnStartup) {
+
+        try {
+            OffsetDateTime start = clockService.now();
+            Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
+            log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
+            TYPE newData = readData(activeVersion);
+            setData(newData);
+            log.info(
+                    "Read {} data from `{}` with size {}MB in {} ms",
+                    cacheConfiguration.getName(),
+                    activeVersion,
+                    BigDecimal.valueOf(getSizeInBytes(activeVersion))
+                            .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
+                    Duration.between(start, clockService.now()).toMillis());
+            consecutiveReadFailures = 0;
+            publishCacheLoadedEvent();
+        } catch (Exception exception) {
+            consecutiveReadFailures += 1;
+            if (consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures()) {
+                log.error("Failed to read {}", cacheConfiguration.getName(), exception);
+            }
+            if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
+                throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
+            }
+        }
+    }
+
+    protected void setData(TYPE data) {
+        dataLock.lock();
+        this.data = data;
+        dataLock.unlock();
+    }
+
     protected abstract TYPE readData(Path activeVersion) throws IOException;
 
     protected abstract void writeData(Path target, TYPE data) throws IOException;
+
+    protected abstract void publishCacheLoadedEvent();
 
     protected long getSizeInBytes(Path path) {
         if (Files.isDirectory(path)) {
@@ -143,11 +150,9 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    private void switchSymLink(Path target) throws IOException {
-
+    protected void switchSymLink(Path target) throws IOException {
         Path symlink = cacheConfiguration.getActiveVersion().toPath();
         Path oldTarget = null;
-
         if (Files.isSymbolicLink(symlink)) {
             if (Files.exists(symlink)) {
                 oldTarget = symlink.toRealPath();
@@ -157,14 +162,10 @@ public abstract class Cache<TYPE> {
 
         Files.createSymbolicLink(symlink, target);
         log.debug("Updated symlink: {}", cacheConfiguration.getActiveVersion().getAbsolutePath());
-
+        log.debug("Update symlink old {} new {}", oldTarget, target);
         if (Objects.nonNull(oldTarget)) {
             FileUtils.deleteDirectory(oldTarget.toFile());
             log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
         }
-    }
-
-    public boolean dataExists() {
-        return Files.exists(getCacheConfiguration().getActiveVersion().toPath());
     }
 }

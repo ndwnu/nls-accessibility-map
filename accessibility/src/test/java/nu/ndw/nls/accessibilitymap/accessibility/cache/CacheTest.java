@@ -21,7 +21,6 @@ import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -98,6 +97,12 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
+
+            }
         };
 
         assertThat(cache.get()).isNull();
@@ -137,6 +142,11 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
+            }
         };
 
         cache.read();
@@ -169,6 +179,15 @@ class CacheTest {
 
         cacheConfiguration.setFailOnStartupCacheReadError(false);
 
+        final Cache<Object> cache = getCache();
+        assertThat(cache.get()).isNull();
+        loggerExtension.containsLog(
+                Level.ERROR,
+                "Failed to read %s".formatted(cacheConfiguration.getName()),
+                "test");
+    }
+
+    private Cache<Object> getCache() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
@@ -179,14 +198,15 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
+            }
         };
 
         cache.read(true);
-        assertThat(cache.get()).isNull();
-        loggerExtension.containsLog(
-                Level.ERROR,
-                "Failed to read %s".formatted(cacheConfiguration.getName()),
-                "test");
+        return cache;
     }
 
     @Test
@@ -205,6 +225,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
             }
         };
         cache.read();
@@ -227,6 +252,16 @@ class CacheTest {
 
         cacheConfiguration.setLoadDataOnStartup(true);
 
+        final Cache<Object> cache = getObjectCache1();
+
+        assertThat(cache.get()).isEqualTo(data);
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Read testCache data from `%s` with size 0.00MB in 310 ms".formatted(cacheConfiguration.getActiveVersion()
+                        .getAbsolutePath()));
+    }
+
+    private Cache<Object> getObjectCache1() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
             protected Object readData(Path activeVersion) {
@@ -237,15 +272,15 @@ class CacheTest {
             protected void writeData(Path target, Object data) {
                 // Do nothing
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
+            }
         };
 
         cache.loadDataOnStartup();
-
-        assertThat(cache.get()).isEqualTo(data);
-        loggerExtension.containsLog(
-                Level.INFO,
-                "Read testCache data from `%s` with size 0.00MB in 310 ms".formatted(cacheConfiguration.getActiveVersion()
-                        .getAbsolutePath()));
+        return cache;
     }
 
     @Test
@@ -265,7 +300,6 @@ class CacheTest {
         assertThat(cache.get()).isNull();
     }
 
-    @NotNull
     private Cache<Object> getObjectCache() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             private int counter;
@@ -281,6 +315,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
             }
         };
 
@@ -309,6 +348,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
             }
         };
 
@@ -342,6 +386,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
             }
         };
 
@@ -379,6 +428,11 @@ class CacheTest {
             protected void writeData(Path target, String data) throws IOException {
 
                 Files.writeString(target.resolve("file1.txt"), data);
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
             }
         };
 
@@ -454,6 +508,11 @@ class CacheTest {
             protected void writeData(Path target, String data) throws IOException {
                 throw new IOException("error");
             }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
+            }
         };
 
         cache.write(() -> "testData1");
@@ -478,6 +537,11 @@ class CacheTest {
             @Override
             protected void writeData(Path target, String data) {
                 // to nothing
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
             }
         };
 

@@ -30,6 +30,10 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @SpringJUnitConfig(classes = {MessagingBeansRegistrar.class, ValidationAutoConfiguration.class})
 class MessagingBeansRegistrarTest {
 
+    private static final String MESSAGE_LISTENER_NAME = "nls-accessibility-map-api-listener-v11";
+
+    private static final String UPDATE_ROAD_SECTION_QUEUE_NAME = "nls_accessibility_map_update_road_section";
+
     @MockitoBean
     private Environment environment;
 
@@ -57,7 +61,7 @@ class MessagingBeansRegistrarTest {
     @Test
     void whenContextLoads_thenStreamTemplateIsRegistered() {
         StreamCreator streamCreator = mock(StreamCreator.class);
-        when(streamCreator.stream("nls_accessibility_map_update_road_section")).thenReturn(streamCreator);
+        when(streamCreator.stream(UPDATE_ROAD_SECTION_QUEUE_NAME)).thenReturn(streamCreator);
         when(streamCreator.maxSegmentSizeBytes(ByteCapacity.kB(5000))).thenReturn(streamCreator);
         when(streamCreator.maxAge(Duration.ofDays(60))).thenReturn(streamCreator);
         when(environment.streamCreator()).thenReturn(streamCreator);
@@ -73,7 +77,7 @@ class MessagingBeansRegistrarTest {
                 .withPropertyValues(
                         "nu.ndw.nls.accessibilitymap.messaging.stream-queues.updateRoadSection.stream-tracking-name=updateRoadSection",
                         "nu.ndw.nls.accessibilitymap.messaging.stream-queues.updateRoadSection.stream-queue-name="
-                        + "nls_accessibility_map_update_road_section"
+                                + UPDATE_ROAD_SECTION_QUEUE_NAME
                 );
 
         contextRunner.run(context -> {
@@ -81,14 +85,14 @@ class MessagingBeansRegistrarTest {
             assertThat(context.getStartupFailure())
                     .hasMessage(
                             "Failed to bind properties under 'nu.ndw.nls.accessibilitymap.messaging' "
-                            + "to nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.MessageStreamProperties")
+                                    + "to nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.MessageStreamProperties")
                     .hasRootCauseInstanceOf(BindValidationException.class);
         });
     }
 
     private AutoTrackingStrategy setupConsumerBuilderMock(ConsumerBuilder consumerBuilder) {
-        when(consumerBuilder.stream("nls_accessibility_map_update_road_section")).thenReturn(consumerBuilder);
-        when(consumerBuilder.name("nls-accessibility-map-api-listener-v3")).thenReturn(consumerBuilder);
+        when(consumerBuilder.stream(UPDATE_ROAD_SECTION_QUEUE_NAME)).thenReturn(consumerBuilder);
+        when(consumerBuilder.name(MESSAGE_LISTENER_NAME)).thenReturn(consumerBuilder);
         when(consumerBuilder.singleActiveConsumer()).thenReturn(consumerBuilder);
         when(consumerBuilder.offset(first())).thenReturn(consumerBuilder);
         AutoTrackingStrategy autoTrackingStrategy = mock(AutoTrackingStrategy.class);
@@ -100,8 +104,8 @@ class MessagingBeansRegistrarTest {
     }
 
     private void verifyConsumerBuilderMock(ConsumerBuilder consumerBuilder, AutoTrackingStrategy autoTrackingStrategy) {
-        verify(consumerBuilder).stream("nls_accessibility_map_update_road_section");
-        verify(consumerBuilder).name("nls-accessibility-map-api-listener-v3");
+        verify(consumerBuilder).stream(UPDATE_ROAD_SECTION_QUEUE_NAME);
+        verify(consumerBuilder).name(MESSAGE_LISTENER_NAME);
         verify(consumerBuilder).singleActiveConsumer();
         verify(consumerBuilder).offset(first());
         verify(autoTrackingStrategy).flushInterval(Duration.ofSeconds(2));

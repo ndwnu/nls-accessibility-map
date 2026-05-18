@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
@@ -23,10 +25,16 @@ import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class RoadSectionUpdateListenerTest {
@@ -72,6 +80,9 @@ class RoadSectionUpdateListenerTest {
     @Mock
     private NwbData nwbData;
 
+    @Mock
+    private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
+
     @Captor
     private ArgumentCaptor<NwbDataUpdates> nwbDataUpdatesCaptor;
 
@@ -82,7 +93,7 @@ class RoadSectionUpdateListenerTest {
         roadSectionUpdateListener = new RoadSectionUpdateListener(networkDataService,
                 nwbVersionIdMapper,
                 nwbRoadSectionUpdateMapper,
-                objectMapper);
+                objectMapper, rabbitListenerEndpointRegistry);
     }
 
     @SneakyThrows
@@ -146,6 +157,28 @@ class RoadSectionUpdateListenerTest {
 
         assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class);
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            NETWORK_DATA,false,false,1
+            NETWORK_DATA,false,true,0
+            NETWORK_DATA,true,true,0
+            TRAFFIC_SIGNS,false,false,0
+            """)
+    void startListener(CacheLoadedEvent.Type type, boolean autoStartup, boolean isRunning, int expectedCalls) {
+        MessageListenerContainer messageListenerContainer = Mockito.mock(MessageListenerContainer.class);
+        if (type == Type.NETWORK_DATA) {
+            when(rabbitListenerEndpointRegistry.getListenerContainer("updateRoadSectionStreamListener"))
+                    .thenReturn(messageListenerContainer);
+            if (!autoStartup) {
+                when(messageListenerContainer.isRunning()).thenReturn(isRunning);
+            }
+        }
+        ReflectionTestUtils.setField(roadSectionUpdateListener, "autoStartup", autoStartup);
+
+        roadSectionUpdateListener.startListener(CacheLoadedEvent.builder().type(type).build());
+        verify(messageListenerContainer, times(expectedCalls)).start();
     }
 }
 
