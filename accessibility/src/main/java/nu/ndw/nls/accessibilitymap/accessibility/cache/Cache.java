@@ -70,6 +70,38 @@ public abstract class Cache<TYPE> {
         read(false);
     }
 
+    public boolean dataExists() {
+        return Files.exists(getCacheConfiguration().getActiveVersion().toPath());
+    }
+
+    public void write(Supplier<TYPE> networkDataSupplier) {
+        OffsetDateTime start = clockService.now();
+        Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
+        try {
+            distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
+            TYPE newData = networkDataSupplier.get();
+            Files.createDirectories(targetLocation);
+            log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
+            writeData(targetLocation.toRealPath().toAbsolutePath(), newData);
+
+            log.info(
+                    "Written {} data to `{}` with size {}MB in {} ms",
+                    cacheConfiguration.getName(),
+                    targetLocation.toFile().getAbsolutePath(),
+                    BigDecimal.valueOf(getSizeInBytes(targetLocation))
+                            .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
+                    Duration.between(start, clockService.now()).toMillis());
+
+            switchSymLink(targetFolder);
+            setData(newData);
+        } catch (IOException exception) {
+            log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
+        } finally {
+            distributedLockService.unlock(cacheConfiguration.getName());
+        }
+    }
+
     protected synchronized void read(boolean triggeredOnStartup) {
 
         try {
@@ -104,34 +136,6 @@ public abstract class Cache<TYPE> {
         dataLock.unlock();
     }
 
-    public void write(Supplier<TYPE> networkDataSupplier) {
-        OffsetDateTime start = clockService.now();
-        Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
-        try {
-            distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
-            TYPE newData = networkDataSupplier.get();
-            Files.createDirectories(targetLocation);
-            log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
-            writeData(targetLocation.toRealPath().toAbsolutePath(), newData);
-
-            log.info(
-                    "Written {} data to `{}` with size {}MB in {} ms",
-                    cacheConfiguration.getName(),
-                    targetLocation.toFile().getAbsolutePath(),
-                    BigDecimal.valueOf(getSizeInBytes(targetLocation))
-                            .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
-                    Duration.between(start, clockService.now()).toMillis());
-
-            switchSymLink(targetFolder);
-            setData(newData);
-        } catch (IOException exception) {
-            log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
-        } finally {
-            distributedLockService.unlock(cacheConfiguration.getName());
-        }
-    }
-
     protected abstract TYPE readData(Path activeVersion) throws IOException;
 
     protected abstract void writeData(Path target, TYPE data) throws IOException;
@@ -163,9 +167,5 @@ public abstract class Cache<TYPE> {
             FileUtils.deleteDirectory(oldTarget.toFile());
             log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
         }
-    }
-
-    public boolean dataExists() {
-        return Files.exists(getCacheConfiguration().getActiveVersion().toPath());
     }
 }
