@@ -20,7 +20,7 @@ services:
     image: ndwnls.azurecr.io/nls-nwb-schema-manager:20260507.12
     platform: linux/amd64
     environment:
-      - SPRING_PROFILES_ACTIVE=build
+      - SPRING_PROFILES_ACTIVE=docker
       - COMMAND=updateNwbSchema
     depends_on:
       nls-postgres:
