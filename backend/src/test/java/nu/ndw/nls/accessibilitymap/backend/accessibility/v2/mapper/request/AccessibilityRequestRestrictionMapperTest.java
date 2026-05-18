@@ -126,22 +126,6 @@ class AccessibilityRequestRestrictionMapperTest {
         }
     }
 
-    @Test
-    void map_coordinatesCouldNotBeSnappedToLine() {
-        when(networkData.findGeometryInNetwork(1)).thenReturn(Optional.of(roadSectionLineString));
-
-        var accessibilityRequestRoadSectionRestrictionJson = AccessibilityRequestRoadSectionRestrictionJson.builder()
-                .id(1)
-                .build();
-
-        assertThatThrownBy(() -> accessibilityRequestRestrictionMapper.map(networkData, accessibilityRequestRoadSectionRestrictionJson))
-                .isInstanceOf(ApiException.class)
-                .hasFieldOrPropertyWithValue("errorId", UUID.fromString("355aba7d-4106-4aec-b0fc-94620647b37d"))
-                .hasFieldOrPropertyWithValue("statusCode", HttpStatus.BAD_REQUEST)
-                .hasFieldOrPropertyWithValue("title", "Invalid road section restriction")
-                .hasFieldOrPropertyWithValue("description",
-                        "Road section with id '1' available in NWB version '0'. Please try a different road section.");
-    }
 
     @Test
     void map_road_section_could_not_be_found() {

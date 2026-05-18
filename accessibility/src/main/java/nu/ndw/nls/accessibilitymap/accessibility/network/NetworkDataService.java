@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,7 +72,7 @@ public class NetworkDataService extends Cache<NetworkData> {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    @Transactional
+    @Timed(value = "accessibilitymap.accessibility.writeNwbDataUpdates")
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
         try {
@@ -93,14 +94,14 @@ public class NetworkDataService extends Cache<NetworkData> {
             Path activeVersion = getCacheConfiguration().getActiveVersion().toPath().toAbsolutePath().toRealPath();
             boolean preserveFileDate = false;
             FileUtils.copyDirectory(activeVersion.toFile(), targetLocation.toFile(), null, preserveFileDate);
-            log.info("Copied active version to {}", targetLocation.toAbsolutePath());
+            log.debug("Copied active version to {}", targetLocation.toAbsolutePath());
 
             Path nwbUpdatesPath = targetLocation.resolve(NWB_UPDATE_DIRECTORY);
             jsonWriter.writeJsonToFile(nwbUpdatesPath, NWB_CHANGED_ROAD_SECTIONS_FILE, newNwbDataUpdates);
-            log.info("Wrote nwbDataUpdates to {}", nwbUpdatesPath);
+            log.debug("Wrote nwbDataUpdates to {}", nwbUpdatesPath);
             switchSymLink(targetFolder);
             setData(updatedNetworkData);
-            log.info("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
+            log.debug("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
         } catch (IOException exception) {
             log.error("Failed to write nwbDataUpdates to disk", exception);
             throw new IllegalStateException(exception);

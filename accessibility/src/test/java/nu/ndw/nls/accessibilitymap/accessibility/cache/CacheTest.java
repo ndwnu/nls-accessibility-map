@@ -21,7 +21,6 @@ import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -188,7 +187,6 @@ class CacheTest {
                 "test");
     }
 
-    @NotNull
     private Cache<Object> getCache() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
@@ -263,7 +261,6 @@ class CacheTest {
                         .getAbsolutePath()));
     }
 
-    @NotNull
     private Cache<Object> getObjectCache1() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             @Override
@@ -303,7 +300,6 @@ class CacheTest {
         assertThat(cache.get()).isNull();
     }
 
-    @NotNull
     private Cache<Object> getObjectCache() {
         Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService) {
             private int counter;

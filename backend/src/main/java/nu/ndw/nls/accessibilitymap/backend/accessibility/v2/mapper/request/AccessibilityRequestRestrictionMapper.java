@@ -12,7 +12,6 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
-import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -21,9 +20,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class AccessibilityRequestRestrictionMapper {
-
-    private static final String INVALID_ROAD_SECTION_ERR_MESSAGE = "Road section with id '%s' available in NWB version '%s'. "
-            + "Please try a different road section.";
 
     private static final String ROAD_SECTION_NOT_FOUND_MESSAGE = "Road section with id '%s' not found in NWB version '%s'.";
 
@@ -65,28 +61,23 @@ public class AccessibilityRequestRestrictionMapper {
         LineString geometry = networkData.findGeometryInNetwork(roadSectionRestrictionJson.getId())
                 .orElseThrow(() -> createApiException(
                         networkData,
-                        roadSectionRestrictionJson,
-                        ROAD_SECTION_NOT_FOUND_MESSAGE)
+                                roadSectionRestrictionJson
+                        )
                 );
-        try {
             return fractionAndDistanceCalculator.getCoordinateAndBearing(
                     roadSectionRestrictionJson.getDirection() == DirectionJson.FORWARD ? geometry : geometry.reverse(),
                     roadSectionRestrictionJson.getFraction().doubleValue());
-        } catch (Exception e) {
-            log.debug("Failed to get road section snapped to geometry coordinates", e);
-            throw createApiException(networkData, roadSectionRestrictionJson, INVALID_ROAD_SECTION_ERR_MESSAGE);
-        }
+
     }
 
-    @NotNull
     private ApiException createApiException(NetworkData networkData,
-            AccessibilityRequestRoadSectionRestrictionJson roadSectionRestrictionJson, String message
+            AccessibilityRequestRoadSectionRestrictionJson roadSectionRestrictionJson
     ) {
         return new ApiException(
                 UUID.fromString("355aba7d-4106-4aec-b0fc-94620647b37d"),
                 HttpStatus.BAD_REQUEST,
                 "Invalid road section restriction",
-                message
+                AccessibilityRequestRestrictionMapper.ROAD_SECTION_NOT_FOUND_MESSAGE
                         .formatted(roadSectionRestrictionJson.getId(), networkData.getNwbVersion()));
     }
 }
