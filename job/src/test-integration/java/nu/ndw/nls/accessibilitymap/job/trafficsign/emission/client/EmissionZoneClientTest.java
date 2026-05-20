@@ -102,7 +102,7 @@ class EmissionZoneClientTest {
                 .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_JSON_VALUE))
                 .withHeader(HttpHeaders.AUTHORIZATION, equalTo(format("Bearer %s", accessToken)))
                 .willReturn(aResponse()
-                        .withStatus(HttpStatus.OK.value())
+                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .withHeader(HttpHeaders.CONTENT_TYPE, "text/html")
                         .withBody("<html><head><title>error</title></head><body>Error!</body></html>")
                 )

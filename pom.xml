@@ -30,7 +30,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <nls-springboot.version>10.0.4</nls-springboot.version>
+    <nls-springboot.version>10.0.5</nls-springboot.version>
     <nls-springboot.logging.version>9.0.0</nls-springboot.logging.version>
     <nls-springboot.component-test.version>14.0.0</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>9.0.0</nls-springboot.monitoring.version>
@@ -161,7 +161,7 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
-      <!-- @todo: remove this explicit dependency once it's included in the bom -->
+      <!-- Resilience4j bug: The resilience4j-bom:2.4.0 is missing the spring boot 4 dependency -->
       <dependency>
         <groupId>io.github.resilience4j</groupId>
         <artifactId>resilience4j-spring-boot4</artifactId>
