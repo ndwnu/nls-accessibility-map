@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import lombok.NoArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
-import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
 public class TrafficSigns extends LinkedHashSet<TrafficSign> {
@@ -18,7 +17,7 @@ public class TrafficSigns extends LinkedHashSet<TrafficSign> {
         this(Arrays.asList(trafficSigns));
     }
 
-    public TrafficSigns(@NotNull Collection<TrafficSign> trafficSigns) {
+    public TrafficSigns(Collection<TrafficSign> trafficSigns) {
         super(trafficSigns);
     }
 }

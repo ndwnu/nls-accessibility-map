@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.request;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -9,8 +10,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRoadSectionRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.DirectionJson;
@@ -44,12 +43,6 @@ class AccessibilityRequestRestrictionMapperTest {
     private NetworkData networkData;
 
     @Mock
-    private NwbData nwbData;
-
-    @Mock
-    private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
-
-    @Mock
     private LineString roadSectionLineString;
 
     @Mock
@@ -73,15 +66,14 @@ class AccessibilityRequestRestrictionMapperTest {
     @EnumSource(DirectionJson.class)
     void map(DirectionJson directionJson) {
 
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
-        when(accessibilityNwbRoadSection.geometry()).thenReturn(roadSectionLineString);
+        when(networkData.findGeometryInNetwork(1)).thenReturn(Optional.of(roadSectionLineString));
 
         if (directionJson == DirectionJson.FORWARD) {
             when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineString, 2.0f)).thenReturn(coordinateAndBearing);
         } else {
             when(roadSectionLineString.reverse()).thenReturn(roadSectionLineStringReversed);
-            when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineStringReversed, 2.0f)).thenReturn(coordinateAndBearing);
+            when(fractionAndDistanceCalculator.getCoordinateAndBearing(roadSectionLineStringReversed,
+                    2.0f)).thenReturn(coordinateAndBearing);
             when(accessibilityRequestDirectionMapper.map(DirectionJson.BACKWARD)).thenReturn(Direction.BACKWARD);
         }
 
@@ -130,27 +122,24 @@ class AccessibilityRequestRestrictionMapperTest {
             assertThat(exception.getTitle()).isEqualTo("Invalid restriction type");
             assertThat(exception.getDescription())
                     .isEqualTo("Restriction type 'AccessibilityRequestRestrictionJson' is not a valid restriction type."
-                               + " Please check the api specification for valid options.");
+                            + " Please check the api specification for valid options.");
         }
     }
 
+
     @Test
-    void map_coordinatesCouldNotBeSnappedToLine() {
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.empty());
+    void map_road_section_could_not_be_found() {
+        when(networkData.findGeometryInNetwork(1)).thenReturn(Optional.empty());
 
         var accessibilityRequestRoadSectionRestrictionJson = AccessibilityRequestRoadSectionRestrictionJson.builder()
                 .id(1)
                 .build();
 
-        try {
-            accessibilityRequestRestrictionMapper.map(networkData, accessibilityRequestRoadSectionRestrictionJson);
-        } catch (ApiException exception) {
-            assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("355aba7d-4106-4aec-b0fc-94620647b37d"));
-            assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            assertThat(exception.getTitle()).isEqualTo("Invalid road section restriction");
-            assertThat(exception.getDescription())
-                    .isEqualTo("Road section with id '1' available in NWB version '0'. Please try a different road section.");
-        }
+        assertThatThrownBy(() -> accessibilityRequestRestrictionMapper.map(networkData, accessibilityRequestRoadSectionRestrictionJson))
+                .isInstanceOf(ApiException.class)
+                .hasFieldOrPropertyWithValue("errorId", UUID.fromString("355aba7d-4106-4aec-b0fc-94620647b37d"))
+                .hasFieldOrPropertyWithValue("statusCode", HttpStatus.BAD_REQUEST)
+                .hasFieldOrPropertyWithValue("title", "Invalid road section restriction")
+                .hasFieldOrPropertyWithValue("description", "Road section with id '1' not found in NWB version '0'.");
     }
 }

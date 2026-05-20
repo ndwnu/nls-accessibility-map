@@ -38,8 +38,13 @@ class StreamQueuePropertiesTest extends ValidationTest {
         StreamQueueProperties config = StreamQueueProperties.builder().build();
         validate(
                 config,
-                List.of("streamQueueName", "consumer", "streamTrackingName", "maxSegmentSizeInKb", "maxAgeInDays"),
-                List.of("must be greater than 0", "must be greater than 0", "must not be blank", "must not be blank", "must not be null"));
+                List.of("streamQueueName", "consumer", "listenerAutoStart", "streamTrackingName", "maxSegmentSizeInKb", "maxAgeInDays"),
+                List.of("must be greater than 0",
+                        "must be greater than 0",
+                        "must not be null",
+                        "must not be blank",
+                        "must not be blank",
+                        "must not be null"));
     }
 
     @Test
@@ -50,6 +55,7 @@ class StreamQueuePropertiesTest extends ValidationTest {
                 .streamQueueName("testQueueName")
                 .maxAgeInDays(1)
                 .maxSegmentSizeInKb(500)
+                .listenerAutoStart(false)
                 .consumer(
                         StreamConsumerProperties.builder()
                                 .flushIntervalInSeconds(5)
@@ -76,6 +82,7 @@ class StreamQueuePropertiesTest extends ValidationTest {
         return StreamQueueProperties.builder()
                 .streamTrackingName("testTrackingName")
                 .streamQueueName("testQueueName")
+                .listenerAutoStart(false)
                 .consumer(
                         StreamConsumerProperties.builder()
                                 .flushIntervalInSeconds(0)

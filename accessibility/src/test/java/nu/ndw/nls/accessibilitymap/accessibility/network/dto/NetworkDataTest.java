@@ -4,6 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import com.graphhopper.storage.BaseGraph;
+import com.graphhopper.util.EdgeIteratorState;
+import com.graphhopper.util.FetchMode;
+import com.graphhopper.util.PointList;
+import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
@@ -12,7 +17,9 @@ import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.locationtech.jts.geom.LineString;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @SuppressWarnings("DataFlowIssue")
@@ -61,7 +68,6 @@ class NetworkDataTest extends ValidationTest {
         assertThat(networkData.getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
     }
 
-
     @Test
     void constructor_notTheSameNwbVersion() {
 
@@ -101,6 +107,30 @@ class NetworkDataTest extends ValidationTest {
     void toStringTest() {
 
         assertThat(networkData).hasToString("NetworkData(nwbVersion=1, networkGraphHopper=networkGraphHopper)");
+    }
+
+    @Test
+    void findGeometryInNetwork() {
+        long roadSectionId = 1L;
+        int edgeKey = 1;
+        BaseGraph baseGraph = Mockito.mock(BaseGraph.class);
+        EdgeIteratorState edgeIteratorState = Mockito.mock(EdgeIteratorState.class);
+        PointList pointList = Mockito.mock(PointList.class);
+        LineString lineString = Mockito.mock(LineString.class);
+        when(networkGraphHopper.getWayIdToEdgeKey()).thenReturn(Map.of(roadSectionId, edgeKey));
+        when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
+        when(baseGraph.getEdgeIteratorStateForKey(edgeKey)).thenReturn(edgeIteratorState);
+        when(edgeIteratorState.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
+        when(pointList.toLineString(false)).thenReturn(lineString);
+        assertThat(networkData.findGeometryInNetwork(roadSectionId)).contains(lineString);
+    }
+
+    @Test
+    void findGeometryInNetwork_empty() {
+        long roadSectionId = 1L;
+        int edgeKey = 1;
+        when(networkGraphHopper.getWayIdToEdgeKey()).thenReturn(Map.of(roadSectionId, edgeKey));
+        assertThat(networkData.findGeometryInNetwork(2)).isEmpty();
     }
 
     @Override

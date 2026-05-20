@@ -18,6 +18,9 @@ public class StreamQueueProperties {
     @NotBlank
     private String streamTrackingName;
 
+    @NotNull
+    private Boolean listenerAutoStart;
+
     @NotBlank
     private String streamQueueName;
 
@@ -32,12 +35,16 @@ public class StreamQueueProperties {
     private StreamConsumerProperties consumer;
 
     @Valid
+    @Builder.Default
     private Collection<String> messagesToSkip;
 
     public boolean isMessageToSkip(Object id) {
+        if (Objects.isNull(messagesToSkip)) {
+            return false;
+        }
         // Skip messages without a messageId
         // or check the list from the configuration if the message should be skipped
         return Objects.isNull(id)
-               || (messagesToSkip.contains(id.toString()));
+                || (messagesToSkip.contains(id.toString()));
     }
 }

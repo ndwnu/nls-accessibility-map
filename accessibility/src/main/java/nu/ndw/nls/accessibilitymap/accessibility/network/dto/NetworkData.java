@@ -1,7 +1,9 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network.dto;
 
+import com.graphhopper.util.FetchMode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -9,6 +11,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetw
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
 @Getter
@@ -55,5 +58,24 @@ public final class NetworkData {
                         .nwbVersion(nwbData.getNwbVersionId()).build(),
                 nwbData,
                 nwbDataUpdates);
+    }
+
+    /**
+     * Retrieves the geometric representation of a road section from the network using its unique identifier.
+     *
+     * @param roadSectionId the unique identifier of the road section in the network
+     * @return a LineString object representing the geometry of the specified road section
+     */
+    public Optional<LineString> findGeometryInNetwork(long roadSectionId) {
+        if (!networkGraphHopper.getWayIdToEdgeKey().containsKey(roadSectionId)) {
+            return Optional.empty();
+        }
+        int edgeKey = networkGraphHopper.getWayIdToEdgeKey()
+                .get(roadSectionId);
+        return Optional.of(networkGraphHopper
+                .getBaseGraph()
+                .getEdgeIteratorStateForKey(edgeKey)
+                .fetchWayGeometry(FetchMode.ALL)
+                .toLineString(false));
     }
 }

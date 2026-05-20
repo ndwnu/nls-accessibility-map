@@ -35,6 +35,7 @@ public class RabbitStreamListenerContainerFactoryFactoryBean
 
         StreamRabbitListenerContainerFactory factory = new StreamRabbitListenerContainerFactory(environment);
         factory.setNativeListener(true);
+
         factory.setAdviceChain(
                 RetryInterceptorBuilder
                         .stateful()
