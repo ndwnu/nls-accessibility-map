@@ -8,8 +8,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import java.util.Arrays;
@@ -36,6 +34,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 @Component
@@ -45,7 +45,7 @@ public class TrafficSignDriver implements StateManagement {
 
     private final FileService fileService;
 
-    private final ObjectMapper objectMapper = new tools.jackson.databind.json.JsonMapper();
+    private final JsonMapper jsonMapper = new JsonMapper();
 
     private final JtsPointJsonMapper jtsPointJsonMapper;
 
@@ -74,7 +74,7 @@ public class TrafficSignDriver implements StateManagement {
                             .willReturn(aResponse()
                                     .withStatus(HttpStatus.OK.value())
                                     .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                    .withBody(objectMapper.writeValueAsString(
+                                    .withBody(jsonMapper.writeValueAsString(
                                             TrafficSignGeoJsonFeatureCollectionDto.builder()
                                                     .features(trafficSigns)
                                                     .build()))));
