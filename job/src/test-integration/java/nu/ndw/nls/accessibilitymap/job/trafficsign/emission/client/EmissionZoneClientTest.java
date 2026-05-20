@@ -10,7 +10,6 @@ import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import io.github.resilience4j.springboot.retry.autoconfigure.RetryAutoConfiguration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -40,7 +39,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.wiremock.spring.EnableWireMock;
 
-@SpringBootTest(classes = {EmissionZoneClientTest.FeignTestConfig.class, RetryAutoConfiguration.class, EmissionZoneOAuthConfiguration.class})
+@SpringBootTest(classes = {EmissionZoneClientTest.FeignTestConfig.class, EmissionZoneOAuthConfiguration.class})
 @EnableConfigurationProperties
 @EnableWireMock
 @TestPropertySource(properties = {
