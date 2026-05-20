@@ -56,7 +56,11 @@ public class MissingRoadSectionProvider {
                 .filter(Objects::nonNull)
                 .flatMap(List::stream)
                 .map(accessibilityRoadSection -> {
-                    LineString geometry = accessibilityRoadSection.geometry();
+                    LineString geometry = networkData.findGeometryInNetwork(accessibilityRoadSection.roadSectionId())
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException("Road section geometry not found for road section id: %d"
+                                            .formatted(accessibilityRoadSection.roadSectionId())));
+
                     if (!searchArea.intersects(PointList.from(geometry))) {
                         return null;
                     }

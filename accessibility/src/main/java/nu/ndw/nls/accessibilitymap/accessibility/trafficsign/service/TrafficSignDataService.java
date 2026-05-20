@@ -53,4 +53,9 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
     protected void writeData(Path target, TrafficSigns data) throws IOException {
         jsonWriter.writeJsonToFile(target, TRAFFIC_SIGNS_JSON, data);
     }
+
+    @Override
+    protected void publishCacheLoadedEvent() {
+        // not implemented
+    }
 }

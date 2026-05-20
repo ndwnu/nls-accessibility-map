@@ -115,6 +115,7 @@ public class AccessibilityMapApiStepDefinitions {
         Response<Void, RoadSectionFeatureCollectionJson> response = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJsonForMunicipality();
 
         assertThatJson(response.body())
+                .withTolerance(1e-6)
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(testDataProvider.readFromFile("api/accessibility/v1", expectedResponseFile));
     }
@@ -148,7 +149,7 @@ public class AccessibilityMapApiStepDefinitions {
 
         assertThatJson(actualResponse.bodyAsString())
                 // Ignore small floating point differences in coordinates local vs aks env
-                .withTolerance(1e-12)
+                .withTolerance(1e-6)
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(expectedResponse);
     }

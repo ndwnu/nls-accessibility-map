@@ -92,7 +92,8 @@ public class GraphHopperService {
     private RoutingNetworkSettings<AccessibilityLink> networkSettingsWithData(
             Path location,
             List<AccessibilityLink> accessibilityLinks,
-            OffsetDateTime timestamp) {
+            OffsetDateTime timestamp
+    ) {
 
         return defaultNetworkSettingsBuilder(location)
                 .indexed(true)
