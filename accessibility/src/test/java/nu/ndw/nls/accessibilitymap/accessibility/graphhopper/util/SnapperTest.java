@@ -91,19 +91,7 @@ class SnapperTest {
     @Test
     void snapLocation() {
 
-        when(location.point()).thenReturn(point);
-        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
-        when(locationIndexTree.findClosest(eq(2.0), eq(1.0), edgeFilterCaptor.capture())).thenReturn(actualSnap);
-        when(pointMatchService.match(networkGraphHopper, point)).thenReturn(Optional.of(candidateMatch));
-        when(candidateMatch.getSnappedPoint()).thenReturn(snappedPoint);
-        when(snappedPoint.isValid()).thenReturn(true);
-        when(snappedPoint.getX()).thenReturn(1.0);
-        when(snappedPoint.getY()).thenReturn(2.0);
-        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(roadSectionEncodedValue);
-        when(edgeIteratorState.get(roadSectionEncodedValue)).thenReturn(23);
-        when(networkData.findCarriageWayTypeCodeByRoadSectionId(23)).thenReturn(Optional.of(CarriagewayTypeCode.RB));
+        setupFixtureForSnapLocation(CarriagewayTypeCode.RB);
 
         Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
 
@@ -114,19 +102,7 @@ class SnapperTest {
     @Test
     void snapLocation_notCarAccessible() {
 
-        when(location.point()).thenReturn(point);
-        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
-        when(locationIndexTree.findClosest(eq(2.0), eq(1.0), edgeFilterCaptor.capture())).thenReturn(actualSnap);
-        when(pointMatchService.match(networkGraphHopper, point)).thenReturn(Optional.of(candidateMatch));
-        when(candidateMatch.getSnappedPoint()).thenReturn(snappedPoint);
-        when(snappedPoint.isValid()).thenReturn(true);
-        when(snappedPoint.getX()).thenReturn(1.0);
-        when(snappedPoint.getY()).thenReturn(2.0);
-        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
-        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(roadSectionEncodedValue);
-        when(edgeIteratorState.get(roadSectionEncodedValue)).thenReturn(23);
-        when(networkData.findCarriageWayTypeCodeByRoadSectionId(23)).thenReturn(Optional.of(CarriagewayTypeCode.FP));
+        setupFixtureForSnapLocation(CarriagewayTypeCode.FP);
 
         Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
 
@@ -137,6 +113,18 @@ class SnapperTest {
     @Test
     void snapLocation_roadSectionNotPresentInNetworkGraphHopper() {
 
+        setupFixtureForSnapLocation(null);
+
+        Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
+
+        assertThat(foundSnap).contains(actualSnap);
+        assertThatThrownBy(() -> edgeFilterCaptor.getValue().accept(edgeIteratorState))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Road section not found for link id: 23");
+    }
+
+    private void setupFixtureForSnapLocation(CarriagewayTypeCode carriageWayTypeCode) {
+        Optional<CarriagewayTypeCode> carriageWayTypeCodeOptional = Optional.ofNullable(carriageWayTypeCode);
         when(location.point()).thenReturn(point);
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
@@ -149,14 +137,7 @@ class SnapperTest {
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(roadSectionEncodedValue);
         when(edgeIteratorState.get(roadSectionEncodedValue)).thenReturn(23);
-        when(networkData.findCarriageWayTypeCodeByRoadSectionId(23)).thenReturn(Optional.empty());
-
-        Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
-
-        assertThat(foundSnap).contains(actualSnap);
-        assertThatThrownBy(() -> edgeFilterCaptor.getValue().accept(edgeIteratorState))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Road section not found for link id: 23");
+        when(networkData.findCarriageWayTypeCodeByRoadSectionId(23)).thenReturn(carriageWayTypeCodeOptional);
     }
 
     @Test
