@@ -8,8 +8,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
@@ -77,5 +80,12 @@ public final class NetworkData {
                 .getEdgeIteratorStateForKey(edgeKey)
                 .fetchWayGeometry(FetchMode.ALL)
                 .toLineString(false));
+    }
+
+    public Optional<CarriagewayTypeCode> findCarriageWayTypeCodeByRoadSectionId(long roadSectionId) {
+        return nwbDataUpdates.findChangedNwbRoadSectionById(roadSectionId)
+                .map(AccessibilityNwbRoadSectionUpdate::carriagewayTypeCode)
+                .or(() -> nwbData.findAccessibilityNwbRoadSectionById(roadSectionId)
+                        .map(AccessibilityNwbRoadSection::carriagewayTypeCode));
     }
 }
