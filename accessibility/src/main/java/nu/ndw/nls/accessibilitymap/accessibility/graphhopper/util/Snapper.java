@@ -73,10 +73,11 @@ public class Snapper {
             NetworkData networkData, EdgeIteratorState edgeIteratorState
     ) {
         EncodingManager encodingManager = networkData.getNetworkGraphHopper().getEncodingManager();
-        CarriagewayTypeCode carriagewayTypeCode = networkData.findCarriageWayTypeCodeByRoadSectionId(edgeIteratorState.get(encodingManager.getIntEncodedValue(
-                        WAY_ID_KEY)))
+        int roadSectionId = edgeIteratorState.get(encodingManager.getIntEncodedValue(
+                WAY_ID_KEY));
+        CarriagewayTypeCode carriagewayTypeCode = networkData.findCarriageWayTypeCodeByRoadSectionId(roadSectionId)
                 .orElseThrow(() -> new IllegalStateException(
-                        "Road section not found for link id: " + edgeIteratorState.get(encodingManager.getIntEncodedValue(WAY_ID_KEY))));
+                        "Road section not found for link id: " + roadSectionId));
         return CAR_ACCESSIBLE_ROADS.contains(carriagewayTypeCode);
     }
 }
