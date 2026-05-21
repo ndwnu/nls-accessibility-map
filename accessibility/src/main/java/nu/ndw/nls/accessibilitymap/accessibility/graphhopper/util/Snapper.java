@@ -76,8 +76,7 @@ public class Snapper {
         int roadSectionId = edgeIteratorState.get(encodingManager.getIntEncodedValue(
                 WAY_ID_KEY));
         CarriagewayTypeCode carriagewayTypeCode = networkData.findCarriageWayTypeCodeByRoadSectionId(roadSectionId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Road section not found for link id: " + roadSectionId));
+                .orElseThrow(() -> new IllegalStateException("Road section not found for link id: " + roadSectionId));
         return CAR_ACCESSIBLE_ROADS.contains(carriagewayTypeCode);
     }
 }
