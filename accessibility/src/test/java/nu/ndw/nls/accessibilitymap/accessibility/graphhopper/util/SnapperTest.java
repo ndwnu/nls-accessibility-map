@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
 
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -15,7 +16,9 @@ import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.PointMatchService;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -39,6 +42,9 @@ class SnapperTest {
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
+
+    @Mock
+    private NetworkData networkData;
 
     @Mock
     private LocationIndexTree locationIndexTree;
@@ -85,48 +91,83 @@ class SnapperTest {
     @Test
     void snapLocation() {
 
+        setupFixtureForSnapLocation(CarriagewayTypeCode.RB);
+
+        Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
+
+        assertThat(foundSnap).contains(actualSnap);
+        assertThat(edgeFilterCaptor.getValue().accept(edgeIteratorState)).isTrue();
+    }
+
+    @Test
+    void snapLocation_notCarAccessible() {
+
+        setupFixtureForSnapLocation(CarriagewayTypeCode.FP);
+
+        Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
+
+        assertThat(foundSnap).contains(actualSnap);
+        assertThat(edgeFilterCaptor.getValue().accept(edgeIteratorState)).isFalse();
+    }
+
+    @Test
+    void snapLocation_roadSectionNotPresentInNetworkGraphHopper() {
+
+        setupFixtureForSnapLocation(null);
+
+        Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
+
+        assertThat(foundSnap).contains(actualSnap);
+        assertThatThrownBy(() -> edgeFilterCaptor.getValue().accept(edgeIteratorState))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Road section not found for link id: 23");
+    }
+
+    private void setupFixtureForSnapLocation(CarriagewayTypeCode carriageWayTypeCode) {
+        Optional<CarriagewayTypeCode> carriageWayTypeCodeOptional = Optional.ofNullable(carriageWayTypeCode);
         when(location.point()).thenReturn(point);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
-        when(locationIndexTree.findClosest(2.0, 1.0, EdgeFilter.ALL_EDGES)).thenReturn(actualSnap);
+        when(locationIndexTree.findClosest(eq(2.0), eq(1.0), edgeFilterCaptor.capture())).thenReturn(actualSnap);
         when(pointMatchService.match(networkGraphHopper, point)).thenReturn(Optional.of(candidateMatch));
         when(candidateMatch.getSnappedPoint()).thenReturn(snappedPoint);
         when(snappedPoint.isValid()).thenReturn(true);
         when(snappedPoint.getX()).thenReturn(1.0);
         when(snappedPoint.getY()).thenReturn(2.0);
-
-        Optional<Snap> foundSnap = snapper.snapLocation(networkGraphHopper, location);
-
-        assertThat(foundSnap).contains(actualSnap);
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+        when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(roadSectionEncodedValue);
+        when(edgeIteratorState.get(roadSectionEncodedValue)).thenReturn(23);
+        when(networkData.findCarriageWayTypeCodeByRoadSectionId(23)).thenReturn(carriageWayTypeCodeOptional);
     }
 
     @Test
     void snapLocation_noLocation() {
 
-        Optional<Snap> foundSnap = snapper.snapLocation(networkGraphHopper, null);
+        Optional<Snap> foundSnap = snapper.snapLocation(networkData, null);
 
         assertThat(foundSnap).isEmpty();
     }
 
     @Test
     void snapLocation_noMatchFound() {
-
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(location.point()).thenReturn(point);
         when(pointMatchService.match(networkGraphHopper, point)).thenReturn(Optional.empty());
 
-        Optional<Snap> foundSnap = snapper.snapLocation(networkGraphHopper, location);
+        Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
 
         assertThat(foundSnap).isEmpty();
     }
 
     @Test
     void snapLocation_notValid() {
-
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(location.point()).thenReturn(point);
         when(pointMatchService.match(networkGraphHopper, point)).thenReturn(Optional.of(candidateMatch));
         when(candidateMatch.getSnappedPoint()).thenReturn(snappedPoint);
         when(snappedPoint.isValid()).thenReturn(false);
 
-        Optional<Snap> foundSnap = snapper.snapLocation(networkGraphHopper, location);
+        Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
 
         assertThat(foundSnap).isEmpty();
     }
@@ -172,7 +213,8 @@ class SnapperTest {
         assertThat(edgeFilterCaptor.getValue().accept(edgeIteratorState)).isTrue();
         assertThat(foundSnap).isEmpty();
 
-        loggerExtension.containsLog(Level.DEBUG, "No road section present for restriction 'restriction' that could be linked to the nwb map in the Graph Hopper network.");
+        loggerExtension.containsLog(Level.DEBUG,
+                "No road section present for restriction 'restriction' that could be linked to the nwb map in the Graph Hopper network.");
     }
 
     @Test
@@ -195,6 +237,7 @@ class SnapperTest {
         assertThat(edgeFilterCaptor.getValue().accept(edgeIteratorState)).isFalse();
         assertThat(foundSnap).isEmpty();
 
-        loggerExtension.containsLog(Level.DEBUG, "No road section present for restriction 'restriction' that could be linked to the nwb map in the Graph Hopper network.");
+        loggerExtension.containsLog(Level.DEBUG,
+                "No road section present for restriction 'restriction' that could be linked to the nwb map in the Graph Hopper network.");
     }
 }
