@@ -70,7 +70,8 @@ public class Snapper {
     }
 
     private static boolean locationIsCarAccessible(
-            NetworkData networkData, EdgeIteratorState edgeIteratorState
+            NetworkData networkData,
+            EdgeIteratorState edgeIteratorState
     ) {
         EncodingManager encodingManager = networkData.getNetworkGraphHopper().getEncodingManager();
         int roadSectionId = edgeIteratorState.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
