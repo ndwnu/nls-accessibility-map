@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.StreamConsumerExponentialBackoffProperties;
 import nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.StreamConsumerProperties;
 import nu.ndw.nls.accessibilitymap.backend.rabbitmq.properties.StreamQueueProperties;
+import org.jspecify.annotations.NonNull;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
@@ -22,8 +23,8 @@ import org.springframework.util.backoff.ExponentialBackOff;
 
 @RequiredArgsConstructor
 @Slf4j
-public class RabbitStreamListenerContainerFactoryFactoryBean
-        implements FactoryBean<RabbitListenerContainerFactory<StreamListenerContainer>> {
+public class RabbitStreamListenerContainerFactoryFactoryBean implements
+        FactoryBean<RabbitListenerContainerFactory<StreamListenerContainer>> {
 
     private final StreamQueueProperties queueConfig;
 
@@ -90,8 +91,7 @@ public class RabbitStreamListenerContainerFactoryFactoryBean
     private ConsumerCustomizer createConsumerCustomizer() {
         StreamConsumerProperties consumerConfig = queueConfig.getConsumer();
 
-        return (id, builder) -> builder
-                .name(queueConfig.getStreamTrackingName())
+        return (id, builder) -> builder.name(queueConfig.getStreamTrackingName())
                 .stream(queueConfig.getStreamQueueName())
                 .singleActiveConsumer()
                 .offset(OffsetSpecification.first())
