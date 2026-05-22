@@ -29,6 +29,11 @@ management:
     health:
       probes:
         enabled: true
+    command:
+      access: unrestricted
+    accessibility-map-cache-reload:
+      access: unrestricted
+
   datadog:
     metrics:
       export:
@@ -85,3 +90,6 @@ logging:
   level:
     root: INFO
     nu.ndw.nls: DEBUG
+    org.springframework.boot.actuate.endpoint.web: TRACE
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG

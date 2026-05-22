@@ -21,7 +21,7 @@ public class OAuthDriver implements StateManagement {
     public void prepareTokenRetrieval() {
 
         stubFor(WireMock.post(urlEqualTo("/auth/realms/ndw/protocol/openid-connect/token"))
-                .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/x-www-form-urlencoded;charset=UTF-8"))
+                .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/x-www-form-urlencoded"))
                 .withRequestBody(equalTo("grant_type=client_credentials"))
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())

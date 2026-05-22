@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.nwb.messaging;
 
+import com.rabbitmq.stream.Resource.Context;
 import tools.jackson.databind.ObjectMapper;
 import com.rabbitmq.stream.Message;
 import io.micrometer.core.annotation.Timed;

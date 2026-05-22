@@ -9,10 +9,13 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.bind.validation.ValidationBindHandler;
 import org.springframework.context.EnvironmentAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -31,6 +34,16 @@ public class MessagingBeansRegistrar implements BeanDefinitionRegistryPostProces
         this.environment = environment;
     }
 
+    /**
+     * For each {@link MessageStreamProperties#getStreamQueues()}, we create a {@link RabbitStreamTemplateFactoryBean} and a
+     * {@link RabbitStreamListenerContainerFactoryFactoryBean}. We can only create one bean with {@link Bean} in a {@link Configuration}
+     * class, therefor we use this {@link BeanDefinitionRegistryPostProcessor} instead. This processor runs very early in the bean
+     * dependency management system and {@link ConfigurationProperties} beans are not yet available in this phase therefor we need to
+     * manually construct and validate the {@link MessageStreamProperties}
+     *
+     * @param registry the bean definition registry used by the application context
+     * @throws BeansException
+     */
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
