@@ -33,7 +33,7 @@
     <nls-springboot.monitoring.version>8.4.32</nls-springboot.monitoring.version>
     <nls-springboot.test.version>9.1.9</nls-springboot.test.version>
     <nls-springboot.gatling-test.version>1.1.1</nls-springboot.gatling-test.version>
-    <gatling.version>3.15.0</gatling.version>
+    <gatling.version>3.15.1</gatling.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
