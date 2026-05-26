@@ -58,6 +58,7 @@ public class AccessibilityRequestMapperV2 {
 
         accessibilityRequestBuilder
                 .timestamp(clockService.now())
+                .effectivelyAccessible(Boolean.TRUE == accessibilityRequest.getEffectivelyAccessible())
                 .addMissingRoadsSectionsFromNwb(true)
                 .vehicleHeightInCm(mapToDouble(accessibilityRequest.getVehicle().getHeight(), MULTIPLIER_FROM_METERS_TO_CM))
                 .vehicleLengthInCm(mapToDouble(accessibilityRequest.getVehicle().getLength(), MULTIPLIER_FROM_METERS_TO_CM))
@@ -81,7 +82,8 @@ public class AccessibilityRequestMapperV2 {
 
     private static void mapDestination(
             AccessibilityRequestJson accessibilityRequest,
-            AccessibilityRequestBuilder accessibilityRequestBuilder) {
+            AccessibilityRequestBuilder accessibilityRequestBuilder
+    ) {
         LocationJson destination = accessibilityRequest.getDestination();
         if (Objects.nonNull(destination)) {
             accessibilityRequestBuilder
@@ -92,7 +94,8 @@ public class AccessibilityRequestMapperV2 {
 
     private static void mapFrom(
             AccessibilityRequestJson accessibilityRequestJson,
-            AccessibilityRequestBuilder accessibilityRequestBuilder) {
+            AccessibilityRequestBuilder accessibilityRequestBuilder
+    ) {
         LocationJson from = accessibilityRequestJson.getFrom();
         if (Objects.nonNull(from)) {
             accessibilityRequestBuilder
@@ -103,7 +106,8 @@ public class AccessibilityRequestMapperV2 {
 
     private void mapAreaRequest(
             AccessibilityRequestJson accessibilityRequestJson,
-            AccessibilityRequestBuilder accessibilityRequestBuilder) {
+            AccessibilityRequestBuilder accessibilityRequestBuilder
+    ) {
 
         areaRequestMappers.stream()
                 .filter(mapper -> mapper.canProcessAreaRequest(accessibilityRequestJson.getArea()))
@@ -122,7 +126,8 @@ public class AccessibilityRequestMapperV2 {
 
     private Set<Restriction> mapRestrictions(
             List<AccessibilityRequestRestrictionJson> restrictions,
-            NetworkData networkData) {
+            NetworkData networkData
+    ) {
 
         if (Objects.isNull(restrictions)) {
             return Set.of();

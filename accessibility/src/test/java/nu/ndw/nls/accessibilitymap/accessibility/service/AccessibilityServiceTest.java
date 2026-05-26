@@ -418,7 +418,7 @@ class AccessibilityServiceTest {
                 Map.of(
                         100, directionalSegmentRoadSectionDestination,
                         101, directionalSegmentRoadSectionCombined),
-                accessibilityNetwork)
+                accessibilityNetwork, false)
         ).thenReturn(accessibilityReasonGroups);
     }
 

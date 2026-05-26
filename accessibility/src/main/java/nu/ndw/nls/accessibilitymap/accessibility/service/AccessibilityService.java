@@ -149,7 +149,9 @@ public class AccessibilityService {
         var reasons = accessibilityReasonService.calculateReasons(
                 toRoadSection,
                 directionalSegmentsById,
-                accessibilityNetwork);
+                accessibilityNetwork,
+                accessibilityRequest.effectivelyAccessible()
+        );
 
         return Accessibility.builder()
                 .accessibleRoadsSectionsWithoutAppliedRestrictions(accessibleRoadsSectionsWithoutAppliedRestrictions)

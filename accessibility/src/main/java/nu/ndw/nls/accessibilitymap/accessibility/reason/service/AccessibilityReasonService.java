@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.reason.service;
 
 import static com.graphhopper.routing.util.TraversalMode.NODE_BASED;
 
+import com.google.common.base.Predicate;
 import com.google.common.base.Stopwatch;
 import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.routing.Path;
@@ -28,6 +29,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AccessibilityReasonService {
 
+    private static final Map<Boolean, Predicate<RoadSection>> ACCESSIBILTY_FILTER_MAP = Map.of(
+            true, roadSection -> roadSection.isAccessibleInAnyDirection(), false,
+            roadSection -> roadSection.isRestrictedInAnyDirection());
+
     private final RoutingAlgorithmFactory routingAlgorithmFactory;
 
     private final PathsToReasonsMapper pathsToReasonsMapper;
@@ -36,10 +41,11 @@ public class AccessibilityReasonService {
     public List<AccessibilityReasonGroup> calculateReasons(
             Optional<RoadSection> toRoadSection,
             Map<Integer, DirectionalSegment> directionalSegmentsById,
-            AccessibilityNetwork accessibilityNetwork) {
-
+            AccessibilityNetwork accessibilityNetwork,
+            boolean effectivelyAccessible
+    ) {
         return toRoadSection
-                .filter(RoadSection::isRestrictedInAnyDirection)
+                .filter(roadSection -> ACCESSIBILTY_FILTER_MAP.get(effectivelyAccessible).test(roadSection))
                 .map(roadSection -> calculateReasons(directionalSegmentsById, accessibilityNetwork))
                 .orElse(Collections.emptyList());
     }
@@ -47,7 +53,8 @@ public class AccessibilityReasonService {
     @SuppressWarnings("java:S1941")
     private List<AccessibilityReasonGroup> calculateReasons(
             Map<Integer, DirectionalSegment> directionalSegmentsById,
-            AccessibilityNetwork accessibilityNetwork) {
+            AccessibilityNetwork accessibilityNetwork
+    ) {
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 
