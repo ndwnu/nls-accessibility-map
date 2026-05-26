@@ -39,7 +39,7 @@ public class RabbitStreamListenerContainerFactoryFactoryBean implements
 
         factory.setAdviceChain(
                 RetryInterceptorBuilder
-                        .stateful()
+                        .stateless()
                         .retryPolicy(
                                 RetryPolicy.builder()
                                         .predicate(this::shouldRetry)
