@@ -28,6 +28,7 @@ public record AccessibilityRequest(
         @NotNull @JsonIgnore BBox searchArea,
         Integer municipalityId,
         boolean addMissingRoadsSectionsFromNwb,
+        boolean effectivelyAccessible,
         @NotNull Double maxSearchDistanceInMeters,
         @NotNull Double startLocationLatitude,
         @NotNull Double startLocationLongitude,
