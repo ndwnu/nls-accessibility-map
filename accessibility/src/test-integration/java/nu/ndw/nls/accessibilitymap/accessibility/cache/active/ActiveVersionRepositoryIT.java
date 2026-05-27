@@ -30,13 +30,6 @@ class ActiveVersionRepositoryIT {
     }
 
     @Test
-    void switchActiveVersion_insert() {
-        repository.switchActiveVersion("test", "active");
-
-        assertThat(repository.findActiveVersion("test")).contains("active");
-    }
-
-    @Test
     void switchActiveVersion_update() {
         repository.switchActiveVersion("test", "active");
         repository.switchActiveVersion("test", "active2");

@@ -94,7 +94,8 @@ public class NetworkDataService extends Cache<NetworkData> {
             Path targetLocation = getCacheConfiguration().getFolder().resolve(targetFolder);
             Files.createDirectories(targetLocation);
             String activeVersionName = getActiveVersionRepository().findActiveVersion(getCacheConfiguration().getName())
-                    .orElseThrow(() -> new IllegalStateException("No active version found for cache %s".formatted(getCacheConfiguration().getName())));
+                    .orElseThrow(() -> new IllegalStateException("No active version found for cache %s"
+                            .formatted(getCacheConfiguration().getName())));
             Path activeVersion = getCacheConfiguration().getFolder().resolve(activeVersionName);
             boolean preserveFileDate = false;
             FileUtils.copyDirectory(activeVersion.toFile(), targetLocation.toFile(), null, preserveFileDate);
