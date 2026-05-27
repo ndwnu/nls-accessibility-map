@@ -9,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
@@ -34,6 +36,9 @@ class TrafficSignDataServiceTest {
 
     @Mock
     private DistributedLockService distributedLockService;
+
+    @Mock
+    private ActiveVersionRepository activeVersionRepository;
 
     @Mock
     private JsonWriter jsonWriter;
@@ -62,7 +67,7 @@ class TrafficSignDataServiceTest {
         trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration,
                 clockService,
                 distributedLockService,
-                new ObjectMapper(), jsonWriter);
+                new ObjectMapper(), jsonWriter, activeVersionRepository);
     }
 
     @AfterEach
@@ -99,8 +104,9 @@ class TrafficSignDataServiceTest {
 
     @Test
     void dataExists() throws IOException {
-
-        Files.createDirectories(trafficSignCacheConfiguration.getActiveVersion().toPath());
+        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName()))
+                .thenReturn(Optional.of("2022-03-11T09:03:01.123-01:00"));
+        Files.createDirectories(trafficSignCacheConfiguration.getFolder().resolve("2022-03-11T09:03:01.123-01:00"));
 
         assertThat(trafficSignDataService.dataExists()).isTrue();
     }

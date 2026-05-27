@@ -2,12 +2,14 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import jakarta.annotation.PreDestroy;
@@ -17,8 +19,10 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
@@ -38,6 +42,8 @@ import org.springframework.scheduling.TaskScheduler;
 @ExtendWith(MockitoExtension.class)
 class CacheWatcherTest {
 
+    private static final String CACHE_NAME = "testCache";
+
     private CacheWatcher<Object> cacheWatcher;
 
     private CacheConfiguration cacheConfiguration;
@@ -51,6 +57,9 @@ class CacheWatcherTest {
     @Mock
     private ScheduledFuture<?> scheduledFuture;
 
+    @Mock
+    private ActiveVersionRepository activeVersionRepository;
+
     private Path testDir;
 
     @RegisterExtension
@@ -62,13 +71,12 @@ class CacheWatcherTest {
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
 
         cacheConfiguration = CacheConfiguration.builder()
-                .name("testCache")
+                .name(CACHE_NAME)
                 .folder(testDir.resolve("testFolder"))
-                .fileNameActiveVersion("active")
                 .fileWatcherInterval(Duration.ofMillis(1))
                 .build();
 
-        cacheWatcher = new CacheWatcher<>(cacheConfiguration, cache, taskScheduler);
+        cacheWatcher = new CacheWatcher<>(cacheConfiguration, cache, taskScheduler, activeVersionRepository);
     }
 
     @AfterEach
@@ -78,10 +86,19 @@ class CacheWatcherTest {
     }
 
     @Test
+    void watchFileChanges_noActiveVersion_Exception() {
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> cacheWatcher.watchFileChanges())
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("No active version found for cache %s".formatted(CACHE_NAME));
+    }
+
+    @Test
     void watchFileChanges_fileChanges() throws IOException {
 
         Path folder = cacheConfiguration.getFolder();
-        Path activeFile = cacheConfiguration.getActiveVersion().toPath();
+        Path activeFile = cacheConfiguration.getFolder().resolve("active");
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(activeFile.getFileName().toString()));
 
         Files.createDirectories(folder);
         Files.createFile(activeFile);

@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import jakarta.annotation.PreDestroy;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
@@ -27,6 +29,8 @@ public class CacheWatcher<TYPE> {
 
     private final TaskScheduler taskScheduler;
 
+    private final ActiveVersionRepository activeVersionRepository;
+
     private ScheduledFuture<?> scheduledTask;
 
     @EventListener(ApplicationStartedEvent.class)
@@ -39,11 +43,16 @@ public class CacheWatcher<TYPE> {
 
         AtomicLong lastModified = new AtomicLong(-1);
 
-        log.info("Watching file changes on {}", cacheConfiguration.getActiveVersion());
+        File activeVersion = activeVersionRepository
+                .findActiveVersion(cacheConfiguration.getName())
+                .map(version -> cacheConfiguration.getFolder().resolve(version).toFile())
+                .orElseThrow(() -> new IllegalStateException("No active version found for cache %s".formatted(cacheConfiguration.getName())));
+
+        log.info("Watching file changes on {}", activeVersion);
 
         scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
 
-            long currentLastModified = cacheConfiguration.getActiveVersion().lastModified();
+            long currentLastModified = activeVersion.lastModified();
 
             if (lastModified.get() == -1) {
                 lastModified.set(currentLastModified);
