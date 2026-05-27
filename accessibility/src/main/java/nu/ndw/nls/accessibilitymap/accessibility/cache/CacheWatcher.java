@@ -46,7 +46,8 @@ public class CacheWatcher<TYPE> {
         File activeVersion = activeVersionRepository
                 .findActiveVersion(cacheConfiguration.getName())
                 .map(version -> cacheConfiguration.getFolder().resolve(version).toFile())
-                .orElseThrow(() -> new IllegalStateException("No active version found for cache %s".formatted(cacheConfiguration.getName())));
+                .orElseThrow(() -> new IllegalStateException("No active version found for cache %s"
+                        .formatted(cacheConfiguration.getName())));
 
         log.info("Watching file changes on {}", activeVersion);
 

@@ -117,7 +117,9 @@ public abstract class Cache<TYPE> {
             OffsetDateTime start = clockService.now();
             Path activeVersion = activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
                     .map(activeVersionName -> cacheConfiguration.getFolder().resolve(activeVersionName))
-                    .orElseThrow(() -> new IllegalStateException("No active version found for cache %s".formatted(cacheConfiguration.getName())));
+                    .orElseThrow(() -> new IllegalStateException("No active version found for cache %s"
+                            .formatted(cacheConfiguration.getName())));
+
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
             TYPE newData = readData(activeVersion);
             setData(newData);
