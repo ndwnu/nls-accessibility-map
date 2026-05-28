@@ -325,10 +325,6 @@
                 <useBeanValidation>true</useBeanValidation>
                 <performBeanValidation>true</performBeanValidation>
 
-                <!--
-                  OpenAPI Jackson Nullable library
-                  https://github.com/OpenAPITools/jackson-databind-nullable
-                 -->
                 <openApiNullable>false</openApiNullable>
 
                 <additionalModelTypeAnnotations>
@@ -376,10 +372,6 @@
                 <useBeanValidation>true</useBeanValidation>
                 <performBeanValidation>true</performBeanValidation>
 
-                <!--
-                  OpenAPI Jackson Nullable library
-                  https://github.com/OpenAPITools/jackson-databind-nullable
-                 -->
                 <openApiNullable>false</openApiNullable>
 
                 <additionalModelTypeAnnotations>
