@@ -3,9 +3,9 @@ package nu.ndw.nls.accessibilitymap.job.trafficsign.command;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.assertArg;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -109,12 +109,12 @@ class RebuildTrafficSignCacheCommandTest {
         when(networkDataService.get())
                 .thenReturn(null)
                 .thenReturn(networkData);
-        when(trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
-                .map(TrafficSignType::getRvvCode)
-                .collect(Collectors.toSet())))
+        when(trafficSignService.getTrafficSigns(
+                Arrays.stream(TrafficSignType.values())
+                        .map(TrafficSignType::getRvvCode)
+                        .collect(Collectors.toSet())))
                 .thenReturn(trafficSignData);
-        when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(
-                1L, List.of(trafficSignGeoJsonDto1)));
+        when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(1L, List.of(trafficSignGeoJsonDto1)));
         when(trafficSignPropertiesDto1.getRoadSectionId()).thenReturn(roadSectionId);
         when(trafficSignGeoJsonDto1.getProperties()).thenReturn(trafficSignPropertiesDto1);
         when(networkData.findGeometryInNetwork(roadSectionId)).thenReturn(Optional.of(lineString));
@@ -122,22 +122,20 @@ class RebuildTrafficSignCacheCommandTest {
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
-        verify(trafficSignDataService).write(argThat(trafficSigns ->
-                trafficSigns.get().size() == 1 && trafficSigns.get().contains(trafficSign1)));
+        verify(trafficSignDataService).write(assertArg(trafficSigns -> assertThat(trafficSigns.get()).containsExactly(trafficSign1)));
         verify(networkDataService).read();
     }
 
     @Test
     void call_grapHopperNetwork_null() {
         long roadSectionId = 123L;
-        when(networkDataService.get())
-                .thenReturn(networkData);
-        when(trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
-                .map(TrafficSignType::getRvvCode)
-                .collect(Collectors.toSet())))
+        when(networkDataService.get()).thenReturn(networkData);
+        when(trafficSignService.getTrafficSigns(
+                Arrays.stream(TrafficSignType.values())
+                        .map(TrafficSignType::getRvvCode)
+                        .collect(Collectors.toSet())))
                 .thenReturn(trafficSignData);
-        when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(
-                1L, List.of(trafficSignGeoJsonDto1)));
+        when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(1L, List.of(trafficSignGeoJsonDto1)));
         when(trafficSignPropertiesDto1.getRoadSectionId()).thenReturn(roadSectionId);
         when(trafficSignGeoJsonDto1.getProperties()).thenReturn(trafficSignPropertiesDto1);
         when(networkData.findGeometryInNetwork(roadSectionId)).thenReturn(Optional.of(lineString));
@@ -145,9 +143,8 @@ class RebuildTrafficSignCacheCommandTest {
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
-        verify(trafficSignDataService).write(argThat(trafficSigns ->
-                trafficSigns.get().size() == 1 && trafficSigns.get().contains(trafficSign1)));
-        verify(networkDataService, times(1)).read();
+        verify(trafficSignDataService).write(assertArg(trafficSigns -> assertThat(trafficSigns.get()).containsExactly(trafficSign1)));
+        verify(networkDataService).read();
     }
 
     @Test
@@ -178,10 +175,10 @@ class RebuildTrafficSignCacheCommandTest {
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
-        verify(trafficSignDataService).write(argThat(trafficSigns ->
-                trafficSigns.get().size() == 3
-                        && trafficSigns.get().containsAll(List.of(trafficSign1, trafficSign2, trafficSign3))));
-        verify(networkDataService, times(0)).read();
+        verify(trafficSignDataService).write(assertArg(trafficSigns ->
+                assertThat(trafficSigns.get()).containsExactlyInAnyOrder(trafficSign1, trafficSign2, trafficSign3)));
+
+        verify(networkDataService, never()).read();
         loggerExtension.containsLog(Level.INFO, "Updating traffic signs");
     }
 
@@ -190,9 +187,7 @@ class RebuildTrafficSignCacheCommandTest {
 
         when(trafficSignService.getTrafficSigns(anySet())).thenThrow(new RuntimeException("test exception"));
 
-        assertThat(new CommandLine(rebuildTrafficSignCacheCommand)
-                .execute()
-        ).isOne();
+        assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isOne();
 
         loggerExtension.containsLog(Level.ERROR, "Failed updating traffic signs", "test exception");
     }
