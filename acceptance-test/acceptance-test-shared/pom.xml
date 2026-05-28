@@ -68,11 +68,6 @@
       <artifactId>hibernate-spatial</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>component-test</artifactId>
       <scope>compile</scope>
@@ -91,10 +86,6 @@
     <dependency>
       <groupId>nu.ndw.nls.geojson.geometry</groupId>
       <artifactId>geometry-jts</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.validation</groupId>
