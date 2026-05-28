@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
@@ -112,6 +113,9 @@ class AccessibilityMapApiDelegateImplTest {
 
     @Mock
     private NetworkData networkData;
+
+    @Mock
+    private DirectionalSegment directionalSegment;
 
     @BeforeEach
     void setUp() {
@@ -513,7 +517,7 @@ class AccessibilityMapApiDelegateImplTest {
         when(networkDataService.get()).thenReturn(networkData);
         when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
 
         RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson = RoadSectionFeatureCollectionJson.builder()
@@ -589,7 +593,7 @@ class AccessibilityMapApiDelegateImplTest {
         when(networkDataService.get()).thenReturn(networkData);
         when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
 
         RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson = RoadSectionFeatureCollectionJson.builder()

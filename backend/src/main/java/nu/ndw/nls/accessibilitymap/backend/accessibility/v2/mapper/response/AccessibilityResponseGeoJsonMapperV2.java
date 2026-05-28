@@ -60,7 +60,7 @@ public class AccessibilityResponseGeoJsonMapperV2 {
                     .type(FeatureJson.TypeEnum.FEATURE)
                     .geometry(new PointJson(List.of(requestDestination.getLongitude(), requestDestination.getLatitude()), TypeEnum.POINT))
                     .properties(DestinationFeaturePropertiesJson.builder()
-                            .roadSectionId(toDirectionSegment.get().getRoadSectionFragment().getRoadSection().getId())
+                            .roadSectionId(toDirectionSegment.get().geRoadSectionId())
                             .accessible(isAccessible(accessibilityRequestJson, toDirectionSegment.get()))
                             .reasons(accessibilityReasonsJsonMapperV2.map(accessibility.reasons()))
                             .build())

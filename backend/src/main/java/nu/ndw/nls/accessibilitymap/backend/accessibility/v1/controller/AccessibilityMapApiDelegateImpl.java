@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
@@ -110,7 +110,8 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 roadSectionFeatureCollectionMapper.map(
                         accessibility.combinedAccessibility(),
                         accessibilityRequest.hasEndLocation(),
-                        accessibility.toDirectionalSegment().map(RoadSection::getId).orElse(null),
+                        accessibility.toDirectionalSegment().map(DirectionalSegment::geRoadSectionId)
+                                .orElse(null),
                         accessible));
     }
 

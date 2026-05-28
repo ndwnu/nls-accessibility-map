@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v1.mapper.response;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
@@ -24,7 +25,7 @@ public class AccessibilityResponseMapper {
                 .toList();
 
         MatchedRoadSectionJson matchedRoadSection = accessibility.toDirectionalSegment()
-                .map(roadSection -> mapToMatchedRoadSection(roadSection, accessibility.reasons()))
+                .map(directionalSegment -> mapToMatchedRoadSection(directionalSegment, accessibility.reasons()))
                 .orElse(null);
 
         return new AccessibilityMapResponseJson()
@@ -42,13 +43,15 @@ public class AccessibilityResponseMapper {
                 .build();
     }
 
-    private MatchedRoadSectionJson mapToMatchedRoadSection(RoadSection roadSection, List<AccessibilityReasonGroup> reasons) {
+    private MatchedRoadSectionJson mapToMatchedRoadSection(DirectionalSegment directionalSegment, List<AccessibilityReasonGroup> reasons) {
 
         return MatchedRoadSectionJson
                 .builder()
-                .roadSectionId(Math.toIntExact(roadSection.getId()))
-                .forwardAccessible(roadSection.hasForwardSegments() ? roadSection.isForwardAccessible() : null)
-                .backwardAccessible(roadSection.hasBackwardSegments() ? roadSection.isBackwardAccessible() : null)
+                .roadSectionId(Math.toIntExact(directionalSegment.geRoadSectionId()))
+                .forwardAccessible(directionalSegment.getRoadSectionFragment().getRoadSection().hasForwardSegments()
+                        ? directionalSegment.getRoadSectionFragment().getRoadSection().isForwardAccessible() : null)
+                .backwardAccessible(directionalSegment.getRoadSectionFragment().getRoadSection().hasBackwardSegments()
+                        ? directionalSegment.getRoadSectionFragment().getRoadSection().isBackwardAccessible() : null)
                 .reasons(accessibilityReasonsJsonMapper.mapToReasonJson(reasons))
                 .build();
     }
