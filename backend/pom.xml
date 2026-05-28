@@ -6,12 +6,12 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>5.3.70-SNAPSHOT</version>
+    <version>5.3.74-SNAPSHOT</version>
   </parent>
 
   <artifactId>backend</artifactId>
 
-  <version>5.3.70-SNAPSHOT</version>
+  <version>5.3.74-SNAPSHOT</version>
   <name>NLS Accessibility Map Backend</name>
 
   <description>Accessibility Map REST API</description>
@@ -101,11 +101,6 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -330,10 +325,6 @@
                 <useBeanValidation>true</useBeanValidation>
                 <performBeanValidation>true</performBeanValidation>
 
-                <!--
-                  OpenAPI Jackson Nullable library
-                  https://github.com/OpenAPITools/jackson-databind-nullable
-                 -->
                 <openApiNullable>false</openApiNullable>
 
                 <additionalModelTypeAnnotations>
@@ -381,10 +372,6 @@
                 <useBeanValidation>true</useBeanValidation>
                 <performBeanValidation>true</performBeanValidation>
 
-                <!--
-                  OpenAPI Jackson Nullable library
-                  https://github.com/OpenAPITools/jackson-databind-nullable
-                 -->
                 <openApiNullable>false</openApiNullable>
 
                 <additionalModelTypeAnnotations>
