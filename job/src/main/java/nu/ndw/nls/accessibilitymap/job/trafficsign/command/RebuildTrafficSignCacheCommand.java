@@ -71,7 +71,7 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
 
     private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
         NetworkData networkData = networkDataService.get();
-        if (Objects.isNull(networkData.getNetworkGraphHopper())) {
+        if (Objects.isNull(networkData) || Objects.isNull(networkData.getNetworkGraphHopper())) {
             log.warn("Network graph hopper is not initialized, reading network data");
             networkDataService.read();
         }

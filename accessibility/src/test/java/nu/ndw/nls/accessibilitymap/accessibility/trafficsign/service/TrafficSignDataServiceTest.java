@@ -10,7 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.Set;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
@@ -35,6 +37,9 @@ class TrafficSignDataServiceTest {
 
     @Mock
     private DistributedLockService distributedLockService;
+
+    @Mock
+    private ActiveVersionRepository activeVersionRepository;
 
     @Mock
     private JsonWriter jsonWriter;
@@ -63,7 +68,7 @@ class TrafficSignDataServiceTest {
         trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration,
                 clockService,
                 distributedLockService,
-                new JsonMapper(), jsonWriter);
+                new JsonMapper(), jsonWriter, activeVersionRepository);
     }
 
     @AfterEach
@@ -90,7 +95,8 @@ class TrafficSignDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-
+        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName()))
+                .thenReturn(Optional.of("2022-03-11T09:03:01.123-01:00"));
         trafficSignDataService.write(() -> new TrafficSigns(trafficSign1, trafficSign2));
         trafficSignDataService.read();
 
@@ -100,8 +106,9 @@ class TrafficSignDataServiceTest {
 
     @Test
     void dataExists() throws IOException {
-
-        Files.createDirectories(trafficSignCacheConfiguration.getActiveVersion().toPath());
+        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName()))
+                .thenReturn(Optional.of("2022-03-11T09:03:01.123-01:00"));
+        Files.createDirectories(trafficSignCacheConfiguration.getFolder().resolve("2022-03-11T09:03:01.123-01:00"));
 
         assertThat(trafficSignDataService.dataExists()).isTrue();
     }
