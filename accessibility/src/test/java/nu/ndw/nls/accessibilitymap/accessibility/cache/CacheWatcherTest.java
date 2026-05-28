@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -19,13 +18,10 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicReference;
-import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.exception.ActiveVersionNotFoundException;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -87,31 +83,12 @@ class CacheWatcherTest {
         FileUtils.deleteDirectory(testDir.toFile());
     }
 
-    @SneakyThrows
-    @Test
-    void watchFileChanges_noActiveVersion_Exception() {
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.empty());
-        AtomicReference<Runnable> capturedTask = new AtomicReference<>();
-        doAnswer(invocation -> {
-            Runnable task = invocation.getArgument(0);
-            capturedTask.set(task);
-            return scheduledFuture;
-        }).when(taskScheduler)
-                .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
-
-        cacheWatcher.watchFileChanges();
-
-        assertThatThrownBy(() -> capturedTask.get().run())
-                .isInstanceOf(ActiveVersionNotFoundException.class)
-                .hasMessage("No active version found for cache %s".formatted(CACHE_NAME));
-    }
-
     @Test
     void watchFileChanges_fileChanges() throws IOException {
 
         Path folder = cacheConfiguration.getFolder();
         Path activeFile = cacheConfiguration.getFolder().resolve("active");
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(activeFile.getFileName().toString()));
+        when(cache.getActiveVersion()).thenReturn(activeFile);
 
         Files.createDirectories(folder);
         Files.createFile(activeFile);
