@@ -1,11 +1,13 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service;
 
 import tools.jackson.databind.ObjectMapper;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
@@ -28,24 +30,26 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
             TrafficSignCacheConfiguration trafficSignCacheConfiguration,
             ClockService clockService,
             DistributedLockService distributedLockService,
-            ObjectMapper objectMapper, JsonWriter jsonWriter
+            ObjectMapper objectMapper, JsonWriter jsonWriter, ActiveVersionRepository activeVersionRepository
     ) {
 
-        super(trafficSignCacheConfiguration, clockService, distributedLockService);
+        super(trafficSignCacheConfiguration, clockService, distributedLockService, activeVersionRepository);
 
         this.objectMapper = objectMapper;
         this.jsonWriter = jsonWriter;
     }
 
     public Set<TrafficSign> findAll() {
-
         return this.get();
     }
 
     @Override
     protected TrafficSigns readData(Path activeVersion) throws IOException {
+        File trafficSignFile = activeVersion
+                .resolve(TRAFFIC_SIGNS_JSON)
+                .toFile();
         return objectMapper.readValue(
-                getCacheConfiguration().getActiveVersion().toPath().resolve(TRAFFIC_SIGNS_JSON).toFile(),
+                trafficSignFile,
                 TrafficSigns.class);
     }
 

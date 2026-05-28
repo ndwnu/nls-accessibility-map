@@ -73,3 +73,12 @@ Feature: Accessibility V2
     When run TrafficSignUpdateCache
     When request accessibility geojson for truck2MetersWide-destination3-7
     Then we expect accessibility geojson response truck2MetersWide-destination3-7-network-has-missing-roads
+
+  Scenario: Get - request with destination on footpath will be snapped to nearest car accessible road
+    Given a simple network with uni-directional road sections and car inaccessible carriageway types
+    And with traffic signs
+      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id |
+
+    When run TrafficSignUpdateCache
+    When request accessibility geojson for truck2MetersWide-destination9-1
+    Then we expect accessibility geojson response truck2MetersWide-destination9-1-snapped-to-2

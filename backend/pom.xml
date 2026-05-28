@@ -92,11 +92,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>nu.ndw.nls.geojson.geometry</groupId>
       <artifactId>geometry-jts</artifactId>
     </dependency>
@@ -333,10 +328,6 @@
                 <useBeanValidation>true</useBeanValidation>
                 <performBeanValidation>true</performBeanValidation>
 
-                <!--
-                  OpenAPI Jackson Nullable library
-                  https://github.com/OpenAPITools/jackson-databind-nullable
-                 -->
                 <openApiNullable>false</openApiNullable>
 
                 <additionalModelTypeAnnotations>
@@ -384,10 +375,6 @@
                 <useBeanValidation>true</useBeanValidation>
                 <performBeanValidation>true</performBeanValidation>
 
-                <!--
-                  OpenAPI Jackson Nullable library
-                  https://github.com/OpenAPITools/jackson-databind-nullable
-                 -->
                 <openApiNullable>false</openApiNullable>
 
                 <additionalModelTypeAnnotations>

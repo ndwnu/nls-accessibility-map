@@ -103,8 +103,8 @@ class AccessibilityNetworkProviderTest {
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
-        when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
-        when(snapper.snapLocation(networkGraphHopper, destination)).thenReturn(Optional.of(destinationSnap));
+        when(snapper.snapLocation(networkData, from)).thenReturn(Optional.of(fromSnap));
+        when(snapper.snapLocation(networkData, destination)).thenReturn(Optional.of(destinationSnap));
 
         when(snapper.snapRestriction(networkGraphHopper, restriction)).thenReturn(Optional.of(restrictionSnap));
 
@@ -148,8 +148,8 @@ class AccessibilityNetworkProviderTest {
         Restrictions restrictions = new Restrictions(List.of(restriction));
 
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
-        when(snapper.snapLocation(networkGraphHopper, destination)).thenReturn(Optional.empty());
+        when(snapper.snapLocation(networkData, from)).thenReturn(Optional.of(fromSnap));
+        when(snapper.snapLocation(networkData, destination)).thenReturn(Optional.empty());
 
         assertThat(catchThrowable(() -> accessibilityNetworkProvider.get(
                 networkData,
@@ -166,7 +166,7 @@ class AccessibilityNetworkProviderTest {
         Restrictions restrictions = new Restrictions(List.of(restriction));
 
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.empty());
+        when(snapper.snapLocation(networkData, from)).thenReturn(Optional.empty());
 
         assertThat(catchThrowable(() -> accessibilityNetworkProvider.get(
                 networkData,
@@ -187,8 +187,8 @@ class AccessibilityNetworkProviderTest {
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
-        when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
-        when(snapper.snapLocation(networkGraphHopper, null)).thenReturn(Optional.of(destinationSnap));
+        when(snapper.snapLocation(networkData, from)).thenReturn(Optional.of(fromSnap));
+        when(snapper.snapLocation(networkData, null)).thenReturn(Optional.of(destinationSnap));
         when(snapper.snapRestriction(networkGraphHopper, restriction)).thenReturn(Optional.of(restrictionSnap));
         when(queryGraphConfigurer.createEdgeRestrictions(
                 eq(encodingManager),
@@ -233,8 +233,8 @@ class AccessibilityNetworkProviderTest {
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(networkGraphHopper.getBaseGraph()).thenReturn(baseGraph);
-        when(snapper.snapLocation(networkGraphHopper, from)).thenReturn(Optional.of(fromSnap));
-        when(snapper.snapLocation(networkGraphHopper, destination)).thenReturn(Optional.of(destinationSnap));
+        when(snapper.snapLocation(networkData, from)).thenReturn(Optional.of(fromSnap));
+        when(snapper.snapLocation(networkData, destination)).thenReturn(Optional.of(destinationSnap));
         when(snapper.snapRestriction(networkGraphHopper, restriction)).thenReturn(Optional.empty());
         when(queryGraphConfigurer.createEdgeRestrictions(
                 eq(encodingManager),
