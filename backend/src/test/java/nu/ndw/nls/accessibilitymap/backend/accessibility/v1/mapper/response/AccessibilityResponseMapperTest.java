@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
@@ -41,6 +42,9 @@ class AccessibilityResponseMapperTest {
     @Mock
     private List<List<ReasonJson>> reasonsJson;
 
+    @Mock
+    private DirectionalSegment directionalSegment;
+
     @BeforeEach
     void setup() {
 
@@ -57,7 +61,7 @@ class AccessibilityResponseMapperTest {
     void map(boolean isForwardAccessible, boolean isBackwardAccessible) {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(roadSection));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
         when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
@@ -99,7 +103,7 @@ class AccessibilityResponseMapperTest {
     void map_missingDirectionalSegments(boolean forwardDirectionalSegmentMissing, boolean backwardDirectionalSegmentMissing) {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(roadSection));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
         when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);

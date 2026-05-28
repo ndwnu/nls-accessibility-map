@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
@@ -111,6 +112,9 @@ class AccessibilityMapApiDelegateImpTest {
     @Mock
     private NetworkData networkData;
 
+    @Mock
+    private DirectionalSegment directionalSegment;
+
     @BeforeEach
     void setup() {
 
@@ -187,7 +191,7 @@ class AccessibilityMapApiDelegateImpTest {
 
         setUpFixture(emissionClassJson, fuelTypesJson);
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build()));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
@@ -252,7 +256,7 @@ class AccessibilityMapApiDelegateImpTest {
             setUpFixture(EmissionClassJson.EURO_1, List.of(FuelTypeJson.ETHANOL));
             when(accessibilityRequest.hasEndLocation()).thenReturn(true);
             when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-            when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build()));
+            when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
             when(accessibility.combinedAccessibility()).thenReturn(roadSections);
             when(roadSectionFeatureCollectionMapper.map(roadSections, true, REQUESTED_ROAD_SECTION_ID, true))
                     .thenReturn(roadSectionFeatureCollectionJson);

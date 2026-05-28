@@ -54,4 +54,8 @@ public final class DirectionalSegment {
 
         return Objects.nonNull(restrictions) && !restrictions.isEmpty();
     }
+
+    public Long geRoadSectionId() {
+        return roadSectionFragment.getRoadSection().getId();
+    }
 }
