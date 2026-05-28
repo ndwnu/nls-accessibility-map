@@ -30,7 +30,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <nls-springboot.version>10.0.5</nls-springboot.version>
+    <nls-springboot.version>10.0.8-SNAPSHOT</nls-springboot.version>
     <nls-springboot.logging.version>9.0.0</nls-springboot.logging.version>
     <nls-springboot.component-test.version>14.0.0</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>9.0.0</nls-springboot.monitoring.version>
@@ -64,7 +64,6 @@
     <yaml-combine-maven-plugin.version>2.0.9</yaml-combine-maven-plugin.version>
     <wiremock-spring-boot.version>4.2.1</wiremock-spring-boot.version>
     <netty.version>4.2.13.Final</netty.version>
-    <rabbitmq-stream-client.version>1.6.0</rabbitmq-stream-client.version>
     <apache.commons.version>3.20.0</apache.commons.version>
   </properties>
   <distributionManagement>
@@ -129,11 +128,6 @@
         <groupId>nu.ndw.nls.locationdataissuesapi</groupId>
         <artifactId>client-feign</artifactId>
         <version>${nls-location-data-issues.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.rabbitmq</groupId>
-        <artifactId>stream-client</artifactId>
-        <version>${rabbitmq-stream-client.version}</version>
       </dependency>
       <!--Fixes broken maven build for gatling test-->
       <dependency>
@@ -268,6 +262,11 @@
       <dependency>
         <groupId>nu.ndw.nls.springboot</groupId>
         <artifactId>messaging</artifactId>
+        <version>${nls-springboot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>nu.ndw.nls.springboot</groupId>
+        <artifactId>message-stream</artifactId>
         <version>${nls-springboot.version}</version>
       </dependency>
       <dependency>
