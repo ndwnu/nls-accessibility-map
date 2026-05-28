@@ -1,8 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache.configuration;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.io.File;
 import java.nio.file.Path;
 import java.time.Duration;
 import lombok.Builder.Default;
@@ -36,9 +34,6 @@ public class CacheConfiguration {
     @NotNull
     private Path folder;
 
-    @NotEmpty
-    @Default
-    private String fileNameActiveVersion = "active";
 
     @Default
     private Duration fileWatcherInterval = Duration.ofSeconds(1);
@@ -48,7 +43,4 @@ public class CacheConfiguration {
 
     private Duration maxLockWaitTime = Duration.ofSeconds(DEFAULT_MAX_LOCK_WAIT_TIME);
 
-    public File getActiveVersion() {
-        return folder.resolve(fileNameActiveVersion).toFile();
-    }
 }
