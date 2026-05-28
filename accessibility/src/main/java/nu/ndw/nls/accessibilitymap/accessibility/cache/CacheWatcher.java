@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.exception.ActiveVersionNotFoundException;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
@@ -47,7 +46,7 @@ public class CacheWatcher<TYPE> {
         log.info("Watching file changes on {}", cacheConfiguration.getName());
 
         scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
-            File activeVersion = getActiveVersion();
+            File activeVersion = cache.getActiveVersion().toFile();
 
             long currentLastModified = activeVersion.lastModified();
 
@@ -63,14 +62,6 @@ public class CacheWatcher<TYPE> {
                 log.info("Finished update");
             }
         }, cacheConfiguration.getFileWatcherInterval());
-    }
-
-    private File getActiveVersion() {
-        return activeVersionRepository
-                .findActiveVersion(cacheConfiguration.getName())
-                .map(version -> cacheConfiguration.getFolder().resolve(version).toFile())
-                .orElseThrow(() -> new ActiveVersionNotFoundException("No active version found for cache %s"
-                        .formatted(cacheConfiguration.getName())));
     }
 
     @PreDestroy

@@ -145,8 +145,7 @@ public abstract class Cache<TYPE> {
     protected Path getActiveVersion() {
         return activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
                 .map(activeVersionName -> cacheConfiguration.getFolder().resolve(activeVersionName))
-                .orElseThrow(() -> new ActiveVersionNotFoundException("No active version found for cache %s"
-                        .formatted(cacheConfiguration.getName())));
+                .orElseThrow(() -> new ActiveVersionNotFoundException(cacheConfiguration.getName()));
     }
 
     protected void setData(TYPE data) {
