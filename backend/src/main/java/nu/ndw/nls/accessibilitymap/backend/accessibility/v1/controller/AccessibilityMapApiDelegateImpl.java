@@ -110,7 +110,7 @@ public class AccessibilityMapApiDelegateImpl implements AccessibilityMapApiDeleg
                 roadSectionFeatureCollectionMapper.map(
                         accessibility.combinedAccessibility(),
                         accessibilityRequest.hasEndLocation(),
-                        accessibility.toRoadSection().map(RoadSection::getId).orElse(null),
+                        accessibility.toDirectionalSegment().map(RoadSection::getId).orElse(null),
                         accessible));
     }
 

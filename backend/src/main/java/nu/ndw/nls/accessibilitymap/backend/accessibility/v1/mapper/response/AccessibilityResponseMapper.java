@@ -23,7 +23,7 @@ public class AccessibilityResponseMapper {
                 .map(AccessibilityResponseMapper::mapToRoadSection)
                 .toList();
 
-        MatchedRoadSectionJson matchedRoadSection = accessibility.toRoadSection()
+        MatchedRoadSectionJson matchedRoadSection = accessibility.toDirectionalSegment()
                 .map(roadSection -> mapToMatchedRoadSection(roadSection, accessibility.reasons()))
                 .orElse(null);
 

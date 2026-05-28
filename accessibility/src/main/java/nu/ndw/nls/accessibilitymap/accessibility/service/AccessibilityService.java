@@ -136,7 +136,7 @@ public class AccessibilityService {
                 accessibleRoadsSectionsWithoutAppliedRestrictions,
                 accessibleRoadSectionsWithAppliedRestrictions);
 
-        Optional<RoadSection> toRoadSection = findDestinationRoadSection(
+        Optional<DirectionalSegment> destinationSegment = findDestinationDirectionalSegment(
                 accessibilityRequest,
                 accessibilityNetwork,
                 combinedRestrictions);
@@ -147,7 +147,7 @@ public class AccessibilityService {
                 .collect(Collectors.toMap(DirectionalSegment::getId, Function.identity()));
 
         var reasons = accessibilityReasonService.calculateReasons(
-                toRoadSection,
+                destinationSegment,
                 directionalSegmentsById,
                 accessibilityNetwork,
                 accessibilityRequest.effectivelyAccessible()
@@ -158,12 +158,12 @@ public class AccessibilityService {
                 .accessibleRoadSectionsWithAppliedRestrictions(accessibleRoadSectionsWithAppliedRestrictions)
                 .combinedAccessibility(combinedRestrictions)
                 .unroutableRoadSections(unroutableRoadSections)
-                .toRoadSection(toRoadSection)
+                .toDirectionalSegment(destinationSegment)
                 .reasons(reasons)
                 .build();
     }
 
-    private Optional<RoadSection> findDestinationRoadSection(
+    private Optional<DirectionalSegment> findDestinationDirectionalSegment(
             AccessibilityRequest accessibilityRequest,
             AccessibilityNetwork accessibilityNetwork,
             Collection<RoadSection> combinedRoadSections
@@ -187,10 +187,12 @@ public class AccessibilityService {
         var network = accessibilityNetwork.getNetworkData().getNetworkGraphHopper();
         int roadSectionId = destinationSnap.get()
                 .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+        int edgeKey = destinationSnap.get().getClosestEdge().getEdgeKey();
 
         return combinedRoadSections.stream()
                 .filter(roadSection -> roadSection.getId() == roadSectionId)
-                .findFirst();
+                .findFirst()
+                .flatMap(roadSection -> roadSection.findDirectionalSegmentById(edgeKey));
     }
 }
 

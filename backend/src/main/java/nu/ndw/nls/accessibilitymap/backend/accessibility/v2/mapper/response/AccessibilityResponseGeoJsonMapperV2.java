@@ -50,9 +50,9 @@ public class AccessibilityResponseGeoJsonMapperV2 {
             Accessibility accessibility,
             AtomicInteger idGenerator) {
         LocationJson requestDestination = accessibilityRequestJson.getDestination();
-        Optional<RoadSection> toRoadSection = accessibility.toRoadSection();
+        Optional<DirectionalSegment> toDirectionSegment = accessibility.toDirectionalSegment();
 
-        if (Objects.isNull(requestDestination) || toRoadSection.isEmpty()) {
+        if (Objects.isNull(requestDestination) || toDirectionSegment.isEmpty()) {
             return Stream.empty();
         } else {
             return Stream.of(FeatureJson.builder()
@@ -60,8 +60,8 @@ public class AccessibilityResponseGeoJsonMapperV2 {
                     .type(FeatureJson.TypeEnum.FEATURE)
                     .geometry(new PointJson(List.of(requestDestination.getLongitude(), requestDestination.getLatitude()), TypeEnum.POINT))
                     .properties(DestinationFeaturePropertiesJson.builder()
-                            .roadSectionId(toRoadSection.get().getId())
-                            .accessible(toRoadSection.get().isAccessibleInAnyDirection())
+                            .roadSectionId(toDirectionSegment.get().getRoadSectionFragment().getRoadSection().getId())
+                            .accessible(isAccessible(accessibilityRequestJson, toDirectionSegment.get()))
                             .reasons(accessibilityReasonsJsonMapperV2.map(accessibility.reasons()))
                             .build())
                     .build());

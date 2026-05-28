@@ -57,7 +57,7 @@ class AccessibilityResponseMapperTest {
     void map(boolean isForwardAccessible, boolean isBackwardAccessible) {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(accessibility.toRoadSection()).thenReturn(Optional.of(roadSection));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(roadSection));
         when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
@@ -99,7 +99,7 @@ class AccessibilityResponseMapperTest {
     void map_missingDirectionalSegments(boolean forwardDirectionalSegmentMissing, boolean backwardDirectionalSegmentMissing) {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(accessibility.toRoadSection()).thenReturn(Optional.of(roadSection));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(roadSection));
         when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
