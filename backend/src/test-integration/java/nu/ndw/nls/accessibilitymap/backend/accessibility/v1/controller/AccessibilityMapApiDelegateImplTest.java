@@ -513,7 +513,7 @@ class AccessibilityMapApiDelegateImplTest {
         when(networkDataService.get()).thenReturn(networkData);
         when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
-        when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
 
         RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson = RoadSectionFeatureCollectionJson.builder()
@@ -589,7 +589,7 @@ class AccessibilityMapApiDelegateImplTest {
         when(networkDataService.get()).thenReturn(networkData);
         when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
-        when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(RoadSection.builder().id(2L).build()));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
 
         RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson = RoadSectionFeatureCollectionJson.builder()

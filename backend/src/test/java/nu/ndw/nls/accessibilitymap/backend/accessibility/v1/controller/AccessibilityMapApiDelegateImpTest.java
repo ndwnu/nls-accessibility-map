@@ -187,7 +187,7 @@ class AccessibilityMapApiDelegateImpTest {
 
         setUpFixture(emissionClassJson, fuelTypesJson);
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-        when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build()));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build()));
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
@@ -215,7 +215,7 @@ class AccessibilityMapApiDelegateImpTest {
 
         setUpFixture(emissionClassJson, fuelTypesJson);
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-        when(accessibility.toRoadSection()).thenReturn(Optional.empty());
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.empty());
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
 
         when(roadSectionFeatureCollectionMapper
@@ -252,7 +252,7 @@ class AccessibilityMapApiDelegateImpTest {
             setUpFixture(EmissionClassJson.EURO_1, List.of(FuelTypeJson.ETHANOL));
             when(accessibilityRequest.hasEndLocation()).thenReturn(true);
             when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-            when(accessibility.toRoadSection()).thenReturn(Optional.of(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build()));
+            when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(RoadSection.builder().id(REQUESTED_ROAD_SECTION_ID).build()));
             when(accessibility.combinedAccessibility()).thenReturn(roadSections);
             when(roadSectionFeatureCollectionMapper.map(roadSections, true, REQUESTED_ROAD_SECTION_ID, true))
                     .thenReturn(roadSectionFeatureCollectionJson);

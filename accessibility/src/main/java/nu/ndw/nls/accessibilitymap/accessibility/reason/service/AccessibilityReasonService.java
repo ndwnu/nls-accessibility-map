@@ -18,7 +18,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
@@ -29,9 +28,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AccessibilityReasonService {
 
-    private static final Map<Boolean, Predicate<RoadSection>> ACCESSIBILTY_FILTER_MAP = Map.of(
-            true, roadSection -> roadSection.isAccessibleInAnyDirection(), false,
-            roadSection -> roadSection.isRestrictedInAnyDirection());
+    private static final Map<Boolean, Predicate<DirectionalSegment>> ACCESSIBILTY_FILTER_MAP = Map.of(
+            true, directionalSegment -> directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment(), false,
+            directionalSegment -> directionalSegment.isAccessible());
 
     private final RoutingAlgorithmFactory routingAlgorithmFactory;
 
@@ -39,14 +38,14 @@ public class AccessibilityReasonService {
 
     @SuppressWarnings("java:S3553")
     public List<AccessibilityReasonGroup> calculateReasons(
-            Optional<RoadSection> toRoadSection,
+            Optional<DirectionalSegment> toSegment,
             Map<Integer, DirectionalSegment> directionalSegmentsById,
             AccessibilityNetwork accessibilityNetwork,
             boolean effectivelyAccessible
     ) {
-        return toRoadSection
-                .filter(roadSection -> ACCESSIBILTY_FILTER_MAP.get(effectivelyAccessible).test(roadSection))
-                .map(roadSection -> calculateReasons(directionalSegmentsById, accessibilityNetwork))
+        return toSegment
+                .filter(directionalSegment -> ACCESSIBILTY_FILTER_MAP.get(effectivelyAccessible).test(directionalSegment))
+                .map(directionalSegment -> calculateReasons(directionalSegmentsById, accessibilityNetwork))
                 .orElse(Collections.emptyList());
     }
 
