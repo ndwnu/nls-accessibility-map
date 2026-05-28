@@ -6,6 +6,11 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.log.LogUtil.keyValu
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.storage.index.Snap;
+import com.graphhopper.util.EdgeExplorer;
+import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
+import com.graphhopper.util.FetchMode;
+import com.graphhopper.util.shapes.GHPoint;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
@@ -32,12 +37,16 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebu
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityException;
 import nu.ndw.nls.springboot.core.time.ClockService;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class AccessibilityService {
+
+    private static final double TOLERANCE_METRE_PRECISION = 0.00001;
 
     private final LocationFactory locationFactory;
 
@@ -185,14 +194,45 @@ public class AccessibilityService {
         }
 
         var network = accessibilityNetwork.getNetworkData().getNetworkGraphHopper();
-        int roadSectionId = destinationSnap.get()
-                .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
-        int edgeKey = destinationSnap.get().getClosestEdge().getEdgeKey();
+        Snap destinationSnapPoint = destinationSnap.get();
 
+        int roadSectionId = destinationSnapPoint
+                .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+
+        EdgeExplorer edgeExplorer = accessibilityNetwork.getQueryGraph().createEdgeExplorer();
+        // By creating a query graph with a snap, the closestNode of the snap is updated to a virtual node if applicable.
+        // See QueryOverlayBuilder.buildVirtualEdges
+        EdgeIterator edgeIterator = edgeExplorer.setBaseNode(destinationSnapPoint.getClosestNode());
+        int edgeKey = -1;
+        while (edgeIterator.next()) {
+            if (isSnapInFrontOfEdge(edgeIterator, destinationSnapPoint)) {
+                edgeKey = edgeIterator.getEdgeKey();
+                break;
+            }
+        }
+
+        int finalEdgeKey = edgeKey;
         return combinedRoadSections.stream()
                 .filter(roadSection -> roadSection.getId() == roadSectionId)
                 .findFirst()
-                .flatMap(roadSection -> roadSection.findDirectionalSegmentById(edgeKey));
+                .flatMap(roadSection -> roadSection.findDirectionalSegmentById(finalEdgeKey));
+    }
+
+    private static boolean isSnapInFrontOfEdge(EdgeIteratorState edgeIteratorState, Snap snap) {
+
+        GHPoint point = snap.getSnappedPoint();
+        Coordinate snapCoordinate = new Coordinate(point.getLon(), point.getLat());
+        Coordinate edgeCoordinate = getEdgeStartCoordinate(edgeIteratorState);
+
+        return edgeCoordinate.equals2D(snapCoordinate, TOLERANCE_METRE_PRECISION);
+    }
+
+    private static Coordinate getEdgeStartCoordinate(EdgeIteratorState edgeIteratorState) {
+
+        LineString lineString = edgeIteratorState
+                .fetchWayGeometry(FetchMode.ALL)
+                .toLineString(false);
+        return lineString.getStartPoint().getCoordinate();
     }
 }
 
