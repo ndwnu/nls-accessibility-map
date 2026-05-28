@@ -128,12 +128,10 @@ class RebuildTrafficSignCacheCommandTest {
     }
 
     @Test
-    void call_grapHopperNetwork_notNull() {
+    void call_grapHopperNetwork_null() {
         long roadSectionId = 123L;
-        NetworkGraphHopper networkGraphHopper = Mockito.mock(NetworkGraphHopper.class);
         when(networkDataService.get())
                 .thenReturn(networkData);
-        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
                 .map(TrafficSignType::getRvvCode)
                 .collect(Collectors.toSet())))
@@ -149,7 +147,7 @@ class RebuildTrafficSignCacheCommandTest {
 
         verify(trafficSignDataService).write(argThat(trafficSigns ->
                 trafficSigns.get().size() == 1 && trafficSigns.get().contains(trafficSign1)));
-        verify(networkDataService, times(0)).read();
+        verify(networkDataService, times(1)).read();
     }
 
     @Test
@@ -168,7 +166,9 @@ class RebuildTrafficSignCacheCommandTest {
                 2L, List.of(trafficSignGeoJsonDto3),
                 3L, List.of(trafficSignGeoJsonDto4)
         ));
+        NetworkGraphHopper networkGraphHopper = Mockito.mock(NetworkGraphHopper.class);
         when(networkDataService.get()).thenReturn(networkData);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkData.findGeometryInNetwork(123L)).thenReturn(Optional.of(lineString));
 
         mockMapperCalls(trafficSignGeoJsonDto1, trafficSign1);
@@ -181,7 +181,7 @@ class RebuildTrafficSignCacheCommandTest {
         verify(trafficSignDataService).write(argThat(trafficSigns ->
                 trafficSigns.get().size() == 3
                         && trafficSigns.get().containsAll(List.of(trafficSign1, trafficSign2, trafficSign3))));
-        verify(networkDataService).read();
+        verify(networkDataService, times(0)).read();
         loggerExtension.containsLog(Level.INFO, "Updating traffic signs");
     }
 
