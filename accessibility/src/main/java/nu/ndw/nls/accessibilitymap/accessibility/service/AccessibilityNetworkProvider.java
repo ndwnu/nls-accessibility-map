@@ -42,11 +42,11 @@ public class AccessibilityNetworkProvider {
 
         NetworkGraphHopper networkGraphHopper = networkData.getNetworkGraphHopper();
 
-        Optional<Snap> fromSnap = snapper.snapLocation(networkGraphHopper, from);
+        Optional<Snap> fromSnap = snapper.snapLocation(networkData, from);
         if (fromSnap.isEmpty()) {
             throw new AccessibilityLocationNotFoundException(from);
         }
-        Optional<Snap> destinationSnap = snapper.snapLocation(networkGraphHopper, destination);
+        Optional<Snap> destinationSnap = snapper.snapLocation(networkData, destination);
         if (Objects.nonNull(destination) && destinationSnap.isEmpty()) {
             throw new AccessibilityLocationNotFoundException(from);
         }

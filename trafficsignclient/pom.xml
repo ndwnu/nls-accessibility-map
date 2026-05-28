@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>5.3.70-SNAPSHOT</version>
+    <version>5.3.74-SNAPSHOT</version>
   </parent>
   <artifactId>trafficsignclient</artifactId>
   <name>NLS Accessibility Map Traffic Sign Client</name>
@@ -52,16 +52,6 @@
       <artifactId>test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.github.jsurfer</groupId>
-      <artifactId>jsurfer-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
   <build>
     <defaultGoal>clean verify</defaultGoal>

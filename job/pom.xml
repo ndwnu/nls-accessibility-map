@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>5.3.70-SNAPSHOT</version>
+    <version>5.3.74-SNAPSHOT</version>
   </parent>
   <artifactId>job</artifactId>
   <name>NLS Accessibility Map - Job</name>
@@ -67,10 +67,6 @@
     <dependency>
       <groupId>nu.ndw.nls.geometry</groupId>
       <artifactId>nls-geometry</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.conductor</groupId>
-      <artifactId>stream-utils</artifactId>
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls.geojson.geometry</groupId>
