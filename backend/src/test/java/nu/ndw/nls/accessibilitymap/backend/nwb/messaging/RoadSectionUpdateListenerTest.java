@@ -6,10 +6,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.springframework.amqp.core.Message;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
-import com.rabbitmq.stream.Message;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -101,7 +100,7 @@ class RoadSectionUpdateListenerTest {
     @Test
     void handleMessage() {
 
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
+        when(message.getBody()).thenReturn(CONTENT_BYTES);
         when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(NEW_VERSION_DATE);
         when(nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate)).thenReturn(accessibilityNwbRoadSectionUpdate);
@@ -121,7 +120,7 @@ class RoadSectionUpdateListenerTest {
     @Test
     void handleMessage_earlier_nwbVersion_in_message_than_current_nwbVersion() {
 
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
+        when(message.getBody()).thenReturn(CONTENT_BYTES);
         when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(EARLIER_NWB_VERSION_DATE);
         when(networkDataService.get()).thenReturn(networkData);
@@ -137,7 +136,7 @@ class RoadSectionUpdateListenerTest {
     @Test
     @SneakyThrows
     void handleMessage_later_nwbVersion_in_message_than_current_nwbVersion() {
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
+        when(message.getBody()).thenReturn(CONTENT_BYTES);
         when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(LATER_NWB_VERSION_DATE);
         when(networkDataService.get()).thenReturn(networkData);
@@ -153,7 +152,7 @@ class RoadSectionUpdateListenerTest {
     @Test
     @SneakyThrows
     void handleMessage_invalid_message_content_throws_exception() {
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
+        when(message.getBody()).thenReturn(CONTENT_BYTES);
         when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenThrow(JacksonException.class);
 
         assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class);
