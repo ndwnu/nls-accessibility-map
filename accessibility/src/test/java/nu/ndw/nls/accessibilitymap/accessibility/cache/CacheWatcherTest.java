@@ -22,8 +22,10 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.exception.ActiveVersionNotFoundException;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -85,11 +87,22 @@ class CacheWatcherTest {
         FileUtils.deleteDirectory(testDir.toFile());
     }
 
+    @SneakyThrows
     @Test
     void watchFileChanges_noActiveVersion_Exception() {
         when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> cacheWatcher.watchFileChanges())
-                .isInstanceOf(IllegalStateException.class)
+        AtomicReference<Runnable> capturedTask = new AtomicReference<>();
+        doAnswer(invocation -> {
+            Runnable task = invocation.getArgument(0);
+            capturedTask.set(task);
+            return scheduledFuture;
+        }).when(taskScheduler)
+                .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
+
+        cacheWatcher.watchFileChanges();
+
+        assertThatThrownBy(() -> capturedTask.get().run())
+                .isInstanceOf(ActiveVersionNotFoundException.class)
                 .hasMessage("No active version found for cache %s".formatted(CACHE_NAME));
     }
 
@@ -116,7 +129,7 @@ class CacheWatcherTest {
 
         loggerExtension.containsLog(
                 Level.INFO,
-                "Watching file changes on %s".formatted(activeFile)
+                "Watching file changes on testCache"
         );
 
         capturedTask.get().run();

@@ -93,10 +93,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
             Path targetLocation = getCacheConfiguration().getFolder().resolve(targetFolder);
             Files.createDirectories(targetLocation);
-            String activeVersionName = getActiveVersionRepository().findActiveVersion(getCacheConfiguration().getName())
-                    .orElseThrow(() -> new IllegalStateException("No active version found for cache %s"
-                            .formatted(getCacheConfiguration().getName())));
-            Path activeVersion = getCacheConfiguration().getFolder().resolve(activeVersionName);
+            Path activeVersion = getActiveVersion();
             boolean preserveFileDate = false;
             FileUtils.copyDirectory(activeVersion.toFile(), targetLocation.toFile(), null, preserveFileDate);
             log.debug("Copied active version to {}", targetLocation.toAbsolutePath());
@@ -104,7 +101,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             Path nwbUpdatesPath = targetLocation.resolve(NWB_UPDATE_DIRECTORY);
             jsonWriter.writeJsonToFile(nwbUpdatesPath, NWB_CHANGED_ROAD_SECTIONS_FILE, newNwbDataUpdates);
             log.debug("Wrote nwbDataUpdates to {}", nwbUpdatesPath);
-            switchSymLink(targetFolder);
+            switchActiveVersion(targetFolder);
             setData(updatedNetworkData);
             log.debug("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
         } catch (IOException exception) {

@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.exception.ActiveVersionNotFoundException;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
@@ -102,7 +103,7 @@ public abstract class Cache<TYPE> {
                             .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
                     Duration.between(start, clockService.now()).toMillis());
 
-            switchSymLink(targetFolder);
+            switchActiveVersion(targetFolder);
             setData(newData);
         } catch (IOException exception) {
             log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
@@ -111,14 +112,12 @@ public abstract class Cache<TYPE> {
         }
     }
 
+
     protected synchronized void read(boolean triggeredOnStartup) {
 
         try {
             OffsetDateTime start = clockService.now();
-            Path activeVersion = activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
-                    .map(activeVersionName -> cacheConfiguration.getFolder().resolve(activeVersionName))
-                    .orElseThrow(() -> new IllegalStateException("No active version found for cache %s"
-                            .formatted(cacheConfiguration.getName())));
+            Path activeVersion = getActiveVersion();
 
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
             TYPE newData = readData(activeVersion);
@@ -143,6 +142,13 @@ public abstract class Cache<TYPE> {
         }
     }
 
+    protected Path getActiveVersion() {
+        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+                .map(activeVersionName -> cacheConfiguration.getFolder().resolve(activeVersionName))
+                .orElseThrow(() -> new ActiveVersionNotFoundException("No active version found for cache %s"
+                        .formatted(cacheConfiguration.getName())));
+    }
+
     protected void setData(TYPE data) {
         dataLock.lock();
         this.data = data;
@@ -163,7 +169,7 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    protected void switchSymLink(Path target) throws IOException {
+    protected void switchActiveVersion(Path target) throws IOException {
         Path oldVersionDirectory = activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
                 .map(oldActiveVersion -> cacheConfiguration.getFolder().resolve(oldActiveVersion).toFile().toPath())
                 .orElse(null);
