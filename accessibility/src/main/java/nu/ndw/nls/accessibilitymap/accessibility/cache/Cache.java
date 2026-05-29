@@ -112,7 +112,6 @@ public abstract class Cache<TYPE> {
         }
     }
 
-
     protected synchronized void read(boolean triggeredOnStartup) {
 
         try {
@@ -175,7 +174,8 @@ public abstract class Cache<TYPE> {
 
         activeVersionRepository.switchActiveVersion(cacheConfiguration.getName(), target.getFileName().toString());
         if (Objects.nonNull(oldVersionDirectory)) {
-            FileUtils.deleteDirectory(oldVersionDirectory.toFile());
+            FileUtils.cleanDirectory(oldVersionDirectory.toFile());
+            FileUtils.delete(oldVersionDirectory.toFile());
         }
     }
 }
