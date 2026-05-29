@@ -416,7 +416,9 @@ class CacheTest {
     void write() {
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
         String timestamp2 = "2022-03-11T09:04:01.123-01:00";
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME))
+                .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(timestamp1));
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(timestamp1, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp2, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
@@ -464,7 +466,7 @@ class CacheTest {
         cache.read();
         assertThat(cache.get()).isEqualTo("testData1");
 
-        verifySymLink(timestamp1);
+        verifyVersion(timestamp1);
 
         // 2nd write
         String timestamp3 = "2022-03-11T09:03:02.123-01:00";
@@ -474,8 +476,8 @@ class CacheTest {
                 .thenReturn(OffsetDateTime.parse(timestamp4, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         cache.write(() -> "testData2");
 
-        verify(distributedLockService, times(2)).lockOrFail(cacheConfiguration.getName(), MAX_LOCK_WAIT_TIME);
-        verify(distributedLockService, times(2)).unlock(cacheConfiguration.getName());
+        verify(distributedLockService, times(3)).lockOrFail(cacheConfiguration.getName(), MAX_LOCK_WAIT_TIME);
+        verify(distributedLockService, times(3)).unlock(cacheConfiguration.getName());
 
         loggerExtension.containsLog(
                 Level.INFO,
@@ -493,7 +495,7 @@ class CacheTest {
         // verify we can load data from the disk
         cache.read();
         assertThat(cache.get()).isEqualTo("testData2");
-        verifySymLink(timestamp3);
+        verifyVersion(timestamp3);
     }
 
     @Test
@@ -561,7 +563,7 @@ class CacheTest {
         assertThat(cache.getSizeInBytes(testDir)).isEqualTo(6);
     }
 
-    private void verifySymLink(String timestamp) {
+    private void verifyVersion(String timestamp) {
         var activeVersion = cacheConfiguration.getFolder().resolve(timestamp);
         assertThat(activeVersion.toFile()).exists();
 
