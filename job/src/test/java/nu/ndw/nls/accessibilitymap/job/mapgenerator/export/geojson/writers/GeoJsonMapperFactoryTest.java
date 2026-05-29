@@ -4,7 +4,6 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
@@ -14,11 +13,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
-class GeoJsonObjectMapperFactoryTest {
+class GeoJsonMapperFactoryTest {
 
-    private GeoJsonObjectMapperFactory geoJsonObjectMapperFactory;
+    private GeoJsonMapperFactory geoJsonMapperFactory;
 
     @Mock
     private GenerateConfiguration generateConfiguration;
@@ -26,7 +26,7 @@ class GeoJsonObjectMapperFactoryTest {
     @BeforeEach
     void setUp() {
 
-        geoJsonObjectMapperFactory = new GeoJsonObjectMapperFactory();
+        geoJsonMapperFactory = new GeoJsonMapperFactory();
     }
 
     @ParameterizedTest
@@ -38,8 +38,8 @@ class GeoJsonObjectMapperFactoryTest {
 
         when(generateConfiguration.prettyPrintJson()).thenReturn(prettyPrint);
 
-        ObjectMapper geoJsonObjectMapper = geoJsonObjectMapperFactory.create(generateConfiguration);
-        String writtenValue = geoJsonObjectMapper.writeValueAsString(
+        JsonMapper geoJsonMapper = geoJsonMapperFactory.create(generateConfiguration);
+        String writtenValue = geoJsonMapper.writeValueAsString(
                 TestDto.builder()
                         .field1("value1")
                         .field2(null)

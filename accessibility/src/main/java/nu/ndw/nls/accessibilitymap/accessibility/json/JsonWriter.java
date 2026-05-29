@@ -1,18 +1,18 @@
 package nu.ndw.nls.accessibilitymap.accessibility.json;
 
-import tools.jackson.core.JsonGenerator;
-import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 @RequiredArgsConstructor
 public class JsonWriter {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     public <T> void writeJsonToFile(Path target, String fileName, T data) throws IOException {
 
@@ -21,9 +21,9 @@ public class JsonWriter {
             Files.createDirectories(target);
             Files.createFile(jsonFilePath);
         }
-        try (JsonGenerator jsonGenerator = objectMapper.createGenerator(Files.newOutputStream(jsonFilePath))) {
+        try (JsonGenerator jsonGenerator = jsonMapper.createGenerator(Files.newOutputStream(jsonFilePath))) {
 
-            objectMapper.writeValue(jsonGenerator, data);
+            jsonMapper.writeValue(jsonGenerator, data);
         }
     }
 }

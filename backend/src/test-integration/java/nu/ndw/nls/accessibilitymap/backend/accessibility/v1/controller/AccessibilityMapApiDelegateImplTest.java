@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +57,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.json.JsonMapper;
 
 @WebMvcTest(controllers = AccessibilityMapApiController.class)
 @Import({SecurityConfig.class, AccessibilityMapApiDelegateImpl.class, PointValidator.class})
@@ -108,7 +108,7 @@ class AccessibilityMapApiDelegateImplTest {
     @Mock
     private Collection<RoadSection> combinedAccessibility;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private NetworkData networkData;
@@ -116,8 +116,8 @@ class AccessibilityMapApiDelegateImplTest {
     @BeforeEach
     void setUp() {
 
-        objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(Include.NON_NULL);
+        jsonMapper = new JsonMapper();
+        jsonMapper.setSerializationInclusion(Include.NON_NULL);
     }
 
     @Test
@@ -186,7 +186,7 @@ class AccessibilityMapApiDelegateImplTest {
 
         MvcResult response = mockMvcBuilder.andReturn();
         assertThatJson(response.getResponse()
-                .getContentAsString()).isEqualTo(objectMapper.writeValueAsString(accessibilityMapResponseJson));
+                .getContentAsString()).isEqualTo(jsonMapper.writeValueAsString(accessibilityMapResponseJson));
     }
 
     @Test
@@ -558,7 +558,7 @@ class AccessibilityMapApiDelegateImplTest {
 
         MvcResult response = mockMvcBuilder.andReturn();
         assertThatJson(response.getResponse()
-                .getContentAsString()).isEqualTo(objectMapper.writeValueAsString(roadSectionFeatureCollectionJson));
+                .getContentAsString()).isEqualTo(jsonMapper.writeValueAsString(roadSectionFeatureCollectionJson));
     }
 
     @Test
@@ -634,7 +634,7 @@ class AccessibilityMapApiDelegateImplTest {
 
         MvcResult response = mockMvcBuilder.andReturn();
         assertThatJson(response.getResponse()
-                .getContentAsString()).isEqualTo(objectMapper.writeValueAsString(roadSectionFeatureCollectionJson));
+                .getContentAsString()).isEqualTo(jsonMapper.writeValueAsString(roadSectionFeatureCollectionJson));
     }
 
     @Test

@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.yaml;
 
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import tools.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

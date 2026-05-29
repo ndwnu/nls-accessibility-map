@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data;
 
 import static org.assertj.core.api.Fail.fail;
 
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
@@ -37,7 +36,7 @@ import org.apache.logging.log4j.util.Strings;
 @RequiredArgsConstructor
 public class DataTypeRegister {
 
-    private final ObjectMapper objectMapper = new JsonMapper();
+    private final JsonMapper jsonMapper = new JsonMapper();
 
     private final GraphHopperDriver graphHopperDriver;
 
@@ -102,7 +101,7 @@ public class DataTypeRegister {
     @DefaultDataTableCellTransformer
     public Object transformer(Object fromValue, Type toValueType) {
 
-        return objectMapper.convertValue(fromValue, objectMapper.constructType(toValueType));
+        return jsonMapper.convertValue(fromValue, jsonMapper.constructType(toValueType));
     }
 
     private static Double mapDoubleValue(String key, Map<String, String> entry) {

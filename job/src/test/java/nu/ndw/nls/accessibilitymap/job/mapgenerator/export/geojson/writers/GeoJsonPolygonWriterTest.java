@@ -172,7 +172,7 @@ class GeoJsonPolygonWriterTest {
             GeoJsonPolygonWriter geoJsonPolygonWriter = new GeoJsonPolygonWriter(
                     fileService,
                     generateConfiguration,
-                    new GeoJsonObjectMapperFactory(),
+                    new GeoJsonMapperFactory(),
                     multiPolygonFactory,
                     featureBuilder);
 
@@ -246,7 +246,7 @@ class GeoJsonPolygonWriterTest {
         GeoJsonPolygonWriter geoJsonPolygonWriter = new GeoJsonPolygonWriter(
                 fileService,
                 generateConfiguration,
-                new GeoJsonObjectMapperFactory(),
+                new GeoJsonMapperFactory(),
                 multiPolygonFactory,
                 featureBuilder);
 

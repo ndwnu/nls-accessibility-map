@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers;
 
-import tools.jackson.databind.ObjectMapper;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
@@ -15,12 +14,13 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.Exporter;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 @Getter(AccessLevel.PROTECTED)
 public abstract class AbstractGeoJsonWriter implements Exporter {
 
-    private final ObjectMapper geoJsonObjectMapper;
+    private final JsonMapper geoJsonMapper;
 
     private final GenerateConfiguration generateConfiguration;
 
@@ -28,12 +28,12 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
 
     protected AbstractGeoJsonWriter(
             GenerateConfiguration generateConfiguration,
-            GeoJsonObjectMapperFactory geoJsonObjectMapperFactory,
+            GeoJsonMapperFactory geoJsonMapperFactory,
             FileService fileService) {
 
         this.generateConfiguration = generateConfiguration;
         this.fileService = fileService;
-        geoJsonObjectMapper = geoJsonObjectMapperFactory.create(generateConfiguration);
+        geoJsonMapper = geoJsonMapperFactory.create(generateConfiguration);
     }
 
     public void export(
@@ -55,7 +55,7 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
                     idSequenceSupplier);
 
             log.debug("Started writing geojson to temp file: %s".formatted(tempFile.toAbsolutePath()));
-            getGeoJsonObjectMapper().writeValue(tempFile.toFile(), geoJson);
+            getGeoJsonMapper().writeValue(tempFile.toFile(), geoJson);
         } catch (JacksonException exception) {
             throw new IllegalStateException("Failed to serialize geojson to file: %s"
                     .formatted(tempFile.toAbsolutePath()), exception);

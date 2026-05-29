@@ -5,8 +5,6 @@ import static nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum.LINE_STRIN
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +35,7 @@ import org.locationtech.jts.geom.LineString;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class FeatureBuilderTest {

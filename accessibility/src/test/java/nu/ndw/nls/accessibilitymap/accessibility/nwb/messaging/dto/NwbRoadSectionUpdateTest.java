@@ -2,8 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -11,6 +9,7 @@ import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 class NwbRoadSectionUpdateTest extends ValidationTest {
 
@@ -18,11 +17,11 @@ class NwbRoadSectionUpdateTest extends ValidationTest {
             {"roadSectionId":600547901,"nwbVersion":"2026-03-01","drivingDirection":"BACK","carriagewayTypeCode":"FP"}
             """;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @BeforeEach
     void setUp() {
-        objectMapper = JsonMapper.builder()
+        jsonMapper = JsonMapper.builder()
                 .findAndAddModules()
                 .build();
     }
@@ -36,7 +35,7 @@ class NwbRoadSectionUpdateTest extends ValidationTest {
                 .drivingDirection(DrivingDirection.BACK)
                 .carriagewayTypeCode(CarriagewayTypeCode.FP)
                 .build();
-        var roadChange = objectMapper.readValue(JSON_STRING, NwbRoadSectionUpdate.class);
+        var roadChange = jsonMapper.readValue(JSON_STRING, NwbRoadSectionUpdate.class);
         assertThat(roadChange).isEqualTo(expectedRoadChange);
     }
 

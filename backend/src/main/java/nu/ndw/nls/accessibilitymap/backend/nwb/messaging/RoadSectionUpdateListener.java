@@ -1,7 +1,5 @@
 package nu.ndw.nls.accessibilitymap.backend.nwb.messaging;
 
-import org.springframework.amqp.core.Message;
-import tools.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +12,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectionUpdate;
 import nu.ndw.nls.accessibilitymap.backend.nwb.messaging.mapper.NwbRoadSectionUpdateMapper;
 import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
@@ -22,6 +21,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 @Slf4j
@@ -38,7 +38,7 @@ public class RoadSectionUpdateListener {
 
     private final NwbRoadSectionUpdateMapper nwbRoadSectionUpdateMapper;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private final RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
 
@@ -84,7 +84,7 @@ public class RoadSectionUpdateListener {
 
     private NwbRoadSectionUpdate toRoadSectionUpdate(Message message) {
         try {
-            return objectMapper.readValue(message.getBody(), NwbRoadSectionUpdate.class);
+            return jsonMapper.readValue(message.getBody(), NwbRoadSectionUpdate.class);
         } catch (JacksonException e) {
             throw new IllegalArgumentException(e);
         }

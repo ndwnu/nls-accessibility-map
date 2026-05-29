@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.response;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.mockito.Mockito.when;
 
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import java.util.Optional;
@@ -60,12 +59,12 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
     private RoadSection destinationRoadSectionInAccessible;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @BeforeEach
     void setUp() {
 
-        objectMapper = new JsonMapper();
+        jsonMapper = new JsonMapper();
 
         roadSectionAccessible = buildRoadSection(1, true, true);
         roadSectionInaccessible = buildRoadSection(2, false, false);
@@ -103,7 +102,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -261,7 +260,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -416,7 +415,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -583,7 +582,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -719,7 +718,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -789,7 +788,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -863,7 +862,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
