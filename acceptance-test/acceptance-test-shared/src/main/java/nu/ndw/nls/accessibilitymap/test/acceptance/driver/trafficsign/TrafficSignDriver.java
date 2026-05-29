@@ -34,7 +34,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
@@ -109,7 +108,7 @@ public class TrafficSignDriver implements StateManagement {
                 .build();
 
         try {
-            ObjectMapper mapper = JsonMapper.builder().build();
+            JsonMapper mapper = JsonMapper.builder().build();
 
             fileService.writeDataToFile(
                     driverGeneralConfiguration.getDebugFolder().resolve("trafficSigns.geojson").toFile(),

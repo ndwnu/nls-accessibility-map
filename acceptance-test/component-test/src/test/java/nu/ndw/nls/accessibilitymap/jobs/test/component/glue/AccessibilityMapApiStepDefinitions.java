@@ -4,7 +4,6 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-import tools.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.time.Duration;
@@ -21,14 +20,14 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.Acces
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
-import org.springframework.http.HttpHeaders;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 @RequiredArgsConstructor
 public class AccessibilityMapApiStepDefinitions {
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private final AccessibilityMapApiClient accessibilityMapApiClient;
 
@@ -106,7 +105,7 @@ public class AccessibilityMapApiStepDefinitions {
         assertThatJson(response.body())
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .inPath("$.inaccessibleRoadSections")
-                .isEqualTo(objectMapper.writeValueAsString(blockedRoadSections));
+                .isEqualTo(jsonMapper.writeValueAsString(blockedRoadSections));
     }
 
     @Then("we expect geojson to match {word}")

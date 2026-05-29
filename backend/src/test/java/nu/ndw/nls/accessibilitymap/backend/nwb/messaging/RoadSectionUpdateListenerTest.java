@@ -6,9 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.springframework.amqp.core.Message;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -32,9 +29,12 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.test.util.ReflectionTestUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class RoadSectionUpdateListenerTest {
@@ -66,7 +66,7 @@ class RoadSectionUpdateListenerTest {
     private NwbRoadSectionUpdateMapper nwbRoadSectionUpdateMapper;
 
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private NwbRoadSectionUpdate nwbRoadSectionUpdate;
@@ -93,7 +93,7 @@ class RoadSectionUpdateListenerTest {
         roadSectionUpdateListener = new RoadSectionUpdateListener(networkDataService,
                 nwbVersionIdMapper,
                 nwbRoadSectionUpdateMapper,
-                objectMapper, rabbitListenerEndpointRegistry);
+                jsonMapper, rabbitListenerEndpointRegistry);
     }
 
     @SneakyThrows
@@ -101,7 +101,7 @@ class RoadSectionUpdateListenerTest {
     void handleMessage() {
 
         when(message.getBody()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
+        when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(NEW_VERSION_DATE);
         when(nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate)).thenReturn(accessibilityNwbRoadSectionUpdate);
         when(networkDataService.get()).thenReturn(networkData);
@@ -121,7 +121,7 @@ class RoadSectionUpdateListenerTest {
     void handleMessage_earlier_nwbVersion_in_message_than_current_nwbVersion() {
 
         when(message.getBody()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
+        when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(EARLIER_NWB_VERSION_DATE);
         when(networkDataService.get()).thenReturn(networkData);
         when(networkData.getNwbData()).thenReturn(nwbData);
@@ -137,7 +137,7 @@ class RoadSectionUpdateListenerTest {
     @SneakyThrows
     void handleMessage_later_nwbVersion_in_message_than_current_nwbVersion() {
         when(message.getBody()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
+        when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(LATER_NWB_VERSION_DATE);
         when(networkDataService.get()).thenReturn(networkData);
         when(networkData.getNwbData()).thenReturn(nwbData);
@@ -153,7 +153,7 @@ class RoadSectionUpdateListenerTest {
     @SneakyThrows
     void handleMessage_invalid_message_content_throws_exception() {
         when(message.getBody()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenThrow(JacksonException.class);
+        when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenThrow(JacksonException.class);
 
         assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class);
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());

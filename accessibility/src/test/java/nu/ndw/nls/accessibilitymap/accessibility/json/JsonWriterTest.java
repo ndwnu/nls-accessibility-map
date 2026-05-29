@@ -2,8 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.json;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -14,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 class JsonWriterTest {
 

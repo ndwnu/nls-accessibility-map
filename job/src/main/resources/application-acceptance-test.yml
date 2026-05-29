@@ -90,6 +90,3 @@ logging:
   level:
     root: INFO
     nu.ndw.nls: DEBUG
-    org.springframework.boot.actuate.endpoint.web: TRACE
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG

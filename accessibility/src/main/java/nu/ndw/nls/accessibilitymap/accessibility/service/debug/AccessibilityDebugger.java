@@ -1,7 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.shapes.BBox;
 import java.io.IOException;
@@ -33,6 +31,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 @Slf4j
@@ -295,7 +294,7 @@ public class AccessibilityDebugger {
 
     private void writeGeoJson(String name, FeatureCollection featureCollection) {
         try {
-            ObjectMapper mapper = JsonMapper.builder().build();
+            JsonMapper mapper = JsonMapper.builder().build();
 
             debugConfiguration.getDebugFolder().toFile().mkdirs();
             FileUtils.writeStringToFile(
