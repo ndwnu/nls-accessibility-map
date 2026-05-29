@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class DistributedLockRepository {
 
-    public static final String COLUMN_LOCK_NAME = "lock_name";
+    private static final String COLUMN_LOCK_NAME = "lock_name";
 
-    public static final String COLUMN_OWNER_ID = "owner_id";
+    private static final String COLUMN_OWNER_ID = "owner_id";
 
-    public static final String COLUMN_LOCK_EXPIRY = "lock_expiry";
+    private static final String COLUMN_LOCK_EXPIRY = "lock_expiry";
 
     private static final String DISTRIBUTED_LOCKS_TABLE = "distributed_locks";
 
