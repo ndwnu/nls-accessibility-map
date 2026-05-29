@@ -29,8 +29,8 @@ import org.springframework.stereotype.Service;
 public class AccessibilityReasonService {
 
     private static final Map<Boolean, Predicate<DirectionalSegment>> ACCESSIBILTY_FILTER_MAP = Map.of(
-            true, directionalSegment -> directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment(), false,
-            directionalSegment -> directionalSegment.isAccessible());
+            true, directionalSegment -> !directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment(), false,
+            directionalSegment -> !directionalSegment.isAccessible());
 
     private final RoutingAlgorithmFactory routingAlgorithmFactory;
 
