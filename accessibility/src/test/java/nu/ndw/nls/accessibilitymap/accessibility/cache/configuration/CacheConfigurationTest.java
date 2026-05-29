@@ -19,7 +19,6 @@ public class CacheConfigurationTest extends ValidationTest {
         cacheConfiguration = CacheConfiguration.builder()
                 .name("name")
                 .folder(Path.of("folder"))
-                .fileNameActiveVersion("activeVersion")
                 .build();
     }
 
@@ -60,15 +59,7 @@ public class CacheConfigurationTest extends ValidationTest {
                 List.of("must not be null"));
     }
 
-    @Test
-    void validate_fileNameActiveVersion_null() {
 
-        cacheConfiguration.setFileNameActiveVersion(null);
-        validate(
-                cacheConfiguration,
-                List.of("fileNameActiveVersion"),
-                List.of("must not be empty"));
-    }
 
     @Override
     protected Class<?> getClassToTest() {
