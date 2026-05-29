@@ -161,8 +161,8 @@ class NetworkDataServiceTest {
                 false,
                 CarriagewayTypeCode.HR)));
 
-        verify(distributedLockService, times(2)).lockOrFail(TEST_CACHE_NAME, MAX_LOCK_WAIT_TIME);
-        verify(distributedLockService, times(2)).unlock(TEST_CACHE_NAME);
+        verify(distributedLockService, times(3)).lockOrFail(TEST_CACHE_NAME, MAX_LOCK_WAIT_TIME);
+        verify(distributedLockService, times(3)).unlock(TEST_CACHE_NAME);
     }
 
     @Test
