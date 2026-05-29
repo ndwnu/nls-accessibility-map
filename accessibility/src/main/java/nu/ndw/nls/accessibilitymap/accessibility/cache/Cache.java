@@ -115,6 +115,7 @@ public abstract class Cache<TYPE> {
     protected synchronized void read(boolean triggeredOnStartup) {
 
         try {
+            distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
             OffsetDateTime start = clockService.now();
             Path activeVersion = getActiveVersion();
 
@@ -138,6 +139,8 @@ public abstract class Cache<TYPE> {
             if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
+        } finally {
+            distributedLockService.unlock(cacheConfiguration.getName());
         }
     }
 
