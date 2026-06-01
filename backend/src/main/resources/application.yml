@@ -53,7 +53,7 @@ nu:
           stream-queues:
             updateRoadSection:
               stream-queue-name: nls_accessibility_map_update_road_section
-              stream-tracking-name: nls-accessibility-map-api-listener-20260601-1
+              stream-tracking-name: nls-accessibility-map-api-listener-20260601-2
               listener-auto-start: false
               max-segment-size-in-kb: 5000
               max-age-in-days: 60
