@@ -52,6 +52,8 @@ public abstract class Cache<TYPE> {
     @Getter(AccessLevel.PROTECTED)
     private final ReentrantLock dataLock = new ReentrantLock();
 
+    private String activeVersion;
+
     @EventListener(ApplicationStartedEvent.class)
     public void loadDataOnStartup() {
         if (cacheConfiguration.isLoadDataOnStartup()) {
@@ -112,6 +114,16 @@ public abstract class Cache<TYPE> {
         }
     }
 
+    protected boolean isDataStale() {
+        String currentActiveVersion = getCurrentActiveVersion();
+        return Objects.nonNull(activeVersion) && !activeVersion.equals(currentActiveVersion);
+    }
+
+    protected String getCurrentActiveVersion() {
+        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+                .orElseThrow(() -> new ActiveVersionNotFoundException(cacheConfiguration.getName()));
+    }
+
     protected synchronized void read(boolean triggeredOnStartup) {
 
         try {
@@ -153,6 +165,7 @@ public abstract class Cache<TYPE> {
     protected void setData(TYPE data) {
         dataLock.lock();
         this.data = data;
+        this.activeVersion = getCurrentActiveVersion();
         dataLock.unlock();
     }
 
