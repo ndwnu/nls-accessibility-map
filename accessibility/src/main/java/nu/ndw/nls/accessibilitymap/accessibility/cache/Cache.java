@@ -177,8 +177,7 @@ public abstract class Cache<TYPE> {
 
         activeVersionRepository.switchActiveVersion(cacheConfiguration.getName(), target.getFileName().toString());
         if (Objects.nonNull(oldVersionDirectory)) {
-            FileUtils.cleanDirectory(oldVersionDirectory.toFile());
-            FileUtils.delete(oldVersionDirectory.toFile());
+            FileUtils.deleteDirectory(oldVersionDirectory.toFile());
         }
     }
 }
