@@ -137,6 +137,7 @@ class NetworkDataServiceTest {
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(INITIAL_TIMESTAMP))
                 .thenReturn(Optional.of(INITIAL_TIMESTAMP))
+                .thenReturn(Optional.of(INITIAL_TIMESTAMP))
                 .thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
@@ -161,8 +162,8 @@ class NetworkDataServiceTest {
                 false,
                 CarriagewayTypeCode.HR)));
 
-        verify(distributedLockService, times(3)).lockOrFail(TEST_CACHE_NAME, MAX_LOCK_WAIT_TIME);
-        verify(distributedLockService, times(3)).unlock(TEST_CACHE_NAME);
+        verify(distributedLockService, times(2)).lockOrFail(TEST_CACHE_NAME, MAX_LOCK_WAIT_TIME);
+        verify(distributedLockService, times(2)).unlock(TEST_CACHE_NAME);
     }
 
     @Test
@@ -171,7 +172,7 @@ class NetworkDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(accessibilityNwbRoadSectionService.getLatestNwbData()).thenReturn(nwbData);
 
         networkDataService.recompileData();
@@ -187,6 +188,7 @@ class NetworkDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(graphHopperNetwork.nwbVersion()).thenReturn(1);
         NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);
