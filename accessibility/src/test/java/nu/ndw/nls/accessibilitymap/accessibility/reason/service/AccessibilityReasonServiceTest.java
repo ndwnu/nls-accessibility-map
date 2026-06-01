@@ -124,7 +124,7 @@ class AccessibilityReasonServiceTest {
                 directionalSegmentsById,
                 accessibilityNetwork, effectivelyAccessible);
 
-        assertThat(actualAccessibilityReasonGroups).isEqualTo(accessibilityReasonGroups);
+        assertThat(actualAccessibilityReasonGroups).hasSize(1).isEqualTo(accessibilityReasonGroups);
     }
 
     @Test
