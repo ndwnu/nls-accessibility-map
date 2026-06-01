@@ -76,8 +76,9 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     @Timed(value = "accessibilitymap.accessibility.writeNwbDataUpdates")
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
-        // avoid deadlock situation on component tests
-        read();
+        if (isDataStale()) {
+            read();
+        }
         try {
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
             NetworkData networkData = get();
