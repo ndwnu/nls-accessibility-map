@@ -30,7 +30,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @SpringJUnitConfig(classes = {MessagingBeansRegistrar.class, ValidationAutoConfiguration.class})
 class MessagingBeansRegistrarTest {
 
-    private static final String MESSAGE_LISTENER_NAME = "nls-accessibility-map-api-listener-20260529-1";
+    private static final String MESSAGE_LISTENER_NAME = "nls-accessibility-map-api-listener-20260601-1";
 
     private static final String UPDATE_ROAD_SECTION_QUEUE_NAME = "nls_accessibility_map_update_road_section";
 
