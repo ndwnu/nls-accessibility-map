@@ -207,8 +207,7 @@ public class AccessibilityService {
         EdgeIterator edgeIterator = edgeExplorer.setBaseNode(snap.getClosestNode());
         while (edgeIterator.next()) {
             int edgeRoadSectionId = edgeIterator.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-            // ignore edge key 0 , which is not present in the road section
-            if (edgeIterator.getEdgeKey() != 0 && edgeRoadSectionId == targetRoadSectionId) {
+            if (edgeRoadSectionId == targetRoadSectionId) {
                 return Optional.of(edgeIterator.getEdgeKey());
             }
         }

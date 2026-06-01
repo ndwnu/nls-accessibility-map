@@ -9,8 +9,11 @@ import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import com.graphhopper.routing.ev.IntEncodedValue;
+import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.index.Snap;
+import com.graphhopper.util.EdgeExplorer;
+import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.EdgeIteratorState;
 import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
@@ -135,6 +138,15 @@ class AccessibilityServiceTest {
 
     @Mock
     private List<AccessibilityReasonGroup> accessibilityReasonGroups;
+
+    @Mock
+    private QueryGraph queryGraph;
+
+    @Mock
+    private EdgeExplorer edgeExplorer;
+
+    @Mock
+    private EdgeIterator edgeIteratorDestination;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -427,12 +439,18 @@ class AccessibilityServiceTest {
 
     private void mockFindDestinationDirectionalSegment(boolean hasDestination) {
         if (hasDestination) {
+            when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
+            when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+            when(destinationSnap.getClosestNode()).thenReturn(1);
+            when(edgeExplorer.setBaseNode(1)).thenReturn(edgeIteratorDestination);
+            when(edgeIteratorDestination.next()).thenReturn(true);
+            when(edgeIteratorDestination.get(idIntEncodedValue)).thenReturn(30);
+            when(edgeIteratorDestination.getEdgeKey()).thenReturn(15);
             when(accessibilityNetwork.getDestination()).thenReturn(destinationSnap);
             when(destinationSnap.getClosestEdge()).thenReturn(endSegmentClosestEdge);
             when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
             when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
             when(endSegmentClosestEdge.get(idIntEncodedValue)).thenReturn(30);
-            when(endSegmentClosestEdge.getEdgeKey()).thenReturn(15);
             when(roadSectionDestination.findDirectionalSegmentById(15))
                     .thenReturn(Optional.of(directionalSegmentDestination));
         }
