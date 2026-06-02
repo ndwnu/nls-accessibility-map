@@ -23,6 +23,7 @@ import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -51,6 +52,8 @@ public abstract class Cache<TYPE> {
 
     @Getter(AccessLevel.PROTECTED)
     private final ReentrantLock dataLock = new ReentrantLock();
+
+    private final RetryTemplate directoryNotEmptyRetryTemplate;
 
     private String activeVersion;
 
@@ -189,9 +192,22 @@ public abstract class Cache<TYPE> {
                 .orElse(null);
 
         activeVersionRepository.switchActiveVersion(cacheConfiguration.getName(), target.getFileName().toString());
+
         if (Objects.nonNull(oldVersionDirectory)) {
-            FileUtils.cleanDirectory(oldVersionDirectory.toFile());
-            FileUtils.delete(oldVersionDirectory.toFile());
+            try {
+                directoryNotEmptyRetryTemplate.execute(context -> {
+                    if (context.getRetryCount() > 0) {
+                        log.warn("Directory not empty, retrying");
+                    }
+                    FileUtils.deleteDirectory(oldVersionDirectory.toFile());
+                    return null;
+                });
+            } catch (Exception e) {
+                if (e instanceof IOException ioException) {
+                    throw ioException;
+                }
+                throw new IOException("Failed to delete old version directory: " + oldVersionDirectory, e);
+            }
         }
     }
 }
