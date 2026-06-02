@@ -5,7 +5,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheWatcher;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.TaskSchedulerFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,9 +14,8 @@ public class NetworkCacheWatcher extends CacheWatcher<NetworkData> {
     public NetworkCacheWatcher(
             NetworkCacheConfiguration networkCacheConfiguration,
             NetworkDataService networkDataService,
-            TaskSchedulerFactory taskSchedulerFactory,
-            RetryTemplate cacheReadRetryTemplate
+            TaskSchedulerFactory taskSchedulerFactory
     ) {
-        super(networkCacheConfiguration, networkDataService, cacheReadRetryTemplate, taskSchedulerFactory.createTaskScheduler());
+        super(networkCacheConfiguration, networkDataService, taskSchedulerFactory.createTaskScheduler());
     }
 }
