@@ -45,29 +45,28 @@ public class CacheWatcher<TYPE> {
 
         log.info("Watching file changes on {}", cacheConfiguration.getName());
 
-        scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
-            File activeVersion = cache.getActiveVersion().toFile();
+        scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> cacheReadRetryTemplate.execute(context -> {
+            if (context.getRetryCount() > 0) {
+                log.warn("Failed to read cache, retrying");
+            }
 
+            File activeVersion = cache.getActiveVersion().toFile();
             long currentLastModified = activeVersion.lastModified();
 
             if (lastModified.get() == -1) {
                 lastModified.set(currentLastModified);
-                return;
+                return null;
             }
 
             if (lastModified.get() != currentLastModified) {
                 lastModified.set(currentLastModified);
                 log.info("Triggering update");
-                cacheReadRetryTemplate.execute(context -> {
-                    if (context.getRetryCount() > 0) {
-                        log.warn("Failed to read cache, retrying");
-                    }
-                    cache.read();
-                    return null;
-                });
+                cache.read();
                 log.info("Finished update");
             }
-        }, cacheConfiguration.getFileWatcherInterval());
+
+            return null;
+        }), cacheConfiguration.getFileWatcherInterval());
     }
 
     @PreDestroy
