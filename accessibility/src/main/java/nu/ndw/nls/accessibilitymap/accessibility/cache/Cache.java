@@ -191,20 +191,20 @@ public abstract class Cache<TYPE> {
         activeVersionRepository.switchActiveVersion(cacheConfiguration.getName(), target.getFileName().toString());
 
         if (Objects.nonNull(oldVersionDirectory)) {
-            try {
-                directoryNotEmptyRetryTemplate.execute(context -> {
-                    if (context.getRetryCount() > 0) {
-                        log.warn("Directory not empty, retrying");
-                    }
+            //  try {
+
+//                    if (context.getRetryCount() > 0) {
+//                        log.warn("Directory not empty, retrying");
+//                    }
                     FileUtils.deleteDirectory(oldVersionDirectory.toFile());
-                    return null;
-                });
-            } catch (Exception e) {
+//                    return null;
+//                });
+          /*  } catch (Exception e) {
                 if (e instanceof IOException ioException) {
                     throw ioException;
                 }
                 throw new IOException("Failed to delete old version directory: " + oldVersionDirectory, e);
-            }
+            }*/
         }
     }
 }
