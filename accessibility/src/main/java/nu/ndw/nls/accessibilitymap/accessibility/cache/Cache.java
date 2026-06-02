@@ -23,8 +23,6 @@ import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,14 +77,14 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    @Retryable(
-            retryFor = Exception.class,
-            maxAttempts = 10,
-            backoff = @Backoff(
-                    delay = 1000,      // 1 second
-                    multiplier = 2.0   // exponential backoff
-            )
-    )
+    //    @Retryable(
+//            retryFor = Exception.class,
+//            maxAttempts = 10,
+//            backoff = @Backoff(
+//                    delay = 1000,
+//                    multiplier = 2.0
+//            )
+//    )
     public void read() {
         read(false);
     }
@@ -140,7 +138,6 @@ public abstract class Cache<TYPE> {
     protected synchronized void read(boolean triggeredOnStartup) {
 
         try {
-            // distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
             OffsetDateTime start = clockService.now();
             Path activeVersion = getActiveVersion();
 
@@ -164,9 +161,7 @@ public abstract class Cache<TYPE> {
             if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
-        } //  finally {
-//            distributedLockService.unlock(cacheConfiguration.getName());
-//        }
+        }
     }
 
     protected Path getActiveVersion() {
