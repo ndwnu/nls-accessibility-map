@@ -6,7 +6,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.or;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.StringValuePattern;
@@ -33,7 +32,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
@@ -55,31 +53,28 @@ public class TrafficSignDriver implements StateManagement {
     @SuppressWarnings("java:S3658")
     public void stubTrafficSignRequest(List<TrafficSignGeoJsonDto> trafficSigns) {
 
-        try {
-            writeTrafficSignsGeoJsonToDisk(trafficSigns);
-            StringValuePattern[] stringValuePatterns = Arrays.stream(TrafficSignType.values())
-                    .map(TrafficSignType::getRvvCode)
-                    .sorted()
-                    .collect(Collectors.toCollection(LinkedHashSet::new)).stream()
-                    .map(WireMock::equalTo).toArray(StringValuePattern[]::new);
-            StringValuePattern stringValuePattern = stringValuePatterns.length == 1 ? stringValuePatterns[0] : or(stringValuePatterns);
-            stubFor(
-                    get(urlPathMatching(
-                            "/api/rest/static-road-data/traffic-signs/v4/current-state"))
-                            .withQueryParam("status", equalTo("PLACED"))
-                            .withQueryParam("rvvCode", stringValuePattern)
-                            .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_JSON_VALUE))
-                            .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/geo+json"))
-                            .willReturn(aResponse()
-                                    .withStatus(HttpStatus.OK.value())
-                                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                    .withBody(jsonMapper.writeValueAsString(
-                                            TrafficSignGeoJsonFeatureCollectionDto.builder()
-                                                    .features(trafficSigns)
-                                                    .build()))));
-        } catch (JacksonException exception) {
-            fail(exception);
-        }
+        writeTrafficSignsGeoJsonToDisk(trafficSigns);
+        StringValuePattern[] stringValuePatterns = Arrays.stream(TrafficSignType.values())
+                .map(TrafficSignType::getRvvCode)
+                .sorted()
+                .collect(Collectors.toCollection(LinkedHashSet::new)).stream()
+                .map(WireMock::equalTo).toArray(StringValuePattern[]::new);
+        StringValuePattern stringValuePattern = stringValuePatterns.length == 1 ? stringValuePatterns[0] : or(stringValuePatterns);
+        stubFor(
+                get(urlPathMatching(
+                        "/api/rest/static-road-data/traffic-signs/v4/current-state"))
+                        .withQueryParam("status", equalTo("PLACED"))
+                        .withQueryParam("rvvCode", stringValuePattern)
+                        .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_JSON_VALUE))
+                        .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/geo+json"))
+                        .willReturn(aResponse()
+                                .withStatus(HttpStatus.OK.value())
+                                .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                .withBody(jsonMapper.writeValueAsString(
+                                        TrafficSignGeoJsonFeatureCollectionDto.builder()
+                                                .features(trafficSigns)
+                                                .build()))));
+
     }
 
     @SuppressWarnings("java:S3658")
@@ -107,15 +102,12 @@ public class TrafficSignDriver implements StateManagement {
                         .toList())
                 .build();
 
-        try {
-            JsonMapper mapper = JsonMapper.builder().build();
+        JsonMapper mapper = JsonMapper.builder().build();
 
-            fileService.writeDataToFile(
-                    driverGeneralConfiguration.getDebugFolder().resolve("trafficSigns.geojson").toFile(),
-                    mapper.writeValueAsString(featureCollection));
-        } catch (JacksonException exception) {
-            fail(exception);
-        }
+        fileService.writeDataToFile(
+                driverGeneralConfiguration.getDebugFolder().resolve("trafficSigns.geojson").toFile(),
+                mapper.writeValueAsString(featureCollection));
+
     }
 
     @Override

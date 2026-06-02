@@ -34,7 +34,6 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,7 +68,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSigns() throws JacksonException {
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSigns() {
 
         prepareDirectionsSegments(true, true, true);
 
@@ -94,8 +93,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsNoTrafficSigns()
-            throws JacksonException {
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsNoTrafficSigns() {
 
         prepareDirectionsSegments(true, true, false);
 
@@ -120,8 +118,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignLineString()
-            throws JacksonException {
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignLineString() {
 
         prepareDirectionsSegments(true, true, true);
 
@@ -146,8 +143,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignPoint()
-            throws JacksonException {
+    void createLineStringsAndTrafficSigns_forDirectionalSegment_allRoadSections_andTrafficSignsOnlyTrafficSignPoint() {
 
         prepareDirectionsSegments(true, true, true);
 
@@ -180,7 +176,7 @@ class FeatureBuilderTest {
     void createLineStringsAndTrafficSigns_accessibleInAllAvailableDirections(
             boolean addRoadSegmentFragmentsThatAreAccessibleInAllAvailableDirections,
             boolean accessible,
-            boolean expectRoadSection) throws JacksonException {
+            boolean expectRoadSection) {
 
         prepareDirectionsSegments(accessible, accessible, true);
 
@@ -214,7 +210,7 @@ class FeatureBuilderTest {
     void createLineStringsAndTrafficSigns_notAccessibleInAllAvailableDirections_blockedInAllDirections(
             boolean addRoadSegmentFragmentsThatAreBlockedInAllAvailableDirections,
             boolean accessible,
-            boolean expectRoadSection) throws JacksonException {
+            boolean expectRoadSection) {
 
         prepareDirectionsSegments(accessible, accessible, true);
 
@@ -251,7 +247,7 @@ class FeatureBuilderTest {
             boolean forwardAccessible,
             boolean backwardAccessible,
             boolean roadSectionAccessible,
-            boolean trafficSignAccessible) throws JacksonException {
+            boolean trafficSignAccessible) {
 
         prepareDirectionsSegments(forwardAccessible, backwardAccessible, true);
 
@@ -277,8 +273,7 @@ class FeatureBuilderTest {
     }
 
     @Test
-    void createPolygon()
-            throws JacksonException {
+    void createPolygon() {
 
         Geometry polygonGeometry = mock(Geometry.class);
         when(polygonGeometry.getCoordinates()).thenReturn(new Coordinate[]{
@@ -331,8 +326,7 @@ class FeatureBuilderTest {
             boolean expectedTrafficSignToBeAccessible,
             boolean expectedRoadSection,
             boolean expectedTrafficSignLineString,
-            boolean expectedTrafficSignPoint)
-            throws JacksonException {
+            boolean expectedTrafficSignPoint) {
 
         AtomicLong featureIdSupplier = new AtomicLong(1);
         String roadSegmentFeature = """

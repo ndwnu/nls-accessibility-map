@@ -21,7 +21,6 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.A
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 import org.springframework.http.HttpHeaders;
-import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
@@ -61,8 +60,7 @@ public class AccessibilityMapApiStepDefinitions {
             int matchedRoadSectionId,
             String forwardAccessible,
             String backwardAccessible,
-            List<BlockedRoadSection> blockedRoadSections
-    ) throws JacksonException {
+            List<BlockedRoadSection> blockedRoadSections) {
 
         weExpectTheFollowingBlockedRoadSectionsWithReasons(
                 matchedRoadSectionId,
@@ -78,8 +76,7 @@ public class AccessibilityMapApiStepDefinitions {
             String forwardAccessible,
             String backwardAccessible,
             String reasonsFile,
-            List<BlockedRoadSection> blockedRoadSections
-    ) throws JacksonException {
+            List<BlockedRoadSection> blockedRoadSections) {
         Response<Void, AccessibilityMapResponseJson> response = accessibilityMapApiClient.getLastResponseForGetAccessibilityForMunicipality();
 
         String reasons = Objects.isNull(reasonsFile)
