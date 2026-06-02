@@ -4,13 +4,11 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
 @Configuration
-@EnableRetry
 public class RetryConfiguration {
 
     @Bean
