@@ -11,12 +11,14 @@ import org.springframework.retry.support.RetryTemplate;
 @Configuration
 public class RetryConfiguration {
 
+    private static final int DEFAULT_RETRY_COUNT = 10;
+
     @Bean
     public RetryTemplate directoryNotEmptyRetryTemplate() {
         RetryTemplate retryTemplate = new RetryTemplate();
 
         SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy(
-                10,
+                DEFAULT_RETRY_COUNT,
                 Map.of(DirectoryNotEmptyException.class, true)
         );
 
