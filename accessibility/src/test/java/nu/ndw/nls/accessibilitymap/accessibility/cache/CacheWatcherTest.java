@@ -20,7 +20,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicReference;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
@@ -35,6 +34,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.TaskScheduler;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +58,10 @@ class CacheWatcherTest {
     private ScheduledFuture<?> scheduledFuture;
 
     @Mock
-    private ActiveVersionRepository activeVersionRepository;
+    private RetryTemplate retryTemplate;
+
+    @Mock
+    private RetryContext retryContext;
 
     private Path testDir;
 
@@ -74,7 +79,7 @@ class CacheWatcherTest {
                 .fileWatcherInterval(Duration.ofMillis(1))
                 .build();
 
-        cacheWatcher = new CacheWatcher<>(cacheConfiguration, cache, taskScheduler, activeVersionRepository);
+        cacheWatcher = new CacheWatcher<>(cacheConfiguration, cache, retryTemplate, taskScheduler);
     }
 
     @AfterEach
@@ -85,6 +90,14 @@ class CacheWatcherTest {
 
     @Test
     void watchFileChanges_fileChanges() throws IOException {
+        when(retryContext.getRetryCount()).thenReturn(0);
+        when(retryTemplate.execute(any(RetryCallback.class)))
+                .thenAnswer(invocation -> {
+                    RetryCallback<Object, RuntimeException> callback =
+                            invocation.getArgument(0);
+
+                    return callback.doWithRetry(retryContext);
+                });
 
         Path folder = cacheConfiguration.getFolder();
         Path activeFile = cacheConfiguration.getFolder().resolve("active");

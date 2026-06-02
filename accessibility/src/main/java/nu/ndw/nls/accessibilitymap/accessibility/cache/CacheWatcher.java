@@ -11,10 +11,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.TaskScheduler;
 
 @Slf4j
@@ -27,9 +27,9 @@ public class CacheWatcher<TYPE> {
     @Getter(AccessLevel.PROTECTED)
     private final Cache<TYPE> cache;
 
-    private final TaskScheduler taskScheduler;
+    private final RetryTemplate cacheReadRetryTemplate;
 
-    private final ActiveVersionRepository activeVersionRepository;
+    private final TaskScheduler taskScheduler;
 
     private ScheduledFuture<?> scheduledTask;
 
@@ -58,7 +58,13 @@ public class CacheWatcher<TYPE> {
             if (lastModified.get() != currentLastModified) {
                 lastModified.set(currentLastModified);
                 log.info("Triggering update");
-                cache.read();
+                cacheReadRetryTemplate.execute(context -> {
+                    if (context.getRetryCount() > 0) {
+                        log.warn("Failed to read cache, retrying");
+                    }
+                    cache.read();
+                    return null;
+                });
                 log.info("Finished update");
             }
         }, cacheConfiguration.getFileWatcherInterval());

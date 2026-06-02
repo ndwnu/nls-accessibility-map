@@ -3,9 +3,9 @@ package nu.ndw.nls.accessibilitymap.accessibility.network;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheWatcher;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.TaskSchedulerFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,8 +16,8 @@ public class NetworkCacheWatcher extends CacheWatcher<NetworkData> {
             NetworkCacheConfiguration networkCacheConfiguration,
             NetworkDataService networkDataService,
             TaskSchedulerFactory taskSchedulerFactory,
-            ActiveVersionRepository activeVersionRepository
+            RetryTemplate cacheReadRetryTemplate
     ) {
-        super(networkCacheConfiguration, networkDataService, taskSchedulerFactory.createTaskScheduler(), activeVersionRepository);
+        super(networkCacheConfiguration, networkDataService, cacheReadRetryTemplate, taskSchedulerFactory.createTaskScheduler());
     }
 }

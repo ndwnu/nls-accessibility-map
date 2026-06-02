@@ -1,9 +1,11 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache.configuration;
 
+import java.io.FileNotFoundException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
@@ -25,6 +27,31 @@ public class RetryConfiguration {
 
         retryTemplate.setRetryPolicy(retryPolicy);
         retryTemplate.setBackOffPolicy(backOffPolicy);
+
+        return retryTemplate;
+    }
+
+    @Bean
+    public RetryTemplate cacheReadRetryTemplate() {
+        RetryTemplate retryTemplate = new RetryTemplate();
+
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(1_000);
+        backOffPolicy.setMultiplier(2.0);
+        backOffPolicy.setMaxInterval(30_000);
+
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+
+        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy(
+                10,
+                Map.of(
+                        FileNotFoundException.class, true,
+                        IllegalStateException.class, true
+                ),
+                true
+        );
+
+        retryTemplate.setRetryPolicy(retryPolicy);
 
         return retryTemplate;
     }

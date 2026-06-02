@@ -5,7 +5,6 @@ import static org.mockito.Mockito.verify;
 
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.TaskSchedulerFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.retry.support.RetryTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class NetworkCacheWatcherTest {
@@ -27,7 +27,7 @@ class NetworkCacheWatcherTest {
     private TaskSchedulerFactory taskSchedulerFactory;
 
     @Mock
-    private ActiveVersionRepository activeVersionRepository;
+    RetryTemplate retryTemplate;
 
     @Test
     void constructor() {
@@ -35,7 +35,7 @@ class NetworkCacheWatcherTest {
         var networkCacheWatcher = new NetworkCacheWatcher(networkCacheConfiguration,
                 networkDataService,
                 taskSchedulerFactory,
-                activeVersionRepository) {
+                retryTemplate) {
             @Override
             public CacheConfiguration getCacheConfiguration() {
 
