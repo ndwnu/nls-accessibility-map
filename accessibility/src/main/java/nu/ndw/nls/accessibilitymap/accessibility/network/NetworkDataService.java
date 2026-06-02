@@ -27,6 +27,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoa
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,10 +63,12 @@ public class NetworkDataService extends Cache<NetworkData> {
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
             ObjectMapper objectMapper,
             JsonWriter jsonWriter,
-            ApplicationEventPublisher applicationEventPublisher, ActiveVersionRepository activeVersionRepository
+            ApplicationEventPublisher applicationEventPublisher,
+            ActiveVersionRepository activeVersionRepository,
+            RetryTemplate directoryNotEmptyRetryTemplate
     ) {
 
-        super(networkCacheConfiguration, clockService, distributedLockService, activeVersionRepository);
+        super(networkCacheConfiguration, clockService, distributedLockService, activeVersionRepository, directoryNotEmptyRetryTemplate);
 
         this.objectMapper = objectMapper;
         this.graphHopperService = graphHopperService;

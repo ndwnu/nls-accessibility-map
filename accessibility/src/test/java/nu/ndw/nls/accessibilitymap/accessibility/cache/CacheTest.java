@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,6 +33,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.retry.RetryCallback;
+import org.springframework.retry.RetryContext;
+import org.springframework.retry.support.RetryTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class CacheTest {
@@ -51,6 +55,9 @@ class CacheTest {
     @Mock
     ActiveVersionRepository activeVersionRepository;
 
+    @Mock
+    private RetryTemplate retryTemplate;
+
     private Path testDir;
 
     @RegisterExtension
@@ -58,6 +65,9 @@ class CacheTest {
 
     @Mock
     private Object data;
+
+    @Mock
+    private RetryContext retryContext;
 
     private CacheConfiguration cacheConfiguration;
 
@@ -90,7 +100,11 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             private int counter;
 
             @Override
@@ -140,7 +154,11 @@ class CacheTest {
         cacheConfiguration.setAcceptableConsequentReadFailures(1);
         cacheConfiguration.setFailOnStartupCacheReadError(false);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             @Override
             protected Object readData(Path activeVersion) {
                 throw new RuntimeException("test");
@@ -196,7 +214,11 @@ class CacheTest {
     }
 
     private Cache<Object> getCache() {
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             @Override
             protected Object readData(Path activeVersion) {
                 throw new RuntimeException("test");
@@ -224,7 +246,11 @@ class CacheTest {
 
         cacheConfiguration.setFailOnStartupCacheReadError(true);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             @Override
             protected Object readData(Path activeVersion) {
                 throw new RuntimeException("test");
@@ -270,7 +296,11 @@ class CacheTest {
     }
 
     private Cache<Object> getObjectCache1() {
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             @Override
             protected Object readData(Path activeVersion) {
                 return data;
@@ -309,7 +339,11 @@ class CacheTest {
     }
 
     private Cache<Object> getObjectCache() {
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             private int counter;
 
             @Override
@@ -347,7 +381,11 @@ class CacheTest {
         cacheConfiguration.setFailOnStartupCacheReadError(true);
         cacheConfiguration.setLoadDataOnStartup(true);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             @Override
             protected Object readData(Path activeVersion) {
                 throw new RuntimeException("test");
@@ -380,7 +418,11 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<Object> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             private int counter;
 
             @Override
@@ -414,6 +456,16 @@ class CacheTest {
     @SneakyThrows
     @Test
     void write() {
+
+        when(retryContext.getRetryCount()).thenReturn(0);
+        when(retryTemplate.execute(any(RetryCallback.class)))
+                .thenAnswer(invocation -> {
+                    RetryCallback<Object, RuntimeException> callback =
+                            invocation.getArgument(0);
+
+                    return callback.doWithRetry(retryContext);
+                });
+
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
         String timestamp2 = "2022-03-11T09:04:01.123-01:00";
         when(activeVersionRepository.findActiveVersion(CACHE_NAME))
@@ -423,7 +475,11 @@ class CacheTest {
                 .thenReturn(OffsetDateTime.parse(timestamp1, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp2, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        Cache<String> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<String> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             @Override
             protected String readData(Path activeVersion) {
 
@@ -509,7 +565,11 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
-        Cache<String> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<String> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             @Override
             protected String readData(Path activeVersion) {
                 return null;
@@ -539,7 +599,11 @@ class CacheTest {
     @Test
     void getSizeInBytes() throws IOException {
 
-        Cache<String> cache = new Cache<>(cacheConfiguration, clockService, distributedLockService, activeVersionRepository) {
+        Cache<String> cache = new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
             @Override
             protected String readData(Path activeVersion) {
                 return null;

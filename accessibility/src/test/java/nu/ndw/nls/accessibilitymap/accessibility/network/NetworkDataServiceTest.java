@@ -42,6 +42,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.retry.support.RetryTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class NetworkDataServiceTest {
@@ -86,6 +87,10 @@ class NetworkDataServiceTest {
     @Mock
     private ActiveVersionRepository activeVersionRepository;
 
+    @Mock
+    private RetryTemplate testRetryTemplate;
+
+
     @Captor
     private ArgumentCaptor<CacheLoadedEvent> cacheLoadedEventCaptor;
 
@@ -113,8 +118,11 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper, jsonWriter,
-                applicationEventPublisher, activeVersionRepository);
+                objectMapper,
+                jsonWriter,
+                applicationEventPublisher,
+                activeVersionRepository,
+                testRetryTemplate);
     }
 
     @AfterEach

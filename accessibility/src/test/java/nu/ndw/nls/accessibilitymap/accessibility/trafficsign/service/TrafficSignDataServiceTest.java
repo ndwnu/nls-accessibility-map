@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.retry.support.RetryTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class TrafficSignDataServiceTest {
@@ -42,6 +43,9 @@ class TrafficSignDataServiceTest {
 
     @Mock
     private JsonWriter jsonWriter;
+
+    @Mock
+    private RetryTemplate retryTemplate;
 
     private TrafficSign trafficSign1;
 
@@ -67,7 +71,7 @@ class TrafficSignDataServiceTest {
         trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration,
                 clockService,
                 distributedLockService,
-                new ObjectMapper(), jsonWriter, activeVersionRepository);
+                new ObjectMapper(), jsonWriter, activeVersionRepository, retryTemplate);
     }
 
     @AfterEach
