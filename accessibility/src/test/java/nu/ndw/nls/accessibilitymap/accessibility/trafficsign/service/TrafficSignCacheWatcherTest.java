@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.retry.support.RetryTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class TrafficSignCacheWatcherTest {
@@ -26,15 +25,12 @@ class TrafficSignCacheWatcherTest {
     @Mock
     private TaskSchedulerFactory taskSchedulerFactory;
 
-    @Mock
-    private RetryTemplate retryTemplate;
-
     @Test
     void constructor() {
 
         var trafficSignCacheWatcher = new TrafficSignCacheWatcher(trafficSignCacheConfiguration,
                 trafficSignDataService,
-                taskSchedulerFactory, retryTemplate) {
+                taskSchedulerFactory) {
             @Override
             public CacheConfiguration getCacheConfiguration() {
 

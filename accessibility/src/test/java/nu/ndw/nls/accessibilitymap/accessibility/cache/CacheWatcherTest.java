@@ -34,9 +34,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.TaskScheduler;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,12 +54,6 @@ class CacheWatcherTest {
     @Mock
     private ScheduledFuture<?> scheduledFuture;
 
-    @Mock
-    private RetryTemplate retryTemplate;
-
-    @Mock
-    private RetryContext retryContext;
-
     private Path testDir;
 
     @RegisterExtension
@@ -79,7 +70,7 @@ class CacheWatcherTest {
                 .fileWatcherInterval(Duration.ofMillis(1))
                 .build();
 
-        cacheWatcher = new CacheWatcher<>(cacheConfiguration, cache, retryTemplate, taskScheduler);
+        cacheWatcher = new CacheWatcher<>(cacheConfiguration, cache, taskScheduler);
     }
 
     @AfterEach
@@ -90,14 +81,6 @@ class CacheWatcherTest {
 
     @Test
     void watchFileChanges_fileChanges() throws IOException {
-        when(retryContext.getRetryCount()).thenReturn(0);
-        when(retryTemplate.execute(any(RetryCallback.class)))
-                .thenAnswer(invocation -> {
-                    RetryCallback<Object, RuntimeException> callback =
-                            invocation.getArgument(0);
-
-                    return callback.doWithRetry(retryContext);
-                });
 
         Path folder = cacheConfiguration.getFolder();
         Path activeFile = cacheConfiguration.getFolder().resolve("active");
