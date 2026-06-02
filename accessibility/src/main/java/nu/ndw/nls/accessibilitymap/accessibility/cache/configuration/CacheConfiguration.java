@@ -17,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 @SuperBuilder
 public class CacheConfiguration {
 
-    private static final int DEFAULT_MAX_LOCK_WAIT_TIME = 120;
+    private static final int DEFAULT_MAX_LOCK_WAIT_TIME = 60;
 
     @NotNull
     private String name;
