@@ -20,6 +20,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.Acces
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
+import org.springframework.http.HttpHeaders;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -140,9 +141,7 @@ public class AccessibilityMapApiStepDefinitions {
     public void expectAccessibilityGeoJsonResponseV2(String responseFile) {
 
         Response<AccessibilityRequestJson, String> actualResponse = accessibilityMapApiClient.getLastResponseForGetAccessibilityGeoJson();
-        // @todo: find another way to test this?
-        // In spring boot 4, this client hides the gzip abstraction by unzipping it and removing the header as if it never existed
-//        assertThat(actualResponse.headers().toSingleValueMap()).containsEntry(HttpHeaders.CONTENT_ENCODING, "gzip");
+        assertThat(actualResponse.headers().containsHeaderValue(HttpHeaders.CONTENT_ENCODING, "gzip")).isTrue();
 
         String expectedResponse = testDataProvider.readFromFile(
                 "api/accessibility/v2/response",
