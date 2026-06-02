@@ -49,7 +49,6 @@ public class CacheWatcher<TYPE> {
             if (context.getRetryCount() > 0) {
                 log.warn("Failed to read cache, retrying");
             }
-
             File activeVersion = cache.getActiveVersion().toFile();
             long currentLastModified = activeVersion.lastModified();
 
