@@ -117,7 +117,7 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    protected boolean isDataStale() {
+    public boolean isDataStale() {
         String currentActiveVersion = getCurrentActiveVersion();
         return Objects.nonNull(activeVersion) && !activeVersion.equals(currentActiveVersion);
     }

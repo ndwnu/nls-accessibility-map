@@ -101,8 +101,7 @@ class CacheWatcherTest {
 
         Path folder = cacheConfiguration.getFolder();
         Path activeFile = cacheConfiguration.getFolder().resolve("active");
-        when(cache.getActiveVersion()).thenReturn(activeFile);
-
+        when(cache.isDataStale()).thenReturn(true);
         Files.createDirectories(folder);
         Files.createFile(activeFile);
 

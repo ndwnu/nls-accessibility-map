@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import jakarta.annotation.PreDestroy;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
@@ -49,20 +48,26 @@ public class CacheWatcher<TYPE> {
             if (context.getRetryCount() > 0) {
                 log.warn("Failed to read cache, retrying");
             }
-            File activeVersion = cache.getActiveVersion().toFile();
-            long currentLastModified = activeVersion.lastModified();
 
-            if (lastModified.get() == -1) {
-                lastModified.set(currentLastModified);
-                return null;
-            }
-
-            if (lastModified.get() != currentLastModified) {
-                lastModified.set(currentLastModified);
+            if (cache.isDataStale()) {
                 log.info("Triggering update");
                 cache.read();
                 log.info("Finished update");
             }
+//            File activeVersion = cache.getActiveVersion().toFile();
+//            long currentLastModified = activeVersion.lastModified();
+//
+//            if (lastModified.get() == -1) {
+//                lastModified.set(currentLastModified);
+//                return null;
+//            }
+//
+//            if (lastModified.get() != currentLastModified) {
+//                lastModified.set(currentLastModified);
+//                log.info("Triggering update");
+//                cache.read();
+//                log.info("Finished update");
+//            }
 
             return null;
         }), cacheConfiguration.getFileWatcherInterval());
