@@ -532,8 +532,8 @@ class CacheTest {
                 .thenReturn(OffsetDateTime.parse(timestamp4, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         cache.write(() -> "testData2");
 
-        verify(distributedLockService, times(3)).lockOrFail(cacheConfiguration.getName(), MAX_LOCK_WAIT_TIME);
-        verify(distributedLockService, times(3)).unlock(cacheConfiguration.getName());
+        verify(distributedLockService, times(2)).lockOrFail(cacheConfiguration.getName(), MAX_LOCK_WAIT_TIME);
+        verify(distributedLockService, times(2)).unlock(cacheConfiguration.getName());
 
         loggerExtension.containsLog(
                 Level.INFO,
