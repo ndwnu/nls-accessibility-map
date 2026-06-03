@@ -75,8 +75,6 @@ management:
     health:
       probes:
         enabled: true
-    accessibility-map-cache-reload:
-      access: unrestricted
   endpoints:
     web:
       exposure:

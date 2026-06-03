@@ -29,11 +29,6 @@ management:
     health:
       probes:
         enabled: true
-    command:
-      access: unrestricted
-    accessibility-map-cache-reload:
-      access: unrestricted
-
   datadog:
     metrics:
       export:
