@@ -30,7 +30,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <nls-springboot.version>10.1.0</nls-springboot.version>
+    <nls-springboot.version>10.1.3</nls-springboot.version>
     <nls-springboot.logging.version>9.0.0</nls-springboot.logging.version>
     <nls-springboot.component-test.version>14.1.0</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>9.0.0</nls-springboot.monitoring.version>
