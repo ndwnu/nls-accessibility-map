@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.yaml;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -44,13 +43,14 @@ public abstract class AbstractYamlRepository<T extends List<?>> {
             String yamlFile,
             Consumer<T> preValidateCallback) throws IOException {
 
-        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-        objectMapper.findAndRegisterModules();
+        YAMLMapper yamlMapper = YAMLMapper.builder()
+                .findAndAddModules()
+                .build();
 
         log.debug("{} started Loading data from.", this.getClass().getSimpleName());
         String yamlFileContent = getYamlFile(yamlFile, environment);
         if (StringUtils.hasText(yamlFileContent)) {
-            data = objectMapper.readValue(
+            data = yamlMapper.readValue(
                     yamlFileContent,
                     dataClass);
 
@@ -89,7 +89,7 @@ public abstract class AbstractYamlRepository<T extends List<?>> {
                     this.getClass().getSimpleName(),
                     index,
                     validationErrors.stream()
-                            .map(constraintViolation -> String.format("%s: %s", constraintViolation.getPropertyPath(),
+                            .map(constraintViolation -> "%s: %s".formatted(constraintViolation.getPropertyPath(),
                                     constraintViolation.getMessage()))
                             .toList());
         }

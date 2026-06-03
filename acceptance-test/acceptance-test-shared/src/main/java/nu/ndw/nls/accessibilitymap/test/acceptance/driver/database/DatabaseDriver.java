@@ -5,12 +5,14 @@ import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@DependsOnDatabaseInitialization
 public class DatabaseDriver implements StateManagement {
 
     private final DataSource dataSource;
