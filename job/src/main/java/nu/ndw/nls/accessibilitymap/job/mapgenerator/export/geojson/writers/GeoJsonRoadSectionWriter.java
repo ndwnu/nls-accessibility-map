@@ -25,9 +25,9 @@ public class GeoJsonRoadSectionWriter extends AbstractGeoJsonWriter {
             FileService fileService,
             FeatureBuilder featureBuilder,
             GenerateConfiguration generateConfiguration,
-            GeoJsonMapperFactory geoJsonMapperFactory) {
+            GeoJsonJsonMapperFactory geoJsonJsonMapperFactory) {
 
-        super(generateConfiguration, geoJsonMapperFactory, fileService);
+        super(generateConfiguration, geoJsonJsonMapperFactory, fileService);
         this.featureBuilder = featureBuilder;
     }
 
