@@ -28,12 +28,12 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
 
     protected AbstractGeoJsonWriter(
             GenerateConfiguration generateConfiguration,
-            GeoJsonMapperFactory geoJsonMapperFactory,
+            GeoJsonJsonMapperFactory geoJsonJsonMapperFactory,
             FileService fileService) {
 
         this.generateConfiguration = generateConfiguration;
         this.fileService = fileService;
-        geoJsonMapper = geoJsonMapperFactory.create(generateConfiguration);
+        geoJsonMapper = geoJsonJsonMapperFactory.create(generateConfiguration);
     }
 
     public void export(

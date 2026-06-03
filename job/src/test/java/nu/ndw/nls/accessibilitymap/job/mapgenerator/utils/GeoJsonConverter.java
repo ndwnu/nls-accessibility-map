@@ -12,7 +12,7 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfig
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers.FeatureBuilder;
-import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers.GeoJsonMapperFactory;
+import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers.GeoJsonJsonMapperFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
 import tools.jackson.core.JacksonException;
@@ -24,7 +24,7 @@ public class GeoJsonConverter {
             MultiPolygon multiPolygon,
             List<RoadSectionFragment> roadSectionFragments) throws JacksonException {
 
-        JsonMapper geoJsonMapper = new GeoJsonMapperFactory().create(
+        JsonMapper geoJsonMapper = new GeoJsonJsonMapperFactory().create(
                 GenerateConfiguration.builder()
                         .prettyPrintJson(true)
                         .build());

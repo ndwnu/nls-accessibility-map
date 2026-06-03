@@ -16,9 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
-class GeoJsonMapperFactoryTest {
+class GeoJsonJsonMapperFactoryTest {
 
-    private GeoJsonMapperFactory geoJsonMapperFactory;
+    private GeoJsonJsonMapperFactory geoJsonJsonMapperFactory;
 
     @Mock
     private GenerateConfiguration generateConfiguration;
@@ -26,7 +26,7 @@ class GeoJsonMapperFactoryTest {
     @BeforeEach
     void setUp() {
 
-        geoJsonMapperFactory = new GeoJsonMapperFactory();
+        geoJsonJsonMapperFactory = new GeoJsonJsonMapperFactory();
     }
 
     @ParameterizedTest
@@ -38,7 +38,7 @@ class GeoJsonMapperFactoryTest {
 
         when(generateConfiguration.prettyPrintJson()).thenReturn(prettyPrint);
 
-        JsonMapper geoJsonMapper = geoJsonMapperFactory.create(generateConfiguration);
+        JsonMapper geoJsonMapper = geoJsonJsonMapperFactory.create(generateConfiguration);
         String writtenValue = geoJsonMapper.writeValueAsString(
                 TestDto.builder()
                         .field1("value1")

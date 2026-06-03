@@ -31,11 +31,11 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
     public GeoJsonPolygonWriter(
             FileService fileService,
             GenerateConfiguration generateConfiguration,
-            GeoJsonMapperFactory geoJsonMapperFactory,
+            GeoJsonJsonMapperFactory geoJsonJsonMapperFactory,
             MultiPolygonFactory multiPolygonFactory,
             FeatureBuilder featureBuilder) {
 
-        super(generateConfiguration, geoJsonMapperFactory, fileService);
+        super(generateConfiguration, geoJsonJsonMapperFactory, fileService);
 
         this.multiPolygonFactory = multiPolygonFactory;
         this.featureBuilder = featureBuilder;

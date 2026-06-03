@@ -48,7 +48,7 @@ class AbstractGeoJsonWriterTest {
     private AbstractGeoJsonWriter abstractGeoJsonWriter;
 
     @Mock
-    private GeoJsonMapperFactory geoJsonMapperFactory;
+    private GeoJsonJsonMapperFactory geoJsonJsonMapperFactory;
 
     @Mock
     private GenerateConfiguration generateConfiguration;
@@ -80,7 +80,7 @@ class AbstractGeoJsonWriterTest {
             """)
     void export(boolean includeOnlyTimeWindowedSigns) throws IOException {
 
-        when(geoJsonMapperFactory.create(generateConfiguration)).thenReturn(new JsonMapper());
+        when(geoJsonJsonMapperFactory.create(generateConfiguration)).thenReturn(new JsonMapper());
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
         ExportProperties exportProperties = buildExportProperties(includeOnlyTimeWindowedSigns);
@@ -96,7 +96,7 @@ class AbstractGeoJsonWriterTest {
 
             abstractGeoJsonWriter = new TestGeoJsonWriter(
                     generateConfiguration,
-                    geoJsonMapperFactory,
+                    geoJsonJsonMapperFactory,
                     fileService,
                     accessibility,
                     exportProperties);
@@ -135,7 +135,7 @@ class AbstractGeoJsonWriterTest {
 
         JsonMapper jsonMapper = mock(JsonMapper.class);
         doThrow(JacksonException.class).when(jsonMapper).writeValue(any(File.class), any(Object.class));
-        when(geoJsonMapperFactory.create(generateConfiguration)).thenReturn(jsonMapper);
+        when(geoJsonJsonMapperFactory.create(generateConfiguration)).thenReturn(jsonMapper);
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
@@ -148,7 +148,7 @@ class AbstractGeoJsonWriterTest {
 
             abstractGeoJsonWriter = new TestGeoJsonWriter(
                     generateConfiguration,
-                    geoJsonMapperFactory,
+                    geoJsonJsonMapperFactory,
                     fileService,
                     accessibility,
                     exportProperties);
@@ -176,12 +176,12 @@ class AbstractGeoJsonWriterTest {
 
         public TestGeoJsonWriter(
                 GenerateConfiguration generateConfiguration,
-                GeoJsonMapperFactory geoJsonMapperFactory,
+                GeoJsonJsonMapperFactory geoJsonJsonMapperFactory,
                 FileService fileService,
                 Accessibility accessibility,
                 ExportProperties exportProperties) {
 
-            super(generateConfiguration, geoJsonMapperFactory, fileService);
+            super(generateConfiguration, geoJsonJsonMapperFactory, fileService);
             this.accessibility = accessibility;
             this.exportProperties = exportProperties;
         }

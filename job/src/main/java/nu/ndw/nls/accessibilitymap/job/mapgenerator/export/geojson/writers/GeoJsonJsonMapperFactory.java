@@ -8,7 +8,7 @@ import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.json.JsonMapper.Builder;
 
 @Component
-public class GeoJsonMapperFactory {
+public class GeoJsonJsonMapperFactory {
 
     public JsonMapper create(GenerateConfiguration generateConfiguration) {
 

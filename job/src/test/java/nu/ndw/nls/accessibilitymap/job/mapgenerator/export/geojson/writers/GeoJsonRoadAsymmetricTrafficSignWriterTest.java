@@ -121,7 +121,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                     fileService,
                     featureBuilder,
                     generateConfiguration,
-                    new GeoJsonMapperFactory());
+                    new GeoJsonJsonMapperFactory());
             String expectedFileName = "c7";
             when(directionalSegmentForward1.hasRestrictions()).thenReturn(true);
             when(directionalSegmentBackward1.isAccessible()).thenReturn(true);
@@ -189,7 +189,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                 fileService,
                 featureBuilder,
                 generateConfiguration,
-                new GeoJsonMapperFactory());
+                new GeoJsonJsonMapperFactory());
         assertThat(geoJsonRoadAsymmetricTrafficSignWriter.isEnabled(Set.of(ExportType.ASYMMETRIC_TRAFFIC_SIGNS_GEO_JSON))).isTrue();
     }
 

@@ -128,7 +128,7 @@ class GeoJsonRoadSectionWriterTest {
                     fileService,
                     featureBuilder,
                     generateConfiguration,
-                    new GeoJsonMapperFactory());
+                    new GeoJsonJsonMapperFactory());
 
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
@@ -216,17 +216,17 @@ class GeoJsonRoadSectionWriterTest {
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
         ExportProperties exportProperties = buildExportProperties(false);
-        GeoJsonMapperFactory geoJsonMapperFactory = mock(GeoJsonMapperFactory.class);
+        GeoJsonJsonMapperFactory geoJsonJsonMapperFactory = mock(GeoJsonJsonMapperFactory.class);
         JsonMapper goeJsonMapper = mock(JsonMapper.class);
 
-        when(geoJsonMapperFactory.create(generateConfiguration)).thenReturn(goeJsonMapper);
+        when(geoJsonJsonMapperFactory.create(generateConfiguration)).thenReturn(goeJsonMapper);
         try {
             String expectedFileName = "c7";
             GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
                     fileService,
                     featureBuilder,
                     generateConfiguration,
-                    geoJsonMapperFactory
+                    geoJsonJsonMapperFactory
             );
 
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
@@ -293,12 +293,12 @@ class GeoJsonRoadSectionWriterTest {
     @Test
     void isEnabled() {
 
-        GeoJsonMapperFactory geoJsonMapperFactory = mock(GeoJsonMapperFactory.class);
+        GeoJsonJsonMapperFactory geoJsonJsonMapperFactory = mock(GeoJsonJsonMapperFactory.class);
         GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
                 fileService,
                 featureBuilder,
                 generateConfiguration,
-                geoJsonMapperFactory);
+                geoJsonJsonMapperFactory);
 
         assertThat(geoJsonRoadSectionWriter.isEnabled(Set.of(ExportType.LINE_STRING_GEO_JSON))).isTrue();
     }
