@@ -10,7 +10,6 @@ import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import io.github.resilience4j.springboot3.retry.autoconfigure.RetryAutoConfiguration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -40,14 +39,15 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.wiremock.spring.EnableWireMock;
 
-@SpringBootTest(classes = {EmissionZoneClientTest.FeignTestConfig.class, RetryAutoConfiguration.class, EmissionZoneOAuthConfiguration.class})
+@SpringBootTest(classes = {EmissionZoneClientTest.FeignTestConfig.class, EmissionZoneOAuthConfiguration.class})
 @EnableConfigurationProperties
 @EnableWireMock
 @TestPropertySource(properties = {
         "nu.ndw.nls.accessibilitymap.trafficsigns.emission-zone.client.url=http://localhost:${wiremock.server.port}",
         "resilience4j.retry.instances.emissionZone.maxAttempts=2",
         "resilience4j.retry.instances.emissionZone.waitDuration=1ms",
-        "spring.liquibase.enabled=false"
+        "spring.liquibase.enabled=false",
+        "management.datadog.metrics.export.enabled=false"
 })
 class EmissionZoneClientTest {
 
@@ -102,7 +102,7 @@ class EmissionZoneClientTest {
                 .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_JSON_VALUE))
                 .withHeader(HttpHeaders.AUTHORIZATION, equalTo(format("Bearer %s", accessToken)))
                 .willReturn(aResponse()
-                        .withStatus(HttpStatus.OK.value())
+                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .withHeader(HttpHeaders.CONTENT_TYPE, "text/html")
                         .withBody("<html><head><title>error</title></head><body>Error!</body></html>")
                 )

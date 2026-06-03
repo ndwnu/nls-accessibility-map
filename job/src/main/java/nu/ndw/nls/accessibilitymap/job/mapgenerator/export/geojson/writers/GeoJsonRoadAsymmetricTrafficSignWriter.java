@@ -23,9 +23,9 @@ public class GeoJsonRoadAsymmetricTrafficSignWriter extends AbstractGeoJsonWrite
             FileService fileService,
             FeatureBuilder featureBuilder,
             GenerateConfiguration generateConfiguration,
-            GeoJsonObjectMapperFactory geoJsonObjectMapperFactory) {
+            GeoJsonJsonMapperFactory geoJsonJsonMapperFactory) {
 
-        super(generateConfiguration, geoJsonObjectMapperFactory, fileService);
+        super(generateConfiguration, geoJsonJsonMapperFactory, fileService);
         this.featureBuilder = featureBuilder;
     }
 
