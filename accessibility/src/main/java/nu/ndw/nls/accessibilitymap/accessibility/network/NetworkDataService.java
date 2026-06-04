@@ -79,11 +79,12 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     @Timed(value = "accessibilitymap.accessibility.writeNwbDataUpdates")
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
-        if (isDataStale()) {
-            read();
-        }
+
         try {
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
+            if (isDataStale()) {
+                read();
+            }
             NetworkData networkData = get();
             NwbDataUpdates previousChanges = networkData.getNwbDataUpdates();
             NwbDataUpdates newNwbDataUpdates = previousChanges.merge(nwbDataUpdates);
