@@ -8,7 +8,7 @@ import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Properties;
 @Builder
 public class GraphHopperEdgeProperties implements Properties {
 
-    private final String type = "edge";
+    private static final String TYPE = "edge";
 
     private final int edge;
 
@@ -19,4 +19,8 @@ public class GraphHopperEdgeProperties implements Properties {
     private final int toNode;
 
     private final double distance;
+
+    public String getType() {
+        return TYPE;
+    }
 }
