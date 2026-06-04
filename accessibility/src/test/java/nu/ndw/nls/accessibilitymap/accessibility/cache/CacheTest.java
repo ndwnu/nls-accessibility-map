@@ -24,6 +24,7 @@ import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.logging.dto.VerificationMode;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -370,6 +371,55 @@ class CacheTest {
     }
 
     @Test
+    void isDataStale_false() {
+        String timestamp1 = "2022-03-11T09:03:01.123-01:00";
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME))
+                .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(timestamp1));
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse(timestamp1, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+
+        Cache<String> cache = createWriteCache();
+
+        assertThat(Files.exists(cacheConfiguration.getFolder())).isFalse();
+
+        cache.write(() -> "testData1");
+
+        assertThat(cache.isDataStale()).isFalse();
+    }
+
+    @Test
+    void isDataStale_nullFalse() {
+        String timestamp1 = "2022-03-11T09:03:01.123-01:00";
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME))
+                .thenReturn(Optional.of(timestamp1));
+
+        Cache<String> cache = createWriteCache();
+
+        assertThat(cache.isDataStale()).isFalse();
+    }
+
+    @Test
+    void isDataStale_true() {
+        String timestamp1 = "2022-03-11T09:03:01.123-01:00";
+        String timestamp2 = "2022-03-11T09:04:01.123-01:00";
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME))
+                .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(timestamp1))
+                .thenReturn(Optional.of(timestamp2));
+        when(clockService.now())
+                .thenReturn(OffsetDateTime.parse(timestamp1, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+
+        Cache<String> cache = createWriteCache();
+
+        assertThat(Files.exists(cacheConfiguration.getFolder())).isFalse();
+
+        cache.write(() -> "testData1");
+
+        assertThat(cache.isDataStale()).isTrue();
+    }
+
+    @Test
     void loadDataOnStartup_error() throws IOException {
         when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
         when(clockService.now())
@@ -475,32 +525,7 @@ class CacheTest {
                 .thenReturn(OffsetDateTime.parse(timestamp1, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp2, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        Cache<String> cache = new Cache<>(cacheConfiguration,
-                clockService,
-                distributedLockService,
-                activeVersionRepository,
-                retryTemplate) {
-            @Override
-            protected String readData(Path activeVersion) {
-
-                try {
-                    return Files.readString(activeVersion.resolve("file1.txt"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            @Override
-            protected void writeData(Path target, String data) throws IOException {
-
-                Files.writeString(target.resolve("file1.txt"), data);
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
-            }
-        };
+        Cache<String> cache = createWriteCache();
 
         assertThat(Files.exists(cacheConfiguration.getFolder())).isFalse();
 
@@ -552,6 +577,36 @@ class CacheTest {
         cache.read();
         assertThat(cache.get()).isEqualTo("testData2");
         verifyVersion(timestamp3);
+    }
+
+    @NotNull
+    private Cache<String> createWriteCache() {
+        return new Cache<>(cacheConfiguration,
+                clockService,
+                distributedLockService,
+                activeVersionRepository,
+                retryTemplate) {
+            @Override
+            protected String readData(Path activeVersion) {
+
+                try {
+                    return Files.readString(activeVersion.resolve("file1.txt"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            @Override
+            protected void writeData(Path target, String data) throws IOException {
+
+                Files.writeString(target.resolve("file1.txt"), data);
+            }
+
+            @Override
+            protected void publishCacheLoadedEvent() {
+                // not implemented
+            }
+        };
     }
 
     @Test
