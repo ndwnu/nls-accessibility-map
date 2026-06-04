@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -276,20 +277,24 @@ class AccessibilityDebuggerTest {
         LineString lineString = mock(LineString.class);
         when(pointList.toLineString(false)).thenReturn(lineString);
 
-        when(jtsPointJsonMapper.map(any(Point.class))).thenAnswer(invocation -> {
-            Point p = invocation.getArgument(0, Point.class);
-            if (p == null) {
-                return null;
+        when(jtsPointJsonMapper.map(argThat(point -> {
+            if (point == null) {
+                return false;
             }
-            return new PointJson(List.of(p.getX(), p.getY()), TypeEnum.POINT);
+            if (point.getX() == 4.0 && point.getY() == 52.0) {
+                return true;
+            }
+            return point.getX() == 4.1 && point.getY() == 52.1;
+        }))).thenAnswer(invocation -> {
+            Point point = invocation.getArgument(0, Point.class);
+            return new PointJson(List.of(point.getX(), point.getY()), TypeEnum.POINT);
         });
 
-        when(jtsLineStringJsonMapper.map(lineString)).thenReturn(
-                new LineStringJson(List.of(List.of(4.0, 52.0), List.of(4.1, 52.1)), TypeEnum.LINE_STRING));
+        when(jtsLineStringJsonMapper.map(lineString))
+                .thenReturn(new LineStringJson(List.of(List.of(4.0, 52.0), List.of(4.1, 52.1)), TypeEnum.LINE_STRING));
 
         accessibilityDebugger.writeDebug(queryGraph);
 
-        // Verify nodes file
         assertThatJson(Files.readString(testDir.resolve("graphHopper.nodes.geojson")))
                 .isEqualTo("""
                         {
@@ -320,7 +325,6 @@ class AccessibilityDebuggerTest {
                         }
                         """);
 
-        // Verify edges file
         assertThatJson(Files.readString(testDir.resolve("graphHopper.edges.geojson")))
                 .isEqualTo("""
                         {
