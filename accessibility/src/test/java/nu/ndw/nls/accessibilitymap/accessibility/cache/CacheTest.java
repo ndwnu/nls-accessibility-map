@@ -34,9 +34,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.support.RetryTemplate;
+import org.springframework.core.retry.RetryTemplate;
+import org.springframework.core.retry.Retryable;
 
 @ExtendWith(MockitoExtension.class)
 class CacheTest {
@@ -67,8 +66,6 @@ class CacheTest {
     @Mock
     private Object data;
 
-    @Mock
-    private RetryContext retryContext;
 
     private CacheConfiguration cacheConfiguration;
 
@@ -507,13 +504,10 @@ class CacheTest {
     @Test
     void write() {
 
-        when(retryContext.getRetryCount()).thenReturn(0);
-        when(retryTemplate.execute(any(RetryCallback.class)))
+        when(retryTemplate.execute(any()))
                 .thenAnswer(invocation -> {
-                    RetryCallback<Object, RuntimeException> callback =
-                            invocation.getArgument(0);
-
-                    return callback.doWithRetry(retryContext);
+                    Retryable<Object> retryable = invocation.getArgument(0);
+                    return retryable.execute();
                 });
 
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
