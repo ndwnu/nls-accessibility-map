@@ -3,10 +3,18 @@ package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.storage.NodeAccess;
 import com.graphhopper.storage.index.Snap;
+import com.graphhopper.util.EdgeExplorer;
+import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
+import com.graphhopper.util.FetchMode;
+import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.BBox;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -170,6 +178,15 @@ public class AccessibilityDebugger {
         writeGeoJson("accessibilityRequest", featureCollection);
     }
 
+    public void writeDebug(QueryGraph queryGraph) {
+        if (debugConfiguration.isDisabled()) {
+            return;
+        }
+
+        writeGraphHopperNodes(queryGraph);
+        writeGraphHopperEdges(queryGraph);
+    }
+
     public void writeDebug(AccessibilityNetwork accessibilityNetwork) {
         if (debugConfiguration.isDisabled()) {
             return;
@@ -196,6 +213,65 @@ public class AccessibilityDebugger {
                 .build();
 
         writeGeoJson("accessibilityNetwork", featureCollection);
+    }
+
+    private void writeGraphHopperNodes(QueryGraph queryGraph) {
+        AtomicLong idSupplier = new AtomicLong(1);
+        ArrayList<Feature> nodes = new ArrayList<>();
+
+        NodeAccess nodeAccess = queryGraph.getNodeAccess();
+        for (int nodeId = 0; nodeId < queryGraph.getNodes(); nodeId++) {
+            double latitude = nodeAccess.getLat(nodeId);
+            double longitude = nodeAccess.getLon(nodeId);
+
+            nodes.add(Feature.builder()
+                    .id(idSupplier.getAndIncrement())
+                    .geometry(jtsPointJsonMapper.map(geometryFactory.createPoint(new Coordinate(longitude, latitude))))
+                    .properties(GraphHopperNodeProperties.builder()
+                            .id(nodeId)
+                            .build())
+                    .build());
+        }
+        FeatureCollection featureCollection = FeatureCollection.builder()
+                .features(nodes)
+                .build();
+        writeGeoJson("graphHopper.nodes", featureCollection);
+    }
+
+    private void writeGraphHopperEdges(QueryGraph queryGraph) {
+        AtomicLong idSupplier = new AtomicLong(1);
+        ArrayList<Feature> edgeFeatures = new ArrayList<>();
+
+        EdgeExplorer explorer = queryGraph.createEdgeExplorer();
+
+        for (int node = 0; node < queryGraph.getNodes(); node++) {
+            EdgeIterator edgeIterator = explorer.setBaseNode(node);
+
+            while (edgeIterator.next()) {
+                int toNode = edgeIterator.getAdjNode();
+                EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(
+                        edgeIterator.getEdge(),
+                        toNode);
+                double distance = edgeIterator.getDistance();
+
+                PointList geometry = edgeIterator.fetchWayGeometry(FetchMode.ALL);
+                edgeFeatures.add(Feature.builder()
+                        .id(idSupplier.getAndIncrement())
+                        .geometry(jtsLineStringJsonMapper.map(geometry.toLineString(false)))
+                        .properties(GraphHopperEdgeProperties.builder()
+                                .edge(currentEdge.getEdge())
+                                .edgeKey(currentEdge.getEdgeKey())
+                                .fromNode(node)
+                                .toNode(toNode)
+                                .distance(distance)
+                                .build())
+                        .build());
+            }
+        }
+        FeatureCollection featureCollection = FeatureCollection.builder()
+                .features(edgeFeatures)
+                .build();
+        writeGeoJson("graphHopper.edges", featureCollection);
     }
 
     public void writeDebug(List<DirectionalSegment> path) {
@@ -310,5 +386,4 @@ public class AccessibilityDebugger {
             log.error("Failed to write file.", exception);
         }
     }
-
 }

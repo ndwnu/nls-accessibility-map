@@ -6,8 +6,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.NodeAccess;
 import com.graphhopper.storage.index.Snap;
+import com.graphhopper.util.EdgeExplorer;
+import com.graphhopper.util.EdgeIterator;
+import com.graphhopper.util.EdgeIteratorState;
+import com.graphhopper.util.FetchMode;
+import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.BBox;
 import com.graphhopper.util.shapes.GHPoint3D;
 import java.io.IOException;
@@ -28,7 +35,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsectio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
@@ -74,9 +80,6 @@ class AccessibilityDebuggerTest {
 
     @Mock
     private LineString lineStringBackward;
-
-    @Mock
-    private NwbDataUpdates nwbDataUpdates;
 
     private Path testDir;
 
@@ -208,7 +211,7 @@ class AccessibilityDebuggerTest {
     }
 
     @Test
-    void writeDebug_accessibility_disabled() {
+    void writeDebug_accessibility_debugDisabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
         accessibilityDebugger.writeDebug((Accessibility) null);
 
@@ -216,6 +219,187 @@ class AccessibilityDebuggerTest {
         assertThat(testDir.resolve("accessibility.roadSectionsWithRestrictions.geojson")).doesNotExist();
         assertThat(testDir.resolve("accessibility.unroutableRoadSections.geojson")).doesNotExist();
         assertThat(testDir.resolve("accessibility.combinedAccessibility.geojson")).doesNotExist();
+    }
+
+    @Test
+    void writeDebug_queryGraph() throws IOException {
+        when(debugConfiguration.getDebugFolder()).thenReturn(testDir);
+
+        QueryGraph queryGraph = mock(QueryGraph.class);
+        NodeAccess nodeAccess = mock(NodeAccess.class);
+        EdgeExplorer edgeExplorer = mock(EdgeExplorer.class);
+        EdgeIterator edgeIterator = mock(EdgeIterator.class);
+        EdgeIteratorState edgeIteratorState = mock(EdgeIteratorState.class);
+        PointList pointList = mock(PointList.class);
+
+        when(queryGraph.getNodes()).thenReturn(2);
+        when(queryGraph.getNodeAccess()).thenReturn(nodeAccess);
+        when(nodeAccess.getLat(0)).thenReturn(52.0);
+        when(nodeAccess.getLon(0)).thenReturn(4.0);
+        when(nodeAccess.getLat(1)).thenReturn(52.1);
+        when(nodeAccess.getLon(1)).thenReturn(4.1);
+
+        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+        when(edgeExplorer.setBaseNode(0)).thenReturn(edgeIterator);
+        when(edgeExplorer.setBaseNode(1)).thenReturn(edgeIterator);
+
+        when(edgeIterator.next())
+                .thenReturn(true)
+                .thenReturn(false)
+                .thenReturn(true)
+                .thenReturn(false);
+
+        when(edgeIterator.getAdjNode())
+                .thenReturn(1)
+                .thenReturn(0);
+
+        when(edgeIterator.getEdge())
+                .thenReturn(10)
+                .thenReturn(10);
+
+        when(queryGraph.getEdgeIteratorState(10, 1)).thenReturn(edgeIteratorState);
+        when(queryGraph.getEdgeIteratorState(10, 0)).thenReturn(edgeIteratorState);
+
+        when(edgeIteratorState.getEdge())
+                .thenReturn(10)
+                .thenReturn(10);
+
+        when(edgeIteratorState.getEdgeKey())
+                .thenReturn(20)
+                .thenReturn(21);
+
+        when(edgeIterator.getDistance())
+                .thenReturn(100.5)
+                .thenReturn(100.5);
+
+        when(edgeIterator.fetchWayGeometry(FetchMode.ALL)).thenReturn(pointList);
+        LineString lineString = mock(LineString.class);
+        when(pointList.toLineString(false)).thenReturn(lineString);
+
+        when(jtsPointJsonMapper.map(any(Point.class))).thenAnswer(invocation -> {
+            Point p = invocation.getArgument(0, Point.class);
+            if (p == null) {
+                return null;
+            }
+            return new PointJson(List.of(p.getX(), p.getY()), TypeEnum.POINT);
+        });
+
+        when(jtsLineStringJsonMapper.map(lineString)).thenReturn(
+                new LineStringJson(List.of(List.of(4.0, 52.0), List.of(4.1, 52.1)), TypeEnum.LINE_STRING));
+
+        accessibilityDebugger.writeDebug(queryGraph);
+
+        // Verify nodes file
+        assertThatJson(Files.readString(testDir.resolve("graphHopper.nodes.geojson")))
+                .isEqualTo("""
+                        {
+                          "features" : [ {
+                            "id" : 1,
+                            "geometry" : {
+                              "type" : "Point",
+                              "coordinates" : [ 4.0, 52.0 ]
+                            },
+                            "properties" : {
+                              "id" : 0,
+                              "type" : "node"
+                            },
+                            "type" : "Feature"
+                          }, {
+                            "id" : 2,
+                            "geometry" : {
+                              "type" : "Point",
+                              "coordinates" : [ 4.1, 52.1 ]
+                            },
+                            "properties" : {
+                              "id" : 1,
+                              "type" : "node"
+                            },
+                            "type" : "Feature"
+                          } ],
+                          "type" : "FeatureCollection"
+                        }
+                        """);
+
+        // Verify edges file
+        assertThatJson(Files.readString(testDir.resolve("graphHopper.edges.geojson")))
+                .isEqualTo("""
+                        {
+                          "features" : [ {
+                            "id" : 1,
+                            "geometry" : {
+                              "type" : "LineString",
+                              "coordinates" : [ [ 4.0, 52.0 ], [ 4.1, 52.1 ] ]
+                            },
+                            "properties" : {
+                              "type" : "edge",
+                              "edge" : 10,
+                              "edgeKey" : 20,
+                              "fromNode" : 0,
+                              "toNode" : 1,
+                              "distance" : 100.5
+                            },
+                            "type" : "Feature"
+                          }, {
+                            "id" : 2,
+                            "geometry" : {
+                              "type" : "LineString",
+                              "coordinates" : [ [ 4.0, 52.0 ], [ 4.1, 52.1 ] ]
+                            },
+                            "properties" : {
+                              "type" : "edge",
+                              "edge" : 10,
+                              "edgeKey" : 21,
+                              "fromNode" : 1,
+                              "toNode" : 0,
+                              "distance" : 100.5
+                            },
+                            "type" : "Feature"
+                          } ],
+                          "type" : "FeatureCollection"
+                        }
+                        """);
+    }
+
+    @Test
+    void writeDebug_queryGraph_emptyGraph() throws IOException {
+        when(debugConfiguration.getDebugFolder()).thenReturn(testDir);
+
+        QueryGraph queryGraph = mock(QueryGraph.class);
+        NodeAccess nodeAccess = mock(NodeAccess.class);
+        EdgeExplorer edgeExplorer = mock(EdgeExplorer.class);
+
+        when(queryGraph.getNodes()).thenReturn(0);
+        when(queryGraph.getNodeAccess()).thenReturn(nodeAccess);
+        when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
+
+        accessibilityDebugger.writeDebug(queryGraph);
+
+        assertThatJson(Files.readString(testDir.resolve("graphHopper.nodes.geojson")))
+                .isEqualTo("""
+                        {
+                          "features" : [],
+                          "type" : "FeatureCollection"
+                        }
+                        """);
+
+        assertThatJson(Files.readString(testDir.resolve("graphHopper.edges.geojson")))
+                .isEqualTo("""
+                        {
+                          "features" : [],
+                          "type" : "FeatureCollection"
+                        }
+                        """);
+    }
+
+    @Test
+    void writeDebug_queryGraph_debugDisabled() {
+        when(debugConfiguration.isDisabled()).thenReturn(true);
+
+        QueryGraph queryGraph = mock(QueryGraph.class);
+        accessibilityDebugger.writeDebug(queryGraph);
+
+        assertThat(testDir.resolve("graphHopper.nodes.geojso")).doesNotExist();
+        assertThat(testDir.resolve("graphHopper.edges.geojso")).doesNotExist();
     }
 
     @Test
@@ -277,7 +461,7 @@ class AccessibilityDebuggerTest {
     }
 
     @Test
-    void writeDebug_roadSections_disabled() {
+    void writeDebug_roadSections_debugDisabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
 
         accessibilityDebugger.writeDebug("roadSections", List.of());
@@ -405,7 +589,7 @@ class AccessibilityDebuggerTest {
     }
 
     @Test
-    void writeDebug_restrictions_disabled() {
+    void writeDebug_restrictions_debugDisabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
 
         accessibilityDebugger.writeDebug((Restrictions) null);
@@ -529,7 +713,7 @@ class AccessibilityDebuggerTest {
     }
 
     @Test
-    void writeDebug_accessibilityRequest_disabled() {
+    void writeDebug_accessibilityRequest_debugDisabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
 
         accessibilityDebugger.writeDebug((AccessibilityRequest) null);
@@ -651,7 +835,7 @@ class AccessibilityDebuggerTest {
     }
 
     @Test
-    void writeDebug_accessibilityNetwork_disabled() {
+    void writeDebug_accessibilityNetwork_debugDisabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
 
         accessibilityDebugger.writeDebug((AccessibilityNetwork) null);

@@ -75,6 +75,7 @@ public class AccessibilityService {
                 locationFactory.mapCoordinate(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude()),
                 locationFactory.mapCoordinate(accessibilityRequest.endLocationLatitude(), accessibilityRequest.endLocationLongitude()));
         accessibilityDebugger.writeDebug(accessibilityNetwork);
+        accessibilityDebugger.writeDebug(accessibilityNetwork.getQueryGraph());
 
         OffsetDateTime startTimeCalculatingAccessibility = clockService.now();
 
