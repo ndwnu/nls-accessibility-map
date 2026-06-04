@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.retry.RetryTemplate;
 import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +43,9 @@ class TrafficSignDataServiceTest {
 
     @Mock
     private JsonWriter jsonWriter;
+
+    @Mock
+    private RetryTemplate retryTemplate;
 
     private TrafficSign trafficSign1;
 
@@ -67,7 +71,7 @@ class TrafficSignDataServiceTest {
         trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration,
                 clockService,
                 distributedLockService,
-                new JsonMapper(), jsonWriter, activeVersionRepository);
+                new JsonMapper(), jsonWriter, activeVersionRepository, retryTemplate);
     }
 
     @AfterEach
@@ -81,7 +85,8 @@ class TrafficSignDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-
+        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName())).thenReturn(Optional.of(
+                "2022-03-11T09:03:01.433-01:00"));
         trafficSignDataService.write(() -> new TrafficSigns(trafficSign1, trafficSign2));
 
         Set<TrafficSign> trafficSigns = trafficSignDataService.findAll();

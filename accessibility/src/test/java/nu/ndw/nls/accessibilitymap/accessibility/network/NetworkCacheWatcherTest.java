@@ -5,7 +5,6 @@ import static org.mockito.Mockito.verify;
 
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.TaskSchedulerFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.configuration.NetworkCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -26,16 +25,12 @@ class NetworkCacheWatcherTest {
     @Mock
     private TaskSchedulerFactory taskSchedulerFactory;
 
-    @Mock
-    private ActiveVersionRepository activeVersionRepository;
-
     @Test
     void constructor() {
 
         var networkCacheWatcher = new NetworkCacheWatcher(networkCacheConfiguration,
                 networkDataService,
-                taskSchedulerFactory,
-                activeVersionRepository) {
+                taskSchedulerFactory) {
             @Override
             public CacheConfiguration getCacheConfiguration() {
 
