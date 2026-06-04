@@ -59,7 +59,7 @@ public class RoadSectionUpdateListener {
         log.debug("Received road section update: {}", nwbRoadSectionUpdate);
         NwbData nwbData = networkDataService.get().getNwbData();
         int updateMapVersion = nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion());
-        log.debug("Active nwb map version: {}", updateMapVersion);
+        log.debug("Update nwb map version: {}", updateMapVersion);
         if (updateMapVersionIsDifferentFromActiveMapVersion(updateMapVersion, nwbData.getNwbVersionId())) {
 
             if (updateMapVersionIsEarlierThanActiveVersion(updateMapVersion, nwbData.getNwbVersionId())) {
