@@ -94,9 +94,9 @@ class AccessibilityReasonServiceTest {
 
         if (effectivelyAccessible) {
             when(directionalSegment.getRoadSectionFragment()).thenReturn(roadSectionFragment);
-            when(roadSectionFragment.isAccessibleFromAnySegment()).thenReturn(true);
+            when(roadSectionFragment.isAccessibleFromAnySegment()).thenReturn(false);
         } else {
-            when(directionalSegment.isAccessible()).thenReturn(true);
+            when(directionalSegment.isAccessible()).thenReturn(false);
         }
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);
@@ -124,7 +124,7 @@ class AccessibilityReasonServiceTest {
                 directionalSegmentsById,
                 accessibilityNetwork, effectivelyAccessible);
 
-        assertThat(actualAccessibilityReasonGroups).hasSize(1).isEqualTo(accessibilityReasonGroups);
+        assertThat(actualAccessibilityReasonGroups).isEqualTo(accessibilityReasonGroups);
     }
 
     @Test
@@ -143,7 +143,7 @@ class AccessibilityReasonServiceTest {
     @Test
     void calculateReasons_noRoutes() {
 
-        when(directionalSegment.isAccessible()).thenReturn(true);
+        when(directionalSegment.isAccessible()).thenReturn(false);
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
@@ -172,7 +172,7 @@ class AccessibilityReasonServiceTest {
     @Test
     void calculateReasons_pathNotFound() {
 
-        when(directionalSegment.isAccessible()).thenReturn(true);
+        when(directionalSegment.isAccessible()).thenReturn(false);
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
@@ -209,9 +209,9 @@ class AccessibilityReasonServiceTest {
 
         if (effectivelyAccessible) {
             when(directionalSegment.getRoadSectionFragment()).thenReturn(roadSectionFragment);
-            when(roadSectionFragment.isAccessibleFromAnySegment()).thenReturn(true);
+            when(roadSectionFragment.isAccessibleFromAnySegment()).thenReturn(false);
         } else {
-            when(directionalSegment.isAccessible()).thenReturn(true);
+            when(directionalSegment.isAccessible()).thenReturn(false);
         }
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);

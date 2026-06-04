@@ -193,6 +193,7 @@ class AccessibilityMapApiDelegateImpTest {
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
         when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
         when(accessibility.combinedAccessibility()).thenReturn(roadSections);
+        when(directionalSegment.geRoadSectionId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
 
         when(roadSectionFeatureCollectionMapper
                 .map(roadSections, true, REQUESTED_ROAD_SECTION_ID, true))
@@ -260,7 +261,7 @@ class AccessibilityMapApiDelegateImpTest {
             when(accessibility.combinedAccessibility()).thenReturn(roadSections);
             when(roadSectionFeatureCollectionMapper.map(roadSections, true, REQUESTED_ROAD_SECTION_ID, true))
                     .thenReturn(roadSectionFeatureCollectionJson);
-
+            when(directionalSegment.geRoadSectionId()).thenReturn(REQUESTED_ROAD_SECTION_ID);
             ResponseEntity<RoadSectionFeatureCollectionJson> response = accessibilityMapApiDelegate.getRoadSections(
                     MUNICIPALITY_ID,
                     VehicleTypeJson.CAR,

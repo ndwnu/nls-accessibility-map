@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.response;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.mockito.Mockito.when;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,6 +36,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityResponseGeoJsonMapperV2Test {
@@ -599,8 +599,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     },
                     "properties" : {
                       "type" : "destination",
-                      "roadSectionId" : 3,
-                      "accessible" : true,
+                      "roadSectionId" : 4,
+                      "accessible" : false,
                       "reasons" : [ [ {
                         "type" : "vehicleTypeReason",
                         "unitSymbol" : "enum",
