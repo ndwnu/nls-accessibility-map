@@ -56,8 +56,7 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
                                             getNwbRoadSectionGeometry(trafficSignGeoJsonDto),
                                             trafficSignGeoJsonDto,
                                             idSupplier))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
+                            .flatMap(Optional::stream)
                             .toList());
 
             log.info("Downloaded {} traffic signs", trafficSigns.size());
@@ -72,7 +71,7 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
 
     private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
         NetworkData networkData = networkDataService.get();
-        if (Objects.isNull(networkData.getNetworkGraphHopper())) {
+        if (Objects.isNull(networkData) || Objects.isNull(networkData.getNetworkGraphHopper())) {
             log.warn("Network graph hopper is not initialized, reading network data");
             networkDataService.read();
         }
