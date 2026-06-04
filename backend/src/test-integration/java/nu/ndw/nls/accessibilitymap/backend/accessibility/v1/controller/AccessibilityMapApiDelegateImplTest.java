@@ -7,8 +7,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -46,8 +46,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,6 +60,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import tools.jackson.databind.json.JsonMapper;
 
 @WebMvcTest(controllers = AccessibilityMapApiController.class)
 @Import({SecurityConfig.class, AccessibilityMapApiDelegateImpl.class, PointValidator.class})
@@ -109,7 +111,7 @@ class AccessibilityMapApiDelegateImplTest {
     @Mock
     private Collection<RoadSection> combinedAccessibility;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private NetworkData networkData;
@@ -120,8 +122,9 @@ class AccessibilityMapApiDelegateImplTest {
     @BeforeEach
     void setUp() {
 
-        objectMapper = new ObjectMapper();
-        objectMapper.setSerializationInclusion(Include.NON_NULL);
+        jsonMapper = JsonMapper.builder()
+                .changeDefaultPropertyInclusion(incl -> incl.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
     }
 
     @Test
@@ -190,7 +193,7 @@ class AccessibilityMapApiDelegateImplTest {
 
         MvcResult response = mockMvcBuilder.andReturn();
         assertThatJson(response.getResponse()
-                .getContentAsString()).isEqualTo(objectMapper.writeValueAsString(accessibilityMapResponseJson));
+                .getContentAsString()).isEqualTo(jsonMapper.writeValueAsString(accessibilityMapResponseJson));
     }
 
     @Test
@@ -562,7 +565,7 @@ class AccessibilityMapApiDelegateImplTest {
 
         MvcResult response = mockMvcBuilder.andReturn();
         assertThatJson(response.getResponse()
-                .getContentAsString()).isEqualTo(objectMapper.writeValueAsString(roadSectionFeatureCollectionJson));
+                .getContentAsString()).isEqualTo(jsonMapper.writeValueAsString(roadSectionFeatureCollectionJson));
     }
 
     @Test
@@ -638,7 +641,7 @@ class AccessibilityMapApiDelegateImplTest {
 
         MvcResult response = mockMvcBuilder.andReturn();
         assertThatJson(response.getResponse()
-                .getContentAsString()).isEqualTo(objectMapper.writeValueAsString(roadSectionFeatureCollectionJson));
+                .getContentAsString()).isEqualTo(jsonMapper.writeValueAsString(roadSectionFeatureCollectionJson));
     }
 
     @Test

@@ -3,8 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.response;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,6 +36,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.core.JacksonException;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityResponseGeoJsonMapperV2Test {
@@ -63,12 +63,12 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
     private RoadSection destinationRoadSectionInAccessible;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @BeforeEach
     void setUp() {
 
-        objectMapper = new ObjectMapper();
+        jsonMapper = new JsonMapper();
 
         roadSectionAccessible = buildRoadSection(1, true, true);
         roadSectionInaccessible = buildRoadSection(2, false, false);
@@ -85,7 +85,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
             "true",
             "null"
     }, nullValues = "null")
-    void map(Boolean includeAccessibleAndInAccessibleRoadSections) throws JsonProcessingException {
+    void map(Boolean includeAccessibleAndInAccessibleRoadSections) throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
                 .toDirectionalSegment(Optional.of(destinationDirectionalSegmentAccessible))
@@ -107,7 +107,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -245,7 +245,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
             "false",
             "null"
     }, nullValues = "null")
-    void map_effectivelyAccessible_defaultBehavior(Boolean effectivelyAccessible) throws JsonProcessingException {
+    void map_effectivelyAccessible_defaultBehavior(Boolean effectivelyAccessible) throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
                 .toDirectionalSegment(Optional.of(destinationDirectionalSegmentAccessible))
@@ -265,7 +265,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -399,7 +399,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     }
 
     @Test
-    void map_effectivelyAccessible_enabled() throws JsonProcessingException {
+    void map_effectivelyAccessible_enabled() throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
                 .toDirectionalSegment(Optional.of(destinationDirectionalSegmentAccessible))
@@ -420,7 +420,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -554,7 +554,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     }
 
     @Test
-    void map_destinationInaccessible() throws JsonProcessingException {
+    void map_destinationInaccessible() throws JacksonException {
 
 
         when(accessibilityReasonsJsonMapperV2.map(reasons)).thenReturn(List.of(List.of(VehicleTypeReasonJson.builder()
@@ -587,7 +587,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -703,7 +703,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     }
 
     @Test
-    void map_onlyAccessible() throws JsonProcessingException {
+    void map_onlyAccessible() throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
                 .toDirectionalSegment(Optional.of(destinationDirectionalSegmentInaccessible))
@@ -723,7 +723,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -773,7 +773,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     }
 
     @Test
-    void map_onlyInaccessible() throws JsonProcessingException {
+    void map_onlyInaccessible() throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
                 .toDirectionalSegment(Optional.of(destinationDirectionalSegmentAccessible))
@@ -793,7 +793,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {
@@ -848,7 +848,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
             "true, false",
             "false, false",
     })
-    void map_noDestination(boolean hasAccessibilityRoadSection, boolean hasRequestDestination) throws JsonProcessingException {
+    void map_noDestination(boolean hasAccessibilityRoadSection, boolean hasRequestDestination) throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
                 .toDirectionalSegment(hasAccessibilityRoadSection ? Optional.of(destinationDirectionalSegmentAccessible) : Optional.empty())
@@ -867,7 +867,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 accessibilityRequestJson,
                 accessibility);
 
-        assertThatJson(objectMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
+        assertThatJson(jsonMapper.writeValueAsString(geoJsonResponse)).isEqualTo("""
                 {
                   "type" : "FeatureCollection",
                   "features" : [ {

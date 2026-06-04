@@ -7,8 +7,8 @@ import nu.ndw.nls.springboot.security.oauth2.client.services.OAuth2ClientCredent
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 
-@AllArgsConstructor
 @Slf4j
+@AllArgsConstructor
 public class EmissionZoneFeignClientConfiguration {
 
     @Bean(name = "emissionZoneApiRequestInterceptor")
