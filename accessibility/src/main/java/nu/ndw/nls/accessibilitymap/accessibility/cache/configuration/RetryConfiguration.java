@@ -1,33 +1,44 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache.configuration;
 
+import jakarta.validation.constraints.NotNull;
 import java.nio.file.DirectoryNotEmptyException;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
+import org.springframework.core.retry.RetryListener;
+import org.springframework.core.retry.RetryPolicy;
+import org.springframework.core.retry.RetryState;
+import org.springframework.core.retry.RetryTemplate;
+import org.springframework.core.retry.Retryable;
+import org.springframework.util.backoff.FixedBackOff;
 
 @Configuration
+@Slf4j
 public class RetryConfiguration {
 
     private static final int DEFAULT_RETRY_COUNT = 10;
 
     @Bean
     public RetryTemplate directoryNotEmptyRetryTemplate() {
-        RetryTemplate retryTemplate = new RetryTemplate();
 
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy(
-                DEFAULT_RETRY_COUNT,
-                Map.of(DirectoryNotEmptyException.class, true)
-        );
+        RetryPolicy retryPolicy = RetryPolicy.builder()
+                .backOff(new FixedBackOff(1000, DEFAULT_RETRY_COUNT))
+                .includes(DirectoryNotEmptyException.class)
+                .build();
+        RetryTemplate retryTemplate = new RetryTemplate(retryPolicy);
+        retryTemplate.setRetryListener(new RetryListener() {
+            @SuppressWarnings("NullableProblems")
+            @Override
+            public void beforeRetry(
+                    @NotNull RetryPolicy policy,
+                    @NotNull Retryable<?> retryable,
+                    @NotNull RetryState state
+            ) {
 
-        FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-        backOffPolicy.setBackOffPeriod(1_000);
-
-        retryTemplate.setRetryPolicy(retryPolicy);
-        retryTemplate.setBackOffPolicy(backOffPolicy);
-
+                log.warn("Directory not empty, retrying (attempt {})",
+                        state.getRetryCount());
+            }
+        });
         return retryTemplate;
     }
 }

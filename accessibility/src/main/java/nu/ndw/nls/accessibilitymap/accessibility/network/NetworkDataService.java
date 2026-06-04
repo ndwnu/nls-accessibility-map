@@ -26,7 +26,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoa
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.retry.support.RetryTemplate;
+import org.springframework.core.retry.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.json.JsonMapper;

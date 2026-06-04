@@ -23,7 +23,7 @@ import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.retry.support.RetryTemplate;
+import org.springframework.core.retry.RetryTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -192,10 +192,7 @@ public abstract class Cache<TYPE> {
 
         if (Objects.nonNull(oldVersionDirectory)) {
             try {
-                directoryNotEmptyRetryTemplate.execute(context -> {
-                    if (context.getRetryCount() > 0) {
-                        log.warn("Directory not empty, retrying");
-                    }
+                directoryNotEmptyRetryTemplate.execute(() -> {
                     FileUtils.deleteDirectory(oldVersionDirectory.toFile());
                     return null;
                 });
