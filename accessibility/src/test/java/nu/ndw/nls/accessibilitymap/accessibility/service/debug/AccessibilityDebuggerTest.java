@@ -278,9 +278,6 @@ class AccessibilityDebuggerTest {
         when(pointList.toLineString(false)).thenReturn(lineString);
 
         when(jtsPointJsonMapper.map(argThat(point -> {
-            if (point == null) {
-                return false;
-            }
             if (point.getX() == 4.0 && point.getY() == 52.0) {
                 return true;
             }
