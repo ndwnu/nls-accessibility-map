@@ -6,14 +6,12 @@ import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipalities;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.yaml.AbstractYamlRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class MunicipalityRepository extends AbstractYamlRepository<Municipalities> {
 
-    @Autowired
     public MunicipalityRepository(final Environment environment) throws IOException {
 
         super(environment, Municipalities.class, "municipalities");

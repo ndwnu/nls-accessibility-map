@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -48,6 +47,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class GeoJsonRoadSectionWriterTest {
@@ -127,7 +128,7 @@ class GeoJsonRoadSectionWriterTest {
                     fileService,
                     featureBuilder,
                     generateConfiguration,
-                    new GeoJsonObjectMapperFactory());
+                    new GeoJsonJsonMapperFactory());
 
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
@@ -215,24 +216,23 @@ class GeoJsonRoadSectionWriterTest {
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
         ExportProperties exportProperties = buildExportProperties(false);
-        GeoJsonObjectMapperFactory geoJsonObjectMapperFactory = mock(GeoJsonObjectMapperFactory.class);
-        ObjectMapper goeJsonObjectMapper = mock(ObjectMapper.class);
+        GeoJsonJsonMapperFactory geoJsonJsonMapperFactory = mock(GeoJsonJsonMapperFactory.class);
+        JsonMapper goeJsonMapper = mock(JsonMapper.class);
 
-        when(geoJsonObjectMapperFactory.create(generateConfiguration)).thenReturn(goeJsonObjectMapper);
+        when(geoJsonJsonMapperFactory.create(generateConfiguration)).thenReturn(goeJsonMapper);
         try {
             String expectedFileName = "c7";
             GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
                     fileService,
                     featureBuilder,
                     generateConfiguration,
-                    geoJsonObjectMapperFactory
+                    geoJsonJsonMapperFactory
             );
 
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
 
-            doThrow(new IOException("some exception")).when(goeJsonObjectMapper)
-                    .writeValue(any(File.class), any(Object.class));
+            doThrow(JacksonException.class).when(goeJsonMapper).writeValue(any(File.class), any(Object.class));
             prepareCreateFeaturesForDirectionalSegment(directionalSegmentForward1, 11, false);
 
             assertThat(
@@ -293,12 +293,12 @@ class GeoJsonRoadSectionWriterTest {
     @Test
     void isEnabled() {
 
-        GeoJsonObjectMapperFactory geoJsonObjectMapperFactory = mock(GeoJsonObjectMapperFactory.class);
+        GeoJsonJsonMapperFactory geoJsonJsonMapperFactory = mock(GeoJsonJsonMapperFactory.class);
         GeoJsonRoadSectionWriter geoJsonRoadSectionWriter = new GeoJsonRoadSectionWriter(
                 fileService,
                 featureBuilder,
                 generateConfiguration,
-                geoJsonObjectMapperFactory);
+                geoJsonJsonMapperFactory);
 
         assertThat(geoJsonRoadSectionWriter.isEnabled(Set.of(ExportType.LINE_STRING_GEO_JSON))).isTrue();
     }
