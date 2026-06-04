@@ -176,15 +176,6 @@ public class AccessibilityDebugger {
         writeGeoJson("accessibilityRequest", featureCollection);
     }
 
-    public void writeDebug(QueryGraph queryGraph) {
-        if (debugConfiguration.isDisabled()) {
-            return;
-        }
-
-        writeGraphHopperNodes(queryGraph);
-        writeGraphHopperEdges(queryGraph);
-    }
-
     public void writeDebug(AccessibilityNetwork accessibilityNetwork) {
         if (debugConfiguration.isDisabled()) {
             return;
@@ -212,6 +203,43 @@ public class AccessibilityDebugger {
         writeGeoJson("accessibilityNetwork", featureCollection);
     }
 
+    public void writeDebug(List<DirectionalSegment> path) {
+        if (debugConfiguration.isDisabled()) {
+            return;
+        }
+
+        AtomicLong idSupplier = new AtomicLong(1);
+        FeatureCollection featureCollection = FeatureCollection.builder()
+                .features(path.stream()
+                        .map(directionalSegment -> Feature.builder()
+                                .id(idSupplier.getAndIncrement())
+                                .geometry(jtsLineStringJsonMapper.map(directionalSegment.getLineString()))
+                                .properties(RoadSectionSegmentProperties.builder()
+                                        .roadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
+                                        .roadSectionFragmentId(directionalSegment.getRoadSectionFragment().getId())
+                                        .edge(directionalSegment.getRoadSectionFragment().getId())
+                                        .segmentId(directionalSegment.getId())
+                                        .edgeKey(directionalSegment.getId())
+                                        .direction(directionalSegment.getDirection())
+                                        .startFraction(directionalSegment.getStartFraction())
+                                        .endFraction(directionalSegment.getEndFraction())
+                                        .accessible(directionalSegment.isAccessible())
+                                        .build())
+                                .build())
+                        .toList())
+                .build();
+
+        writeGeoJson("destinationPaths", featureCollection);
+    }
+
+    public void writeDebug(QueryGraph queryGraph) {
+        if (debugConfiguration.isDisabled()) {
+            return;
+        }
+
+        writeGraphHopperNodes(queryGraph);
+        writeGraphHopperEdges(queryGraph);
+    }
     private void writeGraphHopperNodes(QueryGraph queryGraph) {
         AtomicLong idSupplier = new AtomicLong(1);
         ArrayList<Feature> nodes = new ArrayList<>();
@@ -269,35 +297,6 @@ public class AccessibilityDebugger {
                 .features(edgeFeatures)
                 .build();
         writeGeoJson("graphHopper.edges", featureCollection);
-    }
-
-    public void writeDebug(List<DirectionalSegment> path) {
-        if (debugConfiguration.isDisabled()) {
-            return;
-        }
-
-        AtomicLong idSupplier = new AtomicLong(1);
-        FeatureCollection featureCollection = FeatureCollection.builder()
-                .features(path.stream()
-                        .map(directionalSegment -> Feature.builder()
-                                .id(idSupplier.getAndIncrement())
-                                .geometry(jtsLineStringJsonMapper.map(directionalSegment.getLineString()))
-                                .properties(RoadSectionSegmentProperties.builder()
-                                        .roadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
-                                        .roadSectionFragmentId(directionalSegment.getRoadSectionFragment().getId())
-                                        .edge(directionalSegment.getRoadSectionFragment().getId())
-                                        .segmentId(directionalSegment.getId())
-                                        .edgeKey(directionalSegment.getId())
-                                        .direction(directionalSegment.getDirection())
-                                        .startFraction(directionalSegment.getStartFraction())
-                                        .endFraction(directionalSegment.getEndFraction())
-                                        .accessible(directionalSegment.isAccessible())
-                                        .build())
-                                .build())
-                        .toList())
-                .build();
-
-        writeGeoJson("destinationPaths", featureCollection);
     }
 
     private Optional<Feature> buildPoint(AtomicLong idSupplier, String name, Double latitude, Double longitude) {
