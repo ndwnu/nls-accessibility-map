@@ -8,7 +8,11 @@ import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Properties;
 @Builder
 public class GraphHopperNodeProperties implements Properties {
 
+    private static final String TYPE = "node";
+
     private final int id;
 
-    private final String type = "node";
+    public String getType() {
+        return TYPE;
+    }
 }
