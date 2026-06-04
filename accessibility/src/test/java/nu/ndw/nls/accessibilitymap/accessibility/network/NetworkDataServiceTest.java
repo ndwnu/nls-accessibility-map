@@ -5,7 +5,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,6 +41,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import tools.jackson.databind.json.JsonMapper;
 import org.springframework.retry.support.RetryTemplate;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,7 +70,7 @@ class NetworkDataServiceTest {
 
     private Path testDir;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private GraphHopperNetwork graphHopperNetwork;
@@ -101,8 +101,8 @@ class NetworkDataServiceTest {
     @BeforeEach
     void setUp() throws IOException {
 
-        objectMapper = new ObjectMapper();
-        JsonWriter jsonWriter = new JsonWriter(objectMapper);
+        jsonMapper = new JsonMapper();
+        JsonWriter jsonWriter = new JsonWriter(jsonMapper);
         nwbData = new NwbData(1, buildAccessibilityRoadSections());
         nwbDataUpdates = new NwbDataUpdates(1, buildAccessibilityRoadSectionUpdates());
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
@@ -118,7 +118,7 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper,
+                jsonMapper,
                 jsonWriter,
                 applicationEventPublisher,
                 activeVersionRepository,
@@ -227,12 +227,12 @@ class NetworkDataServiceTest {
                            "nwbVersionId": 1,
                            "accessibilityNwbRoadSections": %s
                         }
-                        """.formatted(objectMapper.writeValueAsString(buildAccessibilityRoadSections())));
+                        """.formatted(jsonMapper.writeValueAsString(buildAccessibilityRoadSections())));
         Path nwbUpdatesDir = networkCacheConfiguration.getFolder().resolve(INITIAL_TIMESTAMP).resolve("nwbUpdates");
         Files.createDirectories(nwbUpdatesDir);
         Files.writeString(nwbUpdatesDir.resolve("nwb_changed_road_sections.json"), """
                 {"nwbVersionId":1,"changedNwbRoadSections": %s}
-                """.formatted(objectMapper.writeValueAsString(buildAccessibilityRoadSectionUpdates())));
+                """.formatted(jsonMapper.writeValueAsString(buildAccessibilityRoadSectionUpdates())));
 
         when(graphHopperService.load(networkCacheConfiguration.getFolder().resolve(INITIAL_TIMESTAMP).resolve("graphHopper")))
                 .thenReturn(graphHopperNetwork);
