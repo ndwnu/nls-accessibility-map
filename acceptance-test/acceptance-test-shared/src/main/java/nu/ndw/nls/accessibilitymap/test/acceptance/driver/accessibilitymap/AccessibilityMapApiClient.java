@@ -1,9 +1,5 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap;
 
-import static org.assertj.core.api.Assertions.fail;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +38,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 @RequiredArgsConstructor
@@ -289,7 +286,7 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     public String getEndpoint() {
-        return String.format("http://%s:%s", getHost(), getPort());
+        return "http://%s:%s".formatted(getHost(), getPort());
     }
 
     @Override
@@ -378,16 +375,10 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
 
     private void debugLogDestination(LocationJson locationJson, Request<?> request) {
         buildGeoJsonEndPoint(locationJson)
-                .ifPresent(endpoint -> {
-                    try {
-                        fileService.writeDataToFile(
-                                driverGeneralConfiguration.getDebugFolder()
-                                        .resolve("request-%s-endpoint.geojson".formatted(request.id()))
-                                        .toFile(),
-                                JsonMapper.builder().build().writeValueAsString(endpoint));
-                    } catch (JsonProcessingException exception) {
-                        fail(exception);
-                    }
-                });
+                .ifPresent(endpoint -> fileService.writeDataToFile(
+                        driverGeneralConfiguration.getDebugFolder()
+                                .resolve("request-%s-endpoint.geojson".formatted(request.id()))
+                                .toFile(),
+                        JsonMapper.builder().build().writeValueAsString(endpoint)));
     }
 }

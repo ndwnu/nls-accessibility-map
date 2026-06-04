@@ -28,7 +28,9 @@ class NetworkCacheWatcherTest {
     @Test
     void constructor() {
 
-        var networkCacheWatcher = new NetworkCacheWatcher(networkCacheConfiguration, networkDataService, taskSchedulerFactory) {
+        var networkCacheWatcher = new NetworkCacheWatcher(networkCacheConfiguration,
+                networkDataService,
+                taskSchedulerFactory) {
             @Override
             public CacheConfiguration getCacheConfiguration() {
 

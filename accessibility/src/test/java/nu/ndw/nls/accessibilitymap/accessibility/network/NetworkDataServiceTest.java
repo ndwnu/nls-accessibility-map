@@ -5,7 +5,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,9 +12,11 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
@@ -40,6 +41,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.retry.RetryTemplate;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class NetworkDataServiceTest {
@@ -47,6 +50,10 @@ class NetworkDataServiceTest {
     private static final String TEST_CACHE_NAME = "testCache";
 
     private static final Duration MAX_LOCK_WAIT_TIME = Duration.ofSeconds(10);
+
+    private static final String INITIAL_TIMESTAMP = "2022-03-11T09:03:01.123-01:00";
+
+    private static final String UPDATED_TIMESTAMP = "2022-03-11T09:03:01.433-01:00";
 
     private NetworkDataService networkDataService;
 
@@ -63,7 +70,7 @@ class NetworkDataServiceTest {
 
     private Path testDir;
 
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private GraphHopperNetwork graphHopperNetwork;
@@ -77,6 +84,13 @@ class NetworkDataServiceTest {
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
 
+    @Mock
+    private ActiveVersionRepository activeVersionRepository;
+
+    @Mock
+    private RetryTemplate testRetryTemplate;
+
+
     @Captor
     private ArgumentCaptor<CacheLoadedEvent> cacheLoadedEventCaptor;
 
@@ -87,8 +101,8 @@ class NetworkDataServiceTest {
     @BeforeEach
     void setUp() throws IOException {
 
-        objectMapper = new ObjectMapper();
-        JsonWriter jsonWriter = new JsonWriter(objectMapper);
+        jsonMapper = new JsonMapper();
+        JsonWriter jsonWriter = new JsonWriter(jsonMapper);
         nwbData = new NwbData(1, buildAccessibilityRoadSections());
         nwbDataUpdates = new NwbDataUpdates(1, buildAccessibilityRoadSectionUpdates());
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
@@ -104,8 +118,11 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                objectMapper, jsonWriter,
-                applicationEventPublisher);
+                jsonMapper,
+                jsonWriter,
+                applicationEventPublisher,
+                activeVersionRepository,
+                testRetryTemplate);
     }
 
     @AfterEach
@@ -124,10 +141,15 @@ class NetworkDataServiceTest {
                         false,
                         CarriagewayTypeCode.HR)
         );
-
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME))
+                .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(INITIAL_TIMESTAMP))
+                .thenReturn(Optional.of(INITIAL_TIMESTAMP))
+                .thenReturn(Optional.of(INITIAL_TIMESTAMP))
+                .thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(clockService.now())
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+                .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(graphHopperNetwork.nwbVersion()).thenReturn(1);
 
@@ -156,9 +178,9 @@ class NetworkDataServiceTest {
     void recompileData() {
 
         when(clockService.now())
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-
+                .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(accessibilityNwbRoadSectionService.getLatestNwbData()).thenReturn(nwbData);
 
         networkDataService.recompileData();
@@ -172,8 +194,9 @@ class NetworkDataServiceTest {
     void write() {
 
         when(clockService.now())
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+                .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(graphHopperNetwork.nwbVersion()).thenReturn(1);
         NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);
@@ -189,12 +212,13 @@ class NetworkDataServiceTest {
 
     @Test
     void read() throws IOException {
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME))
+                .thenReturn(Optional.of(INITIAL_TIMESTAMP));
 
         when(clockService.now())
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-                .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+                .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
 
-        Path nwbDir = networkCacheConfiguration.getActiveVersion().toPath().resolve("nwb");
+        Path nwbDir = networkCacheConfiguration.getFolder().resolve(INITIAL_TIMESTAMP).resolve("nwb");
 
         Files.createDirectories(nwbDir);
         Files.writeString(
@@ -203,14 +227,14 @@ class NetworkDataServiceTest {
                            "nwbVersionId": 1,
                            "accessibilityNwbRoadSections": %s
                         }
-                        """.formatted(objectMapper.writeValueAsString(buildAccessibilityRoadSections())));
-        Path nwbUpdatesDir = networkCacheConfiguration.getActiveVersion().toPath().resolve("nwbUpdates");
+                        """.formatted(jsonMapper.writeValueAsString(buildAccessibilityRoadSections())));
+        Path nwbUpdatesDir = networkCacheConfiguration.getFolder().resolve(INITIAL_TIMESTAMP).resolve("nwbUpdates");
         Files.createDirectories(nwbUpdatesDir);
         Files.writeString(nwbUpdatesDir.resolve("nwb_changed_road_sections.json"), """
                 {"nwbVersionId":1,"changedNwbRoadSections": %s}
-                """.formatted(objectMapper.writeValueAsString(buildAccessibilityRoadSectionUpdates())));
+                """.formatted(jsonMapper.writeValueAsString(buildAccessibilityRoadSectionUpdates())));
 
-        when(graphHopperService.load(networkCacheConfiguration.getActiveVersion().toPath().resolve("graphHopper")))
+        when(graphHopperService.load(networkCacheConfiguration.getFolder().resolve(INITIAL_TIMESTAMP).resolve("graphHopper")))
                 .thenReturn(graphHopperNetwork);
         when(graphHopperNetwork.nwbVersion()).thenReturn(1);
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
@@ -232,8 +256,9 @@ class NetworkDataServiceTest {
 
     @Test
     void dataExists() throws IOException {
-
-        Files.createDirectories(networkCacheConfiguration.getActiveVersion().toPath());
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME))
+                .thenReturn(Optional.of(INITIAL_TIMESTAMP));
+        Files.createDirectories(networkCacheConfiguration.getFolder().resolve(INITIAL_TIMESTAMP));
 
         assertThat(networkDataService.dataExists()).isTrue();
     }

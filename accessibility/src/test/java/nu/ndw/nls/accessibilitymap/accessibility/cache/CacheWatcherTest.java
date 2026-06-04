@@ -7,16 +7,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
@@ -37,6 +37,8 @@ import org.springframework.scheduling.TaskScheduler;
 
 @ExtendWith(MockitoExtension.class)
 class CacheWatcherTest {
+
+    private static final String CACHE_NAME = "testCache";
 
     private CacheWatcher<Object> cacheWatcher;
 
@@ -62,9 +64,8 @@ class CacheWatcherTest {
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
 
         cacheConfiguration = CacheConfiguration.builder()
-                .name("testCache")
+                .name(CACHE_NAME)
                 .folder(testDir.resolve("testFolder"))
-                .fileNameActiveVersion("active")
                 .fileWatcherInterval(Duration.ofMillis(1))
                 .build();
 
@@ -81,8 +82,8 @@ class CacheWatcherTest {
     void watchFileChanges_fileChanges() throws IOException {
 
         Path folder = cacheConfiguration.getFolder();
-        Path activeFile = cacheConfiguration.getActiveVersion().toPath();
-
+        Path activeFile = cacheConfiguration.getFolder().resolve("active");
+        when(cache.isDataStale()).thenReturn(true);
         Files.createDirectories(folder);
         Files.createFile(activeFile);
 
@@ -99,17 +100,12 @@ class CacheWatcherTest {
 
         loggerExtension.containsLog(
                 Level.INFO,
-                "Watching file changes on %s".formatted(activeFile)
+                "Watching file changes on testCache"
         );
 
         capturedTask.get().run();
 
         Files.writeString(activeFile, "changed");
-
-        Files.setLastModifiedTime(
-                activeFile,
-                FileTime.from(Instant.now().plusSeconds(2))
-        );
 
         await()
                 .atMost(2, SECONDS)
@@ -122,13 +118,43 @@ class CacheWatcherTest {
     }
 
     @Test
+    void watchFileChanges_dataNotStale() throws IOException {
+        when(cache.isDataStale()).thenReturn(false);
+        Path folder = cacheConfiguration.getFolder();
+        Path activeFile = cacheConfiguration.getFolder().resolve("active");
+        Files.createDirectories(folder);
+        Files.createFile(activeFile);
+
+        AtomicReference<Runnable> capturedTask = new AtomicReference<>();
+
+        doAnswer(invocation -> {
+            Runnable task = invocation.getArgument(0);
+            capturedTask.set(task);
+            return scheduledFuture;
+        }).when(taskScheduler)
+                .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
+
+        cacheWatcher.watchFileChanges();
+
+        loggerExtension.containsLog(
+                Level.INFO,
+                "Watching file changes on testCache"
+        );
+
+        capturedTask.get().run();
+        verify(cache, never()).read();
+        verify(taskScheduler, atLeast(1))
+                .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
+    }
+
+    @Test
     void watchFileChanges_notWatchingForChanges() throws IOException {
 
         cacheConfiguration.setWatchForUpdates(false);
 
         cacheWatcher.watchFileChanges();
 
-        verify(taskScheduler, org.mockito.Mockito.never())
+        verify(taskScheduler, never())
                 .scheduleWithFixedDelay(any(Runnable.class), eq(Duration.ofMillis(1)));
     }
 

@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants.CAR_PROFILE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,6 +23,8 @@ import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings;
 import nu.ndw.nls.routingmapmatcher.network.model.RoutingNetworkSettings.RoutingNetworkSettingsBuilder;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 @Slf4j
@@ -38,7 +39,7 @@ public class GraphHopperService {
 
     private final AccessibilityNwbRoadSectionToLinkMapper accessibilityNwbRoadSectionToLinkMapper;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private final ClockService clockService;
 
@@ -114,8 +115,8 @@ public class GraphHopperService {
     private GraphhopperMetaData loadMetaData(Path location) {
         Path metaDataLocation = location.resolve(GRAPH_HOPPER_NETWORK_NAME).resolve(ACCESSIBILITY_METADATA_JSON);
         try {
-            return objectMapper.readValue(metaDataLocation.toFile(), GraphhopperMetaData.class);
-        } catch (IOException exception) {
+            return jsonMapper.readValue(metaDataLocation.toFile(), GraphhopperMetaData.class);
+        } catch (JacksonException exception) {
             throw new IllegalStateException("Could not load meta-data from file path: %s".formatted(metaDataLocation), exception);
         }
     }
@@ -123,8 +124,8 @@ public class GraphHopperService {
     private void saveMetaData(Path location, int nwbVersionId) {
         Path metaDataLocation = location.resolve(GRAPH_HOPPER_NETWORK_NAME).resolve(ACCESSIBILITY_METADATA_JSON);
         try {
-            objectMapper.writeValue(metaDataLocation.toFile(), new GraphhopperMetaData(nwbVersionId));
-        } catch (IOException exception) {
+            jsonMapper.writeValue(metaDataLocation.toFile(), new GraphhopperMetaData(nwbVersionId));
+        } catch (JacksonException exception) {
             throw new IllegalStateException("Could not write meta-data to file path: %s".formatted(metaDataLocation), exception);
         }
     }

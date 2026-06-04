@@ -77,8 +77,7 @@ public class TrafficSignAnalyserService extends IssueReporterService {
                 .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                 .filter(DirectionalSegment::hasRestrictions)
                 .map(directionalSegment -> issueBuilder.buildTrafficSignIssue(directionalSegment, issueReportId, issueReportGroupId))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .toList();
 
         logAndReportIssues(issues, analyseAsymmetricTrafficSignsConfiguration.reportIssues(), issueReportId, issueReportGroupId);

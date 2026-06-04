@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -36,27 +35,17 @@ public class CacheWatcher<TYPE> {
         }
 
         Files.createDirectories(cacheConfiguration.getFolder());
-
-        AtomicLong lastModified = new AtomicLong(-1);
-
-        log.info("Watching file changes on {}", cacheConfiguration.getActiveVersion());
+        log.info("Watching file changes on {}", cacheConfiguration.getName());
 
         scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
 
-            long currentLastModified = cacheConfiguration.getActiveVersion().lastModified();
-
-            if (lastModified.get() == -1) {
-                lastModified.set(currentLastModified);
-                return;
-            }
-
-            if (lastModified.get() != currentLastModified) {
-                lastModified.set(currentLastModified);
-                log.info("Triggering update");
-                cache.read();
-                log.info("Finished update");
-            }
-        }, cacheConfiguration.getFileWatcherInterval());
+                    if (cache.isDataStale()) {
+                        log.info("Triggering update");
+                        cache.read();
+                        log.info("Finished update");
+                    }
+                }
+                , cacheConfiguration.getFileWatcherInterval());
     }
 
     @PreDestroy

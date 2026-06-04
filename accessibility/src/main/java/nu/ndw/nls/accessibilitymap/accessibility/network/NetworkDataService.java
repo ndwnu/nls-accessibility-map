@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
@@ -25,8 +26,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoa
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.retry.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 @Slf4j
@@ -42,7 +45,7 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private static final String NWB_CHANGED_ROAD_SECTIONS_FILE = "nwb_changed_road_sections.json";
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private final GraphHopperService graphHopperService;
 
@@ -58,14 +61,16 @@ public class NetworkDataService extends Cache<NetworkData> {
             DistributedLockService distributedLockService,
             GraphHopperService graphHopperService,
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
-            ObjectMapper objectMapper,
+            JsonMapper jsonmapper,
             JsonWriter jsonWriter,
-            ApplicationEventPublisher applicationEventPublisher
+            ApplicationEventPublisher applicationEventPublisher,
+            ActiveVersionRepository activeVersionRepository,
+            RetryTemplate directoryNotEmptyRetryTemplate
     ) {
 
-        super(networkCacheConfiguration, clockService, distributedLockService);
+        super(networkCacheConfiguration, clockService, distributedLockService, activeVersionRepository, directoryNotEmptyRetryTemplate);
 
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonmapper;
         this.graphHopperService = graphHopperService;
         this.accessibilityNwbRoadSectionService = accessibilityNwbRoadSectionService;
         this.jsonWriter = jsonWriter;
@@ -76,9 +81,10 @@ public class NetworkDataService extends Cache<NetworkData> {
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
         try {
-
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
-            read();
+            if (isDataStale()) {
+                read();
+            }
             NetworkData networkData = get();
             NwbDataUpdates previousChanges = networkData.getNwbDataUpdates();
             NwbDataUpdates newNwbDataUpdates = previousChanges.merge(nwbDataUpdates);
@@ -91,7 +97,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
             Path targetLocation = getCacheConfiguration().getFolder().resolve(targetFolder);
             Files.createDirectories(targetLocation);
-            Path activeVersion = getCacheConfiguration().getActiveVersion().toPath().toAbsolutePath().toRealPath();
+            Path activeVersion = getActiveVersion();
             boolean preserveFileDate = false;
             FileUtils.copyDirectory(activeVersion.toFile(), targetLocation.toFile(), null, preserveFileDate);
             log.debug("Copied active version to {}", targetLocation.toAbsolutePath());
@@ -99,7 +105,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             Path nwbUpdatesPath = targetLocation.resolve(NWB_UPDATE_DIRECTORY);
             jsonWriter.writeJsonToFile(nwbUpdatesPath, NWB_CHANGED_ROAD_SECTIONS_FILE, newNwbDataUpdates);
             log.debug("Wrote nwbDataUpdates to {}", nwbUpdatesPath);
-            switchSymLink(targetFolder);
+            switchActiveVersion(targetFolder);
             setData(updatedNetworkData);
             log.debug("Wrote nwbDataUpdates to disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
         } catch (IOException exception) {
@@ -129,28 +135,35 @@ public class NetworkDataService extends Cache<NetworkData> {
     @Override
     protected NetworkData readData(Path activeVersion) throws IOException {
         OffsetDateTime start = getClockService().now();
-        NwbData nwbData = readNwbData();
-        NwbDataUpdates nwbDataUpdates = readNwbDataUpdates();
+        NwbData nwbData = readNwbData(activeVersion);
+        NwbDataUpdates nwbDataUpdates = readNwbDataUpdates(activeVersion);
         log.info("Nwb road sections loaded from disk in {}ms", Duration.between(start, getClockService().now()).toMillis());
 
         GraphHopperNetwork graphHopperNetwork = graphHopperService.load(
-                getCacheConfiguration().getActiveVersion().toPath().resolve(GRAPH_HOPPER_FOLDER));
+                activeVersion.resolve(GRAPH_HOPPER_FOLDER));
 
         return new NetworkData(
                 graphHopperNetwork,
                 nwbData, nwbDataUpdates);
     }
 
-    private NwbDataUpdates readNwbDataUpdates() throws IOException {
-        return objectMapper.readValue(
-                getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_UPDATES_ROAD_SECTIONS_JSON).toFile(),
+    private NwbDataUpdates readNwbDataUpdates(Path activeVersion) {
+        File nwbUpdatesFile = activeVersion
+                .resolve(NWB_UPDATES_ROAD_SECTIONS_JSON)
+                .toFile();
+
+        return jsonMapper.readValue(
+                nwbUpdatesFile,
                 NwbDataUpdates.class);
     }
 
-    private NwbData readNwbData() throws IOException {
-        final Path nwbDataFilePath = getCacheConfiguration().getActiveVersion().toPath().resolve(NWB_ROAD_SECTIONS_JSON);
-        return objectMapper.readValue(
-                nwbDataFilePath.toFile(),
+    private NwbData readNwbData(Path activeVersion) {
+        File nwbDataFile = activeVersion
+                .resolve(NWB_ROAD_SECTIONS_JSON)
+                .toFile();
+
+        return jsonMapper.readValue(
+                nwbDataFile,
                 NwbData.class);
     }
 
