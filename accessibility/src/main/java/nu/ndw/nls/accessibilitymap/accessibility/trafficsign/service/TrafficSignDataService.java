@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,6 +15,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 @Slf4j
@@ -23,7 +23,7 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
 
     private static final String TRAFFIC_SIGNS_JSON = "trafficSigns.json";
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private final JsonWriter jsonWriter;
 
@@ -31,7 +31,7 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
             TrafficSignCacheConfiguration trafficSignCacheConfiguration,
             ClockService clockService,
             DistributedLockService distributedLockService,
-            ObjectMapper objectMapper,
+            JsonMapper jsonMapper,
             JsonWriter jsonWriter,
             ActiveVersionRepository activeVersionRepository,
             RetryTemplate directoryNotEmptyRetryTemplate
@@ -39,7 +39,7 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
 
         super(trafficSignCacheConfiguration, clockService, distributedLockService, activeVersionRepository, directoryNotEmptyRetryTemplate);
 
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonMapper;
         this.jsonWriter = jsonWriter;
     }
 
@@ -52,7 +52,7 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
         File trafficSignFile = activeVersion
                 .resolve(TRAFFIC_SIGNS_JSON)
                 .toFile();
-        return objectMapper.readValue(
+        return jsonMapper.readValue(
                 trafficSignFile,
                 TrafficSigns.class);
     }

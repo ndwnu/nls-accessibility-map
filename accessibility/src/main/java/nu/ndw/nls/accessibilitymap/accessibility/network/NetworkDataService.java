@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.network;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +29,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 @Slf4j
@@ -45,7 +45,7 @@ public class NetworkDataService extends Cache<NetworkData> {
 
     private static final String NWB_CHANGED_ROAD_SECTIONS_FILE = "nwb_changed_road_sections.json";
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private final GraphHopperService graphHopperService;
 
@@ -61,7 +61,7 @@ public class NetworkDataService extends Cache<NetworkData> {
             DistributedLockService distributedLockService,
             GraphHopperService graphHopperService,
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
-            ObjectMapper objectMapper,
+            JsonMapper jsonmapper,
             JsonWriter jsonWriter,
             ApplicationEventPublisher applicationEventPublisher,
             ActiveVersionRepository activeVersionRepository,
@@ -70,7 +70,7 @@ public class NetworkDataService extends Cache<NetworkData> {
 
         super(networkCacheConfiguration, clockService, distributedLockService, activeVersionRepository, directoryNotEmptyRetryTemplate);
 
-        this.objectMapper = objectMapper;
+        this.jsonMapper = jsonmapper;
         this.graphHopperService = graphHopperService;
         this.accessibilityNwbRoadSectionService = accessibilityNwbRoadSectionService;
         this.jsonWriter = jsonWriter;
@@ -147,22 +147,22 @@ public class NetworkDataService extends Cache<NetworkData> {
                 nwbData, nwbDataUpdates);
     }
 
-    private NwbDataUpdates readNwbDataUpdates(Path activeVersion) throws IOException {
+    private NwbDataUpdates readNwbDataUpdates(Path activeVersion) {
         File nwbUpdatesFile = activeVersion
                 .resolve(NWB_UPDATES_ROAD_SECTIONS_JSON)
                 .toFile();
 
-        return objectMapper.readValue(
+        return jsonMapper.readValue(
                 nwbUpdatesFile,
                 NwbDataUpdates.class);
     }
 
-    private NwbData readNwbData(Path activeVersion) throws IOException {
+    private NwbData readNwbData(Path activeVersion) {
         File nwbDataFile = activeVersion
                 .resolve(NWB_ROAD_SECTIONS_JSON)
                 .toFile();
 
-        return objectMapper.readValue(
+        return jsonMapper.readValue(
                 nwbDataFile,
                 NwbData.class);
     }

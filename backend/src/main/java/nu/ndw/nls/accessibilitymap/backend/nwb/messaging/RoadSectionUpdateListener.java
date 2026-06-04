@@ -1,9 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.nwb.messaging;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.stream.Message;
 import io.micrometer.core.annotation.Timed;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +12,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectionUpdate;
 import nu.ndw.nls.accessibilitymap.backend.nwb.messaging.mapper.NwbRoadSectionUpdateMapper;
 import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
@@ -22,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Service
 @Slf4j
@@ -38,7 +38,7 @@ public class RoadSectionUpdateListener {
 
     private final NwbRoadSectionUpdateMapper nwbRoadSectionUpdateMapper;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
 
     private final RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
 
@@ -84,8 +84,8 @@ public class RoadSectionUpdateListener {
 
     private NwbRoadSectionUpdate toRoadSectionUpdate(Message message) {
         try {
-            return objectMapper.readValue(message.getBodyAsBinary(), NwbRoadSectionUpdate.class);
-        } catch (IOException e) {
+            return jsonMapper.readValue(message.getBody(), NwbRoadSectionUpdate.class);
+        } catch (JacksonException e) {
             throw new IllegalArgumentException(e);
         }
     }
