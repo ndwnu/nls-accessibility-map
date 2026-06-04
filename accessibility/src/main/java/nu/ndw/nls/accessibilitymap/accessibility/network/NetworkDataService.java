@@ -26,6 +26,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.service.AccessibilityNwbRoa
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.retry.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.json.JsonMapper;
@@ -62,10 +63,12 @@ public class NetworkDataService extends Cache<NetworkData> {
             AccessibilityNwbRoadSectionService accessibilityNwbRoadSectionService,
             JsonMapper jsonmapper,
             JsonWriter jsonWriter,
-            ApplicationEventPublisher applicationEventPublisher, ActiveVersionRepository activeVersionRepository
+            ApplicationEventPublisher applicationEventPublisher,
+            ActiveVersionRepository activeVersionRepository,
+            RetryTemplate directoryNotEmptyRetryTemplate
     ) {
 
-        super(networkCacheConfiguration, clockService, distributedLockService, activeVersionRepository);
+        super(networkCacheConfiguration, clockService, distributedLockService, activeVersionRepository, directoryNotEmptyRetryTemplate);
 
         this.jsonMapper = jsonmapper;
         this.graphHopperService = graphHopperService;
@@ -78,9 +81,10 @@ public class NetworkDataService extends Cache<NetworkData> {
     public void writeNwbDataUpdates(NwbDataUpdates nwbDataUpdates) {
 
         try {
-
             getDistributedLockService().lockOrFail(getCacheConfiguration().getName(), getCacheConfiguration().getMaxLockWaitTime());
-            read();
+            if (isDataStale()) {
+                read();
+            }
             NetworkData networkData = get();
             NwbDataUpdates previousChanges = networkData.getNwbDataUpdates();
             NwbDataUpdates newNwbDataUpdates = previousChanges.merge(nwbDataUpdates);

@@ -5,7 +5,6 @@ import static org.mockito.Mockito.verify;
 
 import nu.ndw.nls.accessibilitymap.accessibility.cache.Cache;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.TaskSchedulerFactory;
-import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
@@ -26,15 +25,12 @@ class TrafficSignCacheWatcherTest {
     @Mock
     private TaskSchedulerFactory taskSchedulerFactory;
 
-    @Mock
-    private ActiveVersionRepository activeVersionRepository;
-
     @Test
     void constructor() {
 
         var trafficSignCacheWatcher = new TrafficSignCacheWatcher(trafficSignCacheConfiguration,
                 trafficSignDataService,
-                taskSchedulerFactory, activeVersionRepository) {
+                taskSchedulerFactory) {
             @Override
             public CacheConfiguration getCacheConfiguration() {
 

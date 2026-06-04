@@ -13,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.json.JsonWriter;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.configuration.TrafficSignCacheConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.springboot.core.time.ClockService;
+import org.springframework.core.retry.RetryTemplate;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -30,10 +31,13 @@ public class TrafficSignDataService extends Cache<TrafficSigns> {
             TrafficSignCacheConfiguration trafficSignCacheConfiguration,
             ClockService clockService,
             DistributedLockService distributedLockService,
-            JsonMapper jsonMapper, JsonWriter jsonWriter, ActiveVersionRepository activeVersionRepository
+            JsonMapper jsonMapper,
+            JsonWriter jsonWriter,
+            ActiveVersionRepository activeVersionRepository,
+            RetryTemplate directoryNotEmptyRetryTemplate
     ) {
 
-        super(trafficSignCacheConfiguration, clockService, distributedLockService, activeVersionRepository);
+        super(trafficSignCacheConfiguration, clockService, distributedLockService, activeVersionRepository, directoryNotEmptyRetryTemplate);
 
         this.jsonMapper = jsonMapper;
         this.jsonWriter = jsonWriter;
