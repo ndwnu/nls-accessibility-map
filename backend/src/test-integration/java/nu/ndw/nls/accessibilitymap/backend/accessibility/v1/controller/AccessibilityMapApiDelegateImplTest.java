@@ -8,12 +8,12 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.GraphHopperService;
@@ -46,7 +46,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -117,7 +116,12 @@ class AccessibilityMapApiDelegateImplTest {
     private NetworkData networkData;
 
     @Mock
-    private DirectionalSegment directionalSegment;
+    private DirectionalSegment toDirectionalSegment;
+
+    @Mock
+    private RoadSectionFragment toRoadSectionFragment;
+
+    private RoadSection toRoadSection = RoadSection.builder().id(2L).build();
 
     @BeforeEach
     void setUp() {
@@ -520,9 +524,9 @@ class AccessibilityMapApiDelegateImplTest {
         when(networkDataService.get()).thenReturn(networkData);
         when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(toDirectionalSegment));
         when(accessibilityRequest.hasEndLocation()).thenReturn(true);
-
+        when(toDirectionalSegment.geRoadSectionId()).thenReturn(2L);
         RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson = RoadSectionFeatureCollectionJson.builder()
                 .features(List.of(
                         RoadSectionFeatureJson.builder()
@@ -596,9 +600,10 @@ class AccessibilityMapApiDelegateImplTest {
         when(networkDataService.get()).thenReturn(networkData);
         when(accessibilityService.calculateAccessibility(networkData, accessibilityRequest)).thenReturn(accessibility);
         when(accessibility.combinedAccessibility()).thenReturn(combinedAccessibility);
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
-        when(accessibilityRequest.hasEndLocation()).thenReturn(true);
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(toDirectionalSegment));
 
+        when(accessibilityRequest.hasEndLocation()).thenReturn(true);
+        when(toDirectionalSegment.geRoadSectionId()).thenReturn(2L);
         RoadSectionFeatureCollectionJson roadSectionFeatureCollectionJson = RoadSectionFeatureCollectionJson.builder()
                 .features(List.of(
                         RoadSectionFeatureJson.builder()

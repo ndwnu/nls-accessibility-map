@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.AccessibilityMapResponseJson;
@@ -43,7 +44,11 @@ class AccessibilityResponseMapperTest {
     private List<List<ReasonJson>> reasonsJson;
 
     @Mock
-    private DirectionalSegment directionalSegment;
+    private DirectionalSegment toDirectionalSegment;
+
+    @Mock
+    private RoadSectionFragment toRoadSectionFragment;
+
 
     @BeforeEach
     void setup() {
@@ -61,7 +66,9 @@ class AccessibilityResponseMapperTest {
     void map(boolean isForwardAccessible, boolean isBackwardAccessible) {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(toDirectionalSegment));
+        when(toDirectionalSegment.getRoadSectionFragment()).thenReturn(toRoadSectionFragment);
+        when(toRoadSectionFragment.getRoadSection()).thenReturn(roadSection);
         when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
@@ -69,6 +76,7 @@ class AccessibilityResponseMapperTest {
         when(roadSection.hasForwardSegments()).thenReturn(true);
         when(roadSection.isForwardAccessible()).thenReturn(isForwardAccessible);
         when(roadSection.isBackwardAccessible()).thenReturn(isBackwardAccessible);
+        when(toDirectionalSegment.geRoadSectionId()).thenReturn(ROAD_SECTION_ID);
         when(accessibilityReasonsJsonMapper.mapToReasonJson(reasons)).thenReturn(reasonsJson);
 
         AccessibilityMapResponseJson result = accessibilityResponseMapper.map(accessibility);
@@ -103,7 +111,10 @@ class AccessibilityResponseMapperTest {
     void map_missingDirectionalSegments(boolean forwardDirectionalSegmentMissing, boolean backwardDirectionalSegmentMissing) {
 
         when(accessibility.combinedAccessibility()).thenReturn(List.of(roadSection));
-        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(directionalSegment));
+        when(accessibility.toDirectionalSegment()).thenReturn(Optional.of(toDirectionalSegment));
+        when(toDirectionalSegment.geRoadSectionId()).thenReturn(ROAD_SECTION_ID);
+        when(toDirectionalSegment.getRoadSectionFragment()).thenReturn(toRoadSectionFragment);
+        when(toRoadSectionFragment.getRoadSection()).thenReturn(roadSection);
         when(accessibility.reasons()).thenReturn(reasons);
         when(roadSection.getId()).thenReturn(ROAD_SECTION_ID);
         when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
