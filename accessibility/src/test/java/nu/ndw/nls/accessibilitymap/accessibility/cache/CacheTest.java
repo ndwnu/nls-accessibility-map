@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -34,6 +35,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.retry.RetryException;
 import org.springframework.core.retry.RetryTemplate;
 import org.springframework.core.retry.Retryable;
 
@@ -65,7 +67,6 @@ class CacheTest {
 
     @Mock
     private Object data;
-
 
     private CacheConfiguration cacheConfiguration;
 
@@ -674,6 +675,17 @@ class CacheTest {
 
         assertThat(cache.getSizeInBytes(file)).isEqualTo(6);
         assertThat(cache.getSizeInBytes(testDir)).isEqualTo(6);
+    }
+
+    @SneakyThrows
+    @Test
+    void switchActiveVersion_retryException() {
+        Path activeVersion = cacheConfiguration.getFolder().resolve(ACTIVE_VERSION);
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(retryTemplate.execute(any())).thenThrow(new RetryException("test", new RuntimeException("test")));
+        assertThatThrownBy(() -> createWriteCache().switchActiveVersion(activeVersion))
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Failed to delete old version directory:");
     }
 
     private void verifyVersion(String timestamp) {

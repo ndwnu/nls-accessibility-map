@@ -23,6 +23,7 @@ import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.retry.RetryException;
 import org.springframework.core.retry.RetryTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -196,10 +197,7 @@ public abstract class Cache<TYPE> {
                     FileUtils.deleteDirectory(oldVersionDirectory.toFile());
                     return null;
                 });
-            } catch (Exception e) {
-                if (e instanceof IOException ioException) {
-                    throw ioException;
-                }
+            } catch (RetryException e) {
                 throw new IOException("Failed to delete old version directory: " + oldVersionDirectory, e);
             }
         }
