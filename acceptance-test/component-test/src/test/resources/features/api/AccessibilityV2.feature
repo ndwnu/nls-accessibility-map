@@ -59,7 +59,7 @@ Feature: Accessibility V2
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions-effectivelyAccessible
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-reachable-effectivelyAccessible
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions
-    Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-unreachable
+    Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-unreachable-oneway
 
   Scenario: Get - Bounding box inner circle - Destination reachable
     Given a simple network
