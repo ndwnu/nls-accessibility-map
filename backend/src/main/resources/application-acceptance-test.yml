@@ -24,6 +24,8 @@ nu:
   ndw:
     nls:
       accessibilitymap:
+        accessibility:
+          debug: true
         network:
           cache:
             name: "Network"
@@ -42,7 +44,6 @@ nu:
             queues:
               updateRoadSection:
                 messages-to-skip:
-                  id-skippable-message
                 listener-auto-start: true
 logging:
   level:

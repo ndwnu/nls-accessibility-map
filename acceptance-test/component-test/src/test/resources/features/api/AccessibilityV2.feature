@@ -54,10 +54,12 @@ Feature: Accessibility V2
       | 6           | 1         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000001 |
       | 6           | 1         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000002 |
       | 1           | 2         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000003 |
-     # | 1           | 2         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000004 |
+
     When run TrafficSignUpdateCache
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions-effectivelyAccessible
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-reachable-effectivelyAccessible
+    When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions
+    Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-unreachable
 
   Scenario: Get - Bounding box inner circle - Destination reachable
     Given a simple network
