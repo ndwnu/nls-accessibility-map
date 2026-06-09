@@ -7,7 +7,6 @@ import static org.awaitility.Awaitility.await;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.time.Duration;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.jsonunit.core.Option;
@@ -16,13 +15,10 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.Acces
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 import org.springframework.http.HttpHeaders;
-import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 @RequiredArgsConstructor
 public class AccessibilityMapApiStepDefinitions {
-
-    private final JsonMapper jsonMapper;
 
     private final AccessibilityMapApiClient accessibilityMapApiClient;
 
