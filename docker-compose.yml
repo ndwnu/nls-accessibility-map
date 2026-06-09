@@ -54,7 +54,7 @@ services:
 
   accessibility-wiremock:
     hostname: accessibility-wiremock
-    image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.0.0-1
+    image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.13.2-alpine
     platform: linux/amd64
     volumes:
       - ./docker/accessibility-wiremock/extensions:/var/wiremock/extensions
