@@ -1,7 +1,6 @@
 {
   "features": [
     {
-      "id": 1,
       "geometry": {
         "coordinates": [
           [
@@ -369,11 +368,8 @@
         ],
         "type": "Polygon"
       },
+      "id": 1,
       "properties": {
-        "windowTimes": [
-          "window 1",
-          "window 2"
-        ],
         "roadSectionIds": [
           7,
           8,
@@ -382,6 +378,10 @@
           11,
           12,
           13
+        ],
+        "windowTimes": [
+          "window 2",
+          "window 1"
         ]
       },
       "type": "Feature"
