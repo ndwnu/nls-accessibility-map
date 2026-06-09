@@ -17,16 +17,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionClassJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.VehicleTypeJson;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BaseNetworkAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.BlockedRoadSection;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGeneratorJobConfiguration;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.NwbVersion;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
@@ -63,36 +58,6 @@ public class DataTypeRegister {
                 .directionType(DirectionType.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(Objects.nonNull(entry.get("windowTime")) ? entry.get("windowTime") : null)
                 .regulationOrderId(entry.get("regulationOrderId"))
-                .build();
-    }
-
-    @DataTableType
-    public AccessibilityRequest mapAccessibilityRequest(Map<String, String> entry) {
-
-        return AccessibilityRequest.builder()
-                .municipalityId(entry.getOrDefault("municipalityId", null))
-                .endLatitude(mapDoubleValue("endLatitude", entry))
-                .endLongitude(mapDoubleValue("endLongitude", entry))
-                .vehicleLengthInMeters(mapDoubleValue("vehicleLength", entry))
-                .vehicleHeightInMeters(mapDoubleValue("vehicleHeight", entry))
-                .vehicleWidthInMeters(mapDoubleValue("vehicleWidth", entry))
-                .vehicleWeightInTonnes(mapDoubleValue("vehicleWeight", entry))
-                .vehicleAxleLoadInTonnes(mapDoubleValue("vehicleAxleLoad", entry))
-                .vehicleType(entry.containsKey("vehicleType") ? VehicleTypeJson.fromValue(entry.get("vehicleType")) : null)
-                .emissionClass(entry.containsKey("emissionClass") ? EmissionClassJson.fromValue(entry.get("emissionClass")) : null)
-                .accessible(entry.containsKey("accessible") ? Boolean.parseBoolean(entry.get("accessible")) : null)
-                .fuelTypes(entry.containsKey("fuelTypes") && Objects.nonNull(entry.get("fuelTypes"))
-                        ? Arrays.stream(entry.get("fuelTypes").split(",")).map(FuelTypeJson::fromValue).toList()
-                        : null)
-                .excludeRestrictionsWithEmissionZoneIds(entry.containsKey("excludeRestrictionsWithEmissionZoneIds") && Objects.nonNull(
-                        entry.get("excludeRestrictionsWithEmissionZoneIds"))
-                        ? Arrays.stream(entry.get("excludeRestrictionsWithEmissionZoneIds").split(",")).toList()
-                        : null)
-                .excludeRestrictionsWithEmissionZoneTypes(entry.containsKey("excludeRestrictionsWithEmissionZoneTypes") && Objects.nonNull(
-                        entry.get("excludeRestrictionsWithEmissionZoneTypes"))
-                        ? Arrays.stream(entry.get("excludeRestrictionsWithEmissionZoneTypes").split(","))
-                        .map(EmissionZoneTypeJson::fromValue).toList()
-                        : null)
                 .build();
     }
 
@@ -169,7 +134,7 @@ public class DataTypeRegister {
                 .trafficSignTypes(Arrays.stream(entry.get("trafficSignTypes").split(",")).collect(Collectors.toSet()))
                 .includeOnlyWindowSigns(
                         Strings.isNotEmpty(entry.get("exportName"))
-                                && Boolean.parseBoolean(entry.get("includeOnlyWindowSigns")))
+                        && Boolean.parseBoolean(entry.get("includeOnlyWindowSigns")))
                 .publishEvents(Strings.isNotEmpty(entry.get("publishEvents")) && Boolean.parseBoolean(entry.get("publishEvents")))
                 .polygonMaxDistanceBetweenPoints(
                         Strings.isNotEmpty(entry.get("polygonMaxDistanceBetweenPoints"))

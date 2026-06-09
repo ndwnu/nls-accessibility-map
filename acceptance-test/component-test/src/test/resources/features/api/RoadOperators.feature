@@ -5,6 +5,5 @@ Feature: Road operators
     Then it should match all road operators
     Examples:
       | apiVersion |
-      | v1 |
       | v2 |
 

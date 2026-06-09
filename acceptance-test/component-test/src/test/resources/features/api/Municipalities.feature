@@ -5,6 +5,5 @@ Feature: Municipalities
     Then it should match all municipalities
     Examples:
       | apiVersion |
-      | v1 |
       | v2 |
 
