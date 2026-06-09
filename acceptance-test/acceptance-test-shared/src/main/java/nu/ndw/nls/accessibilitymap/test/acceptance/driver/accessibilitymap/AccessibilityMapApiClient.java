@@ -10,15 +10,13 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.AccessibilityMapResponseJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.EmissionZoneTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.FuelTypeJson;
-import nu.ndw.nls.accessibilitymap.backend.openapi.model.v1.RoadSectionFeatureCollectionJson;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionZoneTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
-import nu.ndw.nls.accessibilitymap.test.acceptance.driver.accessibilitymap.dto.AccessibilityRequest;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
 import nu.ndw.nls.springboot.test.await.services.AwaitService;
 import nu.ndw.nls.springboot.test.await.services.predicates.AwaitResponseStatusOkPredicate;
@@ -81,37 +79,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     @SneakyThrows
-    public Response<Void, AccessibilityMapResponseJson> getAccessibilityForMunicipality(AccessibilityRequest accessibilityRequest) {
-        Request<Void> request = Request.<Void>builder()
-                .id("getAccessibilityForMunicipality")
-                .method(HttpMethod.GET)
-                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections".formatted(
-                        accessibilityRequest.municipalityId()))
-                .queryParameters(buildQueryParameters(accessibilityRequest))
-                .build();
-
-        debugLogDestination(
-                LocationJson.builder()
-                        .latitude(accessibilityRequest.endLatitude())
-                        .longitude(accessibilityRequest.endLongitude())
-                        .build(),
-                request);
-
-        return request(
-                request, new ParameterizedTypeReference<>() {
-                });
-    }
-
-    public Response<Void, AccessibilityMapResponseJson> getLastResponseForGetAccessibilityForMunicipality() {
-        return responseWebCache().findResponsesByFilter(
-                        response ->
-                                "getAccessibilityForMunicipality".equals(response.request().id())
-                                && response.request().method().equals(HttpMethod.GET),
-                        Void.class, AccessibilityMapResponseJson.class)
-                .getLast();
-    }
-
-    @SneakyThrows
     public Response<AccessibilityRequestJson, String>
     getAccessibility(AccessibilityRequestJson accessibilityRequestJson) {
         Request<AccessibilityRequestJson> request = Request.<AccessibilityRequestJson>builder()
@@ -165,39 +132,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
     }
 
     @SneakyThrows
-    public Response<Void, RoadSectionFeatureCollectionJson> getAccessibilityGeoJsonForMunicipality(
-            AccessibilityRequest accessibilityRequest
-    ) {
-        Request<Void> request = Request.<Void>builder()
-                .id("getAccessibilityGeoJsonForMunicipality")
-                .method(HttpMethod.GET)
-                .path("api/rest/static-road-data/accessibility-map/v1/municipalities/%s/road-sections.geojson".formatted(
-                        accessibilityRequest.municipalityId()))
-                .queryParameters(buildQueryParameters(accessibilityRequest))
-                .build();
-
-        debugLogDestination(
-                LocationJson.builder()
-                        .latitude(accessibilityRequest.endLatitude())
-                        .longitude(accessibilityRequest.endLongitude())
-                        .build(),
-                request);
-
-        return request(
-                request, new ParameterizedTypeReference<>() {
-                });
-    }
-
-    public Response<Void, RoadSectionFeatureCollectionJson> getLastResponseForGetAccessibilityGeoJsonForMunicipality() {
-        return responseWebCache().findResponsesByFilter(
-                        response ->
-                                "getAccessibilityGeoJsonForMunicipality".equals(response.request().id())
-                                && response.request().method().equals(HttpMethod.GET),
-                        Void.class, RoadSectionFeatureCollectionJson.class)
-                .getLast();
-    }
-
-    @SneakyThrows
     public Response<Void, String> genericRequest(String path, String method) {
         Request<Void> request = Request.<Void>builder()
                 .id("genericRequest")
@@ -217,52 +151,6 @@ public class AccessibilityMapApiClient extends AbstractWebClient {
                                 && response.request().method().equals(HttpMethod.GET),
                         Void.class, String.class)
                 .getLast();
-    }
-
-    public static MultiValueMap<String, String> buildQueryParameters(AccessibilityRequest accessibilityRequest) {
-        Map<String, List<String>> queryParameters = new HashMap<>();
-        queryParameters.put("latitude", List.of(accessibilityRequest.endLatitude() + ""));
-        queryParameters.put("longitude", List.of(accessibilityRequest.endLongitude() + ""));
-        queryParameters.put("vehicleHasTrailer", List.of(accessibilityRequest.vehicleHasTrailer() + ""));
-
-        if (Objects.nonNull(accessibilityRequest.vehicleType())) {
-            queryParameters.put("vehicleType", List.of(accessibilityRequest.vehicleType().getValue()));
-        }
-        if (Objects.nonNull(accessibilityRequest.fuelTypes())) {
-            queryParameters.put("fuelTypes", accessibilityRequest.fuelTypes().stream().map(FuelTypeJson::getValue).toList());
-        }
-        if (Objects.nonNull(accessibilityRequest.emissionClass())) {
-            queryParameters.put("emissionClass", List.of(accessibilityRequest.emissionClass().getValue()));
-        }
-        if (Objects.nonNull(accessibilityRequest.vehicleLengthInMeters())) {
-            queryParameters.put("vehicleLength", List.of(accessibilityRequest.vehicleLengthInMeters() + ""));
-        }
-        if (Objects.nonNull(accessibilityRequest.vehicleWidthInMeters())) {
-            queryParameters.put("vehicleWidth", List.of(accessibilityRequest.vehicleWidthInMeters() + ""));
-        }
-        if (Objects.nonNull(accessibilityRequest.vehicleHeightInMeters())) {
-            queryParameters.put("vehicleHeight", List.of(accessibilityRequest.vehicleHeightInMeters() + ""));
-        }
-        if (Objects.nonNull(accessibilityRequest.vehicleWeightInTonnes())) {
-            queryParameters.put("vehicleWeight", List.of(accessibilityRequest.vehicleWeightInTonnes() + ""));
-        }
-        if (Objects.nonNull(accessibilityRequest.vehicleAxleLoadInTonnes())) {
-            queryParameters.put("vehicleAxleLoad", List.of(accessibilityRequest.vehicleAxleLoadInTonnes() + ""));
-        }
-        if (Objects.nonNull(accessibilityRequest.excludeRestrictionsWithEmissionZoneIds())) {
-            queryParameters.put("excludeEmissionZoneIds", accessibilityRequest.excludeRestrictionsWithEmissionZoneIds());
-        }
-        if (Objects.nonNull(accessibilityRequest.accessible())) {
-            queryParameters.put("accessible", List.of(accessibilityRequest.accessible() + ""));
-        }
-        if (Objects.nonNull(accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes())) {
-            queryParameters.put(
-                    "excludeEmissionZoneTypes",
-                    accessibilityRequest.excludeRestrictionsWithEmissionZoneTypes().stream().
-                            map(EmissionZoneTypeJson::getValue).toList());
-        }
-
-        return MultiValueMap.fromMultiValue(queryParameters);
     }
 
     @NotNull

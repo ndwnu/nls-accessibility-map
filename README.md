@@ -23,7 +23,7 @@ This project is maintained by Nationaal Dataportaal Wegverkeer (NDW)
 
 ## Structure
 The specification module only versions the
-[API YAML](specification/src/main/resources/nu/ndw/nls/accessibilitymap/specification/v1.yaml) and this JAR is used by
+[API YAML](specification/src/main/resources/nu/ndw/nls/accessibilitymap/specification/v2.yaml) and this JAR is used by
 the `openapi-generator-maven-plugin` to generate controllers for the backend application.
 
 ## Development
