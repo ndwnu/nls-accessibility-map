@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.PointList;
@@ -8,6 +9,7 @@ import com.graphhopper.util.shapes.BBox;
 import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
@@ -30,6 +32,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class MissingRoadSectionProviderTest {
+
+    private static final int ROAD_SECTION_ID_ONE = 1;
+
+    private static final int ROAD_SECTION_ID_TWO = 12;
+
+    private static final int ROAD_SECTION_ID_THREE = 45648;
+
+    private static final int ROAD_SECTION_ID_FOUR = 45649;
 
     private MissingRoadSectionProvider missingRoadSectionProvider;
 
@@ -54,7 +64,8 @@ class MissingRoadSectionProviderTest {
     void setUp() {
 
         GeometryFactory geometryFactory = new GeometryFactory();
-        roadSection1LineString = geometryFactory.createLineString(new Coordinate[]{new Coordinate(0, 0), new Coordinate(1, 1)});
+        roadSection1LineString = geometryFactory.createLineString(new Coordinate[]{new Coordinate(0, 0), new Coordinate(ROAD_SECTION_ID_ONE,
+                ROAD_SECTION_ID_ONE)});
         roadSection2LineString = geometryFactory.createLineString(new Coordinate[]{new Coordinate(2, 2), new Coordinate(3, 3)});
         roadSection3LineString = geometryFactory.createLineString(new Coordinate[]{new Coordinate(4, 4), new Coordinate(5, 5)});
 
@@ -62,9 +73,9 @@ class MissingRoadSectionProviderTest {
                 .id(1L)
                 .roadSectionFragments(List.of(
                         RoadSectionFragment.builder()
-                                .id(1)
+                                .id(ROAD_SECTION_ID_ONE)
                                 .forwardSegment(DirectionalSegment.builder()
-                                        .id(1)
+                                        .id(ROAD_SECTION_ID_ONE)
                                         .lineString(roadSection1LineString)
                                         .build())
                                 .backwardSegment(DirectionalSegment.builder()
@@ -87,9 +98,10 @@ class MissingRoadSectionProviderTest {
 
         when(networkData.getNwbData()).thenReturn(nwbData);
         when(networkData.getNwbData().findAllAccessibilityNwbRoadSectionByMunicipalityId(123)).thenReturn(buildRoadSections(true, true));
-
         when(searchArea.intersects(PointList.from(roadSection2LineString))).thenReturn(true);
         when(searchArea.intersects(PointList.from(roadSection3LineString))).thenReturn(false);
+        when(networkData.findGeometryInNetwork(ROAD_SECTION_ID_THREE)).thenReturn(Optional.of(roadSection2LineString));
+        when(networkData.findGeometryInNetwork(ROAD_SECTION_ID_FOUR)).thenReturn(Optional.of(roadSection3LineString));
 
         Collection<RoadSection> missingRoadSections = missingRoadSectionProvider.findAll(
                 networkData,
@@ -114,7 +126,8 @@ class MissingRoadSectionProviderTest {
         when(networkData.getNwbData().findAllAccessibilityNwbRoadSectionByMunicipalityId(123)).thenReturn(buildRoadSections(
                 hasForwardSection,
                 hasBackwardSection));
-
+        when(networkData.findGeometryInNetwork(ROAD_SECTION_ID_THREE)).thenReturn(Optional.of(roadSection2LineString));
+        when(networkData.findGeometryInNetwork(ROAD_SECTION_ID_FOUR)).thenReturn(Optional.of(roadSection3LineString));
         when(searchArea.intersects(PointList.from(roadSection2LineString))).thenReturn(true);
         when(searchArea.intersects(PointList.from(roadSection3LineString))).thenReturn(false);
 
@@ -137,7 +150,8 @@ class MissingRoadSectionProviderTest {
 
         when(networkData.getNwbData()).thenReturn(nwbData);
         when(nwbData.findAllAccessibilityNwbRoadSections()).thenReturn(buildRoadSections(true, true));
-
+        when(networkData.findGeometryInNetwork(ROAD_SECTION_ID_THREE)).thenReturn(Optional.of(roadSection2LineString));
+        when(networkData.findGeometryInNetwork(ROAD_SECTION_ID_FOUR)).thenReturn(Optional.of(roadSection3LineString));
         when(searchArea.intersects(PointList.from(roadSection2LineString))).thenReturn(true);
         when(searchArea.intersects(PointList.from(roadSection3LineString))).thenReturn(false);
 
@@ -153,10 +167,18 @@ class MissingRoadSectionProviderTest {
 
     private List<AccessibilityNwbRoadSection> buildRoadSections(boolean hasForwardSection, boolean hasBackwardSection) {
         return List.of(
-                new AccessibilityNwbRoadSection(1, 2, 3, 4, roadSection1LineString, true, true, CarriagewayTypeCode.RB,"1"),
-                new AccessibilityNwbRoadSection(12, 23, 34, 4, roadSection1LineString, true, true, CarriagewayTypeCode.FP, "1"),
-                new AccessibilityNwbRoadSection(45648, 22, 23, 24, roadSection2LineString, hasForwardSection, hasBackwardSection, CarriagewayTypeCode.RB,"1"),
-                new AccessibilityNwbRoadSection(45649, 32, 33, 34, roadSection3LineString, true, true, CarriagewayTypeCode.RB,"1")
+                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_ONE, 2, 3, 4, null, true, true, CarriagewayTypeCode.RB, "1"),
+                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_TWO, 23, 34, 4, null, true, true, CarriagewayTypeCode.FP, "1"),
+                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_THREE,
+                        22,
+                        23,
+                        24,
+                        null,
+                        hasForwardSection,
+                        hasBackwardSection,
+                        CarriagewayTypeCode.RB,
+                        "1"),
+                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_FOUR, 32, 33, 34, null, true, true, CarriagewayTypeCode.RB, "1")
         );
     }
 
@@ -165,7 +187,8 @@ class MissingRoadSectionProviderTest {
             Collection<RoadSection> missingRoadSections,
             boolean isAccessible,
             boolean hasForwardSection,
-            boolean hasBackwardSection) {
+            boolean hasBackwardSection
+    ) {
         assertThat(missingRoadSections).hasSize(1);
 
         RoadSection roadSection = missingRoadSections.stream().toList().getFirst();
@@ -214,5 +237,15 @@ class MissingRoadSectionProviderTest {
                     assertThat(annotation.value()).isEqualTo("accessibilitymap.accessibility.calculateMissingRoadSections");
                 }
         );
+    }
+
+    @Test
+    void findAll_no_geometry_exception() {
+        when(networkData.getNwbData()).thenReturn(nwbData);
+        when(nwbData.findAllAccessibilityNwbRoadSections()).thenReturn(buildRoadSections(true, true));
+        when(networkData.findGeometryInNetwork(ROAD_SECTION_ID_THREE)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> missingRoadSectionProvider.findAll(networkData, null, List.of(roadSectionExisting), true, searchArea))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Road section geometry not found for road section id: 45648");
     }
 }

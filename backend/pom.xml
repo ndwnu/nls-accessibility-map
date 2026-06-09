@@ -6,12 +6,12 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>5.3.64-SNAPSHOT</version>
+    <version>6.0.8-SNAPSHOT</version>
   </parent>
 
   <artifactId>backend</artifactId>
 
-  <version>5.3.64-SNAPSHOT</version>
+  <version>6.0.8-SNAPSHOT</version>
   <name>NLS Accessibility Map Backend</name>
 
   <description>Accessibility Map REST API</description>
@@ -38,7 +38,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+      <artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -46,7 +46,7 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter-webmvc</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -65,18 +65,8 @@
       <artifactId>messaging</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.rabbitmq</groupId>
-      <artifactId>stream-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.amqp</groupId>
-      <artifactId>spring-rabbit-stream</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>com.rabbitmq</groupId>
-          <artifactId>stream-client</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>nu.ndw.nls.springboot</groupId>
+      <artifactId>message-stream</artifactId>
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
@@ -102,11 +92,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.mapstruct</groupId>
-      <artifactId>mapstruct</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>nu.ndw.nls.geojson.geometry</groupId>
       <artifactId>geometry-jts</artifactId>
     </dependency>
@@ -123,8 +108,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-webmvc-test</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -328,10 +318,6 @@
                 <useBeanValidation>true</useBeanValidation>
                 <performBeanValidation>true</performBeanValidation>
 
-                <!--
-                  OpenAPI Jackson Nullable library
-                  https://github.com/OpenAPITools/jackson-databind-nullable
-                 -->
                 <openApiNullable>false</openApiNullable>
 
                 <additionalModelTypeAnnotations>

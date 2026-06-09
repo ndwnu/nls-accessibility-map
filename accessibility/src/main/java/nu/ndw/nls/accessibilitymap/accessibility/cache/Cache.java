@@ -15,12 +15,17 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.active.ActiveVersionRepository;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.configuration.CacheConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.exception.ActiveVersionNotFoundException;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.retry.RetryException;
+import org.springframework.core.retry.RetryTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,13 +41,22 @@ public abstract class Cache<TYPE> {
     @Getter(AccessLevel.PROTECTED)
     private final ClockService clockService;
 
+    @Getter(AccessLevel.PROTECTED)
     private final DistributedLockService distributedLockService;
+
+    @Getter(AccessLevel.PROTECTED)
+    private final ActiveVersionRepository activeVersionRepository;
 
     private TYPE data;
 
     private int consecutiveReadFailures;
 
+    @Getter(AccessLevel.PROTECTED)
     private final ReentrantLock dataLock = new ReentrantLock();
+
+    private final RetryTemplate directoryNotEmptyRetryTemplate;
+
+    private String activeVersion;
 
     @EventListener(ApplicationStartedEvent.class)
     public void loadDataOnStartup() {
@@ -68,19 +82,61 @@ public abstract class Cache<TYPE> {
         read(false);
     }
 
-    protected synchronized void read(boolean triggeredOnStartup) {
+    public boolean dataExists() {
+        return getActiveVersionRepository()
+                .findActiveVersion(cacheConfiguration.getName())
+                .map(versionName -> Files.exists(getCacheConfiguration().getFolder().resolve(versionName)))
+                .orElse(false);
+    }
+
+    @Transactional
+    public void write(Supplier<TYPE> networkDataSupplier) {
+        OffsetDateTime start = clockService.now();
+        Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
         try {
+            distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
+            TYPE newData = networkDataSupplier.get();
+            Files.createDirectories(targetLocation);
+            log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
+            writeData(targetLocation, newData);
 
+            log.info(
+                    "Written {} data to `{}` with size {}MB in {} ms",
+                    cacheConfiguration.getName(),
+                    targetLocation.toFile().getAbsolutePath(),
+                    BigDecimal.valueOf(getSizeInBytes(targetLocation))
+                            .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
+                    Duration.between(start, clockService.now()).toMillis());
+
+            switchActiveVersion(targetFolder);
+            setData(newData);
+        } catch (IOException exception) {
+            log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
+        } finally {
+            distributedLockService.unlock(cacheConfiguration.getName());
+        }
+    }
+
+    public boolean isDataStale() {
+        String currentActiveVersion = getCurrentActiveVersion();
+        return Objects.nonNull(activeVersion) && !activeVersion.equals(currentActiveVersion);
+    }
+
+    protected String getCurrentActiveVersion() {
+        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+                .orElseThrow(() -> new ActiveVersionNotFoundException(cacheConfiguration.getName()));
+    }
+
+    protected synchronized void read(boolean triggeredOnStartup) {
+
+        try {
             OffsetDateTime start = clockService.now();
-            Path activeVersion = cacheConfiguration.getActiveVersion().toPath().toAbsolutePath().toRealPath();
+            Path activeVersion = getActiveVersion();
+
             log.info("Reading {} from location: {}", cacheConfiguration.getName(), activeVersion.toAbsolutePath());
-
             TYPE newData = readData(activeVersion);
-
-            dataLock.lock();
-            this.data = newData;
-            dataLock.unlock();
-
+            setData(newData);
             log.info(
                     "Read {} data from `{}` with size {}MB in {} ms",
                     cacheConfiguration.getName(),
@@ -89,6 +145,7 @@ public abstract class Cache<TYPE> {
                             .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
                     Duration.between(start, clockService.now()).toMillis());
             consecutiveReadFailures = 0;
+            publishCacheLoadedEvent();
         } catch (Exception exception) {
             consecutiveReadFailures += 1;
             if (consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures()) {
@@ -100,40 +157,24 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    public void write(Supplier<TYPE> networkDataSupplier) {
-        OffsetDateTime start = clockService.now();
-        Path targetFolder = Path.of(start.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        Path targetLocation = cacheConfiguration.getFolder().resolve(targetFolder);
-        try {
-            distributedLockService.lockOrFail(cacheConfiguration.getName(), getCacheConfiguration().getMaxLockWaitTime());
-            TYPE newData = networkDataSupplier.get();
-            Files.createDirectories(targetLocation);
-            log.info("Writing {} to location: {}", cacheConfiguration.getName(), targetLocation.toFile().getAbsolutePath());
-            writeData(targetLocation.toRealPath().toAbsolutePath(), newData);
+    protected Path getActiveVersion() {
+        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+                .map(activeVersionName -> cacheConfiguration.getFolder().resolve(activeVersionName))
+                .orElseThrow(() -> new ActiveVersionNotFoundException(cacheConfiguration.getName()));
+    }
 
-            log.info(
-                    "Written {} data to `{}` with size {}MB in {} ms",
-                    cacheConfiguration.getName(),
-                    targetLocation.toFile().getAbsolutePath(),
-                    BigDecimal.valueOf(getSizeInBytes(targetLocation))
-                            .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
-                    Duration.between(start, clockService.now()).toMillis());
-
-            switchSymLink(targetFolder);
-
-            dataLock.lock();
-            this.data = newData;
-            dataLock.unlock();
-        } catch (IOException exception) {
-            log.error("Failed to write {} to file: {}", cacheConfiguration.getName(), targetLocation, exception);
-        } finally {
-            distributedLockService.unlock(cacheConfiguration.getName());
-        }
+    protected void setData(TYPE data) {
+        dataLock.lock();
+        this.data = data;
+        this.activeVersion = getCurrentActiveVersion();
+        dataLock.unlock();
     }
 
     protected abstract TYPE readData(Path activeVersion) throws IOException;
 
     protected abstract void writeData(Path target, TYPE data) throws IOException;
+
+    protected abstract void publishCacheLoadedEvent();
 
     protected long getSizeInBytes(Path path) {
         if (Files.isDirectory(path)) {
@@ -143,28 +184,22 @@ public abstract class Cache<TYPE> {
         }
     }
 
-    private void switchSymLink(Path target) throws IOException {
+    protected void switchActiveVersion(Path target) throws IOException {
+        Path oldVersionDirectory = activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+                .map(oldActiveVersion -> cacheConfiguration.getFolder().resolve(oldActiveVersion).toFile().toPath())
+                .orElse(null);
 
-        Path symlink = cacheConfiguration.getActiveVersion().toPath();
-        Path oldTarget = null;
+        activeVersionRepository.switchActiveVersion(cacheConfiguration.getName(), target.getFileName().toString());
 
-        if (Files.isSymbolicLink(symlink)) {
-            if (Files.exists(symlink)) {
-                oldTarget = symlink.toRealPath();
+        if (Objects.nonNull(oldVersionDirectory)) {
+            try {
+                directoryNotEmptyRetryTemplate.execute(() -> {
+                    FileUtils.deleteDirectory(oldVersionDirectory.toFile());
+                    return null;
+                });
+            } catch (RetryException e) {
+                throw new IOException("Failed to delete old version directory: " + oldVersionDirectory, e);
             }
-            Files.delete(symlink);
         }
-
-        Files.createSymbolicLink(symlink, target);
-        log.debug("Updated symlink: {}", cacheConfiguration.getActiveVersion().getAbsolutePath());
-
-        if (Objects.nonNull(oldTarget)) {
-            FileUtils.deleteDirectory(oldTarget.toFile());
-            log.debug("Removed old symlink target: {}", oldTarget.toAbsolutePath());
-        }
-    }
-
-    public boolean dataExists() {
-        return Files.exists(getCacheConfiguration().getActiveVersion().toPath());
     }
 }

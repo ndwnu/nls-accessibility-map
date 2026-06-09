@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>5.3.64-SNAPSHOT</version>
+    <version>6.0.8-SNAPSHOT</version>
   </parent>
   <artifactId>trafficsignclient</artifactId>
   <name>NLS Accessibility Map Traffic Sign Client</name>
@@ -35,12 +35,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.junit.vintage</groupId>
-          <artifactId>junit-vintage-engine</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -52,16 +46,6 @@
       <artifactId>test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.github.jsurfer</groupId>
-      <artifactId>jsurfer-jackson</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-
   </dependencies>
   <build>
     <defaultGoal>clean verify</defaultGoal>

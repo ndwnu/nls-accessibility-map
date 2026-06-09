@@ -49,21 +49,23 @@ nu:
           cache:
             name: "Traffic sign"
             folder: "./cache/trafficSigns"
-        messaging:
-          stream-queues:
-            updateRoadSection:
-              stream-queue-name: nls_accessibility_map_update_road_section
-              stream-tracking-name: nls-accessibility-map-api-listener-v3
-              max-segment-size-in-kb: 5000
-              max-age-in-days: 60
-              consumer:
-                flushInterval-in-seconds: 2
-                messageCountBeforeStorage: 1
-                exponential-backoff:
-                  initial-interval-in-seconds: 1
-                  multiplier: 1.5
-                  max-interval-in-seconds: 5184000 # 60 days
-
+      springboot:
+        message:
+          stream:
+            queues:
+              updateRoadSection:
+                stream-queue-name: nls_accessibility_map_update_road_section
+                stream-tracking-name: nls-accessibility-map-api-listener-20260604-2
+                listener-auto-start: false
+                max-segment-size-in-kb: 5000
+                max-age-in-days: 60
+                consumer:
+                  flushInterval-in-seconds: 2
+                  messageCountBeforeStorage: 1
+                  exponential-backoff:
+                    initial-interval-in-seconds: 1
+                    multiplier: 1.5
+                    max-interval-in-seconds: 5184000 # 60 days
 nls:
   oauth2:
     jwtResourceProperty: app-${spring.application.name}-${environment}

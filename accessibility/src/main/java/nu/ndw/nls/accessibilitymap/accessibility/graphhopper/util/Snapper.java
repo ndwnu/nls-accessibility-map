@@ -1,8 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
 
+import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.EdgeAccessHandler.CAR_ACCESSIBLE_ROADS;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
-import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.PointMatchService;
+import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.Geometry;
@@ -25,19 +27,20 @@ public class Snapper {
 
     private final PointMatchService pointMatchService;
 
-    public Optional<Snap> snapLocation(NetworkGraphHopper networkGraphHopper, Location location) {
+    public Optional<Snap> snapLocation(NetworkData networkData, Location location) {
 
         if (Objects.isNull(location)) {
             return Optional.empty();
         }
 
+        NetworkGraphHopper networkGraphHopper = networkData.getNetworkGraphHopper();
         return pointMatchService.match(networkGraphHopper, location.point())
                 .map(CandidateMatch::getSnappedPoint)
                 .filter(Geometry::isValid)
                 .map(snappedPoint -> networkGraphHopper.getLocationIndex().findClosest(
                         snappedPoint.getY(),
                         snappedPoint.getX(),
-                        EdgeFilter.ALL_EDGES));
+                        edgeIteratorState -> locationIsCarAccessible(networkData, edgeIteratorState)));
     }
 
     public Optional<Snap> snapRestriction(NetworkGraphHopper networkGraphHopper, Restriction restriction) {
@@ -59,9 +62,21 @@ public class Snapper {
     private static boolean restrictionMatchesEdge(
             Restriction restriction,
             EncodingManager encodingManager,
-            EdgeIteratorState edgeIteratorState) {
+            EdgeIteratorState edgeIteratorState
+    ) {
 
         int encodedRoadSectionId = edgeIteratorState.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
         return encodedRoadSectionId == restriction.roadSectionId();
+    }
+
+    private static boolean locationIsCarAccessible(
+            NetworkData networkData,
+            EdgeIteratorState edgeIteratorState
+    ) {
+        EncodingManager encodingManager = networkData.getNetworkGraphHopper().getEncodingManager();
+        int roadSectionId = edgeIteratorState.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
+        CarriagewayTypeCode carriagewayTypeCode = networkData.findCarriageWayTypeCodeByRoadSectionId(roadSectionId)
+                .orElseThrow(() -> new IllegalStateException("Road section not found for link id: " + roadSectionId));
+        return CAR_ACCESSIBLE_ROADS.contains(carriagewayTypeCode);
     }
 }

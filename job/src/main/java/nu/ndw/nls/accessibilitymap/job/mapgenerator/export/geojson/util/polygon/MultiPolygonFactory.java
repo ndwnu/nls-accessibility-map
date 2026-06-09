@@ -59,8 +59,7 @@ public class MultiPolygonFactory {
 
         return roadSectionFragments.stream()
                 .map(roadSectionFragment -> roadSectionFragment.getSegments().stream().findFirst())
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 // Accessible segments must come first because of triangulation that would deduplicate coordinates
                 .sorted(directionalSegmentAccessibleComparator)
                 .flatMap(directionalSegment -> Arrays.stream(
