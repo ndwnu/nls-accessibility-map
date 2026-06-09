@@ -36,12 +36,14 @@ nu:
             folder: "./.tmp/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
-        messaging:
-          stream-queues:
-            updateRoadSection:
-              messages-to-skip:
-                id-skippable-message
-
+      springboot:
+        message:
+          stream:
+            queues:
+              updateRoadSection:
+                messages-to-skip:
+                  id-skippable-message
+                listener-auto-start: true
 logging:
   level:
     root: INFO

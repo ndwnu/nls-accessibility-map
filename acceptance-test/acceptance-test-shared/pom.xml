@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>acceptance-test</artifactId>
-    <version>5.3.64-SNAPSHOT</version>
+    <version>6.0.8-SNAPSHOT</version>
   </parent>
   <artifactId>acceptance-test-shared</artifactId>
   <name>NLS Accessibility Map - Acceptance test shared</name>
@@ -64,14 +64,13 @@
       <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-restclient</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-spatial</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>component-test</artifactId>
@@ -93,33 +92,22 @@
       <artifactId>geometry-jts</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    </dependency>
-    <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.annotation</groupId>
       <artifactId>jakarta.annotation-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.openapitools</groupId>
-      <artifactId>jackson-databind-nullable</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <exclusions>
-        <exclusion>
-          <groupId>org.junit.vintage</groupId>
-          <artifactId>junit-vintage-engine</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>org.hamcrest</groupId>
           <artifactId>hamcrest</artifactId>
@@ -199,10 +187,6 @@
                 <useBeanValidation>true</useBeanValidation>
                 <performBeanValidation>true</performBeanValidation>
 
-                <!--
-                  OpenAPI Jackson Nullable library
-                  https://github.com/OpenAPITools/jackson-databind-nullable
-                 -->
                 <openApiNullable>false</openApiNullable>
 
                 <additionalModelTypeAnnotations>

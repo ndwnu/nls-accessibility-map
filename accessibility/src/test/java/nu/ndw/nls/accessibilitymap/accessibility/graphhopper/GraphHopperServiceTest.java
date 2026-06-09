@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -40,6 +39,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class GraphHopperServiceTest {
@@ -59,7 +60,7 @@ class GraphHopperServiceTest {
     private GraphhopperMetaData graphhopperMetaData;
 
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private ClockService clockService;
@@ -77,7 +78,7 @@ class GraphHopperServiceTest {
     private AccessibilityLink accessibilityLink;
 
     @Mock
-    private IOException ioException;
+    private JacksonException jacksonException;
 
     private Path testDir;
 
@@ -91,7 +92,7 @@ class GraphHopperServiceTest {
         graphHopperService = new GraphHopperService(
                 graphHopperNetworkService,
                 accessibilityNwbRoadSectionToLinkMapper,
-                objectMapper,
+                jsonMapper,
                 clockService);
     }
 
@@ -121,7 +122,7 @@ class GraphHopperServiceTest {
                         .networkNameAndVersion("latest")
                         .profiles(List.of(CAR_PROFILE))
                         .build())))).thenReturn(networkGraphHopper);
-        when(objectMapper.readValue(metaDataFile.toFile(), GraphhopperMetaData.class)).thenReturn(graphhopperMetaData);
+        when(jsonMapper.readValue(metaDataFile.toFile(), GraphhopperMetaData.class)).thenReturn(graphhopperMetaData);
         when(graphhopperMetaData.nwbVersion()).thenReturn(1);
 
         GraphHopperNetwork graphHopperNetwork = graphHopperService.load(testDir);
@@ -175,12 +176,12 @@ class GraphHopperServiceTest {
                         .profiles(List.of(CAR_PROFILE))
                         .build())))).thenReturn(networkGraphHopper);
 
-        doThrow(ioException).when(objectMapper).readValue(metaDataFile.toFile(), GraphhopperMetaData.class);
+        doThrow(jacksonException).when(jsonMapper).readValue(metaDataFile.toFile(), GraphhopperMetaData.class);
 
         assertThat(catchThrowable(() -> graphHopperService.load(testDir)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("Could not load meta-data from file path: %s".formatted(metaDataFile.toAbsolutePath()))
-                .hasCause(ioException);
+                .hasCause(jacksonException);
     }
 
     @Test
@@ -212,7 +213,7 @@ class GraphHopperServiceTest {
             assertThat(linkSupplierIterator.hasNext()).isFalse();
             assertThat(routingNetworkSettings.getDataDate()).isEqualTo(OffsetDateTime.parse("2023-09-25T12:00:00Z").toInstant());
         }));
-        verify(objectMapper).writeValue(metaDataFile.toFile(), new GraphhopperMetaData(1));
+        verify(jsonMapper).writeValue(metaDataFile.toFile(), new GraphhopperMetaData(1));
 
         loggerExtension.containsLog(Level.INFO, "GraphHopper network stored on disk in 1234ms");
         assertThat(graphHopperDir)
@@ -221,7 +222,7 @@ class GraphHopperServiceTest {
     }
 
     @Test
-    void save_saveMetaDataError() throws IOException {
+    void save_saveMetaDataError() {
 
         Path graphHopperDir = testDir.resolve("latest");
         Path metaDataFile = graphHopperDir.resolve("accessibility_metadata.json");
@@ -234,12 +235,12 @@ class GraphHopperServiceTest {
         when(nwbData.findAllAccessibilityNwbRoadSections()).thenReturn(List.of(accessibilityNwbRoadSection));
         when(accessibilityNwbRoadSectionToLinkMapper.map(accessibilityNwbRoadSection)).thenReturn(accessibilityLink);
 
-        doThrow(ioException).when(objectMapper).writeValue(metaDataFile.toFile(), new GraphhopperMetaData(1));
+        doThrow(jacksonException).when(jsonMapper).writeValue(metaDataFile.toFile(), new GraphhopperMetaData(1));
 
         assertThat(catchThrowable(() -> graphHopperService.save(testDir, nwbData)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("Could not write meta-data to file path: %s".formatted(metaDataFile.toAbsolutePath()))
-                .hasCause(ioException);
+                .hasCause(jacksonException);
 
         assertThat(graphHopperDir)
                 .exists()

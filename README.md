@@ -50,3 +50,22 @@ https://wiki.openstreetmap.org/wiki/Key:opening_hours
 
 ## Pretty printing geojson
 jq . c6WindowTimeSegments.geojson | sponge c6WindowTimeSegments.geojson
+
+## Resetting the nwb updates tracking key
+
+For receiving nwb network updates there is an event stream configured.
+By renaming stream-tracking-name in the application yaml, all events will be received again.
+Example:
+
+```yaml
+nu:
+  ndw:
+    nls:
+      accessibilitymap:
+        messaging:
+          stream-queues:
+            updateRoadSection:
+              stream-tracking-name: nls-accessibility-map-api-listener-20260528
+```
+
+Also the 'MessagingBeansRegistrarTest' class MESSAGE_LISTENER_NAME property needs to be updated

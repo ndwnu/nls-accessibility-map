@@ -6,12 +6,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.stream.Message;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.SneakyThrows;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
+import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
@@ -23,10 +22,19 @@ import nu.ndw.nls.db.nwb.jooq.mappers.NwbVersionIdMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
+import org.springframework.test.util.ReflectionTestUtils;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class RoadSectionUpdateListenerTest {
@@ -58,7 +66,7 @@ class RoadSectionUpdateListenerTest {
     private NwbRoadSectionUpdateMapper nwbRoadSectionUpdateMapper;
 
     @Mock
-    private ObjectMapper objectMapper;
+    private JsonMapper jsonMapper;
 
     @Mock
     private NwbRoadSectionUpdate nwbRoadSectionUpdate;
@@ -72,6 +80,9 @@ class RoadSectionUpdateListenerTest {
     @Mock
     private NwbData nwbData;
 
+    @Mock
+    private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
+
     @Captor
     private ArgumentCaptor<NwbDataUpdates> nwbDataUpdatesCaptor;
 
@@ -82,15 +93,15 @@ class RoadSectionUpdateListenerTest {
         roadSectionUpdateListener = new RoadSectionUpdateListener(networkDataService,
                 nwbVersionIdMapper,
                 nwbRoadSectionUpdateMapper,
-                objectMapper);
+                jsonMapper, rabbitListenerEndpointRegistry);
     }
 
     @SneakyThrows
     @Test
     void handleMessage() {
 
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
+        when(message.getBody()).thenReturn(CONTENT_BYTES);
+        when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(NEW_VERSION_DATE);
         when(nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate)).thenReturn(accessibilityNwbRoadSectionUpdate);
         when(networkDataService.get()).thenReturn(networkData);
@@ -109,8 +120,8 @@ class RoadSectionUpdateListenerTest {
     @Test
     void handleMessage_earlier_nwbVersion_in_message_than_current_nwbVersion() {
 
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
+        when(message.getBody()).thenReturn(CONTENT_BYTES);
+        when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(EARLIER_NWB_VERSION_DATE);
         when(networkDataService.get()).thenReturn(networkData);
         when(networkData.getNwbData()).thenReturn(nwbData);
@@ -125,8 +136,8 @@ class RoadSectionUpdateListenerTest {
     @Test
     @SneakyThrows
     void handleMessage_later_nwbVersion_in_message_than_current_nwbVersion() {
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
+        when(message.getBody()).thenReturn(CONTENT_BYTES);
+        when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(LATER_NWB_VERSION_DATE);
         when(networkDataService.get()).thenReturn(networkData);
         when(networkData.getNwbData()).thenReturn(nwbData);
@@ -141,11 +152,33 @@ class RoadSectionUpdateListenerTest {
     @Test
     @SneakyThrows
     void handleMessage_invalid_message_content_throws_exception() {
-        when(message.getBodyAsBinary()).thenReturn(CONTENT_BYTES);
-        when(objectMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenThrow(IOException.class);
+        when(message.getBody()).thenReturn(CONTENT_BYTES);
+        when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenThrow(JacksonException.class);
 
         assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class);
         verify(networkDataService, times(0)).writeNwbDataUpdates(nwbDataUpdatesCaptor.capture());
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            NETWORK_DATA,false,false,1
+            NETWORK_DATA,false,true,0
+            NETWORK_DATA,true,true,0
+            TRAFFIC_SIGNS,false,false,0
+            """)
+    void startListener(CacheLoadedEvent.Type type, boolean autoStartup, boolean isRunning, int expectedCalls) {
+        MessageListenerContainer messageListenerContainer = Mockito.mock(MessageListenerContainer.class);
+        if (type == Type.NETWORK_DATA) {
+            when(rabbitListenerEndpointRegistry.getListenerContainer("updateRoadSectionStreamListener"))
+                    .thenReturn(messageListenerContainer);
+            if (!autoStartup) {
+                when(messageListenerContainer.isRunning()).thenReturn(isRunning);
+            }
+        }
+        ReflectionTestUtils.setField(roadSectionUpdateListener, "autoStartup", autoStartup);
+
+        roadSectionUpdateListener.startListener(CacheLoadedEvent.builder().type(type).build());
+        verify(messageListenerContainer, times(expectedCalls)).start();
     }
 }
 

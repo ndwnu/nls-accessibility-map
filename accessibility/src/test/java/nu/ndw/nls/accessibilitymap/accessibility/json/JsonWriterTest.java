@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.json;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,6 +12,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 class JsonWriterTest {
 
@@ -24,7 +24,7 @@ class JsonWriterTest {
     @BeforeEach
     void setUp() {
         testDir = Files.createTempDirectory(this.getClass().getSimpleName());
-        jsonWriter = new JsonWriter(new ObjectMapper());
+        jsonWriter = new JsonWriter(new JsonMapper());
     }
 
     @SneakyThrows

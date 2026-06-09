@@ -1,7 +1,5 @@
 package nu.ndw.nls.accessibilitymap.job.mapgenerator.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
@@ -14,22 +12,24 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfig
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers.FeatureBuilder;
-import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers.GeoJsonObjectMapperFactory;
+import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.writers.GeoJsonJsonMapperFactory;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPolygon;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 public class GeoJsonConverter {
 
     public static String createPolygon(
             MultiPolygon multiPolygon,
-            List<RoadSectionFragment> roadSectionFragments) throws JsonProcessingException {
+            List<RoadSectionFragment> roadSectionFragments) throws JacksonException {
 
-        ObjectMapper geoJsonObjectMapper = new GeoJsonObjectMapperFactory().create(
+        JsonMapper geoJsonMapper = new GeoJsonJsonMapperFactory().create(
                 GenerateConfiguration.builder()
                         .prettyPrintJson(true)
                         .build());
 
-        return geoJsonObjectMapper.writeValueAsString(
+        return geoJsonMapper.writeValueAsString(
                 FeatureCollection.builder()
                         .features(createFeatures(multiPolygon, roadSectionFragments))
                         .build());

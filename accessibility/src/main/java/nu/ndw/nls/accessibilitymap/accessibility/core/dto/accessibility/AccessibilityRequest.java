@@ -79,14 +79,14 @@ public record AccessibilityRequest(
     }
 
     /**
-     * Used for logging purposes when using objectmapper to convert this object to json.
+     * Used for logging purposes when using jsonMapper to convert this object to json.
      */
     public String getRequestAreaString() {
         return requestArea.toString();
     }
 
     /**
-     * Used for logging purposes when using objectmapper to convert this object to json.
+     * Used for logging purposes when using jsonMapper to convert this object to json.
      */
     public String getSearchAreaString() {
         return searchArea.toString();
