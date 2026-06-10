@@ -1,7 +1,6 @@
 {
   "features": [
     {
-      "id": 1,
       "geometry": {
         "coordinates": [
           [
@@ -15,19 +14,19 @@
         ],
         "type": "LineString"
       },
+      "id": 1,
       "properties": {
-        "nwbRoadSectionId": 12,
-        "trafficSignId": "00000000-0000-4000-0000-000000000002",
         "accessible": false,
         "direction": "FORWARD",
+        "nwbRoadSectionId": 12,
+        "trafficSign": true,
+        "trafficSignId": "00000000-0000-4000-0000-000000000002",
         "trafficSignType": "C12",
-        "windowTimes": "window 2",
-        "trafficSign": true
+        "windowTimes": "window 2"
       },
       "type": "Feature"
     },
     {
-      "id": 2,
       "geometry": {
         "coordinates": [
           5.0000007,
@@ -35,19 +34,19 @@
         ],
         "type": "Point"
       },
+      "id": 2,
       "properties": {
-        "nwbRoadSectionId": 12,
-        "trafficSignId": "00000000-0000-4000-0000-000000000002",
         "accessible": false,
         "direction": "FORWARD",
+        "nwbRoadSectionId": 12,
+        "trafficSign": true,
+        "trafficSignId": "00000000-0000-4000-0000-000000000002",
         "trafficSignType": "C12",
-        "windowTimes": "window 2",
-        "trafficSign": true
+        "windowTimes": "window 2"
       },
       "type": "Feature"
     },
     {
-      "id": 3,
       "geometry": {
         "coordinates": [
           [
@@ -61,19 +60,19 @@
         ],
         "type": "LineString"
       },
+      "id": 3,
       "properties": {
-        "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "accessible": false,
         "direction": "FORWARD",
+        "nwbRoadSectionId": 13,
+        "trafficSign": true,
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "trafficSignType": "C12",
-        "windowTimes": "window 1",
-        "trafficSign": true
+        "windowTimes": "window 1"
       },
       "type": "Feature"
     },
     {
-      "id": 4,
       "geometry": {
         "coordinates": [
           5.0000005,
@@ -81,14 +80,15 @@
         ],
         "type": "Point"
       },
+      "id": 4,
       "properties": {
-        "nwbRoadSectionId": 13,
-        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "accessible": false,
         "direction": "FORWARD",
+        "nwbRoadSectionId": 13,
+        "trafficSign": true,
+        "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "trafficSignType": "C12",
-        "windowTimes": "window 1",
-        "trafficSign": true
+        "windowTimes": "window 1"
       },
       "type": "Feature"
     }
