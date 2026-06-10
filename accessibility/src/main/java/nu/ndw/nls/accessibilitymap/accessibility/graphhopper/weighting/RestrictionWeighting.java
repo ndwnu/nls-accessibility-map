@@ -39,15 +39,15 @@ public class RestrictionWeighting implements Weighting {
      * delegates the weight calculation to the underlying {@code sourceWeighting}.
      *
      * @param edgeIteratorState the edge for which the weight is being calculated
-     * @param reversed          indicates whether the edge direction should be reversed during the calculation
+     * @param reversedFlow          indicates if we are traversing the graph in reverse order.
      * @return the calculated weight of the edge, or {@code Double.POSITIVE_INFINITY} if the edge is restricted
      */
     @Override
-    public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversed) {
+    public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversedFlow) {
         if (blockedEdges.contains(edgeIteratorState.getEdgeKey())) {
             return Double.POSITIVE_INFINITY;
         }
-        return sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed);
+        return sourceWeighting.calcEdgeWeight(edgeIteratorState, reversedFlow);
     }
 
     @Override
