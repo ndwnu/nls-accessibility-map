@@ -214,19 +214,19 @@
         "type": "LineString",
         "coordinates": [
           [
-            1.000001,
+            1.0000009,
             1.000001
           ],
           [
-            1.000001,
-            10.000001
+            1.0000006,
+            10.0000007
           ]
         ]
       },
       "id": 10,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": false,
+        "accessible": true,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 6

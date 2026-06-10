@@ -5,6 +5,7 @@ import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
@@ -19,30 +20,39 @@ public class RoadDataWeighting implements Weighting {
 
     private final EncodingManager encodingManager;
 
+    private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
     @Override
     public double calcMinWeightPerDistance() {
         return sourceWeighting.calcMinWeightPerDistance();
     }
 
     @Override
-    public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversed) {
+    public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversedFlow) {
         int linkId = getLinkId(edgeIteratorState, encodingManager);
 
         return nwbData.findAccessibilityNwbRoadSectionById(linkId)
-                .map(roadSection -> blockIfInaccessible(edgeIteratorState, reversed, roadSection))
+                .map(roadSection -> blockIfInaccessible(
+                        edgeIteratorState,
+                        reversedFlow,
+                        roadSection))
                 .orElseThrow(() -> new IllegalStateException("Road section not found for link id: " + linkId));
     }
 
-    private double blockIfInaccessible(EdgeIteratorState edgeIteratorState, boolean reversed, AccessibilityNwbRoadSection roadSection) {
-        return isAccessible(roadSection.carriagewayTypeCode(),
+    private double blockIfInaccessible(EdgeIteratorState edgeIteratorState, boolean reversedFlow, AccessibilityNwbRoadSection roadSection) {
+        boolean reversedDirection = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState);
+        return isAccessible(
+                roadSection.carriagewayTypeCode(),
                 roadSection.forwardAccessible(),
                 roadSection.backwardAccessible(),
-                reversed) ? sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed) : Double.POSITIVE_INFINITY;
+                reversedDirection)
+                ? sourceWeighting.calcEdgeWeight(edgeIteratorState, reversedFlow)
+                : Double.POSITIVE_INFINITY;
     }
 
     @Override
-    public long calcEdgeMillis(EdgeIteratorState edgeIteratorState, boolean reversed) {
-        return sourceWeighting.calcEdgeMillis(edgeIteratorState, reversed);
+    public long calcEdgeMillis(EdgeIteratorState edgeIteratorState, boolean reversedFlow) {
+        return sourceWeighting.calcEdgeMillis(edgeIteratorState, reversedFlow);
     }
 
     @Override
