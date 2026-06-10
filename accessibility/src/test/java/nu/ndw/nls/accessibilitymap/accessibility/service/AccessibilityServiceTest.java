@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
 import com.graphhopper.routing.ev.IntEncodedValue;
+import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
@@ -131,6 +132,9 @@ class AccessibilityServiceTest {
     private DirectionalSegment directionalSegmentRoadSectionCombined;
 
     @Mock
+    private QueryGraph queryGraph;
+
+    @Mock
     private List<AccessibilityReasonGroup> accessibilityReasonGroups;
 
     @RegisterExtension
@@ -175,6 +179,7 @@ class AccessibilityServiceTest {
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
+        when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
 
         when(accessibilityCalculator.calculateWithoutRestrictions(accessibilityRequest, accessibilityNetwork))
                 .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
@@ -223,6 +228,7 @@ class AccessibilityServiceTest {
             loggerExtension.containsLog(Level.DEBUG, "Accessibility calculation done. It took: 123 ms");
 
             verify(accessibilityDebugger).writeDebug(accessibilityRequest);
+            verify(accessibilityDebugger).writeDebug(queryGraph);
             verify(accessibilityDebugger).writeDebug(restrictions);
             verify(accessibilityDebugger).writeDebug(accessibility);
         }
