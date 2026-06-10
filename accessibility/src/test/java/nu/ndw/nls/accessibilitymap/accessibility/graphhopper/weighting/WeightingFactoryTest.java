@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.PMap;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
@@ -49,6 +50,9 @@ class WeightingFactoryTest {
     @Mock
     private EncodingManager encodingManager;
 
+    @Mock
+    private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
     @Captor
     private ArgumentCaptor<RoadChangesWeighting> weightingCaptor;
 
@@ -56,7 +60,7 @@ class WeightingFactoryTest {
 
     @BeforeEach
     void setUp() {
-        weightingFactory = new WeightingFactory();
+        weightingFactory = new WeightingFactory(edgeIteratorStateReverseExtractor);
     }
 
     @ParameterizedTest
@@ -81,6 +85,10 @@ class WeightingFactoryTest {
         RoadChangesWeighting constructedWeighting = weightingCaptor.getValue();
         Weighting roadChangesSourceWeighting = (Weighting) ReflectionTestUtils.getField(constructedWeighting, "sourceWeighting");
         NwbDataUpdates nwbDataUpdatesInstance = (NwbDataUpdates) ReflectionTestUtils.getField(constructedWeighting, "nwbDataUpdates");
+        var roadChangesEdgeIteratorStateReverseExtractorInstance = (EdgeIteratorStateReverseExtractor) ReflectionTestUtils.getField(
+                        constructedWeighting,
+                        "edgeIteratorStateReverseExtractor");
+
         EncodingManager roadChangesEncodingManager = (EncodingManager) ReflectionTestUtils.getField(constructedWeighting,
                 "encodingManager");
 
@@ -89,10 +97,15 @@ class WeightingFactoryTest {
                 .isInstanceOf(RoadDataWeighting.class);
         assertThat(nwbDataUpdatesInstance).isEqualTo(nwbDataUpdates);
         assertThat(roadChangesEncodingManager).isEqualTo(encodingManager);
+        assertThat(roadChangesEdgeIteratorStateReverseExtractorInstance).isEqualTo(edgeIteratorStateReverseExtractor);
 
         Weighting roadDataSourceWeighting = (Weighting) ReflectionTestUtils.getField(roadChangesSourceWeighting, "sourceWeighting");
         NwbData nwbDataInstance = (NwbData) ReflectionTestUtils.getField(roadChangesSourceWeighting, "nwbData");
-        EncodingManager roadDataEncodingManager = (EncodingManager) ReflectionTestUtils.getField(roadChangesSourceWeighting,
+        var roadDataEdgeIteratorStateReverseExtractorInstance = (EdgeIteratorStateReverseExtractor) ReflectionTestUtils.getField(
+                constructedWeighting,
+                "edgeIteratorStateReverseExtractor");
+        EncodingManager roadDataEncodingManager = (EncodingManager) ReflectionTestUtils.getField(
+                roadChangesSourceWeighting,
                 "encodingManager");
 
         assertThat(roadDataSourceWeighting)
@@ -100,6 +113,7 @@ class WeightingFactoryTest {
                 .isInstanceOf(RestrictionWeighting.class);
         assertThat(nwbDataInstance).isEqualTo(nwbData);
         assertThat(roadDataEncodingManager).isEqualTo(encodingManager);
+        assertThat(roadDataEdgeIteratorStateReverseExtractorInstance).isEqualTo(edgeIteratorStateReverseExtractor);
 
         Weighting restrictionWeightingSourceWeighting = (Weighting) ReflectionTestUtils.getField(roadDataSourceWeighting,
                 "sourceWeighting");
