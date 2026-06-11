@@ -148,6 +148,9 @@ class AccessibilityServiceTest {
     @Mock
     private EdgeIterator edgeIteratorDestination;
 
+    @Mock
+    private DestinationSnapEdgeKeyResolver destinationSnapEdgeKeyResolver;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -165,7 +168,7 @@ class AccessibilityServiceTest {
                 missingRoadSectionProvider,
                 accessibilityReasonService,
                 accessibilityNetworkProvider,
-                accessibilityDebugger);
+                accessibilityDebugger, destinationSnapEdgeKeyResolver);
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .startLocationLatitude(1.0)
@@ -439,13 +442,8 @@ class AccessibilityServiceTest {
 
     private void mockFindDestinationDirectionalSegment(boolean hasDestination) {
         if (hasDestination) {
+            when(destinationSnapEdgeKeyResolver.findEdgeKey(queryGraph, destinationSnap, encodingManager)).thenReturn(Optional.of(15));
             when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-            when(queryGraph.createEdgeExplorer()).thenReturn(edgeExplorer);
-            when(destinationSnap.getClosestNode()).thenReturn(1);
-            when(edgeExplorer.setBaseNode(1)).thenReturn(edgeIteratorDestination);
-            when(edgeIteratorDestination.next()).thenReturn(true);
-            when(edgeIteratorDestination.get(idIntEncodedValue)).thenReturn(30);
-            when(edgeIteratorDestination.getEdgeKey()).thenReturn(15);
             when(accessibilityNetwork.getDestination()).thenReturn(destinationSnap);
             when(destinationSnap.getClosestEdge()).thenReturn(endSegmentClosestEdge);
             when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
