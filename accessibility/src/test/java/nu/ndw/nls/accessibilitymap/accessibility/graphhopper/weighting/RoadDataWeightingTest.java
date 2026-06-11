@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
@@ -36,6 +37,9 @@ class RoadDataWeightingTest {
     private EncodingManager encodingManager;
 
     @Mock
+    private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
+    @Mock
     private Weighting sourceWeighting;
 
     @Mock
@@ -51,7 +55,7 @@ class RoadDataWeightingTest {
 
     @BeforeEach
     void setUp() {
-        roadDataWeighting = new RoadDataWeighting(sourceWeighting, nwbData, encodingManager);
+        roadDataWeighting = new RoadDataWeighting(sourceWeighting, nwbData, encodingManager, edgeIteratorStateReverseExtractor);
     }
 
     @Test
@@ -64,10 +68,10 @@ class RoadDataWeightingTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            true,true
-            false,false
-            true,false
-            false,true
+            true,  true
+            false, false
+            true,  false
+            false, true
             """)
     void calcEdgeWeight_withRoadData(boolean isAccessible, boolean reversed) {
         try (var edgeAccessHandler = Mockito.mockStatic(EdgeAccessHandler.class)) {
@@ -80,10 +84,11 @@ class RoadDataWeightingTest {
                     .thenReturn(isAccessible);
             when(nwbData.findAccessibilityNwbRoadSectionById(LINK_ID)).thenReturn(Optional.of(accessibilityNwbRoadSection));
             if (isAccessible) {
-                when(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed)).thenReturn(1.0);
+                when(sourceWeighting.calcEdgeWeight(edgeIteratorState, true)).thenReturn(1.0);
             }
+            when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(reversed);
 
-            double weight = roadDataWeighting.calcEdgeWeight(edgeIteratorState, reversed);
+            double weight = roadDataWeighting.calcEdgeWeight(edgeIteratorState, true);
 
             assertThat(weight).isEqualTo(isAccessible ? 1.0 : Double.POSITIVE_INFINITY);
         }

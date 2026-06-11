@@ -86,7 +86,7 @@ public class GraphHopperTestDataService {
 
                 //Inner circle
                 .createRoad(7, 8).createRoad(8, 9).createRoad(9, 10)
-                .createRoad(10, 11).createRoad(11, 7)
+                .createRoad(10, 11).createDirectionalRoad(11, 7, Set.of(Direction.FORWARD))
 
                 //Circle connections
                 .createRoad(8, 2).createRoad(5, 11);

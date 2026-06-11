@@ -17,7 +17,7 @@ public class AccessibilityLinkCarMapper extends LinkVehicleMapper<AccessibilityL
 
     @Override
     public DirectionalDto<Boolean> getAccessibility(AccessibilityLink link) {
-        // no op implementation. Access will be handled dynamically by WeightingDecorator
+        //Directional detection is done by RoadDataWeighting & RoadChangesWeighting classes.
         return new DirectionalDto<>(true);
     }
 

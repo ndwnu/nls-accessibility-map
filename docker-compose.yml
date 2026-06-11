@@ -3,7 +3,7 @@ services:
     image: ndwnls.azurecr.io/nls-postgres-it-container:20260225.4
     platform: linux/amd64
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 2s
       timeout: 2s
       retries: 10
@@ -54,13 +54,14 @@ services:
 
   accessibility-wiremock:
     hostname: accessibility-wiremock
-    image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.0.0-1
+    image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.13.2-alpine
+    platform: linux/amd64
     volumes:
       - ./docker/accessibility-wiremock/extensions:/var/wiremock/extensions
       - ./docker/accessibility-wiremock/mappings:/home/wiremock/mappings
-    command: --port 8888 --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
+    command: --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
     ports:
-      - "8888:8888"
+      - "8888:8080"
     networks:
       - nls-accessibility-map-network
 
@@ -94,6 +95,7 @@ services:
       - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
       - KC_HTTP_PORT=8000
       - KC_HTTP_RELATIVE_PATH=/auth
+      - KC_HEALTH_ENABLED=true
     expose:
       - 8000
     ports:
@@ -102,7 +104,7 @@ services:
       - ./docker/nls-keycloak/config/realm-export-nls.json:/opt/keycloak/data/import/realm-export-nls.json
       - ./docker/nls-keycloak/dump:/opt/keycloak/data/export/
     healthcheck:
-      test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:9000/auth/health/live']
+      test: [ "CMD-SHELL", "/opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8000/$${KC_HTTP_RELATIVE_PATH}/ --realm master && /opt/keycloak/bin/kcadm.sh get http://localhost:9000/$${KC_HTTP_RELATIVE_PATH}/health" ]
       interval: 2s
       timeout: 30s
       retries: 20

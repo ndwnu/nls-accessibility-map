@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
@@ -24,7 +25,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class NwbDataUpdatesWeightingDecoratorTest {
+class RoadChangesWeightingTest {
 
     private static final int LINK_ID = 123;
 
@@ -33,6 +34,9 @@ class NwbDataUpdatesWeightingDecoratorTest {
 
     @Mock
     private EncodingManager encodingManager;
+
+    @Mock
+    private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
     @Mock
     private Weighting sourceWeighting;
@@ -51,7 +55,7 @@ class NwbDataUpdatesWeightingDecoratorTest {
     @BeforeEach
     void setUp() {
 
-        roadChangesWeighting = new RoadChangesWeighting(sourceWeighting, nwbDataUpdates, encodingManager);
+        roadChangesWeighting = new RoadChangesWeighting(sourceWeighting, nwbDataUpdates, encodingManager, edgeIteratorStateReverseExtractor);
     }
 
     @Test
@@ -81,10 +85,11 @@ class NwbDataUpdatesWeightingDecoratorTest {
                     .thenReturn(hasAccess);
             when(nwbDataUpdates.findChangedNwbRoadSectionById(LINK_ID)).thenReturn(Optional.of(accessibilityNwbRoadSectionUpdate));
             if (hasAccess) {
-                when(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed)).thenReturn(1.0);
+                when(sourceWeighting.calcEdgeWeight(edgeIteratorState, true)).thenReturn(1.0);
             }
+            when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(reversed);
 
-            double weight = roadChangesWeighting.calcEdgeWeight(edgeIteratorState, reversed);
+            double weight = roadChangesWeighting.calcEdgeWeight(edgeIteratorState, true);
 
             assertThat(weight).isEqualTo(hasAccess ? 1.0 : Double.POSITIVE_INFINITY);
         }

@@ -137,6 +137,9 @@ class AccessibilityServiceTest {
     private DirectionalSegment directionalSegmentRoadSectionCombined;
 
     @Mock
+    private QueryGraph queryGraph;
+
+    @Mock
     private List<AccessibilityReasonGroup> accessibilityReasonGroups;
 
     @Mock
@@ -193,6 +196,7 @@ class AccessibilityServiceTest {
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
+        when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
 
         when(accessibilityCalculator.calculateWithoutRestrictions(accessibilityRequest, accessibilityNetwork))
                 .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
@@ -241,6 +245,7 @@ class AccessibilityServiceTest {
             loggerExtension.containsLog(Level.DEBUG, "Accessibility calculation done. It took: 123 ms");
 
             verify(accessibilityDebugger).writeDebug(accessibilityRequest);
+            verify(accessibilityDebugger).writeDebug(queryGraph);
             verify(accessibilityDebugger).writeDebug(restrictions);
             verify(accessibilityDebugger).writeDebug(accessibility);
         }
