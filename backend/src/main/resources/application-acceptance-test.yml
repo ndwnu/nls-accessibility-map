@@ -24,8 +24,6 @@ nu:
   ndw:
     nls:
       accessibilitymap:
-        accessibility:
-          debug: true
         network:
           cache:
             name: "Network"
