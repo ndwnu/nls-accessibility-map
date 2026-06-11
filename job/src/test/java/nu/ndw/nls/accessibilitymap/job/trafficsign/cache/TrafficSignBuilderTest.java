@@ -134,7 +134,7 @@ class TrafficSignBuilderTest {
         assertThat(trafficSign).isEmpty();
 
         loggerExtension.containsLog(
-                Level.INFO,
+                Level.DEBUG,
                 "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
                         .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
                 "Traffic sign with id '%s' is missing a road section.".formatted(trafficSignGeoJsonDto.getId()));
@@ -153,7 +153,7 @@ class TrafficSignBuilderTest {
         assertThat(trafficSign).isEmpty();
 
         loggerExtension.containsLog(
-                Level.INFO,
+                Level.DEBUG,
                 "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
                         .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
                 "Traffic sign with id '%s' is missing a fraction.".formatted(trafficSignGeoJsonDto.getId()));
@@ -197,7 +197,7 @@ class TrafficSignBuilderTest {
 
         assertThat(trafficSign).isEmpty();
         loggerExtension.containsLog(
-                Level.INFO,
+                Level.DEBUG,
                 "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
                         .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
                 "Unknown zone code 'invalid'");
@@ -249,7 +249,7 @@ class TrafficSignBuilderTest {
         if (directionType == DirectionType.BOTH) {
             assertThat(trafficSign).isEmpty();
             loggerExtension.containsLog(
-                    Level.INFO,
+                    Level.DEBUG,
                     "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
                             .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
                     "Driving direction '%s' could not be mapped.".formatted(directionType));
