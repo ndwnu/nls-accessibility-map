@@ -718,30 +718,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            4.0000007,
-            5.000001
-          ],
-          [
-            5.0000005,
-            8.0000009
-          ]
-        ]
-      },
-      "id": 31,
-      "properties": {
-        "type": "roadSectionSegment",
-        "accessible": true,
-        "direction": "backward",
-        "functionalRoadClass": "1",
-        "roadSectionId": 11
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             5.0000007,
             2.0000011
           ],
@@ -751,7 +727,7 @@
           ]
         ]
       },
-      "id": 32,
+      "id": 31,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -775,7 +751,7 @@
           ]
         ]
       },
-      "id": 33,
+      "id": 32,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -799,7 +775,7 @@
           ]
         ]
       },
-      "id": 34,
+      "id": 33,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -823,7 +799,7 @@
           ]
         ]
       },
-      "id": 35,
+      "id": 34,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
