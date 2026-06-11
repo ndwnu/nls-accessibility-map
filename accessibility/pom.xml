@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>6.0.2-SNAPSHOT</version>
+    <version>6.0.12-SNAPSHOT</version>
   </parent>
   <artifactId>accessibility</artifactId>
   <name>NLS Accessibility library</name>
@@ -13,6 +13,7 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-liquibase</artifactId>

@@ -23,6 +23,8 @@ import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.retry.RetryException;
+import org.springframework.core.retry.RetryTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
@@ -51,6 +53,10 @@ public abstract class Cache<TYPE> {
 
     @Getter(AccessLevel.PROTECTED)
     private final ReentrantLock dataLock = new ReentrantLock();
+
+    private final RetryTemplate directoryNotEmptyRetryTemplate;
+
+    private String activeVersion;
 
     @EventListener(ApplicationStartedEvent.class)
     public void loadDataOnStartup() {
@@ -112,6 +118,15 @@ public abstract class Cache<TYPE> {
         }
     }
 
+    public boolean isDataStale() {
+        String currentActiveVersion = getCurrentActiveVersion();
+        return Objects.nonNull(activeVersion) && !activeVersion.equals(currentActiveVersion);
+    }
+
+    protected String getCurrentActiveVersion() {
+        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+                .orElseThrow(() -> new ActiveVersionNotFoundException(cacheConfiguration.getName()));
+    }
 
     protected synchronized void read(boolean triggeredOnStartup) {
 
@@ -151,6 +166,7 @@ public abstract class Cache<TYPE> {
     protected void setData(TYPE data) {
         dataLock.lock();
         this.data = data;
+        this.activeVersion = getCurrentActiveVersion();
         dataLock.unlock();
     }
 
@@ -174,8 +190,16 @@ public abstract class Cache<TYPE> {
                 .orElse(null);
 
         activeVersionRepository.switchActiveVersion(cacheConfiguration.getName(), target.getFileName().toString());
+
         if (Objects.nonNull(oldVersionDirectory)) {
-            FileUtils.deleteDirectory(oldVersionDirectory.toFile());
+            try {
+                directoryNotEmptyRetryTemplate.execute(() -> {
+                    FileUtils.deleteDirectory(oldVersionDirectory.toFile());
+                    return null;
+                });
+            } catch (RetryException e) {
+                throw new IOException("Failed to delete old version directory: " + oldVersionDirectory, e);
+            }
         }
     }
 }

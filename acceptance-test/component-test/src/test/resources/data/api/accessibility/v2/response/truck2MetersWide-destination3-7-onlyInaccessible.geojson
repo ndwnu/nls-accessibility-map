@@ -1,9 +1,6 @@
 {
-  "type": "FeatureCollection",
   "features": [
     {
-      "type": "Feature",
-      "id": 1,
       "geometry": {
         "type": "Point",
         "coordinates": [
@@ -11,16 +8,16 @@
           3.0
         ]
       },
+      "id": 1,
       "properties": {
         "type": "destination",
-        "roadSectionId": 9,
         "accessible": true,
-        "reasons": []
-      }
+        "reasons": [],
+        "roadSectionId": 9
+      },
+      "type": "Feature"
     },
     {
-      "type": "Feature",
-      "id": 2,
       "geometry": {
         "type": "LineString",
         "coordinates": [
@@ -34,17 +31,17 @@
           ]
         ]
       },
+      "id": 2,
       "properties": {
         "type": "roadSectionSegment",
-        "roadSectionId": 6,
-        "functionalRoadClass": "1",
         "accessible": false,
-        "direction": "backward"
-      }
+        "direction": "backward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 6
+      },
+      "type": "Feature"
     },
     {
-      "type": "Feature",
-      "id": 3,
       "geometry": {
         "type": "LineString",
         "coordinates": [
@@ -58,13 +55,16 @@
           ]
         ]
       },
+      "id": 3,
       "properties": {
         "type": "roadSectionSegment",
-        "roadSectionId": 13,
-        "functionalRoadClass": "1",
         "accessible": false,
-        "direction": "forward"
-      }
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 13
+      },
+      "type": "Feature"
     }
-  ]
+  ],
+  "type": "FeatureCollection"
 }

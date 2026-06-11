@@ -5,6 +5,7 @@ import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
@@ -19,32 +20,39 @@ public class RoadChangesWeighting implements Weighting {
 
     private final EncodingManager encodingManager;
 
+    private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
     @Override
     public double calcMinWeightPerDistance() {
         return sourceWeighting.calcMinWeightPerDistance();
     }
 
     @Override
-    public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversed) {
+    public double calcEdgeWeight(EdgeIteratorState edgeIteratorState, boolean reversedFlow) {
         int linkId = getLinkId(edgeIteratorState, encodingManager);
         return nwbDataUpdates.findChangedNwbRoadSectionById(linkId)
-                .map(changedNwbRoadSection -> blockIfInaccessible(edgeIteratorState, reversed, changedNwbRoadSection))
-                .orElse(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed));
+                .map(changedNwbRoadSection -> blockIfInaccessible(edgeIteratorState, reversedFlow, changedNwbRoadSection))
+                .orElse(sourceWeighting.calcEdgeWeight(edgeIteratorState, reversedFlow));
     }
 
-    private double blockIfInaccessible(EdgeIteratorState edgeIteratorState,
-            boolean reversed,
+    private double blockIfInaccessible(
+            EdgeIteratorState edgeIteratorState,
+            boolean reversedFlow,
             AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate
     ) {
-        return isAccessible(accessibilityNwbRoadSectionUpdate.carriagewayTypeCode(),
+        boolean reversedDirection = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState);
+        return isAccessible(
+                accessibilityNwbRoadSectionUpdate.carriagewayTypeCode(),
                 accessibilityNwbRoadSectionUpdate.forwardAccessible(),
                 accessibilityNwbRoadSectionUpdate.backwardAccessible(),
-                reversed) ? sourceWeighting.calcEdgeWeight(edgeIteratorState, reversed) : Double.POSITIVE_INFINITY;
+                reversedDirection)
+                ? sourceWeighting.calcEdgeWeight(edgeIteratorState, reversedFlow)
+                : Double.POSITIVE_INFINITY;
     }
 
     @Override
-    public long calcEdgeMillis(EdgeIteratorState edgeIteratorState, boolean reversed) {
-        return sourceWeighting.calcEdgeMillis(edgeIteratorState, reversed);
+    public long calcEdgeMillis(EdgeIteratorState edgeIteratorState, boolean reversedFlow) {
+        return sourceWeighting.calcEdgeMillis(edgeIteratorState, reversedFlow);
     }
 
     @Override

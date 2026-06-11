@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.backend.nwb.messaging;
 
 import io.micrometer.core.annotation.Timed;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,10 +54,12 @@ public class RoadSectionUpdateListener {
     @Timed(description = "time spend processing road section changes")
     public void handleMessage(Message message) {
         NwbRoadSectionUpdate nwbRoadSectionUpdate = toRoadSectionUpdate(message);
+        log.debug("Received message raw json: {}",
+                new String(message.getBody(), StandardCharsets.UTF_8));
         log.debug("Received road section update: {}", nwbRoadSectionUpdate);
         NwbData nwbData = networkDataService.get().getNwbData();
         int updateMapVersion = nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion());
-        log.debug("Active nwb map version: {}", updateMapVersion);
+        log.debug("Update nwb map version: {}", updateMapVersion);
         if (updateMapVersionIsDifferentFromActiveMapVersion(updateMapVersion, nwbData.getNwbVersionId())) {
 
             if (updateMapVersionIsEarlierThanActiveVersion(updateMapVersion, nwbData.getNwbVersionId())) {

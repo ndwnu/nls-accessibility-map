@@ -41,6 +41,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.retry.RetryTemplate;
 import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -86,6 +87,10 @@ class NetworkDataServiceTest {
     @Mock
     private ActiveVersionRepository activeVersionRepository;
 
+    @Mock
+    private RetryTemplate testRetryTemplate;
+
+
     @Captor
     private ArgumentCaptor<CacheLoadedEvent> cacheLoadedEventCaptor;
 
@@ -113,8 +118,11 @@ class NetworkDataServiceTest {
                 distributedLockService,
                 graphHopperService,
                 accessibilityNwbRoadSectionService,
-                jsonMapper, jsonWriter,
-                applicationEventPublisher, activeVersionRepository);
+                jsonMapper,
+                jsonWriter,
+                applicationEventPublisher,
+                activeVersionRepository,
+                testRetryTemplate);
     }
 
     @AfterEach
@@ -135,6 +143,7 @@ class NetworkDataServiceTest {
         );
         when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME))
                 .thenReturn(Optional.empty())
+                .thenReturn(Optional.of(INITIAL_TIMESTAMP))
                 .thenReturn(Optional.of(INITIAL_TIMESTAMP))
                 .thenReturn(Optional.of(INITIAL_TIMESTAMP))
                 .thenReturn(Optional.of(UPDATED_TIMESTAMP));
@@ -171,7 +180,7 @@ class NetworkDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(accessibilityNwbRoadSectionService.getLatestNwbData()).thenReturn(nwbData);
 
         networkDataService.recompileData();
@@ -187,6 +196,7 @@ class NetworkDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(graphHopperNetwork.nwbVersion()).thenReturn(1);
         NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);

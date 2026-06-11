@@ -41,7 +41,7 @@
               ],
               "condition": "greater_than_or_equals",
               "unitSymbol": "tons",
-              "value": 12.00
+              "value": 12.0
             }
           ]
         ],
@@ -798,30 +798,6 @@
         "type": "LineString",
         "coordinates": [
           [
-            4.0000007,
-            5.000001
-          ],
-          [
-            5.0000005,
-            8.0000009
-          ]
-        ]
-      },
-      "id": 33,
-      "properties": {
-        "type": "roadSectionSegment",
-        "accessible": true,
-        "direction": "backward",
-        "functionalRoadClass": "1",
-        "roadSectionId": 11
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
             5.0000007,
             2.0000011
           ],
@@ -831,7 +807,7 @@
           ]
         ]
       },
-      "id": 34,
+      "id": 33,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -855,7 +831,7 @@
           ]
         ]
       },
-      "id": 35,
+      "id": 34,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -879,7 +855,7 @@
           ]
         ]
       },
-      "id": 36,
+      "id": 35,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -903,7 +879,7 @@
           ]
         ]
       },
-      "id": 37,
+      "id": 36,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
