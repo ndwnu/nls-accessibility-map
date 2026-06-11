@@ -2,11 +2,27 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import org.junit.jupiter.api.Test;
 
 class DirectionalSegmentTest {
+
+    @Test
+    void getRoadSectionId() {
+        var roadSectionFragment = mock(RoadSectionFragment.class);
+        var roadSection = mock(RoadSection.class);
+        when(roadSectionFragment.getRoadSection()).thenReturn(roadSection);
+        long roadSectionId = 1L;
+        when(roadSection.getId()).thenReturn(roadSectionId);
+
+        DirectionalSegment directionalSegment = DirectionalSegment.builder()
+                .roadSectionFragment(roadSectionFragment)
+                .build();
+
+        assertThat(directionalSegment.geRoadSectionId()).isEqualTo(roadSectionId);
+    }
 
     @Test
     void hasRestrictions() {
