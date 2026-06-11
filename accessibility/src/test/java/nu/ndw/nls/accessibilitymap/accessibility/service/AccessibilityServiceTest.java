@@ -12,8 +12,6 @@ import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.EdgeExplorer;
-import com.graphhopper.util.EdgeIterator;
 import com.graphhopper.util.EdgeIteratorState;
 import io.micrometer.core.annotation.Timed;
 import java.time.OffsetDateTime;
@@ -141,15 +139,6 @@ class AccessibilityServiceTest {
 
     @Mock
     private List<AccessibilityReasonGroup> accessibilityReasonGroups;
-
-    @Mock
-    private QueryGraph queryGraph;
-
-    @Mock
-    private EdgeExplorer edgeExplorer;
-
-    @Mock
-    private EdgeIterator edgeIteratorDestination;
 
     @Mock
     private DestinationSnapEdgeKeyResolver destinationSnapEdgeKeyResolver;
