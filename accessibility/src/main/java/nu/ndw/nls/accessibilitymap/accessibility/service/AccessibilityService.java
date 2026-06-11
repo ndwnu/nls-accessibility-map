@@ -5,11 +5,7 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.log.LogConstants.AC
 import static nu.ndw.nls.accessibilitymap.accessibility.core.log.LogUtil.keyValueJson;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
-import com.graphhopper.routing.querygraph.QueryGraph;
-import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.EdgeExplorer;
-import com.graphhopper.util.EdgeIterator;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
@@ -60,6 +56,8 @@ public class AccessibilityService {
     private final AccessibilityNetworkProvider accessibilityNetworkProvider;
 
     private final AccessibilityDebugger accessibilityDebugger;
+
+    private final DestinationSnapEdgeKeyResolver destinationSnapEdgeKeyResolver;
 
     @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
@@ -194,24 +192,13 @@ public class AccessibilityService {
         int roadSectionId = destinationSnapPoint
                 .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
 
-        return findEdgeKey(accessibilityNetwork.getQueryGraph(), destinationSnapPoint, network.getEncodingManager(), roadSectionId)
+        return destinationSnapEdgeKeyResolver.findEdgeKey(accessibilityNetwork.getQueryGraph(),
+                        destinationSnapPoint,
+                        network.getEncodingManager())
                 .flatMap(finalEdgeKey -> combinedRoadSections.stream()
                         .filter(roadSection -> roadSection.getId() == roadSectionId)
                         .findFirst()
                         .flatMap(roadSection -> roadSection.findDirectionalSegmentById(finalEdgeKey)));
-    }
-
-    private Optional<Integer> findEdgeKey(QueryGraph queryGraph, Snap snap, EncodingManager encodingManager, int targetRoadSectionId) {
-        EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
-
-        EdgeIterator edgeIterator = edgeExplorer.setBaseNode(snap.getClosestNode());
-        while (edgeIterator.next()) {
-            int edgeRoadSectionId = edgeIterator.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-            if (edgeRoadSectionId == targetRoadSectionId) {
-                return Optional.of(edgeIterator.getEdgeKey());
-            }
-        }
-        return Optional.empty();
     }
 }
 
