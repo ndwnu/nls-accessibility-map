@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.reason.service;
 
 import static com.graphhopper.routing.util.TraversalMode.NODE_BASED;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Stopwatch;
 import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.routing.Path;
@@ -28,10 +27,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AccessibilityReasonService {
 
-    private static final Map<Boolean, Predicate<DirectionalSegment>> ACCESSIBILTY_FILTER_MAP = Map.of(
-            true, directionalSegment -> !directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment(), false,
-            directionalSegment -> !directionalSegment.isAccessible());
-
     private final RoutingAlgorithmFactory routingAlgorithmFactory;
 
     private final PathsToReasonsMapper pathsToReasonsMapper;
@@ -41,19 +36,25 @@ public class AccessibilityReasonService {
             Optional<DirectionalSegment> toSegment,
             Map<Integer, DirectionalSegment> directionalSegmentsById,
             AccessibilityNetwork accessibilityNetwork,
-            boolean effectivelyAccessible
-    ) {
+            boolean effectivelyAccessible) {
         return toSegment
-                .filter(directionalSegment -> ACCESSIBILTY_FILTER_MAP.get(effectivelyAccessible).test(directionalSegment))
+                .filter(directionalSegment -> isAccessible(directionalSegment, effectivelyAccessible))
                 .map(directionalSegment -> calculateReasons(directionalSegmentsById, accessibilityNetwork))
                 .orElse(Collections.emptyList());
+    }
+
+    private static boolean isAccessible(DirectionalSegment directionalSegment, boolean effectivelyAccessible) {
+        if (effectivelyAccessible) {
+            return directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment();
+        } else {
+            return directionalSegment.isAccessible();
+        }
     }
 
     @SuppressWarnings("java:S1941")
     private List<AccessibilityReasonGroup> calculateReasons(
             Map<Integer, DirectionalSegment> directionalSegmentsById,
-            AccessibilityNetwork accessibilityNetwork
-    ) {
+            AccessibilityNetwork accessibilityNetwork) {
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 

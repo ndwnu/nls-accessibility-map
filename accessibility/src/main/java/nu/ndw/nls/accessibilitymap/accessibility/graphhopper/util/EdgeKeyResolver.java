@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.service;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
 
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
@@ -7,23 +7,23 @@ import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeExplorer;
 import com.graphhopper.util.EdgeIterator;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DestinationSnapEdgeKeyResolver {
+public class EdgeKeyResolver {
 
-    public Optional<Integer> findEdgeKey(QueryGraph queryGraph, Snap destinationSnap, EncodingManager encodingManager) {
+    public int findForSnap(Snap snap, QueryGraph queryGraph, EncodingManager encodingManager) {
+        int targetRoadSectionId = snap.getClosestEdge().get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
+
         EdgeExplorer edgeExplorer = queryGraph.createEdgeExplorer();
-        int targetRoadSectionId = destinationSnap
-                .getClosestEdge().get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-        EdgeIterator edgeIterator = edgeExplorer.setBaseNode(destinationSnap.getClosestNode());
+        EdgeIterator edgeIterator = edgeExplorer.setBaseNode(snap.getClosestNode());
         while (edgeIterator.next()) {
             int edgeRoadSectionId = edgeIterator.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
             if (edgeRoadSectionId == targetRoadSectionId) {
-                return Optional.of(edgeIterator.getEdgeKey());
+                return edgeIterator.getEdgeKey();
             }
         }
-        return Optional.empty();
+
+        throw new IllegalStateException("A snap should always have an edge associated with an way id.");
     }
 }
