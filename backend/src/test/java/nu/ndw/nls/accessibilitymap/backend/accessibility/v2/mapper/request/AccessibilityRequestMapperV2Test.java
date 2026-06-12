@@ -92,6 +92,7 @@ class AccessibilityRequestMapperV2Test {
                 .build();
 
         accessibilityRequestJson = AccessibilityRequestJson.builder()
+                .effectivelyAccessible(true)
                 .vehicle(VehicleCharacteristicsJson.builder()
                         .axleLoad(1F)
                         .hasTrailer(true)
@@ -158,6 +159,7 @@ class AccessibilityRequestMapperV2Test {
 
         assertThat(accessibilityRequest).isEqualTo(AccessibilityRequest.builder()
                 .timestamp(timestamp)
+                .effectivelyAccessible(true)
                 .addMissingRoadsSectionsFromNwb(true)
                 .transportTypes(Set.of(TransportType.CAR))
                 .vehicleHeightInCm(mapToDouble(accessibilityRequestJson.getVehicle().getHeight(), 100))
@@ -320,6 +322,19 @@ class AccessibilityRequestMapperV2Test {
         AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
 
         assertThat(accessibilityRequest.fuelTypes()).isNull();
+    }
+
+    @Test
+    void map_noIsEffectivelyAccessible() {
+
+        accessibilityRequestJson.setEffectivelyAccessible(null);
+        when(areaRequestMapper.canProcessAreaRequest(municipalityAreaRequestJson)).thenReturn(true);
+        when(accessibilityRequestRestrictionMapper.map(networkData, accessibilityRequestRestrictionJson)).thenReturn(restriction);
+        when(clockService.now()).thenReturn(timestamp);
+
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
+
+        assertThat(accessibilityRequest.effectivelyAccessible()).isFalse();
     }
 
     private static Double mapToDouble(Float value, int multiplier) {

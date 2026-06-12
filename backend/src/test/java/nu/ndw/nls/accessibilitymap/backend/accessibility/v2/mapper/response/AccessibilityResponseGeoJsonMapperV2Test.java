@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.response;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.mockito.Mockito.when;
 
-import tools.jackson.databind.json.JsonMapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,6 +36,7 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityResponseGeoJsonMapperV2Test {
@@ -57,6 +57,10 @@ class AccessibilityResponseGeoJsonMapperV2Test {
 
     private RoadSection destinationRoadSectionAccessible;
 
+    private DirectionalSegment destinationDirectionalSegmentInaccessible;
+
+    private DirectionalSegment destinationDirectionalSegmentAccessible;
+
     private RoadSection destinationRoadSectionInAccessible;
 
     private JsonMapper jsonMapper;
@@ -71,7 +75,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
         roadSectionPartiallyAccessible = buildRoadSection(5, false, true);
         destinationRoadSectionAccessible = buildRoadSection(3, true, true);
         destinationRoadSectionInAccessible = buildRoadSection(4, false, false);
-
+        destinationDirectionalSegmentAccessible = buildDestinationDirectionalSegment(3, true, true);
+        destinationDirectionalSegmentInaccessible = buildDestinationDirectionalSegment(4, false, false);
         accessibilityResponseGeoJsonMapperV2 = new AccessibilityResponseGeoJsonMapperV2(accessibilityReasonsJsonMapperV2);
     }
 
@@ -83,7 +88,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     void map(Boolean includeAccessibleAndInAccessibleRoadSections) throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
-                .toRoadSection(Optional.of(destinationRoadSectionAccessible))
+                .toDirectionalSegment(Optional.of(destinationDirectionalSegmentAccessible))
                 .combinedAccessibility(List.of(
                         roadSectionAccessible, roadSectionInaccessible,
                         roadSectionPartiallyAccessible, destinationRoadSectionAccessible))
@@ -243,7 +248,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     void map_effectivelyAccessible_defaultBehavior(Boolean effectivelyAccessible) throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
-                .toRoadSection(Optional.of(destinationRoadSectionAccessible))
+                .toDirectionalSegment(Optional.of(destinationDirectionalSegmentAccessible))
                 .combinedAccessibility(List.of(
                         roadSectionAccessible, roadSectionInaccessible, roadSectionPartiallyAccessible, destinationRoadSectionAccessible))
                 .build();
@@ -397,7 +402,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     void map_effectivelyAccessible_enabled() throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
-                .toRoadSection(Optional.of(destinationRoadSectionAccessible))
+                .toDirectionalSegment(Optional.of(destinationDirectionalSegmentAccessible))
                 .combinedAccessibility(List.of(
                         roadSectionAccessible, roadSectionInaccessible,
                         roadSectionPartiallyAccessible, destinationRoadSectionAccessible))
@@ -564,7 +569,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                 .build())));
 
         Accessibility accessibility = Accessibility.builder()
-                .toRoadSection(Optional.of(destinationRoadSectionAccessible))
+                .toDirectionalSegment(Optional.of(destinationDirectionalSegmentInaccessible))
                 .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, destinationRoadSectionAccessible))
                 .reasons(reasons)
                 .build();
@@ -594,8 +599,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                     },
                     "properties" : {
                       "type" : "destination",
-                      "roadSectionId" : 3,
-                      "accessible" : true,
+                      "roadSectionId" : 4,
+                      "accessible" : false,
                       "reasons" : [ [ {
                         "type" : "vehicleTypeReason",
                         "unitSymbol" : "enum",
@@ -701,7 +706,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     void map_onlyAccessible() throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
-                .toRoadSection(Optional.of(destinationRoadSectionInAccessible))
+                .toDirectionalSegment(Optional.of(destinationDirectionalSegmentInaccessible))
                 .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, destinationRoadSectionInAccessible))
                 .build();
 
@@ -771,7 +776,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     void map_onlyInaccessible() throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
-                .toRoadSection(Optional.of(destinationRoadSectionAccessible))
+                .toDirectionalSegment(Optional.of(destinationDirectionalSegmentAccessible))
                 .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, destinationRoadSectionAccessible))
                 .build();
 
@@ -846,7 +851,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     void map_noDestination(boolean hasAccessibilityRoadSection, boolean hasRequestDestination) throws JacksonException {
 
         Accessibility accessibility = Accessibility.builder()
-                .toRoadSection(hasAccessibilityRoadSection ? Optional.of(destinationRoadSectionAccessible) : Optional.empty())
+                .toDirectionalSegment(hasAccessibilityRoadSection ? Optional.of(destinationDirectionalSegmentAccessible) : Optional.empty())
                 .combinedAccessibility(List.of(roadSectionAccessible, roadSectionInaccessible, destinationRoadSectionAccessible))
                 .build();
 
@@ -952,6 +957,59 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                   } ]
                 }
                 """);
+    }
+
+    private DirectionalSegment buildDestinationDirectionalSegment(long id, boolean accessibleForward, boolean accessibleBackward) {
+        RoadSection roadSection = RoadSection.builder()
+                .id(id)
+                .functionalRoadClass("1")
+                .build();
+
+        RoadSectionFragment roadSectionFragment = RoadSectionFragment.builder()
+                .id(2)
+                .roadSection(roadSection)
+                .build();
+        roadSection.getRoadSectionFragments().add(roadSectionFragment);
+
+        DirectionalSegment directionalSegmentForward = DirectionalSegment.builder()
+                .id(3)
+                .accessible(accessibleForward)
+                .direction(Direction.FORWARD)
+                .roadSectionFragment(roadSectionFragment)
+                .lineString(new GeometryFactory().createLineString(
+                        new Coordinate[]{
+                                new Coordinate(1, 2, 0),
+                                new Coordinate(2, 3, 0)
+                        }))
+                .restrictions(new Restrictions(List.of(TrafficSign.builder()
+                        .id(4)
+                        .roadSectionId(1)
+                        .externalId("externalId")
+                        .direction(Direction.FORWARD)
+                        .fraction(2d)
+                        .longitude(3d)
+                        .latitude(4d)
+                        .textSigns(List.of())
+                        .networkSnappedLatitude(1D)
+                        .networkSnappedLongitude(2D)
+                        .trafficSignType(TrafficSignType.C7)
+                        .transportRestrictions(TransportRestrictions.builder().build())
+                        .build())))
+                .build();
+
+        DirectionalSegment directionalSegmentBackward = directionalSegmentForward
+                .withDirection(Direction.BACKWARD)
+                .withAccessible(accessibleBackward)
+                .withLineString(new GeometryFactory().createLineString(
+                        new Coordinate[]{
+                                new Coordinate(2, 3, 0),
+                                new Coordinate(1, 2, 0)
+                        }));
+
+        roadSectionFragment.setForwardSegment(directionalSegmentForward);
+        roadSectionFragment.setBackwardSegment(directionalSegmentBackward);
+
+        return directionalSegmentForward;
     }
 
     private RoadSection buildRoadSection(long id, boolean accessibleForward, boolean accessibleBackward) {

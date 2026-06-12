@@ -30,6 +30,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.log.LogUtil;
 import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeKeyResolver;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
@@ -90,6 +91,9 @@ class AccessibilityServiceTest {
     private RoadSection roadSectionDestination;
 
     @Mock
+    private DirectionalSegment directionalSegmentDestination;
+
+    @Mock
     private RoadSection missingRoadSection;
 
     @Mock
@@ -137,6 +141,9 @@ class AccessibilityServiceTest {
     @Mock
     private List<AccessibilityReasonGroup> accessibilityReasonGroups;
 
+    @Mock
+    private EdgeKeyResolver edgeKeyResolver;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -154,7 +161,7 @@ class AccessibilityServiceTest {
                 missingRoadSectionProvider,
                 accessibilityReasonService,
                 accessibilityNetworkProvider,
-                accessibilityDebugger);
+                accessibilityDebugger, edgeKeyResolver);
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .startLocationLatitude(1.0)
@@ -200,7 +207,7 @@ class AccessibilityServiceTest {
                 Set.of(roadSectionRestriction, missingRoadSection)))
                 .thenReturn(Set.of(roadSectionCombined, roadSectionDestination));
 
-        mockFindDestinationRoadSection(true);
+        mockFindDestinationDirectionalSegment(true);
         when(roadSectionDestination.getId()).thenReturn(30L);
 
         mockCalculateReasons();
@@ -219,7 +226,7 @@ class AccessibilityServiceTest {
                     roadSectionRestriction,
                     missingRoadSection);
             assertThat(accessibility.unroutableRoadSections()).containsExactlyInAnyOrder(missingRoadSection);
-            assertThat(accessibility.toRoadSection()).contains(roadSectionDestination);
+            assertThat(accessibility.toDirectionalSegment()).contains(directionalSegmentDestination);
             assertThat(accessibility.reasons()).isEqualTo(accessibilityReasonGroups);
 
             loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
@@ -261,7 +268,7 @@ class AccessibilityServiceTest {
                 Set.of(roadSectionRestriction)))
                 .thenReturn(Set.of(roadSectionCombined, roadSectionDestination));
 
-        mockFindDestinationRoadSection(true);
+        mockFindDestinationDirectionalSegment(true);
         when(roadSectionDestination.getId()).thenReturn(30L);
 
         mockCalculateReasons();
@@ -276,7 +283,7 @@ class AccessibilityServiceTest {
             assertThat(accessibility.accessibleRoadsSectionsWithoutAppliedRestrictions()).containsExactlyInAnyOrder(roadSectionNoRestriction);
             assertThat(accessibility.accessibleRoadSectionsWithAppliedRestrictions()).containsExactlyInAnyOrder(roadSectionRestriction);
             assertThat(accessibility.unroutableRoadSections()).isEmpty();
-            assertThat(accessibility.toRoadSection()).contains(roadSectionDestination);
+            assertThat(accessibility.toDirectionalSegment()).contains(directionalSegmentDestination);
             assertThat(accessibility.reasons()).isEqualTo(accessibilityReasonGroups);
 
             loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
@@ -315,7 +322,7 @@ class AccessibilityServiceTest {
                 Set.of(roadSectionRestriction, missingRoadSection)))
                 .thenReturn(Set.of(roadSectionCombined, roadSectionDestination));
 
-        mockFindDestinationRoadSection(false);
+        mockFindDestinationDirectionalSegment(false);
 
         try (var logUtilStaticMock = Mockito.mockStatic(LogUtil.class)) {
             logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
@@ -331,7 +338,7 @@ class AccessibilityServiceTest {
                     roadSectionRestriction,
                     missingRoadSection);
             assertThat(accessibility.unroutableRoadSections()).containsExactlyInAnyOrder(missingRoadSection);
-            assertThat(accessibility.toRoadSection()).isEmpty();
+            assertThat(accessibility.toDirectionalSegment()).isEmpty();
             assertThat(accessibility.reasons()).isEmpty();
 
             loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
@@ -376,7 +383,7 @@ class AccessibilityServiceTest {
                 Set.of(roadSectionRestriction, missingRoadSection)))
                 .thenReturn(Set.of(roadSectionCombined, roadSectionDestination));
 
-        mockFindDestinationRoadSection(false);
+        mockFindDestinationDirectionalSegment(false);
 
         try (var logUtilStaticMock = Mockito.mockStatic(LogUtil.class)) {
             logUtilStaticMock.when(() -> LogUtil.keyValueJson(ACCESSIBILITY_REQUEST, accessibilityRequest))
@@ -392,7 +399,7 @@ class AccessibilityServiceTest {
                     roadSectionRestriction,
                     missingRoadSection);
             assertThat(accessibility.unroutableRoadSections()).containsExactlyInAnyOrder(missingRoadSection);
-            assertThat(accessibility.toRoadSection()).isEmpty();
+            assertThat(accessibility.toDirectionalSegment()).isEmpty();
             assertThat(accessibility.reasons()).isEmpty();
 
             loggerExtension.containsLog(Level.INFO, "Calculating accessibility for key=value");
@@ -420,21 +427,25 @@ class AccessibilityServiceTest {
                 .build()));
 
         when(accessibilityReasonService.calculateReasons(
-                Optional.of(roadSectionDestination),
+                Optional.of(directionalSegmentDestination),
                 Map.of(
                         100, directionalSegmentRoadSectionDestination,
                         101, directionalSegmentRoadSectionCombined),
-                accessibilityNetwork)
+                accessibilityNetwork, false)
         ).thenReturn(accessibilityReasonGroups);
     }
 
-    private void mockFindDestinationRoadSection(boolean hasDestination) {
+    private void mockFindDestinationDirectionalSegment(boolean hasDestination) {
         if (hasDestination) {
+            when(edgeKeyResolver.findForSnap(destinationSnap, queryGraph, encodingManager)).thenReturn(15);
+            when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
             when(accessibilityNetwork.getDestination()).thenReturn(destinationSnap);
             when(destinationSnap.getClosestEdge()).thenReturn(endSegmentClosestEdge);
             when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
             when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(idIntEncodedValue);
             when(endSegmentClosestEdge.get(idIntEncodedValue)).thenReturn(30);
+            when(roadSectionDestination.findDirectionalSegmentById(15))
+                    .thenReturn(Optional.of(directionalSegmentDestination));
         }
     }
 
