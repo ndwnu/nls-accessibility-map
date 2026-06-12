@@ -30,6 +30,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.log.LogUtil;
 import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeKeyResolver;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
@@ -141,7 +142,7 @@ class AccessibilityServiceTest {
     private List<AccessibilityReasonGroup> accessibilityReasonGroups;
 
     @Mock
-    private DestinationSnapEdgeKeyResolver destinationSnapEdgeKeyResolver;
+    private EdgeKeyResolver edgeKeyResolver;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -160,7 +161,7 @@ class AccessibilityServiceTest {
                 missingRoadSectionProvider,
                 accessibilityReasonService,
                 accessibilityNetworkProvider,
-                accessibilityDebugger, destinationSnapEdgeKeyResolver);
+                accessibilityDebugger, edgeKeyResolver);
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .startLocationLatitude(1.0)
@@ -436,7 +437,7 @@ class AccessibilityServiceTest {
 
     private void mockFindDestinationDirectionalSegment(boolean hasDestination) {
         if (hasDestination) {
-            when(destinationSnapEdgeKeyResolver.findEdgeKey(queryGraph, destinationSnap, encodingManager)).thenReturn(Optional.of(15));
+            when(edgeKeyResolver.findForSnap(destinationSnap, queryGraph, encodingManager)).thenReturn(15);
             when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
             when(accessibilityNetwork.getDestination()).thenReturn(destinationSnap);
             when(destinationSnap.getClosestEdge()).thenReturn(endSegmentClosestEdge);

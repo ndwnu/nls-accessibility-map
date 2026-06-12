@@ -25,12 +25,14 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.util.LocationFactory;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.EdgeKeyResolver;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityReasonService;
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebugger;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityException;
+import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
 
@@ -57,7 +59,7 @@ public class AccessibilityService {
 
     private final AccessibilityDebugger accessibilityDebugger;
 
-    private final DestinationSnapEdgeKeyResolver destinationSnapEdgeKeyResolver;
+    private final EdgeKeyResolver edgeKeyResolver;
 
     @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
@@ -187,19 +189,19 @@ public class AccessibilityService {
             return Optional.empty();
         }
 
-        var network = accessibilityNetwork.getNetworkData().getNetworkGraphHopper();
+        NetworkGraphHopper network = accessibilityNetwork.getNetworkData().getNetworkGraphHopper();
         Snap destinationSnapPoint = destinationSnap.get();
 
-        int roadSectionId = destinationSnapPoint
-                .getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+        int roadSectionId = destinationSnapPoint.getClosestEdge().get(network.getEncodingManager().getIntEncodedValue(WAY_ID_KEY));
+        int edgeKey = edgeKeyResolver.findForSnap(
+                destinationSnapPoint,
+                accessibilityNetwork.getQueryGraph(),
+                network.getEncodingManager());
 
-        return destinationSnapEdgeKeyResolver.findEdgeKey(accessibilityNetwork.getQueryGraph(),
-                        destinationSnapPoint,
-                        network.getEncodingManager())
-                .flatMap(finalEdgeKey -> combinedRoadSections.stream()
-                        .filter(roadSection -> roadSection.getId() == roadSectionId)
-                        .findFirst()
-                        .flatMap(roadSection -> roadSection.findDirectionalSegmentById(finalEdgeKey)));
+        return combinedRoadSections.stream()
+                .filter(roadSection -> roadSection.getId() == roadSectionId)
+                .findFirst()
+                .flatMap(roadSection -> roadSection.findDirectionalSegmentById(edgeKey));
     }
 }
 
