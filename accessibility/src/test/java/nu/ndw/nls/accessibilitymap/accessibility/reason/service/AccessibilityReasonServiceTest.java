@@ -87,7 +87,7 @@ class AccessibilityReasonServiceTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            true
+            true,
             false
             """)
     void calculateReasons(boolean effectivelyAccessible) {
