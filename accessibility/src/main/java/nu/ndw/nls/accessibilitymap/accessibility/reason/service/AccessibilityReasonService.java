@@ -38,16 +38,16 @@ public class AccessibilityReasonService {
             AccessibilityNetwork accessibilityNetwork,
             boolean effectivelyAccessible) {
         return toSegment
-                .filter(directionalSegment -> isAccessible(directionalSegment, effectivelyAccessible))
+                .filter(directionalSegment -> isInaccessible(directionalSegment, effectivelyAccessible))
                 .map(directionalSegment -> calculateReasons(directionalSegmentsById, accessibilityNetwork))
                 .orElse(Collections.emptyList());
     }
 
-    private static boolean isAccessible(DirectionalSegment directionalSegment, boolean effectivelyAccessible) {
+    private static boolean isInaccessible(DirectionalSegment directionalSegment, boolean effectivelyAccessible) {
         if (effectivelyAccessible) {
-            return directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment();
+            return !directionalSegment.getRoadSectionFragment().isAccessibleFromAnySegment();
         } else {
-            return directionalSegment.isAccessible();
+            return !directionalSegment.isAccessible();
         }
     }
 
