@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
@@ -25,6 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -32,7 +34,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class AccessibilityReasonServiceTest {
 
     private AccessibilityReasonService accessibilityReasonService;
-
 
     @Mock
     private RoutingAlgorithmFactory routingAlgorithmFactory;
@@ -71,7 +72,10 @@ class AccessibilityReasonServiceTest {
     private Map<Integer, DirectionalSegment> directionalSegmentsById;
 
     @Mock
-    private RoadSection roadSection;
+    private DirectionalSegment directionalSegment;
+
+    @Mock
+    private RoadSectionFragment roadSectionFragment;
 
     @BeforeEach
     void setUp() {
@@ -81,10 +85,19 @@ class AccessibilityReasonServiceTest {
                 pathsToReasonsMapper);
     }
 
-    @Test
-    void calculateReasons() {
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            true,
+            false
+            """)
+    void calculateReasons(boolean effectivelyAccessible) {
 
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
+        if (effectivelyAccessible) {
+            when(directionalSegment.getRoadSectionFragment()).thenReturn(roadSectionFragment);
+            when(roadSectionFragment.isAccessibleFromAnySegment()).thenReturn(false);
+        } else {
+            when(directionalSegment.isAccessible()).thenReturn(false);
+        }
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
@@ -94,8 +107,8 @@ class AccessibilityReasonServiceTest {
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
-                        && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                        && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getAlgorithm().equals("dijkstrabi")
+                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);
@@ -107,9 +120,9 @@ class AccessibilityReasonServiceTest {
                 accessibilityReasonGroups);
 
         List<AccessibilityReasonGroup> actualAccessibilityReasonGroups = accessibilityReasonService.calculateReasons(
-                Optional.of(roadSection),
+                Optional.of(directionalSegment),
                 directionalSegmentsById,
-                accessibilityNetwork);
+                accessibilityNetwork, effectivelyAccessible);
 
         assertThat(actualAccessibilityReasonGroups).isEqualTo(accessibilityReasonGroups);
     }
@@ -117,12 +130,12 @@ class AccessibilityReasonServiceTest {
     @Test
     void calculateReasons_toRoadSection_isNotRestrictedInAnyDirection() {
 
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(false);
+        when(directionalSegment.isAccessible()).thenReturn(true);
 
         List<AccessibilityReasonGroup> actualAccessibilityReasonGroups = accessibilityReasonService.calculateReasons(
-                Optional.of(roadSection),
+                Optional.of(directionalSegment),
                 directionalSegmentsById,
-                accessibilityNetwork);
+                accessibilityNetwork, false);
 
         assertThat(actualAccessibilityReasonGroups).isEmpty();
     }
@@ -130,7 +143,7 @@ class AccessibilityReasonServiceTest {
     @Test
     void calculateReasons_noRoutes() {
 
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
+        when(directionalSegment.isAccessible()).thenReturn(false);
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
@@ -140,8 +153,8 @@ class AccessibilityReasonServiceTest {
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
-                        && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                        && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getAlgorithm().equals("dijkstrabi")
+                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);
@@ -149,9 +162,9 @@ class AccessibilityReasonServiceTest {
         when(routeRoutingAlgorithm.calcPaths(1, 2)).thenReturn(List.of());
 
         List<AccessibilityReasonGroup> actualAccessibilityReasonGroups = accessibilityReasonService.calculateReasons(
-                Optional.of(roadSection),
+                Optional.of(directionalSegment),
                 directionalSegmentsById,
-                accessibilityNetwork);
+                accessibilityNetwork, false);
 
         assertThat(actualAccessibilityReasonGroups).isEmpty();
     }
@@ -159,7 +172,7 @@ class AccessibilityReasonServiceTest {
     @Test
     void calculateReasons_pathNotFound() {
 
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
+        when(directionalSegment.isAccessible()).thenReturn(false);
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
@@ -169,8 +182,8 @@ class AccessibilityReasonServiceTest {
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
-                        && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                        && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getAlgorithm().equals("dijkstrabi")
+                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);
@@ -179,26 +192,49 @@ class AccessibilityReasonServiceTest {
         when(path.isFound()).thenReturn(false);
 
         List<AccessibilityReasonGroup> actualAccessibilityReasonGroups = accessibilityReasonService.calculateReasons(
-                Optional.of(roadSection),
+                Optional.of(directionalSegment),
                 directionalSegmentsById,
-                accessibilityNetwork);
+                accessibilityNetwork, false);
 
         assertThat(actualAccessibilityReasonGroups).isEmpty();
     }
 
-    @Test
-    void calculateReasons_noDestination() {
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            true
+            false
+            """)
+    void calculateReasons_noDestination(boolean effectivelyAccessible) {
 
-        when(roadSection.isRestrictedInAnyDirection()).thenReturn(true);
+
+        if (effectivelyAccessible) {
+            when(directionalSegment.getRoadSectionFragment()).thenReturn(roadSectionFragment);
+            when(roadSectionFragment.isAccessibleFromAnySegment()).thenReturn(false);
+        } else {
+            when(directionalSegment.isAccessible()).thenReturn(false);
+        }
 
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(null);
 
         List<AccessibilityReasonGroup> actualAccessibilityReasonGroups = accessibilityReasonService.calculateReasons(
-                Optional.of(roadSection),
+                Optional.of(directionalSegment),
                 directionalSegmentsById,
-                accessibilityNetwork);
+                accessibilityNetwork, effectivelyAccessible);
 
+        assertThat(actualAccessibilityReasonGroups).isEmpty();
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            true
+            false
+            """)
+    void calculateReasons_noToDirectionalSegment(boolean effectivelyAccessible) {
+        List<AccessibilityReasonGroup> actualAccessibilityReasonGroups = accessibilityReasonService.calculateReasons(
+                Optional.empty(),
+                directionalSegmentsById,
+                accessibilityNetwork, effectivelyAccessible);
         assertThat(actualAccessibilityReasonGroups).isEmpty();
     }
 }

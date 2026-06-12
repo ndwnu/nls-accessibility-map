@@ -42,7 +42,6 @@ nu:
             queues:
               updateRoadSection:
                 messages-to-skip:
-                  id-skippable-message
                 listener-auto-start: true
 logging:
   level:

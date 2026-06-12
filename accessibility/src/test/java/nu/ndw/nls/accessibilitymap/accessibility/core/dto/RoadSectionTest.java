@@ -56,10 +56,21 @@ class RoadSectionTest extends ValidationTest {
                 .restrictions(new Restrictions(List.of(mock(Restriction.class))))
                 .build();
 
-        directionalSegmentBackward = directionalSegmentForward.withDirection(Direction.BACKWARD);
+        directionalSegmentBackward = directionalSegmentForward.withDirection(Direction.BACKWARD)
+                .withId(4);
 
         roadSectionFragment.setForwardSegment(directionalSegmentForward);
         roadSectionFragment.setBackwardSegment(directionalSegmentBackward);
+    }
+
+    @Test
+    void findDirectionalSegmentById() {
+        assertThat(roadSection.findDirectionalSegmentById(3)).contains(directionalSegmentForward);
+    }
+
+    @Test
+    void findDirectionalSegmentById_notFound() {
+        assertThat(roadSection.findDirectionalSegmentById(5)).isEmpty();
     }
 
     @Test

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
@@ -71,6 +72,13 @@ public final class RoadSection {
 
         return roadSectionFragments.stream()
                 .allMatch(RoadSectionFragment::isBackwardAccessible);
+    }
+
+    public Optional<DirectionalSegment> findDirectionalSegmentById(int id) {
+        return roadSectionFragments.stream()
+                .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
+                .filter(directionalSegment -> directionalSegment.getId() == id)
+                .findFirst();
     }
 
     public List<LineString> getForwardGeometries() {
