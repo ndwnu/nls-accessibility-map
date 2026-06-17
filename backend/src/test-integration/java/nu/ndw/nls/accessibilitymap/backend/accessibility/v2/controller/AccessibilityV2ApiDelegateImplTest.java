@@ -45,6 +45,7 @@ import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
+import nu.ndw.nls.springboot.tracing.TracingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -63,7 +64,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(controllers = AccessibilityV2ApiController.class)
-@Import({SecurityConfig.class, AccessibilityV2ApiDelegateImpl.class})
+@Import({SecurityConfig.class, AccessibilityV2ApiDelegateImpl.class, TracingService.class, ClockService.class,})
 @TestPropertySource(properties = {
         "nls.keycloak.url=http://localhost",
 })
