@@ -13,30 +13,18 @@ public class MaximumWeightMapper {
     public Maximum map(Set<VehicleCategory> vehicleCategories, Double maximumWeightInKg) {
 
         Maximum vehicleCategoriesMaximumWeightInKg = map(vehicleCategories);
-        if (Objects.isNull(vehicleCategoriesMaximumWeightInKg) && Objects.isNull(maximumWeightInKg)) {
-            return Maximum.noMaximum();
-        }
-
-        if (Objects.nonNull(vehicleCategoriesMaximumWeightInKg) && Objects.isNull(maximumWeightInKg)) {
+        if (Objects.isNull(maximumWeightInKg) || vehicleCategoriesMaximumWeightInKg.isExceeding(maximumWeightInKg, false)) {
             return vehicleCategoriesMaximumWeightInKg;
         }
 
-        if (Objects.isNull(vehicleCategoriesMaximumWeightInKg)) {
-            return Maximum.builder().value(maximumWeightInKg).build();
-        }
-
-        if (vehicleCategoriesMaximumWeightInKg.value() <= maximumWeightInKg) {
-            return vehicleCategoriesMaximumWeightInKg;
-        } else {
-            return Maximum.builder().value(maximumWeightInKg).build();
-        }
+        return Maximum.builder().value(maximumWeightInKg).build();
     }
 
     @SuppressWarnings("java:S109")
     public Maximum map(Set<VehicleCategory> vehicleCategories) {
 
         if (Objects.isNull(vehicleCategories)) {
-            return null;
+            return Maximum.noMaximum();
         }
 
         return vehicleCategories.stream()
@@ -54,6 +42,6 @@ public class MaximumWeightMapper {
                 .map(minimalWeightRestriction -> Maximum.builder()
                         .value(minimalWeightRestriction)
                         .build())
-                .orElse(null);
+                .orElse(Maximum.noMaximum());
     }
 }
