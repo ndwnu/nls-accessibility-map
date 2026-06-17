@@ -48,11 +48,7 @@ class MaximumWeightMapperTest {
 
         Maximum maximumWeight = maximumWeightMapper.map(vehicleCategory, maximumWeightInKg);
 
-        if(Objects.nonNull(expectedValue)) {
-            assertThat(maximumWeight).isEqualTo(Maximum.builder().value(expectedValue).build());
-        } else {
-            assertThat(maximumWeight).isNull();
-        }
+        assertThat(maximumWeight).isEqualTo(Maximum.builder().value(expectedValue).build());
     }
 
     @ParameterizedTest
@@ -71,7 +67,7 @@ class MaximumWeightMapperTest {
             if (Objects.nonNull(expectedMaxWeight)) {
                 assertThat(maximumWeight).isEqualTo(Maximum.builder().value(expectedMaxWeight).build());
             } else {
-                assertThat(maximumWeight).isNull();
+                assertThat(maximumWeight).isEqualTo(Maximum.noMaximum());
             }
         }
     }
