@@ -29,9 +29,14 @@ class MaximumWeightMapperTest {
         maximumWeightMapper = new MaximumWeightMapper();
     }
 
+    @Test
+    void map_noVehicleCategoryNoMaximumWeightInKgNoMaximum() {
+        Maximum maximumWeight = maximumWeightMapper.map(null, null);
+        assertThat(maximumWeight).isEqualTo(Maximum.noMaximum());
+    }
+
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
-            null, null, null
             M_2, null, 5000
             null, 123, 123
             M_2, 123, 123

@@ -14,7 +14,7 @@ public class MaximumWeightMapper {
 
         Maximum vehicleCategoriesMaximumWeightInKg = map(vehicleCategories);
         if (Objects.isNull(vehicleCategoriesMaximumWeightInKg) && Objects.isNull(maximumWeightInKg)) {
-            return null;
+            return Maximum.noMaximum();
         }
 
         if (Objects.nonNull(vehicleCategoriesMaximumWeightInKg) && Objects.isNull(maximumWeightInKg)) {
