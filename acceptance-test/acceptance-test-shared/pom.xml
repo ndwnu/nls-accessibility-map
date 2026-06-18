@@ -169,7 +169,7 @@
               <apiPackage>${openapi-generator.base.classpath}.api.v2</apiPackage>
               <modelPackage>${openapi-generator.base.classpath}.model.v2</modelPackage>
               <configOptions>
-                <useSpringBoot3>true</useSpringBoot3>
+                <useSpringBoot4>true</useSpringBoot4>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
 
                 <!-- Whether to generate the server files using the delegate pattern -->
