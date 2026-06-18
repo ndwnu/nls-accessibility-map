@@ -45,6 +45,8 @@ class MaximumTest {
 
     @Test
     void noMaximum_shouldNeverBeExceeded() {
+        assertThat(Maximum.noMaximum().isExceeding(Double.MIN_VALUE, true)).isFalse();
+        assertThat(Maximum.noMaximum().isExceeding(Double.MIN_VALUE, false)).isFalse();
         assertThat(Maximum.noMaximum().isExceeding(Double.MAX_VALUE, true)).isFalse();
         assertThat(Maximum.noMaximum().isExceeding(Double.MAX_VALUE, false)).isFalse();
         assertThat(Maximum.noMaximum().isExceeding(null, true)).isFalse();
