@@ -11,6 +11,6 @@ class MunicipalityNotFoundExceptionTest {
 
         MunicipalityNotFoundException exception = new MunicipalityNotFoundException("message");
 
-        assertThat(exception.getMessage()).isEqualTo("message");
+        assertThat(exception.getReason()).isEqualTo("message");
     }
 }

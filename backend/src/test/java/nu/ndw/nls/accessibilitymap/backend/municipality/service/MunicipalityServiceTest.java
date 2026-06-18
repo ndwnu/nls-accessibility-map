@@ -47,7 +47,7 @@ class MunicipalityServiceTest {
         MunicipalityNotFoundException municipalityNotFoundException = assertThrows(MunicipalityNotFoundException.class,
                 () -> municipalityService.getMunicipalityById(MUNICIPALITY_ID_STRING));
 
-        assertThat(municipalityNotFoundException.getMessage())
+        assertThat(municipalityNotFoundException.getReason())
                 .isEqualTo("The municipality with id: %s cannot be found".formatted(MUNICIPALITY_ID_STRING));
     }
 

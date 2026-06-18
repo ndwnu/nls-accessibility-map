@@ -1,153 +1,88 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Path;
-import java.util.Set;
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
-import nu.ndw.nls.accessibilitymap.backend.exception.IncompleteArgumentsException;
-import nu.ndw.nls.accessibilitymap.backend.exception.MunicipalityNotFoundException;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.APIErrorJson;
-import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
-import org.hibernate.validator.internal.engine.path.NodeImpl;
-import org.hibernate.validator.internal.engine.path.PathImpl;
+import nu.ndw.nls.springboot.api.error.dto.ErrorResponse;
+import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
+import org.assertj.core.api.InstanceOfAssertFactories;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ExtendWith(MockitoExtension.class)
 class ErrorHandlerControllerTest {
 
-    private static final String MESSAGE = "test";
-
-    private static final String PATH = "path";
-
-    @InjectMocks
     private ErrorHandlerController errorHandlerController;
 
-    @Mock
-    private ConstraintViolationException constraintViolationException;
-
-    @Mock
-    private ConstraintViolation<?> constraintViolation;
-
-    @Mock
-    private PathImpl pathImpl;
-
-    @Mock
-    private NodeImpl nodeImpl;
-
-    @Mock
-    private Path path;
-
-    @Mock
-    private MethodArgumentTypeMismatchException methodArgumentTypeMismatchException;
-
-    @Test
-    void handleInternalServerErrorException() {
-        ResponseEntity<APIErrorJson> response = errorHandlerController.handleInternalServerErrorException(new Exception(MESSAGE));
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo("An internal server error occurred while processing this request");
+    @BeforeEach
+    void setUp() {
+        errorHandlerController = new ErrorHandlerController(null, null);
     }
 
     @Test
-    void handleBadRequestException() {
-        IncompleteArgumentsException exception = new IncompleteArgumentsException("IncompleteArgumentsException");
-        ResponseEntity<APIErrorJson> response = errorHandlerController.handleBadRequestException(
-                new IncompleteArgumentsException("IncompleteArgumentsException"));
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo(exception.getMessage());
-    }
+    void createResponseEntity() {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .requestId("1")
+                .timestamp(OffsetDateTime.now())
+                .method("GET")
+                .status(400)
+                .path("/")
+                .errors(List.of(
+                        nu.ndw.nls.springboot.api.error.dto.Error.builder()
+                                .id(UUID.randomUUID())
+                                .title("Argument 'version' with value 'null' is not valid")
+                                .description("must not be null")
+                                .build(),
+                        nu.ndw.nls.springboot.api.error.dto.Error.builder()
+                                .id(UUID.randomUUID())
+                                .title("Argument 'otherField' with value '' is not valid")
+                                .description("must not be blank")
+                                .build()))
+                .build();
 
-    @Test
-    void handleApiException() {
-        ApiException exception = new ApiException(UUID.randomUUID(), HttpStatus.BAD_REQUEST, "Title", "Message");
-        ResponseEntity<APIErrorJson> response = errorHandlerController.handleApiException(exception);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo("Message");
+        ResponseEntity<Object> responseEntity = errorHandlerController.createResponseEntity(errorResponse);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getBody()).isNotNull()
+                .asInstanceOf(InstanceOfAssertFactories.type(APIErrorJson.class))
+                .extracting(APIErrorJson::getMessage)
+                .isEqualTo("Argument 'version' with value 'null' is not valid: must not be null; "
+                           + "Argument 'otherField' with value '' is not valid: must not be blank");
     }
 
     @Test
     void handleAccessibilityLocationNotFoundException() {
-        AccessibilityLocationNotFoundException exception = new AccessibilityLocationNotFoundException(new Location(1, 2, null));
-        ResponseEntity<APIErrorJson> response = errorHandlerController.handleApiException(exception);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo("Location could not be resolved at 1.0, 2.0. Please try a different"
-                                                              + " location that is closer to actual road sections in the network.");
+        ResponseEntity<APIErrorJson> responseEntity = errorHandlerController.handleAccessibilityLocationNotFoundException(
+                new AccessibilityLocationNotFoundException(Location.builder()
+                        .latitude(1.1)
+                        .longitude(2.2)
+                        .build()));
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getBody()).isNotNull()
+                .asInstanceOf(InstanceOfAssertFactories.type(APIErrorJson.class))
+                .extracting(APIErrorJson::getMessage)
+                .isEqualTo("Location could not be resolved at 1.1, 2.2. Please try a different location that"
+                           + " is closer to actual road sections in the network.");
     }
 
     @Test
-    void handleAccessDenied() {
-        ResponseEntity<Void> response = errorHandlerController.handleAccessDenied(new AccessDeniedException(MESSAGE));
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    }
+    void handleAccessibilityLocationNotFoundException_exceptionHandlerAnnotation() {
 
-    @Test
-    void handleMethodArgumentTypeMismatchException() {
-        when(methodArgumentTypeMismatchException.getName()).thenReturn("name");
-        when(methodArgumentTypeMismatchException.getValue()).thenReturn("value");
-        ResponseEntity<APIErrorJson> response = errorHandlerController.handleMethodArgumentTypeMismatchException(
-                methodArgumentTypeMismatchException);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo("Argument 'name' with value 'value' is not valid");
-    }
-
-    @Test
-    void handleNotFoundException() {
-        ResponseEntity<APIErrorJson> response = errorHandlerController.handleNotFoundException(new MunicipalityNotFoundException(MESSAGE));
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo(MESSAGE);
-    }
-
-    @Test
-    void handleConstraintViolationException_pathNull() {
-        when(constraintViolation.getPropertyPath()).thenReturn(null);
-
-        handleConstraintViolationException("");
-    }
-
-    @Test
-    void handleConstraintViolationException_pathImplLeafNodeAsString() {
-        when(constraintViolation.getPropertyPath()).thenReturn(pathImpl);
-        when(pathImpl.getLeafNode()).thenReturn(nodeImpl);
-        when(nodeImpl.asString()).thenReturn(PATH);
-
-        handleConstraintViolationException(PATH);
-    }
-
-    @Test
-    void handleConstraintViolationException_pathToString() {
-        when(constraintViolation.getPropertyPath()).thenReturn(path);
-        when(path.toString()).thenReturn(PATH);
-
-        handleConstraintViolationException(PATH);
-    }
-
-    private void handleConstraintViolationException(String path) {
-        when(constraintViolationException.getConstraintViolations()).thenReturn(Set.of(constraintViolation));
-        when(constraintViolation.getMessage()).thenReturn(MESSAGE);
-
-        ResponseEntity<APIErrorJson> response = errorHandlerController.handleConstraintViolationException(constraintViolationException);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getMessage()).isEqualTo("'" + path + "' " + MESSAGE);
+        AnnotationUtil.methodContainsAnnotation(
+                errorHandlerController.getClass(),
+                ExceptionHandler.class,
+                "handleAccessibilityLocationNotFoundException",
+                annotation -> assertThat(annotation.value()).containsExactly(AccessibilityLocationNotFoundException.class));
     }
 }
