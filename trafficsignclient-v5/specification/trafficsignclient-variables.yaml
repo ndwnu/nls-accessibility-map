@@ -1,0 +1,4 @@
+groupPropertyPrefix: 'nu.ndw.nls.api'
+projectPropertyPrefix: 'nu.ndw.nls.accessibilitymap.trafficsignclient'
+useFeignClientBaseUrl: true
+useFeignClientPath: true
