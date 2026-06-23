@@ -14,8 +14,7 @@ COPY --chown=java:java --from=builder /builder/extracted/dependencies/ ./
 COPY --chown=java:java --from=builder /builder/extracted/spring-boot-loader/ ./
 COPY --chown=java:java --from=builder /builder/extracted/snapshot-dependencies/ ./
 COPY --chown=java:java --from=builder /builder/extracted/application/ ./
-COPY --chown=java:java logback-deploy.xml logback-deploy.xml
 
 USER 1000
 
-ENTRYPOINT ["java", "-jar", "application.jar", "$COMMAND"]
+ENTRYPOINT ["sh", "-c", "java -jar application.jar"]
