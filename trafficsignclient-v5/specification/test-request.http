@@ -1,3 +1,8 @@
 ### GET v5
 GET https://wegkenmerken.ndw.nu/api/rest/static-road-data/traffic-signs/v5/current-state?countyCode=GM0307&rvvCode=C10&rvvCode=C11&rvvCode=C12&rvvCode=C17&rvvCode=C18&rvvCode=C19&rvvCode=C20&rvvCode=C21&rvvCode=C22c&rvvCode=C6&rvvCode=C7&rvvCode=C7a&rvvCode=C7b&rvvCode=C8&rvvCode=C9&status=PLACED
 Accept: */*
+
+###
+
+GET https://wegkenmerken.ndw.nu/api/rest/static-road-data/traffic-signs/v5/current-state?rvvCode=C22a&status=PLACED
+Accept: */*

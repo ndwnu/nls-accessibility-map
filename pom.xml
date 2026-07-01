@@ -20,7 +20,6 @@
   <modules>
     <module>specification</module>
     <module>accessibility</module>
-    <module>trafficsignclient</module>
     <module>trafficsignclient-v5</module>
     <module>backend</module>
     <module>job</module>

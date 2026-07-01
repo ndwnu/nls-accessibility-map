@@ -30,7 +30,7 @@
     </dependency>
     <dependency>
       <groupId>nu.ndw.nls.accessibilitymap</groupId>
-      <artifactId>trafficsignclient</artifactId>
+      <artifactId>trafficsignclient-v5</artifactId>
       <version>${project.parent.version}</version>
     </dependency>
     <dependency>

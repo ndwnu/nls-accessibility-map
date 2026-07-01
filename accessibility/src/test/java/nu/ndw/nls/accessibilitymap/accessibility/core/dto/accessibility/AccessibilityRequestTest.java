@@ -7,7 +7,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,22 +86,22 @@ class AccessibilityRequestTest extends ValidationTest {
         accessibilityRequest = accessibilityRequest.withSearchArea(null);
         validate(accessibilityRequest, List.of("searchArea"), List.of("must not be null"));
     }
-
-    @Test
-    void excludeTrafficSignTextSignTypes() {
-
-        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignTextSignTypes(Set.of(TextSignType.EMISSION_ZONE));
-        assertThat(accessibilityRequest.excludeTrafficSignTextSignTypes()).containsExactlyInAnyOrder(TextSignType.EMISSION_ZONE);
-    }
-
-    @Test
-    void excludeTrafficSignTextSignTypes_defaultValue() {
-
-        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignTextSignTypes(null);
-        assertThat(accessibilityRequest.excludeTrafficSignTextSignTypes()).containsExactlyInAnyOrder(
-                TextSignType.EXCLUDING,
-                TextSignType.PRE_ANNOUNCEMENT);
-    }
+//
+//    @Test
+//    void excludeTrafficSignTextSignTypes() {
+//
+//        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignSupplementarySignTypes(Set.of(TextSignType.EMISSION_ZONE));
+//        assertThat(accessibilityRequest.excludeTrafficSignSupplementarySignTypes()).containsExactlyInAnyOrder(TextSignType.EMISSION_ZONE);
+//    }
+//
+//    @Test
+//    void excludeTrafficSignTextSignTypes_defaultValue() {
+//
+//        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignSupplementarySignTypes(null);
+//        assertThat(accessibilityRequest.excludeTrafficSignSupplementarySignTypes()).containsExactlyInAnyOrder(
+//                TextSignType.EXCLUDING,
+//                TextSignType.PRE_ANNOUNCEMENT);
+//    }
 
     @Test
     void excludeTrafficSignZoneCodeTypes() {

@@ -5,6 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -64,14 +65,6 @@ class TrafficSignClientIT {
     private TrafficSignService trafficSignService;
 
     @Test
-    void lala() {
-
-        TrafficSignData trafficSigns = trafficSignService.getTrafficSigns(rvvCodes);
-
-
-    }
-
-    @Test
     void getTrafficSigns_correctRvvAndZoneCodes() {
 
         stubFor(get(urlEqualTo("/api/rest/static-road-data/traffic-signs/v5/current-state%s%s%s".formatted(
@@ -82,113 +75,86 @@ class TrafficSignClientIT {
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(buildFeatureCollectionResponse())));
 
-        TrafficSignData trafficSigns = trafficSignService.getTrafficSigns(rvvCodes);
-        assertNotNull(trafficSigns);
-        assertEquals(2, trafficSigns.trafficSignsByRoadSectionId().size());
-        assertEquals(LocalDate.of(2025, 2, 1), trafficSigns.maxNwbReferenceDate());
+        List<TrafficSignGeoJsonDtoV5Json> trafficSigns = trafficSignService.getTrafficSigns(rvvCodes);
+        assertThat(trafficSigns)
+                .hasSize(2)
+                .satisfies(trafficSignGeoJsonDtoV5Jsons -> {
+                    TrafficSignGeoJsonDtoV5Json first = trafficSignGeoJsonDtoV5Jsons.getFirst();
 
-        LocalDate expectedDate = LocalDate.now();
-        LocalDate actualDate = trafficSigns.maxEventTimestamp().atZone(ZoneId.of("UTC")).toLocalDate();
-        assertEquals(expectedDate, actualDate);
+                    assertThat(first.getProperties().getRvvCode()).isEqualTo("C6");
+                    assertThat(first.getProperties().getCountyCode()).isEqualTo("GM0307");
 
-        List<TrafficSignGeoJsonDtoV5Json> trafficSignsByRoadSectionA = trafficSigns.trafficSignsByRoadSectionId().get(ROAD_SECTION_A);
-        assertEquals(1, trafficSignsByRoadSectionA.size());
+                    TrafficSignGeoJsonDtoV5Json second = trafficSignGeoJsonDtoV5Jsons.getLast();
 
-        TrafficSignGeoJsonDtoV5Json firstTrafficSignRoadSectionA = trafficSignsByRoadSectionA.getFirst();
-        assertEquals("C6", firstTrafficSignRoadSectionA.getProperties().getRvvCode());
-        assertEquals("GM0307", firstTrafficSignRoadSectionA.getProperties().getCountyCode());
-
-        List<TrafficSignGeoJsonDtoV5Json> trafficSignsByRoadSectionB = trafficSigns.trafficSignsByRoadSectionId().get(ROAD_SECTION_B);
-
-        TrafficSignGeoJsonDtoV5Json firstTrafficSignRoadSectionB = trafficSignsByRoadSectionB.getFirst();
-        assertEquals("C7", firstTrafficSignRoadSectionB.getProperties().getRvvCode());
-        assertEquals(ZoneCodeEnum.END, firstTrafficSignRoadSectionB.getProperties().getZoneCode());
+                    assertThat(second.getProperties().getRvvCode()).isEqualTo("C7");
+                    assertThat(second.getProperties().getZoneCode()).isEqualTo(ZoneCodeEnum.END);
+                });
     }
 
     private String buildFeatureCollectionResponse() {
         return """
                 {
-                   "type": "FeatureCollection",
-                   "features": [
-                     {
-                       "type": "Feature",
-                       "id": "3722943b-ba5d-48de-8d34-3d8a4725073b",
-                       "geometry": {
-                         "type": "Point",
-                         "coordinates": [
-                           5.3844458417424,
-                           52.157320095061
-                         ]
-                       },
-                       "properties": {
-                         "externalReferences": [],
-                         "rvvCode": "C6",
-                         "zoneCode": "END",
-                         "supplementarySigns": [],
-                         "placement": "ALONG",
-                         "bearing": 0,
-                         "roadSectionId": 600364496,
-                         "countyCode": "GM0307",
-                         "countyName": "Amersfoort",
-                         "nwbVersion": "2025-01-01",
-                         "privateProperty": false,
-                         "missingRoadSection": false,
-                         "conditions": {
-                           "restrictions": {
-                             "vehicleType": [
-                               "car",
-                               "truck",
-                               "bus",
-                               "caravan",
-                               "trailer",
-                               "deliveryVan",
-                               "taxi",
-                               "agriculturalVehicle"
-                             ]
-                           },
-                           "exemptions": []
-                         },
-                         "registeredOn": "2021-04-16",
-                         "lastModifiedOn": "2025-01-29"
-                       }
-                     },
-                     {
-                       "type": "Feature",
-                       "id": "a8b0fd05-5c2a-474e-8aae-ab4bd25d362f",
-                       "geometry": {
-                         "type": "Point",
-                         "coordinates": [
-                           5.3944671175717,
-                           52.155548118045
-                         ]
-                       },
-                       "properties": {
-                         "externalReferences": [],
-                         "rvvCode": "C7",
-                         "zoneCode": "END",
-                         "supplementarySigns": [],
-                         "placement": "ALONG",
-                         "bearing": 90,
-                         "roadSectionId": 310326144,
-                         "countyCode": "GM0307",
-                         "countyName": "Amersfoort",
-                         "nwbVersion": "2025-02-01",
-                         "privateProperty": false,
-                         "missingRoadSection": false,
-                         "conditions": {
-                           "restrictions": {
-                             "vehicleType": [
-                               "truck"
-                             ]
-                           },
-                           "exemptions": []
-                         },
-                         "registeredOn": "2020-04-18",
-                         "lastModifiedOn": "2025-01-29"
-                       }
-                     }
-                   ]
-                 }
+                  "type": "FeatureCollection",
+                  "features": [
+                    {
+                      "type": "Feature",
+                      "id": "3722943b-ba5d-48de-8d34-3d8a4725073b",
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          5.3844458417424,
+                          52.157320095061
+                        ]
+                      },
+                      "properties": {
+                        "externalReferences": [],
+                        "rvvCode": "C6",
+                        "zoneCode": "END",
+                        "supplementarySigns": [],
+                        "placement": "ALONG",
+                        "bearing": 0,
+                        "roadSectionId": 600364496,
+                        "countyCode": "GM0307",
+                        "countyName": "Amersfoort",
+                        "nwbVersion": "2024-03-01",
+                        "privateProperty": false,
+                        "missingRoadSection": false,
+                        "fraction": 0.27672621607780457,
+                        "drivingDirection": "FORTH",
+                        "registeredOn": "2021-04-16",
+                        "lastModifiedOn": "2024-02-19"
+                      }
+                    },
+                    {
+                      "type": "Feature",
+                      "id": "a8b0fd05-5c2a-474e-8aae-ab4bd25d362f",
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          5.3944671175717,
+                          52.155548118045
+                        ]
+                      },
+                      "properties": {
+                        "externalReferences": [],
+                        "rvvCode": "C7",
+                        "zoneCode": "END",
+                        "supplementarySigns": [],
+                        "placement": "ALONG",
+                        "bearing": 90,
+                        "roadSectionId": 310326144,
+                        "countyCode": "GM0307",
+                        "countyName": "Amersfoort",
+                        "nwbVersion": "2024-03-01",
+                        "privateProperty": false,
+                        "missingRoadSection": false,
+                        "fraction": 0.19860178232192993,
+                        "registeredOn": "2020-04-18",
+                        "lastModifiedOn": "2024-02-19"
+                      }
+                    }
+                  ]
+                }
                 """;
     }
 

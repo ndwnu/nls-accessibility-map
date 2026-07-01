@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto;
 
 import lombok.Builder;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
 
 @Builder
 public record TrafficSign(
@@ -11,7 +11,7 @@ public record TrafficSign(
         double fraction,
         String rvvCode,
         String blackCode,
-        DirectionType directionType,
+        DrivingDirectionEnum directionType,
         String windowTime,
         String regulationOrderId) {
 

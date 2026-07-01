@@ -12,7 +12,7 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.services.MapGeneratorService;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
+//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
@@ -98,10 +98,10 @@ public class GenerateCommand implements Callable<Integer> {
                             .maxSearchDistanceInMeters(searchRadiusInMeters)
                             .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                             .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
-                            .trafficSignTextSignTypes(
-                                    includeOnlyTimeWindowedSigns
-                                            ? Set.of(TextSignType.TIME_PERIOD)
-                                            : null)
+//                            .trafficSignSupplementarySignTypes(
+//                                    includeOnlyTimeWindowedSigns
+//                                            ? Set.of(TextSignType.TIME_PERIOD)
+//                                            : null)
                             .build())
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)
                     .publishEvents(publishEvents)

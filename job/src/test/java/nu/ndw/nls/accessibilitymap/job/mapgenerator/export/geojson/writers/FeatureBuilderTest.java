@@ -19,8 +19,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
+//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
+//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
@@ -282,14 +282,14 @@ class FeatureBuilderTest {
         });
 
         Restrictions restrictions = new Restrictions(Set.of(TrafficSign.builder()
-                .textSigns(List.of(
-                        TextSign.builder()
-                                .type(TextSignType.EXCLUDING)
-                                .build(),
-                        TextSign.builder()
-                                .type(TextSignType.TIME_PERIOD)
-                                .text("window")
-                                .build()))
+//                .supplementarySigns(List.of(
+//                        TextSign.builder()
+//                                .type(TextSignType.EXCLUDING)
+//                                .build(),
+//                        TextSign.builder()
+//                                .type(TextSignType.TIME_PERIOD)
+//                                .text("window")
+//                                .build()))
                 .build()));
         Set<Long> relevantRoadSectionIds = Set.of(1L, 2L, 3L);
 
@@ -433,16 +433,16 @@ class FeatureBuilderTest {
                                 : new Restrictions(List.of(TrafficSign.builder()
                                         .externalId(EXTERNAL_ID)
                                         .trafficSignType(TrafficSignType.C7)
-                                        .textSigns(List.of(
-                                                TextSign.builder()
-                                                        .text("window1")
-                                                        .type(TextSignType.TIME_PERIOD)
-                                                        .build(),
-                                                TextSign.builder()
-                                                        .text("window2")
-                                                        .type(TextSignType.TIME_PERIOD)
-                                                        .build()
-                                        ))
+//                                        .supplementarySigns(List.of(
+//                                                TextSign.builder()
+//                                                        .text("window1")
+//                                                        .type(TextSignType.TIME_PERIOD)
+//                                                        .build(),
+//                                                TextSign.builder()
+//                                                        .text("window2")
+//                                                        .type(TextSignType.TIME_PERIOD)
+//                                                        .build()
+//                                        ))
                                         .longitude(2.3)
                                         .latitude(4.5)
                                         .direction(Direction.FORWARD)
@@ -462,16 +462,16 @@ class FeatureBuilderTest {
                                 ? null
                                 : new Restrictions(List.of(TrafficSign.builder()
                                         .trafficSignType(TrafficSignType.C7)
-                                        .textSigns(List.of(
-                                                TextSign.builder()
-                                                        .text("window1")
-                                                        .type(TextSignType.TIME_PERIOD)
-                                                        .build(),
-                                                TextSign.builder()
-                                                        .text("window2")
-                                                        .type(TextSignType.TIME_PERIOD)
-                                                        .build()
-                                        ))
+//                                        .supplementarySigns(List.of(
+//                                                TextSign.builder()
+//                                                        .text("window1")
+//                                                        .type(TextSignType.TIME_PERIOD)
+//                                                        .build(),
+//                                                TextSign.builder()
+//                                                        .text("window2")
+//                                                        .type(TextSignType.TIME_PERIOD)
+//                                                        .build()
+//                                        ))
                                         .longitude(3.3)
                                         .latitude(5.5)
                                         .direction(Direction.BACKWARD)

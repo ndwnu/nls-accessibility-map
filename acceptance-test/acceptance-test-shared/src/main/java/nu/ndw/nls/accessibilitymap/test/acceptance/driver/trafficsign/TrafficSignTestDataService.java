@@ -7,12 +7,9 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
-import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
-import nu.ndw.nls.geojson.geometry.model.PointJson;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.PointJson;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.springboot.test.graph.dto.Edge;
 import nu.ndw.nls.springboot.test.graph.dto.Graph;
@@ -29,7 +26,7 @@ public class TrafficSignTestDataService {
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @SuppressWarnings("java:S109")
-    public TrafficSignGeoJsonDto createTrafficSignGeoJsonDto(TrafficSign trafficSign) {
+    public TrafficSignGeoJsonDtoV5Json createTrafficSignGeoJsonDto(TrafficSign trafficSign) {
 
         Graph graph = graphHopperDriver.getLastBuiltGraph();
         List<Edge> edges = graph.findEdgesBetweenNodes(trafficSign.startNodeId(), trafficSign.endNodeId());
@@ -50,21 +47,21 @@ public class TrafficSignTestDataService {
         }
         Coordinate endCoordinate = fractionLineString.getCoordinates()[1];
 
-        return TrafficSignGeoJsonDto.builder()
+        return TrafficSignGeoJsonDtoV5Json.builder()
                 .id(UUID.fromString(trafficSign.id()))
-                .geometry(new PointJson().type(TypeEnum.POINT).coordinates(List.of(endCoordinate.x, endCoordinate.y)))
-                .properties(TrafficSignPropertiesDto.builder()
+                .geometry(new PointJson().type("point").coordinates(List.of(endCoordinate.x, endCoordinate.y)))
+                .properties(TrafficSignPropertiesDtoV5Json.builder()
                         .fraction(trafficSign.fraction())
                         .blackCode(trafficSign.blackCode())
                         .rvvCode(trafficSign.rvvCode())
                         .drivingDirection(trafficSign.directionType())
-                        .roadSectionId(edge.getId())
-                        .trafficOrderUrl(trafficSign.regulationOrderId())
-                        .textSigns(List.of(
-                                TextSign.builder()
-                                        .type(TextSignType.TIME_PERIOD)
-                                        .text(trafficSign.windowTime())
-                                        .build()))
+                        .roadSectionId(Math.toIntExact(edge.getId()))
+                        .trafficOrderId(trafficSign.regulationOrderId())
+//                        .textSigns(List.of(
+//                                TextSign.builder()
+//                                        .type(TextSignType.TIME_PERIOD)
+//                                        .text(trafficSign.windowTime())
+//                                        .build()))
                         .build())
                 .build();
     }

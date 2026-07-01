@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -22,9 +21,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.TrafficSignBuilder;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -55,22 +53,19 @@ class RebuildTrafficSignCacheCommandTest {
     private TrafficSignBuilder trafficSignBuilder;
 
     @Mock
-    private TrafficSignData trafficSignData;
+    private TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json1;
 
     @Mock
-    private TrafficSignGeoJsonDto trafficSignGeoJsonDto1;
+    private TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json2;
 
     @Mock
-    private TrafficSignGeoJsonDto trafficSignGeoJsonDto2;
+    private TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json3;
 
     @Mock
-    private TrafficSignGeoJsonDto trafficSignGeoJsonDto3;
+    private TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json4;
 
     @Mock
-    private TrafficSignGeoJsonDto trafficSignGeoJsonDto4;
-
-    @Mock
-    private TrafficSignPropertiesDto trafficSignPropertiesDto1;
+    private TrafficSignPropertiesDtoV5Json trafficSignPropertiesDtoV5Json1;
 
     @Mock
     private TrafficSign trafficSign1;
@@ -105,7 +100,7 @@ class RebuildTrafficSignCacheCommandTest {
 
     @Test
     void call_networkData_null() {
-        long roadSectionId = 123L;
+        int roadSectionId = 123;
         when(networkDataService.get())
                 .thenReturn(null)
                 .thenReturn(networkData);
@@ -113,12 +108,11 @@ class RebuildTrafficSignCacheCommandTest {
                 Arrays.stream(TrafficSignType.values())
                         .map(TrafficSignType::getRvvCode)
                         .collect(Collectors.toSet())))
-                .thenReturn(trafficSignData);
-        when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(1L, List.of(trafficSignGeoJsonDto1)));
-        when(trafficSignPropertiesDto1.getRoadSectionId()).thenReturn(roadSectionId);
-        when(trafficSignGeoJsonDto1.getProperties()).thenReturn(trafficSignPropertiesDto1);
+                .thenReturn(List.of(trafficSignGeoJsonDtoV5Json1));
+        when(trafficSignPropertiesDtoV5Json1.getRoadSectionId()).thenReturn(roadSectionId);
+        when(trafficSignGeoJsonDtoV5Json1.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
         when(networkData.findGeometryInNetwork(roadSectionId)).thenReturn(Optional.of(lineString));
-        mockMapperCalls(trafficSignGeoJsonDto1, trafficSign1);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, trafficSign1);
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
@@ -128,18 +122,17 @@ class RebuildTrafficSignCacheCommandTest {
 
     @Test
     void call_grapHopperNetwork_null() {
-        long roadSectionId = 123L;
+        int roadSectionId = 123;
         when(networkDataService.get()).thenReturn(networkData);
         when(trafficSignService.getTrafficSigns(
                 Arrays.stream(TrafficSignType.values())
                         .map(TrafficSignType::getRvvCode)
                         .collect(Collectors.toSet())))
-                .thenReturn(trafficSignData);
-        when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(1L, List.of(trafficSignGeoJsonDto1)));
-        when(trafficSignPropertiesDto1.getRoadSectionId()).thenReturn(roadSectionId);
-        when(trafficSignGeoJsonDto1.getProperties()).thenReturn(trafficSignPropertiesDto1);
+                .thenReturn(List.of(trafficSignGeoJsonDtoV5Json1));
+        when(trafficSignPropertiesDtoV5Json1.getRoadSectionId()).thenReturn(roadSectionId);
+        when(trafficSignGeoJsonDtoV5Json1.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
         when(networkData.findGeometryInNetwork(roadSectionId)).thenReturn(Optional.of(lineString));
-        mockMapperCalls(trafficSignGeoJsonDto1, trafficSign1);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, trafficSign1);
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
@@ -152,26 +145,22 @@ class RebuildTrafficSignCacheCommandTest {
 
         when(trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
                 .map(TrafficSignType::getRvvCode)
-                .collect(Collectors.toSet()))).thenReturn(trafficSignData);
-        when(trafficSignPropertiesDto1.getRoadSectionId()).thenReturn(123L);
-        when(trafficSignGeoJsonDto1.getProperties()).thenReturn(trafficSignPropertiesDto1);
-        when(trafficSignGeoJsonDto2.getProperties()).thenReturn(trafficSignPropertiesDto1);
-        when(trafficSignGeoJsonDto3.getProperties()).thenReturn(trafficSignPropertiesDto1);
-        when(trafficSignGeoJsonDto4.getProperties()).thenReturn(trafficSignPropertiesDto1);
-        when(trafficSignData.trafficSignsByRoadSectionId()).thenReturn(Map.of(
-                1L, List.of(trafficSignGeoJsonDto1, trafficSignGeoJsonDto2),
-                2L, List.of(trafficSignGeoJsonDto3),
-                3L, List.of(trafficSignGeoJsonDto4)
-        ));
+                .collect(Collectors.toSet()))).thenReturn(List.of(trafficSignGeoJsonDtoV5Json1, trafficSignGeoJsonDtoV5Json2,
+                trafficSignGeoJsonDtoV5Json3, trafficSignGeoJsonDtoV5Json4));
+        when(trafficSignPropertiesDtoV5Json1.getRoadSectionId()).thenReturn(123);
+        when(trafficSignGeoJsonDtoV5Json1.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
+        when(trafficSignGeoJsonDtoV5Json2.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
+        when(trafficSignGeoJsonDtoV5Json3.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
+        when(trafficSignGeoJsonDtoV5Json4.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
         NetworkGraphHopper networkGraphHopper = Mockito.mock(NetworkGraphHopper.class);
         when(networkDataService.get()).thenReturn(networkData);
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkData.findGeometryInNetwork(123L)).thenReturn(Optional.of(lineString));
 
-        mockMapperCalls(trafficSignGeoJsonDto1, trafficSign1);
-        mockMapperCalls(trafficSignGeoJsonDto2, trafficSign2);
-        mockMapperCalls(trafficSignGeoJsonDto3, trafficSign3);
-        mockMapperCalls(trafficSignGeoJsonDto4, null);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, trafficSign1);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json2, trafficSign2);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json3, trafficSign3);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json4, null);
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
@@ -202,11 +191,11 @@ class RebuildTrafficSignCacheCommandTest {
         );
     }
 
-    private void mockMapperCalls(TrafficSignGeoJsonDto trafficSignGeoJsonDto, TrafficSign trafficSign) {
+    private void mockMapperCalls(TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json, TrafficSign trafficSign) {
 
         when(trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 eq(lineString),
-                eq(trafficSignGeoJsonDto),
+                eq(trafficSignGeoJsonDtoV5Json),
                 any(AtomicInteger.class))
         ).thenReturn(Optional.ofNullable(trafficSign));
     }

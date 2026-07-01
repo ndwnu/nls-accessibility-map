@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.command;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -15,8 +15,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.TrafficSignBuilder;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.services.TrafficSignService;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -44,13 +43,12 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
 
             AtomicInteger idSupplier = new AtomicInteger();
 
-            TrafficSignData externalTrafficSigns = trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
+            List<TrafficSignGeoJsonDtoV5Json> externalTrafficSigns =
+                    trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
                     .map(TrafficSignType::getRvvCode)
                     .collect(Collectors.toSet()));
             TrafficSigns trafficSigns = new TrafficSigns(
-                    externalTrafficSigns
-                            .trafficSignsByRoadSectionId().values().stream()
-                            .flatMap(Collection::stream)
+                    externalTrafficSigns.stream()
                             .map(trafficSignGeoJsonDto ->
                                     trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                                             getNwbRoadSectionGeometry(trafficSignGeoJsonDto),
@@ -69,12 +67,18 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
         }
     }
 
-    private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
+    private LineString getNwbRoadSectionGeometry(TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json) {
         NetworkData networkData = networkDataService.get();
         if (Objects.isNull(networkData) || Objects.isNull(networkData.getNetworkGraphHopper())) {
             log.warn("Network graph hopper is not initialized, reading network data");
             networkDataService.read();
         }
-        return networkDataService.get().findGeometryInNetwork(trafficSignGeoJsonDto.getProperties().getRoadSectionId()).orElse(null);
+
+        if (trafficSignGeoJsonDtoV5Json.getProperties() == null ||
+            trafficSignGeoJsonDtoV5Json.getProperties().getRoadSectionId() == null) {
+            return null;
+        }
+
+        return networkDataService.get().findGeometryInNetwork(trafficSignGeoJsonDtoV5Json.getProperties().getRoadSectionId()).orElse(null);
     }
 }

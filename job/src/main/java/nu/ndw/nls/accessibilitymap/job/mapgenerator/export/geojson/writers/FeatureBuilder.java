@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
@@ -19,7 +20,7 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.PolygonGe
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.PolygonProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.RoadSectionProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.TrafficSignProperties;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
+//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
@@ -70,16 +71,16 @@ public class FeatureBuilder {
                         .build())
                 .properties(PolygonProperties.builder()
                         .inAccessibleRoadSectionIds(relevantRoadSectionIds.stream().sorted().toList())
-                        .windowTimes(relevantRestrictions.stream()
-                                //Todo: Add support for other types of restrictions
-                                .filter(TrafficSign.class::isInstance)
-                                .map(TrafficSign.class::cast)
-                                .map(TrafficSign::findFirstTimeWindowedSign)
-                                .flatMap(Optional::stream)
-                                .map(TextSign::text)
-                                .distinct()
-                                .toList()
-                        )
+//                        .windowTimes(relevantRestrictions.stream()
+//                                //Todo: Add support for other types of restrictions
+//                                .filter(TrafficSign.class::isInstance)
+//                                .map(TrafficSign.class::cast)
+//                                .map(TrafficSign::findFirstTimeWindowedSign)
+//                                .flatMap(Optional::stream)
+//                                .map(SupplementarySign::text)
+//                                .distinct()
+//                                .toList()
+//                        )
                         .build())
                 .build();
     }
@@ -193,9 +194,6 @@ public class FeatureBuilder {
                 .direction(trafficSign.direction())
                 .accessible(directionalSegment.isAccessible())
                 .trafficSignType(trafficSign.trafficSignType())
-                .windowTimes(trafficSign.findFirstTimeWindowedSign()
-                        .map(TextSign::text)
-                        .orElse(null))
                 .iconUrl(trafficSign.iconUri())
                 .isTrafficSign(true)
                 .build();

@@ -10,7 +10,6 @@ import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 import org.springframework.validation.annotation.Validated;
 
 @Builder(toBuilder = true)
@@ -29,30 +28,13 @@ public record TrafficSign(
         @NotNull Double networkSnappedLongitude,
         URI iconUri,
         Double blackCode,
-        @NotNull List<TextSign> textSigns,
         ZoneCodeType zoneCodeType,
         String trafficRegulationOrderId,
         @NotNull TransportRestrictions transportRestrictions) implements Restriction {
 
-    public boolean hasTimeWindowedSign() {
-
-        return textSigns
-                .stream()
-                .anyMatch(TextSign::hasWindowTime);
-    }
-
-    public Optional<TextSign> findFirstTimeWindowedSign() {
-
-        return textSigns
-                .stream()
-                .filter(TextSign::hasWindowTime)
-                .findFirst();
-    }
-
     @Override
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
-        return TrafficSignExclusionCalculator.isNotExcluded(this, accessibilityRequest)
-               && TrafficSignRestrictionCalculator.isRestrictive(this, accessibilityRequest);
+        return transportRestrictions.isRestrictive(accessibilityRequest);
     }
 
     @Override
