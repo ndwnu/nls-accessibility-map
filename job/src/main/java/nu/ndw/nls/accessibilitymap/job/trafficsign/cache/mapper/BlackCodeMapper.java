@@ -9,7 +9,7 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.tra
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
@@ -17,25 +17,27 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class BlackCodeMapper {
 
-    public Double map(TrafficSignGeoJsonDto trafficSignGeoJsonDto, TrafficSignType type) {
+    public Double map(TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json, TrafficSignType type) {
 
-        String blackCode = trafficSignGeoJsonDto.getProperties().getBlackCode();
+        String blackCode = trafficSignGeoJsonDtoV5Json.getProperties().getBlackCode();
+
         try {
+
             return Double.parseDouble(blackCode.replace(",", "."));
         } catch (RuntimeException exception) {
             if (!Strings.isEmpty(blackCode)) {
                 log.warn("Unprocessable value {} for traffic sign with id {} and RVV code {} on road section {}",
                         blackCode,
-                        trafficSignGeoJsonDto.getId(),
-                        trafficSignGeoJsonDto.getProperties().getRvvCode(),
-                        trafficSignGeoJsonDto.getProperties().getRoadSectionId(),
+                        trafficSignGeoJsonDtoV5Json.getId(),
+                        trafficSignGeoJsonDtoV5Json.getProperties().getRvvCode(),
+                        trafficSignGeoJsonDtoV5Json.getProperties().getRoadSectionId(),
                         exception);
             }
 
             if (List.of(C17, C18, C19, C20, C21).contains(type)) {
                 throw new IllegalStateException(
                         "Traffic sign with id '%s' is not containing a black code but that is required for type '%s'"
-                                .formatted(trafficSignGeoJsonDto.getId(), type),
+                                .formatted(trafficSignGeoJsonDtoV5Json.getId(), type),
                         exception);
             }
             return null;

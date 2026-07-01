@@ -6,8 +6,8 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import ch.qos.logback.classic.Level;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class BlackCodeMapperTest {
 
     private BlackCodeMapper blackCodeMapper;
 
-    private TrafficSignGeoJsonDto trafficSignGeoJsonDto;
+    private TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDto;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -33,13 +33,16 @@ class BlackCodeMapperTest {
     @BeforeEach
     void setUp() {
 
-        trafficSignGeoJsonDto = TrafficSignGeoJsonDto.builder()
+
+
+        trafficSignGeoJsonDto = TrafficSignGeoJsonDtoV5Json.builder()
                 .id(UUID.randomUUID())
-                .properties(TrafficSignPropertiesDto.builder()
-                        .roadSectionId(123L)
-                        .rvvCode(TrafficSignType.C1.getRvvCode())
-                        .build())
-                .build();
+                .properties(TrafficSignPropertiesDtoV5Json.builder()
+                                .roadSectionId(123)
+                                .rvvCode(TrafficSignType.C1.getRvvCode())
+                                .build())
+                        .build();
+
 
         blackCodeMapper = new BlackCodeMapper();
     }

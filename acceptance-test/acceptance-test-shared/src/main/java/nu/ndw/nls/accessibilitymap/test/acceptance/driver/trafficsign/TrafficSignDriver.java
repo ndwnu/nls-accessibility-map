@@ -19,8 +19,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.PointTrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonFeatureCollectionDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
@@ -51,7 +50,7 @@ public class TrafficSignDriver implements StateManagement {
     private final JobDriver jobDriver;
 
     @SuppressWarnings("java:S3658")
-    public void stubTrafficSignRequest(List<TrafficSignGeoJsonDto> trafficSigns) {
+    public void stubTrafficSignRequest(List<TrafficSignGeoJsonDtoV5Json> trafficSigns) {
 
         writeTrafficSignsGeoJsonToDisk(trafficSigns);
         StringValuePattern[] stringValuePatterns = Arrays.stream(TrafficSignType.values())
@@ -62,7 +61,7 @@ public class TrafficSignDriver implements StateManagement {
         StringValuePattern stringValuePattern = stringValuePatterns.length == 1 ? stringValuePatterns[0] : or(stringValuePatterns);
         stubFor(
                 get(urlPathMatching(
-                        "/api/rest/static-road-data/traffic-signs/v4/current-state"))
+                        "/api/rest/static-road-data/traffic-signs/v5/current-state"))
                         .withQueryParam("status", equalTo("PLACED"))
                         .withQueryParam("rvvCode", stringValuePattern)
                         .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_JSON_VALUE))
@@ -70,15 +69,12 @@ public class TrafficSignDriver implements StateManagement {
                         .willReturn(aResponse()
                                 .withStatus(HttpStatus.OK.value())
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(jsonMapper.writeValueAsString(
-                                        TrafficSignGeoJsonFeatureCollectionDto.builder()
-                                                .features(trafficSigns)
-                                                .build()))));
+                                .withBody(jsonMapper.writeValueAsString(trafficSigns))));
 
     }
 
     @SuppressWarnings("java:S3658")
-    private void writeTrafficSignsGeoJsonToDisk(List<TrafficSignGeoJsonDto> trafficSigns) {
+    private void writeTrafficSignsGeoJsonToDisk(List<TrafficSignGeoJsonDtoV5Json> trafficSigns) {
 
         AtomicLong idSupplier = new AtomicLong(1);
         FeatureCollection featureCollection = FeatureCollection.builder()

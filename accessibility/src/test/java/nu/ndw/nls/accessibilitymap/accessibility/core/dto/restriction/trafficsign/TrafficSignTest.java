@@ -2,24 +2,32 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsi
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
+//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
+//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class TrafficSignTest extends ValidationTest {
 
     private TrafficSign trafficSign;
+
+    @Mock
+    private TransportRestrictions transportRestrictions;
 
     @BeforeEach
     void setUp() {
@@ -33,92 +41,82 @@ class TrafficSignTest extends ValidationTest {
                 .networkSnappedLatitude(2.0)
                 .networkSnappedLongitude(3.0)
                 .direction(Direction.BACKWARD)
-                .textSigns(List.of())
+//                .supplementarySigns(List.of())
                 .trafficSignType(TrafficSignType.C7)
-                .transportRestrictions(TransportRestrictions.builder().build())
+                .transportRestrictions(transportRestrictions)
                 .build();
     }
-
-    @Test
-    void hasTimeWindowedSign() {
-
-        trafficSign = trafficSign.withTextSigns(List.of(
-                TextSign.builder()
-                        .type(TextSignType.EXCLUDING)
-                        .build(),
-                TextSign.builder()
-                        .type(TextSignType.TIME_PERIOD)
-                        .build()
-        ));
-
-        assertThat(trafficSign.hasTimeWindowedSign()).isTrue();
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = TextSignType.class, mode = Mode.EXCLUDE, names = "TIME_PERIOD")
-    void hasTimeWindowedSign_hasNoTimedWindowSign(TextSignType textSignType) {
-
-        trafficSign = trafficSign.withTextSigns(List.of(
-                TextSign.builder()
-                        .type(textSignType)
-                        .build()
-        ));
-
-        assertThat(trafficSign.hasTimeWindowedSign()).isFalse();
-    }
-
-    @Test
-    void findFirstTimeWindowedSign() {
-
-        trafficSign = trafficSign.withTextSigns(List.of(
-                TextSign.builder()
-                        .type(TextSignType.TIME_PERIOD)
-                        .text("1")
-                        .build(),
-                TextSign.builder()
-                        .type(TextSignType.TIME_PERIOD)
-                        .text("2")
-                        .build()
-        ));
-
-        assertThat(trafficSign.findFirstTimeWindowedSign().get().text()).isEqualTo("1");
-    }
-
-    @Test
-    void findFirstTimeWindowedSign_nothingFound() {
-
-        trafficSign = trafficSign.withTextSigns(List.of(
-                TextSign.builder()
-                        .type(TextSignType.EXCLUDING)
-                        .text("1")
-                        .build()
-        ));
-
-        assertThat(trafficSign.findFirstTimeWindowedSign()).isEmpty();
-    }
+//
+//    @Test
+//    void hasTimeWindowedSign() {
+//
+//        trafficSign = trafficSign.withSupplementarySigns(List.of(
+//                TextSign.builder()
+//                        .type(TextSignType.EXCLUDING)
+//                        .build(),
+//                TextSign.builder()
+//                        .type(TextSignType.TIME_PERIOD)
+//                        .build()
+//        ));
+//
+//        assertThat(trafficSign.hasTimeWindowedSign()).isTrue();
+//    }
+//
+//    @ParameterizedTest
+//    @EnumSource(value = TextSignType.class, mode = Mode.EXCLUDE, names = "TIME_PERIOD")
+//    void hasTimeWindowedSign_hasNoTimedWindowSign(TextSignType textSignType) {
+//
+//        trafficSign = trafficSign.withSupplementarySigns(List.of(
+//                TextSign.builder()
+//                        .type(textSignType)
+//                        .build()
+//        ));
+//
+//        assertThat(trafficSign.hasTimeWindowedSign()).isFalse();
+//    }
+//
+//    @Test
+//    void findFirstTimeWindowedSign() {
+//
+//        trafficSign = trafficSign.withSupplementarySigns(List.of(
+//                TextSign.builder()
+//                        .type(TextSignType.TIME_PERIOD)
+//                        .text("1")
+//                        .build(),
+//                TextSign.builder()
+//                        .type(TextSignType.TIME_PERIOD)
+//                        .text("2")
+//                        .build()
+//        ));
+//
+//        assertThat(trafficSign.findFirstTimeWindowedSign().get().text()).isEqualTo("1");
+//    }
+//
+//    @Test
+//    void findFirstTimeWindowedSign_nothingFound() {
+//
+//        trafficSign = trafficSign.withSupplementarySigns(List.of(
+//                TextSign.builder()
+//                        .type(TextSignType.EXCLUDING)
+//                        .text("1")
+//                        .build()
+//        ));
+//
+//        assertThat(trafficSign.findFirstTimeWindowedSign()).isEmpty();
+//    }
 
     @ParameterizedTest
     @CsvSource({
-            "true, true, true",
-            "true, false, false",
-            "false, false, false"
+            "true, true",
+            "false, false"
     })
-    void isRestrictive(boolean notExcluded, boolean isRestrictive, boolean expectedResult) {
+    void isRestrictive(boolean isRestrictive, boolean expectedResult) {
 
         AccessibilityRequest accessibilityRequest = mock(AccessibilityRequest.class);
 
-        try (var trafficSignExclusionCalculator = Mockito.mockStatic(TrafficSignExclusionCalculator.class)) {
-            try (var trafficSignRestrictionCalculator = Mockito.mockStatic(TrafficSignRestrictionCalculator.class)) {
-                trafficSignExclusionCalculator.when(() -> TrafficSignExclusionCalculator.isNotExcluded(trafficSign, accessibilityRequest))
-                        .thenReturn(notExcluded);
-                trafficSignRestrictionCalculator.when(() -> TrafficSignRestrictionCalculator.isRestrictive(
-                                trafficSign,
-                                accessibilityRequest))
-                        .thenReturn(isRestrictive);
+        when(transportRestrictions.isRestrictive(accessibilityRequest)).thenReturn(isRestrictive);
+        assertThat(trafficSign.isRestrictive(accessibilityRequest)).isEqualTo(expectedResult);
 
-                assertThat(trafficSign.isRestrictive(accessibilityRequest)).isEqualTo(expectedResult);
-            }
-        }
     }
 
     @Test
@@ -208,15 +206,15 @@ class TrafficSignTest extends ValidationTest {
                 List.of("must not be null"));
     }
 
-    @Test
-    void validate_textSigns_null() {
-
-        trafficSign = trafficSign.withTextSigns(null);
-        validate(
-                trafficSign,
-                List.of("textSigns"),
-                List.of("must not be null"));
-    }
+//    @Test
+//    void validate_textSigns_null() {
+//
+//        trafficSign = trafficSign.withSupplementarySigns(null);
+//        validate(
+//                trafficSign,
+//                List.of("textSigns"),
+//                List.of("must not be null"));
+//    }
 
     @Override
     protected Class<?> getClassToTest() {

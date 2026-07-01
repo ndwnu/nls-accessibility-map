@@ -37,7 +37,7 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.RoadSectionProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.TrafficSignProperties;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
+//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -309,9 +309,9 @@ class GeoJsonRoadSectionWriterTest {
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder()
                         .trafficSignTypes(Set.of(TrafficSignType.C7))
-                        .trafficSignTextSignTypes(
-                                includeOnlyTimeWindowedSigns
-                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
+//                        .trafficSignSupplementarySignTypes(
+//                                includeOnlyTimeWindowedSigns
+//                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
                         .build())
                 .generateConfiguration(generateConfiguration)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))

@@ -225,7 +225,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uri"
             }
           },
           {
@@ -233,7 +234,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uri"
             }
           },
           {
@@ -241,7 +243,8 @@
             "in": "header",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uri"
             }
           }
         ],
@@ -410,7 +413,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uri"
             }
           },
           {
@@ -418,7 +422,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uri"
             }
           }
         ],
@@ -635,17 +640,19 @@
       },
       "Point": {
         "type": "object",
-        "required": ["coordinates"],
         "properties": {
-          "type": {
-            "type": "string"
+          "crs": {
+            "$ref": "#/components/schemas/Crs"
           },
-          "coordinates": {
+          "bbox": {
             "type": "array",
             "items": {
               "type": "number",
               "format": "double"
             }
+          },
+          "coordinates": {
+            "$ref": "#/components/schemas/LngLatAlt"
           }
         }
       },
@@ -797,7 +804,6 @@
       },
       "TrafficSignGeoJsonDtoV5": {
         "type": "object",
-        "required": ["properties", "geometry"],
         "properties": {
           "type": {
             "type": "string"
@@ -880,11 +886,7 @@
             "format": "double"
           },
           "drivingDirection": {
-            "type": "string",
-            "enum": [
-              "BACK",
-              "FORTH"
-            ]
+            "type": "string"
           },
           "conditions": {
             "$ref": "#/components/schemas/ConditionsDtoV5"

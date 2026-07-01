@@ -12,7 +12,7 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.Exporter;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
+//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -79,10 +79,10 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
         StringBuilder exportFileName = new StringBuilder();
 
         exportFileName.append(exportProperties.name().toLowerCase(Locale.US));
-        if (Objects.nonNull(exportProperties.accessibilityRequest().trafficSignTextSignTypes())
-                && exportProperties.accessibilityRequest().trafficSignTextSignTypes().contains(TextSignType.TIME_PERIOD)) {
-            exportFileName.append("WindowTimeSegments");
-        }
+//        if (Objects.nonNull(exportProperties.accessibilityRequest().trafficSignSupplementarySignTypes())
+//                && exportProperties.accessibilityRequest().trafficSignSupplementarySignTypes().contains(TextSignType.TIME_PERIOD)) {
+//            exportFileName.append("WindowTimeSegments");
+//        }
 
         return exportFileName.toString();
     }

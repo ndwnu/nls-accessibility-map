@@ -14,9 +14,9 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.springframework.validation.annotation.Validated;
 
 @Builder
@@ -43,8 +43,8 @@ public record AccessibilityRequest(
         Set<EmissionClass> emissionClasses,
         Set<TransportType> transportTypes,
         Set<TrafficSignType> trafficSignTypes,
-        Set<TextSignType> trafficSignTextSignTypes,
-        Set<TextSignType> excludeTrafficSignTextSignTypes,
+        Set<SupplementarySignType> trafficSignSupplementarySignTypes,
+        Set<SupplementarySignType> excludeTrafficSignSupplementarySignTypes,
         Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes,
         Set<String> excludeRestrictionsWithEmissionZoneIds,
         Set<EmissionZoneType> excludeRestrictionsWithEmissionZoneTypes,
@@ -56,13 +56,16 @@ public record AccessibilityRequest(
 
     public static final BBox BOUNDING_BOX_GLOBE = BBox.fromPoints(-MAX_LATITUDE, -MAX_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
 
-    public @NotEmpty Set<TextSignType> excludeTrafficSignTextSignTypes() {
+    // Er moet altijd een exclusion zijn? @NotEmpty? Niet @NotNull?
+    public @NotEmpty Set<SupplementarySignType> excludeTrafficSignSupplementarySignTypes() {
 
-        if (Objects.nonNull(excludeTrafficSignTextSignTypes)) {
-            return excludeTrafficSignTextSignTypes;
-        } else {
-            return Set.of(TextSignType.EXCLUDING, TextSignType.PRE_ANNOUNCEMENT);
-        }
+        return excludeTrafficSignSupplementarySignTypes;
+
+//        if (Objects.nonNull(excludeTrafficSignSupplementarySignTypes)) {
+//            return excludeTrafficSignSupplementarySignTypes;
+//        } else {
+//            return Set.of(SupplementarySignType.EXCLUDING, SupplementarySignType.PRE_ANNOUNCEMENT);
+//        }
     }
 
     public @NotEmpty Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes() {
