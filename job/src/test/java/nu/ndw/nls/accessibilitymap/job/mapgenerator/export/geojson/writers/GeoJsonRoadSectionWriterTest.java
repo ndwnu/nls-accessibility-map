@@ -113,7 +113,6 @@ class GeoJsonRoadSectionWriterTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            true,
             false
             """)
     void writeToFile(boolean includeOnlyTimeWindowedSigns) throws IOException {

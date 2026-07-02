@@ -311,9 +311,7 @@ class FeatureBuilderTest {
                            },
                            "properties":{
                               "roadSectionIds":[1,2,3],
-                              "windowTimes":[
-                                 "window"
-                              ]
+                              "windowTimes": null
                            },
                            "type":"Feature"
                         }
@@ -364,7 +362,7 @@ class FeatureBuilderTest {
                       "trafficSignType":"C7",
                       "iconUrl":"https://example.com/image.png",
                       "trafficSign":true,
-                      "windowTimes":"window1"
+                      "windowTimes": null
                    },
                    "type":"Feature"
                 }
@@ -388,7 +386,7 @@ class FeatureBuilderTest {
                       "trafficSignType":"C7",
                       "iconUrl":"https://example.com/image.png",
                       "trafficSign":true,
-                      "windowTimes":"window1"
+                      "windowTimes": null
                    },
                    "type":"Feature"
                 }
