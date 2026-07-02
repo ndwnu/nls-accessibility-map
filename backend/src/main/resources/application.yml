@@ -108,3 +108,10 @@ logging:
     nu.ndw.nls: WARN
     nu.ndw.nls.accessibilitymap.accessibility: INFO
     nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer: ERROR
+
+jooq:
+  schema-validation:
+    schema-severity:
+      nwb: ERROR
+    packages-to-scan:
+      - nu.ndw.nls.db.nwb.jooq.generated
