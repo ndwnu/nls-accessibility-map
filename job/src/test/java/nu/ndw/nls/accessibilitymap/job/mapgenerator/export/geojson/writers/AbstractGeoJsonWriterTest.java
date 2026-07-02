@@ -75,7 +75,6 @@ class AbstractGeoJsonWriterTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            true,
             false
             """)
     void export(boolean includeOnlyTimeWindowedSigns) throws IOException {

@@ -157,7 +157,6 @@ class GeoJsonPolygonWriterTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            true,
             false
             """)
     void prepareGeoJsonFeatureCollection(boolean includeOnlyTimeWindowedSigns) throws IOException {

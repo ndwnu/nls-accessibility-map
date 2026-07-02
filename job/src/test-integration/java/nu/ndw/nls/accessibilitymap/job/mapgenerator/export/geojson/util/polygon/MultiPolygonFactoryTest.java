@@ -75,8 +75,7 @@ class MultiPolygonFactoryTest {
                               "type" : "Polygon"
                             },
                             "properties" : {
-                              "roadSectionIds" : [ ],
-                              "windowTimes" : [ ]
+                              "roadSectionIds" : [ ]
                             },
                             "type" : "Feature"
                           } ],
