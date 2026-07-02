@@ -11,6 +11,6 @@ class IncompleteArgumentsExceptionTest {
 
         IncompleteArgumentsException exception = new IncompleteArgumentsException("message");
 
-        assertThat(exception.getMessage()).isEqualTo("message");
+        assertThat(exception.getReason()).isEqualTo("message");
     }
 }
