@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data;
 
 import static org.assertj.core.api.Fail.fail;
 
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
 import tools.jackson.databind.json.JsonMapper;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
@@ -24,7 +25,6 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.NwbVersion;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.springboot.test.graph.dto.Node;
 import org.apache.logging.log4j.util.Strings;
 
@@ -55,7 +55,7 @@ public class DataTypeRegister {
                 .fraction(Double.parseDouble(entry.get("fraction")))
                 .rvvCode(entry.get("rvvCode"))
                 .blackCode(Objects.nonNull(entry.get("blackCode")) ? entry.get("blackCode").toUpperCase(Locale.US) : null)
-                .directionType(DirectionType.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
+                .directionType(DrivingDirectionEnum.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(Objects.nonNull(entry.get("windowTime")) ? entry.get("windowTime") : null)
                 .regulationOrderId(entry.get("regulationOrderId"))
                 .build();

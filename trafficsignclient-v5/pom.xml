@@ -19,11 +19,6 @@
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>client-feign</artifactId>
     </dependency>
-    <!-- breaks streaming rabbit, ambigious Environment bean -->
-    <dependency>
-      <groupId>nu.ndw.nls.springboot</groupId>
-      <artifactId>oauth2-client-credentials</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations-jakarta</artifactId>

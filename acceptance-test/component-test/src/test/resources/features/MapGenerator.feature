@@ -16,6 +16,11 @@ Feature: Map Generator
 
   Scenario: Job generate geojson for window times with multiple traffic signs on one edge
     Given a simple network
+
+    And with traffic sign conditions
+      | name      | vehicleType | conditions |
+      | maxWeight | car         | 1000       |
+
     And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime | id                                   |
       | 5           | 11        | 0.5      | C12     | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |

@@ -9,8 +9,9 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.tra
 
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.Category;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionPropertiesDtoV5Json.CategoryEnum;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class CategoryMapper {
 
     public Category map(CategoryEnum categoryEnum) {
