@@ -127,8 +127,9 @@ nu:
             folder: "./cache/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
-
-
+        trafficsignclient:
+          currentStateControllerV5:
+            url: http://localhost:8888
 resilience4j:
   retry:
     instances:

@@ -2,7 +2,9 @@ package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
 
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionPropertiesDtoV5Json.VehicleTypeEnum;
+import org.springframework.stereotype.Component;
 
+@Component
 public class VehicleToTransportTypeMapper {
 
     public TransportType map(VehicleTypeEnum vehicleTypeEnum) {
