@@ -34,10 +34,7 @@ public class AccessibilityNetwork {
     private final Snap destination;
 
     @NotNull
-    private final Weighting weightingWithRestrictions;
-
-    @NotNull
-    private final Weighting weightingWithOutRestrictions;
+    private final Weighting weighting;
 
 
     @SuppressWarnings("java:S107")
@@ -48,8 +45,7 @@ public class AccessibilityNetwork {
             @NotNull Map<Integer, List<Restriction>> restrictionsByEdgeKey,
             @NotNull Snap from,
             Snap destination,
-            Weighting weightingWithRestrictions,
-            Weighting weightingWithOutRestrictions
+            Weighting weighting
     ) {
         this.networkData = networkData;
         this.queryGraph = queryGraph;
@@ -57,8 +53,7 @@ public class AccessibilityNetwork {
         this.restrictionsByEdgeKey = restrictionsByEdgeKey;
         this.from = from;
         this.destination = destination;
-        this.weightingWithRestrictions = weightingWithRestrictions;
-        this.weightingWithOutRestrictions = weightingWithOutRestrictions;
+        this.weighting = weighting;
     }
 
     @Override

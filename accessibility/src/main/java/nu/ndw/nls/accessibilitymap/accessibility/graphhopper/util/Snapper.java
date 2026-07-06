@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.EdgeAccessHandler.CAR_ACCESSIBLE_ROADS;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;
@@ -13,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.PointMatchService;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
@@ -75,8 +75,10 @@ public class Snapper {
     ) {
         EncodingManager encodingManager = networkData.getNetworkGraphHopper().getEncodingManager();
         int roadSectionId = edgeIteratorState.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-        CarriagewayTypeCode carriagewayTypeCode = networkData.findCarriageWayTypeCodeByRoadSectionId(roadSectionId)
+
+        CarriagewayTypeCode carriagewayTypeCode = networkData.getNwbNetworkData().findAccessibilityNwbRoadSectionById(roadSectionId)
+                .map(AccessibilityNwbRoadSection::carriagewayTypeCode)
                 .orElseThrow(() -> new IllegalStateException("Road section not found for link id: " + roadSectionId));
-        return CAR_ACCESSIBLE_ROADS.contains(carriagewayTypeCode);
+        return IsCarAccessibleUtil.isAccessible(carriagewayTypeCode);
     }
 }

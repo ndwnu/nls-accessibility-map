@@ -3,12 +3,16 @@ package nu.ndw.nls.accessibilitymap.accessibility.nwb.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.With;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import org.hibernate.validator.constraints.Length;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
+@With
+@Builder
 public record AccessibilityNwbRoadSection(
         long roadSectionId,
 
@@ -36,4 +40,16 @@ public record AccessibilityNwbRoadSection(
         @Length(min = 1, max = 1)
         String functionalRoadClass) {
 
+    public AccessibilityNwbRoadSection(AccessibilityNwbRoadSection accessibilityNwbRoadSection) {
+        this(
+                accessibilityNwbRoadSection.roadSectionId(),
+                accessibilityNwbRoadSection.fromNode(),
+                accessibilityNwbRoadSection.toNode(),
+                accessibilityNwbRoadSection.municipalityId(),
+                accessibilityNwbRoadSection.geometry(),
+                accessibilityNwbRoadSection.forwardAccessible(),
+                accessibilityNwbRoadSection.backwardAccessible(),
+                accessibilityNwbRoadSection.carriagewayTypeCode(),
+                accessibilityNwbRoadSection.functionalRoadClass());
+    }
 }

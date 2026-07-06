@@ -25,10 +25,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToGeometryMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
-import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
+import nu.ndw.nls.routingmapmatcher.isochrone.v2.dto.IsochroneLabel;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -60,7 +60,7 @@ class RoadSectionMapperTest {
     private NetworkGraphHopper networkGraphHopper;
 
     @Mock
-    private IsoLabel isoLabel;
+    private IsochroneLabel isoLabel;
 
     @Mock
     private EdgeIteratorState edgeIteratorState;
@@ -84,7 +84,7 @@ class RoadSectionMapperTest {
     private IntEncodedValue intEncodedValue;
 
     @Mock
-    private NwbData nwbData;
+    private NwbNetworkData nwbNetworkData;
 
     @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
@@ -106,7 +106,7 @@ class RoadSectionMapperTest {
             """)
     void map(boolean isReversed) {
 
-        List<IsoLabel> isochroneMatches = List.of(isoLabel);
+        List<IsochroneLabel> isochroneMatches = List.of(isoLabel);
 
         when(isoLabel.getEdge()).thenReturn(2);
         when(isoLabel.getNode()).thenReturn(1);
@@ -117,8 +117,8 @@ class RoadSectionMapperTest {
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(1);
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+        when(nwbNetworkData.findAccessibilityNwbRoadSectionById(1)).thenReturn(Optional.of(accessibilityNwbRoadSection));
         when(accessibilityNwbRoadSection.functionalRoadClass()).thenReturn("2");
 
         when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(isReversed);

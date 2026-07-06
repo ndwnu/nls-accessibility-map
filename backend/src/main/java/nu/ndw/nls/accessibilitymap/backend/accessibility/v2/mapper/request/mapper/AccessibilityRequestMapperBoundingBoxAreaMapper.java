@@ -16,7 +16,7 @@ public class AccessibilityRequestMapperBoundingBoxAreaMapper implements Accessib
 
     private static final double SEARCH_GRID_DISTANCE_FROM_REQUEST_AREA = 10_000.0; // 10KM
 
-    private static final double SEARCH_DISTANCE_MULTIPLIER = 1.5;
+    private static final double SEARCH_DISTANCE_MULTIPLIER = 1.6;
 
     private final GeometryFactory geometryFactory;
 

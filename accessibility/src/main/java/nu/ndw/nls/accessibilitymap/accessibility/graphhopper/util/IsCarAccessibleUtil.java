@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
 
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.AFR;
 import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.BVP;
@@ -30,12 +30,13 @@ import static nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode.WIS;
 import java.util.EnumSet;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 
 @UtilityClass
-public class EdgeAccessHandler {
+public class IsCarAccessibleUtil {
 
-    public static final Set<CarriagewayTypeCode> CAR_ACCESSIBLE_ROADS = EnumSet.of(
+    private static final Set<CarriagewayTypeCode> CAR_ACCESSIBLE_ROADS_CARRIAGEWAY_TYPE_CODES = EnumSet.of(
             PAR,
             PP,
             WIS,
@@ -63,15 +64,17 @@ public class EdgeAccessHandler {
             BVP,
             NRB);
 
-    public static boolean isAccessible(CarriagewayTypeCode carriagewayTypeCode,
-            boolean forwardAccess,
-            boolean backwardAccess,
-            boolean reversed
-    ) {
-        if (!CAR_ACCESSIBLE_ROADS.contains(carriagewayTypeCode)) {
+    public static boolean isAccessible(AccessibilityNwbRoadSection accessibilityNwbRoadSection, boolean traversingInReversedDirection) {
+        if (!isAccessible(accessibilityNwbRoadSection.carriagewayTypeCode())) {
             return false;
         }
 
-        return reversed ? backwardAccess : forwardAccess;
+        return traversingInReversedDirection
+                ? accessibilityNwbRoadSection.backwardAccessible()
+                : accessibilityNwbRoadSection.forwardAccessible();
+    }
+
+    public static boolean isAccessible(CarriagewayTypeCode carriagewayTypeCode) {
+        return CAR_ACCESSIBLE_ROADS_CARRIAGEWAY_TYPE_CODES.contains(carriagewayTypeCode);
     }
 }
