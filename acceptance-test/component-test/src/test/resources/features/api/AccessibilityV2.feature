@@ -2,12 +2,19 @@ Feature: Accessibility V2
 
   Scenario: Get - Vehicle width 2 meters - Destination reachable
     Given a simple network
+
+    And with traffic sign conditions
+      | name | vehicleType                                                         | width | height |
+      | C12  | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |       |        |
+      | C18  |                                                                     | 1.9   |        |
+      | C19  |                                                                     |       | 1.9    |
+
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
-      | 5           | 11        | 0.5      | C12     |           | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
-      | 6           | 1         | 0.9      | C18     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
-      | 3           | 4         | 0.1      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
-      | 3           | 4         | 0.9      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | blackCode | directionType | regulationOrderId | id                                   |
+      | 5           | 11        | 0.5      | C12     | C12          |           | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
+      | 6           | 1         | 0.9      | C18     | C18          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
+      | 3           | 4         | 0.1      | C19     | C19          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
+      | 3           | 4         | 0.9      | C19     | C19          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
     When run TrafficSignUpdateCache
     When request accessibility geojson for truck2MetersWide-destination3-7
     Then we expect accessibility geojson response truck2MetersWide-destination3-7

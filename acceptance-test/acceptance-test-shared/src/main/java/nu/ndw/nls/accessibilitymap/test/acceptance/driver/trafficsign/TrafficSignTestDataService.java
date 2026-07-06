@@ -7,6 +7,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.mappers.ConditionPropertiesDtoV5JsonMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionsDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
@@ -25,6 +26,8 @@ public class TrafficSignTestDataService {
     private final GraphHopperDriver graphHopperDriver;
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
+
+    private final ConditionPropertiesDtoV5JsonMapper conditionPropertiesDtoV5JsonMapper;
 
     @SuppressWarnings("java:S109")
     public TrafficSignGeoJsonDtoV5Json createTrafficSignGeoJsonDto(TrafficSign trafficSign) {
@@ -58,6 +61,13 @@ public class TrafficSignTestDataService {
                         .drivingDirection(trafficSign.directionType())
                         .roadSectionId(Math.toIntExact(edge.getId()))
                         .trafficOrderId(trafficSign.regulationOrderId())
+                        .conditions(ConditionsDtoV5Json.builder()
+                                .restrictions(conditionPropertiesDtoV5JsonMapper.map(trafficSign.restrictions()))
+                                .exemptions(trafficSign.exemptions()
+                                        .stream()
+                                        .map(conditionPropertiesDtoV5JsonMapper::map)
+                                        .toList())
+                                .build())
 //                        .textSigns(List.of(
 //                                TextSign.builder()
 //                                        .type(TextSignType.TIME_PERIOD)

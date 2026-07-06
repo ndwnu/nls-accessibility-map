@@ -12,6 +12,11 @@ public class TransportRestrictionMapper {
     private final TransportConditionsMapper transportConditionsMapper;
 
     public TransportRestrictions map(ConditionsDtoV5Json conditionsDtoV5Json) {
+        if (conditionsDtoV5Json.getRestrictions() == null) {
+            return TransportRestrictions.builder()
+                    .build();
+        }
+
         return TransportRestrictions.builder()
                 .restrictions(transportConditionsMapper.map(conditionsDtoV5Json.getRestrictions()))
                 .exemptions(conditionsDtoV5Json.getExemptions().stream().map(transportConditionsMapper::map).toList())
