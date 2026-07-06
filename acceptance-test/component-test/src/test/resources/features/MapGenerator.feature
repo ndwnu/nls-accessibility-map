@@ -18,15 +18,16 @@ Feature: Map Generator
     Given a simple network
 
     And with traffic sign conditions
-      | name      | vehicleType | conditions |
-      | maxWeight | car         | 1000       |
+      | name | vehicleType                                                         |
+      | C12  | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |
+      | C7   | truck                                                               |
 
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime | id                                   |
-      | 5           | 11        | 0.5      | C12     | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
-      | 2           | 8         | 0.5      | C12     | BACK          | window 2   | 00000000-0000-4000-0000-000000000002 |
-      | 5           | 11        | 0.5      | C7      | FORTH         | window 3   | 00000000-0000-4000-0000-000000000003 |
-      | 2           | 8         | 0.5      | C7      | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | directionType | windowTime | id                                   |
+      | 5           | 11        | 0.5      | C12     | C12          | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
+      | 2           | 8         | 0.5      | C12     | C12          | BACK          | window 2   | 00000000-0000-4000-0000-000000000002 |
+      | 5           | 11        | 0.5      | C7      | C7           | FORTH         | window 3   | 00000000-0000-4000-0000-000000000003 |
+      | 2           | 8         | 0.5      | C7      | C7           | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
     When run TrafficSignUpdateCache
     And  run MapGenerationJob with configuration
       | exportName                 | startNodeId | trafficSignTypes | exportTypes                           | includeOnlyWindowSigns | publishEvents | polygonMaxDistanceBetweenPoints |

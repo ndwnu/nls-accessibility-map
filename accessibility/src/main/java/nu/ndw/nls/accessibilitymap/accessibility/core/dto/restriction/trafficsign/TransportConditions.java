@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
+import org.apache.commons.collections4.CollectionUtils;
 
 @Builder
 public record TransportConditions(
@@ -53,7 +54,7 @@ public record TransportConditions(
             activeRestrictions.add(buildEmissionRestriction());
         }
 
-        if (Objects.nonNull(transportTypes) && Objects.nonNull(accessibilityRequest.transportTypes())) {
+        if (CollectionUtils.isNotEmpty(transportTypes) && Objects.nonNull(accessibilityRequest.transportTypes())) {
             activeRestrictions.add(containsTransportType());
         }
 

@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionPropertiesDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionPropertiesDtoV5Json.CategoryEnum;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,16 +26,24 @@ public class TransportConditionsMapper {
     private final CategoryMapper categoryMapper;
 
     public TransportConditions map(ConditionPropertiesDtoV5Json conditionPropertiesDtoV5Json) {
-        Set<TransportType> transportTypes = conditionPropertiesDtoV5Json.getVehicleType()
-                .stream()
-                .map(vehicleToTransportTypeMapper::map)
-                .collect(Collectors.toSet());
+        Set<TransportType> transportTypes;
+
+        if (CollectionUtils.isEmpty(conditionPropertiesDtoV5Json.getVehicleType())) {
+            transportTypes = Collections.emptySet();
+        } else {
+            transportTypes = conditionPropertiesDtoV5Json.getVehicleType()
+                    .stream()
+                    .map(vehicleToTransportTypeMapper::map)
+                    .collect(Collectors.toSet());
+        }
 
         return TransportConditions.builder()
                 .transportTypes(transportTypes)
                 .category(mapToCategories(conditionPropertiesDtoV5Json.getCategory()))
                 .timeValidity(conditionPropertiesDtoV5Json.getTimeValidity())
-                .emissionClass(conditionPropertiesDtoV5Json.getEmissionClass())
+                .emissionClass(conditionPropertiesDtoV5Json.getEmissionClass() == null
+                        ? 0
+                        : conditionPropertiesDtoV5Json.getEmissionClass())
                 .fuelType(conditionPropertiesDtoV5Json.getFuelType())
                 .vehicleAxleLoadInKg(mapMaximum(conditionPropertiesDtoV5Json.getAxleWeight(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
                 .vehicleHeightInCm(mapMaximum(conditionPropertiesDtoV5Json.getHeight(), MULTIPLIER_FROM_METERS_TO_CM))
@@ -44,6 +54,10 @@ public class TransportConditionsMapper {
     }
 
     private Set<Category> mapToCategories(Set<CategoryEnum> categoryEnums) {
+        if (CollectionUtils.isEmpty(categoryEnums)) {
+            return Collections.emptySet();
+        }
+
         return categoryEnums.stream()
                 .map(categoryMapper::map)
                 .collect(Collectors.toSet());

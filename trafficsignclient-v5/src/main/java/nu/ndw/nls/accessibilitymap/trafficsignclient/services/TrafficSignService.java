@@ -29,7 +29,7 @@ public class TrafficSignService {
         ResponseEntity<TrafficSignFeatureCollectionV5Json> currentStateResponseEntity =
                 currentStateControllerV5ApiClient.getCurrentStateDefault(
                     null,
-                    "GM0307",
+                    null,
                     rvvCodes,
                     null,
                     PLACED.getValue(),

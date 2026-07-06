@@ -2,7 +2,12 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data;
 
 import static org.assertj.core.api.Fail.fail;
 
+import java.util.Collections;
+import java.util.List;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignConditionDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSignCondition;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
+import org.apache.commons.lang3.StringUtils;
 import tools.jackson.databind.json.JsonMapper;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
@@ -35,6 +40,8 @@ public class DataTypeRegister {
 
     private final GraphHopperDriver graphHopperDriver;
 
+    private final TrafficSignConditionDriver trafficSignConditionDriver;
+
     @DataTableType
     public @Valid BlockedRoadSection mapBlockedRoadSection(Map<String, String> entry) {
 
@@ -48,12 +55,33 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid TrafficSign mapTrafficSign(Map<String, String> entry) {
 
+        String restrictionsConditionName = entry.get("restrictions");
+        TrafficSignCondition trafficSignRestrictions = trafficSignConditionDriver.getTrafficSignCondition(restrictionsConditionName)
+                .orElseThrow(() -> new IllegalArgumentException("Failed to resolve restriction with name %s".formatted(restrictionsConditionName)));
+
+        String exemptionConditionNames = entry.get("exemptions");
+
+        List<TrafficSignCondition> trafficSignExemptions;
+        if (StringUtils.isBlank(exemptionConditionNames)) {
+            trafficSignExemptions = Collections.emptyList();
+        } else {
+            trafficSignExemptions = Arrays.stream(exemptionConditionNames.split(","))
+                    .map(String::trim)
+                    .map(trafficSignExemptionName -> trafficSignConditionDriver.getTrafficSignCondition(trafficSignExemptionName)
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException("Failed to resolve traffic sign exemption condition with name: %s".formatted(
+                                            trafficSignExemptionName))))
+                    .toList();
+        }
+
         return TrafficSign.builder()
                 .id(entry.get("id"))
                 .startNodeId(Integer.parseInt(entry.get("startNodeId")))
                 .endNodeId(Integer.parseInt(entry.get("endNodeId")))
                 .fraction(Double.parseDouble(entry.get("fraction")))
                 .rvvCode(entry.get("rvvCode"))
+                .restrictions(trafficSignRestrictions)
+                .exemptions(trafficSignExemptions)
                 .blackCode(Objects.nonNull(entry.get("blackCode")) ? entry.get("blackCode").toUpperCase(Locale.US) : null)
                 .directionType(DrivingDirectionEnum.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(Objects.nonNull(entry.get("windowTime")) ? entry.get("windowTime") : null)

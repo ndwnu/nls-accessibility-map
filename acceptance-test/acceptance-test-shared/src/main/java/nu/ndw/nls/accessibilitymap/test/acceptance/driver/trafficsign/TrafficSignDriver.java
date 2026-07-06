@@ -19,6 +19,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.test.acceptance.core.util.FileService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.data.geojson.dto.PointTrafficSignProperties;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.DriverGeneralConfiguration;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignFeatureCollectionV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
@@ -59,17 +60,21 @@ public class TrafficSignDriver implements StateManagement {
                 .collect(Collectors.toCollection(LinkedHashSet::new)).stream()
                 .map(WireMock::equalTo).toArray(StringValuePattern[]::new);
         StringValuePattern stringValuePattern = stringValuePatterns.length == 1 ? stringValuePatterns[0] : or(stringValuePatterns);
+
+        TrafficSignFeatureCollectionV5Json trafficSignFeatureCollectionV5Json = TrafficSignFeatureCollectionV5Json.builder()
+                .features(trafficSigns)
+                .build();
+
         stubFor(
                 get(urlPathMatching(
                         "/api/rest/static-road-data/traffic-signs/v5/current-state"))
-                        .withQueryParam("status", equalTo("PLACED"))
                         .withQueryParam("rvvCode", stringValuePattern)
-                        .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.APPLICATION_JSON_VALUE))
-                        .withHeader(HttpHeaders.CONTENT_TYPE, equalTo("application/geo+json"))
+                        .withQueryParam("status", equalTo("PLACED"))
+                        .withHeader(HttpHeaders.ACCEPT, equalTo(MediaType.ALL_VALUE))
                         .willReturn(aResponse()
                                 .withStatus(HttpStatus.OK.value())
                                 .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .withBody(jsonMapper.writeValueAsString(trafficSigns))));
+                                .withBody(jsonMapper.writeValueAsString(trafficSignFeatureCollectionV5Json))));
 
     }
 
