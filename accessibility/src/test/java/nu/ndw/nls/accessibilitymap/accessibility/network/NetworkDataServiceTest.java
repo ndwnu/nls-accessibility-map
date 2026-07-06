@@ -159,7 +159,7 @@ class NetworkDataServiceTest {
 
         NetworkData updatedNetworkData = networkDataService.get();
 
-        assertThat(updatedNetworkData.getNwbDataUpdates()
+        assertThat(updatedNetworkData.getNwbNetworkData().getNwbDataUpdates()
                 .getAccessibilityNwbRoadSectionUpdates()).isEqualTo(List.of(new AccessibilityNwbRoadSectionUpdate(
                 123,
                 false,
@@ -206,8 +206,8 @@ class NetworkDataServiceTest {
 
         assertThat(networkData).isNotNull();
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
-        assertThat(actualNetworkData.getNwbData()).isEqualTo(nwbData);
-        assertThat(actualNetworkData.getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
+        assertThat(actualNetworkData.getNwbNetworkData().getNwbData()).isEqualTo(nwbData);
+        assertThat(actualNetworkData.getNwbNetworkData().getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
     }
 
     @Test
@@ -245,10 +245,10 @@ class NetworkDataServiceTest {
 
         assertThat(networkData).isNotNull();
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
-        assertThat(networkData.getNwbData().getNwbVersionId()).isEqualTo(nwbData.getNwbVersionId());
-        assertThat(networkData.getNwbData().getAccessibilityNwbRoadSections()).isEqualTo(buildAccessibilityRoadSections());
-        assertThat(networkData.getNwbDataUpdates().getNwbVersionId()).isEqualTo(nwbDataUpdates.getNwbVersionId());
-        assertThat(networkData.getNwbDataUpdates()
+        assertThat(networkData.getNwbNetworkData().getNwbData().getNwbVersionId()).isEqualTo(nwbData.getNwbVersionId());
+        assertThat(networkData.getNwbNetworkData().getNwbData().getAccessibilityNwbRoadSections()).isEqualTo(buildAccessibilityRoadSections());
+        assertThat(networkData.getNwbNetworkData().getNwbDataUpdates().getNwbVersionId()).isEqualTo(nwbDataUpdates.getNwbVersionId());
+        assertThat(networkData.getNwbNetworkData().getNwbDataUpdates()
                 .getAccessibilityNwbRoadSectionUpdates()).isEqualTo(buildAccessibilityRoadSectionUpdates());
         verify(applicationEventPublisher).publishEvent(cacheLoadedEventCaptor.capture());
         assertThat(cacheLoadedEventCaptor.getValue().getType()).isEqualTo(Type.NETWORK_DATA);

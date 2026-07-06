@@ -50,7 +50,8 @@ class AccessibilityNetworkTest {
                 restrictions,
                 restrictionsByEdgeKey,
                 from,
-                destination, weighting, weighting);
+                destination,
+                weighting);
 
         assertThat(accessibilityNetwork)
                 .hasToString(

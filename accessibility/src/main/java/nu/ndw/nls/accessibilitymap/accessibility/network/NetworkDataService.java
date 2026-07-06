@@ -86,10 +86,11 @@ public class NetworkDataService extends Cache<NetworkData> {
                 read();
             }
             NetworkData networkData = get();
-            NwbDataUpdates previousChanges = networkData.getNwbDataUpdates();
+            NwbDataUpdates previousChanges = networkData.getNwbNetworkData().getNwbDataUpdates();
             NwbDataUpdates newNwbDataUpdates = previousChanges.merge(nwbDataUpdates);
-            NetworkData updatedNetworkData = new NetworkData(networkData.getNetworkGraphHopper(),
-                    networkData.getNwbData(),
+            NetworkData updatedNetworkData = new NetworkData(
+                    networkData.getNetworkGraphHopper(),
+                    networkData.getNwbNetworkData().getNwbData(),
                     newNwbDataUpdates);
             log.debug("NwbDataUpdates merged: {}", newNwbDataUpdates);
 
@@ -144,7 +145,8 @@ public class NetworkDataService extends Cache<NetworkData> {
 
         return new NetworkData(
                 graphHopperNetwork,
-                nwbData, nwbDataUpdates);
+                nwbData,
+                nwbDataUpdates);
     }
 
     private NwbDataUpdates readNwbDataUpdates(Path activeVersion) {
@@ -171,11 +173,11 @@ public class NetworkDataService extends Cache<NetworkData> {
     protected void writeData(Path target, NetworkData data) throws IOException {
         Path nwbPath = target.resolve("nwb");
         Path nwbUpdatesPath = target.resolve(NWB_UPDATE_DIRECTORY);
-        jsonWriter.writeJsonToFile(nwbPath, "roadSections.json", data.getNwbData());
-        jsonWriter.writeJsonToFile(nwbUpdatesPath, NWB_CHANGED_ROAD_SECTIONS_FILE, data.getNwbDataUpdates());
+        jsonWriter.writeJsonToFile(nwbPath, "roadSections.json", data.getNwbNetworkData().getNwbData());
+        jsonWriter.writeJsonToFile(nwbUpdatesPath, NWB_CHANGED_ROAD_SECTIONS_FILE, data.getNwbNetworkData().getNwbDataUpdates());
         graphHopperService.save(
                 target.resolve(GRAPH_HOPPER_FOLDER),
-                data.getNwbData());
+                data.getNwbNetworkData().getNwbData());
     }
 
     @Override

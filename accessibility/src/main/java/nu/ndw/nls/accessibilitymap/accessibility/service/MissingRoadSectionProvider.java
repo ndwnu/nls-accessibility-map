@@ -1,7 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.EdgeAccessHandler.CAR_ACCESSIBLE_ROADS;
-
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.graphhopper.util.PointList;
@@ -18,6 +16,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.IsCarAccessibleUtil;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import org.locationtech.jts.geom.LineString;
@@ -43,7 +42,7 @@ public class MissingRoadSectionProvider {
                 .collect(Collectors.groupingBy(RoadSection::getId));
 
         Map<Long, List<AccessibilityNwbRoadSection>> allNwbRoadSectionById = roadSections.stream()
-                .filter(accessibilityNwbRoadSection -> CAR_ACCESSIBLE_ROADS.contains(accessibilityNwbRoadSection.carriagewayTypeCode()))
+                .filter(accessibilityNwbRoadSection -> IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection.carriagewayTypeCode()))
                 .collect(Collectors.groupingBy(AccessibilityNwbRoadSection::roadSectionId));
 
         SetView<Long> missingRoadSectionIds = Sets.difference(allNwbRoadSectionById.keySet(), roadSectionsById.keySet());
@@ -102,9 +101,9 @@ public class MissingRoadSectionProvider {
     private List<AccessibilityNwbRoadSection> getAllRoadSections(NetworkData networkData, Integer municipalityId) {
 
         if (Objects.isNull(municipalityId)) {
-            return networkData.getNwbData().findAllAccessibilityNwbRoadSections();
+            return networkData.getNwbNetworkData().findAllAccessibilityNwbRoadSections();
         } else {
-            return networkData.getNwbData().findAllAccessibilityNwbRoadSectionByMunicipalityId(
+            return networkData.getNwbNetworkData().findAllAccessibilityNwbRoadSectionByMunicipalityId(
                     municipalityId);
         }
     }

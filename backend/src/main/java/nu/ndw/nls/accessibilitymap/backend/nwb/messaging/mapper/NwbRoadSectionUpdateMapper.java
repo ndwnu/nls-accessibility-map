@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectionUpdate;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import org.springframework.stereotype.Component;
@@ -17,8 +16,7 @@ public class NwbRoadSectionUpdateMapper {
     private final NetworkDataService networkDataService;
 
     public AccessibilityNwbRoadSectionUpdate map(NwbRoadSectionUpdate nwbRoadSectionUpdate) {
-        NwbData nwbData = networkDataService.get().getNwbData();
-        return nwbData
+        return networkDataService.get().getNwbNetworkData()
                 .findAccessibilityNwbRoadSectionById(nwbRoadSectionUpdate.roadSectionId())
                 .map(
                         accessibilityNwbRoadSection -> mergeWithExistingRoadSection(nwbRoadSectionUpdate, accessibilityNwbRoadSection)

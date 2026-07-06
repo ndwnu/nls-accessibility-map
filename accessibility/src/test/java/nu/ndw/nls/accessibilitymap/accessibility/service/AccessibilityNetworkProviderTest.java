@@ -8,20 +8,17 @@ import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.BaseGraph;
 import com.graphhopper.storage.index.Snap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.WeightingFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
@@ -71,16 +68,6 @@ class AccessibilityNetworkProviderTest {
     @Mock
     private QueryGraph queryGraph;
 
-    @Mock
-    private WeightingFactory weightingFactory;
-
-
-    @Mock
-    private Weighting weightingWithRestrictions;
-
-    @Mock
-    private Weighting weightingWithoutRestrictions;
-
     private Location from;
 
     private Location destination;
@@ -88,7 +75,7 @@ class AccessibilityNetworkProviderTest {
     @BeforeEach
     void setUp() {
 
-        accessibilityNetworkProvider = new AccessibilityNetworkProvider(queryGraphConfigurer, snapper, weightingFactory);
+        accessibilityNetworkProvider = new AccessibilityNetworkProvider(queryGraphConfigurer, snapper);
 
         from = new Location(52.0, 4.0, null);
         destination = new Location(52.1, 4.1, null);
@@ -121,10 +108,6 @@ class AccessibilityNetworkProviderTest {
         try (var queryGraphMockStatic = Mockito.mockStatic(QueryGraph.class)) {
             queryGraphMockStatic.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
-            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet()))
-                    .thenReturn(weightingWithRestrictions);
-            when(weightingFactory.createWeighting(networkData, queryGraph, Set.of()))
-                    .thenReturn(weightingWithoutRestrictions);
 
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                     networkData,
@@ -138,8 +121,6 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(restrictionsById);
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
-            assertThat(accessibilityNetwork.getWeightingWithRestrictions()).isEqualTo(weightingWithRestrictions);
-            assertThat(accessibilityNetwork.getWeightingWithOutRestrictions()).isEqualTo(weightingWithoutRestrictions);
         }
     }
 
@@ -182,7 +163,6 @@ class AccessibilityNetworkProviderTest {
     void get_noDestination() {
 
         Restrictions restrictions = new Restrictions(List.of(restriction));
-        Map<Integer, List<Restriction>> restrictionsById = Map.of(1, List.of(restriction));
 
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
@@ -203,10 +183,6 @@ class AccessibilityNetworkProviderTest {
         try (var queryGraphMockStatic = Mockito.mockStatic(QueryGraph.class)) {
             queryGraphMockStatic.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
-            when(weightingFactory.createWeighting(networkData, queryGraph, restrictionsById.keySet()))
-                    .thenReturn(weightingWithRestrictions);
-            when(weightingFactory.createWeighting(networkData, queryGraph, Set.of()))
-                    .thenReturn(weightingWithoutRestrictions);
 
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                     networkData,
@@ -220,8 +196,6 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getRestrictionsByEdgeKey()).isEqualTo(Map.of(1, List.of(restriction)));
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
-            assertThat(accessibilityNetwork.getWeightingWithRestrictions()).isEqualTo(weightingWithRestrictions);
-            assertThat(accessibilityNetwork.getWeightingWithOutRestrictions()).isEqualTo(weightingWithoutRestrictions);
         }
     }
 
