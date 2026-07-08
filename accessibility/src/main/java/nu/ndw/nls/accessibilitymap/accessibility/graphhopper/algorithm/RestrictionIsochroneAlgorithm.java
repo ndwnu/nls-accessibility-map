@@ -18,6 +18,7 @@ public class RestrictionIsochroneAlgorithm extends AbstractDijkstraIsochroneAlgo
 
     private final Map<Integer, List<Restriction>> restrictionsByEdgeKey;
 
+    @SuppressWarnings("java:S107")
     public RestrictionIsochroneAlgorithm(
             Graph graph,
             EncodingManager encodingManager,
