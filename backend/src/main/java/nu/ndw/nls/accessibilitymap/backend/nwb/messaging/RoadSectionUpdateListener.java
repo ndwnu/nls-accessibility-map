@@ -57,7 +57,7 @@ public class RoadSectionUpdateListener {
                 new String(message.getBody(), StandardCharsets.UTF_8));
         log.debug("Received road section update: {}", nwbRoadSectionUpdate);
 
-        int currentNwbMapVersion = networkDataService.get().getNwbNetworkData().getNwbData().getNwbVersionId();
+        int currentNwbMapVersion = networkDataService.get().getNwbNetworkData().getNwbVersionId();
         int updateMapVersion = nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion());
 
         log.debug("Update nwb map version: {}", updateMapVersion);
