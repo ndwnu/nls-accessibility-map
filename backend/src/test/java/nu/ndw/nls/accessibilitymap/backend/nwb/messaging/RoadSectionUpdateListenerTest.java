@@ -13,8 +13,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent.Type;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectionUpdate;
 import nu.ndw.nls.accessibilitymap.backend.nwb.messaging.mapper.NwbRoadSectionUpdateMapper;
@@ -78,7 +78,7 @@ class RoadSectionUpdateListenerTest {
     private NetworkData networkData;
 
     @Mock
-    private NwbData nwbData;
+    private NwbNetworkData nwbNetworkData;
 
     @Mock
     private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
@@ -105,8 +105,8 @@ class RoadSectionUpdateListenerTest {
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(NEW_VERSION_DATE);
         when(nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate)).thenReturn(accessibilityNwbRoadSectionUpdate);
         when(networkDataService.get()).thenReturn(networkData);
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.getNwbVersionId()).thenReturn(NWB_VERSION_INT);
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+        when(nwbNetworkData.getNwbVersionId()).thenReturn(NWB_VERSION_INT);
         when(nwbVersionIdMapper.mapFromReferenceDate(NEW_VERSION_DATE)).thenReturn(NWB_VERSION_INT);
 
         roadSectionUpdateListener.handleMessage(message);
@@ -124,8 +124,8 @@ class RoadSectionUpdateListenerTest {
         when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(EARLIER_NWB_VERSION_DATE);
         when(networkDataService.get()).thenReturn(networkData);
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.getNwbVersionId()).thenReturn(NWB_VERSION_INT);
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+        when(nwbNetworkData.getNwbVersionId()).thenReturn(NWB_VERSION_INT);
         when(nwbVersionIdMapper.mapFromReferenceDate(EARLIER_NWB_VERSION_DATE)).thenReturn(EARLIER_NWB_VERSION_INT);
 
         roadSectionUpdateListener.handleMessage(message);
@@ -140,8 +140,8 @@ class RoadSectionUpdateListenerTest {
         when(jsonMapper.readValue(CONTENT_BYTES, NwbRoadSectionUpdate.class)).thenReturn(nwbRoadSectionUpdate);
         when(nwbRoadSectionUpdate.nwbVersion()).thenReturn(LATER_NWB_VERSION_DATE);
         when(networkDataService.get()).thenReturn(networkData);
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.getNwbVersionId()).thenReturn(NWB_VERSION_INT);
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+        when(nwbNetworkData.getNwbVersionId()).thenReturn(NWB_VERSION_INT);
         when(nwbVersionIdMapper.mapFromReferenceDate(LATER_NWB_VERSION_DATE)).thenReturn(LATER_NWB_VERSION_INT);
 
         assertThatThrownBy(() -> roadSectionUpdateListener.handleMessage(message)).isInstanceOf(IllegalArgumentException.class)

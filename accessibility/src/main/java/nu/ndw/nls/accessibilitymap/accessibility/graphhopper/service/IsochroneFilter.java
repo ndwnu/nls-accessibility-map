@@ -11,25 +11,18 @@ import com.graphhopper.util.PointList;
 import java.util.Objects;
 import lombok.NoArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
-import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
+import nu.ndw.nls.routingmapmatcher.isochrone.v2.dto.IsochroneLabel;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class IsochroneFilter {
 
-    private static final int ROOT_ID = -1;
-
-    public static boolean isNotRoot(IsoLabel isoLabel) {
-
-        return isoLabel.getEdge() != ROOT_ID;
-    }
-
-    public static boolean isWithinBoundingBox(QueryGraph queryGraph, IsoLabel isoLabel, IsochroneArguments isochroneArguments) {
+    public static boolean isWithinBoundingBox(QueryGraph queryGraph, IsochroneLabel isochroneLabel, IsochroneArguments isochroneArguments) {
 
         if (Objects.isNull(isochroneArguments.boundingBox())) {
             return true;
         }
 
-        EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(isoLabel.getEdge(), isoLabel.getNode());
+        EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(isochroneLabel.getEdge(), isochroneLabel.getNode());
         PointList points = currentEdge.fetchWayGeometry(FetchMode.TOWER_ONLY);
 
         return isochroneArguments.boundingBox().intersects(points);
@@ -38,7 +31,7 @@ public class IsochroneFilter {
     public static boolean isWithinMunicipality(
             EncodingManager encodingManager,
             QueryGraph queryGraph,
-            IsoLabel isoLabel,
+            IsochroneLabel isochroneLabel,
             IsochroneArguments isochroneArguments) {
 
         if (Objects.isNull(isochroneArguments.municipalityId())) {
@@ -46,9 +39,8 @@ public class IsochroneFilter {
         }
 
         IntEncodedValue municipalityEncodeValueId = encodingManager.getIntEncodedValue(MUNICIPALITY_CODE);
-        EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(isoLabel.getEdge(), isoLabel.getNode());
+        EdgeIteratorState currentEdge = queryGraph.getEdgeIteratorState(isochroneLabel.getEdge(), isochroneLabel.getNode());
 
         return currentEdge.get(municipalityEncodeValueId) == isochroneArguments.municipalityId();
     }
-
 }
