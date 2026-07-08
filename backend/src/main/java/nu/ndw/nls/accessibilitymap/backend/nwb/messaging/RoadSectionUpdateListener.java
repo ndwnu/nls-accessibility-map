@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.cache.CacheLoadedEvent;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectionUpdate;
 import nu.ndw.nls.accessibilitymap.backend.nwb.messaging.mapper.NwbRoadSectionUpdateMapper;
@@ -57,12 +56,13 @@ public class RoadSectionUpdateListener {
         log.debug("Received message raw json: {}",
                 new String(message.getBody(), StandardCharsets.UTF_8));
         log.debug("Received road section update: {}", nwbRoadSectionUpdate);
-        NwbData nwbData = networkDataService.get().getNwbData();
-        int updateMapVersion = nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion());
-        log.debug("Update nwb map version: {}", updateMapVersion);
-        if (updateMapVersionIsDifferentFromActiveMapVersion(updateMapVersion, nwbData.getNwbVersionId())) {
 
-            if (updateMapVersionIsEarlierThanActiveVersion(updateMapVersion, nwbData.getNwbVersionId())) {
+        int currentNwbMapVersion = networkDataService.get().getNwbNetworkData().getNwbVersionId();
+        int updateMapVersion = nwbVersionIdMapper.mapFromReferenceDate(nwbRoadSectionUpdate.nwbVersion());
+
+        log.debug("Update nwb map version: {}", updateMapVersion);
+        if (updateMapVersionIsDifferentFromActiveMapVersion(updateMapVersion, currentNwbMapVersion)) {
+            if (updateMapVersionIsEarlierThanActiveVersion(updateMapVersion, currentNwbMapVersion)) {
                 log.warn("Received road section update for previous map version active: {} message: {}",
                         updateMapVersion,
                         nwbRoadSectionUpdate);

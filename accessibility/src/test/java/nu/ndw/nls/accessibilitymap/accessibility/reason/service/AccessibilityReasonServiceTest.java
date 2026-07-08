@@ -102,7 +102,7 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeightingWithOutRestrictions()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
@@ -148,7 +148,7 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeightingWithOutRestrictions()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
@@ -177,7 +177,7 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeightingWithOutRestrictions()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
