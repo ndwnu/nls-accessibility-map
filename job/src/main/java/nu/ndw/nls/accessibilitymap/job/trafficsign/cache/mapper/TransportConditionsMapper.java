@@ -25,6 +25,10 @@ public class TransportConditionsMapper {
 
     private final CategoryMapper categoryMapper;
 
+    private final EuroClassificationMapper euroClassificationMapper;
+
+    private final FuelTypeMapper fuelTypeMapper;
+
     public TransportConditions map(ConditionPropertiesDtoV5Json conditionPropertiesDtoV5Json) {
         Set<TransportType> transportTypes;
 
@@ -41,10 +45,8 @@ public class TransportConditionsMapper {
                 .transportTypes(transportTypes)
                 .category(mapToCategories(conditionPropertiesDtoV5Json.getCategory()))
                 .timeValidity(conditionPropertiesDtoV5Json.getTimeValidity())
-                .emissionClass(conditionPropertiesDtoV5Json.getEmissionClass() == null
-                        ? 0
-                        : conditionPropertiesDtoV5Json.getEmissionClass())
-                .fuelType(conditionPropertiesDtoV5Json.getFuelType())
+                .emissionClass(euroClassificationMapper.map(conditionPropertiesDtoV5Json.getEmissionClass()))
+                .fuelType(fuelTypeMapper.map(conditionPropertiesDtoV5Json.getFuelType()))
                 .vehicleAxleLoadInKg(mapMaximum(conditionPropertiesDtoV5Json.getAxleWeight(), MULTIPLIER_FROM_TONNE_TO_KILO_GRAM))
                 .vehicleHeightInCm(mapMaximum(conditionPropertiesDtoV5Json.getHeight(), MULTIPLIER_FROM_METERS_TO_CM))
                 .vehicleLengthInCm(mapMaximum(conditionPropertiesDtoV5Json.getLength(), MULTIPLIER_FROM_METERS_TO_CM))

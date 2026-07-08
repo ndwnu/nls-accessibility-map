@@ -68,11 +68,6 @@ public class TrafficSignTestDataService {
                                         .map(conditionPropertiesDtoV5JsonMapper::map)
                                         .toList())
                                 .build())
-//                        .textSigns(List.of(
-//                                TextSign.builder()
-//                                        .type(TextSignType.TIME_PERIOD)
-//                                        .text(trafficSign.windowTime())
-//                                        .build()))
                         .build())
                 .build();
     }

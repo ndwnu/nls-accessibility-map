@@ -34,7 +34,8 @@ public record TrafficSign(
 
     @Override
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
-        return transportRestrictions.isRestrictive(accessibilityRequest);
+        return TrafficSignExclusionCalculator.isNotExcluded(this, accessibilityRequest)
+               && TrafficSignRestrictionCalculator.isRestrictive(this, accessibilityRequest);
     }
 
     @Override

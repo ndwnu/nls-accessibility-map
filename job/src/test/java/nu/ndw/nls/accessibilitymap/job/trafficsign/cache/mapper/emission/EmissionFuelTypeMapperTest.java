@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
+package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.emission;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,14 +13,13 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class FuelTypeMapperTest {
+class EmissionFuelTypeMapperTest {
 
-    private FuelTypeMapper fuelTypeMapper;
+    private EmissionFuelTypeMapper emissionFuelTypeMapper;
 
     @BeforeEach
     void setUp() {
-
-        fuelTypeMapper = new FuelTypeMapper();
+        emissionFuelTypeMapper = new EmissionFuelTypeMapper();
     }
 
     @ParameterizedTest
@@ -30,7 +29,7 @@ class FuelTypeMapperTest {
 
         Set<FuelType> expectedFuelType = mapFuelTypes(fuelType);
 
-        Set<FuelType> fuelTypes = fuelTypeMapper.map(fuelType);
+        Set<FuelType> fuelTypes = emissionFuelTypeMapper.map(fuelType);
 
         assertThat(fuelTypes).isEqualTo(expectedFuelType);
     }

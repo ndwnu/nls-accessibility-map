@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
+package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.emission;
 
 import jakarta.validation.Valid;
 import java.time.OffsetDateTime;
@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneExemption;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.MaximumWeightMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.emission.service.EmissionService;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +26,7 @@ public class EmissionZoneMapper {
 
     private final EmissionClassMapper emissionClassMapper;
 
-    private final FuelTypeMapper fuelTypeMapper;
+    private final EmissionFuelTypeMapper emissionFuelTypeMapper;
 
     private final EmissionZoneTypeMapper emissionZoneTypeMapper;
 
@@ -59,7 +61,7 @@ public class EmissionZoneMapper {
 
         return EmissionZoneRestriction.builder()
                 .id(emissionZone.restriction().id())
-                .fuelTypes(fuelTypeMapper.map(emissionZone.restriction().fuelType()))
+                .fuelTypes(emissionFuelTypeMapper.map(emissionZone.restriction().fuelType()))
                 .transportTypes(
                         transportTypeMapper.map(
                                 emissionZone.restriction().vehicleType(),

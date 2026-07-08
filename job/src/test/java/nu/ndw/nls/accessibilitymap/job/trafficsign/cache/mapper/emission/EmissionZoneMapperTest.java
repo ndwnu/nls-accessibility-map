@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
+package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.emission;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,6 +18,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneExemption;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.MaximumWeightMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.EmissionZoneStatus;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.EuroClassification;
@@ -56,7 +58,7 @@ class EmissionZoneMapperTest {
     private EmissionZoneTypeMapper emissionZoneTypeMapper;
 
     @Mock
-    private FuelTypeMapper fuelTypeMapper;
+    private EmissionFuelTypeMapper emissionFuelTypeMapper;
 
     @Mock
     private TransportTypeMapper transportTypeMapper;
@@ -92,7 +94,7 @@ class EmissionZoneMapperTest {
                         .build())
                 .build();
         emissionZoneMapper = new EmissionZoneMapper(
-                emissionService, maximumWeightMapper, emissionClassMapper, fuelTypeMapper,
+                emissionService, maximumWeightMapper, emissionClassMapper, emissionFuelTypeMapper,
                 emissionZoneTypeMapper, transportTypeMapper);
     }
 
@@ -106,7 +108,7 @@ class EmissionZoneMapperTest {
         when(maximumWeightMapper.map(emissionZoneDto.restriction().vehicleCategories())).thenReturn(Maximum.builder().value(3D).build());
         when(emissionClassMapper.map(emissionZoneDto.exemptions().getFirst().euroClassifications())).thenReturn(
                 Set.of(EmissionClass.EURO_1));
-        when(fuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
+        when(emissionFuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
         when(transportTypeMapper.map(
                 emissionZoneDto.restriction().vehicleType(),
                 emissionZoneDto.restriction().vehicleCategories())).thenReturn(Set.of(TransportType.BUS));
@@ -169,7 +171,7 @@ class EmissionZoneMapperTest {
         when(maximumWeightMapper.map(emissionZoneDto.restriction().vehicleCategories())).thenReturn(Maximum.builder().value(3D).build());
         when(emissionClassMapper.map(emissionZoneDto.exemptions().getFirst().euroClassifications())).thenReturn(
                 Set.of(EmissionClass.EURO_1));
-        when(fuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
+        when(emissionFuelTypeMapper.map(emissionZoneDto.restriction().fuelType())).thenReturn(Set.of(FuelType.DIESEL));
         when(transportTypeMapper.map(
                 emissionZoneDto.restriction().vehicleType(),
                 emissionZoneDto.restriction().vehicleCategories())).thenReturn(Set.of(TransportType.BUS));

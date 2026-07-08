@@ -83,7 +83,8 @@ public class TrafficSignBuilder {
 
             ConditionsDtoV5Json conditions = trafficSignGeoJsonDtoV5Json.getProperties().getConditions();
 
-            TransportRestrictions transportRestrictions = transportRestrictionMapper.map(conditions);
+            TransportRestrictions transportRestrictions = transportRestrictionMapper.map(conditions,
+                    trafficSignGeoJsonDtoV5Json.getProperties().getTrafficOrderId());
 
             return Optional.of(trafficSign.withTransportRestrictions(transportRestrictions));
         } catch (RuntimeException exception) {

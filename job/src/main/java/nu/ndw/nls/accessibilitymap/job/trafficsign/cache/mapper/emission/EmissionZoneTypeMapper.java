@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
+package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.emission;
 
 import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;

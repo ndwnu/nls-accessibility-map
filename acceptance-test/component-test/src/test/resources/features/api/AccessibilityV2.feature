@@ -1,5 +1,27 @@
 Feature: Accessibility V2
 
+
+#And with traffic sign conditions
+#| name | vehicleType                                                         | width | height | length | weight | axleWeight | fuelType | emissionsClass | timeValidity |
+#| C1   | pedestrian                                                          |       |        |        |        |            |          |                |              |
+#| C6   | bus,car,deliveryVan,taxi,agriculturalVehicle,truck                  |       |        |        |        |            |          |                |              |
+#| C7   | truck                                                               |       |        |        |        |            |          |                |              |
+#| C7A  | bus                                                                 |       |        |        |        |            |          |                |              |
+#| C7B  | bus,truck                                                           |       |        |        |        |            |          |                |              |
+#| C10  | trailer                                                             |       |        |        |        |            |          |                |              |
+#| C11  | motorcycle                                                          |       |        |        |        |            |          |                |              |
+#| C12  | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |       |        |        |        |            |          |                |              |
+#| C17  |                                                                     |       |        | 1000   |        |            |          |                |              |
+#| C18  |                                                                     | 1000  |        |        |        |            |          |                |              |
+#| C19  |                                                                     |       | 1000   |        |        |            |          |                |              |
+#| C20  |                                                                     |       |        |        |        | 10000      |          |                |              |
+#| C21  |                                                                     |       |        |        | 10000  |            |          |                |              |
+#| C22  | vehicleWithDangerousGoods?                                          |       |        |        |        |            |          |                |              |
+##      Emissions zones (regulationOrderId
+#| C22A |                                                                     |       |        |        |        |            |          |                |              |
+#| C22C |                                                                     |       |        |        |        |            |          |                |              |
+
+
   Scenario: Get - Vehicle width 2 meters - Destination reachable
     Given a simple network
 
@@ -25,7 +47,6 @@ Feature: Accessibility V2
     When request accessibility geojson for truck2MetersWide-destination3-7-onlyInaccessible
     Then we expect accessibility geojson response truck2MetersWide-destination3-7-onlyInaccessible
 
-
   Scenario: Get - Dynamic restriction on node should only block edges with the same road section id
     Given a simple network
     And with traffic signs
@@ -34,9 +55,10 @@ Feature: Accessibility V2
     When request accessibility geojson for dynamicRestrictionOnNode
     Then we expect accessibility geojson response dynamicRestrictionOnNode
 
-
+  @focus
   Scenario: Get - Vehicle emission class euro 3 - Destination unreachable
     Given a simple network
+
     And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
       | 6           | 1         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000001 |
