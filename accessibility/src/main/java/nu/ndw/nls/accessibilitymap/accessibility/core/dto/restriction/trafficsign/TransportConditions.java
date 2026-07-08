@@ -13,6 +13,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.apache.commons.collections4.CollectionUtils;
 
+
+//@todo: category check?
 @Builder
 public record TransportConditions(
         Set<TransportType> transportTypes, // vehicleType

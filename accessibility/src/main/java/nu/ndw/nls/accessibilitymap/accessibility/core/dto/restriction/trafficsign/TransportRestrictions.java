@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import lombok.Builder;
@@ -7,15 +8,15 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 
 @Builder
-public record TransportRestrictions(TransportConditions restrictions, List<TransportConditions> exemptions, EmissionZone emissionZone) {
+public record TransportRestrictions(@NotNull TransportConditions restrictions, List<TransportConditions> exemptions,
+                                    EmissionZone emissionZone) {
 
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
         if (emissionZoneRestrictionsApply(accessibilityRequest)) {
             return true;
         }
 
-        if (restrictions == null ||
-            !restrictions.conditionsApply(accessibilityRequest)) {
+        if (!restrictions.conditionsApply(accessibilityRequest)) {
             return false;
         }
 

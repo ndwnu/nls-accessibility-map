@@ -30,6 +30,10 @@ public class TransportConditionsMapper {
     private final FuelTypeMapper fuelTypeMapper;
 
     public TransportConditions map(ConditionPropertiesDtoV5Json conditionPropertiesDtoV5Json) {
+        if (conditionPropertiesDtoV5Json == null) {
+            return TransportConditions.builder().build();
+        }
+
         Set<TransportType> transportTypes;
 
         if (CollectionUtils.isEmpty(conditionPropertiesDtoV5Json.getVehicleType())) {
