@@ -18,11 +18,11 @@ public class ExploreLimitRestriction extends ExploreLimit<RestrictionsIsochroneL
     }
 
     @Override
-    protected double getValueForLabel(RestrictionsIsochroneLabel isochroneLabel, EncodingManager encodingManager) {
+    protected double getValueForLabel(RestrictionsIsochroneLabel restrictionsIsochroneLabel, EncodingManager encodingManager) {
 
-        return isochroneLabel.getRestrictions().isEmpty()
-                ? ACCESSIBLE
-                : IN_ACCESSIBLE;
+        return restrictionsIsochroneLabel.hasRestrictions()
+                ? IN_ACCESSIBLE
+                : ACCESSIBLE;
     }
 
     @Override

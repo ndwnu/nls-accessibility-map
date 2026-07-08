@@ -16,7 +16,7 @@ import nu.ndw.nls.routingmapmatcher.isochrone.v2.exploration.ExploreLimit;
 @Slf4j
 public class RestrictionIsochroneAlgorithm extends AbstractDijkstraIsochroneAlgorithm<RestrictionsIsochroneLabel> {
 
-    private final Map<Integer, List<Restriction>> RestrictionsByEdgeKey;
+    private final Map<Integer, List<Restriction>> restrictionsByEdgeKey;
 
     public RestrictionIsochroneAlgorithm(
             Graph graph,
@@ -30,7 +30,7 @@ public class RestrictionIsochroneAlgorithm extends AbstractDijkstraIsochroneAlgo
 
         super(graph, encodingManager, traversalMode, traversalInReverseFlow, weighting, exploreLimit, explorePriorityComparator);
 
-        RestrictionsByEdgeKey = restrictionsByEdgeKey;
+        this.restrictionsByEdgeKey = restrictionsByEdgeKey;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class RestrictionIsochroneAlgorithm extends AbstractDijkstraIsochroneAlgo
                 time,
                 distance,
                 weight,
-                new Restrictions(RestrictionsByEdgeKey.getOrDefault(edgeKey, List.of())));
+                new Restrictions(restrictionsByEdgeKey.getOrDefault(edgeKey, List.of())));
     }
 
     @Override

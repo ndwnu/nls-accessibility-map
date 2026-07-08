@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm;
 
+import java.util.Objects;
 import lombok.Getter;
 import lombok.ToString;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
@@ -11,6 +12,7 @@ public class RestrictionsIsochroneLabel extends IsochroneLabel {
     @Getter
     private final Restrictions restrictions;
 
+    @SuppressWarnings("java:S107")
     public RestrictionsIsochroneLabel(
             int node,
             int edge,
@@ -23,5 +25,9 @@ public class RestrictionsIsochroneLabel extends IsochroneLabel {
 
         super(node, edge, edgeKey, parent, time, distance, weight);
         this.restrictions = restrictions;
+    }
+
+    public boolean hasRestrictions() {
+        return Objects.nonNull(restrictions) && !restrictions.isEmpty();
     }
 }
