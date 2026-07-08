@@ -56,11 +56,16 @@ public class DataTypeRegister {
     public @Valid TrafficSign mapTrafficSign(Map<String, String> entry) {
 
         String restrictionsConditionName = entry.get("restrictions");
-        TrafficSignCondition trafficSignRestrictions = trafficSignConditionDriver.getTrafficSignCondition(restrictionsConditionName)
-                .orElseThrow(() -> new IllegalArgumentException("Failed to resolve restriction with name %s".formatted(restrictionsConditionName)));
+        TrafficSignCondition trafficSignRestrictions;
+        if (StringUtils.isBlank(restrictionsConditionName)) {
+            trafficSignRestrictions = null;
+        } else {
+            trafficSignRestrictions = trafficSignConditionDriver.getTrafficSignCondition(restrictionsConditionName)
+                    .orElseThrow(() -> new IllegalArgumentException("Failed to resolve restriction with name %s".formatted(restrictionsConditionName)));
+
+        }
 
         String exemptionConditionNames = entry.get("exemptions");
-
         List<TrafficSignCondition> trafficSignExemptions;
         if (StringUtils.isBlank(exemptionConditionNames)) {
             trafficSignExemptions = Collections.emptyList();

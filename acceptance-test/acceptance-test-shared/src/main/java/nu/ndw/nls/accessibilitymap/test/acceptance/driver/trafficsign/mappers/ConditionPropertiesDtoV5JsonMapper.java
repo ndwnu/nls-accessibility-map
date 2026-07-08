@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 public class ConditionPropertiesDtoV5JsonMapper {
     // @todo: rename units into parameters
     public ConditionPropertiesDtoV5Json map(TrafficSignCondition trafficSignCondition) {
+
+        if (trafficSignCondition == null) {
+            return null;
+        }
+
         return ConditionPropertiesDtoV5Json.builder()
                 .vehicleType(trafficSignCondition.vehicleType())
                 .category(trafficSignCondition.category())

@@ -118,11 +118,11 @@ public class AccessibilityReasonsTrafficSignRestrictionMapper implements Restric
 
         List<AccessibilityReason<?>> accessibilityReasons = new ArrayList<>();
 
-        if (Objects.isNull(trafficSign.transportRestrictions().restrictions().emissionZone())) {
+        if (Objects.isNull(trafficSign.transportRestrictions().emissionZone())) {
             return accessibilityReasons;
         }
 
-        EmissionZoneRestriction restriction = trafficSign.transportRestrictions().restrictions().emissionZone().restriction();
+        EmissionZoneRestriction restriction = trafficSign.transportRestrictions().emissionZone().restriction();
         if (Objects.nonNull(restriction.vehicleWeightInKg())) {
             accessibilityReasons.add(MaximumReason.builder()
                     .value(restriction.vehicleWeightInKg())

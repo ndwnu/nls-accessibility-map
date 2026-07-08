@@ -6,9 +6,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import lombok.Builder;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -17,14 +18,13 @@ public record TransportConditions(
         Set<TransportType> transportTypes, // vehicleType
         Set<Category> category,
         String timeValidity,
-        int emissionClass,
-        String fuelType,
+        EmissionClass emissionClass,
+        FuelType fuelType,
         Maximum vehicleLengthInCm,
         Maximum vehicleHeightInCm,
         Maximum vehicleWidthInCm,
         Maximum vehicleWeightInKg,
-        Maximum vehicleAxleLoadInKg,
-        EmissionZone emissionZone
+        Maximum vehicleAxleLoadInKg
         ) {
 
     public boolean hasEvaluableConditions(AccessibilityRequest accessibilityRequest) {
@@ -47,15 +47,16 @@ public record TransportConditions(
 
         List<Predicate<AccessibilityRequest>> activeRestrictions = new ArrayList<>();
 
-        if (Objects.nonNull(emissionZone)
-                && emissionZone.isActive(accessibilityRequest.timestamp())
-                && Objects.nonNull(accessibilityRequest.fuelTypes())
-                && Objects.nonNull(accessibilityRequest.emissionClasses())) {
-            activeRestrictions.add(buildEmissionRestriction());
-        }
-
         if (CollectionUtils.isNotEmpty(transportTypes) && Objects.nonNull(accessibilityRequest.transportTypes())) {
             activeRestrictions.add(containsTransportType());
+        }
+
+        if (Objects.nonNull(fuelType) && Objects.nonNull(accessibilityRequest.fuelTypes())) {
+            activeRestrictions.add(isMatchingFuelType());
+        }
+
+        if (Objects.nonNull(emissionClass) && Objects.nonNull(accessibilityRequest.emissionClasses())) {
+            activeRestrictions.add(isMatchingEmissionClass());
         }
 
         if (Objects.nonNull(vehicleLengthInCm) && Objects.nonNull(accessibilityRequest.vehicleLengthInCm())) {
@@ -81,22 +82,12 @@ public record TransportConditions(
         return activeRestrictions;
     }
 
-    private Predicate<AccessibilityRequest> buildEmissionRestriction() {
-        return accessibilityRequest -> {
+    private Predicate<AccessibilityRequest> isMatchingFuelType() {
+        return accessibilityRequest -> accessibilityRequest.fuelTypes().contains(fuelType);
+    }
 
-            if (emissionZone.isRelevant(
-                    accessibilityRequest.vehicleWeightInKg(),
-                    accessibilityRequest.fuelTypes(),
-                    accessibilityRequest.transportTypes())) {
-
-                return !emissionZone.isExempt(
-                        accessibilityRequest.timestamp(),
-                        accessibilityRequest.vehicleWeightInKg(),
-                        accessibilityRequest.emissionClasses(),
-                        accessibilityRequest.transportTypes());
-            }
-            return false;
-        };
+    private Predicate<AccessibilityRequest> isMatchingEmissionClass() {
+        return accessibilityRequest -> accessibilityRequest.emissionClasses().contains(emissionClass);
     }
 
     private Predicate<AccessibilityRequest> isExceedingVehicleLength() {
