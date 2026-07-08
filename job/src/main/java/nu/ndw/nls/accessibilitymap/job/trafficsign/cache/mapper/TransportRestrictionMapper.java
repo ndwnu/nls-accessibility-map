@@ -24,12 +24,6 @@ public class TransportRestrictionMapper {
             emissionZone = null;
         }
 
-        if (conditionsDtoV5Json.getRestrictions() == null) {
-            return TransportRestrictions.builder()
-                    .emissionZone(emissionZone)
-                    .build();
-        }
-
         return TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .restrictions(transportConditionsMapper.map(conditionsDtoV5Json.getRestrictions()))
