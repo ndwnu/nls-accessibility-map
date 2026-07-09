@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsi
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.With;
@@ -30,7 +29,8 @@ public record TrafficSign(
         Double blackCode,
         ZoneCodeType zoneCodeType,
         String trafficRegulationOrderId,
-        @NotNull TransportRestrictions transportRestrictions) implements Restriction {
+        @NotNull TransportRestrictions transportRestrictions,
+        @NotNull List<SupplementaryTrafficSign> supplementaryTrafficSigns) implements Restriction {
 
     @Override
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {

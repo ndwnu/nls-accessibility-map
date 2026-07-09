@@ -13,6 +13,7 @@ public record TrafficSign(
         String rvvCode,
         TrafficSignCondition restrictions,
         List<TrafficSignCondition> exemptions,
+        List<SupplementaryTrafficSign> supplementaryTrafficSigns,
         String blackCode,
         DrivingDirectionEnum directionType,
         String windowTime,

@@ -15,9 +15,9 @@ public class TrafficSignConditionDriver implements StateManagement {
 
     private final Map<String, TrafficSignCondition> trafficSignConditionsMap = new HashMap<>();
 
-    public void addTraficSignConditions(List<TrafficSignCondition> trafficSigns) {
-        for (TrafficSignCondition trafficSign : trafficSigns) {
-            trafficSignConditionsMap.put(trafficSign.name(), trafficSign);
+    public void addTraficSignConditions(List<TrafficSignCondition> trafficSignConditions) {
+        for (TrafficSignCondition trafficSignCondition : trafficSignConditions) {
+            trafficSignConditionsMap.put(trafficSignCondition.name(), trafficSignCondition);
         }
     }
 

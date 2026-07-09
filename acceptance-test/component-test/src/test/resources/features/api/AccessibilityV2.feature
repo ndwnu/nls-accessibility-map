@@ -55,7 +55,6 @@ Feature: Accessibility V2
     When request accessibility geojson for dynamicRestrictionOnNode
     Then we expect accessibility geojson response dynamicRestrictionOnNode
 
-  @focus
   Scenario: Get - Vehicle emission class euro 3 - Destination unreachable
     Given a simple network
 

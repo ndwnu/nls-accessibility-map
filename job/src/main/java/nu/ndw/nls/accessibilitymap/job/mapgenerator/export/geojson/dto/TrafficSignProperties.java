@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto;
 
 import java.net.URI;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
@@ -20,7 +21,7 @@ public class TrafficSignProperties implements Properties {
 
     private TrafficSignType trafficSignType;
 
-    private String windowTimes;
+    private List<String> windowTimes;
 
     private URI iconUrl;
 
