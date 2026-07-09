@@ -4,7 +4,9 @@ import static org.assertj.core.api.Fail.fail;
 
 import java.util.Collections;
 import java.util.List;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.SupplementaryTrafficSignDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignConditionDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.SupplementaryTrafficSign;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSignCondition;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +44,8 @@ public class DataTypeRegister {
 
     private final TrafficSignConditionDriver trafficSignConditionDriver;
 
+    private final SupplementaryTrafficSignDriver supplementaryTrafficSignDriver;
+
     @DataTableType
     public @Valid BlockedRoadSection mapBlockedRoadSection(Map<String, String> entry) {
 
@@ -62,7 +66,20 @@ public class DataTypeRegister {
         } else {
             trafficSignRestrictions = trafficSignConditionDriver.getTrafficSignCondition(restrictionsConditionName)
                     .orElseThrow(() -> new IllegalArgumentException("Failed to resolve restriction with name %s".formatted(restrictionsConditionName)));
+        }
 
+        String supplementaryTrafficSignNames = entry.get("supplementaryTrafficSigns");
+        List<SupplementaryTrafficSign> supplementaryTrafficSigns;
+        if (StringUtils.isBlank(supplementaryTrafficSignNames)) {
+            supplementaryTrafficSigns = null;
+        } else {
+            supplementaryTrafficSigns = Arrays.stream(supplementaryTrafficSignNames.split(","))
+                    .map(String::trim)
+                    .map(supplementaryTrafficSignName -> supplementaryTrafficSignDriver.getSupplementaryTrafficSign(supplementaryTrafficSignName)
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException("Failed to resolve supplementary traffic sign with name: %s".formatted(
+                                            supplementaryTrafficSignName))))
+                    .toList();
         }
 
         String exemptionConditionNames = entry.get("exemptions");
@@ -87,6 +104,7 @@ public class DataTypeRegister {
                 .rvvCode(entry.get("rvvCode"))
                 .restrictions(trafficSignRestrictions)
                 .exemptions(trafficSignExemptions)
+                .supplementaryTrafficSigns(supplementaryTrafficSigns)
                 .blackCode(Objects.nonNull(entry.get("blackCode")) ? entry.get("blackCode").toUpperCase(Locale.US) : null)
                 .directionType(DrivingDirectionEnum.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(Objects.nonNull(entry.get("windowTime")) ? entry.get("windowTime") : null)

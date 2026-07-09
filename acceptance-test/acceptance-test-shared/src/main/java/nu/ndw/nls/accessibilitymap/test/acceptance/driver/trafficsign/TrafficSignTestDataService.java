@@ -2,14 +2,18 @@ package nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign;
 
 import static org.assertj.core.api.Fail.fail;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.SupplementaryTrafficSign;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.mappers.ConditionPropertiesDtoV5JsonMapper;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.mappers.TextSignDtoV5JsonMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionsDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.PointJson;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TextSignDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
@@ -28,6 +32,8 @@ public class TrafficSignTestDataService {
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     private final ConditionPropertiesDtoV5JsonMapper conditionPropertiesDtoV5JsonMapper;
+
+    private final TextSignDtoV5JsonMapper textSignDtoV5JsonMapper;
 
     @SuppressWarnings("java:S109")
     public TrafficSignGeoJsonDtoV5Json createTrafficSignGeoJsonDto(TrafficSign trafficSign) {
@@ -61,6 +67,7 @@ public class TrafficSignTestDataService {
                         .drivingDirection(trafficSign.directionType())
                         .roadSectionId(Math.toIntExact(edge.getId()))
                         .trafficOrderId(trafficSign.regulationOrderId())
+                        .supplementarySigns(map(trafficSign.supplementaryTrafficSigns()))
                         .conditions(ConditionsDtoV5Json.builder()
                                 .restrictions(conditionPropertiesDtoV5JsonMapper.map(trafficSign.restrictions()))
                                 .exemptions(trafficSign.exemptions()
@@ -72,5 +79,15 @@ public class TrafficSignTestDataService {
                 .build();
     }
 
+    private List<TextSignDtoV5Json> map(List<SupplementaryTrafficSign> supplementaryTrafficSigns) {
+        if (supplementaryTrafficSigns == null) {
+            return Collections.emptyList();
+        }
+
+        return supplementaryTrafficSigns
+                .stream()
+                .map(textSignDtoV5JsonMapper::map)
+                .toList();
+    }
 
 }

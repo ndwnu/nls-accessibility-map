@@ -27,22 +27,23 @@ public class TrafficSignRestrictionCalculator {
                 return accessibilityRequest.trafficSignTypes().contains(trafficSign.trafficSignType());
             };
 
-//    private static final BiPredicate<TrafficSign, AccessibilityRequest> hasTrafficSignTextTypes =
-//            (trafficSign, accessibilityRequest) -> {
-//                if (Objects.isNull(accessibilityRequest.trafficSignTextSignTypes())) {
-//                    return false;
-//                }
-//
-//                return trafficSign.textSigns().stream()
-//                        .map(TextSign::type)
-//                        .filter(Objects::nonNull)
-//                        .anyMatch(accessibilityRequest.trafficSignTextSignTypes()::contains);
-//            };
+
+    private static final BiPredicate<TrafficSign, AccessibilityRequest> hasSupplementarySignTypes =
+            (trafficSign, accessibilityRequest) -> {
+                if (Objects.isNull(accessibilityRequest.trafficSignSupplementarySignTypes())) {
+                    return false;
+                }
+
+                return trafficSign.supplementaryTrafficSigns()
+                        .stream()
+                        .map(SupplementaryTrafficSign::type)
+                        .anyMatch(o -> accessibilityRequest.trafficSignSupplementarySignTypes().contains(o));
+            };
 
     public static boolean isRestrictive(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
         return hasTransportRestrictions
                 .or(hasTrafficSignType)
-//                .or(hasTrafficSignTextTypes)
+                .or(hasSupplementarySignTypes)
                 .test(trafficSign, accessibilityRequest);
     }
 

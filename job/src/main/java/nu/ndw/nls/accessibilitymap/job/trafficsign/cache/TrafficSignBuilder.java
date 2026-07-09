@@ -11,6 +11,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.DirectionMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.SupplementaryTrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.TransportRestrictionMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.ZoneCodeTypeMapper;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionsDtoV5Json;
@@ -35,6 +36,8 @@ public class TrafficSignBuilder {
     private final DirectionMapper directionMapper;
 
     private final TransportRestrictionMapper transportRestrictionMapper;
+
+    private final SupplementaryTrafficSignMapper supplementaryTrafficSignMapper;
 
     @Valid
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
@@ -79,6 +82,9 @@ public class TrafficSignBuilder {
                     .blackCode(blackCodeMapper.map(trafficSignGeoJsonDtoV5Json, type))
                     .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
                     .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
+                    .supplementaryTrafficSigns(trafficSignGeoJsonDtoV5Json.getProperties().getSupplementarySigns().stream()
+                            .map(supplementaryTrafficSignMapper::map)
+                            .toList())
                     .build();
 
             ConditionsDtoV5Json conditions = trafficSignGeoJsonDtoV5Json.getProperties().getConditions();

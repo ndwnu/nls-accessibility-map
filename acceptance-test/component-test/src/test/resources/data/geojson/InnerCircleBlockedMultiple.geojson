@@ -321,7 +321,9 @@
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000002",
         "trafficSignType": "C12",
-        "windowTimes": "window 2"
+        "windowTimes": [
+          "window 2"
+        ]
       },
       "type": "Feature"
     },
@@ -347,7 +349,9 @@
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000004",
         "trafficSignType": "C7",
-        "windowTimes": "window 4"
+        "windowTimes": [
+          "window 4"
+        ]
       },
       "type": "Feature"
     },
@@ -367,7 +371,10 @@
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000002",
         "trafficSignType": "C12",
-        "windowTimes": "window 2"
+        "trafficSignType": "C12",
+        "windowTimes": [
+          "window 2"
+        ]
       },
       "type": "Feature"
     },
@@ -387,7 +394,9 @@
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000004",
         "trafficSignType": "C7",
-        "windowTimes": "window 4"
+        "windowTimes": [
+          "window 4"
+        ]
       },
       "type": "Feature"
     },
@@ -436,7 +445,9 @@
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "trafficSignType": "C12",
-        "windowTimes": "window 1"
+        "windowTimes": [
+          "window 1"
+        ]
       },
       "type": "Feature"
     },
@@ -462,7 +473,9 @@
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000003",
         "trafficSignType": "C7",
-        "windowTimes": "window 3"
+        "windowTimes": [
+          "window 3"
+        ]
       },
       "type": "Feature"
     },
@@ -482,7 +495,9 @@
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000001",
         "trafficSignType": "C12",
-        "windowTimes": "window 1"
+        "windowTimes": [
+          "window 1"
+        ]
       },
       "type": "Feature"
     },
@@ -502,7 +517,9 @@
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000003",
         "trafficSignType": "C7",
-        "windowTimes": "window 3"
+        "windowTimes": [
+           "window 3"
+        ]
       },
       "type": "Feature"
     },
