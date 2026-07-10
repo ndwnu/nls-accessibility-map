@@ -1,16 +1,10 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,16 +19,28 @@ class TransportConditionsTest {
 
     private AccessibilityRequest accessibilityRequest;
 
-    private OffsetDateTime timestamp;
-
-    @Mock
-    private EmissionZone emissionZone;
-
     @BeforeEach
     void setUp() {
-
-        timestamp = OffsetDateTime.parse("2022-03-11T09:00:00Z", DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         accessibilityRequest = AccessibilityRequest.builder().build();
+    }
+
+    @Test
+    void unrestricted() {
+        TransportConditions unrestricted = TransportConditions.unrestricted();
+
+        assertThat(unrestricted).isNotNull()
+                .isSameAs(TransportConditions.unrestricted());
+
+        assertThat(unrestricted.transportTypes()).isNull();
+        assertThat(unrestricted.category()).isNull();
+        assertThat(unrestricted.timeValidity()).isNull();
+        assertThat(unrestricted.emissionClass()).isNull();
+        assertThat(unrestricted.fuelType()).isNull();
+        assertThat(unrestricted.vehicleLengthInCm()).isNull();
+        assertThat(unrestricted.vehicleHeightInCm()).isNull();
+        assertThat(unrestricted.vehicleWidthInCm()).isNull();
+        assertThat(unrestricted.vehicleWeightInKg()).isNull();
+        assertThat(unrestricted.vehicleAxleLoadInKg()).isNull();
     }
 
     @Test
@@ -46,6 +51,14 @@ class TransportConditionsTest {
                 .build();
 
         assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest.withTransportTypes(TransportType.allExcept()))).isTrue();
+    }
+
+    @Test
+    void hasEvaluableConditions_unrestricted_noRestrictions() {
+
+        TransportConditions transportConditions = TransportConditions.unrestricted();
+
+        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest)).isFalse();
     }
 
     @Test
@@ -66,7 +79,6 @@ class TransportConditionsTest {
                 .vehicleHeightInCm(Maximum.builder().value(30d).build())
                 .vehicleWeightInKg(Maximum.builder().value(40d).build())
                 .vehicleAxleLoadInKg(Maximum.builder().value(50d).build())
-                .emissionZone(emissionZone)
                 .build();
 
         assertThat(transportConditions.conditionsApply(accessibilityRequest
@@ -243,144 +255,4 @@ class TransportConditionsTest {
                 expectedResult);
     }
 
-    @Test
-    void conditionsApply_emissionZone_restrictive() {
-
-        accessibilityRequest = accessibilityRequest
-                .withVehicleWeightInKg(2d)
-                .withTransportTypes(Set.of(TransportType.CAR))
-                .withTimestamp(timestamp)
-                .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
-
-        when(emissionZone.isActive(timestamp)).thenReturn(true);
-        when(emissionZone.isRelevant(
-                accessibilityRequest.vehicleWeightInKg(),
-                accessibilityRequest.fuelTypes(),
-                accessibilityRequest.transportTypes())
-        ).thenReturn(true);
-        when(emissionZone.isExempt(
-                timestamp,
-                accessibilityRequest.vehicleWeightInKg(),
-                accessibilityRequest.emissionClasses(),
-                accessibilityRequest.transportTypes())
-        ).thenReturn(false);
-
-        TransportConditions transportConditions = TransportConditions.builder()
-                .emissionZone(emissionZone)
-                .build();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest)).isTrue();
-    }
-
-    @Test
-    void conditionsApply_emissionZone_isExempt() {
-
-        accessibilityRequest = accessibilityRequest
-                .withVehicleWeightInKg(2d)
-                .withTransportTypes(Set.of(TransportType.CAR))
-                .withTimestamp(timestamp)
-                .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
-
-        when(emissionZone.isActive(timestamp)).thenReturn(true);
-        when(emissionZone.isRelevant(
-                accessibilityRequest.vehicleWeightInKg(),
-                accessibilityRequest.fuelTypes(),
-                accessibilityRequest.transportTypes())
-        ).thenReturn(true);
-        when(emissionZone.isExempt(
-                timestamp,
-                accessibilityRequest.vehicleWeightInKg(),
-                accessibilityRequest.emissionClasses(),
-                accessibilityRequest.transportTypes())
-        ).thenReturn(true);
-
-        TransportConditions transportConditions = TransportConditions.builder()
-                .emissionZone(emissionZone)
-                .build();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest)).isFalse();
-    }
-
-    @Test
-    void conditionsApply_emissionZone_notRelevant() {
-
-        accessibilityRequest = accessibilityRequest
-                .withVehicleWeightInKg(2d)
-                .withTransportTypes(Set.of(TransportType.CAR))
-                .withTimestamp(timestamp)
-                .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
-
-        when(emissionZone.isActive(timestamp)).thenReturn(true);
-        when(emissionZone.isRelevant(
-                accessibilityRequest.vehicleWeightInKg(),
-                accessibilityRequest.fuelTypes(),
-                accessibilityRequest.transportTypes())
-        ).thenReturn(false);
-
-        TransportConditions transportConditions = TransportConditions.builder()
-                .emissionZone(emissionZone)
-                .build();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest)).isFalse();
-    }
-
-    @Test
-    void conditionsApply_emissionZone_notActive() {
-
-        accessibilityRequest = accessibilityRequest
-                .withVehicleWeightInKg(2d)
-                .withTransportTypes(Set.of(TransportType.CAR))
-                .withTimestamp(timestamp)
-                .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
-
-        when(emissionZone.isActive(timestamp)).thenReturn(false);
-
-        TransportConditions transportConditions = TransportConditions.builder()
-                .emissionZone(emissionZone)
-                .build();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest)).isFalse();
-    }
-
-    @Test
-    void conditionsApply_emissionZone_requestHasNoFuelTypes_shouldIgnoreEmissionZones() {
-
-        accessibilityRequest = accessibilityRequest
-                .withVehicleWeightInKg(2d)
-                .withTransportTypes(Set.of(TransportType.CAR))
-                .withTimestamp(timestamp)
-                .withFuelTypes(null)
-                .withEmissionClasses(Set.of(EmissionClass.EURO_4));
-
-        when(emissionZone.isActive(timestamp)).thenReturn(true);
-
-        TransportConditions transportConditions = TransportConditions.builder()
-                .emissionZone(emissionZone)
-                .build();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest)).isFalse();
-    }
-
-    @Test
-    void conditionsApply_emissionZone_requestHasNoEmissionClasses_shouldIgnoreEmissionZones() {
-
-        accessibilityRequest = accessibilityRequest
-                .withVehicleWeightInKg(2d)
-                .withTransportTypes(Set.of(TransportType.CAR))
-                .withTimestamp(timestamp)
-                .withFuelTypes(Set.of(FuelType.DIESEL))
-                .withEmissionClasses(null);
-
-        when(emissionZone.isActive(timestamp)).thenReturn(true);
-
-        TransportConditions transportConditions = TransportConditions.builder()
-                .emissionZone(emissionZone)
-                .build();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest)).isFalse();
-    }
 }

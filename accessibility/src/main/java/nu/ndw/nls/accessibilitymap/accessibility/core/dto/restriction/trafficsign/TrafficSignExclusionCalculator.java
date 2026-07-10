@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import lombok.NoArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class TrafficSignExclusionCalculator {
@@ -18,11 +17,11 @@ public class TrafficSignExclusionCalculator {
                 return accessibilityRequest.excludeTrafficSignZoneCodeTypes().contains(trafficSign.zoneCodeType());
             };
 
-//    private static final BiPredicate<TrafficSign, AccessibilityRequest> hasExclusionsForTextSignTypes =
-//            (trafficSign, accessibilityRequest) -> trafficSign.textSigns().stream()
-//                    .map(TextSign::type)
-//                    .filter(Objects::nonNull)
-//                    .anyMatch(textSignType -> accessibilityRequest.excludeTrafficSignTextSignTypes().contains(textSignType));
+    private static final BiPredicate<TrafficSign, AccessibilityRequest> hasExclusionsForSupplementarySignTypes =
+            (trafficSign, accessibilityRequest) -> trafficSign.supplementaryTrafficSigns().stream()
+                    .map(SupplementaryTrafficSign::type)
+                    .filter(Objects::nonNull)
+                    .anyMatch(textSignType -> accessibilityRequest.excludeTrafficSignSupplementarySignTypes().contains(textSignType));
 
     private static final BiPredicate<TrafficSign, AccessibilityRequest> hasExclusionsForEmissionZoneId =
             (trafficSign, accessibilityRequest) -> {
@@ -52,7 +51,7 @@ public class TrafficSignExclusionCalculator {
 
     public static boolean isNotExcluded(TrafficSign trafficSign, AccessibilityRequest accessibilityRequest) {
         return !hasExclusionsForZoneCodeTypes
-//                .or(hasExclusionsForTextSignTypes)
+                .or(hasExclusionsForSupplementarySignTypes)
                 .or(hasExclusionsForEmissionZoneId)
                 .or(hasExclusionsForEmissionZoneType)
                 .or(isOutsideOfBoundingBox)

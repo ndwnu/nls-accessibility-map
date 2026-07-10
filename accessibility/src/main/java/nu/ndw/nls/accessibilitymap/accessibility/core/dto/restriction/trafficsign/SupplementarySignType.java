@@ -1,5 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 public enum SupplementarySignType {
     C22A1,
     C22A2,
@@ -107,5 +110,15 @@ public enum SupplementarySignType {
     OB719,
     OB720,
     OTHER;
+
+    private static final Set<SupplementarySignType> TIME_WINDOWED_TYPES = EnumSet.of(OB254, OB256, OB259);
+
+    public static Set<SupplementarySignType> getWindowTimeTypes() {
+        return TIME_WINDOWED_TYPES;
+    }
+
+    public boolean isWindowTime() {
+        return getWindowTimeTypes().contains(this);
+    }
 
 }

@@ -29,6 +29,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
@@ -37,7 +38,6 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.LineStringGeometry;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.RoadSectionProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.TrafficSignProperties;
-//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -113,6 +113,7 @@ class GeoJsonRoadSectionWriterTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
+            true,
             false
             """)
     void writeToFile(boolean includeOnlyTimeWindowedSigns) throws IOException {
@@ -158,7 +159,7 @@ class GeoJsonRoadSectionWriterTest {
                                         "accessible":true,
                                         "direction":"FORWARD",
                                         "trafficSignType":"C7",
-                                        "windowTimes":"windowTimes",
+                                        "windowTimes":["windowTimes"],
                                         "iconUrl":"https://example.com/image.png",
                                         "trafficSign":false
                                      },
@@ -270,7 +271,7 @@ class GeoJsonRoadSectionWriterTest {
                                                 .accessible(true)
                                                 .iconUrl(URI.create("https://example.com/image.png"))
                                                 .trafficSignType(TrafficSignType.C7)
-                                                .windowTimes("windowTimes")
+                                                .windowTimes(List.of("windowTimes"))
                                                 .build())
                                         .build(),
                                 Feature.builder()
@@ -308,9 +309,9 @@ class GeoJsonRoadSectionWriterTest {
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder()
                         .trafficSignTypes(Set.of(TrafficSignType.C7))
-//                        .trafficSignSupplementarySignTypes(
-//                                includeOnlyTimeWindowedSigns
-//                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
+                        .trafficSignSupplementarySignTypes(
+                                includeOnlyTimeWindowedSigns
+                                        ? SupplementarySignType.getWindowTimeTypes() : null)
                         .build())
                 .generateConfiguration(generateConfiguration)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))

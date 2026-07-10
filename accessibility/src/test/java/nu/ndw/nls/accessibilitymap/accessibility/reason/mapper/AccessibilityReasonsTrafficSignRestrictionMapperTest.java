@@ -188,13 +188,12 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .restrictions(TransportConditions.builder()
-                                .emissionZone(EmissionZone.builder()
-                                        .restriction(EmissionZoneRestriction.builder()
-                                                .fuelTypes(Set.of())
-                                                .transportTypes(Set.of())
-                                                .vehicleWeightInKg(maximum)
-                                                .build())
+                        .restrictions(TransportConditions.unrestricted())
+                        .emissionZone(EmissionZone.builder()
+                                .restriction(EmissionZoneRestriction.builder()
+                                        .fuelTypes(Set.of())
+                                        .transportTypes(Set.of())
+                                        .vehicleWeightInKg(maximum)
                                         .build())
                                 .build())
                         .build())
@@ -210,8 +209,8 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .restrictions(TransportConditions.builder()
-                                    .emissionZone(EmissionZone.builder()
+                        .restrictions(TransportConditions.unrestricted())
+                        .emissionZone(EmissionZone.builder()
                                             .restriction(EmissionZoneRestriction.builder()
                                                     .fuelTypes(Set.of(FuelType.DIESEL))
                                                     .transportTypes(Set.of())
@@ -219,7 +218,6 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
                                                     .build())
                                             .build())
                                     .build())
-                                .build())
 
                 .build();
 
@@ -237,8 +235,8 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .restrictions(TransportConditions.builder()
-                                .emissionZone(EmissionZone.builder()
+                        .restrictions(TransportConditions.unrestricted())
+                        .emissionZone(EmissionZone.builder()
                                         .restriction(EmissionZoneRestriction.builder()
                                                 .fuelTypes(Set.of())
                                                 .transportTypes(Set.of(TransportType.CAR))
@@ -246,8 +244,7 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
                                                 .build())
                                         .build())
                                 .build())
-                        .build())
-                .build();
+                        .build();
 
         List<AccessibilityReason<?>> accessibilityReasons = mapper.mapRestrictions(new Restrictions(Set.of(trafficSign)));
 

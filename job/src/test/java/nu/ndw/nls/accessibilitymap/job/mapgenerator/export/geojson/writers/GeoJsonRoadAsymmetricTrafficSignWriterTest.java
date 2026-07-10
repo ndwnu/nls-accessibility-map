@@ -155,7 +155,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                                     "accessible": true,
                                     "direction": "FORWARD",
                                     "trafficSignType": "C7",
-                                    "windowTimes": "windowTimes",
+                                    "windowTimes": ["windowTimes"],
                                     "iconUrl": "https://example.com/image.png",
                                     "trafficSign": true
                                   },
@@ -212,7 +212,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                                         .accessible(true)
                                         .iconUrl(URI.create("https://example.com/image.png"))
                                         .trafficSignType(TrafficSignType.C7)
-                                        .windowTimes("windowTimes")
+                                        .windowTimes(List.of("windowTimes"))
                                         .isTrafficSign(true)
                                         .build())
                                 .build()));
