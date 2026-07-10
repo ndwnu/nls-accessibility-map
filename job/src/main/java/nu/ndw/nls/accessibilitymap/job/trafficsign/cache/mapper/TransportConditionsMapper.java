@@ -31,7 +31,7 @@ public class TransportConditionsMapper {
 
     public TransportConditions map(ConditionPropertiesDtoV5Json conditionPropertiesDtoV5Json) {
         if (conditionPropertiesDtoV5Json == null) {
-            return TransportConditions.builder().build();
+            return TransportConditions.unrestricted();
         }
 
         Set<TransportType> transportTypes;

@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -29,12 +30,24 @@ public record TransportConditions(
         Maximum vehicleAxleLoadInKg
         ) {
 
+    private static final TransportConditions TRANSPORT_CONDITIONS_UNRESTRICTED = TransportConditions.builder().build();
+
+    public static TransportConditions unrestricted() {
+        return TRANSPORT_CONDITIONS_UNRESTRICTED;
+    }
+
     public boolean hasEvaluableConditions(AccessibilityRequest accessibilityRequest) {
+        if (this == TRANSPORT_CONDITIONS_UNRESTRICTED) {
+            return false;
+        }
 
         return !getActiveConditions(accessibilityRequest).isEmpty();
     }
 
     public boolean conditionsApply(AccessibilityRequest accessibilityRequest) {
+        if (this == TRANSPORT_CONDITIONS_UNRESTRICTED) {
+            return false;
+        }
 
         List<Predicate<AccessibilityRequest>> activeConditions = getActiveConditions(accessibilityRequest);
         if (activeConditions.isEmpty()) {

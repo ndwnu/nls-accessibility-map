@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.SupplementaryTrafficSign;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSignCondition;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.mappers.ConditionPropertiesDtoV5JsonMapper;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.mappers.TextSignDtoV5JsonMapper;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionPropertiesDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionsDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.PointJson;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TextSignDtoV5Json;
@@ -67,19 +69,27 @@ public class TrafficSignTestDataService {
                         .drivingDirection(trafficSign.directionType())
                         .roadSectionId(Math.toIntExact(edge.getId()))
                         .trafficOrderId(trafficSign.regulationOrderId())
-                        .supplementarySigns(map(trafficSign.supplementaryTrafficSigns()))
+                        .supplementarySigns(mapTextSignDto(trafficSign.supplementaryTrafficSigns()))
                         .conditions(ConditionsDtoV5Json.builder()
                                 .restrictions(conditionPropertiesDtoV5JsonMapper.map(trafficSign.restrictions()))
-                                .exemptions(trafficSign.exemptions()
-                                        .stream()
-                                        .map(conditionPropertiesDtoV5JsonMapper::map)
-                                        .toList())
+                                .exemptions(mapTrafficSignConditions(trafficSign.exemptions()))
                                 .build())
                         .build())
                 .build();
     }
 
-    private List<TextSignDtoV5Json> map(List<SupplementaryTrafficSign> supplementaryTrafficSigns) {
+    private List<ConditionPropertiesDtoV5Json> mapTrafficSignConditions(List<TrafficSignCondition> trafficSignConditions) {
+        if (trafficSignConditions == null) {
+            return Collections.emptyList();
+        }
+
+        return trafficSignConditions
+                .stream()
+                .map(conditionPropertiesDtoV5JsonMapper::map)
+                .toList();
+    }
+
+    private List<TextSignDtoV5Json> mapTextSignDto(List<SupplementaryTrafficSign> supplementaryTrafficSigns) {
         if (supplementaryTrafficSigns == null) {
             return Collections.emptyList();
         }
