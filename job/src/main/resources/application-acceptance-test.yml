@@ -43,7 +43,7 @@ nu:
       accessibilitymap:
         jobs:
           generate:
-            root-export-directory: "./.tmp/map-generation-destination"
+            root-export-directory: "./cache/map-generation-destination"
             prettyPrintJson: true
         trafficsignclient:
           api:
@@ -52,17 +52,6 @@ nu:
           emission-zone:
             client:
               url: http://${hostWiremock}:8888/api/area/ibbm/emission-zones/v1
-          cache:
-            folder: "./.tmp/trafficSigns/"
-        network:
-          cache:
-            folder: "./.tmp/network"
-        roadChanges:
-          cache:
-            folder: "./.tmp/roadChanges"
-        speedLimit:
-          cache:
-            folder: "./.tmp/speedLimits"
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300

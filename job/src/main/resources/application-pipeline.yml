@@ -10,3 +10,4 @@ nu:
         jobs:
           generate:
             root-export-directory: "/application/maps"
+

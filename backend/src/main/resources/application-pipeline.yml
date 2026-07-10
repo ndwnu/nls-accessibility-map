@@ -8,17 +8,3 @@ spring:
     stream:
       host: ${hostRabbitMQ}
     host: ${hostRabbitMQ}
-
-nu:
-  ndw:
-    nls:
-      accessibilitymap:
-        trafficSigns:
-          cache:
-            folder: "./cache/trafficSigns/"
-        roadChanges:
-          cache:
-            folder: "./cache/roadChanges/"
-        network:
-          cache:
-            folder: "./cache/network"

@@ -62,10 +62,10 @@ class InitializeCacheCommandTest {
     void call() {
 
         assertThat(new CommandLine(initializeCacheCommand).execute()).isZero();
-        verify(networkDataService).dataExists();
+
         verify(networkDataService).recompileData();
-        verify(trafficSignDataService).dataExists();
         verify(rebuildTrafficSignCacheCommand).call();
+        verify(rebuildSpeedLimitCacheCommand).call();
     }
 
     @SneakyThrows
@@ -101,11 +101,27 @@ class InitializeCacheCommandTest {
 
     @Test
     void call_trafficSignCache_unableToCreateCache() {
-        doThrow(new RuntimeException("error")).when(rebuildTrafficSignCacheCommand).call();
+        when(rebuildTrafficSignCacheCommand.call()).thenReturn(1);
 
         assertThat(new CommandLine(initializeCacheCommand).execute()).isOne();
+    }
 
-        loggerExtension.containsLog(Level.ERROR, "An error occurred while creating traffic sign cache", "error");
+    @SneakyThrows
+    @Test
+    void call_speedLimitCache_exists() {
+        when(speedLimitDataService.dataExists()).thenReturn(true);
+
+        assertThat(new CommandLine(initializeCacheCommand).execute()).isZero();
+
+        loggerExtension.containsLog(Level.INFO, "Speed limit cache already exists, skipping creation");
+        verifyNoMoreInteractions(speedLimitDataService);
+    }
+
+    @Test
+    void call_speedLimitCache_unableToCreateCache() {
+        when(rebuildSpeedLimitCacheCommand.call()).thenReturn(1);
+
+        assertThat(new CommandLine(initializeCacheCommand).execute()).isOne();
     }
 
     @Test

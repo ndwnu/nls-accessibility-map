@@ -1,6 +1,19 @@
 nu:
   ndw:
     nls:
+      accessibilitymap:
+        network:
+          cache:
+            fail-on-startup-cache-read-error: false
+        trafficsigns:
+          cache:
+            fail-on-startup-cache-read-error: false
+        roadChanges:
+          cache:
+            fail-on-startup-cache-read-error: false
+        speedLimit:
+          cache:
+            fail-on-startup-cache-read-error: false
       springboot:
         job:
           run-as-service: false
