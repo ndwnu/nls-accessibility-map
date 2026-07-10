@@ -28,6 +28,7 @@ public class InitializeCacheCommand implements Callable<Integer> {
     private final SpeedLimitDataService speedLimitDataService;
 
     @Override
+    @SuppressWarnings("java:S1142")
     public Integer call() {
         if (networkDataService.dataExists()) {
             log.info("Network cache already exists, skipping creation");
