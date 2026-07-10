@@ -836,6 +836,72 @@ class AccessibilityDebuggerTest {
     }
 
     @Test
+    void writeDebug_directionalSegment() throws IOException {
+        debugEnabled();
+
+        when(debugConfiguration.getDebugFolder()).thenReturn(testDir);
+
+        List<List<Double>> coordinatesForward = List.of(List.of(0d, 0d), List.of(1d, 1d));
+        when(jtsLineStringJsonMapper.map(lineStringForward)).thenReturn(new LineStringJson(coordinatesForward, TypeEnum.LINE_STRING));
+        List<List<Double>> coordinatesBackward = List.of(List.of(1d, 1d), List.of(0d, 0d));
+        when(jtsLineStringJsonMapper.map(lineStringBackward)).thenReturn(new LineStringJson(coordinatesBackward, TypeEnum.LINE_STRING));
+
+        RoadSection roadSection = buildRoadSection();
+        List<DirectionalSegment> directionalSegments = roadSection.getRoadSectionFragments().stream()
+                .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
+                .toList();
+
+        accessibilityDebugger.writeDebug(directionalSegments);
+
+        assertThatJson(Files.readString(testDir.resolve("destinationPaths.geojson")))
+                .isEqualTo("""
+                        {
+                          "features": [
+                            {
+                              "id": 1,
+                              "geometry": {
+                                "type": "LineString",
+                                "coordinates": [ [0.0, 0.0], [1.0, 1.0] ]
+                              },
+                              "properties": {
+                                "accessible": true,
+                                "direction": "FORWARD",
+                                "edge": 2,
+                                "edgeKey": 3,
+                                "startFraction": 0.5,
+                                "endFraction": 1.0,
+                                "roadSectionFragmentId": 2,
+                                "roadSectionId": 1,
+                                "segmentId": 3
+                              },
+                              "type": "Feature"
+                            },
+                            {
+                              "id": 2,
+                              "geometry": {
+                                "type": "LineString",
+                                "coordinates": [ [1.0, 1.0], [0.0, 0.0] ]
+                              },
+                              "properties": {
+                                "accessible": true,
+                                "direction": "BACKWARD",
+                                "edge": 2,
+                                "edgeKey": 3,
+                                "startFraction": 1.0,
+                                "endFraction": 0.5,
+                                "roadSectionFragmentId": 2,
+                                "roadSectionId": 1,
+                                "segmentId": 3
+                              },
+                              "type": "Feature"
+                            }
+                          ],
+                          "type": "FeatureCollection"
+                        }
+                        """);
+    }
+
+    @Test
     void writeDebug_accessibilityNetwork_debugDisabled() {
         when(debugConfiguration.isDisabled()).thenReturn(true);
 

@@ -69,7 +69,7 @@ services:
     build:
       context: docker/nls-accessibility-map-job
     environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
+      - SPRING_PROFILES_ACTIVE=acceptance-test,job-initialize-cache
       - COMMAND=initializeCache
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true

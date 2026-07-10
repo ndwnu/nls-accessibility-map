@@ -9,7 +9,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static nu.ndw.nls.accessibilitymap.jobs.test.component.driver.oauth.OAuthDriver.SIMULATED_BEARER_TOKEN;
+import static nu.ndw.nls.accessibilitymap.test.acceptance.driver.oauth.OAuthDriver.SIMULATED_BEARER_TOKEN;
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;

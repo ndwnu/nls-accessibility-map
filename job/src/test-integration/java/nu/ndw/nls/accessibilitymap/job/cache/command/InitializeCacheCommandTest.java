@@ -9,7 +9,9 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import lombok.SneakyThrows;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.service.SpeedLimitDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
+import nu.ndw.nls.accessibilitymap.job.speedlimits.RebuildSpeedLimitCacheCommand;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -34,13 +36,22 @@ class InitializeCacheCommandTest {
     private RebuildTrafficSignCacheCommand rebuildTrafficSignCacheCommand;
 
     @Mock
+    private RebuildSpeedLimitCacheCommand rebuildSpeedLimitCacheCommand;
+
+    @Mock
     private TrafficSignDataService trafficSignDataService;
+
+    @Mock
+    private SpeedLimitDataService speedLimitDataService;
 
     @BeforeEach
     void setUp() {
-        initializeCacheCommand = new InitializeCacheCommand(networkDataService,
+        initializeCacheCommand = new InitializeCacheCommand(
+                networkDataService,
                 rebuildTrafficSignCacheCommand,
-                trafficSignDataService);
+                rebuildSpeedLimitCacheCommand,
+                trafficSignDataService,
+                speedLimitDataService);
     }
 
     @RegisterExtension

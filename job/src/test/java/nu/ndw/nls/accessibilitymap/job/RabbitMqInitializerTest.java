@@ -42,7 +42,16 @@ class RabbitMqInitializerTest {
         loggerExtension.containsLog(Level.INFO, "Initializing RabbitMQ");
         loggerExtension.containsLog(Level.INFO, "RabbitMQ channel successfully initialized");
     }
+    @Test
+    void test() {
 
+        System.out.println("0%1000="+ 0/1000);
+        System.out.println("0%1000="+ 1/1000);
+        System.out.println("0%1000="+ 1000/1000);
+        System.out.println("0%1000="+ 1001/1000);
+        System.out.println("0%1000="+ 2000/1000);
+        System.out.println("0%1000="+ 2001/1000);
+    }
     @Test
     void initRabbitMq_annotations() {
         AnnotationUtil.methodContainsAnnotation(

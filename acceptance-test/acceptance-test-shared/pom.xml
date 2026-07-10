@@ -92,6 +92,10 @@
       <artifactId>geometry-jts</artifactId>
     </dependency>
     <dependency>
+      <groupId>nu.ndw.nls.roadattributesapi</groupId>
+      <artifactId>client-feign</artifactId>
+    </dependency>
+    <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
     </dependency>

@@ -26,14 +26,17 @@ nu:
       accessibilitymap:
         network:
           cache:
-            name: "Network"
             folder: "./.tmp/network"
             load-data-on-startup: false
             watch-for-updates: false
         trafficSigns:
           cache:
-            name: "Traffic sign"
             folder: "./.tmp/trafficSigns"
+            load-data-on-startup: false
+            watch-for-updates: false
+        speedLimit:
+          cache:
+            folder: "./.tmp/speedLimits"
             load-data-on-startup: false
             watch-for-updates: false
       springboot:

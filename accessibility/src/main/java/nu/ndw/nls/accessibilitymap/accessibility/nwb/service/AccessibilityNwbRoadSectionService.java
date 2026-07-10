@@ -23,6 +23,9 @@ public class AccessibilityNwbRoadSectionService {
 
     private static final Collection<CarriagewayTypeCode> CARRIAGE_WAY_TYPE_CODE_INCLUSIONS;
 
+    @SuppressWarnings("java:S2148")
+    public static final int FALLBACK_NWB_VERSION = 19700101;
+
     static {
         CARRIAGE_WAY_TYPE_CODE_INCLUSIONS = Stream.of(CarriagewayTypeCode.values())
                 .collect(Collectors.toSet());
@@ -42,7 +45,7 @@ public class AccessibilityNwbRoadSectionService {
         Integer nwbVersionId = nwbVersionCrudService.findLatestVersionId();
 
         if (Objects.isNull(nwbVersionId)) {
-            return new NwbData(-1, List.of());
+            return new NwbData(FALLBACK_NWB_VERSION, List.of());
         }
 
         var accessibilityNwbRoadSections = nwbRoadSectionCrudService.findLazyByVersionIdAndCarriageWayTypeCodeAndMunicipality(

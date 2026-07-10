@@ -145,7 +145,7 @@ public abstract class Cache<TYPE> {
                             .divide(BINARY_KILO.multiply(BINARY_KILO), SIZE_ROUNDING, RoundingMode.HALF_UP),
                     Duration.between(start, clockService.now()).toMillis());
             consecutiveReadFailures = 0;
-            publishCacheLoadedEvent();
+            afterCacheLoaded();
         } catch (Exception exception) {
             consecutiveReadFailures += 1;
             if (consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures()) {
@@ -174,7 +174,9 @@ public abstract class Cache<TYPE> {
 
     protected abstract void writeData(Path target, TYPE data) throws IOException;
 
-    protected abstract void publishCacheLoadedEvent();
+    protected void afterCacheLoaded() {
+
+    }
 
     protected long getSizeInBytes(Path path) {
         if (Files.isDirectory(path)) {
