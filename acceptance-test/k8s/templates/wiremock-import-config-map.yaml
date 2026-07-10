@@ -3,7 +3,8 @@ kind: ConfigMap
 metadata:
   name: wiremock-import
 data:
-  default-mapping.json: |-
-{{ .Files.Get "data/wiremock/mappings/default-speed-limit-api-mapping.json" | indent 4}}
-{{ .Files.Get "data/wiremock/mappings/default-traffic-sign-api-mapping.json" | indent 4}}
-{{ .Files.Get "data/wiremock/mappings/keycloak-token-mapping.json" | indent 4}}
+{{- $files := .Files.Glob "data/wiremock/mappings/*.json" }}
+{{- range $path, $content := $files }}
+  {{ base $path }}: |-
+{{ $content | toString | indent 4 }}
+{{- end }}
