@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 import java.io.File;
@@ -32,7 +33,6 @@ import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfig
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
-//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -215,9 +215,9 @@ class AbstractGeoJsonWriterTest {
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder()
                         .trafficSignTypes(Set.of(TrafficSignType.C7))
-//                        .trafficSignSupplementarySignTypes(
-//                                includeOnlyTimeWindowedSigns
-//                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
+                        .trafficSignSupplementarySignTypes(
+                                includeOnlyTimeWindowedSigns
+                                        ? SupplementarySignType.getWindowTimeTypes() : null)
                         .build())
                 .generateConfiguration(generateConfiguration)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
