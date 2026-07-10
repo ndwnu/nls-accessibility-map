@@ -4,4 +4,6 @@ metadata:
   name: wiremock-import
 data:
   default-mapping.json: |-
-{{ .Files.Get "data/wiremock/mappings/default-mapping.json" | indent 4}}
+{{ .Files.Get "data/wiremock/mappings/default-speed-limit-api-mapping.json" | indent 4}}
+{{ .Files.Get "data/wiremock/mappings/default-traffic-sign-api-mapping.json" | indent 4}}
+{{ .Files.Get "data/wiremock/mappings/keycloak-token-mapping.json" | indent 4}}
