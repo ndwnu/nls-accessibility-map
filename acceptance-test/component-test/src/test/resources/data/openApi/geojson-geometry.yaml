@@ -2,7 +2,7 @@ components:
   schemas:
     Geometry:
       type: object
-      description: GeoJSON geometry (2D only)
+      description: GeoJSON location (2D only)
       discriminator:
         propertyName: type
       externalDocs:
@@ -23,7 +23,7 @@ components:
 
     MultiPoint:
       type: object
-      description: GeoJSON multipoint geometry
+      description: GeoJSON multipoint location
       externalDocs:
         url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.3
       allOf:
@@ -39,7 +39,7 @@ components:
 
     MultiLineString:
       type: object
-      description: GeoJSON multilinestring geometry
+      description: GeoJSON multilinestring location
       externalDocs:
         url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.5
       example: [
@@ -74,7 +74,7 @@ components:
 
     Point:
       type: object
-      description: GeoJSON point geometry
+      description: GeoJSON point location
       example: [ 5.1, 52.2 ]
       externalDocs:
         url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.2
@@ -88,7 +88,7 @@ components:
 
     Polygon:
       type: object
-      description: GeoJSON polygon geometry
+      description: GeoJSON polygon location
       externalDocs:
         url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.6
       example: [
@@ -111,7 +111,7 @@ components:
 
     LineString:
       type: object
-      description: GeoJSON linestring geometry
+      description: GeoJSON linestring location
       example: [ [ 5.1, 52.2 ], [ 5.4, 52.3 ] ]
       externalDocs:
         url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.4
@@ -128,7 +128,7 @@ components:
 
     MultiPolygon:
       type: object
-      description: GeoJSON multipolygon geometry
+      description: GeoJSON multipolygon location
       externalDocs:
         url: https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.7
       example: [

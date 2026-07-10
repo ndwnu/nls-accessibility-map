@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data;
 
 import static org.assertj.core.api.Fail.fail;
 
-import tools.jackson.databind.json.JsonMapper;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
 import io.cucumber.java.DefaultDataTableEntryTransformer;
@@ -11,6 +10,7 @@ import jakarta.validation.Valid;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -23,10 +23,16 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.MapGenerato
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.NwbVersion;
 import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSignAnalyserJobConfiguration;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.speedlimit.dto.SpeedLimit;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
+import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
+import nu.ndw.nls.springboot.test.graph.dto.Edge;
+import nu.ndw.nls.springboot.test.graph.dto.Graph;
 import nu.ndw.nls.springboot.test.graph.dto.Node;
 import org.apache.logging.log4j.util.Strings;
+import org.locationtech.jts.geom.LineString;
+import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 public class DataTypeRegister {
@@ -34,6 +40,8 @@ public class DataTypeRegister {
     private final JsonMapper jsonMapper = new JsonMapper();
 
     private final GraphHopperDriver graphHopperDriver;
+
+    private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @DataTableType
     public @Valid BlockedRoadSection mapBlockedRoadSection(Map<String, String> entry) {
@@ -48,17 +56,53 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid TrafficSign mapTrafficSign(Map<String, String> entry) {
 
+        var edge = getEdgeBetweenStartAndEndNode(Integer.parseInt(entry.get("startNodeId")), Integer.parseInt(entry.get("endNodeId")));
+
+        var fraction = Double.parseDouble(entry.get("fraction"));
+        LineString fractionLineString = fractionAndDistanceCalculator.getSubLineString(
+                edge.getWgs84LineString(),
+                fraction);
+
         return TrafficSign.builder()
                 .id(entry.get("id"))
-                .startNodeId(Integer.parseInt(entry.get("startNodeId")))
-                .endNodeId(Integer.parseInt(entry.get("endNodeId")))
-                .fraction(Double.parseDouble(entry.get("fraction")))
+                .roadSectionId(edge.getId())
+                .fraction(fraction)
+                .location(fractionLineString.getCoordinates()[1])
                 .rvvCode(entry.get("rvvCode"))
                 .blackCode(Objects.nonNull(entry.get("blackCode")) ? entry.get("blackCode").toUpperCase(Locale.US) : null)
                 .directionType(DirectionType.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(Objects.nonNull(entry.get("windowTime")) ? entry.get("windowTime") : null)
                 .regulationOrderId(entry.get("regulationOrderId"))
                 .build();
+    }
+
+    @DataTableType
+    public @Valid SpeedLimit mapSpeedLimit(Map<String, String> entry) {
+
+        var edge = getEdgeBetweenStartAndEndNode(Integer.parseInt(entry.get("startNodeId")), Integer.parseInt(entry.get("endNodeId")));
+
+        return SpeedLimit.builder()
+                .roadSectionId(edge.getId())
+                .forwardAverageSpeedLimit(
+                        Objects.nonNull(entry.get("forwardAverageSpeedLimit"))
+                                ? Integer.parseInt(entry.get("forwardAverageSpeedLimit"))
+                                : null)
+                .backwardAverageSpeedLimit(
+                        Objects.nonNull(entry.get("backwardAverageSpeedLimit"))
+                                ? Integer.parseInt(entry.get("backwardAverageSpeedLimit"))
+                                : null)
+                .build();
+    }
+
+    private Edge getEdgeBetweenStartAndEndNode(int startNodeId, int endNodeId) {
+        Graph graph = graphHopperDriver.getLastBuiltGraph();
+        List<Edge> edges = graph.findEdgesBetweenNodes(startNodeId, endNodeId);
+
+        if (edges.size() != 1) {
+            fail("There should be exactly one link between the start and end node. But there were %s"
+                    .formatted(edges.size()));
+        }
+        return edges.getFirst();
     }
 
     @DefaultParameterTransformer

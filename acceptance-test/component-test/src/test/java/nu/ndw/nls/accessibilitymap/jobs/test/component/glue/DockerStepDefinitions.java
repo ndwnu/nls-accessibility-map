@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.jobs.test.component.glue;
 
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +41,17 @@ public class DockerStepDefinitions {
         jobConfigurations.forEach(dataAnalyserJobDriver::runBaseNetworkAnalysisJob);
     }
 
-    @When("run TrafficSignUpdateCache")
+    @Given("run TrafficSignUpdateCache")
     public void runTrafficSignUpdateCache() {
 
         jobDriver.run("job", "rebuildTrafficSignCache");
+        accessibilityMapServicesClient.reloadCaches();
+    }
+
+    @Given("run SpeedLimitUpdateCache")
+    public void runSpeedLimitUpdateCache() {
+
+        jobDriver.run("job", "rebuildSpeedLimitCache");
         accessibilityMapServicesClient.reloadCaches();
     }
 }

@@ -8,7 +8,11 @@ Feature: Accessibility V2
       | 6           | 1         | 0.9      | C18     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
       | 3           | 4         | 0.1      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
       | 3           | 4         | 0.9      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
-    When run TrafficSignUpdateCache
+    And run TrafficSignUpdateCache
+    And with speed limits
+      | startNodeId | endNodeId | forwardAverageSpeedLimit |
+      | 5           | 11        | 30                       |
+    And run SpeedLimitUpdateCache
     When request accessibility geojson for truck2MetersWide-destination3-7
     Then we expect accessibility geojson response truck2MetersWide-destination3-7
 
@@ -21,9 +25,6 @@ Feature: Accessibility V2
 
   Scenario: Get - Dynamic restriction on node should only block edges with the same road section id
     Given a simple network
-    And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
-    When run TrafficSignUpdateCache
     When request accessibility geojson for dynamicRestrictionOnNode
     Then we expect accessibility geojson response dynamicRestrictionOnNode
 
@@ -36,7 +37,7 @@ Feature: Accessibility V2
       | 6           | 1         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000002 |
       | 1           | 2         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000003 |
       | 1           | 2         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000004 |
-    When run TrafficSignUpdateCache
+    And run TrafficSignUpdateCache
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-unreachable
 
@@ -54,45 +55,32 @@ Feature: Accessibility V2
       | 6           | 1         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000001 |
       | 6           | 1         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000002 |
       | 1           | 2         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000003 |
-
-    When run TrafficSignUpdateCache
+    And run TrafficSignUpdateCache
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions-effectivelyAccessible
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-reachable-effectivelyAccessible
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-unreachable-oneway
 
+
   Scenario: Get - Bounding box inner circle - Destination reachable
     Given a simple network
-    And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
-    When run TrafficSignUpdateCache
     When request accessibility geojson for boundingBox-destination3-7
     Then we expect accessibility geojson response boundingBox-destination3-7
 
 
   Scenario: Get - Bounding box inner circle - Custom restrictions - Destination unreachable
     Given a simple network
-    And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
-    When run TrafficSignUpdateCache
-
     When request accessibility geojson for boundingBox-destination3-7-unreachable
     Then we expect accessibility geojson response boundingBox-destination3-7-unreachable
 
+
   Scenario: Get - network with uni-directional roads and car inaccessible roads sections will not be included
     Given a simple network with uni-directional road sections and car inaccessible carriageway types
-    And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id |
-
-    When run TrafficSignUpdateCache
     When request accessibility geojson for truck2MetersWide-destination3-7
     Then we expect accessibility geojson response truck2MetersWide-destination3-7-network-has-missing-roads
 
+
   Scenario: Get - request with destination on footpath will be snapped to nearest car accessible road
     Given a simple network with uni-directional road sections and car inaccessible carriageway types
-    And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id |
-
-    When run TrafficSignUpdateCache
     When request accessibility geojson for truck2MetersWide-destination9-1
     Then we expect accessibility geojson response truck2MetersWide-destination9-1-snapped-to-2
