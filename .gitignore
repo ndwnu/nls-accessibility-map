@@ -24,4 +24,4 @@ secrets-*.yaml
 
 /specification/**/geojson-geometry.yaml
 **/open-api-config.yaml
-/.tmp/
+/cache/

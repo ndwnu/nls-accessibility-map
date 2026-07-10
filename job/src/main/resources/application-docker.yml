@@ -1,3 +1,9 @@
 hostDatabase: nls-postgres
 hostRabbitMQ: nls-rabbitmq
 hostWiremock: accessibility-wiremock
+nu:
+  ndw:
+    nls:
+      springboot:
+        job:
+          run-as-service: false
