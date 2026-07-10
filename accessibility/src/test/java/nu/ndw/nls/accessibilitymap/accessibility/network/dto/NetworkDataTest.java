@@ -9,13 +9,9 @@ import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.PointList;
 import java.util.Map;
-import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.GraphHopperNetwork;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbDataUpdates;
-import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,8 +55,8 @@ class NetworkDataTest extends ValidationTest {
 
         assertThat(networkData.getNwbVersion()).isEqualTo(1);
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
-        assertThat(networkData.getNwbData()).isEqualTo(nwbData);
-        assertThat(networkData.getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
+        assertThat(networkData.getNwbNetworkData().getNwbData()).isEqualTo(nwbData);
+        assertThat(networkData.getNwbNetworkData().getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
     }
 
     @Test
@@ -68,8 +64,8 @@ class NetworkDataTest extends ValidationTest {
         networkData = new NetworkData(networkGraphHopper, nwbData, nwbDataUpdates);
         assertThat(networkData.getNwbVersion()).isEqualTo(1);
         assertThat(networkData.getNetworkGraphHopper()).isEqualTo(networkGraphHopper);
-        assertThat(networkData.getNwbData()).isEqualTo(nwbData);
-        assertThat(networkData.getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
+        assertThat(networkData.getNwbNetworkData().getNwbData()).isEqualTo(nwbData);
+        assertThat(networkData.getNwbNetworkData().getNwbDataUpdates()).isEqualTo(nwbDataUpdates);
     }
 
     @Test
@@ -136,38 +132,6 @@ class NetworkDataTest extends ValidationTest {
         when(networkGraphHopper.getWayIdToEdgeKey()).thenReturn(Map.of(roadSectionId, edgeKey));
         assertThat(networkData.findGeometryInNetwork(2)).isEmpty();
     }
-
-    @Test
-    void findCarriageWayTypeCodeByRoadSectionId_inRoadUpdates() {
-        long roadSectionId = 1L;
-        AccessibilityNwbRoadSectionUpdate accessibilityNwbRoadSectionUpdate = Mockito.mock(AccessibilityNwbRoadSectionUpdate.class);
-        when(nwbDataUpdates.findChangedNwbRoadSectionById(roadSectionId)).thenReturn(Optional.of(accessibilityNwbRoadSectionUpdate));
-        when(accessibilityNwbRoadSectionUpdate.carriagewayTypeCode()).thenReturn(CarriagewayTypeCode.RB);
-
-        assertThat(networkData.findCarriageWayTypeCodeByRoadSectionId(roadSectionId)).contains(CarriagewayTypeCode.RB);
-    }
-
-    @Test
-    void findCarriageWayTypeCodeByRoadSectionId_inNwbData() {
-        long roadSectionId = 1L;
-        AccessibilityNwbRoadSection accessibilityNwbRoadSection = Mockito.mock(AccessibilityNwbRoadSection.class);
-        when(nwbDataUpdates.findChangedNwbRoadSectionById(roadSectionId)).thenReturn(Optional.empty());
-        when(nwbData.findAccessibilityNwbRoadSectionById(roadSectionId)).thenReturn(Optional.of(accessibilityNwbRoadSection));
-        when(accessibilityNwbRoadSection.carriagewayTypeCode()).thenReturn(CarriagewayTypeCode.RB);
-
-        assertThat(networkData.findCarriageWayTypeCodeByRoadSectionId(roadSectionId)).contains(CarriagewayTypeCode.RB);
-    }
-
-    @Test
-    void findCarriageWayTypeCodeByRoadSectionId_notfound() {
-        long roadSectionId = 1L;
-        when(nwbDataUpdates.findChangedNwbRoadSectionById(roadSectionId)).thenReturn(Optional.empty());
-        when(nwbData.findAccessibilityNwbRoadSectionById(roadSectionId)).thenReturn(Optional.empty());
-
-        assertThat(networkData.findCarriageWayTypeCodeByRoadSectionId(roadSectionId)).isEmpty();
-    }
-
-
 
     @Override
     protected Class<?> getClassToTest() {

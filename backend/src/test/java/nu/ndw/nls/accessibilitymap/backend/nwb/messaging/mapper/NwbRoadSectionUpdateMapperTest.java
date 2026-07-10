@@ -7,9 +7,9 @@ import static org.mockito.Mockito.when;
 
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSectionUpdate;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.NwbData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.DrivingDirection;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.messaging.dto.NwbRoadSectionUpdate;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
@@ -31,7 +31,7 @@ class NwbRoadSectionUpdateMapperTest {
     private NetworkData networkData;
 
     @Mock
-    private NwbData nwbData;
+    private NwbNetworkData nwbNetworkData;
 
     @Mock
     private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
@@ -51,8 +51,8 @@ class NwbRoadSectionUpdateMapperTest {
                 .drivingDirection(DrivingDirection.BOTH)
                 .build();
         when(networkDataService.get()).thenReturn(networkData);
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.findAccessibilityNwbRoadSectionById(ROAD_SECTION_ID)).thenReturn(java.util.Optional.of(accessibilityNwbRoadSection));
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+        when(nwbNetworkData.findAccessibilityNwbRoadSectionById(ROAD_SECTION_ID)).thenReturn(java.util.Optional.of(accessibilityNwbRoadSection));
 
         AccessibilityNwbRoadSectionUpdate expected = new AccessibilityNwbRoadSectionUpdate(ROAD_SECTION_ID,
                 true,
@@ -69,8 +69,8 @@ class NwbRoadSectionUpdateMapperTest {
                 .roadSectionId(ROAD_SECTION_ID)
                 .build();
         when(networkDataService.get()).thenReturn(networkData);
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.findAccessibilityNwbRoadSectionById(ROAD_SECTION_ID)).thenReturn(java.util.Optional.of(accessibilityNwbRoadSection));
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+        when(nwbNetworkData.findAccessibilityNwbRoadSectionById(ROAD_SECTION_ID)).thenReturn(java.util.Optional.of(accessibilityNwbRoadSection));
         when(accessibilityNwbRoadSection.carriagewayTypeCode()).thenReturn(CarriagewayTypeCode.RB);
         when(accessibilityNwbRoadSection.backwardAccessible()).thenReturn(true);
         when(accessibilityNwbRoadSection.forwardAccessible()).thenReturn(false);
@@ -88,8 +88,8 @@ class NwbRoadSectionUpdateMapperTest {
                 .roadSectionId(ROAD_SECTION_ID)
                 .build();
         when(networkDataService.get()).thenReturn(networkData);
-        when(networkData.getNwbData()).thenReturn(nwbData);
-        when(nwbData.findAccessibilityNwbRoadSectionById(ROAD_SECTION_ID)).thenReturn(java.util.Optional.empty());
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+        when(nwbNetworkData.findAccessibilityNwbRoadSectionById(ROAD_SECTION_ID)).thenReturn(java.util.Optional.empty());
 
         assertThatThrownBy(() -> nwbRoadSectionUpdateMapper.map(nwbRoadSectionUpdate)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Road update road-section: 1 is not present is active version");

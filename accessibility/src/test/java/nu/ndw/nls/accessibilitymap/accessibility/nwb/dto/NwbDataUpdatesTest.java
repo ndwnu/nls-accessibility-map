@@ -7,22 +7,23 @@ import java.util.List;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import org.junit.jupiter.api.Test;
 
-@SuppressWarnings("DataFlowIssue")
 class NwbDataUpdatesTest {
 
     @Test
     void constructor_same_road_sections() {
-        var changedRoads = List.of(
+        List<AccessibilityNwbRoadSectionUpdate> changedRoads = List.of(
                 new AccessibilityNwbRoadSectionUpdate(1, true, true, CarriagewayTypeCode.RB),
                 new AccessibilityNwbRoadSectionUpdate(1, true, false, CarriagewayTypeCode.HR));
-        var roadChanges = new NwbDataUpdates(1, changedRoads);
 
-        var expectedChangedRoads = List.of(new AccessibilityNwbRoadSectionUpdate(1, true, false, CarriagewayTypeCode.HR));
+        NwbDataUpdates roadChanges = new NwbDataUpdates(1, changedRoads);
 
-        assertThat(roadChanges.getAccessibilityNwbRoadSectionUpdates()).isEqualTo(expectedChangedRoads);
+        assertThat(roadChanges.getAccessibilityNwbRoadSectionUpdates()).containsExactly(
+                new AccessibilityNwbRoadSectionUpdate(1, true, false, CarriagewayTypeCode.HR)
+        );
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void constructor_changed_road_sections_null() {
         assertThatThrownBy(() -> new NwbDataUpdates(1, null))
                 .hasMessage("accessibilityNwbRoadSectionUpdates is marked non-null but is null")
@@ -30,6 +31,7 @@ class NwbDataUpdatesTest {
     }
 
     @Test
+    @SuppressWarnings("DataFlowIssue")
     void constructor_nwbVersionId_null() {
         assertThatThrownBy(() -> new NwbDataUpdates(null, List.of()))
                 .hasMessage("nwbVersionId is marked non-null but is null")
@@ -38,15 +40,18 @@ class NwbDataUpdatesTest {
 
     @Test
     void merge_ok() {
-        var existingRoadChanges = new NwbDataUpdates(1,
+        NwbDataUpdates existingRoadChanges = new NwbDataUpdates(
+                1,
                 List.of(
                         new AccessibilityNwbRoadSectionUpdate(1, true, true, CarriagewayTypeCode.RB),
                         new AccessibilityNwbRoadSectionUpdate(2, true, true, CarriagewayTypeCode.RB)));
-        var incomingRoadChanges = new NwbDataUpdates(1,
+        NwbDataUpdates incomingRoadChanges = new NwbDataUpdates(
+                1,
                 List.of(
                         new AccessibilityNwbRoadSectionUpdate(1, true, false, CarriagewayTypeCode.NRB),
                         new AccessibilityNwbRoadSectionUpdate(3, true, false, CarriagewayTypeCode.HR)));
-        var expectedRoadChanges = new NwbDataUpdates(1,
+        NwbDataUpdates expectedRoadChanges = new NwbDataUpdates(
+                1,
                 List.of(
                         new AccessibilityNwbRoadSectionUpdate(1, true, false, CarriagewayTypeCode.NRB),
                         new AccessibilityNwbRoadSectionUpdate(2, true, true, CarriagewayTypeCode.RB),
@@ -58,13 +63,22 @@ class NwbDataUpdatesTest {
 
     @Test
     void merge_not_same_nwbVersionId() {
-        var existingRoadChanges = new NwbDataUpdates(1,
-                List.of());
+        var existingRoadChanges = new NwbDataUpdates(1, List.of());
 
-        var incomingRoadChanges = new NwbDataUpdates(2,
-                List.of());
+        var incomingRoadChanges = new NwbDataUpdates(2, List.of());
 
         assertThatThrownBy(() -> existingRoadChanges.merge(incomingRoadChanges)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Cannot merge updates from different NWB versions");
+    }
+
+    @Test
+    void findChangedNwbRoadSectionById() {
+        AccessibilityNwbRoadSectionUpdate roadSection = new AccessibilityNwbRoadSectionUpdate(1, true, true, CarriagewayTypeCode.RB);
+        List<AccessibilityNwbRoadSectionUpdate> changedRoads = List.of(roadSection);
+
+        NwbDataUpdates nwbDataUpdates = new NwbDataUpdates(1, changedRoads);
+
+        assertThat(nwbDataUpdates.findChangedNwbRoadSectionById(1)).contains(roadSection);
+        assertThat(nwbDataUpdates.findChangedNwbRoadSectionById(2)).isEmpty();
     }
 }

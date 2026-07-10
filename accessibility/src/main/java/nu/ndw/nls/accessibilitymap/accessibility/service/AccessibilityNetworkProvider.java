@@ -1,22 +1,21 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
-import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
+import com.graphhopper.util.PMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.weighting.WeightingFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
@@ -30,8 +29,6 @@ public class AccessibilityNetworkProvider {
     private final QueryGraphConfigurer queryGraphConfigurer;
 
     private final Snapper snapper;
-
-    private final WeightingFactory weightingFactory;
 
     public AccessibilityNetwork get(
             NetworkData networkData,
@@ -71,10 +68,6 @@ public class AccessibilityNetworkProvider {
                 queryGraph,
                 snapRestrictions);
 
-        Set<Integer> blockedEdges = restrictionsByEdgeKey.keySet();
-        Weighting weightingWithRestrictions = weightingFactory.createWeighting(networkData, queryGraph, blockedEdges);
-        Weighting weightingWithoutRestrictions = weightingFactory.createWeighting(networkData, queryGraph, Set.of());
-
         return new AccessibilityNetwork(
                 networkData,
                 queryGraph,
@@ -82,7 +75,6 @@ public class AccessibilityNetworkProvider {
                 restrictionsByEdgeKey,
                 fromSnap.get(),
                 destinationSnap.orElse(null),
-                weightingWithRestrictions,
-                weightingWithoutRestrictions);
+                queryGraph.wrapWeighting(networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap())));
     }
 }
