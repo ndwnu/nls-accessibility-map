@@ -13,6 +13,7 @@ import static nu.ndw.nls.accessibilitymap.test.acceptance.driver.oauth.OAuthDriv
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Component;
 public class IssueDriver {
 
     private final TestDataProvider testDataProvider;
+
+    private final GraphHopperDriver graphHopperDriver;
 
     public void stubIssueApiRequest() {
 
@@ -45,6 +48,7 @@ public class IssueDriver {
     public void verifyIssueCreated(String issueFile) {
 
         String issueBody = testDataProvider.readFromFile("issue", issueFile + ".json");
+        issueBody = issueBody.replaceAll("###NWB_VERSION###", graphHopperDriver.getLastBuiltGraphVersion() + "");
 
         verify(postRequestedFor(urlEqualTo("/api/rest/static-road-data/location-data-issues/v1/issues"))
                 .withHeader("Content-Type", equalTo("application/json"))
@@ -53,8 +57,9 @@ public class IssueDriver {
 
     public void verifyNumberOfCreatedIssues(int numberOfIssues) {
 
-        verify(numberOfIssues, postRequestedFor(urlEqualTo("/api/rest/static-road-data/location-data-issues/v1/issues"))
-                .withHeader("Content-Type", equalTo("application/json")));
+        verify(
+                numberOfIssues, postRequestedFor(urlEqualTo("/api/rest/static-road-data/location-data-issues/v1/issues"))
+                        .withHeader("Content-Type", equalTo("application/json")));
     }
 
     public void verifyReportComplete(String reporterReportGroupId) {
