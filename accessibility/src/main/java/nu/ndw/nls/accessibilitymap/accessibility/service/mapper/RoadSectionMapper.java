@@ -22,7 +22,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToGeometryMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
-import nu.ndw.nls.routingmapmatcher.isochrone.algorithm.IsoLabel;
+import nu.ndw.nls.routingmapmatcher.isochrone.v2.dto.IsochroneLabel;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +39,7 @@ public class RoadSectionMapper {
     @Timed(value = "accessibilitymap.roadSection.mapping")
     public @Valid Collection<RoadSection> map(
             AccessibilityNetwork accessibilityNetwork,
-            List<IsoLabel> isoLabels,
+            List<IsochroneLabel> isochroneLabels,
             Map<Integer, List<Restriction>> restrictionsByEdgeKey
     ) {
 
@@ -48,7 +48,7 @@ public class RoadSectionMapper {
         SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
 
-        isoLabels.forEach(isoLabel -> {
+        isochroneLabels.forEach(isoLabel -> {
             EdgeIteratorState currentEdge = accessibilityNetwork.getQueryGraph().getEdgeIteratorState(
                     isoLabel.getEdge(),
                     isoLabel.getNode());
@@ -64,7 +64,7 @@ public class RoadSectionMapper {
                     id -> RoadSection.builder()
                             .id(Long.valueOf(id))
                             .functionalRoadClass(accessibilityNetwork.getNetworkData()
-                                    .getNwbData()
+                                    .getNwbNetworkData()
                                     .findAccessibilityNwbRoadSectionById(id)
                                     .orElseThrow()
                                     .functionalRoadClass())
@@ -93,7 +93,7 @@ public class RoadSectionMapper {
                     restrictions);
         });
 
-        log.debug("Mapped {} iso labels to {} road sections", isoLabels.size(), roadSectionsById.size());
+        log.debug("Mapped {} iso labels to {} road sections", isochroneLabels.size(), roadSectionsById.size());
         return new ArrayList<>(roadSectionsById.values());
     }
 

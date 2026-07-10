@@ -17,6 +17,8 @@ import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.PointMatchService;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
@@ -45,6 +47,9 @@ class SnapperTest {
 
     @Mock
     private NetworkData networkData;
+
+    @Mock
+    private NwbNetworkData nwbNetworkData;
 
     @Mock
     private LocationIndexTree locationIndexTree;
@@ -78,6 +83,9 @@ class SnapperTest {
 
     @Mock
     private EdgeIteratorState edgeIteratorState;
+
+    @Mock
+    private AccessibilityNwbRoadSection accessibilityNwbRoadSection;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
@@ -124,7 +132,6 @@ class SnapperTest {
     }
 
     private void setupFixtureForSnapLocation(CarriagewayTypeCode carriageWayTypeCode) {
-        Optional<CarriagewayTypeCode> carriageWayTypeCodeOptional = Optional.ofNullable(carriageWayTypeCode);
         when(location.point()).thenReturn(point);
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);
@@ -137,7 +144,10 @@ class SnapperTest {
         when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(roadSectionEncodedValue);
         when(edgeIteratorState.get(roadSectionEncodedValue)).thenReturn(23);
-        when(networkData.findCarriageWayTypeCodeByRoadSectionId(23)).thenReturn(carriageWayTypeCodeOptional);
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+
+        when(nwbNetworkData.findAccessibilityNwbRoadSectionById(23)).thenReturn(Optional.of(accessibilityNwbRoadSection));
+        when(accessibilityNwbRoadSection.carriagewayTypeCode()).thenReturn(carriageWayTypeCode);
     }
 
     @Test
@@ -213,7 +223,8 @@ class SnapperTest {
         assertThat(edgeFilterCaptor.getValue().accept(edgeIteratorState)).isTrue();
         assertThat(foundSnap).isEmpty();
 
-        loggerExtension.containsLog(Level.DEBUG,
+        loggerExtension.containsLog(
+                Level.DEBUG,
                 "No road section present for restriction 'restriction' that could be linked to the nwb map in the Graph Hopper network.");
     }
 
@@ -237,7 +248,8 @@ class SnapperTest {
         assertThat(edgeFilterCaptor.getValue().accept(edgeIteratorState)).isFalse();
         assertThat(foundSnap).isEmpty();
 
-        loggerExtension.containsLog(Level.DEBUG,
+        loggerExtension.containsLog(
+                Level.DEBUG,
                 "No road section present for restriction 'restriction' that could be linked to the nwb map in the Graph Hopper network.");
     }
 }
