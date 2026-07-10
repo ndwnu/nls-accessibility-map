@@ -25,6 +25,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
@@ -258,9 +259,9 @@ class GeoJsonPolygonWriterTest {
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder()
                         .trafficSignTypes(Set.of(TrafficSignType.C7))
-//                        .trafficSignSupplementarySignTypes(
-//                                includeOnlyTimeWindowedSigns
-//                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
+                        .trafficSignSupplementarySignTypes(
+                                includeOnlyTimeWindowedSigns
+                                        ? SupplementarySignType.getWindowTimeTypes() : null)
                         .build())
                 .generateConfiguration(generateConfiguration)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))

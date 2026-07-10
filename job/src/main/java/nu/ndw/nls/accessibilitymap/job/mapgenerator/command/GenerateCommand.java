@@ -99,11 +99,8 @@ public class GenerateCommand implements Callable<Integer> {
                             .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                             .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                             .trafficSignSupplementarySignTypes(
-                                    // Right now OB254 seems to contain all the window time signs?
                                     includeOnlyTimeWindowedSigns
-                                            ? Set.of(   SupplementarySignType.OB254,
-                                                        SupplementarySignType.OB256,
-                                                        SupplementarySignType.OB259)
+                                            ? SupplementarySignType.getWindowTimeTypes()
                                             : null)
                             .build())
                     .polygonMaxDistanceBetweenPoints(polygonMaxDistanceBetweenPoints)

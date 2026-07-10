@@ -1,27 +1,6 @@
 Feature: Accessibility V2
 
-
-#And with traffic sign conditions
-#| name | vehicleType                                                         | width | height | length | weight | axleWeight | fuelType | emissionsClass | timeValidity |
-#| C1   | pedestrian                                                          |       |        |        |        |            |          |                |              |
-#| C6   | bus,car,deliveryVan,taxi,agriculturalVehicle,truck                  |       |        |        |        |            |          |                |              |
-#| C7   | truck                                                               |       |        |        |        |            |          |                |              |
-#| C7A  | bus                                                                 |       |        |        |        |            |          |                |              |
-#| C7B  | bus,truck                                                           |       |        |        |        |            |          |                |              |
-#| C10  | trailer                                                             |       |        |        |        |            |          |                |              |
-#| C11  | motorcycle                                                          |       |        |        |        |            |          |                |              |
-#| C12  | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |       |        |        |        |            |          |                |              |
-#| C17  |                                                                     |       |        | 1000   |        |            |          |                |              |
-#| C18  |                                                                     | 1000  |        |        |        |            |          |                |              |
-#| C19  |                                                                     |       | 1000   |        |        |            |          |                |              |
-#| C20  |                                                                     |       |        |        |        | 10000      |          |                |              |
-#| C21  |                                                                     |       |        |        | 10000  |            |          |                |              |
-#| C22  | vehicleWithDangerousGoods?                                          |       |        |        |        |            |          |                |              |
-##      Emissions zones (regulationOrderId
-#| C22A |                                                                     |       |        |        |        |            |          |                |              |
-#| C22C |                                                                     |       |        |        |        |            |          |                |              |
-
-
+  @focus
   Scenario: Get - Vehicle width 2 meters - Destination reachable
     Given a simple network
 

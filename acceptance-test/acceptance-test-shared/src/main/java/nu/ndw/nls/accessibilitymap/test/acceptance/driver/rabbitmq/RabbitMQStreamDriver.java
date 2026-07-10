@@ -46,8 +46,8 @@ public class RabbitMQStreamDriver implements StateManagement {
     @Override
     @SneakyThrows
     public void prepareState() {
-//        await().atMost(Duration.ofSeconds(TWO.intValue()))
-//                .untilAsserted(() -> assertThat(environment.streamExists(streamQueueName)).isTrue());
+        await().atMost(Duration.ofSeconds(TWO.intValue()))
+                .untilAsserted(() -> assertThat(environment.streamExists(streamQueueName)).isTrue());
     }
 
     @Override

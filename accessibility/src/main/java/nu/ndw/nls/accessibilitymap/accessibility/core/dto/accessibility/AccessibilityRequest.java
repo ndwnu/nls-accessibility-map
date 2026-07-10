@@ -57,16 +57,16 @@ public record AccessibilityRequest(
     public static final BBox BOUNDING_BOX_GLOBE = BBox.fromPoints(-MAX_LATITUDE, -MAX_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
 
     // Er moet altijd een exclusion zijn? @NotEmpty? Niet @NotNull?
-    public @NotEmpty Set<SupplementarySignType> excludeTrafficSignSupplementarySignTypes() {
-
-        return excludeTrafficSignSupplementarySignTypes;
-
+//    public @NotEmpty Set<SupplementarySignType> excludeTrafficSignSupplementarySignTypes() {
+//
+//        return excludeTrafficSignSupplementarySignTypes;
+//
 //        if (Objects.nonNull(excludeTrafficSignSupplementarySignTypes)) {
 //            return excludeTrafficSignSupplementarySignTypes;
 //        } else {
 //            return Set.of(SupplementarySignType.EXCLUDING, SupplementarySignType.PRE_ANNOUNCEMENT);
 //        }
-    }
+//    }
 
     public @NotEmpty Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes() {
 
