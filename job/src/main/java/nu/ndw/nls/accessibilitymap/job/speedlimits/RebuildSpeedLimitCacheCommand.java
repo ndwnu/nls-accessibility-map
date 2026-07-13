@@ -24,7 +24,7 @@ import picocli.CommandLine.Command;
 @RequiredArgsConstructor
 public class RebuildSpeedLimitCacheCommand implements Callable<Integer> {
 
-    public static final int ITEMS_PER_PAGE = 1000;
+    private static final int ITEMS_PER_PAGE = 1000;
 
     private final SpeedLimitsApiClient speedLimitsApiClient;
 

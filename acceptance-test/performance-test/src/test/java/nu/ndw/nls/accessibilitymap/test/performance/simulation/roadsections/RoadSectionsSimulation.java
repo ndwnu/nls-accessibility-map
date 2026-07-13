@@ -71,7 +71,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
             TrafficSignDriver trafficSignDriver,
             TrafficSignTestDataService trafficSignTestDataService,
             JobDriver jobDriver,
-            TestDataProvider testDataProvider, FractionAndDistanceCalculator fractionAndDistanceCalculator
+            TestDataProvider testDataProvider,
+            FractionAndDistanceCalculator fractionAndDistanceCalculator
     ) {
 
         super(RoadSectionsSimulationConfiguration.class);
