@@ -1,10 +1,10 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.supplier.AccessibilityNwbRoadSectionDtoSupplier;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.supplier.AccessibilityVersionSupplier;
@@ -15,6 +15,7 @@ import nu.ndw.nls.springboot.test.graph.dto.Direction;
 import nu.ndw.nls.springboot.test.graph.dto.Graph;
 import nu.ndw.nls.springboot.test.graph.exporter.database.nwb.NwbDatabaseExporter;
 import nu.ndw.nls.springboot.test.graph.exporter.database.nwb.dto.NwbDataAccessSettings;
+import nu.ndw.nls.springboot.test.graph.exporter.database.nwb.dto.NwbDataAccessSettings.NwbDataAccessSettingsBuilder;
 import nu.ndw.nls.springboot.test.graph.service.GraphDataBuilder;
 import nu.ndw.nls.springboot.test.graph.service.GraphGeneratorService;
 import nu.ndw.nls.springboot.test.graph.service.dto.GenerateSpecification;
@@ -38,6 +39,9 @@ public class GraphHopperDriver {
     @Getter
     private Graph lastBuiltGraph;
 
+    @Getter
+    private Integer lastBuiltGraphVersion;
+
     public GraphHopperDriver createRoad(long startNodeId, long endNodeId) {
 
         graphDataBuilder.createEdge(startNodeId, endNodeId);
@@ -56,35 +60,32 @@ public class GraphHopperDriver {
         return this;
     }
 
-    @SneakyThrows
-    @SuppressWarnings("java:S3658")
     public GraphHopperDriver insertNwbData() {
-        return insertNwbDataWithCarriagewayOverrides(Map.of());
+        return insertNwbData(null, Map.of());
     }
 
-    @SneakyThrows
-    @SuppressWarnings("java:S3658")
     public GraphHopperDriver insertNwbDataWithVersion(String version) {
-        lastBuiltGraph = graphDataBuilder.build();
-        nwbDatabaseExporter.export(
-                lastBuiltGraph,
-                NwbDataAccessSettings.builder()
-                        .versionDtoSupplier(new AccessibilityVersionSupplier(version))
-                        .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier(Map.of()))
-                        .build());
-
-        return this;
+        return insertNwbData(version, Map.of());
     }
 
-    @SneakyThrows
-    @SuppressWarnings("java:S3658")
     public GraphHopperDriver insertNwbDataWithCarriagewayOverrides(Map<Long, CarriagewayTypeCode> carriagewayOverrides) {
+        return insertNwbData(null, carriagewayOverrides);
+    }
+
+    private GraphHopperDriver insertNwbData(String version, Map<Long, CarriagewayTypeCode> carriagewayOverrides) {
         lastBuiltGraph = graphDataBuilder.build();
-        nwbDatabaseExporter.export(
-                lastBuiltGraph,
-                NwbDataAccessSettings.builder()
-                        .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier(carriagewayOverrides))
-                        .build());
+
+        NwbDataAccessSettingsBuilder nwbDataAccessSettingsBuilder = NwbDataAccessSettings.builder()
+                .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier(carriagewayOverrides));
+        if (Objects.nonNull(version)) {
+            nwbDataAccessSettingsBuilder.versionDtoSupplier(new AccessibilityVersionSupplier(version));
+        }
+
+        NwbDataAccessSettings nwbDataAccessSettings = nwbDataAccessSettingsBuilder.build();
+
+        lastBuiltGraphVersion = nwbDataAccessSettings.getVersionDtoSupplier().create().getVersionId();
+
+        nwbDatabaseExporter.export(lastBuiltGraph, nwbDataAccessSettings);
 
         return this;
     }

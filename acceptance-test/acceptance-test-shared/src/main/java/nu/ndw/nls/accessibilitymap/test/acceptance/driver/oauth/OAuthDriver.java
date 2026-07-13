@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.jobs.test.component.driver.oauth;
+package nu.ndw.nls.accessibilitymap.test.acceptance.driver.oauth;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -7,6 +7,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.springboot.test.component.state.StateManagement;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class OAuthDriver implements StateManagement {
 
     public static final String SIMULATED_BEARER_TOKEN = "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3";

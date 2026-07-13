@@ -68,10 +68,14 @@ class TrafficSignDataServiceTest {
                 .folder(testDir.resolve("testFolder"))
                 .build();
 
-        trafficSignDataService = new TrafficSignDataService(trafficSignCacheConfiguration,
+        trafficSignDataService = new TrafficSignDataService(
+                trafficSignCacheConfiguration,
                 clockService,
                 distributedLockService,
-                new JsonMapper(), jsonWriter, activeVersionRepository, retryTemplate);
+                new JsonMapper(),
+                jsonWriter,
+                activeVersionRepository,
+                retryTemplate);
     }
 
     @AfterEach

@@ -1,7 +1,5 @@
 package nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign;
 
-import static org.assertj.core.api.Fail.fail;
-
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +12,6 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesD
 import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
-import nu.ndw.nls.springboot.test.graph.dto.Edge;
-import nu.ndw.nls.springboot.test.graph.dto.Graph;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,34 +25,15 @@ public class TrafficSignTestDataService {
     @SuppressWarnings("java:S109")
     public TrafficSignGeoJsonDto createTrafficSignGeoJsonDto(TrafficSign trafficSign) {
 
-        Graph graph = graphHopperDriver.getLastBuiltGraph();
-        List<Edge> edges = graph.findEdgesBetweenNodes(trafficSign.startNodeId(), trafficSign.endNodeId());
-
-        if (edges.size() != 1) {
-            fail("There should be exactly one link between the start and end node. But there was %s"
-                    .formatted(edges.size()));
-        }
-        Edge edge = edges.getFirst();
-
-        LineString fractionLineString = fractionAndDistanceCalculator.getSubLineString(
-                edge.getWgs84LineString(),
-                trafficSign.fraction());
-
-        if (fractionLineString.getCoordinates().length != 2) {
-            fail("There should a start and end coordinate. But there was only %s"
-                    .formatted(fractionLineString.getCoordinates().length));
-        }
-        Coordinate endCoordinate = fractionLineString.getCoordinates()[1];
-
         return TrafficSignGeoJsonDto.builder()
                 .id(UUID.fromString(trafficSign.id()))
-                .geometry(new PointJson().type(TypeEnum.POINT).coordinates(List.of(endCoordinate.x, endCoordinate.y)))
+                .geometry(new PointJson().type(TypeEnum.POINT).coordinates(List.of(trafficSign.location().x, trafficSign.location().y)))
                 .properties(TrafficSignPropertiesDto.builder()
                         .fraction(trafficSign.fraction())
                         .blackCode(trafficSign.blackCode())
                         .rvvCode(trafficSign.rvvCode())
                         .drivingDirection(trafficSign.directionType())
-                        .roadSectionId(edge.getId())
+                        .roadSectionId(trafficSign.roadSectionId())
                         .trafficOrderUrl(trafficSign.regulationOrderId())
                         .textSigns(List.of(
                                 TextSign.builder()

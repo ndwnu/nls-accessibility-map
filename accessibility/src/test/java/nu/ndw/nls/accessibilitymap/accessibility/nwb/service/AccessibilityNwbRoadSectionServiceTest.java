@@ -86,7 +86,7 @@ class AccessibilityNwbRoadSectionServiceTest {
 
         var nwbData = accessibilityNwbRoadSectionService.getLatestNwbData();
 
-        assertThat(nwbData.getNwbVersionId()).isEqualTo(-1);
+        assertThat(nwbData.getNwbVersionId()).isEqualTo(19700101);
         assertThat(nwbData.findAllAccessibilityNwbRoadSections()).isEmpty();
     }
 }

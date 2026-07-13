@@ -82,16 +82,11 @@ nu:
               accessibility-map:
                 host: ${hostApplication}
                 port: 8080
-              graph-hopper:
-                location-on-disk: "../../.tmp/network/active/graphHopper"
-              traffic-sign:
-                location-on-disk: "../../.tmp/trafficSigns"
-                file-name-active-version: "active"
       test:
         component:
           driver:
             map-generation-job:
-              location-on-disk: "../../.tmp/map-generation-destination"
+              location-on-disk: "../../cache/map-generation-destination"
               download-from-pod: false
               download-directory: "/application/maps"
               service-name: "jobs"

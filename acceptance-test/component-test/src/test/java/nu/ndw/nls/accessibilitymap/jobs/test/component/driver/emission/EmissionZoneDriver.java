@@ -5,7 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static nu.ndw.nls.accessibilitymap.jobs.test.component.driver.oauth.OAuthDriver.SIMULATED_BEARER_TOKEN;
+import static nu.ndw.nls.accessibilitymap.test.acceptance.driver.oauth.OAuthDriver.SIMULATED_BEARER_TOKEN;
 
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;

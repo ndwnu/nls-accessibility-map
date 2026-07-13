@@ -28,10 +28,10 @@ public class TrafficSignGeoJsonDto {
     private UUID id;
 
     private PointJson geometry;
+
     private TrafficSignPropertiesDto properties;
 
     public String getType() {
         return TYPE;
     }
-
 }

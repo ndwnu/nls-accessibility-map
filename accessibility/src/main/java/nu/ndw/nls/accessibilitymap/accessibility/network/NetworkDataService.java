@@ -181,7 +181,7 @@ public class NetworkDataService extends Cache<NetworkData> {
     }
 
     @Override
-    protected void publishCacheLoadedEvent() {
+    protected void afterCacheLoaded() {
         applicationEventPublisher.publishEvent(CacheLoadedEvent.builder().type(Type.NETWORK_DATA)
                 .build());
     }
