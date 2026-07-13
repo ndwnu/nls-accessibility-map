@@ -59,9 +59,9 @@ services:
     volumes:
       - ./docker/accessibility-wiremock/extensions:/var/wiremock/extensions
       - ./docker/accessibility-wiremock/mappings:/home/wiremock/mappings
-    command: --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
+    command: --port 8888 --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
     ports:
-      - "8888:8080"
+      - "8888:8888"
     networks:
       - nls-accessibility-map-network
 
@@ -69,7 +69,7 @@ services:
     build:
       context: docker/nls-accessibility-map-job
     environment:
-      - SPRING_PROFILES_ACTIVE=acceptance-test,docker
+      - SPRING_PROFILES_ACTIVE=acceptance-test,job-initialize-cache,docker
       - COMMAND=initializeCache
       - MANAGEMENT_DATADOG_METRICS_EXPORT_ENABLED=false
       - JAVA_TOOL_OPTIONS=-Dorg.jooq.no-tips=true
@@ -79,7 +79,7 @@ services:
       nls-nwb-schema-manager:
         condition: service_completed_successfully
     volumes:
-      - ./.tmp:/application/cache
+      - ./cache:/application/cache
     networks:
       - nls-accessibility-map-network
 

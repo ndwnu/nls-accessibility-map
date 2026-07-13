@@ -8,6 +8,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.dto.TrafficSigns;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class RestrictionServiceTest {
     @Test
     void findAllBy() {
 
-        when(trafficSignDataService.findAll()).thenReturn(Set.of(trafficSignRestrictive, trafficSignNotRestrictive));
+        when(trafficSignDataService.findAll()).thenReturn(new TrafficSigns(Set.of(trafficSignRestrictive, trafficSignNotRestrictive)));
         when(trafficSignRestrictive.isRestrictive(accessibilityRequest)).thenReturn(true);
         when(trafficSignNotRestrictive.isRestrictive(accessibilityRequest)).thenReturn(false);
 
@@ -59,7 +60,7 @@ class RestrictionServiceTest {
     @Test
     void findAllBy_noDynamicRestrictions() {
 
-        when(trafficSignDataService.findAll()).thenReturn(Set.of(trafficSignRestrictive, trafficSignNotRestrictive));
+        when(trafficSignDataService.findAll()).thenReturn(new TrafficSigns(Set.of(trafficSignRestrictive, trafficSignNotRestrictive)));
         when(trafficSignRestrictive.isRestrictive(accessibilityRequest)).thenReturn(true);
         when(trafficSignNotRestrictive.isRestrictive(accessibilityRequest)).thenReturn(false);
 

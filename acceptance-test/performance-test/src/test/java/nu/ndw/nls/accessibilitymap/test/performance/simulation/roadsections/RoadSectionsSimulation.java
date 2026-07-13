@@ -25,6 +25,7 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
 import nu.ndw.nls.springboot.test.component.driver.web.dto.Response;
@@ -32,6 +33,7 @@ import nu.ndw.nls.springboot.test.component.state.StateManager;
 import nu.ndw.nls.springboot.test.component.util.data.TestDataProvider;
 import nu.ndw.nls.springboot.test.graph.dto.Edge;
 import nu.ndw.nls.springboot.test.graph.dto.Graph;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -60,6 +62,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
 
     private Graph graph;
 
+    private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
+
     public RoadSectionsSimulation(
             StateManager stateManager,
             AccessibilityMapApiClient accessibilityMapApiClient,
@@ -67,7 +71,8 @@ public class RoadSectionsSimulation extends AbstractSimulation {
             TrafficSignDriver trafficSignDriver,
             TrafficSignTestDataService trafficSignTestDataService,
             JobDriver jobDriver,
-            TestDataProvider testDataProvider
+            TestDataProvider testDataProvider,
+            FractionAndDistanceCalculator fractionAndDistanceCalculator
     ) {
 
         super(RoadSectionsSimulationConfiguration.class);
@@ -79,6 +84,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         this.accessibilityMapApiClient = accessibilityMapApiClient;
         this.jobDriver = jobDriver;
         this.testDataProvider = testDataProvider;
+        this.fractionAndDistanceCalculator = fractionAndDistanceCalculator;
     }
 
     @Override
@@ -110,11 +116,17 @@ public class RoadSectionsSimulation extends AbstractSimulation {
         List<TrafficSignGeoJsonDto> trafficSigns = Stream.generate(
                         () -> {
                             Edge edge = graph.getEdges().get(randomGenerator.nextInt(0, graph.getEdges().size()));
+
+                            double fraction = 0.5;
+
+                            LineString fractionLineString = fractionAndDistanceCalculator.getSubLineString(
+                                    edge.getWgs84LineString(),
+                                    fraction);
+
                             return trafficSignTestDataService.createTrafficSignGeoJsonDto(TrafficSign.builder()
                                     .id(UUID.randomUUID().toString())
-                                    .startNodeId(edge.getFromNode().getId().intValue())
-                                    .endNodeId(edge.getToNode().getId().intValue())
-                                    .fraction(0.5)
+                                    .location(fractionLineString.getCoordinates()[1])
+                                    .fraction(fraction)
                                     .rvvCode(TrafficSignType.C12.getRvvCode())
                                     .directionType(DirectionType.FORTH)
                                     .build());
