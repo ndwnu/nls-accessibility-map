@@ -61,7 +61,7 @@ services:
       - ./docker/accessibility-wiremock/mappings:/home/wiremock/mappings
     command: --port 8888 --extensions="nu.ndw.nls.wiremock.extensions.QueryParamToBodyFileTransformer,com.github.masonm.JwtMatcherExtension,com.github.masonm.JwtStubMappingTransformer" --global-response-templating --verbose
     ports:
-      - "8888:8080"
+      - "8888:8888"
     networks:
       - nls-accessibility-map-network
 
