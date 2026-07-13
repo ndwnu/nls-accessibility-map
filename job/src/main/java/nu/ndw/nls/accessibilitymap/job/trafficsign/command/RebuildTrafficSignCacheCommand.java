@@ -74,8 +74,7 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
             networkDataService.read();
         }
 
-        if (trafficSignGeoJsonDtoV5Json.getProperties() == null ||
-            trafficSignGeoJsonDtoV5Json.getProperties().getRoadSectionId() == null) {
+        if (trafficSignGeoJsonDtoV5Json.getProperties().getRoadSectionId() == null) {
             return null;
         }
 
