@@ -56,9 +56,9 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid TrafficSign mapTrafficSign(Map<String, String> entry) {
 
-        var edge = getEdgeBetweenStartAndEndNode(Integer.parseInt(entry.get("startNodeId")), Integer.parseInt(entry.get("endNodeId")));
+        Edge edge = getEdgeBetweenStartAndEndNode(Integer.parseInt(entry.get("startNodeId")), Integer.parseInt(entry.get("endNodeId")));
 
-        var fraction = Double.parseDouble(entry.get("fraction"));
+        double fraction = Double.parseDouble(entry.get("fraction"));
         LineString fractionLineString = fractionAndDistanceCalculator.getSubLineString(
                 edge.getWgs84LineString(),
                 fraction);
@@ -79,7 +79,7 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid SpeedLimit mapSpeedLimit(Map<String, String> entry) {
 
-        var edge = getEdgeBetweenStartAndEndNode(Integer.parseInt(entry.get("startNodeId")), Integer.parseInt(entry.get("endNodeId")));
+        Edge edge = getEdgeBetweenStartAndEndNode(Integer.parseInt(entry.get("startNodeId")), Integer.parseInt(entry.get("endNodeId")));
 
         return SpeedLimit.builder()
                 .roadSectionId(edge.getId())
@@ -111,11 +111,6 @@ public class DataTypeRegister {
     public Object transformer(Object fromValue, Type toValueType) {
 
         return jsonMapper.convertValue(fromValue, jsonMapper.constructType(toValueType));
-    }
-
-    private static Double mapDoubleValue(String key, Map<String, String> entry) {
-
-        return entry.containsKey(key) ? Double.parseDouble(entry.get(key)) : null;
     }
 
     @DataTableType
