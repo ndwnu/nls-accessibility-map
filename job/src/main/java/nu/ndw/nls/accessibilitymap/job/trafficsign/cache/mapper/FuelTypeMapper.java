@@ -12,6 +12,6 @@ public class FuelTypeMapper {
             return null;
         }
 
-        throw new UnsupportedOperationException("Not implemented yet, no fuel types found in traffic sign response");
+        throw new IllegalArgumentException("Not implemented yet, no fuel types found in traffic sign response");
     }
 }

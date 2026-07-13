@@ -65,24 +65,24 @@ public class TrafficSignBuilder {
 
             var coordinateAndBearing = fractionAndDistanceCalculator.getCoordinateAndBearing(nwbRoadSectionGeometry, fraction);
 
-            TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDtoV5Json.getProperties().getRvvCode());
+            TrafficSignType trafficSignType = TrafficSignType.fromRvvCode(trafficSignGeoJsonDtoV5Json.getProperties().getRvvCode());
             TrafficSign trafficSign = TrafficSign.builder()
                     .id(idSequenceSupplier.getAndIncrement())
                     .externalId(trafficSignGeoJsonDtoV5Json.getId().toString())
                     .roadSectionId(trafficSignGeoJsonDtoV5Json.getProperties().getRoadSectionId())
-                    .trafficSignType(type)
+                    .trafficSignType(trafficSignType)
                     .direction(directionMapper.map(trafficSignGeoJsonDtoV5Json.getProperties().getDrivingDirection()))
                     .fraction(fraction)
                     //In GeoJSON, a Point's coordinates are always [longitude, latitude] (X, Y),
-                    .longitude(trafficSignGeoJsonDtoV5Json.getGeometry().getCoordinates().getFirst())
                     .latitude(trafficSignGeoJsonDtoV5Json.getGeometry().getCoordinates().getLast())
-//                    .iconUri(createUri(trafficSignGeoJsonDtoV5Json.getProperties().getImageUrl()))
+                    .longitude(trafficSignGeoJsonDtoV5Json.getGeometry().getCoordinates().getFirst())
                     .zoneCodeType(zoneCodeTypeMapper.map(trafficSignGeoJsonDtoV5Json.getProperties().getZoneCode()))
                     .trafficRegulationOrderId(trafficSignGeoJsonDtoV5Json.getProperties().getTrafficOrderId())
-                    .blackCode(blackCodeMapper.map(trafficSignGeoJsonDtoV5Json, type))
+                    .blackCode(blackCodeMapper.map(trafficSignGeoJsonDtoV5Json, trafficSignType))
                     .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
                     .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
-                    .supplementaryTrafficSigns(trafficSignGeoJsonDtoV5Json.getProperties().getSupplementarySigns().stream()
+                    .supplementaryTrafficSigns(trafficSignGeoJsonDtoV5Json.getProperties().getSupplementarySigns()
+                            .stream()
                             .map(supplementaryTrafficSignMapper::map)
                             .toList())
                     .build();
@@ -101,12 +101,4 @@ public class TrafficSignBuilder {
         }
     }
 
-//    private static URI createUri(String value) {
-//
-//        if (Objects.isNull(value)) {
-//            return null;
-//        }
-//
-//        return URI.create(value);
-//    }
 }

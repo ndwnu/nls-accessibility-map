@@ -94,15 +94,13 @@ class AccessibilityRequestTest extends ValidationTest {
         accessibilityRequest = accessibilityRequest.withExcludeTrafficSignSupplementarySignTypes(Set.of(SupplementarySignType.OB259));
         assertThat(accessibilityRequest.excludeTrafficSignSupplementarySignTypes()).containsExactlyInAnyOrder(SupplementarySignType.OB259);
     }
-//
-//    @Test
-//    void excludeTrafficSignSupplementarySignTypes_defaultValue() {
-//
-//        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignSupplementarySignTypes(null);
-//        assertThat(accessibilityRequest.excludeTrafficSignSupplementarySignTypes()).containsExactlyInAnyOrder(
-//                TextSignType.EXCLUDING,
-//                TextSignType.PRE_ANNOUNCEMENT);
-//    }
+
+    @Test
+    void excludeTrafficSignSupplementarySignTypes_defaultValue() {
+
+        accessibilityRequest = accessibilityRequest.withExcludeTrafficSignSupplementarySignTypes(null);
+        assertThat(accessibilityRequest.excludeTrafficSignSupplementarySignTypes()).isEmpty();
+    }
 
     @Test
     void excludeTrafficSignZoneCodeTypes() {

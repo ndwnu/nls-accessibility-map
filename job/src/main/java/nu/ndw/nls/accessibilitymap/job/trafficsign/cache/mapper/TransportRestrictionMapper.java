@@ -21,10 +21,11 @@ public class TransportRestrictionMapper {
     private final TransportConditionsMapper transportConditionsMapper;
 
     private final EmissionZoneMapper emissionZoneMapper;
+
     public TransportRestrictions map(ConditionsDtoV5Json conditionsDtoV5Json, String trafficRegulationOrderId) {
 
         EmissionZone emissionZone;
-        if ( StringUtils.isNotBlank(trafficRegulationOrderId)) {
+        if (StringUtils.isNotBlank(trafficRegulationOrderId)) {
             emissionZone = emissionZoneMapper.map(trafficRegulationOrderId);
         } else {
             emissionZone = null;
@@ -33,11 +34,11 @@ public class TransportRestrictionMapper {
         return TransportRestrictions.builder()
                 .emissionZone(emissionZone)
                 .restrictions(transportConditionsMapper.map(conditionsDtoV5Json.getRestrictions()))
-                .exemptions(mapExcemptions(conditionsDtoV5Json.getExemptions()))
+                .exemptions(mapExemptions(conditionsDtoV5Json.getExemptions()))
                 .build();
     }
 
-    private List<TransportConditions> mapExcemptions(List<@Valid ConditionPropertiesDtoV5Json> exemptions) {
+    private List<TransportConditions> mapExemptions(List<@Valid ConditionPropertiesDtoV5Json> exemptions) {
         if (CollectionUtils.isEmpty(exemptions)) {
             return Collections.emptyList();
         }

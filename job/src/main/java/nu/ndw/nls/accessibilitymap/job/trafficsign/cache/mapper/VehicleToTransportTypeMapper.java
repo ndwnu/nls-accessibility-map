@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 public class VehicleToTransportTypeMapper {
 
     public TransportType map(VehicleTypeEnum vehicleTypeEnum) {
+        if (vehicleTypeEnum == null) {
+            return null;
+        }
 
         return switch (vehicleTypeEnum) {
             case BICYCLE -> TransportType.BICYCLE;
