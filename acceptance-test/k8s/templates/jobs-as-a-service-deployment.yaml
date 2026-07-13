@@ -24,7 +24,7 @@ spec:
             - containerPort: 8081
           env:
             - name: JAVA_TOOL_OPTIONS
-              value: -Dspring.profiles.active=acceptance-test,pipeline -DhostSuffix={{ .Values.hostSuffix }} {{ .Values.pods.jobs.container.env.javaOptions }}
+              value: -Dspring.profiles.active=dev,pipeline -DhostSuffix={{ .Values.hostSuffix }} {{ .Values.pods.jobs.container.env.javaOptions }}
           readinessProbe:
             httpGet:
               path:  /actuator/health/readiness
