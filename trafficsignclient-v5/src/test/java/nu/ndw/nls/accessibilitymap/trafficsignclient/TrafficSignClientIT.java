@@ -105,7 +105,7 @@ class TrafficSignClientIT {
                                         assertThat(firstSupplementarySign.getOpeningHours())
                                                 .isEqualTo("Mo-Fr 06:00-09:00, 16:00-19:00");
                                         assertThat(firstSupplementarySign.getExternalReferences()).isEmpty();
-                                        assertThat(firstSupplementarySign.getIndex()).isEqualTo(0);
+                                        assertThat(firstSupplementarySign.getIndex()).isZero();
                                     },
                                     secondSupplementarySign -> {
                                         assertThat(secondSupplementarySign.getSignCode())
@@ -114,7 +114,7 @@ class TrafficSignClientIT {
                                                 .isEqualTo("uitgezonderd aanwonenden en exploitatie aanliggende percelen");
                                         assertThat(secondSupplementarySign.getOpeningHours()).isNull();
                                         assertThat(secondSupplementarySign.getExternalReferences()).isEmpty();
-                                        assertThat(secondSupplementarySign.getIndex()).isEqualTo(1);
+                                        assertThat(secondSupplementarySign.getIndex()).isOne();
                                     });
                     assertThat(secondProperties.getPlacement()).isEqualTo("ALONG");
                     assertThat(secondProperties.getBearing()).isEqualTo(180);

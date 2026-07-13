@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import lombok.NoArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-//import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class TrafficSignRestrictionCalculator {

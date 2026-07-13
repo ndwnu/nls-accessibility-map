@@ -47,7 +47,7 @@ public class TransportConditionsMapper {
 
         return TransportConditions.builder()
                 .transportTypes(transportTypes)
-                .category(mapToCategories(conditionPropertiesDtoV5Json.getCategory()))
+                .categories(mapToCategories(conditionPropertiesDtoV5Json.getCategory()))
                 .timeValidity(conditionPropertiesDtoV5Json.getTimeValidity())
                 .emissionClass(euroClassificationMapper.map(conditionPropertiesDtoV5Json.getEmissionClass()))
                 .fuelType(fuelTypeMapper.map(conditionPropertiesDtoV5Json.getFuelType()))

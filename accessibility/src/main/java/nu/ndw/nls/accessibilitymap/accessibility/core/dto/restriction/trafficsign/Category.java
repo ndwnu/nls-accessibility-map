@@ -11,5 +11,5 @@ public enum Category {
     DISABLED_TRANSPORT("disabledTransport"),
     DANGEROUS_SUPPLIES("dangerousSupplies");
 
-    private final String category;
+    private final String value;
 }

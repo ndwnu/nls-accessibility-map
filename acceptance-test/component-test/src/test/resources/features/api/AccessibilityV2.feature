@@ -5,10 +5,10 @@ Feature: Accessibility V2
     Given a simple network
 
     And with traffic sign conditions
-      | name | vehicleType                                                         | width | height |
-      | C12  | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |       |        |
-      | C18  |                                                                     | 1.9   |        |
-      | C19  |                                                                     |       | 1.9    |
+      | name | vehicleType                                                         | widthInM | heightInM |
+      | C12  | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |          |           |
+      | C18  |                                                                     | 1.9      |           |
+      | C19  |                                                                     |          | 1.9       |
 
     And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | restrictions | blackCode | directionType | regulationOrderId | id                                   |

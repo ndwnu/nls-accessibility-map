@@ -7,8 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class SupplementaryTrafficSignTypeMapper {
 
-    //@todo: implement this properly
     public SupplementarySignType map(SignCodeEnum signCodeEnum) {
+        if (signCodeEnum == null) {
+            return null;
+        }
+
         return SupplementarySignType.valueOf(String.valueOf(signCodeEnum));
     }
 
