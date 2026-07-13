@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ConditionPropertiesDtoV5JsonMapper {
-    // @todo: rename units into parameters
+
     public ConditionPropertiesDtoV5Json map(TrafficSignCondition trafficSignCondition) {
 
         if (trafficSignCondition == null) {
@@ -19,11 +19,11 @@ public class ConditionPropertiesDtoV5JsonMapper {
                 .timeValidity(trafficSignCondition.timeValidity())
                 .emissionClass(trafficSignCondition.emissionClass())
                 .fuelType(trafficSignCondition.fuelType())
-                .axleWeight(trafficSignCondition.axleWeight())
-                .height(trafficSignCondition.height())
-                .length(trafficSignCondition.length())
-                .weight(trafficSignCondition.weight())
-                .width(trafficSignCondition.width())
+                .length(trafficSignCondition.lengthInM())
+                .width(trafficSignCondition.widthInM())
+                .height(trafficSignCondition.heightInM())
+                .weight(trafficSignCondition.weightInTon())
+                .axleWeight(trafficSignCondition.axleWeightInTon())
                 .build();
     }
 }

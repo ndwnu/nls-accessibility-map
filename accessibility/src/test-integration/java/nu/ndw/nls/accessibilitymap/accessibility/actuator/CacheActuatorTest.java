@@ -7,7 +7,6 @@ import ch.qos.logback.classic.Level;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
         })
 @AutoConfigureMockMvc
 @EnableAutoConfiguration
-@Disabled //@todo: fix this test
 class CacheActuatorTest {
 
     @Autowired

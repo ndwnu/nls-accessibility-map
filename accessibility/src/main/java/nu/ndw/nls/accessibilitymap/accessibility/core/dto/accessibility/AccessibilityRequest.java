@@ -14,6 +14,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.Category;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
@@ -42,6 +43,7 @@ public record AccessibilityRequest(
         Set<FuelType> fuelTypes,
         Set<EmissionClass> emissionClasses,
         Set<TransportType> transportTypes,
+        Set<Category> categories,
         Set<TrafficSignType> trafficSignTypes,
         Set<SupplementarySignType> trafficSignSupplementarySignTypes,
         Set<SupplementarySignType> excludeTrafficSignSupplementarySignTypes,
@@ -56,17 +58,14 @@ public record AccessibilityRequest(
 
     public static final BBox BOUNDING_BOX_GLOBE = BBox.fromPoints(-MAX_LATITUDE, -MAX_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
 
-    // Er moet altijd een exclusion zijn? @NotEmpty? Niet @NotNull?
-//    public @NotEmpty Set<SupplementarySignType> excludeTrafficSignSupplementarySignTypes() {
-//
-//        return excludeTrafficSignSupplementarySignTypes;
-//
-//        if (Objects.nonNull(excludeTrafficSignSupplementarySignTypes)) {
-//            return excludeTrafficSignSupplementarySignTypes;
-//        } else {
-//            return Set.of(SupplementarySignType.EXCLUDING, SupplementarySignType.PRE_ANNOUNCEMENT);
-//        }
-//    }
+    //@todo: still relevant? was used for default filtering Set.of(SupplementarySignType.EXCLUDING, SupplementarySignType.PRE_ANNOUNCEMENT)
+    public @NotEmpty Set<SupplementarySignType> excludeTrafficSignSupplementarySignTypes() {
+        if (Objects.nonNull(excludeTrafficSignSupplementarySignTypes)) {
+            return excludeTrafficSignSupplementarySignTypes;
+        } else {
+            return Set.of();
+        }
+    }
 
     public @NotEmpty Set<ZoneCodeType> excludeTrafficSignZoneCodeTypes() {
 

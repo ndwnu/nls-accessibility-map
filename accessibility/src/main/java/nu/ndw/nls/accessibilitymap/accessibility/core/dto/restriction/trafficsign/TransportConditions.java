@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -15,11 +14,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.apache.commons.collections4.CollectionUtils;
 
 
-//@todo: category check?
 @Builder
 public record TransportConditions(
         Set<TransportType> transportTypes, // vehicleType
-        Set<Category> category,
+        Set<Category> categories,
         String timeValidity,
         EmissionClass emissionClass,
         FuelType fuelType,
@@ -58,12 +56,17 @@ public record TransportConditions(
                 .allMatch(restriction -> restriction.test(accessibilityRequest));
     }
 
+    @SuppressWarnings("java:S3776")
     private List<Predicate<AccessibilityRequest>> getActiveConditions(AccessibilityRequest accessibilityRequest) {
 
         List<Predicate<AccessibilityRequest>> activeRestrictions = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(transportTypes) && Objects.nonNull(accessibilityRequest.transportTypes())) {
             activeRestrictions.add(containsTransportType());
+        }
+
+        if (CollectionUtils.isNotEmpty(categories) && Objects.nonNull(accessibilityRequest.categories())) {
+            activeRestrictions.add(containsCategory());
         }
 
         if (Objects.nonNull(fuelType) && Objects.nonNull(accessibilityRequest.fuelTypes())) {
@@ -127,5 +130,9 @@ public record TransportConditions(
 
     private Predicate<AccessibilityRequest> containsTransportType() {
         return accessibilityRequest -> transportTypes.stream().anyMatch(accessibilityRequest.transportTypes()::contains);
+    }
+
+    private Predicate<AccessibilityRequest> containsCategory() {
+        return accessibilityRequest -> categories.stream().anyMatch(accessibilityRequest.categories()::contains);
     }
 }

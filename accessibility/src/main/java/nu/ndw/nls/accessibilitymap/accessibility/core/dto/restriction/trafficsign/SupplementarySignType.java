@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsi
 import java.util.EnumSet;
 import java.util.Set;
 
+@SuppressWarnings("java:S115")
 public enum SupplementarySignType {
     C22A1,
     C22A2,

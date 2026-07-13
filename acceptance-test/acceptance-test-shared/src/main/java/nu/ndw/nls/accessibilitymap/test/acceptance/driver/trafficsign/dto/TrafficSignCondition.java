@@ -12,9 +12,10 @@ public record TrafficSignCondition(String name,
                                    String timeValidity,
                                    Integer emissionClass,
                                    String fuelType,
-                                   Double axleWeight,
-                                   Double height,
-                                   Double length,
-                                   Double weight,
-                                   Double width) { }
+                                   Double lengthInM,
+                                   Double widthInM,
+                                   Double heightInM,
+                                   Double weightInTon,
+                                   Double axleWeightInTon) { }
+
 

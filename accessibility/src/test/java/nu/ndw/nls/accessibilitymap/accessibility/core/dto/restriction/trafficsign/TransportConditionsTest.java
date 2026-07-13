@@ -32,7 +32,7 @@ class TransportConditionsTest {
                 .isSameAs(TransportConditions.unrestricted());
 
         assertThat(unrestricted.transportTypes()).isNull();
-        assertThat(unrestricted.category()).isNull();
+        assertThat(unrestricted.categories()).isNull();
         assertThat(unrestricted.timeValidity()).isNull();
         assertThat(unrestricted.emissionClass()).isNull();
         assertThat(unrestricted.fuelType()).isNull();

@@ -22,8 +22,7 @@ public class MaxNwbVersionTracker {
     }
 
     private Optional<LocalDate> getNwbVersion(TrafficSignGeoJsonDtoV5Json trafficSignData) {
-        if (trafficSignData.getProperties() == null ||
-            trafficSignData.getProperties().getNwbVersion() == null) {
+        if (trafficSignData.getProperties().getNwbVersion() == null) {
             return Optional.empty();
         }
 
