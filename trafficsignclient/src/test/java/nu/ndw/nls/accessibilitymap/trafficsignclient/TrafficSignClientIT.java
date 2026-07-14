@@ -112,7 +112,7 @@ class TrafficSignClientIT {
                                                 .isEqualTo(TextSignDtoV5Json.SignCodeEnum.OTHER);
                                         assertThat(secondSupplementarySign.getText())
                                                 .isEqualTo("uitgezonderd aanwonenden en exploitatie aanliggende percelen");
-                                        assertThat(secondSupplementarySign.getOpeningHours()).isNull();
+                                        assertThat(secondSupplementarySign.getOpeningHours()).isEmpty();
                                         assertThat(secondSupplementarySign.getExternalReferences()).isEmpty();
                                         assertThat(secondSupplementarySign.getIndex()).isOne();
                                     });

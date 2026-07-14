@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.job.trafficsign.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.assertArg;
 import static org.mockito.ArgumentMatchers.eq;
@@ -112,7 +113,7 @@ class RebuildTrafficSignCacheCommandTest {
         when(trafficSignPropertiesDtoV5Json1.getRoadSectionId()).thenReturn(roadSectionId);
         when(trafficSignGeoJsonDtoV5Json1.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
         when(networkData.findGeometryInNetwork(roadSectionId)).thenReturn(Optional.of(lineString));
-        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, trafficSign1);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, lineString, trafficSign1);
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
@@ -132,7 +133,7 @@ class RebuildTrafficSignCacheCommandTest {
         when(trafficSignPropertiesDtoV5Json1.getRoadSectionId()).thenReturn(roadSectionId);
         when(trafficSignGeoJsonDtoV5Json1.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
         when(networkData.findGeometryInNetwork(roadSectionId)).thenReturn(Optional.of(lineString));
-        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, trafficSign1);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, lineString, trafficSign1);
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
@@ -157,16 +158,48 @@ class RebuildTrafficSignCacheCommandTest {
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkData.findGeometryInNetwork(123L)).thenReturn(Optional.of(lineString));
 
-        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, trafficSign1);
-        mockMapperCalls(trafficSignGeoJsonDtoV5Json2, trafficSign2);
-        mockMapperCalls(trafficSignGeoJsonDtoV5Json3, trafficSign3);
-        mockMapperCalls(trafficSignGeoJsonDtoV5Json4, null);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, lineString, trafficSign1);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json2, lineString, trafficSign2);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json3, lineString, trafficSign3);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json4, lineString, null);
 
         assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
 
         verify(trafficSignDataService).write(assertArg(trafficSigns ->
                 assertThat(trafficSigns.get()).containsExactlyInAnyOrder(trafficSign1, trafficSign2, trafficSign3)));
 
+        verify(networkDataService, never()).read();
+        loggerExtension.containsLog(Level.INFO, "Updating traffic signs");
+    }
+
+    @Test
+    void call_roadSectionIsNull() {
+
+        when(trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
+                .map(TrafficSignType::getRvvCode)
+                .collect(Collectors.toSet()))).thenReturn(List.of(trafficSignGeoJsonDtoV5Json1, trafficSignGeoJsonDtoV5Json2,
+                trafficSignGeoJsonDtoV5Json3, trafficSignGeoJsonDtoV5Json4));
+        when(trafficSignPropertiesDtoV5Json1.getRoadSectionId()).thenReturn(null);
+        when(trafficSignGeoJsonDtoV5Json1.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
+        when(trafficSignGeoJsonDtoV5Json2.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
+        when(trafficSignGeoJsonDtoV5Json3.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
+        when(trafficSignGeoJsonDtoV5Json4.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
+        NetworkGraphHopper networkGraphHopper = Mockito.mock(NetworkGraphHopper.class);
+        when(networkDataService.get()).thenReturn(networkData);
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+
+
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json1, null, trafficSign1);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json2, null, trafficSign2);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json3, null, trafficSign3);
+        mockMapperCalls(trafficSignGeoJsonDtoV5Json4, null, null);
+
+        assertThat(new CommandLine(rebuildTrafficSignCacheCommand).execute()).isZero();
+
+        verify(trafficSignDataService).write(assertArg(trafficSigns ->
+                assertThat(trafficSigns.get()).containsExactlyInAnyOrder(trafficSign1, trafficSign2, trafficSign3)));
+
+        verify(networkData, never()).findGeometryInNetwork(anyLong());
         verify(networkDataService, never()).read();
         loggerExtension.containsLog(Level.INFO, "Updating traffic signs");
     }
@@ -191,7 +224,7 @@ class RebuildTrafficSignCacheCommandTest {
         );
     }
 
-    private void mockMapperCalls(TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json, TrafficSign trafficSign) {
+    private void mockMapperCalls(TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json, LineString lineString, TrafficSign trafficSign) {
 
         when(trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 eq(lineString),
