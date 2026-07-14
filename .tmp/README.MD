@@ -1,1 +1,0 @@
-# A tmp directory with temporary files for all jobs that are writing files.

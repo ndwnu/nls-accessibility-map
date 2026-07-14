@@ -18,7 +18,7 @@ Feature: Map Generator
       | 5           | 11        | 0.5      | C12     | window1      | FORTH         | window1                   | 00000000-0000-4000-0000-000000000001 |
       | 2           | 8         | 0.5      | C12     | window2      | BACK          | window2                   | 00000000-0000-4000-0000-000000000002 |
 
-    When run TrafficSignUpdateCache
+    And run TrafficSignUpdateCache
     And run MapGenerationJob with configuration
       | exportName         | startNodeId | trafficSignTypes | exportTypes                           | includeOnlyWindowSigns | publishEvents | polygonMaxDistanceBetweenPoints |
       | InnerCircleBlocked | 2           | C12              | LINE_STRING_GEO_JSON,POLYGON_GEO_JSON | false                  | true          | 0.5                             |
@@ -47,7 +47,7 @@ Feature: Map Generator
       | 2           | 8         | 0.5      | C12     | C12          | BACK          | window2                   | 00000000-0000-4000-0000-000000000002 |
       | 5           | 11        | 0.5      | C7      | C7           | FORTH         | window3                   | 00000000-0000-4000-0000-000000000003 |
       | 2           | 8         | 0.5      | C7      | C7           | BACK          | window4                   | 00000000-0000-4000-0000-000000000004 |
-    When run TrafficSignUpdateCache
+    And run TrafficSignUpdateCache
     And  run MapGenerationJob with configuration
       | exportName                 | startNodeId | trafficSignTypes | exportTypes                           | includeOnlyWindowSigns | publishEvents | polygonMaxDistanceBetweenPoints |
       | InnerCircleBlockedMultiple | 2           | C12,C7           | LINE_STRING_GEO_JSON,POLYGON_GEO_JSON | false                  | false         | 0.5                             |
@@ -71,7 +71,7 @@ Feature: Map Generator
       | 2           | 8         | 0.5      | C12     | FORTH         | window2                   | 00000000-0000-4000-0000-000000000002 |
       | 1           | 6         | 0.0      | C7      | FORTH         | window3                   | 00000000-0000-4000-0000-000000000003 |
       | 6           | 1         | 1.0      | C7      | BACK          | window4                   | 00000000-0000-4000-0000-000000000004 |
-    When run TrafficSignUpdateCache
+    And run TrafficSignUpdateCache
     And  run MapGenerationJob with configuration
       | exportName                              | startNodeId | trafficSignTypes   | exportTypes                       |
       | TruckRestrictionsAsymmetricTrafficSigns | 2           | C6,C7,C7B,C12,C22C | ASYMMETRIC_TRAFFIC_SIGNS_GEO_JSON |

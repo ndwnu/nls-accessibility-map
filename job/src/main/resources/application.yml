@@ -46,6 +46,11 @@ spring:
             client-id: ${nls.keycloak.client-id}
             client-secret: ${nls.keycloak.client-secret}
             provider: ndw-keycloak
+          sa-nls-road-attributes-api:
+            authorization-grant-type: client_credentials
+            client-id: ${nls.keycloak.client-id}
+            client-secret: ${nls.keycloak.client-secret}
+            provider: ndw-keycloak
           traffic-sign-area-backend:
             authorization-grant-type: client_credentials
             client-id: ${nls.keycloak.client-id}
@@ -89,13 +94,20 @@ nu:
                 - NWB_IMPORTED_EVENT
       locationdataissuesapi:
         issue:
-          url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
+          url: ${feign.client.base-url}api/rest/static-road-data/location-data-issues/v1
         report:
-          url: ${feign.client.base-url}/rest/static-road-data/location-data-issues/v1
+          url: ${feign.client.base-url}api/rest/static-road-data/location-data-issues/v1
         client:
           feign:
             oauth2:
               registration-id: sa-nls-location-data-issues-api
+      roadattributesapi:
+        speedLimits:
+          url: ${feign.client.base-url}
+        client:
+          feign:
+            oauth2:
+              registration-id: sa-nls-road-attributes-api
       accessibilitymap:
         jobs:
           generate:
@@ -115,7 +127,6 @@ nu:
             folder: "./cache/network"
             load-data-on-startup: false
             watch-for-updates: false
-
         trafficSigns:
           emission-zone:
             client:
@@ -130,6 +141,19 @@ nu:
         trafficsignclient:
           currentStateControllerV5:
             url: http://localhost:8888
+        roadChanges:
+          cache:
+            name: "Road changes"
+            folder: "./cache/roadChanges"
+            load-data-on-startup: false
+            watch-for-updates: false
+        speedLimit:
+          cache:
+            name: "Speed limit"
+            folder: "./cache/speedLimits"
+            load-data-on-startup: false
+            watch-for-updates: false
+
 resilience4j:
   retry:
     instances:

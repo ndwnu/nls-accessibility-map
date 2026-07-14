@@ -49,6 +49,10 @@ nu:
           cache:
             name: "Traffic sign"
             folder: "./cache/trafficSigns"
+        speedLimit:
+          cache:
+            name: "Speed limit"
+            folder: "./cache/speedLimits"
       springboot:
         message:
           stream:

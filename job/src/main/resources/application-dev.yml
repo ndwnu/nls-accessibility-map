@@ -43,7 +43,7 @@ nu:
       accessibilitymap:
         jobs:
           generate:
-            root-export-directory: "./.tmp/map-generation-destination"
+            root-export-directory: "./cache/map-generation-destination"
             prettyPrintJson: true
         trafficsignclient:
           api:
@@ -52,20 +52,6 @@ nu:
           emission-zone:
             client:
               url: http://${hostWiremock}:8888/api/area/ibbm/emission-zones/v1
-          cache:
-            folder: "./.tmp/trafficSigns/"
-            load-data-on-startup: false
-            watch-for-updates: false
-        network:
-          cache:
-            folder: "./.tmp/network"
-            load-data-on-startup: false
-            watch-for-updates: false
-        roadChanges:
-          cache:
-            folder: "./.tmp/roadChanges"
-            load-data-on-startup: false
-            watch-for-updates: false
       springboot:
         messaging:
           broker-uri: amqp://guest:guest@${hostRabbitMQ}:5672?heartbeat=300
@@ -79,7 +65,7 @@ nls:
 
 feign:
   client:
-    base-url: http://${hostWiremock}:8888/api
+    base-url: http://${hostWiremock}:8888/
 
 logging:
   level:

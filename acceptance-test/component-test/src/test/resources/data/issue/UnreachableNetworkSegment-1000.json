@@ -12,7 +12,7 @@
     {
       "source": "Nwb",
       "versions": [
-        "1"
+        "###NWB_VERSION###"
       ],
       "records": [
         {

@@ -69,7 +69,7 @@ public class GraphHopperStepDefinitions {
                 .insertNwbData();
 
         nwbRoadSections.forEach(nwbRoadSection -> roadSectionRepository.save(RoadSection.builder()
-                .primaryKey(new NwbRoadSectionPrimaryKey(1, nwbRoadSection.id()))
+                .primaryKey(new NwbRoadSectionPrimaryKey(graphHopperDriver.getLastBuiltGraphVersion(), nwbRoadSection.id()))
                 .junctionIdFrom(nwbRoadSection.junctionIdFrom())
                 .junctionIdTo(nwbRoadSection.junctionIdTo())
                 .roadOperatorType("Municipality")

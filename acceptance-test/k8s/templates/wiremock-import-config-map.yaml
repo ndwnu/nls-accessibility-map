@@ -3,5 +3,8 @@ kind: ConfigMap
 metadata:
   name: wiremock-import
 data:
-  default-mapping.json: |-
-{{ .Files.Get "data/wiremock/mappings/default-mapping.json" | indent 4}}
+{{- $files := .Files.Glob "data/wiremock/mappings/*.json" }}
+{{- range $path, $content := $files }}
+  {{ base $path }}: |-
+{{ $content | toString | indent 4 }}
+{{- end }}

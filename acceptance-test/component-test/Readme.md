@@ -15,10 +15,12 @@
       loaded into QGIS.
 - Output of jobs is placed at normal locations, the output of the job will be written there as
   well.
-    - [Map generation destination](../../.tmp/map-generation-destination)
-    - [Graph hopper destination](../../.tmp/graphhopper/accessibility_latest)
-    - [Traffic signs destination](../../.tmp/trafficsigns)
+    - [Map generation destination](../../cache/map-generation-destination)
+    - [Graph hopper destination](../../cache/graphhopper/accessibility_latest)
+    - [Traffic signs destination](../../cache/trafficSigns)
+    - [Speed limits destination](../../cache/speedLimits)
 
 # Debugging graph situations
- - Go to [.debug](.debug)
- - Load all relevant geojson files into QGIS to get a representation of what happened.
+
+- Go to [.debug](.debug)
+- Load all relevant geojson files into QGIS to get a representation of what happened.

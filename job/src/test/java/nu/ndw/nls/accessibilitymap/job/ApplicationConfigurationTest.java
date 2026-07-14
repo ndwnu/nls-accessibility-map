@@ -7,6 +7,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.nwb.NwbConfiguration;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.TrafficSignClientConfiguration;
 import nu.ndw.nls.geojson.geometry.JtsGeoJsonMappersConfiguration;
 import nu.ndw.nls.locationdataissuesapi.client.feign.LocationDataIssuesApiClientConfiguration;
+import nu.ndw.nls.roadattributesapi.client.feign.RoadAttributesApiConfiguration;
 import nu.ndw.nls.springboot.core.NlsSpringBootCoreAutoConfiguration;
 import nu.ndw.nls.springboot.datadog.DatadogConfiguration;
 import nu.ndw.nls.springboot.messaging.MessagingConfig;
@@ -30,6 +31,7 @@ class ApplicationConfigurationTest {
                         AccessibilityConfiguration.class,
                         DatadogConfiguration.class,
                         TrafficSignClientConfiguration.class,
+                        RoadAttributesApiConfiguration.class,
                         JtsGeoJsonMappersConfiguration.class,
                         OAuthClientCredentialsConfiguration.class,
                         NwbConfiguration.class,
