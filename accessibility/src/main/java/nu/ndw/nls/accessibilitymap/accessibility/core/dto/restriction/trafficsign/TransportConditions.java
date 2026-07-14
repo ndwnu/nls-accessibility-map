@@ -61,19 +61,19 @@ public record TransportConditions(
 
         List<Predicate<AccessibilityRequest>> activeRestrictions = new ArrayList<>();
 
-        if (CollectionUtils.isNotEmpty(transportTypes) && Objects.nonNull(accessibilityRequest.transportTypes())) {
+        if (CollectionUtils.isNotEmpty(transportTypes) && CollectionUtils.isNotEmpty(accessibilityRequest.transportTypes())) {
             activeRestrictions.add(containsTransportType());
         }
 
-        if (CollectionUtils.isNotEmpty(categories) && Objects.nonNull(accessibilityRequest.categories())) {
+        if (CollectionUtils.isNotEmpty(categories) && CollectionUtils.isNotEmpty(accessibilityRequest.categories())) {
             activeRestrictions.add(containsCategory());
         }
 
-        if (Objects.nonNull(fuelType) && Objects.nonNull(accessibilityRequest.fuelTypes())) {
+        if (Objects.nonNull(fuelType) && CollectionUtils.isNotEmpty(accessibilityRequest.fuelTypes())) {
             activeRestrictions.add(isMatchingFuelType());
         }
 
-        if (Objects.nonNull(emissionClass) && Objects.nonNull(accessibilityRequest.emissionClasses())) {
+        if (Objects.nonNull(emissionClass) && CollectionUtils.isNotEmpty(accessibilityRequest.emissionClasses())) {
             activeRestrictions.add(isMatchingEmissionClass());
         }
 
