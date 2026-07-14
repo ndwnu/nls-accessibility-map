@@ -121,10 +121,11 @@ class TransportConditionsTest {
                 .categories(conditionSetContains.map(Category.values()))
                 .build();
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withCategories(requestSetContains.map(Category.values()))))
-                .isEqualTo(hasEvaluableConditions);
 
         assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest.withCategories(requestSetContains.map(Category.values()))))
+                .isEqualTo(hasEvaluableConditions);
+
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withCategories(requestSetContains.map(Category.values()))))
                 .isEqualTo(conditionsApply);
     }
 
