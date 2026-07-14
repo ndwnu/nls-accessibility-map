@@ -34,14 +34,12 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSign
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.speedlimit.dto.SpeedLimit;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.springboot.test.graph.dto.Edge;
 import nu.ndw.nls.springboot.test.graph.dto.Graph;
 import nu.ndw.nls.springboot.test.graph.dto.Node;
 import org.apache.logging.log4j.util.Strings;
 import org.locationtech.jts.geom.LineString;
-import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 public class DataTypeRegister {

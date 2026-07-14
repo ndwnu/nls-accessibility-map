@@ -3,7 +3,6 @@ package nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto;
 import java.util.List;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import org.locationtech.jts.geom.Coordinate;
 
 @Builder
