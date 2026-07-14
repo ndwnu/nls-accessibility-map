@@ -504,30 +504,38 @@
         "properties": {
           "vehicleType": {
             "type": "array",
+            "default": "",
+            "description": "Vehicle types this condition applies to",
             "items": {
               "type": "string",
+              "default": "unknown",
+              "description": "New values may be added over time; treat any value your client doesn't recognize as unknown.",
               "enum": [
+                "pedestrian",
+                "rider",
                 "bicycle",
-                "car",
+                "moped",
                 "microcar",
+                "agriculturalVehicle",
+                "car",
                 "truck",
                 "bus",
-                "pedestrian",
-                "moped",
                 "motorcycle",
                 "caravan",
                 "trailer",
                 "deliveryVan",
-                "rider",
                 "tram",
                 "taxi",
-                "agriculturalVehicle"
+                "all",
+                "unknown"
               ]
             },
             "uniqueItems": true
           },
           "category": {
             "type": "array",
+            "default": "",
+            "description": "Traffic categories this condition applies to",
             "items": {
               "type": "string",
               "enum": [
@@ -542,34 +550,50 @@
             "uniqueItems": true
           },
           "timeValidity": {
-            "type": "string"
+            "type": "string",
+            "default": "",
+            "description": "Time window for these conditions in OSM format"
           },
           "emissionClass": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "default": "",
+            "description": "Not yet used, will be used later when emission zone signs are mapped"
           },
           "fuelType": {
-            "type": "string"
+            "type": "string",
+            "default": "",
+            "description": "Not yet used, will be used later when emission zone signs are mapped"
           },
           "axleWeight": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "default": "",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
           },
           "height": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "default": "",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
           },
           "length": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "default": "",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
           },
           "weight": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "default": "",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
           },
           "width": {
             "type": "number",
-            "format": "double"
+            "format": "double",
+            "default": "",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
           }
         }
       },
@@ -577,15 +601,23 @@
         "type": "object",
         "properties": {
           "restrictions": {
-            "$ref": "#/components/schemas/ConditionPropertiesDtoV5"
+            "$ref": "#/components/schemas/ConditionPropertiesDtoV5",
+            "default": "",
+            "description": "Contains what is forbidden by this sign. Always present, though may be an empty object if there are no restrictions."
           },
           "exemptions": {
             "type": "array",
+            "default": "",
+            "description": "What is allowed despite the restriction. Always present, may be an empty array.",
             "items": {
               "$ref": "#/components/schemas/ConditionPropertiesDtoV5"
             }
           }
-        }
+        },
+        "required": [
+          "exemptions",
+          "restrictions"
+        ]
       },
       "Crs": {
         "type": "object",
@@ -663,20 +695,28 @@
             "type": "string"
           },
           "openingHours": {
-            "type": "string"
+            "type": "string",
+            "default": "",
+            "description": "If applicable for the obCode, this contains the time window in OSM format"
           },
           "externalReferences": {
             "type": "array",
+            "default": "",
+            "description": "External system references for this text sign. Always present, though may be an empty array.",
             "items": {
               "$ref": "#/components/schemas/ExternalReferenceDtoV5"
             }
           },
           "index": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "default": "",
+            "description": "Position of this text sign relative to the other supplementary signs on the same traffic sign. Always present."
           },
           "signCode": {
             "type": "string",
+            "default": "",
+            "description": "The text sign's machine-readable code. Always present.",
             "enum": [
               "C22A1",
               "C22A2",
@@ -786,45 +826,74 @@
               "OTHER"
             ]
           }
-        }
+        },
+        "required": [
+          "externalReferences",
+          "index",
+          "signCode"
+        ]
       },
       "TrafficSignFeatureCollectionV5": {
         "type": "object",
         "properties": {
           "type": {
-            "type": "string"
+            "type": "string",
+            "default": "",
+            "description": "Always \"FeatureCollection\"."
           },
           "features": {
             "type": "array",
+            "default": "",
+            "description": "The traffic sign features. Always present, though may be an empty array.",
             "items": {
               "$ref": "#/components/schemas/TrafficSignGeoJsonDtoV5"
             }
           }
-        }
+        },
+        "required": [
+          "features",
+          "type"
+        ]
       },
       "TrafficSignGeoJsonDtoV5": {
         "type": "object",
         "properties": {
           "type": {
-            "type": "string"
+            "type": "string",
+            "default": "",
+            "description": "Always \"Feature\"."
           },
           "id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "default": "",
+            "description": "Unique identifier of the traffic sign. Always present."
           },
           "geometry": {
-            "$ref": "#/components/schemas/Point"
+            "$ref": "#/components/schemas/Point",
+            "default": "",
+            "description": "Location of the traffic sign. Always present."
           },
           "properties": {
-            "$ref": "#/components/schemas/TrafficSignPropertiesDtoV5"
+            "$ref": "#/components/schemas/TrafficSignPropertiesDtoV5",
+            "default": "",
+            "description": "The sign's properties. Always present."
           }
-        }
+        },
+        "required": [
+          "geometry",
+          "id",
+          "properties",
+          "type"
+        ]
       },
       "TrafficSignPropertiesDtoV5": {
         "type": "object",
         "properties": {
           "externalReferences": {
             "type": "array",
+            "default": "",
+            "description": "External system references for this sign. Always present, though may be an empty array.",
             "items": {
               "$ref": "#/components/schemas/ExternalReferenceDtoV5"
             }
@@ -834,7 +903,9 @@
             "format": "date"
           },
           "rvvCode": {
-            "type": "string"
+            "type": "string",
+            "default": "",
+            "description": "The RVV code this sign represents. Always present."
           },
           "blackCode": {
             "type": "string"
@@ -850,6 +921,8 @@
           },
           "supplementarySigns": {
             "type": "array",
+            "default": "",
+            "description": "Supplementary text signs attached to this sign. Always present, though may be an empty array.",
             "items": {
               "$ref": "#/components/schemas/TextSignDtoV5"
             }
@@ -876,13 +949,26 @@
             "format": "date"
           },
           "privateProperty": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this sign is located on private property."
           },
           "missingRoadSection": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this sign is on a road that is not yet present in NWB."
+          },
+          "fraction": {
+            "type": "number",
+            "format": "double"
+          },
+          "drivingDirection": {
+            "type": "string"
           },
           "conditions": {
-            "$ref": "#/components/schemas/ConditionsDtoV5"
+            "$ref": "#/components/schemas/ConditionsDtoV5",
+            "default": "",
+            "description": "The sign's machine-readable legal meaning. Present (though possibly empty) for every sign."
           },
           "registeredOn": {
             "type": "string",
@@ -923,7 +1009,15 @@
               "type": "string"
             }
           }
-        }
+        },
+        "required": [
+          "conditions",
+          "externalReferences",
+          "missingRoadSection",
+          "privateProperty",
+          "rvvCode",
+          "supplementarySigns"
+        ]
       },
       "CountyEventDtoV4": {
         "type": "object",
