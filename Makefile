@@ -10,7 +10,7 @@ stop:                                ## Stops the docker environment
 
 start-infra: 						 ## Starts specific containers needed for local environment --adapt when needed
 	mkdir -p cache
-	docker rmi nls-accessibility-map-initialise-cache-job:latest
+	docker rmi nls-accessibility-map-initialise-cache-job:latest || true
 	$(dc) up -d nls-keycloak nls-postgres accessibility-wiremock nls-rabbitmq nls-nwb-schema-manager initialise-cache-job
 
 integration-test:                    ## Build and run it tests via maven
