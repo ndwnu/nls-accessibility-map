@@ -3,12 +3,13 @@ package nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto;
 import java.util.List;
 import lombok.Builder;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
+import org.locationtech.jts.geom.Coordinate;
 
 @Builder
 public record TrafficSign(
         String id,
-        int startNodeId,
-        int endNodeId,
+        long roadSectionId,
         double fraction,
         String rvvCode,
         TrafficSignCondition restrictions,
@@ -17,6 +18,7 @@ public record TrafficSign(
         String blackCode,
         DrivingDirectionEnum directionType,
         String windowTime,
-        String regulationOrderId) {
+        String regulationOrderId,
+        Coordinate location) {
 
 }

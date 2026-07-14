@@ -19,10 +19,6 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.Te
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
-import nu.ndw.nls.springboot.test.graph.dto.Edge;
-import nu.ndw.nls.springboot.test.graph.dto.Graph;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -61,7 +57,7 @@ public class TrafficSignTestDataService {
 
         return TrafficSignGeoJsonDtoV5Json.builder()
                 .id(UUID.fromString(trafficSign.id()))
-                .geometry(new PointJson().type("point").coordinates(List.of(endCoordinate.x, endCoordinate.y)))
+                .geometry(new PointJson().type("point").coordinates(List.of(trafficSign.location().x, trafficSign.location().y)))
                 .properties(TrafficSignPropertiesDtoV5Json.builder()
                         .fraction(trafficSign.fraction())
                         .blackCode(trafficSign.blackCode())

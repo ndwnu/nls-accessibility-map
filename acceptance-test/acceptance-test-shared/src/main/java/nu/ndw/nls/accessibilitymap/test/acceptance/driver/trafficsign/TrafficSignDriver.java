@@ -28,6 +28,7 @@ import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.Feature;
 import nu.ndw.nls.springboot.test.graph.exporter.geojson.dto.FeatureCollection;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,6 +37,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 @Component
+@Order()
 public class TrafficSignDriver implements StateManagement {
 
     private final DriverGeneralConfiguration driverGeneralConfiguration;

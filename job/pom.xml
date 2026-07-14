@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>6.0.41-SNAPSHOT</version>
+    <version>6.0.43-SNAPSHOT</version>
   </parent>
   <artifactId>job</artifactId>
   <name>NLS Accessibility Map - Job</name>
@@ -28,6 +28,10 @@
       <artifactId>trafficsignclient</artifactId>
     </dependency>
     <dependency>
+      <groupId>nu.ndw.nls.roadattributesapi</groupId>
+      <artifactId>client-feign</artifactId>
+    </dependency>
+    <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>job</artifactId>
     </dependency>
@@ -44,8 +48,8 @@
       <artifactId>spring-boot-starter-aspectj</artifactId>
     </dependency>
     <dependency>
-    <groupId>io.github.resilience4j</groupId>
-    <artifactId>resilience4j-spring-boot4</artifactId>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-spring-boot4</artifactId>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>

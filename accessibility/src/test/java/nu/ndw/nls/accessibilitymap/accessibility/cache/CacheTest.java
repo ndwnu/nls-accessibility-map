@@ -99,7 +99,8 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration,
+        Cache<Object> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -120,7 +121,7 @@ class CacheTest {
             }
 
             @Override
-            protected void publishCacheLoadedEvent() {
+            protected void afterCacheLoaded() {
                 // not implemented
 
             }
@@ -153,7 +154,8 @@ class CacheTest {
         cacheConfiguration.setAcceptableConsequentReadFailures(1);
         cacheConfiguration.setFailOnStartupCacheReadError(false);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration,
+        Cache<Object> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -166,11 +168,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
 
@@ -213,7 +210,8 @@ class CacheTest {
     }
 
     private Cache<Object> getCache() {
-        Cache<Object> cache = new Cache<>(cacheConfiguration,
+        Cache<Object> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -226,11 +224,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
 
@@ -245,7 +238,8 @@ class CacheTest {
 
         cacheConfiguration.setFailOnStartupCacheReadError(true);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration,
+        Cache<Object> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -258,11 +252,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
         cache.read();
@@ -295,7 +284,8 @@ class CacheTest {
     }
 
     private Cache<Object> getObjectCache1() {
-        Cache<Object> cache = new Cache<>(cacheConfiguration,
+        Cache<Object> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -308,11 +298,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
 
@@ -338,7 +323,8 @@ class CacheTest {
     }
 
     private Cache<Object> getObjectCache() {
-        Cache<Object> cache = new Cache<>(cacheConfiguration,
+        Cache<Object> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -356,11 +342,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
 
@@ -429,7 +410,8 @@ class CacheTest {
         cacheConfiguration.setFailOnStartupCacheReadError(true);
         cacheConfiguration.setLoadDataOnStartup(true);
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration,
+        Cache<Object> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -442,11 +424,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
 
@@ -466,7 +443,8 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
-        Cache<Object> cache = new Cache<>(cacheConfiguration,
+        Cache<Object> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -484,11 +462,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, Object data) {
                 // Do nothing
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
 
@@ -576,7 +549,8 @@ class CacheTest {
 
     @NotNull
     private Cache<String> createWriteCache() {
-        return new Cache<>(cacheConfiguration,
+        return new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -596,11 +570,6 @@ class CacheTest {
 
                 Files.writeString(target.resolve("file1.txt"), data);
             }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
-            }
         };
     }
 
@@ -615,7 +584,8 @@ class CacheTest {
 
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
-        Cache<String> cache = new Cache<>(cacheConfiguration,
+        Cache<String> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -628,11 +598,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, String data) throws IOException {
                 throw new IOException("error");
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
 
@@ -649,7 +614,8 @@ class CacheTest {
     @Test
     void getSizeInBytes() throws IOException {
 
-        Cache<String> cache = new Cache<>(cacheConfiguration,
+        Cache<String> cache = new Cache<>(
+                cacheConfiguration,
                 clockService,
                 distributedLockService,
                 activeVersionRepository,
@@ -662,11 +628,6 @@ class CacheTest {
             @Override
             protected void writeData(Path target, String data) {
                 // to nothing
-            }
-
-            @Override
-            protected void publishCacheLoadedEvent() {
-                // not implemented
             }
         };
 
