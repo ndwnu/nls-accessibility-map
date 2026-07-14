@@ -25,8 +25,6 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSig
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;

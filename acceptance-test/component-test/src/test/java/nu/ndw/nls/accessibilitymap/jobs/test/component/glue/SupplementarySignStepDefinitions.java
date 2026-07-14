@@ -12,7 +12,7 @@ public class SupplementarySignStepDefinitions {
     private final SupplementaryTrafficSignDriver supplementaryTrafficSignDriver;
 
     @Given("with supplementary traffic sign(s)")
-    public void trafficSigns(List<SupplementaryTrafficSign> trafficSigns) {
-        supplementaryTrafficSignDriver.addTraficSignConditions(trafficSigns);
+    public void withSupplementaryTrafficSigns(List<SupplementaryTrafficSign> supplementaryTrafficSigns) {
+        supplementaryTrafficSignDriver.addTraficSignConditions(supplementaryTrafficSigns);
     }
 }

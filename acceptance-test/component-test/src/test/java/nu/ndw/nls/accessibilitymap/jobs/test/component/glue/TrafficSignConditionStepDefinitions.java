@@ -14,8 +14,8 @@ public class TrafficSignConditionStepDefinitions {
     private final TrafficSignConditionDriver trafficSignConditionDriver;
 
     @Given("with traffic sign condition(s)")
-    public void trafficSigns(List<TrafficSignCondition> trafficSigns) {
-        trafficSignConditionDriver.addTraficSignConditions(trafficSigns);
+    public void withTrafficSignsConditions(List<TrafficSignCondition> trafficSignConditions) {
+        trafficSignConditionDriver.addTrafficSignConditions(trafficSignConditions);
     }
 
 }

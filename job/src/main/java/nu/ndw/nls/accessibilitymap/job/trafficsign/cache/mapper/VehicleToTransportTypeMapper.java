@@ -28,6 +28,8 @@ public class VehicleToTransportTypeMapper {
             case RIDER -> TransportType.RIDERS;
             case TRAM -> TransportType.TRAM;
             case TAXI -> TransportType.TAXI;
+            //case ??? -> TransportType.CONDUCTORS
+            //case ??? -> TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES
         };
     }
 }
