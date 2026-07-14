@@ -109,7 +109,6 @@
                 <additionalModelTypeAnnotations>
                   @lombok.experimental.SuperBuilder
                   @lombok.NoArgsConstructor
-                  @lombok.AllArgsConstructor
                 </additionalModelTypeAnnotations>
 
               </configOptions>
