@@ -15,6 +15,7 @@ Feature: Accessibility V2
       | 6           | 1         | 0.9      | C18     | C18          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
       | 3           | 4         | 0.1      | C19     | C19          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
       | 3           | 4         | 0.9      | C19     | C19          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
+    And run TrafficSignUpdateCache
     And with speed limits
       | startNodeId | endNodeId | forwardAverageSpeedLimit |
       | 5           | 11        | 30                       |
