@@ -16,7 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 @Builder
 public record TransportConditions(
-        Set<TransportType> transportTypes, // vehicleType
+        Set<TransportType> transportTypes,
         Set<Category> categories,
         String timeValidity,
         EmissionClass emissionClass,
