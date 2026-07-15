@@ -35,7 +35,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
-        "delayBecauseOfRestrictions": 0,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 6
@@ -60,7 +60,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
-        "delayBecauseOfRestrictions": 0,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 13

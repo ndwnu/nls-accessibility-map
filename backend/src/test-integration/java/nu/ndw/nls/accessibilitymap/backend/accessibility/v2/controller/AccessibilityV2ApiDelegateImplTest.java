@@ -122,7 +122,7 @@ class AccessibilityV2ApiDelegateImplTest {
                                         .roadSectionId(2L)
                                         .accessible(true)
                                         .direction(DirectionJson.BACKWARD)
-                                        .delayBecauseOfRestrictions(10L)
+                                        .delayInMilliSecondsBecauseOfRestrictions(10L)
                                         .build())
                                 .build(),
                         FeatureJson.builder()
@@ -221,7 +221,7 @@ class AccessibilityV2ApiDelegateImplTest {
                                 "roadSectionId": 2,
                                 "accessible": true,
                                 "direction": "backward",
-                                "delayBecauseOfRestrictions": 10
+                                "delayInMilliSecondsBecauseOfRestrictions": 10
                               }
                             },
                             {

@@ -58,7 +58,7 @@ public final class DirectionalSegment {
      * Only not 0 if this segment is impacted by restrictions when combined by RoadSectionCombinator
      */
     @Min(0)
-    private long delayBecauseOfRestrictions;
+    private long delayInMilliSecondsBecauseOfRestrictions;
 
     private final boolean accessible;
 
