@@ -3,11 +3,11 @@ Feature: DataAnalyser-AsymmetricTrafficSigns
   Scenario: Job generate issue export for asymmetric traffic-sign detection should send only asymmetrically placed traffic signs
     Given a simple network
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | windowTime | id                                   |
-      | 5           | 11        | 0.5      | C12     |           | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
-      | 2           | 8         | 0.5      | C12     |           | FORTH         | window 2   | 00000000-0000-4000-0000-000000000002 |
-      | 1           | 6         | 0.0      | C17     | invalid   | FORTH         | window 3   | 00000000-0000-4000-0000-000000000003 |
-      | 6           | 1         | 1.0      | C17     | 1.9 m     | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
+      | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime | id                                   |
+      | 5           | 11        | 0.5      | C12     | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
+      | 2           | 8         | 0.5      | C12     | FORTH         | window 2   | 00000000-0000-4000-0000-000000000002 |
+      | 1           | 6         | 0.0      | C17     | FORTH         | window 3   | 00000000-0000-4000-0000-000000000003 |
+      | 6           | 1         | 1.0      | C17     | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
     And expecting issues to be send to issue api
     And run TrafficSignUpdateCache
     And run AsymmetricTrafficSignsAnalysis with configuration

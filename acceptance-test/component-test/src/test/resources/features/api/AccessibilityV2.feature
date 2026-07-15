@@ -10,11 +10,11 @@ Feature: Accessibility V2
       | C19  |                                                                     |          | 1.9       |
 
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | restrictions | blackCode | directionType | regulationOrderId | id                                   |
-      | 5           | 11        | 0.5      | C12     | C12          |           | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
-      | 6           | 1         | 0.9      | C18     | C18          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
-      | 3           | 4         | 0.1      | C19     | C19          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
-      | 3           | 4         | 0.9      | C19     | C19          | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | directionType | regulationOrderId | id                                   |
+      | 5           | 11        | 0.5      | C12     | C12          | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
+      | 6           | 1         | 0.9      | C18     | C18          | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
+      | 3           | 4         | 0.1      | C19     | C19          | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
+      | 3           | 4         | 0.9      | C19     | C19          | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
     And run TrafficSignUpdateCache
     And with speed limits
       | startNodeId | endNodeId | forwardAverageSpeedLimit |
@@ -38,11 +38,11 @@ Feature: Accessibility V2
     Given a simple network
 
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
-      | 6           | 1         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000001 |
-      | 6           | 1         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000002 |
-      | 1           | 2         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000003 |
-      | 1           | 2         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000004 |
+      | startNodeId | endNodeId | fraction | rvvCode | directionType | regulationOrderId | id                                   |
+      | 6           | 1         | 0.1      | C22a    | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000001 |
+      | 6           | 1         | 0.9      | C22a    | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000002 |
+      | 1           | 2         | 0.1      | C22a    | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000003 |
+      | 1           | 2         | 0.9      | C22a    | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000004 |
     And run TrafficSignUpdateCache
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-unreachable
@@ -57,10 +57,10 @@ Feature: Accessibility V2
   Scenario: Get - Vehicle emission class euro 3 - Destination effectively accessible
     Given a simple network
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | blackCode | directionType | regulationOrderId | id                                   |
-      | 6           | 1         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000001 |
-      | 6           | 1         | 0.9      | C22a    |           | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000002 |
-      | 1           | 2         | 0.1      | C22a    |           | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000003 |
+      | startNodeId | endNodeId | fraction | rvvCode | directionType | regulationOrderId | id                                   |
+      | 6           | 1         | 0.1      | C22a    | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000001 |
+      | 6           | 1         | 0.9      | C22a    | BACK          | zone-zero         | 00000000-0000-4000-0000-000000000002 |
+      | 1           | 2         | 0.1      | C22a    | FORTH         | zone-zero         | 00000000-0000-4000-0000-000000000003 |
     And run TrafficSignUpdateCache
     When request accessibility geojson for truck-emissionEuro3-destination1-2-dynamicRestrictions-effectivelyAccessible
     Then we expect accessibility geojson response truck-emissionEuro3-destination1-2-reachable-effectivelyAccessible

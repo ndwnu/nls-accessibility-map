@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.DirectionMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.SupplementaryTrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.TransportRestrictionMapper;
@@ -28,8 +27,6 @@ import org.springframework.validation.annotation.Validated;
 public class TrafficSignBuilder {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
-
-    private final BlackCodeMapper blackCodeMapper;
 
     private final ZoneCodeTypeMapper zoneCodeTypeMapper;
 
@@ -78,7 +75,6 @@ public class TrafficSignBuilder {
                     .longitude(trafficSignGeoJsonDtoV5Json.getGeometry().getCoordinates().getFirst())
                     .zoneCodeType(zoneCodeTypeMapper.map(trafficSignGeoJsonDtoV5Json.getProperties().getZoneCode()))
                     .trafficRegulationOrderId(trafficSignGeoJsonDtoV5Json.getProperties().getTrafficOrderId())
-                    .blackCode(blackCodeMapper.map(trafficSignGeoJsonDtoV5Json, trafficSignType))
                     .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
                     .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
                     .supplementaryTrafficSigns(trafficSignGeoJsonDtoV5Json.getProperties().getSupplementarySigns()

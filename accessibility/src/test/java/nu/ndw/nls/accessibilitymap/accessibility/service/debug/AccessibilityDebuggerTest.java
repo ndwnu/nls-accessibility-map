@@ -515,8 +515,7 @@ class AccessibilityDebuggerTest {
                               "fraction" : 0.6,
                               "trafficSignId" : null,
                               "trafficSignExternalId" : null,
-                              "trafficSignType" : null,
-                              "trafficSignBlackCode" : null
+                              "trafficSignType" : null
                             },
                             "type" : "Feature"
                           } ],
@@ -543,7 +542,6 @@ class AccessibilityDebuggerTest {
                 .direction(Direction.BACKWARD)
                 .trafficSignType(TrafficSignType.C1)
                 .fraction(0.5)
-                .blackCode(123D)
                 .build();
         Restrictions restrictions = new Restrictions(List.of(trafficSign));
 
@@ -579,8 +577,7 @@ class AccessibilityDebuggerTest {
                               "fraction" : 0.5,
                               "trafficSignId" : 1,
                               "trafficSignExternalId" : "2",
-                              "trafficSignType" : "C1",
-                              "trafficSignBlackCode" : 123.0
+                              "trafficSignType" : "C1"
                             },
                             "type" : "Feature"
                           } ],

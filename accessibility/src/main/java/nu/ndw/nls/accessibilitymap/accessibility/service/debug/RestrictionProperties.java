@@ -24,5 +24,4 @@ public class RestrictionProperties implements Properties {
 
     private final TrafficSignType trafficSignType;
 
-    private final Double trafficSignBlackCode;
 }
