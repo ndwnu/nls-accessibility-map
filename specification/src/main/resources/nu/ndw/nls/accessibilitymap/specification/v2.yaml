@@ -584,12 +584,12 @@ components:
         url: "https://docs.ndw.nu/en/handleidingen/nwb/nwb-basisstructuur/overige-attributen/#functional-road-class"
         description: "NDW - Functional road class documentation"
       readOnly: true
-    DelayBecauseOfRestrictions:
+    DelayInMilliSecondsBecauseOfRestrictions:
       type: "integer"
       format: "int64"
       example: "163245"
       minimum: 0
-      description: "The delay it took to reach the location because of a restriction. Is 0 if road section is not reachable."
+      description: "The delay (in milli seconds) it took to reach the location because of a restriction. Is 0 if road section is not reachable."
       readOnly: true
     Accessible:
       type: "boolean"
@@ -919,7 +919,7 @@ components:
           required:
             - roadSectionId
             - functionalRoadClass
-            - delayBecauseOfRestrictions
+            - delayInMilliSecondsBecauseOfRestrictions
             - accessible
             - direction
           properties:
@@ -927,8 +927,8 @@ components:
               $ref: "#/components/schemas/RoadSectionId"
             functionalRoadClass:
               $ref: "#/components/schemas/FunctionalRoadClass"
-            delayBecauseOfRestrictions:
-              $ref: "#/components/schemas/DelayBecauseOfRestrictions"
+            delayInMilliSecondsBecauseOfRestrictions:
+              $ref: "#/components/schemas/DelayInMilliSecondsBecauseOfRestrictions"
             accessible:
               $ref: "#/components/schemas/Accessible"
             direction:

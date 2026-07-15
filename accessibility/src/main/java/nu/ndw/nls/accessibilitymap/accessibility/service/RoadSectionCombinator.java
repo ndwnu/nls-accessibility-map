@@ -79,7 +79,7 @@ public class RoadSectionCombinator {
                         Objects.nonNull(directionalSegmentWithRestrictionsApplied)
                         && directionalSegmentWithRestrictionsApplied.isAccessible()
                 )
-                .withDelayBecauseOfRestrictions(
+                .withDelayInMilliSecondsBecauseOfRestrictions(
                         Objects.isNull(directionalSegmentWithRestrictionsApplied)
                                 ? 0
                                 : (

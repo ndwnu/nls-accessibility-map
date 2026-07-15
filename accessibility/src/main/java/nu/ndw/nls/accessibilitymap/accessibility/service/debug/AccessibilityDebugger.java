@@ -98,7 +98,7 @@ public class AccessibilityDebugger {
     private RoadSectionSegmentProperties buildRoadSectionSegmentProperties(DirectionalSegment directionalSegment) {
 
         Duration travelTime = Duration.ofMillis(directionalSegment.getTravelTimeInMilliSeconds());
-        Duration delayBecauseOfRestrictions = Duration.ofMillis(directionalSegment.getDelayBecauseOfRestrictions());
+        Duration delayBecauseOfRestrictions = Duration.ofMillis(directionalSegment.getDelayInMilliSecondsBecauseOfRestrictions());
 
         return RoadSectionSegmentProperties.builder()
                 .roadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())

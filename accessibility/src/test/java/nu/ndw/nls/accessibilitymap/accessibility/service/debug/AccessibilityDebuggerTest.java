@@ -895,8 +895,8 @@ class AccessibilityDebuggerTest {
                                 "segmentId": 3,
                                 "travelTime" : "89:17:32",
                                 "travelTimeInSeconds" : 321452,
-                                "delayBecauseOfRestrictions" : "27:15:58",
-                                "delayBecauseOfRestrictionsInSeconds" : 98158,
+                                "delayInMilliSecondsBecauseOfRestrictions" : "27:15:58",
+                                "delayInMilliSecondsBecauseOfRestrictionsInSeconds" : 98158,
                                 "distanceInMeters" : 321541.0
                               },
                               "type": "Feature"
@@ -919,8 +919,8 @@ class AccessibilityDebuggerTest {
                                 "segmentId": 3,
                                 "travelTime" : "0:20:34",
                                 "travelTimeInSeconds" : 1234,
-                                "delayBecauseOfRestrictions" : "89:20:54",
-                                "delayBecauseOfRestrictionsInSeconds" : 321654,
+                                "delayInMilliSecondsBecauseOfRestrictions" : "89:20:54",
+                                "delayInMilliSecondsBecauseOfRestrictionsInSeconds" : 321654,
                                 "distanceInMeters" : 13251.0
                               },
                               "type": "Feature"
@@ -959,7 +959,7 @@ class AccessibilityDebuggerTest {
                 .lineString(lineStringForward)
                 .accessible(true)
                 .travelTimeInMilliSeconds(321452557L)
-                .delayBecauseOfRestrictions(98158131L)
+                .delayInMilliSecondsBecauseOfRestrictions(98158131L)
                 .distanceInMeters(321541.0)
                 .build();
         DirectionalSegment backwardSegment = DirectionalSegment.builder()
@@ -971,7 +971,7 @@ class AccessibilityDebuggerTest {
                 .lineString(lineStringBackward)
                 .accessible(true)
                 .travelTimeInMilliSeconds(1234567L)
-                .delayBecauseOfRestrictions(321654987L)
+                .delayInMilliSecondsBecauseOfRestrictions(321654987L)
                 .distanceInMeters(13251.0)
                 .build();
 
