@@ -58,12 +58,11 @@ public record AccessibilityRequest(
 
     public static final BBox BOUNDING_BOX_GLOBE = BBox.fromPoints(-MAX_LATITUDE, -MAX_LONGITUDE, MAX_LATITUDE, MAX_LONGITUDE);
 
-    //@todo: still relevant? was used for default filtering Set.of(SupplementarySignType.EXCLUDING, SupplementarySignType.PRE_ANNOUNCEMENT)
     public @NotEmpty Set<SupplementarySignType> excludeTrafficSignSupplementarySignTypes() {
         if (Objects.nonNull(excludeTrafficSignSupplementarySignTypes)) {
             return excludeTrafficSignSupplementarySignTypes;
         } else {
-            return Set.of();
+            return SupplementarySignType.getPreAnnouncementTypes();
         }
     }
 

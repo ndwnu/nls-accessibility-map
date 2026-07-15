@@ -3,6 +3,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsi
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OB254;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OB256;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OB259;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OB401;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OB411;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.EnumSet;
@@ -14,6 +16,8 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 class SupplementarySignTypeTest {
 
+    private static final Set<SupplementarySignType> PRE_ANNOUNCEMENTS = EnumSet.of(OB401, OB411);
+
     private static final Set<SupplementarySignType> TIME_WINDOWED_TYPES = EnumSet.of(OB254, OB256, OB259);
 
     @Test
@@ -21,6 +25,13 @@ class SupplementarySignTypeTest {
         assertThat(SupplementarySignType.getWindowTimeTypes())
                 .isSameAs(SupplementarySignType.getWindowTimeTypes())
                 .isEqualTo(TIME_WINDOWED_TYPES);
+    }
+
+    @Test
+    void getPreAnnouncementTypes() {
+        assertThat(SupplementarySignType.getPreAnnouncementTypes())
+                .isSameAs(SupplementarySignType.getPreAnnouncementTypes())
+                .isEqualTo(PRE_ANNOUNCEMENTS);
     }
 
     @ParameterizedTest

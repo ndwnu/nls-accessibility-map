@@ -112,10 +112,16 @@ public enum SupplementarySignType {
     OB720,
     OTHER;
 
+    private static final Set<SupplementarySignType> PRE_ANNOUNCEMENTS = EnumSet.of(OB401, OB411);
+
     private static final Set<SupplementarySignType> TIME_WINDOWED_TYPES = EnumSet.of(OB254, OB256, OB259);
 
     public static Set<SupplementarySignType> getWindowTimeTypes() {
         return TIME_WINDOWED_TYPES;
+    }
+
+    public static Set<SupplementarySignType> getPreAnnouncementTypes() {
+        return PRE_ANNOUNCEMENTS;
     }
 
     public boolean isWindowTime() {

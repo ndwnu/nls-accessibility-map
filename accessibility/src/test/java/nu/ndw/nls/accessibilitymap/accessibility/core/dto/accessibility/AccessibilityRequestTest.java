@@ -99,7 +99,7 @@ class AccessibilityRequestTest extends ValidationTest {
     void excludeTrafficSignSupplementarySignTypes_defaultValue() {
 
         accessibilityRequest = accessibilityRequest.withExcludeTrafficSignSupplementarySignTypes(null);
-        assertThat(accessibilityRequest.excludeTrafficSignSupplementarySignTypes()).isEmpty();
+        assertThat(accessibilityRequest.excludeTrafficSignSupplementarySignTypes()).isEqualTo(SupplementarySignType.getPreAnnouncementTypes());
     }
 
     @Test
