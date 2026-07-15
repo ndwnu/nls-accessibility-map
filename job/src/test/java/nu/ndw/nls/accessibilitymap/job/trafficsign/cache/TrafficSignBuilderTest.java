@@ -67,17 +67,12 @@ class TrafficSignBuilderTest {
 
     private static final double POINT_COORDINATE_Y = 4.0;
 
-    private static final double BLACK_CODE = 5d;
-
     private static final double COORDINATE_AND_BEARING_X = 6d;
 
     private static final double COORDINATE_AND_BEARING_Y = 7d;
 
     @Mock
     private FractionAndDistanceCalculator fractionAndDistanceCalculator;
-
-    @Mock
-    private BlackCodeMapper blackCodeMapper;
 
     @Mock
     private ZoneCodeTypeMapper zoneCodeTypeMapper;
@@ -153,7 +148,6 @@ class TrafficSignBuilderTest {
         when(trafficSignPropertiesDtoV5Json.getZoneCode()).thenReturn(ZONE_CODE_ENUM);
         when(zoneCodeTypeMapper.map(ZONE_CODE_ENUM)).thenReturn(ZONE_CODE_TYPE);
         when(trafficSignPropertiesDtoV5Json.getTrafficOrderId()).thenReturn(TRAFFIC_REGULATION_ORDER_ID);
-        when(blackCodeMapper.map(trafficSignGeoJsonDtoV5Json, RVV_CODE_C1_TRAFFIC_SIGN_TYPE)).thenReturn(BLACK_CODE);
         when(coordinateAndBearing.coordinate()).thenReturn(new Coordinate(COORDINATE_AND_BEARING_X, COORDINATE_AND_BEARING_Y));
 
         when(trafficSignPropertiesDtoV5Json.getSupplementarySigns()).thenReturn(List.of(textSignDtoV5JsonA, textSignDtoV5JsonB));
@@ -180,7 +174,6 @@ class TrafficSignBuilderTest {
         assertThat(trafficSign.longitude()).isEqualTo(POINT_COORDINATE_X);
         assertThat(trafficSign.zoneCodeType()).isEqualTo(ZONE_CODE_TYPE);
         assertThat(trafficSign.trafficRegulationOrderId()).isEqualTo(TRAFFIC_REGULATION_ORDER_ID);
-        assertThat(trafficSign.blackCode()).isEqualTo(BLACK_CODE);
         assertThat(trafficSign.networkSnappedLatitude()).isEqualTo(COORDINATE_AND_BEARING_Y);
         assertThat(trafficSign.networkSnappedLongitude()).isEqualTo(COORDINATE_AND_BEARING_X);
         assertThat(trafficSign.supplementaryTrafficSigns()).containsExactly(supplementaryTrafficSignA, supplementaryTrafficSignB);

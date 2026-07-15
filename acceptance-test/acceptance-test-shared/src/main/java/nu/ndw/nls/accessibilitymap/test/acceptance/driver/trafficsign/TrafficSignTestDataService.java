@@ -33,7 +33,6 @@ public class TrafficSignTestDataService {
                 .geometry(new PointJson().type("point").coordinates(List.of(trafficSign.location().x, trafficSign.location().y)))
                 .properties(TrafficSignPropertiesDtoV5Json.builder()
                         .fraction(trafficSign.fraction())
-                        .blackCode(trafficSign.blackCode())
                         .rvvCode(trafficSign.rvvCode())
                         .drivingDirection(trafficSign.directionType())
                         .roadSectionId(Math.toIntExact(trafficSign.roadSectionId()))

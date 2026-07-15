@@ -124,8 +124,7 @@ public class AccessibilityDebugger {
                                 restrictionPropertiesBuilder
                                         .trafficSignId(trafficSignRestriction.id())
                                         .trafficSignExternalId(trafficSignRestriction.externalId())
-                                        .trafficSignType(trafficSignRestriction.trafficSignType())
-                                        .trafficSignBlackCode(trafficSignRestriction.blackCode());
+                                        .trafficSignType(trafficSignRestriction.trafficSignType());
                             }
 
                             return Feature.builder()

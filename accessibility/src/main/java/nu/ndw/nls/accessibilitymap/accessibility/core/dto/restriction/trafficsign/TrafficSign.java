@@ -26,7 +26,6 @@ public record TrafficSign(
         @NotNull Double networkSnappedLatitude,
         @NotNull Double networkSnappedLongitude,
         URI iconUri,
-        Double blackCode,
         ZoneCodeType zoneCodeType,
         String trafficRegulationOrderId,
         @NotNull TransportRestrictions transportRestrictions,
