@@ -9,7 +9,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,180 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TransportConditionsTest {
 
-    private static final String REQUEST_SET_CONDITION_SET_EVALUABLE_CONDITIONS_CONDITIONS_APPLY = """
-            requestSetContains, conditionSetContains,   hasEvaluableConditions, conditionsApply
-            NULL,               NULL,                   false,                  false
-            EMPTY,              NULL,                   false,                  false
-            FIRST,              NULL,                   false,                  false
-            ALL,                NULL,                   false,                  false
-            NULL,               EMPTY,                  false,                  false
-            EMPTY,              EMPTY,                  false,                  false
-            FIRST,              EMPTY,                  false,                  false
-            ALL,                EMPTY,                  false,                  false
-            NULL,               FIRST,                  false,                  false
-            EMPTY,              FIRST,                  false,                  false
-            FIRST,              FIRST,                  true,                   true
-            SECOND,             FIRST,                  true,                   false
-            ALL,                FIRST,                  true,                   true
-            NULL,               ALL,                    false,                  false
-            EMPTY,              ALL,                    false,                  false
-            FIRST,              ALL,                    true,                   true
-            ALL,                ALL,                    true,                   true
-            """;
-
-    private AccessibilityRequest accessibilityRequest;
-
-    @BeforeEach
-    void setUp() {
-        accessibilityRequest = AccessibilityRequest.builder().build();
-    }
-
-    @Test
-    void unrestricted() {
-        TransportConditions unrestricted = TransportConditions.unrestricted();
-
-        assertThat(unrestricted).isNotNull()
-                .isSameAs(TransportConditions.unrestricted());
-
-        assertThat(unrestricted.transportTypes()).isNull();
-        assertThat(unrestricted.categories()).isNull();
-        assertThat(unrestricted.timeValidity()).isNull();
-        assertThat(unrestricted.emissionClass()).isNull();
-        assertThat(unrestricted.fuelType()).isNull();
-        assertThat(unrestricted.vehicleLengthInCm()).isNull();
-        assertThat(unrestricted.vehicleHeightInCm()).isNull();
-        assertThat(unrestricted.vehicleWidthInCm()).isNull();
-        assertThat(unrestricted.vehicleWeightInKg()).isNull();
-        assertThat(unrestricted.vehicleAxleLoadInKg()).isNull();
-    }
-
-    @Test
-    void hasEvaluableConditions() {
-
-        TransportConditions transportConditions = TransportConditions.builder()
-                .transportTypes(TransportType.allExcept())
-                .build();
-
-        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest.withTransportTypes(TransportType.allExcept()))).isTrue();
-    }
-
-    @Test
-    void hasEvaluableConditions_unrestricted_noRestrictions() {
-
-        TransportConditions transportConditions = TransportConditions.unrestricted();
-
-        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest)).isFalse();
-    }
-
-    @Test
-    void hasEvaluableConditions_noRestrictions() {
-
-        TransportConditions transportConditions = TransportConditions.builder().build();
-
-        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest)).isFalse();
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = REQUEST_SET_CONDITION_SET_EVALUABLE_CONDITIONS_CONDITIONS_APPLY, useHeadersInDisplayName = true)
-    void conditionsApply_and_hasEvaluableConditions_transportTypes(
-            EnumSetContains requestSetContains,
-            EnumSetContains conditionSetContains,
-            boolean hasEvaluableConditions,
-            boolean conditionsApply) {
-        TransportConditions transportConditions = TransportConditions.builder()
-                .transportTypes(conditionSetContains.map(TransportType.values()))
-                .build();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withTransportTypes(requestSetContains.map(TransportType.values()))))
-                .isEqualTo(conditionsApply);
-
-        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest.withTransportTypes(requestSetContains.map(TransportType.values()))))
-                .isEqualTo(hasEvaluableConditions);
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = REQUEST_SET_CONDITION_SET_EVALUABLE_CONDITIONS_CONDITIONS_APPLY, useHeadersInDisplayName = true)
-    void conditionsApply_and_hasEvaluableConditions_categories(
-            EnumSetContains requestSetContains,
-            EnumSetContains conditionSetContains,
-            boolean hasEvaluableConditions,
-            boolean conditionsApply) {
-        TransportConditions transportConditions = TransportConditions.builder()
-                .categories(conditionSetContains.map(Category.values()))
-                .build();
-
-
-        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest.withCategories(requestSetContains.map(Category.values()))))
-                .isEqualTo(hasEvaluableConditions);
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withCategories(requestSetContains.map(Category.values()))))
-                .isEqualTo(conditionsApply);
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            requestSetContains, conditionSetContains,   hasEvaluableConditions, conditionsApply
-            NULL,               null,                   false,                  false
-            EMPTY,              null,                   false,                  false
-            FIRST,              null,                   false,                  false
-            ALL,                null,                   false,                  false
-            NULL,               COMPRESSED_NATURAL_GAS, false,                  false
-            EMPTY,              COMPRESSED_NATURAL_GAS, false,                  false
-            FIRST,              COMPRESSED_NATURAL_GAS, true,                   true
-            FIRST,              DIESEL,                 true,                   false
-            ALL,                COMPRESSED_NATURAL_GAS, true,                   true
-            """, nullValues = "null", useHeadersInDisplayName = true)
-    void conditionsApply_and_hasEvaluableConditions_fuelType(
-            EnumSetContains requestSetContains,
-            FuelType fuelType,
-            boolean hasEvaluableConditions,
-            boolean conditionsApply) {
-        TransportConditions transportConditions = TransportConditions.builder()
-                .fuelType(fuelType)
-                .build();
-
-        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest.withFuelTypes(requestSetContains.map(FuelType.values()))))
-                .isEqualTo(hasEvaluableConditions);
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withFuelTypes(requestSetContains.map(FuelType.values()))))
-                .isEqualTo(conditionsApply);
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            requestSetContains, conditionSetContains,   hasEvaluableConditions, conditionsApply
-            NULL,               null,                   false,                  false
-            EMPTY,              null,                   false,                  false
-            FIRST,              null,                   false,                  false
-            ALL,                null,                   false,                  false
-            NULL,               EURO_1,                 false,                  false
-            EMPTY,              EURO_1,                 false,                  false
-            FIRST,              EURO_1,                 true,                   true
-            FIRST,              EURO_2,                 true,                   false
-            ALL,                EURO_1,                 true,                   true
-            """, nullValues = "null", useHeadersInDisplayName = true)
-    void conditionsApply_emissionClass(
-            EnumSetContains requestSetContains,
-            EmissionClass emissionClass,
-            boolean hasEvaluableConditions,
-            boolean conditionsApply) {
-        TransportConditions transportConditions = TransportConditions.builder()
-                .emissionClass(emissionClass)
-                .build();
-
-        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest.withEmissionClasses(requestSetContains.map(EmissionClass.values())))).isEqualTo(
-                hasEvaluableConditions);
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withEmissionClasses(requestSetContains.map(EmissionClass.values())))).isEqualTo(
-                conditionsApply);
-    }
-
-    @Test
-    void conditionsApply_unrestricted_noRestrictions() {
-        TransportConditions transportConditions = TransportConditions.unrestricted();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest)).isFalse();
-    }
+    private final AccessibilityRequest accessibilityRequest = AccessibilityRequest.builder().build();
 
     @Test
     void conditionsApply_combinationTest() {
@@ -224,28 +50,160 @@ class TransportConditionsTest {
                 .withVehicleAxleLoadInKg(transportConditions.vehicleAxleLoadInKg().value() - 1d)
         )).isFalse();
     }
+    @Test
+    void unrestricted() {
+        TransportConditions unrestricted = TransportConditions.unrestricted();
+
+        assertThat(unrestricted).isNotNull()
+                .isSameAs(TransportConditions.unrestricted());
+
+        assertThat(unrestricted.transportTypes()).isNull();
+        assertThat(unrestricted.categories()).isNull();
+        assertThat(unrestricted.timeValidity()).isNull();
+        assertThat(unrestricted.emissionClass()).isNull();
+        assertThat(unrestricted.fuelType()).isNull();
+        assertThat(unrestricted.vehicleLengthInCm()).isNull();
+        assertThat(unrestricted.vehicleHeightInCm()).isNull();
+        assertThat(unrestricted.vehicleWidthInCm()).isNull();
+        assertThat(unrestricted.vehicleWeightInKg()).isNull();
+        assertThat(unrestricted.vehicleAxleLoadInKg()).isNull();
+    }
+
+    @Test
+    void conditionsApply_unrestricted() {
+        TransportConditions transportConditions = TransportConditions.unrestricted();
+
+        assertThat(transportConditions.conditionsApply(accessibilityRequest)).isFalse();
+    }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            vehicleLengthCondition, vehicleLengthRequest,   hasEvaluableConditions, conditionsApply
-            20,                     20,                     true,                   false
-            20,                     20.1,                   true,                   true
-            20,                     null,                   false,                  false
-            null,                   20.1,                   true,                   false
-            null,                   null,                   false,                  false
+            requestSetContains, conditionSetContains,   conditionsApply
+            NULL,               NULL,                   false
+            EMPTY,              NULL,                   false
+            FIRST_ENUM,         NULL,                   false
+            ALL,                NULL,                   false
+            NULL,               EMPTY,                  false
+            EMPTY,              EMPTY,                  false
+            FIRST_ENUM,         EMPTY,                  false
+            ALL,                EMPTY,                  false
+            NULL,               FIRST_ENUM,             false
+            EMPTY,              FIRST_ENUM,             false
+            FIRST_ENUM,         FIRST_ENUM,             true
+            SECOND_ENUM,        FIRST_ENUM,             false
+            ALL,                FIRST_ENUM,             true
+            NULL,               ALL,                    false
+            EMPTY,              ALL,                    false
+            FIRST_ENUM,         ALL,                    true
+            ALL,                ALL,                    true
+            """, useHeadersInDisplayName = true)
+    void conditionsApply_transportTypes(
+            EnumSetContains requestSetContains,
+            EnumSetContains conditionSetContains,
+            boolean conditionsApply) {
+        TransportConditions transportConditions = TransportConditions.builder()
+                .transportTypes(conditionSetContains.map(TransportType.values()))
+                .build();
+
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withTransportTypes(requestSetContains.map(TransportType.values()))))
+                .isEqualTo(conditionsApply);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            requestSetContains, conditionSetContains,   conditionsApply
+            NULL,               NULL,                   false
+            EMPTY,              NULL,                   false
+            FIRST_ENUM,         NULL,                   false
+            ALL,                NULL,                   false
+            NULL,               EMPTY,                  false
+            EMPTY,              EMPTY,                  false
+            FIRST_ENUM,         EMPTY,                  false
+            ALL,                EMPTY,                  false
+            NULL,               FIRST_ENUM,             false
+            EMPTY,              FIRST_ENUM,             false
+            FIRST_ENUM,         FIRST_ENUM,             true
+            SECOND_ENUM,        FIRST_ENUM,             false
+            ALL,                FIRST_ENUM,             true
+            NULL,               ALL,                    false
+            EMPTY,              ALL,                    false
+            FIRST_ENUM,         ALL,                    true
+            ALL,                ALL,                    true
+            """, useHeadersInDisplayName = true)
+    void conditionsApply_categories(
+            EnumSetContains requestSetContains,
+            EnumSetContains conditionSetContains,
+            boolean conditionsApply) {
+        TransportConditions transportConditions = TransportConditions.builder()
+                .categories(conditionSetContains.map(Category.values()))
+                .build();
+
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withCategories(requestSetContains.map(Category.values()))))
+                .isEqualTo(conditionsApply);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            requestSetContains, emissionClass,  conditionsApply
+            NULL,               null,           false
+            EMPTY,              null,           false
+            FIRST_ENUM,         null,           false
+            ALL,                null,           false
+            NULL,               EURO_1,         false
+            EMPTY,              EURO_1,         false
+            FIRST_ENUM,         EURO_1,         true
+            FIRST_ENUM,         EURO_2,         false
+            ALL,                EURO_1,         true
+            """, nullValues = "null", useHeadersInDisplayName = true)
+    void conditionsApply_emissionClass(
+            EnumSetContains requestSetContains,
+            EmissionClass emissionClass,
+            boolean conditionsApply) {
+        TransportConditions transportConditions = TransportConditions.builder()
+                .emissionClass(emissionClass)
+                .build();
+
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withEmissionClasses(requestSetContains.map(EmissionClass.values()))))
+                .isEqualTo(conditionsApply);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            requestSetContains, conditionSetContains,   conditionsApply
+            NULL,               null,                   false
+            EMPTY,              null,                   false
+            FIRST_ENUM,         null,                   false
+            ALL,                null,                   false
+            NULL,               COMPRESSED_NATURAL_GAS, false
+            EMPTY,              COMPRESSED_NATURAL_GAS, false
+            FIRST_ENUM,         COMPRESSED_NATURAL_GAS, true
+            FIRST_ENUM,         DIESEL,                 false
+            ALL,                COMPRESSED_NATURAL_GAS, true
+            """, nullValues = "null", useHeadersInDisplayName = true)
+    void conditionsApply_fuelType(EnumSetContains requestSetContains, FuelType fuelType, boolean conditionsApply) {
+        TransportConditions transportConditions = TransportConditions.builder().fuelType(fuelType).build();
+
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withFuelTypes(requestSetContains.map(FuelType.values()))))
+                .isEqualTo(conditionsApply);
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            vehicleLengthCondition, vehicleLengthRequest,   conditionsApply
+            20,                     20,                     false
+            20,                     20.1,                   true
+            20,                     null,                   false
+            null,                   20.1,                   false
+            null,                   null,                   false
             """, useHeadersInDisplayName = true, nullValues = "null")
-    void conditionsApply_vehicleLength(
+    void conditionsApply_vehicleLengthInCm(
             Double vehicleLengthCondition,
             Double vehicleLengthRequest,
-            boolean hasEvaluableConditions,
             boolean conditionsApply) {
 
         TransportConditions transportConditions = TransportConditions.builder()
                 .vehicleLengthInCm(Maximum.builder().value(vehicleLengthCondition).build())
                 .build();
-
-        assertThat(transportConditions.hasEvaluableConditions(accessibilityRequest.withVehicleLengthInCm(vehicleLengthRequest))).isEqualTo(
-                hasEvaluableConditions);
 
         assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleLengthInCm(vehicleLengthRequest))).isEqualTo(
                 conditionsApply);
@@ -253,100 +211,104 @@ class TransportConditionsTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            20, 20, false
-            20, 20.1, true
-            20, , false
-            , 20.1, false
-            , , false
-            """)
-    void conditionsApply_vehicleHeight(
-            Double vehicleHeight,
-            Double vehicleHeightToTestFor,
-            boolean expectedResult) {
+            vehicleHeightCondition, vehicleHeightRequest,   conditionsApply
+            20,                     20,                     false
+            20,                     20.1,                   true
+            20,                     null,                   false
+            null,                   20.1,                   false
+            null,                   null,                   false
+            """, useHeadersInDisplayName = true, nullValues = "null")
+    void conditionsApply_vehicleHeightInCm(
+            Double vehicleHeightCondition,
+            Double vehicleHeightRequest,
+            boolean conditionsApply) {
 
         TransportConditions transportConditions = TransportConditions.builder()
                 .vehicleHeightInCm(Maximum.builder()
-                        .value(vehicleHeight)
+                        .value(vehicleHeightCondition)
                         .build())
                 .build();
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleHeightInCm(vehicleHeightToTestFor))).isEqualTo(
-                expectedResult);
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleHeightInCm(vehicleHeightRequest))).isEqualTo(
+                conditionsApply);
     }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            20, 20, false
-            20, 20.1, true
-            20, , false
-            , 20.1, false
-            , , false
-            """)
-    void conditionsApply_vehicleWidth(
-            Double vehicleWidth,
-            Double vehicleWidthToTestFor,
-            boolean expectedResult) {
+            vehicleWidthCondition,  vehicleWidthRequest,    conditionsApply
+            20,                     20,                     false
+            20,                     20.1,                   true
+            20,                     null,                   false
+            null,                   20.1,                   false
+            null,                   null,                   false
+            """, useHeadersInDisplayName = true, nullValues = "null")
+    void conditionsApply_vehicleWidthInCm(
+            Double vehicleWidthCondition,
+            Double vehicleWidthRequest,
+            boolean conditionsApply) {
 
         TransportConditions transportConditions = TransportConditions.builder()
                 .vehicleWidthInCm(Maximum.builder()
-                        .value(vehicleWidth)
+                        .value(vehicleWidthCondition)
                         .build())
                 .build();
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleWidthInCm(vehicleWidthToTestFor))).isEqualTo(expectedResult);
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleWidthInCm(vehicleWidthRequest))).isEqualTo(conditionsApply);
     }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            20, 20, false
-            20, 20.1, true
-            20, , false
-            , 20.1, false
-            , , false
-            """)
-    void conditionsApply_vehicleWeight(
-            Double vehicleWeight,
-            Double vehicleWeightToTestFor,
-            boolean expectedResult) {
+            vehicleWeightCondition, vehicleWeightRequest,   conditionsApply
+            20,                     20,                     false
+            20,                     20.1,                   true
+            20,                     null,                   false
+            null,                   20.1,                   false
+            null,                   null,                   false
+            """, useHeadersInDisplayName = true, nullValues = "null")
+    void conditionsApply_vehicleWeightInKg(
+            Double vehicleWeightCondition,
+            Double vehicleWeightRequest,
+            boolean conditionsApply) {
 
         TransportConditions transportConditions = TransportConditions.builder()
                 .vehicleWeightInKg(Maximum.builder()
-                        .value(vehicleWeight)
+                        .value(vehicleWeightCondition)
                         .build())
                 .build();
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleWeightInKg(vehicleWeightToTestFor))).isEqualTo(
-                expectedResult);
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleWeightInKg(vehicleWeightRequest))).isEqualTo(
+                conditionsApply);
     }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-            20, 20, false
-            20, 20.1, true
-            20, , false
-            , 20.1, false
-            , , false
-            """)
-    void conditionsApply_vehicleAxleLoad(
-            Double vehicleAxleLoad,
-            Double vehicleAxleLoadToTestFor,
-            boolean expectedResult) {
+            vehicleAxleLoadCondition,   vehicleAxleLoadRequest, conditionsApply
+            20,                         20,                     false
+            20,                         20.1,                   true
+            20,                         null,                   false
+            null,                       20.1,                   false
+            null,                       null,                   false
+            """, useHeadersInDisplayName = true, nullValues = "null")
+    void conditionsApply_vehicleAxleLoadInKg(
+            Double vehicleAxleLoadCondition,
+            Double vehicleAxleLoadRequest,
+            boolean conditionsApply) {
 
         TransportConditions transportConditions = TransportConditions.builder()
                 .vehicleAxleLoadInKg(Maximum.builder()
-                        .value(vehicleAxleLoad)
+                        .value(vehicleAxleLoadCondition)
                         .build())
                 .build();
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleAxleLoadInKg(vehicleAxleLoadToTestFor))).isEqualTo(
-                expectedResult);
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleAxleLoadInKg(vehicleAxleLoadRequest))).isEqualTo(
+                conditionsApply);
     }
 
     enum EnumSetContains {
         NULL,
         EMPTY,
-        FIRST,
-        SECOND,
+        FIRST_ENUM,
+        SECOND_ENUM,
         ALL;
 
         public <T extends Enum<T>> Set<T> map(T[] values) {
@@ -355,9 +317,9 @@ class TransportConditionsTest {
                     return null;
                 case EMPTY:
                     return Collections.emptySet();
-                case FIRST:
+                case FIRST_ENUM:
                     return Set.of(values[0]);
-                case SECOND:
+                case SECOND_ENUM:
                     return Set.of(values[1]);
                 case ALL:
             }

@@ -34,14 +34,6 @@ public record TransportConditions(
         return TRANSPORT_CONDITIONS_UNRESTRICTED;
     }
 
-    public boolean hasEvaluableConditions(AccessibilityRequest accessibilityRequest) {
-        if (this == TRANSPORT_CONDITIONS_UNRESTRICTED) {
-            return false;
-        }
-
-        return !getActiveConditions(accessibilityRequest).isEmpty();
-    }
-
     public boolean conditionsApply(AccessibilityRequest accessibilityRequest) {
         if (this == TRANSPORT_CONDITIONS_UNRESTRICTED) {
             return false;
