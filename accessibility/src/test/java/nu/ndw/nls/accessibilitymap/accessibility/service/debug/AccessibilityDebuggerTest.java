@@ -895,8 +895,8 @@ class AccessibilityDebuggerTest {
                                 "segmentId": 3,
                                 "travelTime" : "89:17:32",
                                 "travelTimeInSeconds" : 321452,
-                                "delayInMilliSecondsBecauseOfRestrictions" : "27:15:58",
-                                "delayInMilliSecondsBecauseOfRestrictionsInSeconds" : 98158,
+                                "delayBecauseOfRestrictions" : "27:15:58",
+                                "delayBecauseOfRestrictionsInSeconds" : 98158,
                                 "distanceInMeters" : 321541.0
                               },
                               "type": "Feature"
@@ -919,8 +919,8 @@ class AccessibilityDebuggerTest {
                                 "segmentId": 3,
                                 "travelTime" : "0:20:34",
                                 "travelTimeInSeconds" : 1234,
-                                "delayInMilliSecondsBecauseOfRestrictions" : "89:20:54",
-                                "delayInMilliSecondsBecauseOfRestrictionsInSeconds" : 321654,
+                                "delayBecauseOfRestrictions" : "89:20:54",
+                                "delayBecauseOfRestrictionsInSeconds" : 321654,
                                 "distanceInMeters" : 13251.0
                               },
                               "type": "Feature"
