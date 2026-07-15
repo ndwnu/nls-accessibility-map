@@ -15,6 +15,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.speedlimit.SpeedLimit;
 
 @NoArgsConstructor
+@SuppressWarnings("java:S2160")
 public class SpeedLimits extends LinkedHashSet<SpeedLimit> {
 
     @Serial
