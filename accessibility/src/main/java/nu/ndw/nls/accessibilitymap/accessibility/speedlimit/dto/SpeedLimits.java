@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.speedlimit.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serial;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +20,8 @@ public class SpeedLimits extends LinkedHashSet<SpeedLimit> {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private Map<Integer, List<SpeedLimit>> speedLimitsByRoadSectionId;
+    @JsonIgnore
+    private transient Map<Integer, List<SpeedLimit>> speedLimitsByRoadSectionId;
 
     public SpeedLimits(SpeedLimit... speedLimits) {
         this(Arrays.asList(speedLimits));
