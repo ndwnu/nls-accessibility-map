@@ -122,6 +122,7 @@ class AccessibilityV2ApiDelegateImplTest {
                                         .roadSectionId(2L)
                                         .accessible(true)
                                         .direction(DirectionJson.BACKWARD)
+                                        .delayBecauseOfRestrictions(10L)
                                         .build())
                                 .build(),
                         FeatureJson.builder()
@@ -213,22 +214,14 @@ class AccessibilityV2ApiDelegateImplTest {
                               "id": 1,
                               "geometry": {
                                 "type": "LineString",
-                                "coordinates": [
-                                  [
-                                    1.1,
-                                    1.2
-                                  ],
-                                  [
-                                    2.1,
-                                    2.2
-                                  ]
-                                ]
+                                "coordinates": [ [1.1, 1.2], [2.1, 2.2] ]
                               },
                               "properties": {
                                 "type": "roadSectionSegment",
                                 "roadSectionId": 2,
                                 "accessible": true,
-                                "direction": "backward"
+                                "direction": "backward",
+                                "delayBecauseOfRestrictions": 10
                               }
                             },
                             {
@@ -236,10 +229,7 @@ class AccessibilityV2ApiDelegateImplTest {
                               "id": 3,
                               "geometry": {
                                 "type": "Point",
-                                "coordinates": [
-                                  3.1,
-                                  3.2
-                                ]
+                                "coordinates": [3.1, 3.2]
                               },
                               "properties": {
                                 "type": "destination",

@@ -35,6 +35,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 1
@@ -59,6 +60,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 1
@@ -83,6 +85,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 2
@@ -107,6 +110,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 2
@@ -131,6 +135,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 3
@@ -155,6 +160,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 3
@@ -179,6 +185,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 4
@@ -203,6 +210,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 4
@@ -227,6 +235,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 5
@@ -251,6 +260,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 5
@@ -275,6 +285,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 6
@@ -299,6 +310,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
+        "delayBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 6
@@ -323,6 +335,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 6
@@ -347,6 +360,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 6
@@ -371,6 +385,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 64218135,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 7
@@ -395,6 +410,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 13840341,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 7
@@ -419,6 +435,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 13840341,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 8
@@ -443,6 +460,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 16317763,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 8
@@ -467,6 +485,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 16317763,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 9
@@ -491,6 +510,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 112390177,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 9
@@ -515,6 +535,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 16317763,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 9
@@ -539,6 +560,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 112390177,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 9
@@ -563,6 +585,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 112390177,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 10
@@ -587,6 +610,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 144140211,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 10
@@ -611,6 +635,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 144140211,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 11
@@ -635,6 +660,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 13840341,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 12
@@ -659,6 +685,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 12
@@ -683,6 +710,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 13
@@ -707,6 +735,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 144140211,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 13
@@ -731,6 +760,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
+        "delayBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 13
@@ -755,6 +785,7 @@
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
+        "delayBecauseOfRestrictions": 144140211,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 13

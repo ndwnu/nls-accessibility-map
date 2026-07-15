@@ -26,4 +26,14 @@ public class RoadSectionSegmentProperties implements Properties {
     private final double endFraction;
 
     private final boolean accessible;
+
+    private final String travelTime;
+
+    private final long travelTimeInSeconds;
+
+    private final String delayBecauseOfRestrictions;
+
+    private final long delayBecauseOfRestrictionsInSeconds;
+
+    private final double distanceInMeters;
 }
