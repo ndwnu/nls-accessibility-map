@@ -90,6 +90,7 @@ public class AccessibilityResponseGeoJsonMapperV2 {
                                 .functionalRoadClass(roadSection.getFunctionalRoadClass())
                                 .accessible(isAccessible(accessibilityRequestJson, directionalSegment))
                                 .direction(DirectionJson.valueOf(directionalSegment.getDirection().name().toUpperCase(Locale.ROOT)))
+                                .delayBecauseOfRestrictions(directionalSegment.getDelayBecauseOfRestrictions())
                                 .build())
                         .build())
                 .map(FeatureJson.class::cast)

@@ -11,6 +11,7 @@ import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.BBox;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -86,22 +87,35 @@ public class AccessibilityDebugger {
                         .map(directionalSegment -> Feature.builder()
                                 .id(idSupplier.getAndIncrement())
                                 .geometry(jtsLineStringJsonMapper.map(directionalSegment.getLineString()))
-                                .properties(RoadSectionSegmentProperties.builder()
-                                        .roadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
-                                        .roadSectionFragmentId(directionalSegment.getRoadSectionFragment().getId())
-                                        .edge(directionalSegment.getRoadSectionFragment().getId())
-                                        .segmentId(directionalSegment.getId())
-                                        .edgeKey(directionalSegment.getId())
-                                        .direction(directionalSegment.getDirection())
-                                        .startFraction(directionalSegment.getStartFraction())
-                                        .endFraction(directionalSegment.getEndFraction())
-                                        .accessible(directionalSegment.isAccessible())
-                                        .build())
+                                .properties(buildRoadSectionSegmentProperties(directionalSegment))
                                 .build())
                         .toList())
                 .build();
 
         writeGeoJson(name, featureCollection);
+    }
+
+    private RoadSectionSegmentProperties buildRoadSectionSegmentProperties(DirectionalSegment directionalSegment) {
+
+        Duration travelTime = Duration.ofMillis(directionalSegment.getTravelTimeInMilliSeconds());
+        Duration delayBecauseOfRestrictions = Duration.ofMillis(directionalSegment.getDelayBecauseOfRestrictions());
+
+        return RoadSectionSegmentProperties.builder()
+                .roadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
+                .roadSectionFragmentId(directionalSegment.getRoadSectionFragment().getId())
+                .edge(directionalSegment.getRoadSectionFragment().getId())
+                .segmentId(directionalSegment.getId())
+                .edgeKey(directionalSegment.getId())
+                .travelTime(prettyPrint(travelTime))
+                .travelTimeInSeconds(travelTime.getSeconds())
+                .delayBecauseOfRestrictions(prettyPrint(delayBecauseOfRestrictions))
+                .delayBecauseOfRestrictionsInSeconds(delayBecauseOfRestrictions.getSeconds())
+                .distanceInMeters(directionalSegment.getDistanceInMeters())
+                .direction(directionalSegment.getDirection())
+                .startFraction(directionalSegment.getStartFraction())
+                .endFraction(directionalSegment.getEndFraction())
+                .accessible(directionalSegment.isAccessible())
+                .build();
     }
 
     public void writeDebug(Restrictions restrictions) {
@@ -214,17 +228,7 @@ public class AccessibilityDebugger {
                         .map(directionalSegment -> Feature.builder()
                                 .id(idSupplier.getAndIncrement())
                                 .geometry(jtsLineStringJsonMapper.map(directionalSegment.getLineString()))
-                                .properties(RoadSectionSegmentProperties.builder()
-                                        .roadSectionId(directionalSegment.getRoadSectionFragment().getRoadSection().getId())
-                                        .roadSectionFragmentId(directionalSegment.getRoadSectionFragment().getId())
-                                        .edge(directionalSegment.getRoadSectionFragment().getId())
-                                        .segmentId(directionalSegment.getId())
-                                        .edgeKey(directionalSegment.getId())
-                                        .direction(directionalSegment.getDirection())
-                                        .startFraction(directionalSegment.getStartFraction())
-                                        .endFraction(directionalSegment.getEndFraction())
-                                        .accessible(directionalSegment.isAccessible())
-                                        .build())
+                                .properties(buildRoadSectionSegmentProperties(directionalSegment))
                                 .build())
                         .toList())
                 .build();
@@ -240,6 +244,7 @@ public class AccessibilityDebugger {
         writeGraphHopperNodes(queryGraph);
         writeGraphHopperEdges(queryGraph);
     }
+
     private void writeGraphHopperNodes(QueryGraph queryGraph) {
         AtomicLong idSupplier = new AtomicLong(1);
         ArrayList<Feature> nodes = new ArrayList<>();
@@ -381,5 +386,9 @@ public class AccessibilityDebugger {
         } catch (IOException exception) {
             log.error("Failed to write file.", exception);
         }
+    }
+
+    private String prettyPrint(Duration duration) {
+        return "%d:%d:%d".formatted(duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart());
     }
 }

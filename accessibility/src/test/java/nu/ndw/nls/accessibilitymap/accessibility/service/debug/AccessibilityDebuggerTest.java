@@ -184,7 +184,12 @@ class AccessibilityDebuggerTest {
                               "direction" : "FORWARD",
                               "startFraction" : 0.5,
                               "endFraction" : 1.0,
-                              "accessible" : true
+                              "accessible" : true,
+                              "travelTime" : "89:17:32",
+                              "travelTimeInSeconds" : 321452,
+                              "delayBecauseOfRestrictions" : "27:15:58",
+                              "delayBecauseOfRestrictionsInSeconds" : 98158,
+                              "distanceInMeters" : 321541.0
                             },
                             "type" : "Feature"
                           }, {
@@ -202,7 +207,12 @@ class AccessibilityDebuggerTest {
                               "direction" : "BACKWARD",
                               "startFraction" : 1.0,
                               "endFraction" : 0.5,
-                              "accessible" : true
+                              "accessible" : true,
+                              "travelTime" : "0:20:34",
+                              "travelTimeInSeconds" : 1234,
+                              "delayBecauseOfRestrictions" : "89:20:54",
+                              "delayBecauseOfRestrictionsInSeconds" : 321654,
+                              "distanceInMeters" : 13251.0
                             },
                             "type" : "Feature"
                           } ],
@@ -434,7 +444,12 @@ class AccessibilityDebuggerTest {
                               "direction" : "FORWARD",
                               "startFraction" : 0.5,
                               "endFraction" : 1.0,
-                              "accessible" : true
+                              "accessible" : true,
+                               "travelTime" : "89:17:32",
+                               "travelTimeInSeconds" : 321452,
+                               "delayBecauseOfRestrictions" : "27:15:58",
+                               "delayBecauseOfRestrictionsInSeconds" : 98158,
+                               "distanceInMeters" : 321541.0
                             },
                             "type" : "Feature"
                           }, {
@@ -452,7 +467,12 @@ class AccessibilityDebuggerTest {
                               "direction" : "BACKWARD",
                               "startFraction" : 1.0,
                               "endFraction" : 0.5,
-                              "accessible" : true
+                              "accessible" : true,
+                              "travelTime" : "0:20:34",
+                              "travelTimeInSeconds" : 1234,
+                              "delayBecauseOfRestrictions" : "89:20:54",
+                              "delayBecauseOfRestrictionsInSeconds" : 321654,
+                              "distanceInMeters" : 13251.0
                             },
                             "type" : "Feature"
                           } ],
@@ -872,7 +892,12 @@ class AccessibilityDebuggerTest {
                                 "endFraction": 1.0,
                                 "roadSectionFragmentId": 2,
                                 "roadSectionId": 1,
-                                "segmentId": 3
+                                "segmentId": 3,
+                                "travelTime" : "89:17:32",
+                                "travelTimeInSeconds" : 321452,
+                                "delayBecauseOfRestrictions" : "27:15:58",
+                                "delayBecauseOfRestrictionsInSeconds" : 98158,
+                                "distanceInMeters" : 321541.0
                               },
                               "type": "Feature"
                             },
@@ -891,7 +916,12 @@ class AccessibilityDebuggerTest {
                                 "endFraction": 0.5,
                                 "roadSectionFragmentId": 2,
                                 "roadSectionId": 1,
-                                "segmentId": 3
+                                "segmentId": 3,
+                                "travelTime" : "0:20:34",
+                                "travelTimeInSeconds" : 1234,
+                                "delayBecauseOfRestrictions" : "89:20:54",
+                                "delayBecauseOfRestrictionsInSeconds" : 321654,
+                                "distanceInMeters" : 13251.0
                               },
                               "type": "Feature"
                             }
@@ -928,6 +958,9 @@ class AccessibilityDebuggerTest {
                 .direction(Direction.FORWARD)
                 .lineString(lineStringForward)
                 .accessible(true)
+                .travelTimeInMilliSeconds(321452557L)
+                .delayBecauseOfRestrictions(98158131L)
+                .distanceInMeters(321541.0)
                 .build();
         DirectionalSegment backwardSegment = DirectionalSegment.builder()
                 .id(3)
@@ -937,6 +970,9 @@ class AccessibilityDebuggerTest {
                 .direction(Direction.BACKWARD)
                 .lineString(lineStringBackward)
                 .accessible(true)
+                .travelTimeInMilliSeconds(1234567L)
+                .delayBecauseOfRestrictions(321654987L)
+                .distanceInMeters(13251.0)
                 .build();
 
         roadSectionFragment.setForwardSegment(forwardSegment);

@@ -48,10 +48,10 @@ public class RoadSectionMapper {
         SortedMap<Integer, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById = new TreeMap<>();
 
-        isochroneLabels.forEach(isoLabel -> {
+        isochroneLabels.forEach(isochroneLabel -> {
             EdgeIteratorState currentEdge = accessibilityNetwork.getQueryGraph().getEdgeIteratorState(
-                    isoLabel.getEdge(),
-                    isoLabel.getNode());
+                    isochroneLabel.getEdge(),
+                    isochroneLabel.getNode());
             LineString lineString = isoLabelToGeometryMapper.map(currentEdge);
             int roadSectionId = currentEdge.get(accessibilityNetwork.getNetworkData().getNetworkGraphHopper().getEncodingManager()
                     .getIntEncodedValue(WAY_ID_KEY));
@@ -90,7 +90,8 @@ public class RoadSectionMapper {
                     lineString,
                     directionalSegmentId,
                     roadSectionFragmentById,
-                    restrictions);
+                    restrictions,
+                    isochroneLabel);
         });
 
         log.debug("Mapped {} iso labels to {} road sections", isochroneLabels.size(), roadSectionsById.size());
@@ -103,8 +104,8 @@ public class RoadSectionMapper {
             LineString lineString,
             int directionalSegmentId,
             SortedMap<Integer, RoadSectionFragment> roadSectionFragmentById,
-            List<Restriction> restrictions
-    ) {
+            List<Restriction> restrictions,
+            IsochroneLabel isochroneLabel) {
 
         if (isReversed) {
             roadSectionFragment.setBackwardSegment(
@@ -113,7 +114,8 @@ public class RoadSectionMapper {
                             Direction.BACKWARD,
                             lineString,
                             roadSectionFragmentById.get(roadSectionFragment.getId()),
-                            restrictions));
+                            restrictions,
+                            isochroneLabel));
         } else {
             roadSectionFragment.setForwardSegment(
                     buildDirectionalSegment(
@@ -121,7 +123,8 @@ public class RoadSectionMapper {
                             Direction.FORWARD,
                             lineString,
                             roadSectionFragmentById.get(roadSectionFragment.getId()),
-                            restrictions));
+                            restrictions,
+                            isochroneLabel));
         }
     }
 
@@ -130,8 +133,8 @@ public class RoadSectionMapper {
             Direction direction,
             LineString lineString,
             RoadSectionFragment roadSectionFragment,
-            List<Restriction> restrictions
-    ) {
+            List<Restriction> restrictions,
+            IsochroneLabel isochroneLabel) {
 
         return DirectionalSegment.builder()
                 .id(id)
@@ -140,6 +143,8 @@ public class RoadSectionMapper {
                 .lineString(lineString)
                 .roadSectionFragment(roadSectionFragment)
                 .restrictions(new Restrictions(restrictions))
+                .travelTimeInMilliSeconds(isochroneLabel.getTimeInMilliSeconds())
+                .distanceInMeters(isochroneLabel.getDistanceInMeters())
                 .build();
     }
 }

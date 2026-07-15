@@ -1,8 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
+import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.index.Snap;
-import com.graphhopper.util.PMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,12 +13,13 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.SnapRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.weight.WeightingFactory;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.querygraph.QueryGraphConfigurer;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.Snapper;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityLocationNotFoundException;
+import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.dto.SpeedLimits;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.springframework.stereotype.Component;
 
@@ -30,14 +31,15 @@ public class AccessibilityNetworkProvider {
 
     private final Snapper snapper;
 
+    public final WeightingFactory weightingFactory;
+
     public AccessibilityNetwork get(
             NetworkData networkData,
             Restrictions restrictions,
+            SpeedLimits speedLimits,
             Location from,
             Location destination
     ) {
-
-        NetworkGraphHopper networkGraphHopper = networkData.getNetworkGraphHopper();
 
         Optional<Snap> fromSnap = snapper.snapLocation(networkData, from);
         if (fromSnap.isEmpty()) {
@@ -48,6 +50,7 @@ public class AccessibilityNetworkProvider {
             throw new AccessibilityLocationNotFoundException(from);
         }
 
+        NetworkGraphHopper networkGraphHopper = networkData.getNetworkGraphHopper();
         List<SnapRestriction> snapRestrictions = restrictions.stream()
                 .map(restriction -> snapper.snapRestriction(networkGraphHopper, restriction)
                         .map(snap -> new SnapRestriction(snap, restriction)).orElse(null))
@@ -68,6 +71,8 @@ public class AccessibilityNetworkProvider {
                 queryGraph,
                 snapRestrictions);
 
+        Weighting weighting = weightingFactory.createWeighting(queryGraph, networkData, speedLimits);
+
         return new AccessibilityNetwork(
                 networkData,
                 queryGraph,
@@ -75,6 +80,6 @@ public class AccessibilityNetworkProvider {
                 restrictionsByEdgeKey,
                 fromSnap.get(),
                 destinationSnap.orElse(null),
-                queryGraph.wrapWeighting(networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap())));
+                weighting);
     }
 }

@@ -21,13 +21,13 @@ public class RoadSectionCombinator {
             Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
             Collection<RoadSection> accessibleRoadSectionsWithAppliedRestrictions) {
 
-        List<DirectionalSegment> allDirectionalSegments =
+        List<DirectionalSegment> reachableSegmentsWhenNoRestrictionsApplied =
                 accessibleRoadsSectionsWithoutAppliedRestrictions.stream()
                         .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                         .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
                         .toList();
 
-        Map<Integer, DirectionalSegment> directionalSegmentsThatAreAccessible =
+        Map<Integer, DirectionalSegment> reachableSegmentsWhenRestrictionsApplied =
                 accessibleRoadSectionsWithAppliedRestrictions.stream()
                         .flatMap(roadSection -> roadSection.getRoadSectionFragments().stream())
                         .flatMap(roadSectionFragment -> roadSectionFragment.getSegments().stream())
@@ -36,20 +36,20 @@ public class RoadSectionCombinator {
         SortedMap<Long, RoadSection> roadSectionsById = new TreeMap<>();
         SortedMap<Integer, RoadSectionFragment> roadSectionsFragmentsById = new TreeMap<>();
 
-        allDirectionalSegments.forEach(
-                directionalSegmentToCopyFrom -> {
+        reachableSegmentsWhenNoRestrictionsApplied.forEach(
+                directionalSegmentNoRestrictionsApplied -> {
                     RoadSection newRoadSection = roadSectionsById.computeIfAbsent(
-                            directionalSegmentToCopyFrom.getRoadSectionFragment().getRoadSection().getId(),
+                            directionalSegmentNoRestrictionsApplied.getRoadSectionFragment().getRoadSection().getId(),
                             roadSectionId -> RoadSection.builder()
                                     .id(roadSectionId)
-                                    .functionalRoadClass(directionalSegmentToCopyFrom
+                                    .functionalRoadClass(directionalSegmentNoRestrictionsApplied
                                             .getRoadSectionFragment()
                                             .getRoadSection()
                                             .getFunctionalRoadClass())
                                     .build());
 
                     RoadSectionFragment newRoadSectionFraction = roadSectionsFragmentsById.computeIfAbsent(
-                            directionalSegmentToCopyFrom.getRoadSectionFragment().getId(),
+                            directionalSegmentNoRestrictionsApplied.getRoadSectionFragment().getId(),
                             roadSectionFragmentId -> {
                                 RoadSectionFragment newRoadSectionFragment = RoadSectionFragment.builder()
                                         .id(roadSectionFragmentId)
@@ -62,8 +62,8 @@ public class RoadSectionCombinator {
 
                     addNewDirectionSegmentToRoadSection(
                             newRoadSectionFraction,
-                            directionalSegmentToCopyFrom,
-                            directionalSegmentsThatAreAccessible.get(directionalSegmentToCopyFrom.getId()));
+                            directionalSegmentNoRestrictionsApplied,
+                            reachableSegmentsWhenRestrictionsApplied.get(directionalSegmentNoRestrictionsApplied.getId()));
                 });
 
         return roadSectionsById.values();
@@ -71,16 +71,24 @@ public class RoadSectionCombinator {
 
     private static void addNewDirectionSegmentToRoadSection(
             RoadSectionFragment newRoadSectionFraction,
-            DirectionalSegment directionalSegmentToCopyFrom,
-            DirectionalSegment accessibleDirectionSegment) {
+            DirectionalSegment directionalSegmentNoRestrictionsApplied,
+            DirectionalSegment directionalSegmentWithRestrictionsApplied) {
 
-        DirectionalSegment newDirectionSegment = directionalSegmentToCopyFrom
+        DirectionalSegment newDirectionSegment = directionalSegmentNoRestrictionsApplied
                 .withAccessible(
-                        Objects.nonNull(accessibleDirectionSegment) && accessibleDirectionSegment.isAccessible()
+                        Objects.nonNull(directionalSegmentWithRestrictionsApplied)
+                        && directionalSegmentWithRestrictionsApplied.isAccessible()
                 )
+                .withDelayBecauseOfRestrictions(
+                        Objects.isNull(directionalSegmentWithRestrictionsApplied)
+                                ? 0
+                                : (
+                                        directionalSegmentWithRestrictionsApplied.getTravelTimeInMilliSeconds()
+                                        - directionalSegmentNoRestrictionsApplied.getTravelTimeInMilliSeconds()
+                                ))
                 .withRoadSectionFragment(newRoadSectionFraction);
 
-        if (directionalSegmentToCopyFrom.getDirection() == Direction.BACKWARD) {
+        if (directionalSegmentNoRestrictionsApplied.getDirection() == Direction.BACKWARD) {
             newRoadSectionFraction.setBackwardSegment(newDirectionSegment);
         } else {
             newRoadSectionFraction.setForwardSegment(newDirectionSegment);

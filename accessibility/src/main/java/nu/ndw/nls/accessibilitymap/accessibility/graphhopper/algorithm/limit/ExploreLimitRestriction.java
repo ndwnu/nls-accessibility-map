@@ -1,7 +1,8 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit;
 
 import com.graphhopper.routing.util.EncodingManager;
 import lombok.ToString;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.RestrictionsIsochroneLabel;
 import nu.ndw.nls.routingmapmatcher.isochrone.v2.exploration.ExploreLimit;
 
 @ToString(callSuper = true)
