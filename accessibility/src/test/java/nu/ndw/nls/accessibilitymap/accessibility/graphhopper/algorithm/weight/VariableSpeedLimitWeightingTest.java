@@ -110,7 +110,7 @@ class VariableSpeedLimitWeightingTest {
     void hasTurnCosts() {
         when(sourceWeighting.hasTurnCosts()).thenReturn(true);
 
-        assertThat(variableSpeedLimitWeighting.hasTurnCosts()).isEqualTo(true);
+        assertThat(variableSpeedLimitWeighting.hasTurnCosts()).isTrue();
     }
 
     @Test

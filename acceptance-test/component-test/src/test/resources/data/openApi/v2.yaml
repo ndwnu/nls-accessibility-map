@@ -589,7 +589,7 @@ components:
       format: "int64"
       example: "163245"
       minimum: 0
-      description: "The delay it took to reach the location because of a restriction"
+      description: "The delay it took to reach the location because of a restriction. Is 0 if road section is not reachable."
       readOnly: true
     Accessible:
       type: "boolean"
