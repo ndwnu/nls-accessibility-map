@@ -9,8 +9,8 @@ nu:
     nls:
       accessibilitymap:
         trafficsignclient:
-          api:
-            url: https://wegkenmerken.ndw.nu/api/rest/static-road-data/traffic-signs/v4
+          currentStateControllerV5:
+            url: https://wegkenmerken.ndw.nu/api
 
 nls:
   keycloak:
