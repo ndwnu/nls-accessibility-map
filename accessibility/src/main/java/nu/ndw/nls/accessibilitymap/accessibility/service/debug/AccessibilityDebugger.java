@@ -26,6 +26,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportConditions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.RestrictionProperties.RestrictionPropertiesBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
@@ -121,10 +123,27 @@ public class AccessibilityDebugger {
                                     .fraction(restriction.fraction());
 
                             if (restriction instanceof TrafficSign trafficSignRestriction) {
+
+                                ConditionsProperties restrictionConditions;
+                                List<ConditionsProperties> exemptionsConditions;
+                                if (trafficSignRestriction.transportRestrictions() != null) {
+                                    restrictionConditions = mapConditionProperties(trafficSignRestriction.transportRestrictions()
+                                            .restrictions());
+                                    exemptionsConditions = trafficSignRestriction.transportRestrictions().exemptions()
+                                            .stream()
+                                            .map(this::mapConditionProperties)
+                                            .toList();
+                                } else {
+                                    restrictionConditions = null;
+                                    exemptionsConditions = null;
+                                }
+
                                 restrictionPropertiesBuilder
                                         .trafficSignId(trafficSignRestriction.id())
                                         .trafficSignExternalId(trafficSignRestriction.externalId())
-                                        .trafficSignType(trafficSignRestriction.trafficSignType());
+                                        .trafficSignType(trafficSignRestriction.trafficSignType())
+                                        .restrictions(restrictionConditions)
+                                        .exemptions(exemptionsConditions);
                             }
 
                             return Feature.builder()
@@ -139,6 +158,28 @@ public class AccessibilityDebugger {
                 .build();
 
         writeGeoJson("activeRestriction", featureCollection);
+    }
+
+    private ConditionsProperties mapConditionProperties(TransportConditions transportConditions) {
+        return ConditionsProperties.builder()
+                .transportTypes(transportConditions.transportTypes())
+                .categories(transportConditions.categories())
+                .timeValidity(transportConditions.timeValidity())
+                .emissionClass(transportConditions.emissionClass())
+                .fuelType(transportConditions.fuelType())
+                .vehicleLengthInCm(getMaximumValue(transportConditions.vehicleLengthInCm()))
+                .vehicleHeightInCm(getMaximumValue(transportConditions.vehicleHeightInCm()))
+                .vehicleWidthInCm(getMaximumValue(transportConditions.vehicleWidthInCm()))
+                .vehicleWeightInKg(getMaximumValue(transportConditions.vehicleWeightInKg()))
+                .vehicleAxleLoadInKg(getMaximumValue(transportConditions.vehicleAxleLoadInKg()))
+                .build();
+    }
+
+    private Double getMaximumValue(Maximum maximum) {
+        if (maximum == null) {
+            return null;
+        }
+        return maximum.value();
     }
 
     public void writeDebug(AccessibilityRequest accessibilityRequest) {

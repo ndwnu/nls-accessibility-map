@@ -23,18 +23,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.javacrumbs.jsonunit.core.Option;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.roadsection.RoadSectionRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.Category;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportConditions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
@@ -542,6 +549,24 @@ class AccessibilityDebuggerTest {
                 .direction(Direction.BACKWARD)
                 .trafficSignType(TrafficSignType.C1)
                 .fraction(0.5)
+                .transportRestrictions(TransportRestrictions.builder()
+                        .restrictions(TransportConditions.builder()
+                                .transportTypes(Set.of(TransportType.CAR))
+                                .categories(Set.of(Category.LOADING))
+                                .emissionClass(EmissionClass.EURO_1)
+                                .timeValidity("time restrict")
+                                .vehicleLengthInCm(new Maximum(2D))
+                                .vehicleHeightInCm(new Maximum(2D))
+                                .vehicleWidthInCm(new Maximum(3D))
+                                .vehicleWeightInKg(new Maximum(1D))
+                                .vehicleAxleLoadInKg(new Maximum(4D))
+                                .build())
+                        .exemptions(List.of(
+                                TransportConditions.builder()
+                                        .transportTypes(Set.of(TransportType.TRUCK))
+                                        .build()
+                        ))
+                        .build())
                 .build();
         Restrictions restrictions = new Restrictions(List.of(trafficSign));
 
@@ -564,25 +589,40 @@ class AccessibilityDebuggerTest {
                 .withOptions(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo("""
                         {
-                          "features" : [ {
-                            "id" : 1,
-                            "geometry" : {
-                              "type" : "Point",
-                              "coordinates" : [ 4.0, 3.0 ]
-                            },
-                            "properties" : {
-                              "type" : "TrafficSign",
-                              "roadSectionId" : 6,
-                              "direction" : "BACKWARD",
-                              "fraction" : 0.5,
-                              "trafficSignId" : 1,
-                              "trafficSignExternalId" : "2",
-                              "trafficSignType" : "C1"
-                            },
-                            "type" : "Feature"
-                          } ],
-                          "type" : "FeatureCollection"
-                        }
+                            "features": [
+                              {
+                                "id": 1,
+                                "geometry": {
+                                  "type": "Point",
+                                  "coordinates": [
+                                    4.0,
+                                    3.0
+                                  ]
+                                },
+                                "properties": {
+                                  "direction": "BACKWARD",
+                                  "fraction": 0.5,
+                                  "roadSectionId": 6,
+                                  "trafficSignExternalId": "2",
+                                  "trafficSignId": 1,
+                                  "trafficSignType": "C1",
+                                  "type": "TrafficSign",
+                                  "restrictions.vehicleWidthInCm": "3.0",
+                                  "restrictions.vehicleHeightInCm": "2.0",
+                                  "exemptions1.transportTypes": "TRUCK",
+                                  "restrictions.categories": "LOADING",
+                                  "restrictions.vehicleLengthInCm": "2.0",
+                                  "restrictions.vehicleAxleLoadInKg": "4.0",
+                                  "restrictions.timeValidity": "time restrict",
+                                  "restrictions.vehicleWeightInKg": "1.0",
+                                  "restrictions.transportTypes": "CAR",
+                                  "restrictions.emissionClass": "EURO_1"
+                                },
+                                "type": "Feature"
+                              }
+                            ],
+                            "type": "FeatureCollection"
+                          }
                         """);
     }
 
