@@ -14,7 +14,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.BlackCodeMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.DirectionMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.SupplementaryTrafficSignMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.TransportRestrictionMapper;
@@ -129,7 +128,7 @@ class TrafficSignBuilderTest {
     LoggerExtension loggerExtension = new LoggerExtension();
 
     @Test
-    void mapFromTrafficSignGeoJsonDto_ok() {
+    void mapFromTrafficSignGeoJsonDto() {
 
         when(trafficSignGeoJsonDtoV5Json.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json);
         when(trafficSignPropertiesDtoV5Json.getFraction()).thenReturn(FRACTION);

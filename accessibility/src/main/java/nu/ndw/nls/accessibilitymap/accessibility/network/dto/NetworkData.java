@@ -29,7 +29,6 @@ public final class NetworkData {
     @Valid
     private final NwbNetworkData nwbNetworkData;
 
-
     public NetworkData(
             @NonNull GraphHopperNetwork graphHopperNetwork,
             @NonNull NwbData nwbData,
@@ -50,7 +49,8 @@ public final class NetworkData {
             NwbData nwbData,
             NwbDataUpdates nwbDataUpdates
     ) {
-        this(GraphHopperNetwork.builder().network(networkGraphHopper)
+        this(
+                GraphHopperNetwork.builder().network(networkGraphHopper)
                         .nwbVersion(nwbData.getNwbVersionId()).build(),
                 nwbData,
                 nwbDataUpdates);

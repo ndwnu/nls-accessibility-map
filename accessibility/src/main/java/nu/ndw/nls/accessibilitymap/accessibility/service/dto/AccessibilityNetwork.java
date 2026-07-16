@@ -36,7 +36,6 @@ public class AccessibilityNetwork {
     @NotNull
     private final Weighting weighting;
 
-
     @SuppressWarnings("java:S107")
     public AccessibilityNetwork(
             @NotNull NetworkData networkData,
@@ -59,11 +58,11 @@ public class AccessibilityNetwork {
     @Override
     public String toString() {
         return "GraphHopperNetwork(" +
-                "networkData=" + networkData + ", " +
-                "restrictions=" + restrictions + ", " +
-                "restrictionsByEdgeKey=" + restrictionsByEdgeKey + ", " +
-                "from=" + from + ", " +
-                "destination=" + destination +
-                ')';
+               "networkData=" + networkData + ", " +
+               "restrictions=" + restrictions + ", " +
+               "restrictionsByEdgeKey=" + restrictionsByEdgeKey + ", " +
+               "from=" + from + ", " +
+               "destination=" + destination +
+               ')';
     }
 }

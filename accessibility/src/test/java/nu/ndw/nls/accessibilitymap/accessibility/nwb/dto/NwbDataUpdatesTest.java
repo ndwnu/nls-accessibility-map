@@ -39,7 +39,7 @@ class NwbDataUpdatesTest {
     }
 
     @Test
-    void merge_ok() {
+    void merge() {
         NwbDataUpdates existingRoadChanges = new NwbDataUpdates(
                 1,
                 List.of(

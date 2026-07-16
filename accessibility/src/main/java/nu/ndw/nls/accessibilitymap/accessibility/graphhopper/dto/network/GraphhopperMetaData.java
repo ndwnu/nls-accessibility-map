@@ -7,5 +7,4 @@ public record GraphhopperMetaData(int nwbVersion) implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
 }

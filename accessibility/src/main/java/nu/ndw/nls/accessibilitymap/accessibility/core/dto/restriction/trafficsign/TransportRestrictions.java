@@ -41,7 +41,6 @@ public record TransportRestrictions(@NotNull TransportConditions restrictions, @
                         accessibilityRequest.transportTypes());
             }
             return false;
-
         }
 
         return false;
