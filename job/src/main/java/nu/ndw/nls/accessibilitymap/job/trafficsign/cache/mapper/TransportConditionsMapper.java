@@ -57,6 +57,7 @@ public class TransportConditionsMapper {
         return vehicleTypeEnums
                 .stream()
                 .map(vehicleToTransportTypeMapper::map)
+                .flatMap(Set::stream)
                 .collect(Collectors.toSet());
     }
 

@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
 
+import java.util.Collections;
+import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionPropertiesDtoV5Json.VehicleTypeEnum;
 import org.springframework.stereotype.Component;
@@ -7,29 +9,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class VehicleToTransportTypeMapper {
 
-    public TransportType map(VehicleTypeEnum vehicleTypeEnum) {
+    public Set<TransportType> map(VehicleTypeEnum vehicleTypeEnum) {
         if (vehicleTypeEnum == null) {
-            return null;
+            return Collections.emptySet();
         }
 
         return switch (vehicleTypeEnum) {
-            case BICYCLE -> TransportType.BICYCLE;
-            case CAR -> TransportType.CAR;
-            case BUS -> TransportType.BUS;
-            case MOPED -> TransportType.MOPED;
-            case MOTORCYCLE -> TransportType.MOTORCYCLE;
-            case AGRICULTURAL_VEHICLE -> TransportType.TRACTOR;
-            case CARAVAN -> TransportType.CARAVAN;
-            case TRAILER -> TransportType.VEHICLE_WITH_TRAILER;
-            case MICROCAR -> null;
-            case PEDESTRIAN -> TransportType.PEDESTRIAN;
-            case TRUCK -> TransportType.TRUCK;
-            case DELIVERY_VAN -> TransportType.DELIVERY_VAN;
-            case RIDER -> TransportType.RIDERS;
-            case TRAM -> TransportType.TRAM;
-            case TAXI -> TransportType.TAXI;
-            case ALL -> null;
-            case UNKNOWN -> null;
+            case BICYCLE -> Set.of(TransportType.BICYCLE);
+            case CAR -> Set.of(TransportType.CAR);
+            case BUS -> Set.of(TransportType.BUS);
+            case MOPED -> Set.of(TransportType.MOPED);
+            case MOTORCYCLE -> Set.of(TransportType.MOTORCYCLE);
+            case AGRICULTURAL_VEHICLE -> Set.of(TransportType.TRACTOR);
+            case CARAVAN -> Set.of(TransportType.CARAVAN);
+            case TRAILER -> Set.of(TransportType.VEHICLE_WITH_TRAILER);
+            case MICROCAR -> Set.of(TransportType.CAR);
+            case PEDESTRIAN -> Set.of(TransportType.PEDESTRIAN);
+            case TRUCK -> Set.of(TransportType.TRUCK);
+            case DELIVERY_VAN -> Set.of(TransportType.DELIVERY_VAN);
+            case RIDER -> Set.of(TransportType.RIDERS);
+            case TRAM -> Set.of(TransportType.TRAM);
+            case TAXI -> Set.of(TransportType.TAXI);
+            case ALL -> Set.of(TransportType.values());
+            case UNKNOWN -> Set.of();
             //case ??? -> TransportType.CONDUCTORS
             //case ??? -> TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES
         };
