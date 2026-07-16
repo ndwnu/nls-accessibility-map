@@ -35,7 +35,7 @@ class TrafficSignServiceTest {
     private List<TrafficSignGeoJsonDtoV5Json> features;
 
     @Test
-    void getTrafficSigns_ok() {
+    void getTrafficSigns() {
         when(currentStateControllerV5ApiClient.getCurrentStateDefault(
                 null,
                 null,

@@ -18,7 +18,10 @@ public class AccessibilityLink extends Link {
     private final Integer municipalityCode;
 
     @Builder
-    protected AccessibilityLink(long id, long fromNodeId, long toNodeId,
+    protected AccessibilityLink(
+            long id,
+            long fromNodeId,
+            long toNodeId,
             DirectionalDto<Boolean> accessibility,
             double distanceInMeters,
             LineString geometry,

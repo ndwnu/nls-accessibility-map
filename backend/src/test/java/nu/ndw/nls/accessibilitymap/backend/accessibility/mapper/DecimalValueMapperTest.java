@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 class DecimalValueMapperTest {
 
     @Test
-    void map_ok() {
+    void map() {
         Double inputValue = 1234.56;
         int decimalPlaces = 2;
         BigDecimal expected = new BigDecimal("12.35");

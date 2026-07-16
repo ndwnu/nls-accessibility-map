@@ -19,6 +19,4 @@ public class EmissionZoneTypeMapper {
             default -> EmissionZoneType.UNKNOWN;
         };
     }
-
-
 }
