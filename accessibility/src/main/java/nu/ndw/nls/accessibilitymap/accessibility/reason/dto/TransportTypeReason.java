@@ -34,5 +34,4 @@ public class TransportTypeReason extends AccessibilityReason<Set<TransportType>>
                 .restrictions(mergeRestrictions(otherTransportTypeReason))
                 .build();
     }
-
 }

@@ -127,5 +127,4 @@ public enum SupplementarySignType {
     public boolean isWindowTime() {
         return getWindowTimeTypes().contains(this);
     }
-
 }

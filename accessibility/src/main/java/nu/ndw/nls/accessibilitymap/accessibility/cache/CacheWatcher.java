@@ -37,7 +37,8 @@ public class CacheWatcher<TYPE> {
         Files.createDirectories(cacheConfiguration.getFolder());
         log.info("Watching file changes on {}", cacheConfiguration.getName());
 
-        scheduledTask = taskScheduler.scheduleWithFixedDelay(() -> {
+        scheduledTask = taskScheduler.scheduleWithFixedDelay(
+                () -> {
 
                     if (cache.isDataStale()) {
                         log.info("Triggering update");

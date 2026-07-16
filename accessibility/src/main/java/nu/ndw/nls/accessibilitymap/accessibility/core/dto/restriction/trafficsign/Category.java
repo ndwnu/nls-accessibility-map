@@ -6,5 +6,5 @@ public enum Category {
     PERMIT,
     LOCAL_TRAFFIC,
     DISABLED_TRANSPORT,
-    DANGEROUS_SUPPLIES;
+    DANGEROUS_SUPPLIES
 }

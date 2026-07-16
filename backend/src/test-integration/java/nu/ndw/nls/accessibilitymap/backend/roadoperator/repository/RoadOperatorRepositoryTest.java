@@ -22,7 +22,7 @@ class RoadOperatorRepositoryTest {
     private RoadOperatorRepository roadOperatorRepository;
 
     @Test
-    void loadFromConfigFile_ok() {
+    void loadFromConfigFile() {
 
         assertThat(roadOperatorRepository).isNotNull();
 

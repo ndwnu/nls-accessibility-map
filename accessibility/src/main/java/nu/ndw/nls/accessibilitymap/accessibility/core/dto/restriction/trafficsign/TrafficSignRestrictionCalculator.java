@@ -26,7 +26,6 @@ public class TrafficSignRestrictionCalculator {
                 return accessibilityRequest.trafficSignTypes().contains(trafficSign.trafficSignType());
             };
 
-
     private static final BiPredicate<TrafficSign, AccessibilityRequest> hasSupplementarySignTypes =
             (trafficSign, accessibilityRequest) -> {
                 if (Objects.isNull(accessibilityRequest.trafficSignSupplementarySignTypes())) {
@@ -45,5 +44,4 @@ public class TrafficSignRestrictionCalculator {
                 .or(hasSupplementarySignTypes)
                 .test(trafficSign, accessibilityRequest);
     }
-
 }
