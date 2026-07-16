@@ -23,5 +23,4 @@ public class RestrictionProperties implements Properties {
     private final String trafficSignExternalId;
 
     private final TrafficSignType trafficSignType;
-
 }

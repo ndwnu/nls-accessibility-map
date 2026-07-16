@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
 
-import static nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.IsCarAccessibleUtil.isAccessible;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
@@ -45,14 +44,14 @@ class IsCarAccessibleUtilTest {
             NRB,    true,   true,   true,   true
             FP,     true,   true,   true,   false
             """)
-    void isAccessible_ok(
+    void isAccessible(
             CarriagewayTypeCode carriagewayTypeCode,
             boolean forwardAccess,
             boolean backwardAccess,
             boolean reversed,
             boolean expectedAccessible
     ) {
-        assertThat(isAccessible(
+        assertThat(IsCarAccessibleUtil.isAccessible(
                 AccessibilityNwbRoadSection.builder()
                         .carriagewayTypeCode(carriagewayTypeCode)
                         .backwardAccessible(backwardAccess)

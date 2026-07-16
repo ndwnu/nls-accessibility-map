@@ -239,6 +239,7 @@ public class AccessibilityDebugger {
         writeGraphHopperNodes(queryGraph);
         writeGraphHopperEdges(queryGraph);
     }
+
     private void writeGraphHopperNodes(QueryGraph queryGraph) {
         AtomicLong idSupplier = new AtomicLong(1);
         ArrayList<Feature> nodes = new ArrayList<>();

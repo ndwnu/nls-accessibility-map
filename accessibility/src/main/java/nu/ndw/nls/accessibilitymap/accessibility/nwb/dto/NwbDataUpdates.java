@@ -38,7 +38,8 @@ public final class NwbDataUpdates {
     private final SortedMap<Long, AccessibilityNwbRoadSectionUpdate> changedNwbRoadSectionsById;
 
     @JsonCreator
-    public NwbDataUpdates(@NonNull @JsonProperty("nwbVersionId") Integer nwbVersionId,
+    public NwbDataUpdates(
+            @NonNull @JsonProperty("nwbVersionId") Integer nwbVersionId,
             @NonNull @JsonProperty("changedNwbRoadSections") List<AccessibilityNwbRoadSectionUpdate> accessibilityNwbRoadSectionUpdates
     ) {
         this.nwbVersionId = nwbVersionId;

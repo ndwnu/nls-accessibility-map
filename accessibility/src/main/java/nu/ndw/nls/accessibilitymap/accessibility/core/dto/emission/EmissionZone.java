@@ -26,7 +26,7 @@ public record EmissionZone(
     public boolean isActive(OffsetDateTime time) {
 
         return (time.isEqual(startTime) || time.isAfter(startTime))
-                && time.isBefore(endTime);
+               && time.isBefore(endTime);
     }
 
     public boolean isRelevant(

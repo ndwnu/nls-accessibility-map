@@ -13,7 +13,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.apache.commons.collections4.CollectionUtils;
 
-
 @Builder
 public record TransportConditions(
         Set<TransportType> transportTypes,
@@ -26,7 +25,7 @@ public record TransportConditions(
         Maximum vehicleWidthInCm,
         Maximum vehicleWeightInKg,
         Maximum vehicleAxleLoadInKg
-        ) {
+) {
 
     private static final TransportConditions TRANSPORT_CONDITIONS_UNRESTRICTED = TransportConditions.builder().build();
 

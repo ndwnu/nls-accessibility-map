@@ -35,5 +35,4 @@ public class FuelTypeReason extends AccessibilityReason<Set<FuelType>> {
                 .restrictions(mergeRestrictions(otherFuelTypeReason))
                 .build();
     }
-
 }
