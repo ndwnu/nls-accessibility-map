@@ -37,7 +37,7 @@ public class IsochroneService {
                         new ExploreDistanceLimit<>(isochroneArguments.searchDistanceInMetres(), true),
                         isochroneArguments.exploreLimit()
                 )),
-                Comparator.comparingDouble(IsochroneLabel::getTime),
+                Comparator.comparingDouble(IsochroneLabel::getTimeInMilliSeconds),
                 accessibilityNetwork.getRestrictionsByEdgeKey()
         );
 

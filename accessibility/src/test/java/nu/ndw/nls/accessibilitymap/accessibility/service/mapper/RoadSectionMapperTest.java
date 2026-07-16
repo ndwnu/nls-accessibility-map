@@ -22,7 +22,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.isochone.IsoLabelToGeometryMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
@@ -60,7 +59,7 @@ class RoadSectionMapperTest {
     private NetworkGraphHopper networkGraphHopper;
 
     @Mock
-    private IsochroneLabel isoLabel;
+    private IsochroneLabel isochroneLabel;
 
     @Mock
     private EdgeIteratorState edgeIteratorState;
@@ -106,10 +105,12 @@ class RoadSectionMapperTest {
             """)
     void map(boolean isReversed) {
 
-        List<IsochroneLabel> isochroneMatches = List.of(isoLabel);
+        List<IsochroneLabel> isochroneMatches = List.of(isochroneLabel);
 
-        when(isoLabel.getEdge()).thenReturn(2);
-        when(isoLabel.getNode()).thenReturn(1);
+        when(isochroneLabel.getEdge()).thenReturn(2);
+        when(isochroneLabel.getNode()).thenReturn(1);
+        when(isochroneLabel.getTimeInMilliSeconds()).thenReturn(3L);
+        when(isochroneLabel.getDistanceInMeters()).thenReturn(4.0);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
         when(queryGraph.getEdgeIteratorState(2, 1)).thenReturn(edgeIteratorState);
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
@@ -171,7 +172,8 @@ class RoadSectionMapperTest {
         assertThat(segment.getRoadSectionFragment()).isEqualTo(roadSectionFragment);
         assertThat(segment.isAccessible()).isTrue();
         assertThat(segment.getLineString()).isEqualTo(geometry);
-        assertThat(segment.getRestrictions()).isEqualTo(new Restrictions(List.of(restriction)));
+        assertThat(segment.getTravelTimeInMilliSeconds()).isEqualTo(3L);
+        assertThat(segment.getDistanceInMeters()).isEqualTo(4.0);
     }
 
     @Test

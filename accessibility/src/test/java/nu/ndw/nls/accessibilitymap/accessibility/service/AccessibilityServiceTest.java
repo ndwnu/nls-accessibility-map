@@ -37,6 +37,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.reason.service.AccessibilityRea
 import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebugger;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
+import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.dto.SpeedLimits;
+import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.service.SpeedLimitDataService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
@@ -144,6 +146,12 @@ class AccessibilityServiceTest {
     @Mock
     private EdgeKeyResolver edgeKeyResolver;
 
+    @Mock
+    private SpeedLimitDataService speedLimitDataService;
+
+    @Mock
+    private SpeedLimits speedLimits;
+
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
@@ -161,7 +169,9 @@ class AccessibilityServiceTest {
                 missingRoadSectionProvider,
                 accessibilityReasonService,
                 accessibilityNetworkProvider,
-                accessibilityDebugger, edgeKeyResolver);
+                accessibilityDebugger,
+                edgeKeyResolver,
+                speedLimitDataService);
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .startLocationLatitude(1.0)
@@ -184,7 +194,8 @@ class AccessibilityServiceTest {
         when(restrictionService.findAllBy(accessibilityRequest)).thenReturn(restrictions);
         mockFromAndDestination(accessibilityRequest);
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-        when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
+        when(speedLimitDataService.findAll()).thenReturn(speedLimits);
+        when(accessibilityNetworkProvider.get(networkData, restrictions, speedLimits, from, destination)).thenReturn(accessibilityNetwork);
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
 
@@ -254,7 +265,8 @@ class AccessibilityServiceTest {
         mockFromAndDestination(accessibilityRequest);
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
 
-        when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
+        when(speedLimitDataService.findAll()).thenReturn(speedLimits);
+        when(accessibilityNetworkProvider.get(networkData, restrictions, speedLimits, from, destination)).thenReturn(accessibilityNetwork);
         when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
 
         when(accessibilityCalculator.calculateWithoutRestrictions(accessibilityRequest, accessibilityNetwork))
@@ -301,7 +313,8 @@ class AccessibilityServiceTest {
         when(restrictionService.findAllBy(accessibilityRequest)).thenReturn(restrictions);
 
         mockFromAndDestination(accessibilityRequest);
-        when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
+        when(speedLimitDataService.findAll()).thenReturn(speedLimits);
+        when(accessibilityNetworkProvider.get(networkData, restrictions, speedLimits, from, destination)).thenReturn(accessibilityNetwork);
 
         when(accessibilityCalculator.calculateWithoutRestrictions(accessibilityRequest, accessibilityNetwork))
                 .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
@@ -362,7 +375,8 @@ class AccessibilityServiceTest {
         when(restrictionService.findAllBy(accessibilityRequest)).thenReturn(restrictions);
 
         mockFromAndDestination(accessibilityRequest);
-        when(accessibilityNetworkProvider.get(networkData, restrictions, from, destination)).thenReturn(accessibilityNetwork);
+        when(speedLimitDataService.findAll()).thenReturn(speedLimits);
+        when(accessibilityNetworkProvider.get(networkData, restrictions, speedLimits, from, destination)).thenReturn(accessibilityNetwork);
 
         when(accessibilityCalculator.calculateWithoutRestrictions(accessibilityRequest, accessibilityNetwork))
                 .thenReturn(new HashSet<>(Set.of(roadSectionNoRestriction)));
