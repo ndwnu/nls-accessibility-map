@@ -88,8 +88,8 @@ class TransportConditionsMapperTest {
     @Test
     void map_ok() {
 
-        when(vehicleToTransportTypeMapper.map(vehicleTypeEnumA)).thenReturn(transportTypeA);
-        when(vehicleToTransportTypeMapper.map(vehicleTypeEnumB)).thenReturn(transportTypeB);
+        when(vehicleToTransportTypeMapper.map(vehicleTypeEnumA)).thenReturn(Set.of(transportTypeA));
+        when(vehicleToTransportTypeMapper.map(vehicleTypeEnumB)).thenReturn(Set.of(transportTypeB));
         when(categoryMapper.map(categoryEnumA)).thenReturn(categoryA);
         when(categoryMapper.map(categoryEnumB)).thenReturn(categoryB);
 
