@@ -10,8 +10,8 @@ Feature: Accessibility V2
       | 3           | 4         | 0.9      | C19     | 1.9       | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
     And run TrafficSignUpdateCache
     And with speed limits
-      | startNodeId | endNodeId | forwardAverageSpeedLimit |
-      | 5           | 11        | 30                       |
+      | startNodeId | endNodeId | forwardAverageSpeedLimit | backwardAverageSpeedLimit |
+      | 5           | 11        | 30                       | 20                        |
     And run SpeedLimitUpdateCache
     When request accessibility geojson for truck2MetersWide-destination3-7
     Then we expect accessibility geojson response truck2MetersWide-destination3-7

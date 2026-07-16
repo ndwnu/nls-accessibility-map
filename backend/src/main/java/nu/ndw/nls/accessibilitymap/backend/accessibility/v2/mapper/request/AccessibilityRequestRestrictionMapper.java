@@ -60,17 +60,17 @@ public class AccessibilityRequestRestrictionMapper {
 
         LineString geometry = networkData.findGeometryInNetwork(roadSectionRestrictionJson.getId())
                 .orElseThrow(() -> createApiException(
-                        networkData,
+                                networkData,
                                 roadSectionRestrictionJson
                         )
                 );
-            return fractionAndDistanceCalculator.getCoordinateAndBearing(
-                    roadSectionRestrictionJson.getDirection() == DirectionJson.FORWARD ? geometry : geometry.reverse(),
-                    roadSectionRestrictionJson.getFraction().doubleValue());
-
+        return fractionAndDistanceCalculator.getCoordinateAndBearing(
+                roadSectionRestrictionJson.getDirection() == DirectionJson.FORWARD ? geometry : geometry.reverse(),
+                roadSectionRestrictionJson.getFraction().doubleValue());
     }
 
-    private ApiException createApiException(NetworkData networkData,
+    private ApiException createApiException(
+            NetworkData networkData,
             AccessibilityRequestRoadSectionRestrictionJson roadSectionRestrictionJson
     ) {
         return new ApiException(
