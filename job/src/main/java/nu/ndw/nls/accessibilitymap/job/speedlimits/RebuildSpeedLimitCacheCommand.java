@@ -2,8 +2,6 @@ package nu.ndw.nls.accessibilitymap.job.speedlimits;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -46,11 +44,11 @@ public class RebuildSpeedLimitCacheCommand implements Callable<Integer> {
                     networkDataService.get().getNwbNetworkData().getNwbVersionId() + "",
                     DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-            HashSet<SpeedLimit> speedLimits = new LinkedHashSet<>();
+            SpeedLimits speedLimits = new SpeedLimits();
             loadSpeedLimits(nwbVersion, speedLimits::add);
             log.info("Downloaded {} speed limits", speedLimits.size());
 
-            speedLimitDataService.write(() -> new SpeedLimits(speedLimits));
+            speedLimitDataService.write(() -> speedLimits);
             return 0;
         } catch (Exception exception) {
             log.error("Failed updating speed limits", exception);
