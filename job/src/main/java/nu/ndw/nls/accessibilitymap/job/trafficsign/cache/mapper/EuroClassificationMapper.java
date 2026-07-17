@@ -23,5 +23,4 @@ public class EuroClassificationMapper {
             default -> EmissionClass.UNKNOWN;
         };
     }
-
 }

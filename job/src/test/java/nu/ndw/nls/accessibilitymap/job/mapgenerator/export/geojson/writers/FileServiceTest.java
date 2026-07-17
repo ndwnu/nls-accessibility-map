@@ -73,7 +73,8 @@ class FileServiceTest {
     @Test
     void moveFileAndOverride() throws IOException {
 
-        Path source = Files.createTempFile("file1", ".tmp",
+        Path source = Files.createTempFile(
+                "file1", ".tmp",
                 PosixFilePermissions.asFileAttribute(Set.of(OWNER_READ, OWNER_WRITE, OTHERS_READ)));
         Path destinationDir = Files.createTempDirectory("dir");
         Path destination = Files.createTempFile(destinationDir, "file2", ".tmp");
@@ -89,7 +90,8 @@ class FileServiceTest {
             assertEquals(Set.of(OWNER_READ, OWNER_WRITE, OTHERS_READ), Files.getPosixFilePermissions(destination));
 
             assertThat(Files.exists(destinationDir)).isTrue();
-            assertEquals(Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE),
+            assertEquals(
+                    Set.of(OWNER_READ, OWNER_WRITE, OWNER_EXECUTE, OTHERS_READ, OTHERS_EXECUTE),
                     Files.getPosixFilePermissions(destinationDir));
         } finally {
             deleteFile(source);

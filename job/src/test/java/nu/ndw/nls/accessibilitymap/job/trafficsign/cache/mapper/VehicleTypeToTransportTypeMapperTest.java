@@ -46,5 +46,4 @@ class VehicleTypeToTransportTypeMapperTest {
         assertThat(vehicleTypeToTransportTypeMapper.map(VehicleTypeEnum.ALL))
                 .containsExactlyInAnyOrder(TransportType.values());
     }
-
 }

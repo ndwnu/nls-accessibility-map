@@ -26,7 +26,8 @@ public class BlackCodeMapper {
             return Double.parseDouble(blackCode.replace(",", "."));
         } catch (RuntimeException exception) {
             if (!Strings.isEmpty(blackCode)) {
-                log.warn("Unprocessable value {} for traffic sign with id {} and RVV code {} on road section {}",
+                log.warn(
+                        "Unprocessable value {} for traffic sign with id {} and RVV code {} on road section {}",
                         blackCode,
                         trafficSignGeoJsonDtoV5Json.getId(),
                         trafficSignGeoJsonDtoV5Json.getProperties().getRvvCode(),

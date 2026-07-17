@@ -72,20 +72,17 @@ class TransportRestrictionMapperTest {
 
     @Test
     void map_nullValues() {
-        TransportRestrictions result = transportRestrictionMapper.map(ConditionsDtoV5Json.builder()
-                .build(), null);
+        TransportRestrictions result = transportRestrictionMapper.map(ConditionsDtoV5Json.builder().build(), null);
 
         assertThat(result.emissionZone()).isNull();
-        assertThat(result.exemptions())
-                .isEmpty();
+        assertThat(result.exemptions()).isEmpty();
 
         verifyNoInteractions(emissionZoneMapper);
     }
 
     @Test
     void map_emptyEmissionZoneString() {
-        TransportRestrictions result = transportRestrictionMapper.map(ConditionsDtoV5Json.builder()
-                .build(), "");
+        TransportRestrictions result = transportRestrictionMapper.map(ConditionsDtoV5Json.builder().build(), "");
 
         assertThat(result.emissionZone()).isNull();
         verifyNoInteractions(emissionZoneMapper);
