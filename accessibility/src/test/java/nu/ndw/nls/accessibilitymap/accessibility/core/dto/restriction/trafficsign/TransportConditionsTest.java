@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsi
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
@@ -102,10 +103,10 @@ class TransportConditionsTest {
             EnumSetContains conditionSetContains,
             boolean conditionsApply) {
         TransportConditions transportConditions = TransportConditions.builder()
-                .transportTypes(conditionSetContains.map(TransportType.values()))
+                .transportTypes(conditionSetContains.mapToSet(TransportType.values()))
                 .build();
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withTransportTypes(requestSetContains.map(TransportType.values()))))
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withTransportTypes(requestSetContains.mapToSet(TransportType.values()))))
                 .isEqualTo(conditionsApply);
     }
 
@@ -135,56 +136,65 @@ class TransportConditionsTest {
             EnumSetContains conditionSetContains,
             boolean conditionsApply) {
         TransportConditions transportConditions = TransportConditions.builder()
-                .categories(conditionSetContains.map(Category.values()))
+                .categories(conditionSetContains.mapToSet(Category.values()))
                 .build();
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withCategories(requestSetContains.map(Category.values()))))
-                .isEqualTo(conditionsApply);
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            requestSetContains, emissionClass,  conditionsApply
-            NULL,               null,           false
-            EMPTY,              null,           false
-            FIRST_ENUM,         null,           false
-            ALL,                null,           false
-            NULL,               EURO_1,         false
-            EMPTY,              EURO_1,         false
-            FIRST_ENUM,         EURO_1,         true
-            FIRST_ENUM,         EURO_2,         false
-            ALL,                EURO_1,         true
-            """, nullValues = "null", useHeadersInDisplayName = true)
-    void conditionsApply_emissionClass(
-            EnumSetContains requestSetContains,
-            EmissionClass emissionClass,
-            boolean conditionsApply) {
-        TransportConditions transportConditions = TransportConditions.builder()
-                .emissionClass(emissionClass)
-                .build();
-
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withEmissionClasses(requestSetContains.map(EmissionClass.values()))))
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withCategories(requestSetContains.mapToSet(Category.values()))))
                 .isEqualTo(conditionsApply);
     }
 
     @ParameterizedTest
     @CsvSource(textBlock = """
             requestSetContains, conditionSetContains,   conditionsApply
-            NULL,               null,                   false
-            EMPTY,              null,                   false
-            FIRST_ENUM,         null,                   false
-            ALL,                null,                   false
-            NULL,               COMPRESSED_NATURAL_GAS, false
-            EMPTY,              COMPRESSED_NATURAL_GAS, false
-            FIRST_ENUM,         COMPRESSED_NATURAL_GAS, true
-            FIRST_ENUM,         DIESEL,                 false
-            ALL,                COMPRESSED_NATURAL_GAS, true
-            """, nullValues = "null", useHeadersInDisplayName = true)
-    void conditionsApply_fuelType(EnumSetContains requestSetContains, FuelType fuelType, boolean conditionsApply) {
-        TransportConditions transportConditions = TransportConditions.builder().fuelType(fuelType).build();
+            NULL,               NULL_VALUE,             false
+            EMPTY,              NULL_VALUE,             false
+            FIRST_ENUM,         NULL_VALUE,             false
+            ALL,                NULL_VALUE,             false
+            NULL,               ALL,                    false
+            EMPTY,              ALL,                    false
+            FIRST_ENUM,         FIRST_ENUM,             true
+            FIRST_ENUM,         SECOND_ENUM,            false
+            ALL,                ALL,                    true
+            """, useHeadersInDisplayName = true)
+    void conditionsApply_emissionClass(
+            EnumSetContains requestSetContains,
+            EnumSetContains conditionSetContains,
+            boolean conditionsApply) {
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withFuelTypes(requestSetContains.map(FuelType.values()))))
-                .isEqualTo(conditionsApply);
+
+        for (EmissionClass emissionClass : conditionSetContains.mapToSet(EmissionClass.values())) {
+            TransportConditions transportConditions = TransportConditions.builder()
+                    .emissionClass(emissionClass)
+                    .build();
+
+            assertThat(transportConditions.conditionsApply(
+                    accessibilityRequest.withEmissionClasses(requestSetContains.mapToSet(EmissionClass.values()))))
+                    .isEqualTo(conditionsApply);
+        }
+
+    }
+
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            requestSetContains, conditionSetContains,   conditionsApply
+            NULL,               NULL_VALUE,             false
+            EMPTY,              NULL_VALUE,             false
+            FIRST_ENUM,         NULL_VALUE,             false
+            ALL,                NULL_VALUE,             false
+            NULL,               ALL,                    false
+            EMPTY,              ALL,                    false
+            FIRST_ENUM,         FIRST_ENUM,             true
+            FIRST_ENUM,         SECOND_ENUM,            false
+            ALL,                ALL,                    true
+            """, useHeadersInDisplayName = true)
+    void conditionsApply_fuelType(EnumSetContains requestSetContains, EnumSetContains conditionSetContains, boolean conditionsApply) {
+        for (FuelType fuelType : conditionSetContains.mapToSet(FuelType.values())) {
+            TransportConditions transportConditions = TransportConditions.builder().fuelType(fuelType).build();
+
+            assertThat(transportConditions.conditionsApply(
+                    accessibilityRequest.withFuelTypes(requestSetContains.mapToSet(FuelType.values()))))
+                    .isEqualTo(conditionsApply);
+        }
     }
 
     @ParameterizedTest
@@ -306,15 +316,20 @@ class TransportConditionsTest {
 
     enum EnumSetContains {
         NULL,
+        NULL_VALUE,
         EMPTY,
         FIRST_ENUM,
         SECOND_ENUM,
         ALL;
 
-        public <T extends Enum<T>> Set<T> map(T[] values) {
+        public <T extends Enum<T>> Set<T> mapToSet(T[] values) {
             switch (this) {
                 case NULL:
                     return null;
+                case NULL_VALUE:
+                    HashSet<T> setThatAllowsNulls = new HashSet<>();
+                    setThatAllowsNulls.add(null);
+                    return setThatAllowsNulls;
                 case EMPTY:
                     return Collections.emptySet();
                 case FIRST_ENUM:

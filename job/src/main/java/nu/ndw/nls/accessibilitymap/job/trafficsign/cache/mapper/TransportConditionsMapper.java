@@ -22,7 +22,7 @@ public class TransportConditionsMapper {
 
     private static final int MULTIPLIER_FROM_TONNE_TO_KILO_GRAM = 1000;
 
-    private final VehicleToTransportTypeMapper vehicleToTransportTypeMapper;
+    private final VehicleTypeToTransportTypeMapper vehicleTypeToTransportTypeMapper;
 
     private final CategoryMapper categoryMapper;
 
@@ -56,7 +56,7 @@ public class TransportConditionsMapper {
 
         return vehicleTypeEnums
                 .stream()
-                .map(vehicleToTransportTypeMapper::map)
+                .map(vehicleTypeToTransportTypeMapper::map)
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
     }

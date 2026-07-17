@@ -7,7 +7,7 @@ import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.Co
 import org.springframework.stereotype.Component;
 
 @Component
-public class VehicleToTransportTypeMapper {
+public class VehicleTypeToTransportTypeMapper {
 
     public Set<TransportType> map(VehicleTypeEnum vehicleTypeEnum) {
         if (vehicleTypeEnum == null) {
@@ -32,8 +32,6 @@ public class VehicleToTransportTypeMapper {
             case TAXI -> Set.of(TransportType.TAXI);
             case ALL -> Set.of(TransportType.values());
             case UNKNOWN -> Set.of();
-            //case ??? -> TransportType.CONDUCTORS
-            //case ??? -> TransportType.VEHICLE_WITH_DANGEROUS_SUPPLIES
         };
     }
 }

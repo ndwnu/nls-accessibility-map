@@ -47,7 +47,7 @@ class TransportConditionsMapperTest {
     private static final FuelType FUEL_TYPE = FuelType.UNKNOWN;
 
     @Mock
-    private VehicleToTransportTypeMapper vehicleToTransportTypeMapper;
+    private VehicleTypeToTransportTypeMapper vehicleTypeToTransportTypeMapper;
 
     @Mock
     private CategoryMapper categoryMapper;
@@ -88,8 +88,8 @@ class TransportConditionsMapperTest {
     @Test
     void map() {
 
-        when(vehicleToTransportTypeMapper.map(vehicleTypeEnumA)).thenReturn(Set.of(transportTypeA));
-        when(vehicleToTransportTypeMapper.map(vehicleTypeEnumB)).thenReturn(Set.of(transportTypeB));
+        when(vehicleTypeToTransportTypeMapper.map(vehicleTypeEnumA)).thenReturn(Set.of(transportTypeA));
+        when(vehicleTypeToTransportTypeMapper.map(vehicleTypeEnumB)).thenReturn(Set.of(transportTypeB));
         when(categoryMapper.map(categoryEnumA)).thenReturn(categoryA);
         when(categoryMapper.map(categoryEnumB)).thenReturn(categoryB);
 
