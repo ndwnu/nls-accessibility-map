@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit;
 
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,6 +12,7 @@ import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.RestrictionsIsochroneLabel;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
