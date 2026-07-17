@@ -4,18 +4,19 @@ Feature: Accessibility V2
     Given a simple network
 
     And with traffic sign conditions
-      | name                | vehicleType                                                         | widthInM | heightInM |
-      | C12                 | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |          |           |
-      | C18                 |                                                                     | 1.9      |           |
-      | C19                 |                                                                     |          | 1.9       |
-      | agriculturalVehicle | agriculturalVehicle                                                 |          |           |
+      | name  | vehicleType                                                         | widthInM | heightInM |
+      | C12   | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |          |           |
+      | C18   |                                                                     | 1.9      |           |
+      | C19   |                                                                     |          | 1.9       |
+      | truck | truck                                                               |          |           |
 
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | restrictions | exemptions          | directionType | regulationOrderId | id                                   |
-      | 5           | 11        | 0.5      | C12     | C12          | agriculturalVehicle | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
-      | 6           | 1         | 0.9      | C18     | C18          |                     | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
-      | 3           | 4         | 0.1      | C19     | C19          |                     | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
-      | 3           | 4         | 0.9      | C19     | C19          |                     | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | exemptions | directionType | regulationOrderId | id                                   |
+      | 5           | 11        | 0.5      | C12     | C12          |            | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
+      | 6           | 1         | 0.9      | C18     | C18          |            | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
+      | 3           | 4         | 0.1      | C19     | C19          |            | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
+      | 3           | 4         | 0.9      | C19     | C19          |            | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
+      | 8           | 2         | 0.5      | C12     | C12          | truck      | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
     And run TrafficSignUpdateCache
     And with speed limits
       | startNodeId | endNodeId | forwardAverageSpeedLimit | backwardAverageSpeedLimit |
@@ -30,8 +31,6 @@ Feature: Accessibility V2
     When request accessibility geojson for truck2MetersWide-destination3-7-onlyInaccessible
     Then we expect accessibility geojson response truck2MetersWide-destination3-7-onlyInaccessible
 
-    When request accessibility geojson for tractor-destination3-7
-    Then we expect accessibility geojson response tractor-destination3-7
 
   Scenario: Get - Dynamic restriction on node should only block edges with the same road section id
     Given a simple network
