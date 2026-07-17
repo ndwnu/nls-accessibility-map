@@ -105,5 +105,4 @@ public class GeoJsonPolygonWriter extends AbstractGeoJsonWriter {
 
         return super.buildExportFileName(exportProperties).concat("-polygon");
     }
-
 }

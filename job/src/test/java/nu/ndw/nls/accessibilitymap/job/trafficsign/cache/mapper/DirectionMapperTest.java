@@ -13,10 +13,10 @@ class DirectionMapperTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-                        null,   null
-                        FORTH,  FORWARD
-                        BACK,   BACKWARD
-                        """, nullValues = "null")
+            null,   null
+            FORTH,  FORWARD
+            BACK,   BACKWARD
+            """, nullValues = "null")
     void map(DrivingDirectionEnum drivingDirection, Direction direction) {
         assertThat(directionMapper.map(drivingDirection)).isEqualTo(direction);
     }

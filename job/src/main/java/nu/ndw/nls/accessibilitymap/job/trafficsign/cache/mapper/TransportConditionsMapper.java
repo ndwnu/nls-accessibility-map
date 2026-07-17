@@ -49,7 +49,7 @@ public class TransportConditionsMapper {
                 .build();
     }
 
-    private Set<TransportType> mapToTransportType( Set<VehicleTypeEnum> vehicleTypeEnums ) {
+    private Set<TransportType> mapToTransportType(Set<VehicleTypeEnum> vehicleTypeEnums) {
         if (CollectionUtils.isEmpty(vehicleTypeEnums)) {
             return Collections.emptySet();
         }
@@ -78,7 +78,6 @@ public class TransportConditionsMapper {
 
         return Maximum.builder().value(maximum * multiplier).build();
     }
-
 }
 
 

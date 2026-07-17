@@ -54,7 +54,7 @@ public class IssueBuilder {
                 .map(IssueBuilder::mapRestriction)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        if(recordsList.isEmpty()) {
+        if (recordsList.isEmpty()) {
             return Optional.empty();
         }
 

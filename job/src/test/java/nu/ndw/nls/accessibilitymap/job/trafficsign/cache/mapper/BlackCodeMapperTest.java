@@ -33,16 +33,13 @@ class BlackCodeMapperTest {
     @BeforeEach
     void setUp() {
 
-
-
         trafficSignGeoJsonDto = TrafficSignGeoJsonDtoV5Json.builder()
                 .id(UUID.randomUUID())
                 .properties(TrafficSignPropertiesDtoV5Json.builder()
-                                .roadSectionId(123)
-                                .rvvCode(TrafficSignType.C1.getRvvCode())
-                                .build())
-                        .build();
-
+                        .roadSectionId(123)
+                        .rvvCode(TrafficSignType.C1.getRvvCode())
+                        .build())
+                .build();
 
         blackCodeMapper = new BlackCodeMapper();
     }

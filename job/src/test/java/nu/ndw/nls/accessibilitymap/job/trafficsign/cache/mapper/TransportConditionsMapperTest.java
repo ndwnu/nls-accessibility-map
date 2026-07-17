@@ -114,33 +114,22 @@ class TransportConditionsMapperTest {
         assertThat(result.emissionClass()).isEqualTo(EMISSION_CLASS);
         assertThat(result.fuelType()).isEqualTo(FUEL_TYPE);
 
-        assertThat(result.vehicleAxleLoadInKg().isExceeding(AXLE_WEIGHT*MULTIPLIER_FROM_TONNE_TO_KILO_GRAM, true))
-                .isTrue();
-        assertThat(result.vehicleAxleLoadInKg().isExceeding(AXLE_WEIGHT*MULTIPLIER_FROM_TONNE_TO_KILO_GRAM, false))
-                .isFalse();
-        assertThat(result.vehicleWeightInKg().isExceeding(WEIGHT*MULTIPLIER_FROM_TONNE_TO_KILO_GRAM, true))
-                .isTrue();
-        assertThat(result.vehicleWeightInKg().isExceeding(WEIGHT*MULTIPLIER_FROM_TONNE_TO_KILO_GRAM, false))
-                .isFalse();
-        assertThat(result.vehicleHeightInCm().isExceeding(HEIGHT*MULTIPLIER_FROM_METERS_TO_CM, true))
-                .isTrue();
-        assertThat(result.vehicleHeightInCm().isExceeding(HEIGHT*MULTIPLIER_FROM_METERS_TO_CM, false))
-                .isFalse();
-        assertThat(result.vehicleLengthInCm().isExceeding(LENGTH*MULTIPLIER_FROM_METERS_TO_CM, true))
-                .isTrue();
-        assertThat(result.vehicleLengthInCm().isExceeding(LENGTH*MULTIPLIER_FROM_METERS_TO_CM, false))
-                .isFalse();
-        assertThat(result.vehicleWidthInCm().isExceeding(WIDTH*MULTIPLIER_FROM_METERS_TO_CM, true))
-                .isTrue();
-        assertThat(result.vehicleWidthInCm().isExceeding(WIDTH*MULTIPLIER_FROM_METERS_TO_CM, false))
-                .isFalse();
+        assertThat(result.vehicleAxleLoadInKg().isExceeding(AXLE_WEIGHT * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM, true)).isTrue();
+        assertThat(result.vehicleAxleLoadInKg().isExceeding(AXLE_WEIGHT * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM, false)).isFalse();
+        assertThat(result.vehicleWeightInKg().isExceeding(WEIGHT * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM, true)).isTrue();
+        assertThat(result.vehicleWeightInKg().isExceeding(WEIGHT * MULTIPLIER_FROM_TONNE_TO_KILO_GRAM, false)).isFalse();
+        assertThat(result.vehicleHeightInCm().isExceeding(HEIGHT * MULTIPLIER_FROM_METERS_TO_CM, true)).isTrue();
+        assertThat(result.vehicleHeightInCm().isExceeding(HEIGHT * MULTIPLIER_FROM_METERS_TO_CM, false)).isFalse();
+        assertThat(result.vehicleLengthInCm().isExceeding(LENGTH * MULTIPLIER_FROM_METERS_TO_CM, true)).isTrue();
+        assertThat(result.vehicleLengthInCm().isExceeding(LENGTH * MULTIPLIER_FROM_METERS_TO_CM, false)).isFalse();
+        assertThat(result.vehicleWidthInCm().isExceeding(WIDTH * MULTIPLIER_FROM_METERS_TO_CM, true)).isTrue();
+        assertThat(result.vehicleWidthInCm().isExceeding(WIDTH * MULTIPLIER_FROM_METERS_TO_CM, false)).isFalse();
     }
 
     @Test
     void map_null() {
         assertThat(transportConditionsMapper.map(null)).isEqualTo(TransportConditions.unrestricted());
     }
-
 
     @Test
     void map_nullValues() {
@@ -154,6 +143,5 @@ class TransportConditionsMapperTest {
         assertThat(result.vehicleHeightInCm()).isNull();
         assertThat(result.vehicleLengthInCm()).isNull();
         assertThat(result.vehicleWidthInCm()).isNull();
-
     }
 }

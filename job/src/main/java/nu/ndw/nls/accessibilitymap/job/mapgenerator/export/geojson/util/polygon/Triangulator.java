@@ -33,8 +33,7 @@ public class Triangulator {
         Geometry convexHull = conformingDelaunayTriangulator.getConvexHull();
 
         if (!(convexHull instanceof Polygon)) {
-            throw new IllegalArgumentException("Too few points found. "
-                    + "Please try a different 'point' or a larger 'time_limit'.");
+            throw new IllegalArgumentException("Too few points found. Please try a different 'point' or a larger 'time_limit'.");
         }
 
         QuadEdgeSubdivision tin = conformingDelaunayTriangulator.getSubdivision();

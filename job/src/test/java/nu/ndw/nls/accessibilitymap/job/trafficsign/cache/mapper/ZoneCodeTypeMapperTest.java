@@ -13,12 +13,12 @@ class ZoneCodeTypeMapperTest {
 
     @ParameterizedTest
     @CsvSource(textBlock = """
-                        null, null
-                        END, END
-                        BEGIN, START
-                        REPEAT, REPEAT
-                        UNKNOWN, UNKNOWN
-                        """, nullValues = "null")
+            null, null
+            END, END
+            BEGIN, START
+            REPEAT, REPEAT
+            UNKNOWN, UNKNOWN
+            """, nullValues = "null")
     void map(ZoneCodeEnum inputZoneCodeEnum, ZoneCodeType expectedZoneCodeType) {
         assertThat(zoneCodeTypeMapper.map(inputZoneCodeEnum)).isEqualTo(expectedZoneCodeType);
     }

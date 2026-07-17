@@ -14,5 +14,4 @@ public class SupplementaryTrafficSignTypeMapper {
 
         return SupplementarySignType.valueOf(String.valueOf(signCodeEnum));
     }
-
 }

@@ -22,7 +22,8 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties
 @ConfigurationPropertiesScan
 @EnableFeignClients
-@Import({AccessibilityConfiguration.class,
+@Import({
+        AccessibilityConfiguration.class,
         DatadogConfiguration.class,
         TrafficSignClientConfiguration.class,
         RoadAttributesApiConfiguration.class,

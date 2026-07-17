@@ -25,5 +25,4 @@ public class CategoryMapper {
             case DANGEROUS_SUPPLIES -> null;
         };
     }
-
 }
