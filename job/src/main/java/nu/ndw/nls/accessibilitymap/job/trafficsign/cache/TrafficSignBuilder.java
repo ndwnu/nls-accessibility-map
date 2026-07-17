@@ -59,7 +59,6 @@ public class TrafficSignBuilder {
                         .formatted(trafficSignGeoJsonDtoV5Json.getId()));
             }
 
-
             var coordinateAndBearing = fractionAndDistanceCalculator.getCoordinateAndBearing(nwbRoadSectionGeometry, fraction);
 
             TrafficSignType trafficSignType = TrafficSignType.fromRvvCode(trafficSignGeoJsonDtoV5Json.getProperties().getRvvCode());
@@ -85,7 +84,8 @@ public class TrafficSignBuilder {
 
             ConditionsDtoV5Json conditions = trafficSignGeoJsonDtoV5Json.getProperties().getConditions();
 
-            TransportRestrictions transportRestrictions = transportRestrictionMapper.map(conditions,
+            TransportRestrictions transportRestrictions = transportRestrictionMapper.map(
+                    conditions,
                     trafficSignGeoJsonDtoV5Json.getProperties().getTrafficOrderId());
 
             return Optional.of(trafficSign.withTransportRestrictions(transportRestrictions));
@@ -96,5 +96,4 @@ public class TrafficSignBuilder {
             return Optional.empty();
         }
     }
-
 }

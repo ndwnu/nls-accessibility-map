@@ -35,7 +35,7 @@ public class MaximumWeightMapper {
                             case N_1 -> 35_000D;
                             case N_2 -> 12_000D;
                             case M_3, N_3 -> Double.MAX_VALUE;
-                            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle category '%s'." .formatted(vehicleCategory));
+                            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle category '%s'.".formatted(vehicleCategory));
                         })
                 .filter(Objects::nonNull)
                 .min(Double::compareTo)

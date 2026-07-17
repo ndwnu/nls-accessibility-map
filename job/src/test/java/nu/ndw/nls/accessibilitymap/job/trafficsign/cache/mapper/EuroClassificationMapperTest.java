@@ -30,6 +30,5 @@ class EuroClassificationMapperTest {
     void map_invalidValue() {
         assertThat(euroClassificationMapper.map(0)).isEqualTo(UNKNOWN);
         assertThat(euroClassificationMapper.map(7)).isEqualTo(UNKNOWN);
-
     }
 }

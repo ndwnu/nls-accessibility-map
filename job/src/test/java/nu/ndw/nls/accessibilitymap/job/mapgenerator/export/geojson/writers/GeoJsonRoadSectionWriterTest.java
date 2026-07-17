@@ -249,7 +249,8 @@ class GeoJsonRoadSectionWriterTest {
         }
     }
 
-    private void prepareCreateFeaturesForDirectionalSegment(DirectionalSegment directionalSegmentForward1, int id,
+    private void prepareCreateFeaturesForDirectionalSegment(
+            DirectionalSegment directionalSegmentForward1, int id,
             boolean simpleFeatures) {
 
         when(featureBuilder.createLineStringsAndTrafficSigns(

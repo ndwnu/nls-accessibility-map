@@ -64,6 +64,7 @@ class EmissionZoneTest extends ValidationTest {
 
         assertThat(emissionZone.isActive()).isFalse();
     }
+
     @Test
     void validate() {
 

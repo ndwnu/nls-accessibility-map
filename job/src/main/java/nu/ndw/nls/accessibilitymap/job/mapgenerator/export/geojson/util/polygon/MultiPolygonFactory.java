@@ -85,5 +85,4 @@ public class MultiPolygonFactory {
         densifier.setDistanceTolerance(maxDistanceBetweenPoints);
         return densifier.getResultGeometry();
     }
-
 }

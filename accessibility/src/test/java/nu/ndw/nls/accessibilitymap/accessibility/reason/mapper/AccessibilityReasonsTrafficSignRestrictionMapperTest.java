@@ -211,13 +211,13 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
                 .transportRestrictions(TransportRestrictions.builder()
                         .restrictions(TransportConditions.unrestricted())
                         .emissionZone(EmissionZone.builder()
-                                            .restriction(EmissionZoneRestriction.builder()
-                                                    .fuelTypes(Set.of(FuelType.DIESEL))
-                                                    .transportTypes(Set.of())
-                                                    .vehicleWeightInKg(null)
-                                                    .build())
-                                            .build())
-                                    .build())
+                                .restriction(EmissionZoneRestriction.builder()
+                                        .fuelTypes(Set.of(FuelType.DIESEL))
+                                        .transportTypes(Set.of())
+                                        .vehicleWeightInKg(null)
+                                        .build())
+                                .build())
+                        .build())
 
                 .build();
 
@@ -237,14 +237,14 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
                 .transportRestrictions(TransportRestrictions.builder()
                         .restrictions(TransportConditions.unrestricted())
                         .emissionZone(EmissionZone.builder()
-                                        .restriction(EmissionZoneRestriction.builder()
-                                                .fuelTypes(Set.of())
-                                                .transportTypes(Set.of(TransportType.CAR))
-                                                .vehicleWeightInKg(null)
-                                                .build())
+                                .restriction(EmissionZoneRestriction.builder()
+                                        .fuelTypes(Set.of())
+                                        .transportTypes(Set.of(TransportType.CAR))
+                                        .vehicleWeightInKg(null)
                                         .build())
                                 .build())
-                        .build();
+                        .build())
+                .build();
 
         List<AccessibilityReason<?>> accessibilityReasons = mapper.mapRestrictions(new Restrictions(Set.of(trafficSign)));
 

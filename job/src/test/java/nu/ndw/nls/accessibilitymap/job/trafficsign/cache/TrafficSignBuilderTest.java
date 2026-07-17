@@ -191,7 +191,8 @@ class TrafficSignBuilderTest {
 
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()".formatted(ID),
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()"
+                        .formatted(ID),
                 "Traffic sign with id '%s' is missing a road section.".formatted(ID));
     }
 
@@ -209,7 +210,8 @@ class TrafficSignBuilderTest {
 
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()".formatted(ID),
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()"
+                        .formatted(ID),
                 "Traffic sign with id '%s' is missing a fraction.".formatted(ID));
     }
 
@@ -228,8 +230,8 @@ class TrafficSignBuilderTest {
 
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()".formatted(ID),
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()"
+                        .formatted(ID),
                 "Traffic sign with id '%s' is missing a roadSectionId.".formatted(ID));
     }
-
 }
