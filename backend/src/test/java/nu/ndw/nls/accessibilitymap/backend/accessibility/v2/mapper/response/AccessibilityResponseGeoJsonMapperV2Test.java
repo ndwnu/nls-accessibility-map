@@ -136,7 +136,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -150,7 +151,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -164,7 +166,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -178,7 +181,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -192,7 +196,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 5,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -206,7 +211,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 5,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -220,7 +226,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -234,7 +241,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   } ]
                 }
@@ -294,7 +302,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -308,7 +317,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -322,7 +332,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -336,7 +347,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -350,7 +362,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 5,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -364,7 +377,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 5,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -378,7 +392,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -392,7 +407,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   } ]
                 }
@@ -449,7 +465,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -463,7 +480,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -477,7 +495,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -491,7 +510,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -505,7 +525,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 5,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -519,7 +540,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 5,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -533,7 +555,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -547,7 +570,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   } ]
                 }
@@ -557,16 +581,15 @@ class AccessibilityResponseGeoJsonMapperV2Test {
     @Test
     void map_destinationInaccessible() throws JacksonException {
 
-
         when(accessibilityReasonsJsonMapperV2.map(reasons)).thenReturn(List.of(List.of(VehicleTypeReasonJson.builder()
                 .type(TypeEnum.VEHICLE_TYPE_REASON)
                 .unitSymbol(ReasonUnitSymbolJson.ENUM)
                 .values(List.of(VehicleTypeJson.CAR))
                 .condition(ReasonConditionJson.EQUALS)
-                        .becauseOf(List.of(TrafficSignRestrictionJson.builder()
-                                        .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
-                                        .trafficSignType(TrafficSignTypeJson.C1)
-                                .build()))
+                .becauseOf(List.of(TrafficSignRestrictionJson.builder()
+                        .trafficSignId(UUID.fromString("71332fe6-fb88-4a91-8b72-eefc3c37c713"))
+                        .trafficSignType(TrafficSignTypeJson.C1)
+                        .build()))
                 .build())));
 
         Accessibility accessibility = Accessibility.builder()
@@ -626,7 +649,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -640,7 +664,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -654,7 +679,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -668,7 +694,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -682,7 +709,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -696,7 +724,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   } ]
                 }
@@ -752,7 +781,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -766,7 +796,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   } ]
                 }
@@ -822,7 +853,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -836,7 +868,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   } ]
                 }
@@ -883,7 +916,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -897,7 +931,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 1,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -911,7 +946,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -925,7 +961,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 2,
                       "functionalRoadClass" : "1",
                       "accessible" : false,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   }, {
                     "type" : "Feature",
@@ -939,7 +976,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "forward"
+                      "direction" : "forward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 23
                     }
                   }, {
                     "type" : "Feature",
@@ -953,7 +991,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                       "roadSectionId" : 3,
                       "functionalRoadClass" : "1",
                       "accessible" : true,
-                      "direction" : "backward"
+                      "direction" : "backward",
+                      "delayInMilliSecondsBecauseOfRestrictions": 24
                     }
                   } ]
                 }
@@ -996,6 +1035,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .trafficSignType(TrafficSignType.C7)
                         .transportRestrictions(TransportRestrictions.builder().build())
                         .build())))
+                .delayInMilliSecondsBecauseOfRestrictions(23)
                 .build();
 
         DirectionalSegment directionalSegmentBackward = directionalSegmentForward
@@ -1005,7 +1045,8 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         new Coordinate[]{
                                 new Coordinate(2, 3, 0),
                                 new Coordinate(1, 2, 0)
-                        }));
+                        }))
+                .withDelayInMilliSecondsBecauseOfRestrictions(24);
 
         roadSectionFragment.setForwardSegment(directionalSegmentForward);
         roadSectionFragment.setBackwardSegment(directionalSegmentBackward);
@@ -1049,6 +1090,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .trafficSignType(TrafficSignType.C7)
                         .transportRestrictions(TransportRestrictions.builder().build())
                         .build())))
+                .delayInMilliSecondsBecauseOfRestrictions(23)
                 .build();
 
         DirectionalSegment directionalSegmentBackward = directionalSegmentForward
@@ -1058,7 +1100,10 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         new Coordinate[]{
                                 new Coordinate(2, 3, 0),
                                 new Coordinate(1, 2, 0)
-                        }));
+                        })
+
+                )
+                .withDelayInMilliSecondsBecauseOfRestrictions(24);
 
         roadSectionFragment.setForwardSegment(directionalSegmentForward);
         roadSectionFragment.setBackwardSegment(directionalSegmentBackward);

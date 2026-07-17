@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm;
+package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import com.graphhopper.routing.util.EncodingManager;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.RestrictionsIsochroneLabel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

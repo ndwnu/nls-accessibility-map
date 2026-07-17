@@ -48,6 +48,18 @@ public final class DirectionalSegment {
     @Valid
     private Restrictions restrictions;
 
+    @Min(0)
+    private long travelTimeInMilliSeconds;
+
+    @Min(0)
+    private double distanceInMeters;
+
+    /**
+     * Only not 0 if this segment is impacted by restrictions when combined by RoadSectionCombinator
+     */
+    @Min(0)
+    private long delayInMilliSecondsBecauseOfRestrictions;
+
     private final boolean accessible;
 
     public boolean hasRestrictions() {

@@ -32,6 +32,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.restriction.RestrictionService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebugger;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.accessibilitymap.accessibility.service.exception.AccessibilityException;
+import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.service.SpeedLimitDataService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.springframework.stereotype.Component;
@@ -61,6 +62,8 @@ public class AccessibilityService {
 
     private final EdgeKeyResolver edgeKeyResolver;
 
+    private final SpeedLimitDataService speedLimitDataService;
+
     @Timed(value = "accessibilitymap.accessibility.calculate")
     public Accessibility calculateAccessibility(
             @Valid NetworkData networkData,
@@ -76,6 +79,7 @@ public class AccessibilityService {
         AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                 networkData,
                 restrictions,
+                speedLimitDataService.findAll(),
                 locationFactory.mapCoordinate(accessibilityRequest.startLocationLatitude(), accessibilityRequest.startLocationLongitude()),
                 locationFactory.mapCoordinate(accessibilityRequest.endLocationLatitude(), accessibilityRequest.endLocationLongitude()));
         accessibilityDebugger.writeDebug(accessibilityNetwork);
