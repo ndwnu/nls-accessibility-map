@@ -552,7 +552,7 @@ class AccessibilityDebuggerTest {
                 .transportRestrictions(TransportRestrictions.builder()
                         .restrictions(TransportConditions.builder()
                                 .transportTypes(Set.of(TransportType.CAR))
-                                .categories(Set.of(Category.LOADING))
+                                .categories(Set.of(Category.LOCAL_TRAFFIC))
                                 .emissionClass(EmissionClass.EURO_1)
                                 .timeValidity("time restrict")
                                 .vehicleLengthInCm(new Maximum(2D))
@@ -564,6 +564,14 @@ class AccessibilityDebuggerTest {
                         .exemptions(List.of(
                                 TransportConditions.builder()
                                         .transportTypes(Set.of(TransportType.TRUCK))
+                                        .categories(Set.of(Category.LOCAL_TRAFFIC))
+                                        .emissionClass(EmissionClass.EURO_2)
+                                        .timeValidity("time exempt")
+                                        .vehicleLengthInCm(new Maximum(5D))
+                                        .vehicleHeightInCm(new Maximum(6D))
+                                        .vehicleWidthInCm(new Maximum(7D))
+                                        .vehicleWeightInKg(new Maximum(8D))
+                                        .vehicleAxleLoadInKg(new Maximum(9D))
                                         .build()
                         ))
                         .build())
@@ -600,23 +608,31 @@ class AccessibilityDebuggerTest {
                                   ]
                                 },
                                 "properties": {
-                                  "direction": "BACKWARD",
-                                  "fraction": 0.5,
-                                  "roadSectionId": 6,
-                                  "trafficSignExternalId": "2",
-                                  "trafficSignId": 1,
-                                  "trafficSignType": "C1",
-                                  "type": "TrafficSign",
-                                  "restrictions.vehicleWidthInCm": "3.0",
-                                  "restrictions.vehicleHeightInCm": "2.0",
-                                  "exemptions1.transportTypes": "TRUCK",
-                                  "restrictions.categories": "LOADING",
-                                  "restrictions.vehicleLengthInCm": "2.0",
-                                  "restrictions.vehicleAxleLoadInKg": "4.0",
-                                  "restrictions.timeValidity": "time restrict",
-                                  "restrictions.vehicleWeightInKg": "1.0",
-                                  "restrictions.transportTypes": "CAR",
-                                  "restrictions.emissionClass": "EURO_1"
+                                    "direction": "BACKWARD",
+                                    "exemptions1.categories": "LOCAL_TRAFFIC",
+                                    "exemptions1.emissionClass": "EURO_2",
+                                    "exemptions1.timeValidity": "time exempt",
+                                    "exemptions1.transportTypes": "TRUCK",
+                                    "exemptions1.vehicleAxleLoadInKg": "9.0",
+                                    "exemptions1.vehicleHeightInCm": "6.0",
+                                    "exemptions1.vehicleLengthInCm": "5.0",
+                                    "exemptions1.vehicleWeightInKg": "8.0",
+                                    "exemptions1.vehicleWidthInCm": "7.0",
+                                    "fraction": 0.5,
+                                    "restrictions.categories": "LOCAL_TRAFFIC",
+                                    "restrictions.emissionClass": "EURO_1",
+                                    "restrictions.timeValidity": "time restrict",
+                                    "restrictions.transportTypes": "CAR",
+                                    "restrictions.vehicleAxleLoadInKg": "4.0",
+                                    "restrictions.vehicleHeightInCm": "2.0",
+                                    "restrictions.vehicleLengthInCm": "2.0",
+                                    "restrictions.vehicleWeightInKg": "1.0",
+                                    "restrictions.vehicleWidthInCm": "3.0",
+                                    "roadSectionId": 6,
+                                    "trafficSignExternalId": "2",
+                                    "trafficSignId": 1,
+                                    "trafficSignType": "C1",
+                                    "type": "TrafficSign"
                                 },
                                 "type": "Feature"
                               }
@@ -625,6 +641,8 @@ class AccessibilityDebuggerTest {
                           }
                         """);
     }
+
+
 
     @Test
     void writeDebug_restrictions_debugDisabled() {

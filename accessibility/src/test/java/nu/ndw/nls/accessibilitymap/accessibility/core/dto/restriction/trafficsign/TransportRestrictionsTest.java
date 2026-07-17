@@ -236,4 +236,23 @@ class TransportRestrictionsTest {
 
         assertThat(transportConditions.isRestrictive(accessibilityRequest)).isFalse();
     }
+
+    @Test
+    void conditionsApply_emissionZone_conditionsEmissionZoneIsNull_shouldIgnoreEmissionZones() {
+        accessibilityRequest = AccessibilityRequest.builder().build();
+        accessibilityRequest = accessibilityRequest
+                .withVehicleWeightInKg(2d)
+                .withTransportTypes(Set.of(TransportType.CAR))
+                .withTimestamp(timestamp)
+                .withFuelTypes(Set.of(FuelType.DIESEL))
+                .withEmissionClasses(null);
+
+        TransportRestrictions transportConditions = TransportRestrictions.builder()
+                .emissionZone(null)
+                .restrictions(TransportConditions.builder().build())
+                .exemptions(Collections.emptyList())
+                .build();
+
+        assertThat(transportConditions.isRestrictive(accessibilityRequest)).isFalse();
+    }
 }

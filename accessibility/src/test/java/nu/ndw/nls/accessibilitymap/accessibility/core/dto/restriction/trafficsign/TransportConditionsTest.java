@@ -110,26 +110,14 @@ class TransportConditionsTest {
                 .isEqualTo(conditionsApply);
     }
 
+    // Use CsvSource like the one from conditionsApply_transportTypes when there are more than one categories
     @ParameterizedTest
     @CsvSource(textBlock = """
             requestSetContains, conditionSetContains,   conditionsApply
             NULL,               NULL,                   false
-            EMPTY,              NULL,                   false
-            FIRST_ENUM,         NULL,                   false
-            ALL,                NULL,                   false
-            NULL,               EMPTY,                  false
-            EMPTY,              EMPTY,                  false
-            FIRST_ENUM,         EMPTY,                  false
-            ALL,                EMPTY,                  false
-            NULL,               FIRST_ENUM,             false
-            EMPTY,              FIRST_ENUM,             false
             FIRST_ENUM,         FIRST_ENUM,             true
-            SECOND_ENUM,        FIRST_ENUM,             false
-            ALL,                FIRST_ENUM,             true
-            NULL,               ALL,                    false
-            EMPTY,              ALL,                    false
-            FIRST_ENUM,         ALL,                    true
-            ALL,                ALL,                    true
+            FIRST_ENUM,         NULL,                   false
+            NULL,               FIRST_ENUM,             false
             """, useHeadersInDisplayName = true)
     void conditionsApply_categories(
             EnumSetContains requestSetContains,
