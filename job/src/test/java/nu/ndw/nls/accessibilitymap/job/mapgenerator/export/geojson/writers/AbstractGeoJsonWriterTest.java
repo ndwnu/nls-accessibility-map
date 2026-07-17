@@ -11,13 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import java.util.Collections;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
-import org.junit.jupiter.params.provider.EnumSource;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,11 +19,15 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
@@ -42,8 +39,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class AbstractGeoJsonWriterTest {
@@ -123,9 +123,11 @@ class AbstractGeoJsonWriterTest {
 
             loggerExtension.containsLog(Level.DEBUG, "Started generating geojson");
             loggerExtension.containsLog(Level.DEBUG, "Started building features");
-            loggerExtension.containsLog(Level.DEBUG,
+            loggerExtension.containsLog(
+                    Level.DEBUG,
                     "Started writing geojson to temp file: %s".formatted(exportTmpFilePath));
-            loggerExtension.containsLog(Level.DEBUG,
+            loggerExtension.containsLog(
+                    Level.DEBUG,
                     "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
@@ -163,7 +165,8 @@ class AbstractGeoJsonWriterTest {
             verify(fileService, never()).moveFileAndOverride(any(), any());
 
             loggerExtension.containsLog(Level.DEBUG, "Started generating geojson");
-            loggerExtension.containsLog(Level.DEBUG,
+            loggerExtension.containsLog(
+                    Level.DEBUG,
                     "Started writing geojson to temp file: %s".formatted(exportTmpFilePath));
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
@@ -195,7 +198,8 @@ class AbstractGeoJsonWriterTest {
         }
 
         @Override
-        protected FeatureCollection prepareGeoJsonFeatureCollection(Accessibility accessibility,
+        protected FeatureCollection prepareGeoJsonFeatureCollection(
+                Accessibility accessibility,
                 ExportProperties exportProperties, AtomicLong idSequenceSupplier) {
 
             assertThat(accessibility).isEqualTo(this.accessibility);
@@ -237,5 +241,4 @@ class AbstractGeoJsonWriterTest {
             return this == WINDOW_TIMES;
         }
     }
-
 }

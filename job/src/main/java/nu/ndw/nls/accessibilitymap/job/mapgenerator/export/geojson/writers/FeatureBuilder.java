@@ -145,7 +145,6 @@ public class FeatureBuilder {
         LineStringJson directionSegmentLineStringJson = jtsLineStringJsonMapper.map(
                 directionalSegment.getLineString());
         return restrictions.stream()
-                // Todo: Add support for other restriction types
                 .filter(TrafficSign.class::isInstance)
                 .map(TrafficSign.class::cast)
                 .map(trafficSign -> Feature.builder()
@@ -164,7 +163,6 @@ public class FeatureBuilder {
             DirectionalSegment directionalSegment,
             int trafficSignLineStringDistanceInMeters) {
         return restrictions.stream()
-                // Todo: Add support for other restriction types
                 .filter(TrafficSign.class::isInstance)
                 .map(TrafficSign.class::cast)
                 .map(trafficSign -> Feature.builder()
@@ -191,7 +189,7 @@ public class FeatureBuilder {
                 .direction(trafficSign.direction())
                 .accessible(directionalSegment.isAccessible())
                 .trafficSignType(trafficSign.trafficSignType())
-                .windowTimes( trafficSign.supplementaryTrafficSigns()
+                .windowTimes(trafficSign.supplementaryTrafficSigns()
                         .stream()
                         .filter(SupplementaryTrafficSign::hasWindowTime)
                         .map(SupplementaryTrafficSign::text)

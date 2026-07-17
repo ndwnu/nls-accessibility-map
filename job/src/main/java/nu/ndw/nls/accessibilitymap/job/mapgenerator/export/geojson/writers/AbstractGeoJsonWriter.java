@@ -51,14 +51,12 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
 
         try {
             log.debug("Started building features");
-            FeatureCollection geoJson = prepareGeoJsonFeatureCollection(accessibility, exportProperties,
-                    idSequenceSupplier);
+            FeatureCollection geoJson = prepareGeoJsonFeatureCollection(accessibility, exportProperties, idSequenceSupplier);
 
             log.debug("Started writing geojson to temp file: %s".formatted(tempFile.toAbsolutePath()));
             getGeoJsonMapper().writeValue(tempFile.toFile(), geoJson);
         } catch (JacksonException exception) {
-            throw new IllegalStateException("Failed to serialize geojson to file: %s"
-                    .formatted(tempFile.toAbsolutePath()), exception);
+            throw new IllegalStateException("Failed to serialize geojson to file: %s".formatted(tempFile.toAbsolutePath()), exception);
         }
 
         Path exportFile = exportProperties.generateConfiguration()

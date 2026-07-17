@@ -21,13 +21,13 @@ class ExemptionTest extends ValidationTest {
     void setUp() {
 
         exemption = Exemption.builder()
-                        .id("exemption")
-                        .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-                        .endTime(OffsetDateTime.parse("2022-03-11T10:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
-                        .euroClassifications(Set.of(EuroClassification.EURO_1))
-                        .vehicleWeightInKg(2)
-                        .vehicleCategories(Set.of(VehicleCategory.M_1))
-                        .build();
+                .id("exemption")
+                .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .endTime(OffsetDateTime.parse("2022-03-11T10:00:00.000-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+                .euroClassifications(Set.of(EuroClassification.EURO_1))
+                .vehicleWeightInKg(2)
+                .vehicleCategories(Set.of(VehicleCategory.M_1))
+                .build();
     }
 
     @Test

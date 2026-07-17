@@ -40,7 +40,5 @@ class CategoryMapperTest {
         assertThat(LOCAL_TRAFFIC.getValue()).isEqualTo("Local traffic");
         assertThat(DISABLED_TRANSPORT.getValue()).isEqualTo("Disabled transport");
         assertThat(DANGEROUS_SUPPLIES.getValue()).isEqualTo("Dangerous supplies");
-
     }
-
 }

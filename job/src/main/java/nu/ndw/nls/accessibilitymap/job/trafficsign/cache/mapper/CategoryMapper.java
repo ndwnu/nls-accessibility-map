@@ -20,7 +20,7 @@ public class CategoryMapper {
             return null;
         }
 
-        return switch(categoryEnum) {
+        return switch (categoryEnum) {
             case CHARGING -> CHARGING;
             case LOADING -> LOADING;
             case PERMIT -> PERMIT;
@@ -29,5 +29,4 @@ public class CategoryMapper {
             case DANGEROUS_SUPPLIES -> DANGEROUS_SUPPLIES;
         };
     }
-
 }

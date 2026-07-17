@@ -108,7 +108,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                                 .build()
                 ))
                 .build();
-
     }
 
     @SneakyThrows
@@ -176,11 +175,9 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
             loggerExtension.containsLog(
                     Level.DEBUG,
                     "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
-
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }
-
     }
 
     @Test
@@ -216,6 +213,5 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                                         .isTrafficSign(true)
                                         .build())
                                 .build()));
-
     }
 }

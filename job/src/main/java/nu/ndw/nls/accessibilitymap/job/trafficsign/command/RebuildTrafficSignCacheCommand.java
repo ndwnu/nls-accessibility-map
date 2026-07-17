@@ -45,8 +45,8 @@ public class RebuildTrafficSignCacheCommand implements Callable<Integer> {
 
             List<TrafficSignGeoJsonDtoV5Json> externalTrafficSigns =
                     trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
-                    .map(TrafficSignType::getRvvCode)
-                    .collect(Collectors.toSet()));
+                            .map(TrafficSignType::getRvvCode)
+                            .collect(Collectors.toSet()));
             TrafficSigns trafficSigns = new TrafficSigns(
                     externalTrafficSigns.stream()
                             .map(trafficSignGeoJsonDto ->

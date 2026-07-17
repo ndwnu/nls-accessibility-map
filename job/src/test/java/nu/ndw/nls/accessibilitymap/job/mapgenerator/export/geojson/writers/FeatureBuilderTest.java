@@ -282,7 +282,7 @@ class FeatureBuilderTest {
         });
 
         Restrictions restrictions = new Restrictions(Set.of(TrafficSign.builder()
-                    .supplementaryTrafficSigns(List.of(
+                .supplementaryTrafficSigns(List.of(
                         SupplementaryTrafficSign.builder()
                                 .type(SupplementarySignType.C22A4)
                                 .build(),
@@ -290,7 +290,7 @@ class FeatureBuilderTest {
                                 .type(SupplementarySignType.OB254)
                                 .text("window")
                                 .build()))
-                    .build()));
+                .build()));
 
         Set<Long> relevantRoadSectionIds = Set.of(1L, 2L, 3L);
 

@@ -48,7 +48,8 @@ public class EmissionZoneMapper {
                                 .restriction(mapRestriction(emissionZone))
                                 .build();
                     } catch (RuntimeException exception) {
-                        log.error("Emission zone with trafficRegulationOrderId '{}' is incomplete and will be skipped.",
+                        log.error(
+                                "Emission zone with trafficRegulationOrderId '{}' is incomplete and will be skipped.",
                                 trafficRegulationOrderId,
                                 exception);
                         return null;
@@ -92,5 +93,4 @@ public class EmissionZoneMapper {
         }
         return Double.valueOf(value);
     }
-
 }
