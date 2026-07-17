@@ -146,8 +146,11 @@ class RebuildTrafficSignCacheCommandTest {
 
         when(trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
                 .map(TrafficSignType::getRvvCode)
-                .collect(Collectors.toSet()))).thenReturn(List.of(trafficSignGeoJsonDtoV5Json1, trafficSignGeoJsonDtoV5Json2,
-                trafficSignGeoJsonDtoV5Json3, trafficSignGeoJsonDtoV5Json4));
+                .collect(Collectors.toSet()))).thenReturn(List.of(
+                trafficSignGeoJsonDtoV5Json1,
+                trafficSignGeoJsonDtoV5Json2,
+                trafficSignGeoJsonDtoV5Json3,
+                trafficSignGeoJsonDtoV5Json4));
         when(trafficSignPropertiesDtoV5Json1.getRoadSectionId()).thenReturn(123);
         when(trafficSignGeoJsonDtoV5Json1.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
         when(trafficSignGeoJsonDtoV5Json2.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
@@ -177,8 +180,11 @@ class RebuildTrafficSignCacheCommandTest {
 
         when(trafficSignService.getTrafficSigns(Arrays.stream(TrafficSignType.values())
                 .map(TrafficSignType::getRvvCode)
-                .collect(Collectors.toSet()))).thenReturn(List.of(trafficSignGeoJsonDtoV5Json1, trafficSignGeoJsonDtoV5Json2,
-                trafficSignGeoJsonDtoV5Json3, trafficSignGeoJsonDtoV5Json4));
+                .collect(Collectors.toSet()))).thenReturn(List.of(
+                trafficSignGeoJsonDtoV5Json1,
+                trafficSignGeoJsonDtoV5Json2,
+                trafficSignGeoJsonDtoV5Json3,
+                trafficSignGeoJsonDtoV5Json4));
         when(trafficSignPropertiesDtoV5Json1.getRoadSectionId()).thenReturn(null);
         when(trafficSignGeoJsonDtoV5Json1.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
         when(trafficSignGeoJsonDtoV5Json2.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json1);
@@ -187,7 +193,6 @@ class RebuildTrafficSignCacheCommandTest {
         NetworkGraphHopper networkGraphHopper = Mockito.mock(NetworkGraphHopper.class);
         when(networkDataService.get()).thenReturn(networkData);
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
-
 
         mockMapperCalls(trafficSignGeoJsonDtoV5Json1, null, trafficSign1);
         mockMapperCalls(trafficSignGeoJsonDtoV5Json2, null, trafficSign2);
