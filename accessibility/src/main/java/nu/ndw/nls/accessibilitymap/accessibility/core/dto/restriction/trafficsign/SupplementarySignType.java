@@ -76,10 +76,10 @@ public enum SupplementarySignType {
     OB254("Period: Mon-Fri 06:00-10:00"),
     OB256("End of period: Mon-Fri 06:00-10:00"),
     OB259("Except during period: Mon-Fri 06:00-10:00"),
-    OB301("Enforced with wheel clamps"),
-    OB302("Enforced with wheel clamps"),
-    OB303("Enforced with wheel clamps"),
-    OB304("Tow-away zone"),
+    OB301("Enforced with wheel clamps 1"),
+    OB302("Enforced with wheel clamps 2"),
+    OB303("Tow-away zone 1"),
+    OB304("Tow-away zone 2"),
     OB305("Bicycles will be removed"),
     OB306("Chip card"),
     OB307("Debit card"),
@@ -116,11 +116,11 @@ public enum SupplementarySignType {
     OB720("Plus lane open"),
     OTHER("Free text: soft verge");
 
-    private final String value;
-
     private static final Set<SupplementarySignType> PRE_ANNOUNCEMENTS = EnumSet.of(OB401, OB411);
 
     private static final Set<SupplementarySignType> TIME_WINDOWED_TYPES = EnumSet.of(OB254, OB256, OB259);
+
+    private final String value;
 
     public static Set<SupplementarySignType> getWindowTimeTypes() {
         return TIME_WINDOWED_TYPES;

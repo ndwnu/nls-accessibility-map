@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.services;
 
-import static nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignEventDtoV4Json.StatusEnum.PLACED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -18,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 class TrafficSignServiceTest {
+
+    private static final String PLACED = "PLACED";
 
     @Mock
     private CurrentStateControllerV5ApiClient currentStateControllerV5ApiClient;
@@ -41,7 +42,7 @@ class TrafficSignServiceTest {
                 null,
                 List.of("C4", "C7"),
                 null,
-                PLACED.getValue(),
+                PLACED,
                 null,
                 null,
                 null,
@@ -64,7 +65,7 @@ class TrafficSignServiceTest {
                 null,
                 List.of("C4", "C7"),
                 null,
-                PLACED.getValue(),
+                PLACED,
                 null,
                 null,
                 null,

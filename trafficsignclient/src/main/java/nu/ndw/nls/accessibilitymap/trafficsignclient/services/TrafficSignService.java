@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.services;
 
-import static nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignEventDtoV4Json.StatusEnum.PLACED;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TrafficSignService {
+
+    private static final String PLACED = "PLACED";
 
     private final CurrentStateControllerV5ApiClient currentStateControllerV5ApiClient;
 
@@ -32,7 +33,7 @@ public class TrafficSignService {
                     null,
                     rvvCodes,
                     null,
-                    PLACED.getValue(),
+                    PLACED,
                     null,
                     null,
                     null,

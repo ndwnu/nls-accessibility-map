@@ -107,19 +107,27 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.tra
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OB720;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OTHER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.util.EnumSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class SupplementarySignTypeTest {
 
     private static final Set<SupplementarySignType> PRE_ANNOUNCEMENTS = EnumSet.of(OB401, OB411);
 
     private static final Set<SupplementarySignType> TIME_WINDOWED_TYPES = EnumSet.of(OB254, OB256, OB259);
+
+    @Mock
+    private SupplementarySignType supplementarySignType;
 
     @Test
     void getValue() {
@@ -190,10 +198,10 @@ class SupplementarySignTypeTest {
         assertThat(OB254.getValue()).isEqualTo("Period: Mon-Fri 06:00-10:00");
         assertThat(OB256.getValue()).isEqualTo("End of period: Mon-Fri 06:00-10:00");
         assertThat(OB259.getValue()).isEqualTo("Except during period: Mon-Fri 06:00-10:00");
-        assertThat(OB301.getValue()).isEqualTo("Enforced with wheel clamps");
-        assertThat(OB302.getValue()).isEqualTo("Enforced with wheel clamps");
-        assertThat(OB303.getValue()).isEqualTo("Enforced with wheel clamps");
-        assertThat(OB304.getValue()).isEqualTo("Tow-away zone");
+        assertThat(OB301.getValue()).isEqualTo("Enforced with wheel clamps 1");
+        assertThat(OB302.getValue()).isEqualTo("Enforced with wheel clamps 2");
+        assertThat(OB303.getValue()).isEqualTo("Tow-away zone 1");
+        assertThat(OB304.getValue()).isEqualTo("Tow-away zone 2");
         assertThat(OB305.getValue()).isEqualTo("Bicycles will be removed");
         assertThat(OB306.getValue()).isEqualTo("Chip card");
         assertThat(OB307.getValue()).isEqualTo("Debit card");
@@ -257,4 +265,23 @@ class SupplementarySignTypeTest {
         assertThat(supplementarySignType.isWindowTime()).isTrue();
     }
 
+    @Test
+    void hasWindowTime_true() {
+        when(supplementarySignType.isWindowTime()).thenReturn(true);
+        SupplementaryTrafficSign supplementaryTrafficSign = SupplementaryTrafficSign.builder()
+                .type(supplementarySignType)
+                .build();
+
+        assertThat(supplementaryTrafficSign.hasWindowTime()).isTrue();
+    }
+
+    @Test
+    void hasWindowTime_false() {
+        when(supplementarySignType.isWindowTime()).thenReturn(false);
+        SupplementaryTrafficSign supplementaryTrafficSign = SupplementaryTrafficSign.builder()
+                .type(supplementarySignType)
+                .build();
+
+        assertThat(supplementaryTrafficSign.hasWindowTime()).isFalse();
+    }
 }
