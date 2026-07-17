@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class VehicleToTransportTypeMapperTest {
+class VehicleTypeToTransportTypeMapperTest {
 
-    private final VehicleToTransportTypeMapper vehicleToTransportTypeMapper = new VehicleToTransportTypeMapper();
+    private final VehicleTypeToTransportTypeMapper vehicleTypeToTransportTypeMapper = new VehicleTypeToTransportTypeMapper();
 
     @ParameterizedTest
     @CsvSource(textBlock = """
@@ -31,19 +31,19 @@ class VehicleToTransportTypeMapperTest {
             TAXI,                   TAXI,
             """)
     void map_singleValues(VehicleTypeEnum vehicleTypeEnum, TransportType transportType) {
-        assertThat(vehicleToTransportTypeMapper.map(vehicleTypeEnum))
+        assertThat(vehicleTypeToTransportTypeMapper.map(vehicleTypeEnum))
                 .containsExactly(transportType);
     }
 
     @Test
     void map_null() {
-        assertThat(vehicleToTransportTypeMapper.map(null))
+        assertThat(vehicleTypeToTransportTypeMapper.map(null))
                 .isEmpty();
     }
 
     @Test
     void map_all() {
-        assertThat(vehicleToTransportTypeMapper.map(VehicleTypeEnum.ALL))
+        assertThat(vehicleTypeToTransportTypeMapper.map(VehicleTypeEnum.ALL))
                 .containsExactlyInAnyOrder(TransportType.values());
     }
 
