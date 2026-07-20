@@ -6,5 +6,4 @@ import lombok.NoArgsConstructor;
 public class LogConstants {
 
     public static final String ACCESSIBILITY_REQUEST = "accessibility.request";
-
 }

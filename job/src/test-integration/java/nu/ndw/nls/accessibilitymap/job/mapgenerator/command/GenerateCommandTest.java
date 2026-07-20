@@ -8,13 +8,13 @@ import ch.qos.logback.classic.Level;
 import java.time.OffsetDateTime;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignCacheWatcher;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.services.MapGeneratorService;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -226,7 +226,7 @@ class GenerateCommandTest {
                         .maxSearchDistanceInMeters(3d)
                         .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                         .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
-                        .trafficSignTextSignTypes(includeTimeWindowedSigns ? Set.of(TextSignType.TIME_PERIOD) : null)
+                        .trafficSignSupplementarySignTypes(includeTimeWindowedSigns ? SupplementarySignType.getWindowTimeTypes() : null)
                         .build());
         assertThat(exportProperties.generateConfiguration()).isEqualTo(generateConfiguration);
 

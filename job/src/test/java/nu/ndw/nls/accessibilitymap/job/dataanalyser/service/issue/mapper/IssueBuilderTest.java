@@ -103,7 +103,8 @@ class IssueBuilderTest {
                                 .builder()
                                 .versions(List.of("1"))
                                 .source(DataLinkSourceJson.TRAFFIC_SIGN_API)
-                                .records(List.of(DataLinkRecordJson.builder()
+                                .records(List.of(
+                                        DataLinkRecordJson.builder()
                                                 .id("id")
                                                 .type("TrafficSign")
                                                 .build(),

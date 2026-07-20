@@ -15,7 +15,6 @@ public class GeoJsonJsonMapperFactory {
         Builder jsonMapperBuilder = JsonMapper.builder()
                 .changeDefaultPropertyInclusion(incl -> incl.withContentInclusion(Include.NON_NULL).withValueInclusion(Include.NON_NULL));
 
-
         if (generateConfiguration.prettyPrintJson()) {
             jsonMapperBuilder.enable(SerializationFeature.INDENT_OUTPUT);
         }

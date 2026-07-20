@@ -46,8 +46,8 @@ nu:
             root-export-directory: "./cache/map-generation-destination"
             prettyPrintJson: true
         trafficsignclient:
-          api:
-            url: http://${hostWiremock}:8888/api/rest/static-road-data/traffic-signs/v4
+          currentStateControllerV5:
+            url: http://${hostWiremock}:8888
         trafficSigns:
           emission-zone:
             client:

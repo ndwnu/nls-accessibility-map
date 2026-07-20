@@ -23,8 +23,8 @@ import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHoppe
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignTestDataService;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.springboot.gatling.test.simulation.AbstractSimulation;
 import nu.ndw.nls.springboot.test.component.driver.job.JobDriver;
@@ -113,7 +113,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
     private void setupTrafficSigns() {
         Random randomGenerator = new Random(Long.MAX_VALUE);
         RoadSectionsSimulationConfiguration roadSectionsSimulationConfiguration = this.getSimulationSpecificConfiguration();
-        List<TrafficSignGeoJsonDto> trafficSigns = Stream.generate(
+        List<TrafficSignGeoJsonDtoV5Json> trafficSigns = Stream.generate(
                         () -> {
                             Edge edge = graph.getEdges().get(randomGenerator.nextInt(0, graph.getEdges().size()));
 
@@ -128,7 +128,7 @@ public class RoadSectionsSimulation extends AbstractSimulation {
                                     .location(fractionLineString.getCoordinates()[1])
                                     .fraction(fraction)
                                     .rvvCode(TrafficSignType.C12.getRvvCode())
-                                    .directionType(DirectionType.FORTH)
+                                    .directionType(DrivingDirectionEnum.FORTH)
                                     .build());
                         })
                 .limit(roadSectionsSimulationConfiguration.numberOfTrafficSigns())

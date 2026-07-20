@@ -7,8 +7,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,7 +44,7 @@ class TrafficSignRestrictionCalculatorTest {
     })
     void isRestrictive_hasTransportRestrictions(boolean hasRestrictions, boolean isRestrictive, boolean expectedResult) {
 
-        when(transportRestrictions.hasActiveRestrictions(accessibilityRequest)).thenReturn(hasRestrictions);
+        when(transportRestrictions.isRestrictive(accessibilityRequest)).thenReturn(hasRestrictions);
         if (hasRestrictions) {
             when(transportRestrictions.isRestrictive(accessibilityRequest)).thenReturn(isRestrictive);
         }
@@ -86,22 +84,22 @@ class TrafficSignRestrictionCalculatorTest {
             "false, true, false",
             "false, false, false"
     })
-    void isRestrictive_hasTrafficSignTextTypes(boolean requestHasTrafficSignTextTypes, boolean matchesTextSignType, boolean expectedResult) {
+    void isRestrictive_hasTrafficSignTextTypes(boolean requestHasSupplementarySignTypes, boolean matchesTextSignType, boolean expectedResult) {
 
-        TextSignType textSignType = mock(TextSignType.class);
-        TextSign textSign = mock(TextSign.class);
+        SupplementaryTrafficSign supplementaryTrafficSign = mock(SupplementaryTrafficSign.class);
+        SupplementarySignType supplementarySignType = mock(SupplementarySignType.class);
 
-        trafficSign = trafficSign.withTextSigns(List.of(textSign));
+        trafficSign = trafficSign.withSupplementaryTrafficSigns(List.of(supplementaryTrafficSign));
 
-        if (requestHasTrafficSignTextTypes) {
-            when(textSign.type()).thenReturn(textSignType);
+        if (requestHasSupplementarySignTypes) {
+            when(supplementaryTrafficSign.type()).thenReturn(supplementarySignType);
             if (matchesTextSignType) {
-                accessibilityRequest = accessibilityRequest.withTrafficSignTextSignTypes(Set.of(textSignType));
+                accessibilityRequest = accessibilityRequest.withTrafficSignSupplementarySignTypes(Set.of(supplementarySignType));
             } else {
-                accessibilityRequest = accessibilityRequest.withTrafficSignTextSignTypes(Set.of(mock(TextSignType.class)));
+                accessibilityRequest = accessibilityRequest.withTrafficSignSupplementarySignTypes(Set.of(mock(SupplementarySignType.class)));
             }
         } else {
-            accessibilityRequest = accessibilityRequest.withTrafficSignTextSignTypes(null);
+            accessibilityRequest = accessibilityRequest.withTrafficSignSupplementarySignTypes(null);
         }
 
         assertThat(TrafficSignRestrictionCalculator.isRestrictive(trafficSign, accessibilityRequest)).isEqualTo(expectedResult);

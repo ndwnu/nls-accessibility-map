@@ -1,55 +1,51 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.services;
 
-import java.time.Instant;
-import java.util.LinkedHashSet;
+
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.CurrentStateStatus;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignData;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.repositories.TrafficSignRepository;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.utils.MaxNwbVersionTracker;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.api.v1.CurrentStateControllerV5ApiClient;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignFeatureCollectionV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TrafficSignService {
 
-    private final TrafficSignRepository trafficSignRepository;
+    private static final String PLACED = "PLACED";
 
-    public TrafficSignData getTrafficSigns(Set<String> rvvCodes) {
-        MaxNwbVersionTracker maxNwbVersionTracker = new MaxNwbVersionTracker();
+    private final CurrentStateControllerV5ApiClient currentStateControllerV5ApiClient;
 
-        Map<Long, List<TrafficSignGeoJsonDto>> trafficSigns;
-        Instant fetchTimestamp = Instant.now();
-        try (Stream<TrafficSignGeoJsonDto> stream = findTrafficSignByRvvCodes(
-                rvvCodes.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new)))) {
-            trafficSigns = stream
-                    .filter(this::hasRoadSectionId)
-                    .map(maxNwbVersionTracker::updateMaxNwbVersionAndContinue)
-                    .collect(Collectors.groupingBy(t -> Long.parseLong(
-                            String.valueOf(t.getProperties().getRoadSectionId()))));
+    public List<TrafficSignGeoJsonDtoV5Json> getTrafficSigns(Set<String> rvvCodes) {
+        return findTrafficSignByRvvCodes(rvvCodes.stream()
+                .sorted()
+                .toList());
+    }
+
+    private List<TrafficSignGeoJsonDtoV5Json> findTrafficSignByRvvCodes(List<String> rvvCodes) {
+
+        ResponseEntity<TrafficSignFeatureCollectionV5Json> currentStateResponseEntity =
+                currentStateControllerV5ApiClient.getCurrentStateDefault(
+                    null,
+                    null,
+                    rvvCodes,
+                    null,
+                    PLACED,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+
+        TrafficSignFeatureCollectionV5Json body = currentStateResponseEntity.getBody();
+        if (body == null) {
+            return Collections.emptyList();
         }
 
-        return new TrafficSignData(trafficSigns, maxNwbVersionTracker.getMaxNwbReferenceDate(), fetchTimestamp);
-    }
-
-    private Stream<TrafficSignGeoJsonDto> findTrafficSignByRvvCodes(
-            Set<String> rvvCodes) {
-
-        return trafficSignRepository.findCurrentState(
-                        CurrentStateStatus.PLACED,
-                        rvvCodes,
-                        null,
-                        null)
-                .getFeatures().stream();
-    }
-
-    private boolean hasRoadSectionId(TrafficSignGeoJsonDto t) {
-        return t.getProperties().getRoadSectionId() != null;
+        return body.getFeatures();
     }
 }

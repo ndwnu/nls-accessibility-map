@@ -138,6 +138,9 @@ nu:
             folder: "./cache/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
+        trafficsignclient:
+          currentStateControllerV5:
+            url: http://localhost:8888
         roadChanges:
           cache:
             name: "Road changes"

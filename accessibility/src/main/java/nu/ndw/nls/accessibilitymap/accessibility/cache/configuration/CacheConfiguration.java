@@ -34,7 +34,6 @@ public class CacheConfiguration {
     @NotNull
     private Path folder;
 
-
     @Default
     private Duration fileWatcherInterval = Duration.ofSeconds(1);
 
@@ -42,5 +41,4 @@ public class CacheConfiguration {
     private int acceptableConsequentReadFailures = 1;
 
     private Duration maxLockWaitTime = Duration.ofSeconds(DEFAULT_MAX_LOCK_WAIT_TIME);
-
 }

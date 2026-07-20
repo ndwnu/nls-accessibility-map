@@ -60,7 +60,8 @@ public class DistributedLockService {
                         log.debug("Acquired lock '{}'", lockName);
                         result.complete(null);
                     } else {
-                        scheduler.schedule(this,
+                        scheduler.schedule(
+                                this,
                                 lockConfiguration.getLockRetryInterval().toMillis(),
                                 TimeUnit.MILLISECONDS);
                     }

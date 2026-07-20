@@ -8,11 +8,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.Exporter;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -51,14 +51,12 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
 
         try {
             log.debug("Started building features");
-            FeatureCollection geoJson = prepareGeoJsonFeatureCollection(accessibility, exportProperties,
-                    idSequenceSupplier);
+            FeatureCollection geoJson = prepareGeoJsonFeatureCollection(accessibility, exportProperties, idSequenceSupplier);
 
             log.debug("Started writing geojson to temp file: %s".formatted(tempFile.toAbsolutePath()));
             getGeoJsonMapper().writeValue(tempFile.toFile(), geoJson);
         } catch (JacksonException exception) {
-            throw new IllegalStateException("Failed to serialize geojson to file: %s"
-                    .formatted(tempFile.toAbsolutePath()), exception);
+            throw new IllegalStateException("Failed to serialize geojson to file: %s".formatted(tempFile.toAbsolutePath()), exception);
         }
 
         Path exportFile = exportProperties.generateConfiguration()
@@ -79,8 +77,10 @@ public abstract class AbstractGeoJsonWriter implements Exporter {
         StringBuilder exportFileName = new StringBuilder();
 
         exportFileName.append(exportProperties.name().toLowerCase(Locale.US));
-        if (Objects.nonNull(exportProperties.accessibilityRequest().trafficSignTextSignTypes())
-                && exportProperties.accessibilityRequest().trafficSignTextSignTypes().contains(TextSignType.TIME_PERIOD)) {
+        if (Objects.nonNull(exportProperties.accessibilityRequest().trafficSignSupplementarySignTypes())
+            && exportProperties.accessibilityRequest()
+                    .trafficSignSupplementarySignTypes()
+                    .equals(SupplementarySignType.getWindowTimeTypes())) {
             exportFileName.append("WindowTimeSegments");
         }
 

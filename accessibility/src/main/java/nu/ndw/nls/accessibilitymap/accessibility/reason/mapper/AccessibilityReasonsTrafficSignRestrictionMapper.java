@@ -37,12 +37,12 @@ public class AccessibilityReasonsTrafficSignRestrictionMapper implements Restric
 
     private static List<AccessibilityReason<?>> mapVehicleHeight(TrafficSign trafficSign) {
 
-        if (Objects.isNull(trafficSign.transportRestrictions().vehicleHeightInCm())) {
+        if (Objects.isNull(trafficSign.transportRestrictions().restrictions().vehicleHeightInCm())) {
             return List.of();
         }
 
         return List.of(MaximumReason.builder()
-                .value(trafficSign.transportRestrictions().vehicleHeightInCm())
+                .value(trafficSign.transportRestrictions().restrictions().vehicleHeightInCm())
                 .restrictions(Set.of(trafficSign))
                 .reasonType(ReasonType.VEHICLE_HEIGHT)
                 .build());
@@ -50,12 +50,12 @@ public class AccessibilityReasonsTrafficSignRestrictionMapper implements Restric
 
     private static List<AccessibilityReason<?>> mapVehicleWidth(TrafficSign trafficSign) {
 
-        if (Objects.isNull(trafficSign.transportRestrictions().vehicleWidthInCm())) {
+        if (Objects.isNull(trafficSign.transportRestrictions().restrictions().vehicleWidthInCm())) {
             return List.of();
         }
 
         return List.of(MaximumReason.builder()
-                .value(trafficSign.transportRestrictions().vehicleWidthInCm())
+                .value(trafficSign.transportRestrictions().restrictions().vehicleWidthInCm())
                 .restrictions(Set.of(trafficSign))
                 .reasonType(ReasonType.VEHICLE_WIDTH)
                 .build());
@@ -63,12 +63,12 @@ public class AccessibilityReasonsTrafficSignRestrictionMapper implements Restric
 
     private static List<AccessibilityReason<?>> mapVehicleLength(TrafficSign trafficSign) {
 
-        if (Objects.isNull(trafficSign.transportRestrictions().vehicleLengthInCm())) {
+        if (Objects.isNull(trafficSign.transportRestrictions().restrictions().vehicleLengthInCm())) {
             return List.of();
         }
 
         return List.of(MaximumReason.builder()
-                .value(trafficSign.transportRestrictions().vehicleLengthInCm())
+                .value(trafficSign.transportRestrictions().restrictions().vehicleLengthInCm())
                 .restrictions(Set.of(trafficSign))
                 .reasonType(ReasonType.VEHICLE_LENGTH)
                 .build());
@@ -76,12 +76,12 @@ public class AccessibilityReasonsTrafficSignRestrictionMapper implements Restric
 
     private static List<AccessibilityReason<?>> mapVehicleAxleLoad(TrafficSign trafficSign) {
 
-        if (Objects.isNull(trafficSign.transportRestrictions().vehicleAxleLoadInKg())) {
+        if (Objects.isNull(trafficSign.transportRestrictions().restrictions().vehicleAxleLoadInKg())) {
             return List.of();
         }
 
         return List.of(MaximumReason.builder()
-                .value(trafficSign.transportRestrictions().vehicleAxleLoadInKg())
+                .value(trafficSign.transportRestrictions().restrictions().vehicleAxleLoadInKg())
                 .restrictions(Set.of(trafficSign))
                 .reasonType(ReasonType.VEHICLE_AXLE_LOAD)
                 .build());
@@ -89,12 +89,12 @@ public class AccessibilityReasonsTrafficSignRestrictionMapper implements Restric
 
     private static List<AccessibilityReason<?>> mapVehicleWeight(TrafficSign trafficSign) {
 
-        if (Objects.isNull(trafficSign.transportRestrictions().vehicleWeightInKg())) {
+        if (Objects.isNull(trafficSign.transportRestrictions().restrictions().vehicleWeightInKg())) {
             return List.of();
         }
 
         return List.of(MaximumReason.builder()
-                .value(trafficSign.transportRestrictions().vehicleWeightInKg())
+                .value(trafficSign.transportRestrictions().restrictions().vehicleWeightInKg())
                 .restrictions(Set.of(trafficSign))
                 .reasonType(ReasonType.VEHICLE_WEIGHT)
                 .build());
@@ -102,13 +102,13 @@ public class AccessibilityReasonsTrafficSignRestrictionMapper implements Restric
 
     private static List<AccessibilityReason<?>> mapTransportTypes(TrafficSign trafficSign) {
 
-        if (Objects.isNull(trafficSign.transportRestrictions().transportTypes())
-            || trafficSign.transportRestrictions().transportTypes().isEmpty()) {
+        if (Objects.isNull(trafficSign.transportRestrictions().restrictions().transportTypes())
+            || trafficSign.transportRestrictions().restrictions().transportTypes().isEmpty()) {
             return List.of();
         }
 
         return List.of(TransportTypeReason.builder()
-                .value(trafficSign.transportRestrictions().transportTypes())
+                .value(trafficSign.transportRestrictions().restrictions().transportTypes())
                 .restrictions(Set.of(trafficSign))
                 .build());
     }

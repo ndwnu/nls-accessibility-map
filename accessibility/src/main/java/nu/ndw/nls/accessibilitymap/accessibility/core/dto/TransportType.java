@@ -1,13 +1,15 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum TransportType {
 
     PEDESTRIAN("Pedestrian"),
@@ -40,5 +42,20 @@ public enum TransportType {
         return Stream.of(TransportType.values())
                 .filter(transportType -> !excludingTypes.contains(transportType))
                 .collect(Collectors.toSet());
+    }
+
+    @JsonValue
+    public String getType() {
+        return type;
+    }
+
+    @JsonCreator
+    public static TransportType fromValue(String value) {
+        for (TransportType transportType : TransportType.values()) {
+            if (transportType.type.equals(value)) {
+                return transportType;
+            }
+        }
+        throw new IllegalArgumentException("Unexpected value '" + value + "'");
     }
 }

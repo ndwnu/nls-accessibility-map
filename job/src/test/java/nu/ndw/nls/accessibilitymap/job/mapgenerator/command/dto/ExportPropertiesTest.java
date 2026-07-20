@@ -84,7 +84,8 @@ class ExportPropertiesTest extends ValidationTest {
             0, must be greater than 0,
             0.0000000000001, null,
             """)
-    void validate_polygonMaxDistanceBetweenPoints_mustBePositive(double polygonMaxDistanceBetweenPoints,
+    void validate_polygonMaxDistanceBetweenPoints_mustBePositive(
+            double polygonMaxDistanceBetweenPoints,
             String expectedError) {
 
         exportProperties = exportProperties.withPolygonMaxDistanceBetweenPoints(

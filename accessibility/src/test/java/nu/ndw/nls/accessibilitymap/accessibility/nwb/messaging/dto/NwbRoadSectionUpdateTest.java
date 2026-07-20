@@ -28,7 +28,7 @@ class NwbRoadSectionUpdateTest extends ValidationTest {
 
     @SneakyThrows
     @Test
-    void deserialize_ok() {
+    void deserialize() {
         var expectedRoadChange = NwbRoadSectionUpdate.builder()
                 .roadSectionId(600547901)
                 .nwbVersion(LocalDate.of(2026, 3, 1))

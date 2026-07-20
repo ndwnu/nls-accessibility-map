@@ -47,7 +47,6 @@ public class FileService {
             }
 
             Files.move(tempFile, exportFile, StandardCopyOption.REPLACE_EXISTING);
-
         } catch (IOException exception) {
             throw new IllegalStateException(
                     "Error moving file from %s to %s.".formatted(tempFile, exportFile),

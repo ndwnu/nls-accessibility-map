@@ -1,19 +1,20 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache;
 
 import jakarta.validation.Valid;
-import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.BlackCodeMapper;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.DirectionMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.SupplementaryTrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.TransportRestrictionMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.ZoneCodeTypeMapper;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionsDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
@@ -25,91 +26,74 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class TrafficSignBuilder {
 
-    private final TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
-
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
-    private final BlackCodeMapper blackCodeMapper;
+    private final ZoneCodeTypeMapper zoneCodeTypeMapper;
+
+    private final DirectionMapper directionMapper;
+
+    private final TransportRestrictionMapper transportRestrictionMapper;
+
+    private final SupplementaryTrafficSignMapper supplementaryTrafficSignMapper;
 
     @Valid
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
             LineString nwbRoadSectionGeometry,
-            TrafficSignGeoJsonDto trafficSignGeoJsonDto,
+            TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json,
             AtomicInteger idSequenceSupplier) {
 
         try {
             if (Objects.isNull(nwbRoadSectionGeometry)) {
                 throw new IllegalStateException("Traffic sign with id '%s' is missing a road section."
-                        .formatted(trafficSignGeoJsonDto.getId()));
+                        .formatted(trafficSignGeoJsonDtoV5Json.getId()));
             }
 
-            Double fraction = trafficSignGeoJsonDto.getProperties().getFraction();
+            Double fraction = trafficSignGeoJsonDtoV5Json.getProperties().getFraction();
             if (Objects.isNull(fraction)) {
                 throw new IllegalStateException("Traffic sign with id '%s' is missing a fraction."
-                        .formatted(trafficSignGeoJsonDto.getId()));
+                        .formatted(trafficSignGeoJsonDtoV5Json.getId()));
             }
+
+            if (Objects.isNull(trafficSignGeoJsonDtoV5Json.getProperties().getRoadSectionId())) {
+                throw new IllegalStateException("Traffic sign with id '%s' is missing a roadSectionId."
+                        .formatted(trafficSignGeoJsonDtoV5Json.getId()));
+            }
+
             var coordinateAndBearing = fractionAndDistanceCalculator.getCoordinateAndBearing(nwbRoadSectionGeometry, fraction);
 
-            TrafficSignType type = TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode());
+            TrafficSignType trafficSignType = TrafficSignType.fromRvvCode(trafficSignGeoJsonDtoV5Json.getProperties().getRvvCode());
             TrafficSign trafficSign = TrafficSign.builder()
                     .id(idSequenceSupplier.getAndIncrement())
-                    .externalId(trafficSignGeoJsonDto.getId().toString())
-                    .roadSectionId(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue())
-                    .trafficSignType(type)
-                    .direction(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()))
+                    .externalId(trafficSignGeoJsonDtoV5Json.getId().toString())
+                    .roadSectionId(trafficSignGeoJsonDtoV5Json.getProperties().getRoadSectionId())
+                    .trafficSignType(trafficSignType)
+                    .direction(directionMapper.map(trafficSignGeoJsonDtoV5Json.getProperties().getDrivingDirection()))
                     .fraction(fraction)
                     //In GeoJSON, a Point's coordinates are always [longitude, latitude] (X, Y),
-                    .longitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getFirst())
-                    .latitude(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLast())
-                    .iconUri(createUri(trafficSignGeoJsonDto.getProperties().getImageUrl()))
-                    .textSigns(trafficSignGeoJsonDto.getProperties().getTextSigns())
-                    .zoneCodeType(mapZoneCodeType(trafficSignGeoJsonDto))
-                    .trafficRegulationOrderId(trafficSignGeoJsonDto.getProperties().getTrafficOrderUrl())
-                    .blackCode(blackCodeMapper.map(trafficSignGeoJsonDto, type))
+                    .latitude(trafficSignGeoJsonDtoV5Json.getGeometry().getCoordinates().getLast())
+                    .longitude(trafficSignGeoJsonDtoV5Json.getGeometry().getCoordinates().getFirst())
+                    .zoneCodeType(zoneCodeTypeMapper.map(trafficSignGeoJsonDtoV5Json.getProperties().getZoneCode()))
+                    .trafficRegulationOrderId(trafficSignGeoJsonDtoV5Json.getProperties().getTrafficOrderId())
                     .networkSnappedLatitude(coordinateAndBearing.coordinate().getY())
                     .networkSnappedLongitude(coordinateAndBearing.coordinate().getX())
+                    .supplementaryTrafficSigns(trafficSignGeoJsonDtoV5Json.getProperties().getSupplementarySigns()
+                            .stream()
+                            .map(supplementaryTrafficSignMapper::map)
+                            .toList())
                     .build();
 
-            return Optional.of(trafficSign.withTransportRestrictions(trafficSignRestrictionsBuilder.buildFor(trafficSign)));
+            ConditionsDtoV5Json conditions = trafficSignGeoJsonDtoV5Json.getProperties().getConditions();
+
+            TransportRestrictions transportRestrictions = transportRestrictionMapper.map(
+                    conditions,
+                    trafficSignGeoJsonDtoV5Json.getProperties().getTrafficOrderId());
+
+            return Optional.of(trafficSign.withTransportRestrictions(transportRestrictions));
         } catch (RuntimeException exception) {
             log.debug(
                     "Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
-                    trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto, exception);
+                    trafficSignGeoJsonDtoV5Json.getId(), trafficSignGeoJsonDtoV5Json, exception);
             return Optional.empty();
         }
-    }
-
-    private static ZoneCodeType mapZoneCodeType(TrafficSignGeoJsonDto trafficSignGeoJsonDto) {
-
-        if (Objects.isNull(trafficSignGeoJsonDto.getProperties().getZoneCode())) {
-            return null;
-        }
-        return switch (trafficSignGeoJsonDto.getProperties().getZoneCode()) {
-            case "ZE" -> ZoneCodeType.END;
-            case "ZB" -> ZoneCodeType.START;
-            case "ZH" -> ZoneCodeType.REPEAT;
-            case "ZO" -> ZoneCodeType.UNKNOWN;
-            default -> throw new IllegalArgumentException("Unknown zone code '%s'"
-                    .formatted(trafficSignGeoJsonDto.getProperties().getZoneCode()));
-        };
-    }
-
-    private static Direction createDirection(DirectionType drivingDirection) {
-
-        return switch (drivingDirection) {
-            case FORTH -> Direction.FORWARD;
-            case BACK -> Direction.BACKWARD;
-            default -> throw new IllegalArgumentException(
-                    "Driving direction '%s' could not be mapped.".formatted(drivingDirection));
-        };
-    }
-
-    private static URI createUri(String value) {
-
-        if (Objects.isNull(value)) {
-            return null;
-        }
-
-        return URI.create(value);
     }
 }

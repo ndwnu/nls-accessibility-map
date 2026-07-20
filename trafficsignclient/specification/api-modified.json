@@ -1,0 +1,770 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Verkeersborden download API",
+    "description": "Actueel beeld en verkeersborden events",
+    "version": "5.0"
+  },
+  "servers": [
+    {
+      "url": "https://wegkenmerken.staging.ndw.nu/api",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/rest/static-road-data/traffic-signs/v5/current-state": {
+      "get": {
+        "tags": [
+          "current-state-controller-v-5"
+        ],
+        "summary": "Get current state as GeoJSON FeatureCollection",
+        "operationId": "getCurrentStateDefault",
+        "parameters": [
+          {
+            "name": "obCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "C22A1",
+                  "C22A2",
+                  "C22A3",
+                  "C22A4",
+                  "C22A5",
+                  "C22A6",
+                  "C22A7",
+                  "C22A8",
+                  "C22A9",
+                  "C22C1",
+                  "C22E1",
+                  "C22E4",
+                  "C22E5",
+                  "C22E6",
+                  "C22E7",
+                  "C22E8",
+                  "C22E9",
+                  "C22E10",
+                  "OB01",
+                  "OB02",
+                  "OB03",
+                  "OB04",
+                  "OB05",
+                  "OB06",
+                  "OB07",
+                  "OB08",
+                  "OB09",
+                  "OB10",
+                  "OB11",
+                  "OB12",
+                  "OB13",
+                  "OB14",
+                  "OB15",
+                  "OB16",
+                  "OB17l",
+                  "OB17r",
+                  "OB18l",
+                  "OB18r",
+                  "OB19",
+                  "OB51",
+                  "OB52",
+                  "OB53",
+                  "OB54",
+                  "OB55",
+                  "OB56",
+                  "OB57",
+                  "OB58",
+                  "OB59",
+                  "OB60",
+                  "OB61",
+                  "OB62",
+                  "OB63",
+                  "OB64",
+                  "OB65",
+                  "OB66",
+                  "OB101",
+                  "OB102",
+                  "OB103",
+                  "OB104",
+                  "OB108",
+                  "OB109",
+                  "OB110",
+                  "OB113",
+                  "OB115",
+                  "OB254",
+                  "OB256",
+                  "OB259",
+                  "OB301",
+                  "OB302",
+                  "OB303",
+                  "OB304",
+                  "OB305",
+                  "OB306",
+                  "OB307",
+                  "OB308",
+                  "OB309",
+                  "OB310",
+                  "OB311",
+                  "OB313",
+                  "OB320",
+                  "OB401",
+                  "OB411",
+                  "OB501l",
+                  "OB501r",
+                  "OB502",
+                  "OB503",
+                  "OB504",
+                  "OB505",
+                  "OB617",
+                  "OB618",
+                  "OB619",
+                  "OB620",
+                  "OB621",
+                  "OB627",
+                  "OB711",
+                  "OB711l",
+                  "OB711r",
+                  "OB712",
+                  "OB712l",
+                  "OB712r",
+                  "OB713",
+                  "OB713l",
+                  "OB713r",
+                  "OB719",
+                  "OB720",
+                  "OTHER"
+                ]
+              }
+            }
+          },
+          {
+            "name": "countyCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^GM\\d{4}$"
+            }
+          },
+          {
+            "name": "rvvCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 12,
+                "minLength": 2
+              }
+            }
+          },
+          {
+            "name": "roadSectionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32",
+                "exclusiveMinimum": 0
+              }
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PLANNED",
+                "PLACED",
+                "REMOVED"
+              ]
+            }
+          },
+          {
+            "name": "roadAuthorityType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "R",
+                "P",
+                "G",
+                "W",
+                "T"
+              ]
+            }
+          },
+          {
+            "name": "roadAuthorityCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 4,
+              "minLength": 0
+            }
+          },
+          {
+            "name": "bbox",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bbox-crs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "crs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Crs",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrafficSignFeatureCollectionV5",
+                  "additionalProperties": {
+                    "default": ""
+                  },
+                  "default": ""
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConditionPropertiesDtoV5": {
+        "type": "object",
+        "properties": {
+          "vehicleType": {
+            "type": "array",
+            "description": "Vehicle types this condition applies to",
+            "items": {
+              "type": "string",
+              "default": "unknown",
+              "description": "New values may be added over time; treat any value your client doesn't recognize as unknown.",
+              "enum": [
+                "pedestrian",
+                "rider",
+                "bicycle",
+                "moped",
+                "microcar",
+                "agriculturalVehicle",
+                "car",
+                "truck",
+                "bus",
+                "motorcycle",
+                "caravan",
+                "trailer",
+                "deliveryVan",
+                "tram",
+                "taxi",
+                "all",
+                "unknown"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "category": {
+            "type": "array",
+            "description": "Traffic categories this condition applies to",
+            "items": {
+              "type": "string",
+              "enum": [
+                "charging",
+                "loading",
+                "permit",
+                "localTraffic",
+                "disabledTransport",
+                "dangerousSupplies"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "timeValidity": {
+            "type": "string",
+            "default": "",
+            "description": "Time window for these conditions in OSM format"
+          },
+          "emissionClass": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Not yet used, will be used later when emission zone signs are mapped"
+          },
+          "fuelType": {
+            "type": "string",
+            "description": "Not yet used, will be used later when emission zone signs are mapped"
+          },
+          "axleWeight": {
+            "type": "number",
+            "format": "double",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
+          },
+          "height": {
+            "type": "number",
+            "format": "double",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
+          },
+          "length": {
+            "type": "number",
+            "format": "double",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
+          },
+          "width": {
+            "type": "number",
+            "format": "double",
+            "description": "Max value as filled in by the user in the black code of the traffic sign"
+          }
+        }
+      },
+      "ConditionsDtoV5": {
+        "type": "object",
+        "properties": {
+          "restrictions": {
+            "$ref": "#/components/schemas/ConditionPropertiesDtoV5",
+            "description": "Contains what is forbidden by this sign. Always present, though may be an empty object if there are no restrictions."
+          },
+          "exemptions": {
+            "type": "array",
+            "description": "What is allowed despite the restriction. Always present, may be an empty array.",
+            "items": {
+              "$ref": "#/components/schemas/ConditionPropertiesDtoV5"
+            }
+          }
+        },
+        "required": [
+          "exemptions",
+          "restrictions"
+        ]
+      },
+      "Crs": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "name",
+              "link"
+            ]
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "ExternalReferenceDtoV5": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "LngLatAlt": {
+        "type": "object",
+        "properties": {
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "altitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "additionalElements": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        }
+      },
+      "Point": {
+        "type": "object",
+        "required": ["coordinates"],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        }
+      },
+      "TextSignDtoV5": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "openingHours": {
+            "type": "string",
+            "default": "",
+            "description": "If applicable for the obCode, this contains the time window in OSM format"
+          },
+          "externalReferences": {
+            "type": "array",
+            "description": "External system references for this text sign. Always present, though may be an empty array.",
+            "items": {
+              "$ref": "#/components/schemas/ExternalReferenceDtoV5"
+            }
+          },
+          "index": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Position of this text sign relative to the other supplementary signs on the same traffic sign. Always present."
+          },
+          "signCode": {
+            "type": "string",
+            "description": "The text sign's machine-readable code. Always present.",
+            "enum": [
+              "C22A1",
+              "C22A2",
+              "C22A3",
+              "C22A4",
+              "C22A5",
+              "C22A6",
+              "C22A7",
+              "C22A8",
+              "C22A9",
+              "C22C1",
+              "C22E1",
+              "C22E4",
+              "C22E5",
+              "C22E6",
+              "C22E7",
+              "C22E8",
+              "C22E9",
+              "C22E10",
+              "OB01",
+              "OB02",
+              "OB03",
+              "OB04",
+              "OB05",
+              "OB06",
+              "OB07",
+              "OB08",
+              "OB09",
+              "OB10",
+              "OB11",
+              "OB12",
+              "OB13",
+              "OB14",
+              "OB15",
+              "OB16",
+              "OB17l",
+              "OB17r",
+              "OB18l",
+              "OB18r",
+              "OB19",
+              "OB51",
+              "OB52",
+              "OB53",
+              "OB54",
+              "OB55",
+              "OB56",
+              "OB57",
+              "OB58",
+              "OB59",
+              "OB60",
+              "OB61",
+              "OB62",
+              "OB63",
+              "OB64",
+              "OB65",
+              "OB66",
+              "OB101",
+              "OB102",
+              "OB103",
+              "OB104",
+              "OB108",
+              "OB109",
+              "OB110",
+              "OB113",
+              "OB115",
+              "OB254",
+              "OB256",
+              "OB259",
+              "OB301",
+              "OB302",
+              "OB303",
+              "OB304",
+              "OB305",
+              "OB306",
+              "OB307",
+              "OB308",
+              "OB309",
+              "OB310",
+              "OB311",
+              "OB313",
+              "OB320",
+              "OB401",
+              "OB411",
+              "OB501l",
+              "OB501r",
+              "OB502",
+              "OB503",
+              "OB504",
+              "OB505",
+              "OB617",
+              "OB618",
+              "OB619",
+              "OB620",
+              "OB621",
+              "OB627",
+              "OB711",
+              "OB711l",
+              "OB711r",
+              "OB712",
+              "OB712l",
+              "OB712r",
+              "OB713",
+              "OB713l",
+              "OB713r",
+              "OB719",
+              "OB720",
+              "OTHER"
+            ]
+          }
+        },
+        "required": [
+          "externalReferences",
+          "index",
+          "signCode"
+        ]
+      },
+      "TrafficSignFeatureCollectionV5": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Always \"FeatureCollection\"."
+          },
+          "features": {
+            "type": "array",
+            "description": "The traffic sign features. Always present, though may be an empty array.",
+            "items": {
+              "$ref": "#/components/schemas/TrafficSignGeoJsonDtoV5"
+            }
+          }
+        },
+        "required": [
+          "features",
+          "type"
+        ]
+      },
+      "TrafficSignGeoJsonDtoV5": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Always \"Feature\"."
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier of the traffic sign. Always present."
+          },
+          "geometry": {
+            "$ref": "#/components/schemas/Point",
+            "description": "Location of the traffic sign. Always present."
+          },
+          "properties": {
+            "$ref": "#/components/schemas/TrafficSignPropertiesDtoV5",
+            "description": "The sign's properties. Always present."
+          }
+        },
+        "required": [
+          "geometry",
+          "id",
+          "properties",
+          "type"
+        ]
+      },
+      "TrafficSignPropertiesDtoV5": {
+        "type": "object",
+        "properties": {
+          "externalReferences": {
+            "type": "array",
+            "description": "External system references for this sign. Always present, though may be an empty array.",
+            "items": {
+              "$ref": "#/components/schemas/ExternalReferenceDtoV5"
+            }
+          },
+          "validatedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "rvvCode": {
+            "type": "string",
+            "default": "",
+            "description": "The RVV code this sign represents. Always present."
+          },
+          "blackCode": {
+            "type": "string"
+          },
+          "zoneCode": {
+            "type": "string",
+            "enum": [
+              "BEGIN",
+              "END",
+              "REPEAT",
+              "UNKNOWN"
+            ]
+          },
+          "supplementarySigns": {
+            "type": "array",
+            "description": "Supplementary text signs attached to this sign. Always present, though may be an empty array.",
+            "items": {
+              "$ref": "#/components/schemas/TextSignDtoV5"
+            }
+          },
+          "placement": {
+            "type": "string"
+          },
+          "bearing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roadSectionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "countyCode": {
+            "type": "string"
+          },
+          "countyName": {
+            "type": "string"
+          },
+          "nwbVersion": {
+            "type": "string",
+            "format": "date"
+          },
+          "privateProperty": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this sign is located on private property."
+          },
+          "missingRoadSection": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether this sign is on a road that is not yet present in NWB."
+          },
+          "fraction": {
+            "type": "number",
+            "format": "double"
+          },
+          "drivingDirection": {
+            "type": "string",
+            "enum": [
+              "BACK",
+              "FORTH"
+            ]
+          },
+          "conditions": {
+            "$ref": "#/components/schemas/ConditionsDtoV5",
+            "description": "The sign's machine-readable legal meaning. Present (though possibly empty) for every sign."
+          },
+          "registeredOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "lastModifiedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "removedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "placedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "expectedPlacedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "expectedRemovedOn": {
+            "type": "string",
+            "format": "date"
+          },
+          "trafficOrderId": {
+            "type": "string"
+          },
+          "ownerType": {
+            "type": "string"
+          },
+          "ownerCode": {
+            "type": "string"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "conditions",
+          "externalReferences",
+          "missingRoadSection",
+          "privateProperty",
+          "rvvCode",
+          "supplementarySigns"
+        ]
+      }
+    }
+  }
+}

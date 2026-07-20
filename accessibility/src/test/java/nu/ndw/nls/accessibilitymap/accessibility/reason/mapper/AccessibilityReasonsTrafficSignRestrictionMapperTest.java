@@ -13,6 +13,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneR
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportConditions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
@@ -47,7 +48,9 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .transportTypes(Set.of(TransportType.CAR))
+                        .restrictions(TransportConditions.builder()
+                                .transportTypes(Set.of(TransportType.CAR))
+                                .build())
                         .build())
                 .build();
 
@@ -68,7 +71,9 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .transportTypes(transportTypes)
+                        .restrictions(TransportConditions.builder()
+                                .transportTypes(transportTypes)
+                                .build())
                         .build())
                 .build();
 
@@ -86,7 +91,9 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .vehicleHeightInCm(hasValue ? maximum : null)
+                        .restrictions(TransportConditions.builder()
+                                .vehicleHeightInCm(hasValue ? maximum : null)
+                                .build())
                         .build())
                 .build();
 
@@ -104,7 +111,10 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .vehicleWidthInCm(hasValue ? maximum : null)
+                        .restrictions(TransportConditions.builder()
+                                .vehicleWidthInCm(hasValue ? maximum : null)
+                                .build())
+
                         .build())
                 .build();
 
@@ -122,7 +132,9 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .vehicleWeightInKg(hasValue ? maximum : null)
+                        .restrictions(TransportConditions.builder()
+                                .vehicleWeightInKg(hasValue ? maximum : null)
+                                .build())
                         .build())
                 .build();
 
@@ -140,7 +152,9 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .vehicleLengthInCm(hasValue ? maximum : null)
+                        .restrictions(TransportConditions.builder()
+                                .vehicleLengthInCm(hasValue ? maximum : null)
+                                .build())
                         .build())
                 .build();
 
@@ -158,7 +172,9 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
-                        .vehicleAxleLoadInKg(hasValue ? maximum : null)
+                        .restrictions(TransportConditions.builder()
+                                .vehicleAxleLoadInKg(hasValue ? maximum : null)
+                                .build())
                         .build())
                 .build();
 
@@ -172,6 +188,7 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
+                        .restrictions(TransportConditions.unrestricted())
                         .emissionZone(EmissionZone.builder()
                                 .restriction(EmissionZoneRestriction.builder()
                                         .fuelTypes(Set.of())
@@ -192,6 +209,7 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
+                        .restrictions(TransportConditions.unrestricted())
                         .emissionZone(EmissionZone.builder()
                                 .restriction(EmissionZoneRestriction.builder()
                                         .fuelTypes(Set.of(FuelType.DIESEL))
@@ -200,6 +218,7 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
                                         .build())
                                 .build())
                         .build())
+
                 .build();
 
         List<AccessibilityReason<?>> accessibilityReasons = mapper.mapRestrictions(new Restrictions(Set.of(trafficSign)));
@@ -216,6 +235,7 @@ class AccessibilityReasonsTrafficSignRestrictionMapperTest {
 
         TrafficSign trafficSign = TrafficSign.builder()
                 .transportRestrictions(TransportRestrictions.builder()
+                        .restrictions(TransportConditions.unrestricted())
                         .emissionZone(EmissionZone.builder()
                                 .restriction(EmissionZoneRestriction.builder()
                                         .fuelTypes(Set.of())
