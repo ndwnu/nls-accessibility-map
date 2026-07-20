@@ -17,7 +17,7 @@
       "id": 1,
       "properties": {
         "accessible": false,
-        "direction": "FORWARD",
+        "direction": "Forward",
         "nwbRoadSectionId": 12,
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000002",
@@ -39,7 +39,7 @@
       "id": 2,
       "properties": {
         "accessible": false,
-        "direction": "FORWARD",
+        "direction": "Forward",
         "nwbRoadSectionId": 12,
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000002",
@@ -67,7 +67,7 @@
       "id": 3,
       "properties": {
         "accessible": false,
-        "direction": "FORWARD",
+        "direction": "Forward",
         "nwbRoadSectionId": 13,
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000001",
@@ -89,7 +89,7 @@
       "id": 4,
       "properties": {
         "accessible": false,
-        "direction": "FORWARD",
+        "direction": "Forward",
         "nwbRoadSectionId": 13,
         "trafficSign": true,
         "trafficSignId": "00000000-0000-4000-0000-000000000001",

@@ -152,7 +152,7 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                                   "properties": {
                                     "nwbRoadSectionId": 11,
                                     "accessible": true,
-                                    "direction": "FORWARD",
+                                    "direction": "Forward",
                                     "trafficSignType": "C7",
                                     "windowTimes": ["windowTimes"],
                                     "iconUrl": "https://example.com/image.png",

@@ -107,136 +107,238 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.tra
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OB720;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType.OTHER;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.EnumSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-@ExtendWith(MockitoExtension.class)
 class SupplementarySignTypeTest {
 
     private static final Set<SupplementarySignType> PRE_ANNOUNCEMENTS = EnumSet.of(OB401, OB411);
 
     private static final Set<SupplementarySignType> TIME_WINDOWED_TYPES = EnumSet.of(OB254, OB256, OB259);
 
-    @Mock
-    private SupplementarySignType supplementarySignType;
+    @Test
+    void getDescription() {
+        assertThat(C22A1.getDescription()).isEqualTo("Emission class 3-6");
+        assertThat(C22A2.getDescription()).isEqualTo("Emission class 4-6");
+        assertThat(C22A3.getDescription()).isEqualTo("Emission class 5-6");
+        assertThat(C22A4.getDescription()).isEqualTo("Truck, emission class 5-6");
+        assertThat(C22A5.getDescription()).isEqualTo("Truck, emission class 6");
+        assertThat(C22A6.getDescription()).isEqualTo("Bus, emission class 4-6");
+        assertThat(C22A7.getDescription()).isEqualTo("Bus, emission class 6");
+        assertThat(C22A8.getDescription()).isEqualTo("Truck and bus, emission class 4-6");
+        assertThat(C22A9.getDescription()).isEqualTo("Truck and bus, emission class 6");
+        assertThat(C22C1.getDescription()).isEqualTo("Zero emission");
+        assertThat(C22E1.getDescription()).isEqualTo("Emission zone 3 and higher for van and trucks");
+        assertThat(C22E4.getDescription()).isEqualTo("Emission zone 4 and higher for cars");
+        assertThat(C22E5.getDescription()).isEqualTo("Emission zone 5 and higher for cars");
+        assertThat(C22E6.getDescription()).isEqualTo("Emission zone 4 and higher for cars and vans");
+        assertThat(C22E7.getDescription()).isEqualTo("Emission zone 5 and higher for cars and vans");
+        assertThat(C22E8.getDescription()).isEqualTo("Emission zone 6 and higher for trucks");
+        assertThat(C22E9.getDescription()).isEqualTo("Emission zone 6 and higher for busses");
+        assertThat(C22E10.getDescription()).isEqualTo("Emission zone 6 and higher for trucks and busses");
+        assertThat(OB01.getDescription()).isEqualTo("Rider (equestrian)");
+        assertThat(OB02.getDescription()).isEqualTo("Bicycle");
+        assertThat(OB03.getDescription()).isEqualTo("Moped");
+        assertThat(OB04.getDescription()).isEqualTo("(Moped) bicycle");
+        assertThat(OB05.getDescription()).isEqualTo("Agricultural traffic");
+        assertThat(OB06.getDescription()).isEqualTo("Motorcycle");
+        assertThat(OB07.getDescription()).isEqualTo("Motorcycle, car");
+        assertThat(OB08.getDescription()).isEqualTo("Car, front");
+        assertThat(OB09.getDescription()).isEqualTo("Car, side");
+        assertThat(OB10.getDescription()).isEqualTo("Semi-trailer");
+        assertThat(OB11.getDescription()).isEqualTo("Truck");
+        assertThat(OB12.getDescription()).isEqualTo("Bus");
+        assertThat(OB13.getDescription()).isEqualTo("Truck and bus");
+        assertThat(OB14.getDescription()).isEqualTo("Tram");
+        assertThat(OB15.getDescription()).isEqualTo("Microcar (moped car)");
+        assertThat(OB16.getDescription()).isEqualTo("Vehicle for the disabled");
+        assertThat(OB17l.getDescription()).isEqualTo("Overhanging branches, left");
+        assertThat(OB17r.getDescription()).isEqualTo("Overhanging branches, right");
+        assertThat(OB18l.getDescription()).isEqualTo("Soft verge, left");
+        assertThat(OB18r.getDescription()).isEqualTo("Soft verge, right");
+        assertThat(OB19.getDescription()).isEqualTo("Electric vehicles only");
+        assertThat(OB51.getDescription()).isEqualTo("Except riders (equestrians)");
+        assertThat(OB52.getDescription()).isEqualTo("Except bicycles");
+        assertThat(OB53.getDescription()).isEqualTo("Except mopeds");
+        assertThat(OB54.getDescription()).isEqualTo("Except (moped) bicycles");
+        assertThat(OB55.getDescription()).isEqualTo("Except agricultural traffic");
+        assertThat(OB56.getDescription()).isEqualTo("Except motorcycles");
+        assertThat(OB57.getDescription()).isEqualTo("Except motorcycles and cars");
+        assertThat(OB58.getDescription()).isEqualTo("Except cars, front");
+        assertThat(OB59.getDescription()).isEqualTo("Except cars, side");
+        assertThat(OB60.getDescription()).isEqualTo("Except semi-trailers");
+        assertThat(OB61.getDescription()).isEqualTo("Except trucks");
+        assertThat(OB62.getDescription()).isEqualTo("Except buses");
+        assertThat(OB63.getDescription()).isEqualTo("Except trucks and buses");
+        assertThat(OB64.getDescription()).isEqualTo("Except trams");
+        assertThat(OB65.getDescription()).isEqualTo("Except microcars (moped cars)");
+        assertThat(OB66.getDescription()).isEqualTo("Except vehicles for the disabled");
+        assertThat(OB101.getDescription()).isEqualTo("Overtaking agricultural traffic permitted");
+        assertThat(OB102.getDescription()).isEqualTo("Except verge");
+        assertThat(OB103.getDescription()).isEqualTo("Except police");
+        assertThat(OB104.getDescription()).isEqualTo("Except scheduled buses");
+        assertThat(OB108.getDescription()).isEqualTo("Except local traffic");
+        assertThat(OB109.getDescription()).isEqualTo("Except adjoining properties");
+        assertThat(OB110.getDescription()).isEqualTo("Only within marked bays");
+        assertThat(OB113.getDescription()).isEqualTo("Except trucks, restricted field of view");
+        assertThat(OB115.getDescription()).isEqualTo("Moped riders on the carriageway");
+        assertThat(OB254.getDescription()).isEqualTo("Period: Mon-Fri 06:00-10:00");
+        assertThat(OB256.getDescription()).isEqualTo("End of period: Mon-Fri 06:00-10:00");
+        assertThat(OB259.getDescription()).isEqualTo("Except during period: Mon-Fri 06:00-10:00");
+        assertThat(OB301.getDescription()).isEqualTo("Enforced with wheel clamps 1");
+        assertThat(OB302.getDescription()).isEqualTo("Enforced with wheel clamps 2");
+        assertThat(OB303.getDescription()).isEqualTo("Tow-away zone 1");
+        assertThat(OB304.getDescription()).isEqualTo("Tow-away zone 2");
+        assertThat(OB305.getDescription()).isEqualTo("Bicycles will be removed");
+        assertThat(OB306.getDescription()).isEqualTo("Chip card");
+        assertThat(OB307.getDescription()).isEqualTo("Debit card");
+        assertThat(OB308.getDescription()).isEqualTo("Free");
+        assertThat(OB309.getDescription()).isEqualTo("License plate: XXX-XX-X");
+        assertThat(OB310.getDescription()).isEqualTo("Parking prohibited during period");
+        assertThat(OB311.getDescription()).isEqualTo("Repeated sign");
+        assertThat(OB313.getDescription()).isEqualTo("Raised carriageway separation");
+        assertThat(OB320.getDescription()).isEqualTo("Text: school zone");
+        assertThat(OB401.getDescription()).isEqualTo("Distance indication: 400m");
+        assertThat(OB411.getDescription()).isEqualTo("Distance indication arrow: 500m");
+        assertThat(OB501l.getDescription()).isEqualTo("Arrow, left");
+        assertThat(OB501r.getDescription()).isEqualTo("Arrow, right");
+        assertThat(OB502.getDescription()).isEqualTo("Arrows, left and right");
+        assertThat(OB503.getDescription()).isEqualTo("Arrows, right and left");
+        assertThat(OB504.getDescription()).isEqualTo("Arrows, diagonal");
+        assertThat(OB505.getDescription()).isEqualTo("Arrows, oncoming traffic");
+        assertThat(OB617.getDescription()).isEqualTo("Bus gate");
+        assertThat(OB618.getDescription()).isEqualTo("Railway crossing, length 1127");
+        assertThat(OB619.getDescription()).isEqualTo("Bus lane");
+        assertThat(OB620.getDescription()).isEqualTo("Lane offset");
+        assertThat(OB621.getDescription()).isEqualTo("Raised carriageway separation");
+        assertThat(OB627.getDescription()).isEqualTo("Movable obstacle");
+        assertThat(OB711.getDescription()).isEqualTo("Priority intersection");
+        assertThat(OB711l.getDescription()).isEqualTo("Priority intersection, left");
+        assertThat(OB711r.getDescription()).isEqualTo("Priority intersection, right");
+        assertThat(OB712.getDescription()).isEqualTo("Priority fork");
+        assertThat(OB712l.getDescription()).isEqualTo("Priority fork, left");
+        assertThat(OB712r.getDescription()).isEqualTo("Priority fork, right");
+        assertThat(OB713.getDescription()).isEqualTo("Priority road, side street");
+        assertThat(OB713l.getDescription()).isEqualTo("Priority road, side street left");
+        assertThat(OB713r.getDescription()).isEqualTo("Priority road, side street right");
+        assertThat(OB719.getDescription()).isEqualTo("Peak-hour lane open");
+        assertThat(OB720.getDescription()).isEqualTo("Plus lane open");
+        assertThat(OTHER.getDescription()).isEqualTo("Free text: soft verge");
+    }
 
     @Test
     void getValue() {
-        assertThat(C22A1.getValue()).isEqualTo("Emission class 3-6");
-        assertThat(C22A2.getValue()).isEqualTo("Emission class 4-6");
-        assertThat(C22A3.getValue()).isEqualTo("Emission class 5-6");
-        assertThat(C22A4.getValue()).isEqualTo("Truck, emission class 5-6");
-        assertThat(C22A5.getValue()).isEqualTo("Truck, emission class 6");
-        assertThat(C22A6.getValue()).isEqualTo("Bus, emission class 4-6");
-        assertThat(C22A7.getValue()).isEqualTo("Bus, emission class 6");
-        assertThat(C22A8.getValue()).isEqualTo("Truck and bus, emission class 4-6");
-        assertThat(C22A9.getValue()).isEqualTo("Truck and bus, emission class 6");
-        assertThat(C22C1.getValue()).isEqualTo("Zero emission");
-        assertThat(C22E1.getValue()).isEqualTo("Emission zone 3 and higher for van and trucks");
-        assertThat(C22E4.getValue()).isEqualTo("Emission zone 4 and higher for cars");
-        assertThat(C22E5.getValue()).isEqualTo("Emission zone 5 and higher for cars");
-        assertThat(C22E6.getValue()).isEqualTo("Emission zone 4 and higher for cars and vans");
-        assertThat(C22E7.getValue()).isEqualTo("Emission zone 5 and higher for cars and vans");
-        assertThat(C22E8.getValue()).isEqualTo("Emission zone 6 and higher for trucks");
-        assertThat(C22E9.getValue()).isEqualTo("Emission zone 6 and higher for busses");
-        assertThat(C22E10.getValue()).isEqualTo("Emission zone 6 and higher for trucks and busses");
-        assertThat(OB01.getValue()).isEqualTo("Rider (equestrian)");
-        assertThat(OB02.getValue()).isEqualTo("Bicycle");
-        assertThat(OB03.getValue()).isEqualTo("Moped");
-        assertThat(OB04.getValue()).isEqualTo("(Moped) bicycle");
-        assertThat(OB05.getValue()).isEqualTo("Agricultural traffic");
-        assertThat(OB06.getValue()).isEqualTo("Motorcycle");
-        assertThat(OB07.getValue()).isEqualTo("Motorcycle, car");
-        assertThat(OB08.getValue()).isEqualTo("Car, front");
-        assertThat(OB09.getValue()).isEqualTo("Car, side");
-        assertThat(OB10.getValue()).isEqualTo("Semi-trailer");
-        assertThat(OB11.getValue()).isEqualTo("Truck");
-        assertThat(OB12.getValue()).isEqualTo("Bus");
-        assertThat(OB13.getValue()).isEqualTo("Truck and bus");
-        assertThat(OB14.getValue()).isEqualTo("Tram");
-        assertThat(OB15.getValue()).isEqualTo("Microcar (moped car)");
-        assertThat(OB16.getValue()).isEqualTo("Vehicle for the disabled");
-        assertThat(OB17l.getValue()).isEqualTo("Overhanging branches, left");
-        assertThat(OB17r.getValue()).isEqualTo("Overhanging branches, right");
-        assertThat(OB18l.getValue()).isEqualTo("Soft verge, left");
-        assertThat(OB18r.getValue()).isEqualTo("Soft verge, right");
-        assertThat(OB19.getValue()).isEqualTo("Electric vehicles only");
-        assertThat(OB51.getValue()).isEqualTo("Except riders (equestrians)");
-        assertThat(OB52.getValue()).isEqualTo("Except bicycles");
-        assertThat(OB53.getValue()).isEqualTo("Except mopeds");
-        assertThat(OB54.getValue()).isEqualTo("Except (moped) bicycles");
-        assertThat(OB55.getValue()).isEqualTo("Except agricultural traffic");
-        assertThat(OB56.getValue()).isEqualTo("Except motorcycles");
-        assertThat(OB57.getValue()).isEqualTo("Except motorcycles and cars");
-        assertThat(OB58.getValue()).isEqualTo("Except cars, front");
-        assertThat(OB59.getValue()).isEqualTo("Except cars, side");
-        assertThat(OB60.getValue()).isEqualTo("Except semi-trailers");
-        assertThat(OB61.getValue()).isEqualTo("Except trucks");
-        assertThat(OB62.getValue()).isEqualTo("Except buses");
-        assertThat(OB63.getValue()).isEqualTo("Except trucks and buses");
-        assertThat(OB64.getValue()).isEqualTo("Except trams");
-        assertThat(OB65.getValue()).isEqualTo("Except microcars (moped cars)");
-        assertThat(OB66.getValue()).isEqualTo("Except vehicles for the disabled");
-        assertThat(OB101.getValue()).isEqualTo("Overtaking agricultural traffic permitted");
-        assertThat(OB102.getValue()).isEqualTo("Except verge");
-        assertThat(OB103.getValue()).isEqualTo("Except police");
-        assertThat(OB104.getValue()).isEqualTo("Except scheduled buses");
-        assertThat(OB108.getValue()).isEqualTo("Except local traffic");
-        assertThat(OB109.getValue()).isEqualTo("Except adjoining properties");
-        assertThat(OB110.getValue()).isEqualTo("Only within marked bays");
-        assertThat(OB113.getValue()).isEqualTo("Except trucks, restricted field of view");
-        assertThat(OB115.getValue()).isEqualTo("Moped riders on the carriageway");
-        assertThat(OB254.getValue()).isEqualTo("Period: Mon-Fri 06:00-10:00");
-        assertThat(OB256.getValue()).isEqualTo("End of period: Mon-Fri 06:00-10:00");
-        assertThat(OB259.getValue()).isEqualTo("Except during period: Mon-Fri 06:00-10:00");
-        assertThat(OB301.getValue()).isEqualTo("Enforced with wheel clamps 1");
-        assertThat(OB302.getValue()).isEqualTo("Enforced with wheel clamps 2");
-        assertThat(OB303.getValue()).isEqualTo("Tow-away zone 1");
-        assertThat(OB304.getValue()).isEqualTo("Tow-away zone 2");
-        assertThat(OB305.getValue()).isEqualTo("Bicycles will be removed");
-        assertThat(OB306.getValue()).isEqualTo("Chip card");
-        assertThat(OB307.getValue()).isEqualTo("Debit card");
-        assertThat(OB308.getValue()).isEqualTo("Free");
-        assertThat(OB309.getValue()).isEqualTo("License plate: XXX-XX-X");
-        assertThat(OB310.getValue()).isEqualTo("Parking prohibited during period");
-        assertThat(OB311.getValue()).isEqualTo("Repeated sign");
-        assertThat(OB313.getValue()).isEqualTo("Raised carriageway separation");
-        assertThat(OB320.getValue()).isEqualTo("Text: school zone");
-        assertThat(OB401.getValue()).isEqualTo("Distance indication: 400m");
-        assertThat(OB411.getValue()).isEqualTo("Distance indication arrow: 500m");
-        assertThat(OB501l.getValue()).isEqualTo("Arrow, left");
-        assertThat(OB501r.getValue()).isEqualTo("Arrow, right");
-        assertThat(OB502.getValue()).isEqualTo("Arrows, left and right");
-        assertThat(OB503.getValue()).isEqualTo("Arrows, right and left");
-        assertThat(OB504.getValue()).isEqualTo("Arrows, diagonal");
-        assertThat(OB505.getValue()).isEqualTo("Arrows, oncoming traffic");
-        assertThat(OB617.getValue()).isEqualTo("Bus gate");
-        assertThat(OB618.getValue()).isEqualTo("Railway crossing, length 1127");
-        assertThat(OB619.getValue()).isEqualTo("Bus lane");
-        assertThat(OB620.getValue()).isEqualTo("Lane offset");
-        assertThat(OB621.getValue()).isEqualTo("Raised carriageway separation");
-        assertThat(OB627.getValue()).isEqualTo("Movable obstacle");
-        assertThat(OB711.getValue()).isEqualTo("Priority intersection");
-        assertThat(OB711l.getValue()).isEqualTo("Priority intersection, left");
-        assertThat(OB711r.getValue()).isEqualTo("Priority intersection, right");
-        assertThat(OB712.getValue()).isEqualTo("Priority fork");
-        assertThat(OB712l.getValue()).isEqualTo("Priority fork, left");
-        assertThat(OB712r.getValue()).isEqualTo("Priority fork, right");
-        assertThat(OB713.getValue()).isEqualTo("Priority road, side street");
-        assertThat(OB713l.getValue()).isEqualTo("Priority road, side street left");
-        assertThat(OB713r.getValue()).isEqualTo("Priority road, side street right");
-        assertThat(OB719.getValue()).isEqualTo("Peak-hour lane open");
-        assertThat(OB720.getValue()).isEqualTo("Plus lane open");
-        assertThat(OTHER.getValue()).isEqualTo("Free text: soft verge");
+        assertThat(C22A1.getValue()).isEqualTo("C22A1");
+        assertThat(C22A2.getValue()).isEqualTo("C22A2");
+        assertThat(C22A3.getValue()).isEqualTo("C22A3");
+        assertThat(C22A4.getValue()).isEqualTo("C22A4");
+        assertThat(C22A5.getValue()).isEqualTo("C22A5");
+        assertThat(C22A6.getValue()).isEqualTo("C22A6");
+        assertThat(C22A7.getValue()).isEqualTo("C22A7");
+        assertThat(C22A8.getValue()).isEqualTo("C22A8");
+        assertThat(C22A9.getValue()).isEqualTo("C22A9");
+        assertThat(C22C1.getValue()).isEqualTo("C22C1");
+        assertThat(C22E1.getValue()).isEqualTo("C22E1");
+        assertThat(C22E4.getValue()).isEqualTo("C22E4");
+        assertThat(C22E5.getValue()).isEqualTo("C22E5");
+        assertThat(C22E6.getValue()).isEqualTo("C22E6");
+        assertThat(C22E7.getValue()).isEqualTo("C22E7");
+        assertThat(C22E8.getValue()).isEqualTo("C22E8");
+        assertThat(C22E9.getValue()).isEqualTo("C22E9");
+        assertThat(C22E10.getValue()).isEqualTo("C22E10");
+        assertThat(OB01.getValue()).isEqualTo("OB01");
+        assertThat(OB02.getValue()).isEqualTo("OB02");
+        assertThat(OB03.getValue()).isEqualTo("OB03");
+        assertThat(OB04.getValue()).isEqualTo("OB04");
+        assertThat(OB05.getValue()).isEqualTo("OB05");
+        assertThat(OB06.getValue()).isEqualTo("OB06");
+        assertThat(OB07.getValue()).isEqualTo("OB07");
+        assertThat(OB08.getValue()).isEqualTo("OB08");
+        assertThat(OB09.getValue()).isEqualTo("OB09");
+        assertThat(OB10.getValue()).isEqualTo("OB10");
+        assertThat(OB11.getValue()).isEqualTo("OB11");
+        assertThat(OB12.getValue()).isEqualTo("OB12");
+        assertThat(OB13.getValue()).isEqualTo("OB13");
+        assertThat(OB14.getValue()).isEqualTo("OB14");
+        assertThat(OB15.getValue()).isEqualTo("OB15");
+        assertThat(OB16.getValue()).isEqualTo("OB16");
+        assertThat(OB17l.getValue()).isEqualTo("OB17l");
+        assertThat(OB17r.getValue()).isEqualTo("OB17r");
+        assertThat(OB18l.getValue()).isEqualTo("OB18l");
+        assertThat(OB18r.getValue()).isEqualTo("OB18r");
+        assertThat(OB19.getValue()).isEqualTo("OB19");
+        assertThat(OB51.getValue()).isEqualTo("OB51");
+        assertThat(OB52.getValue()).isEqualTo("OB52");
+        assertThat(OB53.getValue()).isEqualTo("OB53");
+        assertThat(OB54.getValue()).isEqualTo("OB54");
+        assertThat(OB55.getValue()).isEqualTo("OB55");
+        assertThat(OB56.getValue()).isEqualTo("OB56");
+        assertThat(OB57.getValue()).isEqualTo("OB57");
+        assertThat(OB58.getValue()).isEqualTo("OB58");
+        assertThat(OB59.getValue()).isEqualTo("OB59");
+        assertThat(OB60.getValue()).isEqualTo("OB60");
+        assertThat(OB61.getValue()).isEqualTo("OB61");
+        assertThat(OB62.getValue()).isEqualTo("OB62");
+        assertThat(OB63.getValue()).isEqualTo("OB63");
+        assertThat(OB64.getValue()).isEqualTo("OB64");
+        assertThat(OB65.getValue()).isEqualTo("OB65");
+        assertThat(OB66.getValue()).isEqualTo("OB66");
+        assertThat(OB101.getValue()).isEqualTo("OB101");
+        assertThat(OB102.getValue()).isEqualTo("OB102");
+        assertThat(OB103.getValue()).isEqualTo("OB103");
+        assertThat(OB104.getValue()).isEqualTo("OB104");
+        assertThat(OB108.getValue()).isEqualTo("OB108");
+        assertThat(OB109.getValue()).isEqualTo("OB109");
+        assertThat(OB110.getValue()).isEqualTo("OB110");
+        assertThat(OB113.getValue()).isEqualTo("OB113");
+        assertThat(OB115.getValue()).isEqualTo("OB115");
+        assertThat(OB254.getValue()).isEqualTo("OB254");
+        assertThat(OB256.getValue()).isEqualTo("OB256");
+        assertThat(OB259.getValue()).isEqualTo("OB259");
+        assertThat(OB301.getValue()).isEqualTo("OB301");
+        assertThat(OB302.getValue()).isEqualTo("OB302");
+        assertThat(OB303.getValue()).isEqualTo("OB303");
+        assertThat(OB304.getValue()).isEqualTo("OB304");
+        assertThat(OB305.getValue()).isEqualTo("OB305");
+        assertThat(OB306.getValue()).isEqualTo("OB306");
+        assertThat(OB307.getValue()).isEqualTo("OB307");
+        assertThat(OB308.getValue()).isEqualTo("OB308");
+        assertThat(OB309.getValue()).isEqualTo("OB309");
+        assertThat(OB310.getValue()).isEqualTo("OB310");
+        assertThat(OB311.getValue()).isEqualTo("OB311");
+        assertThat(OB313.getValue()).isEqualTo("OB313");
+        assertThat(OB320.getValue()).isEqualTo("OB320");
+        assertThat(OB401.getValue()).isEqualTo("OB401");
+        assertThat(OB411.getValue()).isEqualTo("OB411");
+        assertThat(OB501l.getValue()).isEqualTo("OB501l");
+        assertThat(OB501r.getValue()).isEqualTo("OB501r");
+        assertThat(OB502.getValue()).isEqualTo("OB502");
+        assertThat(OB503.getValue()).isEqualTo("OB503");
+        assertThat(OB504.getValue()).isEqualTo("OB504");
+        assertThat(OB505.getValue()).isEqualTo("OB505");
+        assertThat(OB617.getValue()).isEqualTo("OB617");
+        assertThat(OB618.getValue()).isEqualTo("OB618");
+        assertThat(OB619.getValue()).isEqualTo("OB619");
+        assertThat(OB620.getValue()).isEqualTo("OB620");
+        assertThat(OB621.getValue()).isEqualTo("OB621");
+        assertThat(OB627.getValue()).isEqualTo("OB627");
+        assertThat(OB711.getValue()).isEqualTo("OB711");
+        assertThat(OB711l.getValue()).isEqualTo("OB711l");
+        assertThat(OB711r.getValue()).isEqualTo("OB711r");
+        assertThat(OB712.getValue()).isEqualTo("OB712");
+        assertThat(OB712l.getValue()).isEqualTo("OB712l");
+        assertThat(OB712r.getValue()).isEqualTo("OB712r");
+        assertThat(OB713.getValue()).isEqualTo("OB713");
+        assertThat(OB713l.getValue()).isEqualTo("OB713l");
+        assertThat(OB713r.getValue()).isEqualTo("OB713r");
+        assertThat(OB719.getValue()).isEqualTo("OB719");
+        assertThat(OB720.getValue()).isEqualTo("OB720");
+        assertThat(OTHER.getValue()).isEqualTo("OTHER");
     }
 
     @Test
@@ -267,9 +369,8 @@ class SupplementarySignTypeTest {
 
     @Test
     void hasWindowTime_true() {
-        when(supplementarySignType.isWindowTime()).thenReturn(true);
         SupplementaryTrafficSign supplementaryTrafficSign = SupplementaryTrafficSign.builder()
-                .type(supplementarySignType)
+                .type(OB254)
                 .build();
 
         assertThat(supplementaryTrafficSign.hasWindowTime()).isTrue();
@@ -277,11 +378,23 @@ class SupplementarySignTypeTest {
 
     @Test
     void hasWindowTime_false() {
-        when(supplementarySignType.isWindowTime()).thenReturn(false);
         SupplementaryTrafficSign supplementaryTrafficSign = SupplementaryTrafficSign.builder()
-                .type(supplementarySignType)
+                .type(OB01)
                 .build();
 
         assertThat(supplementaryTrafficSign.hasWindowTime()).isFalse();
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = SupplementarySignType.class)
+    void fromValue(SupplementarySignType supplementarySignType) {
+        assertThat(SupplementarySignType.fromValue(supplementarySignType.getValue())).isEqualTo(supplementarySignType);
+    }
+
+    @Test
+    void fromValue_unknown_throwsException() {
+        assertThatThrownBy(() -> SupplementarySignType.fromValue("unknown-value"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Unexpected value 'unknown-value'");
     }
 }

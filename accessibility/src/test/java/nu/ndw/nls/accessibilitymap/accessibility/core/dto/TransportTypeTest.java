@@ -1,5 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.BUS;
+import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.CAR;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
@@ -29,11 +32,51 @@ class TransportTypeTest {
     @Test
     void allExcept() {
         Set<TransportType> expectedTransportTypes = Stream.of(TransportType.values())
-                .filter(transportType -> TransportType.CAR != transportType)
-                .filter(transportType -> TransportType.BUS != transportType)
+                .filter(transportType -> CAR != transportType)
+                .filter(transportType -> BUS != transportType)
                 .collect(Collectors.toSet());
 
-        assertThat(TransportType.allExcept(TransportType.CAR, TransportType.BUS)).doesNotContain(TransportType.CAR, TransportType.BUS);
-        assertThat(TransportType.allExcept(TransportType.CAR, TransportType.BUS)).containsAll(expectedTransportTypes);
+        assertThat(TransportType.allExcept(CAR, BUS)).doesNotContain(CAR, BUS);
+        assertThat(TransportType.allExcept(CAR, BUS)).containsAll(expectedTransportTypes);
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TransportType.class)
+    void getType(TransportType transportType) {
+        assertThat(transportType.getType()).isEqualTo(expectedType(transportType));
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = TransportType.class)
+    void fromValue(TransportType transportType) {
+        assertThat(TransportType.fromValue(transportType.getType())).isEqualTo(transportType);
+    }
+
+    @Test
+    void fromValue_unknown_throwsException() {
+        assertThatThrownBy(() -> TransportType.fromValue("unknown"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Unexpected value 'unknown'");
+    }
+
+    private static String expectedType(TransportType transportType) {
+        return switch (transportType) {
+            case PEDESTRIAN -> "Pedestrian";
+            case BICYCLE -> "Bicycle";
+            case MOPED -> "Moped";
+            case MOTORCYCLE -> "Motorcycle";
+            case CARAVAN -> "Caravan";
+            case CAR -> "Car";
+            case TRUCK -> "Truck";
+            case TRACTOR -> "Tractor";
+            case VEHICLE_WITH_TRAILER -> "VehicleWithTrailer";
+            case VEHICLE_WITH_DANGEROUS_SUPPLIES -> "VehicleWithDangerousSupplies";
+            case DELIVERY_VAN -> "DeliveryVan";
+            case RIDERS -> "Riders";
+            case CONDUCTORS -> "Conductors";
+            case BUS -> "Bus";
+            case TRAM -> "Tram";
+            case TAXI -> "Taxi";
+        };
     }
 }

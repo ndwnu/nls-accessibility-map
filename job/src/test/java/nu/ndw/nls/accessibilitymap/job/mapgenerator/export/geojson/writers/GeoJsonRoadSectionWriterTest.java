@@ -157,7 +157,7 @@ class GeoJsonRoadSectionWriterTest {
                                      "properties":{
                                         "nwbRoadSectionId":11,
                                         "accessible":true,
-                                        "direction":"FORWARD",
+                                        "direction":"Forward",
                                         "trafficSignType":"C7",
                                         "windowTimes":["windowTimes"],
                                         "iconUrl":"https://example.com/image.png",
@@ -175,7 +175,7 @@ class GeoJsonRoadSectionWriterTest {
                                         "nwbRoadSectionId":11,
                                         "roadSectionFragmentId":100,
                                         "accessible":true,
-                                        "direction":"FORWARD"
+                                        "direction":"Forward"
                                      },
                                      "type":"Feature"
                                   },

@@ -249,19 +249,10 @@ public class AccessibilityDebugger {
     }
 
     private ConditionsProperties mapRestrictions(TrafficSign trafficSign) {
-        if (trafficSign.transportRestrictions() == null) {
-            return null;
-
-        } else {
-            return mapConditionProperties(trafficSign.transportRestrictions().restrictions());
-        }
+        return mapConditionProperties(trafficSign.transportRestrictions().restrictions());
     }
 
     private List<ConditionsProperties> mapExemptions(TrafficSign trafficSign) {
-        if (trafficSign.transportRestrictions() == null) {
-            return null;
-        }
-
         return trafficSign.transportRestrictions().exemptions().stream()
                 .map(this::mapConditionProperties)
                 .toList();

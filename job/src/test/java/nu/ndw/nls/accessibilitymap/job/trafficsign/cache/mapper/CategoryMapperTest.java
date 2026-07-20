@@ -29,7 +29,7 @@ class CategoryMapperTest {
 
     @Test
     void getValue() {
-        assertThat(LOCAL_TRAFFIC.getValue()).isEqualTo("Local traffic");
+        assertThat(LOCAL_TRAFFIC.getValue()).isEqualTo("LocalTraffic");
 
     }
 
