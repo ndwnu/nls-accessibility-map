@@ -45,6 +45,13 @@ class MaximumTest {
     }
 
     @Test
+    void noMaximum_sameInstance() {
+        assertThat(Maximum.noMaximum())
+                .as("noMaximum() should always return the same instance")
+                .isSameAs(Maximum.noMaximum());
+    }
+
+    @Test
     void noMaximum_shouldNeverBeExceeded() {
         assertThat(Maximum.noMaximum().isExceeding(Double.MIN_VALUE, true)).isFalse();
         assertThat(Maximum.noMaximum().isExceeding(Double.MIN_VALUE, false)).isFalse();

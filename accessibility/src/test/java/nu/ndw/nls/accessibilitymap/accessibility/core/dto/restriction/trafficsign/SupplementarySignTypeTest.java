@@ -115,6 +115,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+
 class SupplementarySignTypeTest {
 
     private static final Set<SupplementarySignType> PRE_ANNOUNCEMENTS = EnumSet.of(OB401, OB411);
@@ -344,6 +345,7 @@ class SupplementarySignTypeTest {
     @Test
     void getWindowTimeTypes() {
         assertThat(SupplementarySignType.getWindowTimeTypes())
+                .as("getWindowTimeTypes() should always return the same Set instance with window times: %s", TIME_WINDOWED_TYPES)
                 .isSameAs(SupplementarySignType.getWindowTimeTypes())
                 .isEqualTo(TIME_WINDOWED_TYPES);
     }
@@ -351,6 +353,7 @@ class SupplementarySignTypeTest {
     @Test
     void getPreAnnouncementTypes() {
         assertThat(SupplementarySignType.getPreAnnouncementTypes())
+                .as("getPreAnnouncementTypes() should always return the same Set instance with pre-announcements: %s", PRE_ANNOUNCEMENTS)
                 .isSameAs(SupplementarySignType.getPreAnnouncementTypes())
                 .isEqualTo(PRE_ANNOUNCEMENTS);
     }
