@@ -55,7 +55,8 @@ class TransportConditionsTest {
     void unrestricted() {
         TransportConditions unrestricted = TransportConditions.unrestricted();
 
-        assertThat(unrestricted).isNotNull()
+        assertThat(unrestricted)
+                .as("unrestricted() should always return the same instance")
                 .isSameAs(TransportConditions.unrestricted());
 
         assertThat(unrestricted.transportTypes()).isNull();
