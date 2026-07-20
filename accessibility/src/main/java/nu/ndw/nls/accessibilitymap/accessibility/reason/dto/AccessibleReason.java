@@ -27,10 +27,10 @@ public class AccessibleReason extends AccessibilityReason<Boolean> {
 
         Boolean newValue = this.getValue();
         Set<Restriction> newRestrictions = this.getRestrictions();
-        if(Boolean.TRUE.equals(value)) {
+        if (Boolean.TRUE.equals(value)) {
             newValue = otherAccessibleReason.getValue();
             newRestrictions = otherAccessibleReason.getRestrictions();
-        } else if(Boolean.FALSE.equals(otherAccessibleReason.getValue())) {
+        } else if (Boolean.FALSE.equals(otherAccessibleReason.getValue())) {
             newRestrictions = mergeRestrictions(otherAccessibleReason);
         }
 

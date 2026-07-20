@@ -108,7 +108,6 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                                 .build()
                 ))
                 .build();
-
     }
 
     @SneakyThrows
@@ -153,9 +152,9 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                                   "properties": {
                                     "nwbRoadSectionId": 11,
                                     "accessible": true,
-                                    "direction": "FORWARD",
+                                    "direction": "Forward",
                                     "trafficSignType": "C7",
-                                    "windowTimes": "windowTimes",
+                                    "windowTimes": ["windowTimes"],
                                     "iconUrl": "https://example.com/image.png",
                                     "trafficSign": true
                                   },
@@ -176,11 +175,9 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
             loggerExtension.containsLog(
                     Level.DEBUG,
                     "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
-
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
         }
-
     }
 
     @Test
@@ -212,10 +209,9 @@ class GeoJsonRoadAsymmetricTrafficSignWriterTest {
                                         .accessible(true)
                                         .iconUrl(URI.create("https://example.com/image.png"))
                                         .trafficSignType(TrafficSignType.C7)
-                                        .windowTimes("windowTimes")
+                                        .windowTimes(List.of("windowTimes"))
                                         .isTrafficSign(true)
                                         .build())
                                 .build()));
-
     }
 }

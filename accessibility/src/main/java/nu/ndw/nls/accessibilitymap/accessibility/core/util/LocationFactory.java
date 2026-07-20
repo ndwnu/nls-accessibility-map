@@ -15,7 +15,7 @@ public class LocationFactory {
     private final GeometryFactoryWgs84 geometryFactoryWgs84;
 
     public Location mapCoordinate(Double latitude, Double longitude) {
-        if(Objects.isNull(latitude) || Objects.isNull(longitude)) {
+        if (Objects.isNull(latitude) || Objects.isNull(longitude)) {
             return null;
         }
         Point point = geometryFactoryWgs84.createPoint(new Coordinate(longitude, latitude));

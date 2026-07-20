@@ -15,5 +15,4 @@ public class FeatureCollection {
     public String getType() {
         return TYPE;
     }
-
 }

@@ -35,7 +35,8 @@ public class RetryConfiguration {
                     @NotNull RetryState state
             ) {
 
-                log.warn("Directory not empty, retrying (attempt {})",
+                log.warn(
+                        "Directory not empty, retrying (attempt {})",
                         state.getRetryCount());
             }
         });

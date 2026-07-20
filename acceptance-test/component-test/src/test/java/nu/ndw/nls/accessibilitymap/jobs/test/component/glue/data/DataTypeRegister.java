@@ -2,6 +2,15 @@ package nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data;
 
 import static org.assertj.core.api.Fail.fail;
 
+import java.util.Collections;
+import java.util.List;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.SupplementaryTrafficSignDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.TrafficSignConditionDriver;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.SupplementaryTrafficSign;
+import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSignCondition;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
+import org.apache.commons.lang3.StringUtils;
+import tools.jackson.databind.json.JsonMapper;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.DefaultDataTableCellTransformer;
 import io.cucumber.java.DefaultDataTableEntryTransformer;
@@ -25,14 +34,12 @@ import nu.ndw.nls.accessibilitymap.jobs.test.component.glue.data.dto.TrafficSign
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.graphhopper.GraphHopperDriver;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.speedlimit.dto.SpeedLimit;
 import nu.ndw.nls.accessibilitymap.test.acceptance.driver.trafficsign.dto.TrafficSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.springboot.test.graph.dto.Edge;
 import nu.ndw.nls.springboot.test.graph.dto.Graph;
 import nu.ndw.nls.springboot.test.graph.dto.Node;
 import org.apache.logging.log4j.util.Strings;
 import org.locationtech.jts.geom.LineString;
-import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 public class DataTypeRegister {
@@ -40,6 +47,10 @@ public class DataTypeRegister {
     private final JsonMapper jsonMapper = new JsonMapper();
 
     private final GraphHopperDriver graphHopperDriver;
+
+    private final TrafficSignConditionDriver trafficSignConditionDriver;
+
+    private final SupplementaryTrafficSignDriver supplementaryTrafficSignDriver;
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
@@ -56,6 +67,43 @@ public class DataTypeRegister {
     @DataTableType
     public @Valid TrafficSign mapTrafficSign(Map<String, String> entry) {
 
+        String restrictionsConditionName = entry.get("restrictions");
+        TrafficSignCondition trafficSignRestrictions;
+        if (StringUtils.isBlank(restrictionsConditionName)) {
+            trafficSignRestrictions = null;
+        } else {
+            trafficSignRestrictions = trafficSignConditionDriver.getTrafficSignCondition(restrictionsConditionName)
+                    .orElseThrow(() -> new IllegalArgumentException("Failed to resolve restriction with name %s".formatted(restrictionsConditionName)));
+        }
+
+        String supplementaryTrafficSignNames = entry.get("supplementaryTrafficSigns");
+        List<SupplementaryTrafficSign> supplementaryTrafficSigns;
+        if (StringUtils.isBlank(supplementaryTrafficSignNames)) {
+            supplementaryTrafficSigns = null;
+        } else {
+            supplementaryTrafficSigns = Arrays.stream(supplementaryTrafficSignNames.split(","))
+                    .map(String::trim)
+                    .map(supplementaryTrafficSignName -> supplementaryTrafficSignDriver.getSupplementaryTrafficSign(supplementaryTrafficSignName)
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException("Failed to resolve supplementary traffic sign with name: %s".formatted(
+                                            supplementaryTrafficSignName))))
+                    .toList();
+        }
+
+        String exemptionConditionNames = entry.get("exemptions");
+        List<TrafficSignCondition> trafficSignExemptions;
+        if (StringUtils.isBlank(exemptionConditionNames)) {
+            trafficSignExemptions = Collections.emptyList();
+        } else {
+            trafficSignExemptions = Arrays.stream(exemptionConditionNames.split(","))
+                    .map(String::trim)
+                    .map(trafficSignExemptionName -> trafficSignConditionDriver.getTrafficSignCondition(trafficSignExemptionName)
+                            .orElseThrow(() ->
+                                    new IllegalArgumentException("Failed to resolve traffic sign exemption condition with name: %s".formatted(
+                                            trafficSignExemptionName))))
+                    .toList();
+        }
+
         Edge edge = getEdgeBetweenStartAndEndNode(Integer.parseInt(entry.get("startNodeId")), Integer.parseInt(entry.get("endNodeId")));
 
         double fraction = Double.parseDouble(entry.get("fraction"));
@@ -69,8 +117,11 @@ public class DataTypeRegister {
                 .fraction(fraction)
                 .location(fractionLineString.getCoordinates()[1])
                 .rvvCode(entry.get("rvvCode"))
+                .restrictions(trafficSignRestrictions)
+                .exemptions(trafficSignExemptions)
+                .supplementaryTrafficSigns(supplementaryTrafficSigns)
                 .blackCode(Objects.nonNull(entry.get("blackCode")) ? entry.get("blackCode").toUpperCase(Locale.US) : null)
-                .directionType(DirectionType.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
+                .directionType(DrivingDirectionEnum.valueOf(entry.get("directionType").toUpperCase(Locale.US)))
                 .windowTime(Objects.nonNull(entry.get("windowTime")) ? entry.get("windowTime") : null)
                 .regulationOrderId(entry.get("regulationOrderId"))
                 .build();

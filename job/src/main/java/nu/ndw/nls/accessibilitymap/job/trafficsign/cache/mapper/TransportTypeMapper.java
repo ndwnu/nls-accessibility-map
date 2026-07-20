@@ -31,7 +31,7 @@ public class TransportTypeMapper {
                             case M, M_1, M_2, M_3 ->
                                     Set.of(TransportType.BUS, TransportType.CAR, TransportType.TAXI, TransportType.CARAVAN);
                             case N, N_1, N_2, N_3 -> Set.of(TransportType.TRUCK, TransportType.DELIVERY_VAN);
-                            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle category '%s'." .formatted(vehicleCategory));
+                            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle category '%s'.".formatted(vehicleCategory));
                         })
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
@@ -60,10 +60,11 @@ public class TransportTypeMapper {
                  MOBILE_LANE_SIGNALING_VEHICLE -> Set.of();
             case MOTORSCOOTER ->
                     throw new IllegalStateException(("Unsupported vehicle type '%s' because we have no ability to map this to any of the "
-                            + "internal structures. We checked with W&R and they should never send this value in any situation although it "
-                            + "is supported in the API according to the specs it is never used.") .formatted(vehicleType));
-            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle type '%s'." .formatted(vehicleType));
+                                                     + "internal structures. We checked with W&R and they should never send this value in "
+                                                     + "any situation although it is supported in the API according to the specs it is "
+                                                     + "never used.").formatted(
+                            vehicleType));
+            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle type '%s'.".formatted(vehicleType));
         };
     }
-
 }

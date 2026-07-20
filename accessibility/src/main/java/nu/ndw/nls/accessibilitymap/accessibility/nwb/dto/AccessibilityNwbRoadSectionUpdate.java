@@ -21,5 +21,4 @@ public record AccessibilityNwbRoadSectionUpdate(
                 other.backwardAccessible(),
                 other.carriagewayTypeCode());
     }
-
 }

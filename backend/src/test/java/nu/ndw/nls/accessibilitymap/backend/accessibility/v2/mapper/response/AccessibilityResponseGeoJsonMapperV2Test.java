@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.response;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -1028,7 +1029,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .fraction(2d)
                         .longitude(3d)
                         .latitude(4d)
-                        .textSigns(List.of())
+                        .supplementaryTrafficSigns(Collections.emptyList())
                         .networkSnappedLatitude(1D)
                         .networkSnappedLongitude(2D)
                         .trafficSignType(TrafficSignType.C7)
@@ -1083,7 +1084,7 @@ class AccessibilityResponseGeoJsonMapperV2Test {
                         .fraction(2d)
                         .longitude(3d)
                         .latitude(4d)
-                        .textSigns(List.of())
+                        .supplementaryTrafficSigns(Collections.emptyList())
                         .networkSnappedLatitude(1D)
                         .networkSnappedLongitude(2D)
                         .trafficSignType(TrafficSignType.C7)

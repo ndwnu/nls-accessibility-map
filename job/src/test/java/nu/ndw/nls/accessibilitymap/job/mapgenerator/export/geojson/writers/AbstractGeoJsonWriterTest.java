@@ -11,8 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.json.JsonMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,26 +19,31 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementarySignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.dto.ExportProperties;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.configuration.GenerateConfiguration;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.ExportType;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.Feature;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.export.geojson.dto.FeatureCollection;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class AbstractGeoJsonWriterTest {
@@ -74,19 +77,18 @@ class AbstractGeoJsonWriterTest {
     );
 
     @ParameterizedTest
-    @CsvSource(textBlock = """
-            true,
-            false
-            """)
-    void export(boolean includeOnlyTimeWindowedSigns) throws IOException {
+    @EnumSource(SupplementarySignTypeWindowTimeSet.class)
+    void export(SupplementarySignTypeWindowTimeSet supplementarySignTypeWindowTimeSet) throws IOException {
 
         when(geoJsonJsonMapperFactory.create(generateConfiguration)).thenReturn(new JsonMapper());
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
-        ExportProperties exportProperties = buildExportProperties(includeOnlyTimeWindowedSigns);
+        ExportProperties exportProperties = buildExportProperties(supplementarySignTypeWindowTimeSet);
 
         try {
-            String expectedFileName = "c7".concat(includeOnlyTimeWindowedSigns ? "WindowTimeSegments" : "");
+            String expectedFileName = "c7".concat(supplementarySignTypeWindowTimeSet.includeWindowTimes()
+                    ? "WindowTimeSegments"
+                    : "");
 
             when(fileService.createTmpFile(expectedFileName, ".geojson")).thenReturn(exportTmpFilePath);
             when(generateConfiguration.getGenerationDirectoryPath(exportProperties.startTime()))
@@ -121,9 +123,11 @@ class AbstractGeoJsonWriterTest {
 
             loggerExtension.containsLog(Level.DEBUG, "Started generating geojson");
             loggerExtension.containsLog(Level.DEBUG, "Started building features");
-            loggerExtension.containsLog(Level.DEBUG,
+            loggerExtension.containsLog(
+                    Level.DEBUG,
                     "Started writing geojson to temp file: %s".formatted(exportTmpFilePath));
-            loggerExtension.containsLog(Level.DEBUG,
+            loggerExtension.containsLog(
+                    Level.DEBUG,
                     "Moving geojson to: /tmp/AbstractGeoJsonWriterTest-exportFile.geojson");
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
@@ -139,7 +143,7 @@ class AbstractGeoJsonWriterTest {
 
         Path exportTmpFilePath = Files.createTempFile("tmp", ".tmp", FILE_READ_WRITE_PERMISSIONS);
 
-        ExportProperties exportProperties = buildExportProperties(false);
+        ExportProperties exportProperties = buildExportProperties(SupplementarySignTypeWindowTimeSet.NULL);
 
         try {
             String expectedFileName = "c7";
@@ -161,7 +165,8 @@ class AbstractGeoJsonWriterTest {
             verify(fileService, never()).moveFileAndOverride(any(), any());
 
             loggerExtension.containsLog(Level.DEBUG, "Started generating geojson");
-            loggerExtension.containsLog(Level.DEBUG,
+            loggerExtension.containsLog(
+                    Level.DEBUG,
                     "Started writing geojson to temp file: %s".formatted(exportTmpFilePath));
         } finally {
             Files.deleteIfExists(exportTmpFilePath);
@@ -193,7 +198,8 @@ class AbstractGeoJsonWriterTest {
         }
 
         @Override
-        protected FeatureCollection prepareGeoJsonFeatureCollection(Accessibility accessibility,
+        protected FeatureCollection prepareGeoJsonFeatureCollection(
+                Accessibility accessibility,
                 ExportProperties exportProperties, AtomicLong idSequenceSupplier) {
 
             assertThat(accessibility).isEqualTo(this.accessibility);
@@ -210,18 +216,29 @@ class AbstractGeoJsonWriterTest {
         }
     }
 
-    private ExportProperties buildExportProperties(boolean includeOnlyTimeWindowedSigns) {
-
+    private ExportProperties buildExportProperties(SupplementarySignTypeWindowTimeSet supplementarySignTypeWindowTimeSet) {
         return ExportProperties.builder()
                 .name(TrafficSignType.C7.name())
                 .accessibilityRequest(AccessibilityRequest.builder()
                         .trafficSignTypes(Set.of(TrafficSignType.C7))
-                        .trafficSignTextSignTypes(
-                                includeOnlyTimeWindowedSigns
-                                        ? Set.of(TextSignType.TIME_PERIOD) : null)
+                        .trafficSignSupplementarySignTypes(supplementarySignTypeWindowTimeSet.getSupplementarySignTypes())
                         .build())
                 .generateConfiguration(generateConfiguration)
                 .startTime(OffsetDateTime.parse("2022-03-11T09:00:00.000-01:00"))
                 .build();
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    enum SupplementarySignTypeWindowTimeSet {
+        WINDOW_TIMES(SupplementarySignType.getWindowTimeTypes()),
+        NULL(null),
+        EMPTY_SET(Collections.emptySet());
+
+        private final Set<SupplementarySignType> supplementarySignTypes;
+
+        public boolean includeWindowTimes() {
+            return this == WINDOW_TIMES;
+        }
     }
 }

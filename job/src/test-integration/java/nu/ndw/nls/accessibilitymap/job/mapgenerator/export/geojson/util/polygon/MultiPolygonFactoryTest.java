@@ -46,12 +46,12 @@ class MultiPolygonFactoryTest {
         MultiPolygon multiPolygon = multiPolygonFactory.createMultiPolygon(roadSectionFragments, 0.5);
         assertThat(multiPolygon.toString()).hasToString(
                 "MULTIPOLYGON (("
-                        + "(1.75 0.5, 2 0.5, 2.25 0.5, 2.5 0.75, 2.5 1, 2.5 1.25, 2.5 1.5, 2.5 1.75, 2.5 2, 2.5 2.25, "
-                        + "2.25 2.5, 2 2.5, 1.75 2.5, 1.5 2.5, 1.25 2.5, 1 2.5, 0.75 2.5, 0.5 2.25, 0.5 2, 0.5 1.75, "
-                        + "0.5 1.5, 0.5 1.25, 0.5 1, 0.5 0.75, 0.75 0.5, 1 0.5, 1.25 0.5, 1.5 0.5, 1.75 0.5), "
-                        + "(1.125 1.375, 1.125 1.625, 1.125 1.875, 1.375 1.875, 1.625 1.875, 1.875 1.875, 1.875 1.625, "
-                        + "1.875 1.375, 1.875 1.125, 1.625 1.125, 1.375 1.125, 1.125 1.125, 1.125 1.375)"
-                        + "))");
+                + "(1.75 0.5, 2 0.5, 2.25 0.5, 2.5 0.75, 2.5 1, 2.5 1.25, 2.5 1.5, 2.5 1.75, 2.5 2, 2.5 2.25, "
+                + "2.25 2.5, 2 2.5, 1.75 2.5, 1.5 2.5, 1.25 2.5, 1 2.5, 0.75 2.5, 0.5 2.25, 0.5 2, 0.5 1.75, "
+                + "0.5 1.5, 0.5 1.25, 0.5 1, 0.5 0.75, 0.75 0.5, 1 0.5, 1.25 0.5, 1.5 0.5, 1.75 0.5), "
+                + "(1.125 1.375, 1.125 1.625, 1.125 1.875, 1.375 1.875, 1.625 1.875, 1.875 1.875, 1.875 1.625, "
+                + "1.875 1.375, 1.875 1.125, 1.625 1.125, 1.375 1.125, 1.125 1.125, 1.125 1.375)"
+                + "))");
 
         // This check is just here so we can easily load it into QGIS for visualisation. This check should always pass
         // if the multiPolygon assert is correct as it is just a different representation of the same data.
@@ -75,8 +75,8 @@ class MultiPolygonFactoryTest {
                               "type" : "Polygon"
                             },
                             "properties" : {
-                              "roadSectionIds" : [ ],
-                              "windowTimes" : [ ]
+                              "roadSectionIds" : [],
+                               "windowTimes" : []
                             },
                             "type" : "Feature"
                           } ],

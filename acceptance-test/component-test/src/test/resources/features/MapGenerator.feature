@@ -2,10 +2,22 @@ Feature: Map Generator
 
   Scenario: Job generate geojson for window times
     Given a simple network
+
+    And with supplementary traffic signs
+      | name    | signType | text     |
+      | window1 | OB254    | window 1 |
+      | window2 | OB254    | window 2 |
+
+    And with traffic sign conditions
+      | name    | vehicleType                                                         | timeValidity |
+      | window1 | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck | window 1     |
+      | window2 | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck | window 2     |
+
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime | id                                   |
-      | 5           | 11        | 0.5      | C12     | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
-      | 2           | 8         | 0.5      | C12     | BACK          | window 2   | 00000000-0000-4000-0000-000000000002 |
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | directionType | supplementaryTrafficSigns | id                                   |
+      | 5           | 11        | 0.5      | C12     | window1      | FORTH         | window1                   | 00000000-0000-4000-0000-000000000001 |
+      | 2           | 8         | 0.5      | C12     | window2      | BACK          | window2                   | 00000000-0000-4000-0000-000000000002 |
+
     And run TrafficSignUpdateCache
     And run MapGenerationJob with configuration
       | exportName         | startNodeId | trafficSignTypes | exportTypes                           | includeOnlyWindowSigns | publishEvents | polygonMaxDistanceBetweenPoints |
@@ -16,12 +28,25 @@ Feature: Map Generator
 
   Scenario: Job generate geojson for window times with multiple traffic signs on one edge
     Given a simple network
+
+    And with supplementary traffic signs
+      | name    | signType | text     |
+      | window1 | OB254    | window 1 |
+      | window2 | OB254    | window 2 |
+      | window3 | OB254    | window 3 |
+      | window4 | OB254    | window 4 |
+
+    And with traffic sign conditions
+      | name | vehicleType                                                         |
+      | C12  | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |
+      | C7   | truck                                                               |
+
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime | id                                   |
-      | 5           | 11        | 0.5      | C12     | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
-      | 2           | 8         | 0.5      | C12     | BACK          | window 2   | 00000000-0000-4000-0000-000000000002 |
-      | 5           | 11        | 0.5      | C7      | FORTH         | window 3   | 00000000-0000-4000-0000-000000000003 |
-      | 2           | 8         | 0.5      | C7      | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | directionType | supplementaryTrafficSigns | id                                   |
+      | 5           | 11        | 0.5      | C12     | C12          | FORTH         | window1                   | 00000000-0000-4000-0000-000000000001 |
+      | 2           | 8         | 0.5      | C12     | C12          | BACK          | window2                   | 00000000-0000-4000-0000-000000000002 |
+      | 5           | 11        | 0.5      | C7      | C7           | FORTH         | window3                   | 00000000-0000-4000-0000-000000000003 |
+      | 2           | 8         | 0.5      | C7      | C7           | BACK          | window4                   | 00000000-0000-4000-0000-000000000004 |
     And run TrafficSignUpdateCache
     And  run MapGenerationJob with configuration
       | exportName                 | startNodeId | trafficSignTypes | exportTypes                           | includeOnlyWindowSigns | publishEvents | polygonMaxDistanceBetweenPoints |
@@ -32,12 +57,20 @@ Feature: Map Generator
 
   Scenario: Job generate geojson for asymmetric traffic-sign detection should output only asymmetrically placed traffic signs
     Given a simple network
+
+    And with supplementary traffic signs
+      | name    | signType | text     |
+      | window1 | OB254    | window 1 |
+      | window2 | OB254    | window 2 |
+      | window3 | OB254    | window 3 |
+      | window4 | OB254    | window 4 |
+
     And with traffic signs
-      | startNodeId | endNodeId | fraction | rvvCode | directionType | windowTime | id                                   |
-      | 5           | 11        | 0.5      | C12     | FORTH         | window 1   | 00000000-0000-4000-0000-000000000001 |
-      | 2           | 8         | 0.5      | C12     | FORTH         | window 2   | 00000000-0000-4000-0000-000000000002 |
-      | 1           | 6         | 0.0      | C7      | FORTH         | window 3   | 00000000-0000-4000-0000-000000000003 |
-      | 6           | 1         | 1.0      | C7      | BACK          | window 4   | 00000000-0000-4000-0000-000000000004 |
+      | startNodeId | endNodeId | fraction | rvvCode | directionType | supplementaryTrafficSigns | id                                   |
+      | 5           | 11        | 0.5      | C12     | FORTH         | window1                   | 00000000-0000-4000-0000-000000000001 |
+      | 2           | 8         | 0.5      | C12     | FORTH         | window2                   | 00000000-0000-4000-0000-000000000002 |
+      | 1           | 6         | 0.0      | C7      | FORTH         | window3                   | 00000000-0000-4000-0000-000000000003 |
+      | 6           | 1         | 1.0      | C7      | BACK          | window4                   | 00000000-0000-4000-0000-000000000004 |
     And run TrafficSignUpdateCache
     And  run MapGenerationJob with configuration
       | exportName                              | startNodeId | trafficSignTypes   | exportTypes                       |

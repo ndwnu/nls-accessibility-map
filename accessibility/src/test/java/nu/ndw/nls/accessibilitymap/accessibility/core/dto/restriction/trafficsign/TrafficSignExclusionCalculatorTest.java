@@ -10,8 +10,6 @@ import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSignType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +36,7 @@ class TrafficSignExclusionCalculatorTest {
         trafficSign = TrafficSign.builder()
                 .latitude(2D)
                 .longitude(3D)
-                .textSigns(List.of())
+                .supplementaryTrafficSigns(List.of())
                 .transportRestrictions(transportRestrictions)
                 .build();
 
@@ -82,28 +80,28 @@ class TrafficSignExclusionCalculatorTest {
             "false, true, true",
             "false, false, true"
     })
-    void isNotExcluded_hasExclusionsForTextSignTypes(
-            boolean hasTrafficSignTextType,
-            boolean matchesRequestTextSignType,
+    void isNotExcluded_hasExclusionsForSupplementarySignTypes(
+            boolean hasSupplementarySignType,
+            boolean matchesRequestSupplementarySignType,
             boolean expectedResult) {
 
         if(expectedResult) {
             when(searchArea.contains(trafficSign.latitude(), trafficSign.longitude())).thenReturn(true);
         }
 
-        TextSign textSign = mock(TextSign.class);
-        trafficSign = trafficSign.withTextSigns(List.of(textSign));
+        SupplementaryTrafficSign supplementaryTrafficSign = mock(SupplementaryTrafficSign.class);
+        trafficSign = trafficSign.withSupplementaryTrafficSigns(List.of(supplementaryTrafficSign));
 
-        if (hasTrafficSignTextType) {
-            TextSignType textSignType = mock(TextSignType.class);
-            when(textSign.type()).thenReturn(textSignType);
-            if (matchesRequestTextSignType) {
-                accessibilityRequest = accessibilityRequest.withExcludeTrafficSignTextSignTypes(Set.of(textSignType));
+        if (hasSupplementarySignType) {
+            SupplementarySignType supplementarySignType = mock(SupplementarySignType.class);
+            when(supplementaryTrafficSign.type()).thenReturn(supplementarySignType);
+            if (matchesRequestSupplementarySignType) {
+                accessibilityRequest = accessibilityRequest.withExcludeTrafficSignSupplementarySignTypes(Set.of(supplementarySignType));
             } else {
-                accessibilityRequest = accessibilityRequest.withExcludeTrafficSignTextSignTypes(Set.of(mock(TextSignType.class)));
+                accessibilityRequest = accessibilityRequest.withExcludeTrafficSignSupplementarySignTypes(Set.of(mock(SupplementarySignType.class)));
             }
         } else {
-            when(textSign.type()).thenReturn(null);
+            when(supplementaryTrafficSign.type()).thenReturn(null);
         }
 
         assertThat(TrafficSignExclusionCalculator.isNotExcluded(trafficSign, accessibilityRequest)).isEqualTo(expectedResult);

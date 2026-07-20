@@ -27,6 +27,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportConditions;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.RestrictionProperties.RestrictionPropertiesBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
@@ -139,7 +141,8 @@ public class AccessibilityDebugger {
                                         .trafficSignId(trafficSignRestriction.id())
                                         .trafficSignExternalId(trafficSignRestriction.externalId())
                                         .trafficSignType(trafficSignRestriction.trafficSignType())
-                                        .trafficSignBlackCode(trafficSignRestriction.blackCode());
+                                        .restrictions(mapRestrictions(trafficSignRestriction))
+                                        .exemptions(mapExemptions(trafficSignRestriction));
                             }
 
                             return Feature.builder()
@@ -244,6 +247,39 @@ public class AccessibilityDebugger {
         writeGraphHopperNodes(queryGraph);
         writeGraphHopperEdges(queryGraph);
     }
+
+    private ConditionsProperties mapRestrictions(TrafficSign trafficSign) {
+        return mapConditionProperties(trafficSign.transportRestrictions().restrictions());
+    }
+
+    private List<ConditionsProperties> mapExemptions(TrafficSign trafficSign) {
+        return trafficSign.transportRestrictions().exemptions().stream()
+                .map(this::mapConditionProperties)
+                .toList();
+    }
+
+    private ConditionsProperties mapConditionProperties(TransportConditions transportConditions) {
+        return ConditionsProperties.builder()
+                .transportTypes(transportConditions.transportTypes())
+                .categories(transportConditions.categories())
+                .timeValidity(transportConditions.timeValidity())
+                .emissionClass(transportConditions.emissionClass())
+                .fuelType(transportConditions.fuelType())
+                .vehicleLengthInCm(getMaximumValue(transportConditions.vehicleLengthInCm()))
+                .vehicleHeightInCm(getMaximumValue(transportConditions.vehicleHeightInCm()))
+                .vehicleWidthInCm(getMaximumValue(transportConditions.vehicleWidthInCm()))
+                .vehicleWeightInKg(getMaximumValue(transportConditions.vehicleWeightInKg()))
+                .vehicleAxleLoadInKg(getMaximumValue(transportConditions.vehicleAxleLoadInKg()))
+                .build();
+    }
+
+    private Double getMaximumValue(Maximum maximum) {
+        if (maximum == null) {
+            return null;
+        }
+        return maximum.value();
+    }
+
 
     private void writeGraphHopperNodes(QueryGraph queryGraph) {
         AtomicLong idSupplier = new AtomicLong(1);

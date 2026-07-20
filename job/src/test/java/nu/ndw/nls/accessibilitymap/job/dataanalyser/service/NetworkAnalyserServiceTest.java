@@ -137,11 +137,11 @@ class NetworkAnalyserServiceTest {
                 argThat(completeReportJson -> {
                     Matcher reportIdMatcher = REPORT_ID_PATTERN.matcher(completeReportJson.getReporterReportId());
                     return reportIdMatcher.find()
-                            && completeReportJson.getReporterReportGroupId()
-                            .equals("UnreachableNetworkSegments");
+                           && completeReportJson.getReporterReportGroupId()
+                                   .equals("UnreachableNetworkSegments");
                 }));
         loggerExtension.containsLog(
                 Level.INFO, "Analysing with the following properties: AnalyseNetworkConfiguration[name=name, "
-                        + "reportIssues=true, maxSearchDistanceInMeters=4.0, startLocationLatitude=2.0, startLocationLongitude=3.0]");
+                            + "reportIssues=true, maxSearchDistanceInMeters=4.0, startLocationLatitude=2.0, startLocationLongitude=3.0]");
     }
 }

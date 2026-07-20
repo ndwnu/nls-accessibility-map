@@ -1,337 +1,237 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.SupplementaryTrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSign;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TrafficSignType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.TransportRestrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsign.ZoneCodeType;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.BlackCodeMapper;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.DirectionType;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TextSign;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignGeoJsonDto;
-import nu.ndw.nls.accessibilitymap.trafficsignclient.dtos.TrafficSignPropertiesDto;
-import nu.ndw.nls.geojson.geometry.model.GeometryJson.TypeEnum;
-import nu.ndw.nls.geojson.geometry.model.PointJson;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.DirectionMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.SupplementaryTrafficSignMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.TransportRestrictionMapper;
+import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.ZoneCodeTypeMapper;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionsDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.PointJson;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TextSignDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.DrivingDirectionEnum;
+import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignPropertiesDtoV5Json.ZoneCodeEnum;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
 import nu.ndw.nls.geometry.distance.model.CoordinateAndBearing;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;
-import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.stereotype.Component;
 
-@SuppressWarnings("ALL")
 @ExtendWith(MockitoExtension.class)
 class TrafficSignBuilderTest {
 
-    private static final double DEFAULT_X_COORDINATE = 1d;
+    private static final UUID ID = UUID.randomUUID();
 
-    private static final double DEFAULT_Y_COORDINATE = 2d;
+    private static final double FRACTION = 0.5d;
 
-    private TrafficSignBuilder trafficSignBuilder;
+    private static final int ROAD_SECTION_ID = 1;
 
-    private TrafficSignGeoJsonDto trafficSignGeoJsonDto;
+    private static final String TRAFFIC_REGULATION_ORDER_ID = "trafficRegulationOrderId";
 
-    private AtomicInteger idSequenceSupplier;
+    private static final int ID_SEQUENCE_SUPPLIED_ID = 2;
+
+    private static final String RVV_CODE_C1_STRING = "C1";
+
+    private static final TrafficSignType RVV_CODE_C1_TRAFFIC_SIGN_TYPE = TrafficSignType.C1;
+
+    private static final DrivingDirectionEnum DRIVING_DIRECTION_ENUM = DrivingDirectionEnum.FORTH;
+
+    private static final Direction DIRECTION = Direction.FORWARD;
+
+    private static final ZoneCodeEnum ZONE_CODE_ENUM = ZoneCodeEnum.BEGIN;
+
+    private static final ZoneCodeType ZONE_CODE_TYPE = ZoneCodeType.START;
+
+    private static final double POINT_COORDINATE_X = 3.0;
+
+    private static final double POINT_COORDINATE_Y = 4.0;
+
+    private static final double COORDINATE_AND_BEARING_X = 6d;
+
+    private static final double COORDINATE_AND_BEARING_Y = 7d;
 
     @Mock
     private FractionAndDistanceCalculator fractionAndDistanceCalculator;
 
     @Mock
-    private BlackCodeMapper blackCodeMapper;
+    private ZoneCodeTypeMapper zoneCodeTypeMapper;
 
     @Mock
-    private List<TextSign> textSigns;
+    private DirectionMapper directionMapper;
 
     @Mock
-    private TrafficSignRestrictionsBuilder trafficSignRestrictionsBuilder;
+    private TransportRestrictionMapper transportRestrictionMapper;
 
     @Mock
-    private TransportRestrictions transportRestrictions;
+    private SupplementaryTrafficSignMapper supplementaryTrafficSignMapper;
+
+    @InjectMocks
+    private TrafficSignBuilder trafficSignBuilder;
+
+    @Mock
+    private LineString nwbRoadSectionGeometry;
+
+    @Mock
+    private TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json;
+
+    @Mock
+    private TrafficSignPropertiesDtoV5Json trafficSignPropertiesDtoV5Json;
 
     @Mock
     private CoordinateAndBearing coordinateAndBearing;
 
     @Mock
-    private Coordinate coordinate;
+    private TextSignDtoV5Json textSignDtoV5JsonA;
 
     @Mock
-    private LineString nwbRoadSectionGeometry;
+    private TextSignDtoV5Json textSignDtoV5JsonB;
+
+    @Mock
+    private SupplementaryTrafficSign supplementaryTrafficSignA;
+
+    @Mock
+    private SupplementaryTrafficSign supplementaryTrafficSignB;
+
+    @Mock
+    private AtomicInteger idSequenceSupplier;
+
+    @Mock
+    private PointJson pointJson;
+
+    @Mock
+    private ConditionsDtoV5Json conditionsDtoV5Json;
+
+    @Mock
+    private TransportRestrictions transportRestrictions;
 
     @RegisterExtension
     LoggerExtension loggerExtension = new LoggerExtension();
 
-    @BeforeEach
-    void setUp() {
-
-        idSequenceSupplier = new AtomicInteger(1);
-        trafficSignGeoJsonDto = TrafficSignGeoJsonDto.builder()
-                .id(UUID.randomUUID())
-                .properties(TrafficSignPropertiesDto.builder()
-                        .roadSectionId(1L)
-                        .rvvCode("C6")
-                        .drivingDirection(DirectionType.BACK)
-                        .fraction(2d)
-                        .blackCode("4.1")
-                        .imageUrl("https://example.com/image")
-                        .zoneCode("ZE")
-                        .textSigns(textSigns)
-                        .build())
-                .geometry(new PointJson().type(TypeEnum.POINT).coordinates(List.of(DEFAULT_X_COORDINATE, DEFAULT_Y_COORDINATE)))
-                .build();
-        trafficSignBuilder = new TrafficSignBuilder(trafficSignRestrictionsBuilder, fractionAndDistanceCalculator, blackCodeMapper);
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = TrafficSignType.class)
-    void mapFromTrafficSignGeoJsonDto(TrafficSignType trafficSignType) {
-
-        when(blackCodeMapper.map(trafficSignGeoJsonDto, trafficSignType)).thenReturn(4.1d);
-        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign -> trafficSign.trafficSignType() == trafficSignType)))
-                .thenReturn(transportRestrictions);
-
-        setupFixtureForNwbSnap();
-
-        trafficSignGeoJsonDto.getProperties().setRvvCode(trafficSignType.getRvvCode());
-
-        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                idSequenceSupplier);
-
-        validateTrafficSign(trafficSign.get());
-    }
-
-    @ParameterizedTest
-    @NullSource
-    void mapFromTrafficSignGeoJsonDto_noNwbRoadSectionGeometrySupplied(LineString nwbRoadSectionGeometry) {
-
-        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                idSequenceSupplier);
-
-        assertThat(trafficSign).isEmpty();
-
-        loggerExtension.containsLog(
-                Level.DEBUG,
-                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
-                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
-                "Traffic sign with id '%s' is missing a road section.".formatted(trafficSignGeoJsonDto.getId()));
-    }
-
     @Test
-    void mapFromTrafficSignGeoJsonDto_missingFraction() {
+    void mapFromTrafficSignGeoJsonDto() {
 
-        trafficSignGeoJsonDto.getProperties().setFraction(null);
+        when(trafficSignGeoJsonDtoV5Json.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json);
+        when(trafficSignPropertiesDtoV5Json.getFraction()).thenReturn(FRACTION);
+        when(trafficSignPropertiesDtoV5Json.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);
 
-        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
+        when(fractionAndDistanceCalculator.getCoordinateAndBearing(nwbRoadSectionGeometry, FRACTION))
+                .thenReturn(coordinateAndBearing);
+
+        when(trafficSignGeoJsonDtoV5Json.getProperties().getRvvCode()).thenReturn(RVV_CODE_C1_STRING);
+        when(idSequenceSupplier.getAndIncrement()).thenReturn(ID_SEQUENCE_SUPPLIED_ID);
+        when(trafficSignGeoJsonDtoV5Json.getId()).thenReturn(ID);
+        when(trafficSignPropertiesDtoV5Json.getDrivingDirection()).thenReturn(DRIVING_DIRECTION_ENUM);
+        when(directionMapper.map(DRIVING_DIRECTION_ENUM)).thenReturn(DIRECTION);
+        when(trafficSignGeoJsonDtoV5Json.getGeometry()).thenReturn(pointJson);
+        when(pointJson.getCoordinates()).thenReturn(List.of(POINT_COORDINATE_X, POINT_COORDINATE_Y));
+        when(trafficSignPropertiesDtoV5Json.getZoneCode()).thenReturn(ZONE_CODE_ENUM);
+        when(zoneCodeTypeMapper.map(ZONE_CODE_ENUM)).thenReturn(ZONE_CODE_TYPE);
+        when(trafficSignPropertiesDtoV5Json.getTrafficOrderId()).thenReturn(TRAFFIC_REGULATION_ORDER_ID);
+        when(coordinateAndBearing.coordinate()).thenReturn(new Coordinate(COORDINATE_AND_BEARING_X, COORDINATE_AND_BEARING_Y));
+
+        when(trafficSignPropertiesDtoV5Json.getSupplementarySigns()).thenReturn(List.of(textSignDtoV5JsonA, textSignDtoV5JsonB));
+        when(supplementaryTrafficSignMapper.map(textSignDtoV5JsonA)).thenReturn(supplementaryTrafficSignA);
+        when(supplementaryTrafficSignMapper.map(textSignDtoV5JsonB)).thenReturn(supplementaryTrafficSignB);
+
+        when(trafficSignPropertiesDtoV5Json.getConditions()).thenReturn(conditionsDtoV5Json);
+        when(transportRestrictionMapper.map(conditionsDtoV5Json, TRAFFIC_REGULATION_ORDER_ID)).thenReturn(transportRestrictions);
+
+        Optional<TrafficSign> result = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
+                trafficSignGeoJsonDtoV5Json,
                 idSequenceSupplier);
 
-        assertThat(trafficSign).isEmpty();
-
-        loggerExtension.containsLog(
-                Level.DEBUG,
-                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
-                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
-                "Traffic sign with id '%s' is missing a fraction.".formatted(trafficSignGeoJsonDto.getId()));
-    }
-
-    @ParameterizedTest
-    @CsvSource(textBlock = """
-            ZE, END
-            ZB, START
-            ZH, REPEAT
-            ZO, UNKNOWN
-            """)
-    void mapFromTrafficSignGeoJsonDto_allZoneCodeTypes(String zoneCodeString, String expectedZoneCodeType) {
-
-        when(blackCodeMapper.map(trafficSignGeoJsonDto, TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-                .thenReturn(4.1d);
-        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
-                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-        ).thenReturn(transportRestrictions);
-
-        trafficSignGeoJsonDto.getProperties().setZoneCode(zoneCodeString);
-        setupFixtureForNwbSnap();
-        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                idSequenceSupplier);
-
-        validateTrafficSign(trafficSign.get());
-        assertThat(trafficSign.get().zoneCodeType()).isEqualTo(ZoneCodeType.valueOf(expectedZoneCodeType));
-    }
-
-    @Test
-    void mapFromTrafficSignGeoJsonDto_invalidZoneCodeType() {
-
-        trafficSignGeoJsonDto.getProperties().setZoneCode("invalid");
-
-        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                idSequenceSupplier);
-
-        assertThat(trafficSign).isEmpty();
-        loggerExtension.containsLog(
-                Level.DEBUG,
-                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
-                        .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
-                "Unknown zone code 'invalid'");
-    }
-
-    @Test
-    void mapFromTrafficSignGeoJsonDto_invalidZoneCodeType_null() {
-
-        when(blackCodeMapper.map(trafficSignGeoJsonDto, TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-                .thenReturn(4.1d);
-        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
-                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-        ).thenReturn(transportRestrictions);
-
-        trafficSignGeoJsonDto.getProperties().setZoneCode(null);
-        setupFixtureForNwbSnap();
-
-        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                idSequenceSupplier);
-
-        validateTrafficSign(trafficSign.get());
-        assertThat(trafficSign.get().zoneCodeType()).isNull();
-    }
-
-    @ParameterizedTest
-    @EnumSource(value = DirectionType.class)
-    void mapFromTrafficSignGeoJsonDto_allDirections(DirectionType directionType) {
-
-        if (directionType != DirectionType.BOTH) {
-            when(blackCodeMapper.map(
-                    trafficSignGeoJsonDto,
-                    TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-                    .thenReturn(4.1d);
-            setupFixtureForNwbSnap();
-            when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
-                    trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-            ).thenReturn(transportRestrictions);
-        }
-
-        trafficSignGeoJsonDto.getProperties().setDrivingDirection(directionType);
-
-        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                idSequenceSupplier);
-
-        if (directionType == DirectionType.BOTH) {
-            assertThat(trafficSign).isEmpty();
-            loggerExtension.containsLog(
-                    Level.DEBUG,
-                    "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: %s"
-                            .formatted(trafficSignGeoJsonDto.getId(), trafficSignGeoJsonDto),
-                    "Driving direction '%s' could not be mapped.".formatted(directionType));
-        } else {
-            validateTrafficSign(trafficSign.get());
-        }
-    }
-
-    @ParameterizedTest
-    @NullSource
-    void mapFromTrafficSignGeoJsonDto_imageUrl_null(String imageUrl) {
-
-        when(trafficSignRestrictionsBuilder.buildFor(argThat(trafficSign ->
-                trafficSign.trafficSignType() == TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode())))
-        ).thenReturn(transportRestrictions);
-
-        trafficSignGeoJsonDto.getProperties().setImageUrl(imageUrl);
-        setupFixtureForNwbSnap();
-        Optional<TrafficSign> trafficSign = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
-                nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto,
-                idSequenceSupplier);
-
-        assertThat(trafficSign.get().iconUri()).isNull();
-    }
-
-    @Test
-    void class_configurationAnnotation() {
-
-        AnnotationUtil.classContainsAnnotation(
-                trafficSignBuilder.getClass(),
-                Component.class,
-                annotation -> assertThat(annotation).isNotNull()
-        );
-    }
-
-    private void validateTrafficSign(TrafficSign trafficSign) {
-
-        assertThat(trafficSign.id()).isEqualTo(1);
-        assertThat(trafficSign.roadSectionId()).isEqualTo(trafficSignGeoJsonDto.getProperties().getRoadSectionId().intValue());
-        assertThat(trafficSign.trafficSignType())
-                .isEqualTo(TrafficSignType.fromRvvCode(trafficSignGeoJsonDto.getProperties().getRvvCode()));
-        assertThat(trafficSign.direction()).isEqualTo(createDirection(trafficSignGeoJsonDto.getProperties().getDrivingDirection()));
-        assertThat(trafficSign.fraction()).isEqualTo(trafficSignGeoJsonDto.getProperties().getFraction());
-        assertThat(trafficSign.latitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getLast());
-        assertThat(trafficSign.longitude()).isEqualTo(trafficSignGeoJsonDto.getGeometry().getCoordinates().getFirst());
-        assertThat(trafficSign.textSigns()).isEqualTo(trafficSignGeoJsonDto.getProperties().getTextSigns());
-        assertThat(trafficSign.iconUri()).isEqualTo(URI.create(trafficSignGeoJsonDto.getProperties().getImageUrl()));
+        assertThat(result).isPresent();
+        TrafficSign trafficSign = result.get();
+        assertThat(trafficSign.id()).isEqualTo(ID_SEQUENCE_SUPPLIED_ID);
+        assertThat(trafficSign.externalId()).isEqualTo(ID.toString());
+        assertThat(trafficSign.roadSectionId()).isEqualTo(ROAD_SECTION_ID);
+        assertThat(trafficSign.trafficSignType()).isEqualTo(RVV_CODE_C1_TRAFFIC_SIGN_TYPE);
+        assertThat(trafficSign.direction()).isEqualTo(DIRECTION);
+        assertThat(trafficSign.fraction()).isEqualTo(FRACTION);
+        assertThat(trafficSign.latitude()).isEqualTo(POINT_COORDINATE_Y);
+        assertThat(trafficSign.longitude()).isEqualTo(POINT_COORDINATE_X);
+        assertThat(trafficSign.zoneCodeType()).isEqualTo(ZONE_CODE_TYPE);
+        assertThat(trafficSign.trafficRegulationOrderId()).isEqualTo(TRAFFIC_REGULATION_ORDER_ID);
+        assertThat(trafficSign.networkSnappedLatitude()).isEqualTo(COORDINATE_AND_BEARING_Y);
+        assertThat(trafficSign.networkSnappedLongitude()).isEqualTo(COORDINATE_AND_BEARING_X);
+        assertThat(trafficSign.supplementaryTrafficSigns()).containsExactly(supplementaryTrafficSignA, supplementaryTrafficSignB);
         assertThat(trafficSign.transportRestrictions()).isEqualTo(transportRestrictions);
-        assertThat(trafficSign.networkSnappedLatitude()).isEqualTo(DEFAULT_Y_COORDINATE);
-        assertThat(trafficSign.networkSnappedLongitude()).isEqualTo(DEFAULT_X_COORDINATE);
-
-        if (trafficSignGeoJsonDto.getProperties().getBlackCode().equals("invalid")) {
-            assertThat(trafficSign.blackCode()).isNull();
-        } else {
-            assertThat(trafficSign.blackCode()).isEqualTo(Double.parseDouble(trafficSignGeoJsonDto.getProperties().getBlackCode()));
-        }
     }
 
-    private void setupFixtureForNwbSnap() {
+    @Test
+    void mapFromTrafficSignGeoJsonDto_illegalState_geometryIsNull() {
+        when(trafficSignGeoJsonDtoV5Json.toString()).thenReturn("TrafficSignGeoJsonDtoV5Json.toString()");
+        when(trafficSignGeoJsonDtoV5Json.getId()).thenReturn(ID);
 
-        when(fractionAndDistanceCalculator.getCoordinateAndBearing(
+        assertThat(trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
+                null,
+                trafficSignGeoJsonDtoV5Json,
+                idSequenceSupplier)).isEmpty();
+
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()"
+                        .formatted(ID),
+                "Traffic sign with id '%s' is missing a road section.".formatted(ID));
+    }
+
+    @Test
+    void mapFromTrafficSignGeoJsonDto_illegalState_fractionIsNull() {
+        when(trafficSignGeoJsonDtoV5Json.toString()).thenReturn("TrafficSignGeoJsonDtoV5Json.toString()");
+        when(trafficSignGeoJsonDtoV5Json.getId()).thenReturn(ID);
+        when(trafficSignGeoJsonDtoV5Json.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json);
+        when(trafficSignPropertiesDtoV5Json.getFraction()).thenReturn(null);
+
+        assertThat(trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
-                trafficSignGeoJsonDto.getProperties().getFraction())
-        ).thenReturn(coordinateAndBearing);
-        when(coordinateAndBearing.coordinate()).thenReturn(coordinate);
-        when(coordinate.getX()).thenReturn(DEFAULT_X_COORDINATE);
-        when(coordinate.getY()).thenReturn(DEFAULT_Y_COORDINATE);
+                trafficSignGeoJsonDtoV5Json,
+                idSequenceSupplier)).isEmpty();
+
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()"
+                        .formatted(ID),
+                "Traffic sign with id '%s' is missing a fraction.".formatted(ID));
     }
 
-    private Direction createDirection(DirectionType drivingDirection) {
+    @Test
+    void mapFromTrafficSignGeoJsonDto_illegalState_roadSectionIdIsNull() {
+        when(trafficSignGeoJsonDtoV5Json.toString()).thenReturn("TrafficSignGeoJsonDtoV5Json.toString()");
+        when(trafficSignGeoJsonDtoV5Json.getId()).thenReturn(ID);
+        when(trafficSignGeoJsonDtoV5Json.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json);
+        when(trafficSignPropertiesDtoV5Json.getFraction()).thenReturn(1.0);
+        when(trafficSignPropertiesDtoV5Json.getRoadSectionId()).thenReturn(null);
 
-        switch (drivingDirection) {
-            case FORTH -> {
-                return Direction.FORWARD;
-            }
-            case BACK -> {
-                return Direction.BACKWARD;
-            }
-            default -> {
-                return null;
-            }
-        }
+        assertThat(trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDtoV5Json,
+                idSequenceSupplier)).isEmpty();
+
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()"
+                        .formatted(ID),
+                "Traffic sign with id '%s' is missing a roadSectionId.".formatted(ID));
     }
 }

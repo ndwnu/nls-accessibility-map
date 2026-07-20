@@ -32,7 +32,6 @@ public class RoadSectionFragment {
     @Valid
     private DirectionalSegment backwardSegment;
 
-
     public List<DirectionalSegment> getSegments() {
 
         return Stream.of(forwardSegment, backwardSegment)
@@ -61,7 +60,7 @@ public class RoadSectionFragment {
     public boolean isPartiallyAccessible() {
 
         return getSegments().stream().anyMatch(DirectionalSegment::isAccessible)
-                && getSegments().stream().anyMatch(directionalSegment -> !directionalSegment.isAccessible());
+               && getSegments().stream().anyMatch(directionalSegment -> !directionalSegment.isAccessible());
     }
 
     public boolean hasForwardSegment() {
