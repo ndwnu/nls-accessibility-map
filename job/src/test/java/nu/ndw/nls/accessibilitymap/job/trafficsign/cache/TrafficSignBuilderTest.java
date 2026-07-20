@@ -1,11 +1,18 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
@@ -85,6 +92,9 @@ class TrafficSignBuilderTest {
     @Mock
     private SupplementaryTrafficSignMapper supplementaryTrafficSignMapper;
 
+    @Mock
+    private Validator validator;
+
     @InjectMocks
     private TrafficSignBuilder trafficSignBuilder;
 
@@ -155,6 +165,7 @@ class TrafficSignBuilderTest {
 
         when(trafficSignPropertiesDtoV5Json.getConditions()).thenReturn(conditionsDtoV5Json);
         when(transportRestrictionMapper.map(conditionsDtoV5Json, TRAFFIC_REGULATION_ORDER_ID)).thenReturn(transportRestrictions);
+        when(validator.validate(any())).thenReturn(Set.of());
 
         Optional<TrafficSign> result = trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
                 nwbRoadSectionGeometry,
@@ -177,6 +188,71 @@ class TrafficSignBuilderTest {
         assertThat(trafficSign.networkSnappedLongitude()).isEqualTo(COORDINATE_AND_BEARING_X);
         assertThat(trafficSign.supplementaryTrafficSigns()).containsExactly(supplementaryTrafficSignA, supplementaryTrafficSignB);
         assertThat(trafficSign.transportRestrictions()).isEqualTo(transportRestrictions);
+
+        verify(validator).validate(trafficSign);
+    }
+
+    @Test
+    void mapFromTrafficSignGeoJsonDto_constraintViolation_directionIsNull() {
+
+        when(trafficSignGeoJsonDtoV5Json.toString()).thenReturn("TrafficSignGeoJsonDtoV5Json.toString()");
+        when(trafficSignGeoJsonDtoV5Json.getProperties()).thenReturn(trafficSignPropertiesDtoV5Json);
+        when(trafficSignPropertiesDtoV5Json.getFraction()).thenReturn(FRACTION);
+        when(trafficSignPropertiesDtoV5Json.getRoadSectionId()).thenReturn(ROAD_SECTION_ID);
+
+        when(fractionAndDistanceCalculator.getCoordinateAndBearing(nwbRoadSectionGeometry, FRACTION))
+                .thenReturn(coordinateAndBearing);
+
+        when(trafficSignGeoJsonDtoV5Json.getProperties().getRvvCode()).thenReturn(RVV_CODE_C1_STRING);
+        when(idSequenceSupplier.getAndIncrement()).thenReturn(ID_SEQUENCE_SUPPLIED_ID);
+        when(trafficSignGeoJsonDtoV5Json.getId()).thenReturn(ID);
+        when(trafficSignPropertiesDtoV5Json.getDrivingDirection()).thenReturn(DRIVING_DIRECTION_ENUM);
+        // Simulate a mapper that fails to resolve a direction, violating TrafficSign's @NotNull direction constraint.
+        when(directionMapper.map(DRIVING_DIRECTION_ENUM)).thenReturn(null);
+        when(trafficSignGeoJsonDtoV5Json.getGeometry()).thenReturn(pointJson);
+        when(pointJson.getCoordinates()).thenReturn(List.of(POINT_COORDINATE_X, POINT_COORDINATE_Y));
+        when(trafficSignPropertiesDtoV5Json.getZoneCode()).thenReturn(ZONE_CODE_ENUM);
+        when(zoneCodeTypeMapper.map(ZONE_CODE_ENUM)).thenReturn(ZONE_CODE_TYPE);
+        when(trafficSignPropertiesDtoV5Json.getTrafficOrderId()).thenReturn(TRAFFIC_REGULATION_ORDER_ID);
+        when(coordinateAndBearing.coordinate()).thenReturn(new Coordinate(COORDINATE_AND_BEARING_X, COORDINATE_AND_BEARING_Y));
+
+        when(trafficSignPropertiesDtoV5Json.getSupplementarySigns()).thenReturn(List.of(textSignDtoV5JsonA, textSignDtoV5JsonB));
+        when(supplementaryTrafficSignMapper.map(textSignDtoV5JsonA)).thenReturn(supplementaryTrafficSignA);
+        when(supplementaryTrafficSignMapper.map(textSignDtoV5JsonB)).thenReturn(supplementaryTrafficSignB);
+
+        when(trafficSignPropertiesDtoV5Json.getConditions()).thenReturn(conditionsDtoV5Json);
+        when(transportRestrictionMapper.map(conditionsDtoV5Json, TRAFFIC_REGULATION_ORDER_ID)).thenReturn(transportRestrictions);
+
+
+        when(validator.validate(any())).thenAnswer(invocation -> {
+            // It's easier to just use a real validator than mocking a valid validator result that works correctly with the
+            // ConstraintViolationException that extracts the source path and message
+            try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
+                Validator realValidator = validatorFactory.getValidator();
+                return realValidator.validate(invocation.getArgument(0));
+            }
+        });
+
+
+        assertThat(trafficSignBuilder.mapFromTrafficSignGeoJsonDto(
+                nwbRoadSectionGeometry,
+                trafficSignGeoJsonDtoV5Json,
+                idSequenceSupplier)).isEmpty();
+
+        loggerExtension.containsLog(
+                Level.DEBUG,
+                "Traffic sign with id '%s' is incomplete and will be skipped. Traffic sign: TrafficSignGeoJsonDtoV5Json.toString()"
+                        .formatted(ID));
+
+        assertThat(loggerExtension.getLogEvents().stream()
+                .filter(logEvent -> logEvent.getMessage().startsWith("Traffic sign with id")))
+                .singleElement()
+                .satisfies(logEvent -> {
+                    assertThat(logEvent.getThrowableProxy().getClassName()).isEqualTo(ConstraintViolationException.class.getName());
+                    assertThat(logEvent.getThrowableProxy().getMessage())
+                            .contains("direction")
+                            .contains("must not be null");
+                });
     }
 
     @Test
