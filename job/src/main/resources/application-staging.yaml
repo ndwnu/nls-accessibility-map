@@ -10,7 +10,7 @@ nu:
       accessibilitymap:
         trafficsignclient:
           currentStateControllerV5:
-            url: https://wegkenmerken.staging.ndw.nu/api
+            url: https://wegkenmerken.staging.ndw.nu
 
 nls:
   keycloak:
