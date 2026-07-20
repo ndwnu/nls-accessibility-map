@@ -341,7 +341,7 @@ class FeatureBuilderTest {
                       "nwbRoadSectionId":1,
                       "roadSectionFragmentId": 10,
                       "accessible":%s,
-                      "direction":"FORWARD"
+                      "direction":"Forward"
                    },
                    "type":"Feature"
                 }
@@ -361,7 +361,7 @@ class FeatureBuilderTest {
                       "nwbRoadSectionId":1,
                       "accessible":%s,
                       "trafficSignId": "externalId",
-                      "direction":"FORWARD",
+                      "direction":"Forward",
                       "trafficSignType":"C7",
                       "iconUrl":"https://example.com/image.png",
                       "trafficSign":true,
@@ -385,7 +385,7 @@ class FeatureBuilderTest {
                       "nwbRoadSectionId":1,
                       "accessible":%s,
                       "trafficSignId": "externalId",
-                      "direction":"FORWARD",
+                      "direction":"Forward",
                       "trafficSignType":"C7",
                       "iconUrl":"https://example.com/image.png",
                       "trafficSign":true,

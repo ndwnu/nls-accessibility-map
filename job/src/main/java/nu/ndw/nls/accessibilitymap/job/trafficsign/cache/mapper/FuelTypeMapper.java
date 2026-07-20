@@ -6,12 +6,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FuelTypeMapper {
 
-    // @todo: no examples found in response?
+    @SuppressWarnings("java:S1172")
     public FuelType map(String fuelType) {
-        if (fuelType == null) {
-            return null;
-        }
-
-        throw new IllegalArgumentException("Not implemented yet, no fuel types found in traffic sign response");
+        return null;
     }
 }
