@@ -1,8 +1,11 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache;
 
-import jakarta.validation.Valid;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +19,13 @@ import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.ZoneCodeTypeMapp
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.ConditionsDtoV5Json;
 import nu.ndw.nls.accessibilitymap.trafficsignclient.feign.generated.model.v1.TrafficSignGeoJsonDtoV5Json;
 import nu.ndw.nls.geometry.distance.FractionAndDistanceCalculator;
+import org.hibernate.validator.internal.engine.ConstraintViolationImpl;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@Validated
 public class TrafficSignBuilder {
 
     private final FractionAndDistanceCalculator fractionAndDistanceCalculator;
@@ -36,7 +38,8 @@ public class TrafficSignBuilder {
 
     private final SupplementaryTrafficSignMapper supplementaryTrafficSignMapper;
 
-    @Valid
+    private final Validator validator;
+
     public Optional<TrafficSign> mapFromTrafficSignGeoJsonDto(
             LineString nwbRoadSectionGeometry,
             TrafficSignGeoJsonDtoV5Json trafficSignGeoJsonDtoV5Json,
@@ -88,12 +91,23 @@ public class TrafficSignBuilder {
                     conditions,
                     trafficSignGeoJsonDtoV5Json.getProperties().getTrafficOrderId());
 
-            return Optional.of(trafficSign.withTransportRestrictions(transportRestrictions));
+            TrafficSign trafficSignResult = trafficSign.withTransportRestrictions(transportRestrictions);
+
+            validate(trafficSignResult);
+
+            return Optional.of(trafficSignResult);
         } catch (RuntimeException exception) {
             log.debug(
                     "Traffic sign with id '{}' is incomplete and will be skipped. Traffic sign: {}",
                     trafficSignGeoJsonDtoV5Json.getId(), trafficSignGeoJsonDtoV5Json, exception);
             return Optional.empty();
+        }
+    }
+
+    private void validate(TrafficSign trafficSign) {
+        Set<ConstraintViolation<TrafficSign>> constraintViolations = validator.validate(trafficSign);
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException(constraintViolations);
         }
     }
 }
