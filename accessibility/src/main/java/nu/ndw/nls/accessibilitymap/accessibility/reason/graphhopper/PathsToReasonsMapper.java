@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RestrictionMapper;
@@ -21,20 +22,24 @@ public class PathsToReasonsMapper {
 
     public List<AccessibilityReasonGroup> mapRoutesToReasons(
             List<Path> routes,
-            Map<Integer, DirectionalSegment> directionalSegmentsById) {
+            Map<Integer, DirectionalSegment> directionalSegmentsById,
+            NwbNetworkData nwbNetworkData) {
 
         return routes.stream()
-                .map(path -> new AccessibilityReasonGroup(calculateReasonsForPath(directionalSegmentsById, path)))
+                .map(path -> new AccessibilityReasonGroup(
+                        calculateReasonsForPath(directionalSegmentsById, path, nwbNetworkData)))
                 .toList();
     }
 
     private List<AccessibilityReason<?>> calculateReasonsForPath(
             Map<Integer, DirectionalSegment> directionalSegmentsById,
-            Path path) {
+            Path path,
+            NwbNetworkData nwbNetworkData) {
 
         AccessibilityReasonEdgeVisitor edgeVisitor = AccessibilityReasonEdgeVisitor.create(
                 directionalSegmentsById,
-                restrictionMappers);
+                restrictionMappers,
+                nwbNetworkData);
 
         path.forEveryEdge(edgeVisitor);
 
