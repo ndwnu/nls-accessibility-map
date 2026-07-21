@@ -634,6 +634,13 @@ components:
           description: "What triggerd this reason why the destination is inaccessible."
           items:
             $ref: "#/components/schemas/Restriction"
+        requestExemptionUrls:
+          type: "array"
+          description: "URLs where an exemption can be requested for the road operators responsible for this reason. Multiple reasons may share a url. No de-duplication done."
+          items:
+            type: "string"
+          example:
+            - "https://loket.digitaal.utrecht.nl/nl/products/ontheffing-voertuig"
 
     Restriction:
       type: "object"
