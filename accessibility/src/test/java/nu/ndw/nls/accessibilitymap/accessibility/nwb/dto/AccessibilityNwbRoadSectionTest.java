@@ -26,7 +26,8 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 true,
                 true,
                 CarriagewayTypeCode.RB,
-                "1");
+                "1",
+                "WS14");
         validate(accessibilityNwbRoadSection, List.of(), List.of());
     }
 
@@ -42,7 +43,8 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 true,
                 true,
                 CarriagewayTypeCode.RB,
-                null
+                null,
+                "WS14"
         );
         validate(accessibilityNwbRoadSection, List.of("functionalRoadClass"), List.of("must not be null"));
     }
@@ -58,7 +60,8 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 true,
                 true,
                 CarriagewayTypeCode.RB,
-                ""
+                "",
+                "WS14"
         );
         validate(accessibilityNwbRoadSection, List.of("functionalRoadClass"), List.of("length must be between 1 and 1"));
 
@@ -71,7 +74,8 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 true,
                 true,
                 CarriagewayTypeCode.RB,
-                "df"
+                "df",
+                "WS14"
         );
         validate(accessibilityNwbRoadSection, List.of("functionalRoadClass"), List.of("length must be between 1 and 1"));
     }
@@ -87,7 +91,8 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 true,
                 true,
                 null,
-                "1"
+                "1",
+                "WS14"
         );
         validate(accessibilityNwbRoadSection, List.of("carriagewayTypeCode"), List.of("must not be null"));
 
@@ -100,7 +105,8 @@ class AccessibilityNwbRoadSectionTest extends ValidationTest {
                 true,
                 true,
                 CarriagewayTypeCode.RB,
-                "df"
+                "df",
+                "WS14"
         );
         validate(accessibilityNwbRoadSection, List.of("functionalRoadClass"), List.of("length must be between 1 and 1"));
     }

@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSectionFragment;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
@@ -77,6 +79,12 @@ class AccessibilityReasonServiceTest {
     @Mock
     private RoadSectionFragment roadSectionFragment;
 
+    @Mock
+    private NetworkData networkData;
+
+    @Mock
+    private NwbNetworkData nwbNetworkData;
+
     @BeforeEach
     void setUp() {
 
@@ -116,7 +124,10 @@ class AccessibilityReasonServiceTest {
         when(routeRoutingAlgorithm.calcPaths(1, 2)).thenReturn(List.of(path));
         when(path.isFound()).thenReturn(true);
 
-        when(pathsToReasonsMapper.mapRoutesToReasons(List.of(path), directionalSegmentsById)).thenReturn(
+        when(accessibilityNetwork.getNetworkData()).thenReturn(networkData);
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+
+        when(pathsToReasonsMapper.mapRoutesToReasons(List.of(path), directionalSegmentsById, nwbNetworkData)).thenReturn(
                 accessibilityReasonGroups);
 
         List<AccessibilityReasonGroup> actualAccessibilityReasonGroups = accessibilityReasonService.calculateReasons(

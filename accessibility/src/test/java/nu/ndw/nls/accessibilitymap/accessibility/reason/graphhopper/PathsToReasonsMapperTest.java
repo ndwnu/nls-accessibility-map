@@ -8,6 +8,7 @@ import com.graphhopper.routing.Path;
 import java.util.List;
 import java.util.Map;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReason;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.mapper.RestrictionMapper;
@@ -44,6 +45,9 @@ class PathsToReasonsMapperTest {
     @Mock
     private AccessibilityReason<?> accessibilityReason;
 
+    @Mock
+    private NwbNetworkData nwbNetworkData;
+
     private MockedStatic<AccessibilityReasonEdgeVisitor> accessibilityReasonEdgeVisitorMockedStatic;
 
     @BeforeEach
@@ -64,12 +68,12 @@ class PathsToReasonsMapperTest {
 
         Map<Integer, DirectionalSegment> directionalSegmentsById = Map.of(1, directionalSegment);
         accessibilityReasonEdgeVisitorMockedStatic.when(
-                        () -> AccessibilityReasonEdgeVisitor.create(directionalSegmentsById, List.of(restrictionMapper)))
+                        () -> AccessibilityReasonEdgeVisitor.create(directionalSegmentsById, List.of(restrictionMapper), nwbNetworkData))
                 .thenReturn(accessibilityReasonEdgeVisitor);
         when(accessibilityReasonEdgeVisitor.getReasons()).thenReturn(List.of(accessibilityReason));
         when(accessibilityReasonEdgeVisitor.getPathFollowed()).thenReturn(List.of(directionalSegment));
 
-        var accessibilityReasonGroups = pathsToReasonsMapper.mapRoutesToReasons(List.of(path), directionalSegmentsById);
+        var accessibilityReasonGroups = pathsToReasonsMapper.mapRoutesToReasons(List.of(path), directionalSegmentsById, nwbNetworkData);
 
         assertThat(accessibilityReasonGroups).hasSize(1);
         AccessibilityReasonGroup accessibilityReasonGroup = accessibilityReasonGroups.getFirst();

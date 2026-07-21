@@ -38,7 +38,9 @@ public record AccessibilityNwbRoadSection(
 
         @NotNull
         @Length(min = 1, max = 1)
-        String functionalRoadClass) {
+        String functionalRoadClass,
+
+        String roadOperatorCode) {
 
     public AccessibilityNwbRoadSection(AccessibilityNwbRoadSection accessibilityNwbRoadSection) {
         this(
@@ -50,6 +52,7 @@ public record AccessibilityNwbRoadSection(
                 accessibilityNwbRoadSection.forwardAccessible(),
                 accessibilityNwbRoadSection.backwardAccessible(),
                 accessibilityNwbRoadSection.carriagewayTypeCode(),
-                accessibilityNwbRoadSection.functionalRoadClass());
+                accessibilityNwbRoadSection.functionalRoadClass(),
+                accessibilityNwbRoadSection.roadOperatorCode());
     }
 }
