@@ -1,6 +1,7 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +69,7 @@ public class TransportConditionsMapper {
 
         return categoryEnums.stream()
                 .map(categoryMapper::map)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
