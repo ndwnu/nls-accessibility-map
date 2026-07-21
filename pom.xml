@@ -30,7 +30,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <nls-springboot.version>10.4.11</nls-springboot.version>
+    <nls-springboot.version>10.4.12</nls-springboot.version>
     <nls-springboot.logging.version>9.0.1</nls-springboot.logging.version>
     <nls-springboot.component-test.version>14.1.3</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>9.0.2</nls-springboot.monitoring.version>
@@ -50,7 +50,7 @@
     <jackson-databind-nullable.version>0.2.10</jackson-databind-nullable.version>
     <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
     <keycloak-authz-client.version>26.0.11</keycloak-authz-client.version>
-    <openapi-generator-maven-plugin.version>7.23.0</openapi-generator-maven-plugin.version>
+    <openapi-generator-maven-plugin.version>7.24.0</openapi-generator-maven-plugin.version>
     <picocli.version>4.7.7</picocli.version>
     <springdoc.version>3.0.3</springdoc.version>
     <stream-utils.version>1.3.1</stream-utils.version>
