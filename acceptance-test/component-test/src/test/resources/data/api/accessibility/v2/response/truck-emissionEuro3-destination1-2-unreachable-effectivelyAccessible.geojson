@@ -23,6 +23,7 @@
                   "trafficSignType": "C22a"
                 }
               ],
+              "requestExemptionUrls": [],
               "condition": "equals",
               "unitSymbol": "enum",
               "values": [
@@ -39,6 +40,7 @@
                   "trafficSignType": "C22a"
                 }
               ],
+              "requestExemptionUrls": [],
               "condition": "greater_than_or_equals",
               "unitSymbol": "tons",
               "value": 12.00
