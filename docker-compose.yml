@@ -29,7 +29,7 @@ services:
       - nls-accessibility-map-network
 
   nls-rabbitmq:
-    image: ndwnls.azurecr.io/docker.io/library/rabbitmq:4.2.2-management-alpine
+    image: ndwnls.azurecr.io/docker.io/library/rabbitmq:4.2.2-management-alpine@sha256:563b3b81b17cb0b96461ecfe6b23b7eb167dc6b0c4d21dded08617371aa06daa
     hostname: nls-rabbitmq
     user: rabbitmq
     platform: linux/amd64
@@ -54,7 +54,7 @@ services:
 
   accessibility-wiremock:
     hostname: accessibility-wiremock
-    image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.13.2-alpine
+    image: ndwnls.azurecr.io/docker.io/wiremock/wiremock:3.13.2-alpine@sha256:f8c42a38dca3f4a1d7219af11c80438740f39eebb1505b0f029aed743c20e147
     platform: linux/amd64
     volumes:
       - ./docker/accessibility-wiremock/extensions:/var/wiremock/extensions
@@ -85,7 +85,7 @@ services:
 
 
   nls-keycloak:
-    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.6.1
+    image: ndwnls.azurecr.io/quay.io/keycloak/keycloak:26.6.1@sha256:dea26401d06341095cc4ea9d66896200b55de5ca1daa1d2fcbe58493afa6e0ad
     command: start-dev --import-realm
     hostname: nls-keycloak
     environment:
