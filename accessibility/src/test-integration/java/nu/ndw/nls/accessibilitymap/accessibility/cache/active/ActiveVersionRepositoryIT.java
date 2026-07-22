@@ -13,27 +13,29 @@ import org.springframework.context.annotation.Import;
 })
 class ActiveVersionRepositoryIT {
 
+    private static final int CACHE_VERSION = 1;
+
     @Autowired
     ActiveVersionRepository repository;
 
     @Test
     void findActiveVersion() {
-        repository.switchActiveVersion("test", "active");
+        repository.switchActiveVersion("test", "active", CACHE_VERSION);
 
-        assertThat(repository.findActiveVersion("test")).contains("active");
+        assertThat(repository.findActiveVersion("test", CACHE_VERSION)).contains("active");
     }
 
     @Test
     void findActiveVersion_notFound() {
 
-        assertThat(repository.findActiveVersion("test")).isEmpty();
+        assertThat(repository.findActiveVersion("test", CACHE_VERSION)).isEmpty();
     }
 
     @Test
     void switchActiveVersion_update() {
-        repository.switchActiveVersion("test", "active");
-        repository.switchActiveVersion("test", "active2");
+        repository.switchActiveVersion("test", "active", CACHE_VERSION);
+        repository.switchActiveVersion("test", "active2", CACHE_VERSION);
 
-        assertThat(repository.findActiveVersion("test")).contains("active2");
+        assertThat(repository.findActiveVersion("test", CACHE_VERSION)).contains("active2");
     }
 }
