@@ -13,4 +13,9 @@
         dbms="postgresql"/>
   </changeSet>
 
+  <changeSet id="3" author="gsenff" context="main">
+    <sqlFile relativeToChangelogFile='true' path="changes/03_add_cache_version_column.sql" splitStatements="false"
+        dbms="postgresql"/>
+  </changeSet>
+
 </databaseChangeLog>

@@ -48,6 +48,8 @@ class CacheTest {
 
     private static final String ACTIVE_VERSION = "active";
 
+    private static final int CACHE_VERSION = 1;
+
     @Mock
     private ClockService clockService;
 
@@ -77,6 +79,7 @@ class CacheTest {
 
         cacheConfiguration = CacheConfiguration.builder()
                 .name(CACHE_NAME)
+                .cacheVersion(CACHE_VERSION)
                 .folder(testDir.resolve("testFolder"))
                 .maxLockWaitTime(MAX_LOCK_WAIT_TIME)
                 .build();
@@ -90,7 +93,7 @@ class CacheTest {
     @SneakyThrows
     @Test
     void read() {
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(ACTIVE_VERSION));
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
@@ -148,7 +151,7 @@ class CacheTest {
 
     @Test
     void read_error() throws IOException {
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(ACTIVE_VERSION));
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
         cacheConfiguration.setAcceptableConsequentReadFailures(1);
@@ -196,7 +199,7 @@ class CacheTest {
 
     @Test
     void read_error_failOnCacheReadError() throws IOException {
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(ACTIVE_VERSION));
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
         cacheConfiguration.setFailOnStartupCacheReadError(false);
@@ -233,7 +236,7 @@ class CacheTest {
 
     @Test
     void read_error_failOnCacheReadError_notTriggeredByStartup() throws IOException {
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(ACTIVE_VERSION));
         Files.createDirectories(cacheConfiguration.getFolder().resolve(ACTIVE_VERSION));
 
         cacheConfiguration.setFailOnStartupCacheReadError(true);
@@ -265,7 +268,7 @@ class CacheTest {
 
     @Test
     void loadDataOnStartup() throws IOException {
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(ACTIVE_VERSION));
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
@@ -352,7 +355,7 @@ class CacheTest {
     @Test
     void isDataStale_false() {
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME))
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(timestamp1));
         when(clockService.now())
@@ -370,7 +373,7 @@ class CacheTest {
     @Test
     void isDataStale_nullFalse() {
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME))
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION))
                 .thenReturn(Optional.of(timestamp1));
 
         Cache<String> cache = createWriteCache();
@@ -382,7 +385,7 @@ class CacheTest {
     void isDataStale_true() {
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
         String timestamp2 = "2022-03-11T09:04:01.123-01:00";
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME))
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(timestamp1))
                 .thenReturn(Optional.of(timestamp2));
@@ -400,7 +403,7 @@ class CacheTest {
 
     @Test
     void loadDataOnStartup_error() throws IOException {
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(ACTIVE_VERSION));
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
@@ -436,7 +439,7 @@ class CacheTest {
 
     @Test
     void get() throws IOException {
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(ACTIVE_VERSION));
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
@@ -486,7 +489,7 @@ class CacheTest {
 
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
         String timestamp2 = "2022-03-11T09:04:01.123-01:00";
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME))
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(timestamp1));
         when(clockService.now())
@@ -577,7 +580,7 @@ class CacheTest {
     void write_error() throws IOException {
         String timestamp1 = "2022-03-11T09:03:01.123-01:00";
         String timestamp2 = "2022-03-11T09:04:01.123-01:00";
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME,CACHE_VERSION )).thenReturn(Optional.of(ACTIVE_VERSION));
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(timestamp1, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(timestamp2, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
@@ -642,7 +645,7 @@ class CacheTest {
     @Test
     void switchActiveVersion_retryException() {
         Path activeVersion = cacheConfiguration.getFolder().resolve(ACTIVE_VERSION);
-        when(activeVersionRepository.findActiveVersion(CACHE_NAME)).thenReturn(Optional.of(ACTIVE_VERSION));
+        when(activeVersionRepository.findActiveVersion(CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(ACTIVE_VERSION));
         when(retryTemplate.execute(any())).thenThrow(new RetryException("test", new RuntimeException("test")));
         assertThatThrownBy(() -> createWriteCache().switchActiveVersion(activeVersion))
                 .isInstanceOf(IOException.class)
@@ -655,7 +658,7 @@ class CacheTest {
 
         assertThat(activeVersion.toAbsolutePath())
                 .isEqualTo(cacheConfiguration.getFolder().resolve(timestamp).toAbsolutePath());
-        verify(activeVersionRepository).switchActiveVersion(CACHE_NAME, timestamp);
+        verify(activeVersionRepository).switchActiveVersion(CACHE_NAME, timestamp, CACHE_VERSION);
     }
 
     @Test
