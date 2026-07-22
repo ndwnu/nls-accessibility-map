@@ -22,6 +22,9 @@ public class CacheConfiguration {
     @NotNull
     private String name;
 
+    @NotNull
+    private Integer cacheVersion;
+
     @Default
     private boolean loadDataOnStartup = true;
 

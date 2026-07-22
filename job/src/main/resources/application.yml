@@ -127,6 +127,7 @@ nu:
             folder: "./cache/network"
             load-data-on-startup: false
             watch-for-updates: false
+            cache-version: 3
         trafficSigns:
           emission-zone:
             client:
@@ -138,6 +139,7 @@ nu:
             folder: "./cache/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
+            cache-version: 3
         trafficsignclient:
           currentStateControllerV5:
             url: http://localhost:8888
@@ -147,12 +149,14 @@ nu:
             folder: "./cache/roadChanges"
             load-data-on-startup: false
             watch-for-updates: false
+            cache-version: 3
         speedLimit:
           cache:
             name: "Speed limit"
             folder: "./cache/speedLimits"
             load-data-on-startup: false
             watch-for-updates: false
+            cache-version: 3
 
 resilience4j:
   retry:

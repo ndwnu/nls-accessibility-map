@@ -30,6 +30,8 @@ import tools.jackson.databind.json.JsonMapper;
 @ExtendWith(MockitoExtension.class)
 class SpeedLimitDataServiceTest {
 
+    private static final int CACHE_VERSION = 1;
+
     private SpeedLimitDataService speedLimitDataService;
 
     @Mock
@@ -64,6 +66,7 @@ class SpeedLimitDataServiceTest {
 
         speedLimitCacheConfiguration = SpeedLimitCacheConfiguration.builder()
                 .name("testCache")
+                .cacheVersion(1)
                 .folder(testDir.resolve("testFolder"))
                 .build();
 
@@ -91,7 +94,7 @@ class SpeedLimitDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        when(activeVersionRepository.findActiveVersion(speedLimitCacheConfiguration.getName()))
+        when(activeVersionRepository.findActiveVersion(speedLimitCacheConfiguration.getName(), CACHE_VERSION))
                 .thenReturn(Optional.of("2022-03-11T09:03:01.123-01:00"));
         speedLimitDataService.write(() -> new SpeedLimits(speedLimit1, speedLimit2));
         speedLimitDataService.read();
@@ -102,7 +105,7 @@ class SpeedLimitDataServiceTest {
 
     @Test
     void dataExists() throws IOException {
-        when(activeVersionRepository.findActiveVersion(speedLimitCacheConfiguration.getName()))
+        when(activeVersionRepository.findActiveVersion(speedLimitCacheConfiguration.getName(), CACHE_VERSION))
                 .thenReturn(Optional.of("2022-03-11T09:03:01.123-01:00"));
         Files.createDirectories(speedLimitCacheConfiguration.getFolder().resolve("2022-03-11T09:03:01.123-01:00"));
 
@@ -120,7 +123,7 @@ class SpeedLimitDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        when(activeVersionRepository.findActiveVersion(speedLimitCacheConfiguration.getName())).thenReturn(Optional.of(
+        when(activeVersionRepository.findActiveVersion(speedLimitCacheConfiguration.getName(), CACHE_VERSION)).thenReturn(Optional.of(
                 "2022-03-11T09:03:01.433-01:00"));
         speedLimitDataService.write(() -> new SpeedLimits(speedLimit1, speedLimit2));
 

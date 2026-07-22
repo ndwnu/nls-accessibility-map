@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [6.0.56] 2026-06-22
+
+Added `cache_version` to allow isolation of caches during rolling updates
+
+## [6.0.55] 2026-06-21
+
+Using Traffic Sign API v5
+
 ## [6.0.19] 2026-06-17
 
 Fixed a null pointer exception which occurred when for an emission zone a vehicle category did not map to a maximum weight and an explicit 

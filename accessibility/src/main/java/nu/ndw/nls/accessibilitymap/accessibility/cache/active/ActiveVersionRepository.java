@@ -11,13 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class ActiveVersionRepository {
 
-    private static final String NAME_COLUMN_NAME = "name";
+    private static final String SCHEMA_ACCESSIBILITY_MAP = "accessibility_map";
 
-    private static final String VERSION_COLUMN_NAME = "version";
+    private static final String TABLE_ACTIVE_VERSION = "active_version";
 
-    private static final String ACTIVE_VERSION_TABLE_NAME = "active_version";
+    private static final String COLUMN_NAME = "name";
 
-    private static final String ACCESSIBILITY_MAP_SCHEMA = "accessibility_map";
+    private static final String COLUMN_VERSION = "version";
+
+    private static final String COLUMN_CACHE_VERSION = "cache_version";
 
     private final DSLContext dsl;
 
@@ -27,27 +29,30 @@ public class ActiveVersionRepository {
 
     private final Field<String> versionField;
 
+    private final Field<Integer> cacheVersionField;
+
     public ActiveVersionRepository(DSLContext dsl) {
         this.dsl = dsl;
-        var schema = DSL.schema(ACCESSIBILITY_MAP_SCHEMA);
-        this.activeVersionTable = DSL.table(DSL.name(schema.getName(), ACTIVE_VERSION_TABLE_NAME));
-        this.nameField = DSL.field(DSL.name(NAME_COLUMN_NAME), String.class);
-        this.versionField = DSL.field(DSL.name(VERSION_COLUMN_NAME), String.class);
+        var schema = DSL.schema(SCHEMA_ACCESSIBILITY_MAP);
+        this.activeVersionTable = DSL.table(DSL.name(schema.getName(), TABLE_ACTIVE_VERSION));
+        this.nameField = DSL.field(DSL.name(COLUMN_NAME), String.class);
+        this.versionField = DSL.field(DSL.name(COLUMN_VERSION), String.class);
+        this.cacheVersionField = DSL.field(DSL.name(COLUMN_CACHE_VERSION), Integer.class);
     }
 
     @Transactional
-    public Optional<String> findActiveVersion(String cacheName) {
+    public Optional<String> findActiveVersion(String cacheName, int cacheVersion) {
 
         return Optional.ofNullable(dsl.select(versionField).from(activeVersionTable)
-                .where(nameField.eq(cacheName))
+                .where(nameField.eq(cacheName).and(cacheVersionField.eq(cacheVersion)))
                 .fetchOne(versionField));
     }
 
     @Transactional
-    public void switchActiveVersion(String cacheName, String activeVersion) {
+    public void switchActiveVersion(String cacheName, String activeVersion, int cacheVersion) {
         dsl.insertInto(activeVersionTable)
-                .columns(nameField, versionField)
-                .values(cacheName, activeVersion)
+                .columns(nameField, versionField, cacheVersionField)
+                .values(cacheName, activeVersion, cacheVersion)
                 .onConflict(nameField)
                 .doUpdate()
                 .set(versionField, activeVersion)

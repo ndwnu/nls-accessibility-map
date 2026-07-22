@@ -84,7 +84,7 @@ public abstract class Cache<TYPE> {
 
     public boolean dataExists() {
         return getActiveVersionRepository()
-                .findActiveVersion(cacheConfiguration.getName())
+                .findActiveVersion(cacheConfiguration.getName(), cacheConfiguration.getCacheVersion())
                 .map(versionName -> Files.exists(getCacheConfiguration().getFolder().resolve(versionName)))
                 .orElse(false);
     }
@@ -124,7 +124,7 @@ public abstract class Cache<TYPE> {
     }
 
     protected String getCurrentActiveVersion() {
-        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName(), cacheConfiguration.getCacheVersion())
                 .orElseThrow(() -> new ActiveVersionNotFoundException(cacheConfiguration.getName()));
     }
 
@@ -158,7 +158,7 @@ public abstract class Cache<TYPE> {
     }
 
     protected Path getActiveVersion() {
-        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+        return activeVersionRepository.findActiveVersion(cacheConfiguration.getName(), cacheConfiguration.getCacheVersion())
                 .map(activeVersionName -> cacheConfiguration.getFolder().resolve(activeVersionName))
                 .orElseThrow(() -> new ActiveVersionNotFoundException(cacheConfiguration.getName()));
     }
@@ -187,11 +187,16 @@ public abstract class Cache<TYPE> {
     }
 
     protected void switchActiveVersion(Path target) throws IOException {
-        Path oldVersionDirectory = activeVersionRepository.findActiveVersion(cacheConfiguration.getName())
+        Path oldVersionDirectory = activeVersionRepository.findActiveVersion(
+                        cacheConfiguration.getName(),
+                        cacheConfiguration.getCacheVersion())
                 .map(oldActiveVersion -> cacheConfiguration.getFolder().resolve(oldActiveVersion).toFile().toPath())
                 .orElse(null);
 
-        activeVersionRepository.switchActiveVersion(cacheConfiguration.getName(), target.getFileName().toString());
+        activeVersionRepository.switchActiveVersion(
+                cacheConfiguration.getName(),
+                target.getFileName().toString(),
+                cacheConfiguration.getCacheVersion());
 
         if (Objects.nonNull(oldVersionDirectory)) {
             try {
