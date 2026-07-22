@@ -14,6 +14,8 @@ public class AccessibilityNwbRoadSectionDtoSupplier extends NwbRoadSectionDtoSup
 
     private final Map<Long, CarriagewayTypeCode> carriagewayTypeCodeMap;
 
+    private final String roadOperatorCode;
+
     @Override
     public NwbRoadSectionDto create(Edge edge, NwbVersionDto nwbVersionDto) {
 
@@ -32,6 +34,7 @@ public class AccessibilityNwbRoadSectionDtoSupplier extends NwbRoadSectionDtoSup
                 .withDrivingDirection(drivingDirection)
                 .withCarriagewayTypeCode(
                         carriagewayTypeCodeMap.containsKey(edge.getId()) ? carriagewayTypeCodeMap.get(edge.getId()).getCode() : "RB")
-                .withRoadOperatorType(RoadOperatorType.MUNICIPALITY);
+                .withRoadOperatorType(RoadOperatorType.MUNICIPALITY)
+                .withRoadOperatorCode(roadOperatorCode);
     }
 }
