@@ -195,4 +195,69 @@ class AccessibilityReasonEdgeVisitorTest {
         assertThat(accessibilityReasonEdgeVisitor.getReasons()).hasSize(1);
         assertThat(accessibilityReasonEdgeVisitor.getReasons().getFirst().getRoadOperatorCodes()).isEmpty();
     }
+
+    @Test
+    void visit_resolvesRoadOperatorCodes_nullRestrictions() {
+
+        AccessibleReason accessibleReason = AccessibleReason.builder()
+                .value(false)
+                .build();
+
+        when(edgeIteratorState.getEdgeKey()).thenReturn(1);
+        when(directionalSegment.getRestrictions()).thenReturn(restrictions);
+        when(restrictionMapper.mapRestrictions(restrictions)).thenReturn(List.of(accessibleReason));
+
+        accessibilityReasonEdgeVisitor.next(edgeIteratorState, 0, 0);
+        accessibilityReasonEdgeVisitor.finish();
+
+        assertThat(accessibilityReasonEdgeVisitor.getReasons()).hasSize(1);
+        assertThat(accessibilityReasonEdgeVisitor.getReasons().getFirst().getRoadOperatorCodes()).isEmpty();
+    }
+
+    @Test
+    void visit_resolvesRoadOperatorCodes_roadSectionIdNull() {
+
+        RoadSectionRestriction roadSectionRestriction = RoadSectionRestriction.builder()
+                .id(null)
+                .build();
+        AccessibleReason accessibleReason = AccessibleReason.builder()
+                .value(false)
+                .restrictions(Set.of(roadSectionRestriction))
+                .build();
+
+        when(edgeIteratorState.getEdgeKey()).thenReturn(1);
+        when(directionalSegment.getRestrictions()).thenReturn(restrictions);
+        when(restrictionMapper.mapRestrictions(restrictions)).thenReturn(List.of(accessibleReason));
+
+        accessibilityReasonEdgeVisitor.next(edgeIteratorState, 0, 0);
+        accessibilityReasonEdgeVisitor.finish();
+
+        assertThat(accessibilityReasonEdgeVisitor.getReasons()).hasSize(1);
+        assertThat(accessibilityReasonEdgeVisitor.getReasons().getFirst().getRoadOperatorCodes()).isEmpty();
+    }
+
+    @Test
+    void visit_resolvesRoadOperatorCodes_roadOperatorCodeNull() {
+
+        RoadSectionRestriction roadSectionRestriction = RoadSectionRestriction.builder()
+                .id(42)
+                .build();
+        AccessibleReason accessibleReason = AccessibleReason.builder()
+                .value(false)
+                .restrictions(Set.of(roadSectionRestriction))
+                .build();
+
+        when(edgeIteratorState.getEdgeKey()).thenReturn(1);
+        when(directionalSegment.getRestrictions()).thenReturn(restrictions);
+        when(restrictionMapper.mapRestrictions(restrictions)).thenReturn(List.of(accessibleReason));
+        when(nwbNetworkData.findAccessibilityNwbRoadSectionById(42L)).thenReturn(Optional.of(AccessibilityNwbRoadSection.builder()
+                .roadOperatorCode(null)
+                .build()));
+
+        accessibilityReasonEdgeVisitor.next(edgeIteratorState, 0, 0);
+        accessibilityReasonEdgeVisitor.finish();
+
+        assertThat(accessibilityReasonEdgeVisitor.getReasons()).hasSize(1);
+        assertThat(accessibilityReasonEdgeVisitor.getReasons().getFirst().getRoadOperatorCodes()).isEmpty();
+    }
 }

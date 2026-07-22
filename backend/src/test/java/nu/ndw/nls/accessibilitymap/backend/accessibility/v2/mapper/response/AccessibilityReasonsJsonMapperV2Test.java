@@ -124,6 +124,68 @@ class AccessibilityReasonsJsonMapperV2Test {
 
     @Test
     @SuppressWarnings("unchecked")
+    void mapToReasonJson_duplicateRoadOperatorCode_keepsFirstUrl() {
+
+        when(roadOperatorService.findAll()).thenReturn(List.of(
+                RoadOperator.builder()
+                        .roadOperatorCode("operatorA")
+                        .requestExemptionUrl(URI.create("https://example.com/first"))
+                        .build(),
+                RoadOperator.builder()
+                        .roadOperatorCode("operatorA")
+                        .requestExemptionUrl(URI.create("https://example.com/second"))
+                        .build()));
+
+        when(accessibilityReason.getReasonType()).thenReturn(reasonType);
+        when(accessibilityReason.getRoadOperatorCodes()).thenReturn(Set.of("operatorA"));
+        when(accessibilityReasonJsonMapperV2.map(accessibilityReason, List.of(restrictionJson))).thenReturn(reasonJson);
+        when(accessibilityRestrictionJsonMapperV2.map(restriction)).thenReturn(restrictionJson);
+        when(accessibilityReason.getRestrictions()).thenReturn(Set.of(restriction));
+
+        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapperV2.map(
+                List.of(new AccessibilityReasonGroup(List.of(accessibilityReason))));
+
+        assertThat(actual).hasSize(1);
+        verify(reasonJson).setRequestExemptionUrls(List.of("https://example.com/first"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void mapToReasonJson_nullRoadOperatorCodes_setsEmptyUrls() {
+
+        when(roadOperatorService.findAll()).thenReturn(List.of());
+        when(accessibilityReason.getReasonType()).thenReturn(reasonType);
+        when(accessibilityReason.getRoadOperatorCodes()).thenReturn(null);
+        when(accessibilityReasonJsonMapperV2.map(accessibilityReason, List.of(restrictionJson))).thenReturn(reasonJson);
+        when(accessibilityRestrictionJsonMapperV2.map(restriction)).thenReturn(restrictionJson);
+        when(accessibilityReason.getRestrictions()).thenReturn(Set.of(restriction));
+
+        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapperV2.map(
+                List.of(new AccessibilityReasonGroup(List.of(accessibilityReason))));
+
+        assertThat(actual).hasSize(1);
+        verify(reasonJson).setRequestExemptionUrls(List.of());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void mapToReasonJson_reasonJsonNull_isFilteredOut() {
+
+        when(roadOperatorService.findAll()).thenReturn(List.of());
+        when(accessibilityReason.getReasonType()).thenReturn(reasonType);
+        when(accessibilityReasonJsonMapperV2.map(accessibilityReason, List.of(restrictionJson))).thenReturn(null);
+        when(accessibilityRestrictionJsonMapperV2.map(restriction)).thenReturn(restrictionJson);
+        when(accessibilityReason.getRestrictions()).thenReturn(Set.of(restriction));
+
+        List<List<ReasonJson>> actual = accessibilityReasonsJsonMapperV2.map(
+                List.of(new AccessibilityReasonGroup(List.of(accessibilityReason))));
+
+        assertThat(actual).hasSize(1);
+        assertThat(actual.getFirst()).isEmpty();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     void mapToReasonJson_noRestrictionMapperFound() {
 
         when(roadOperatorService.findAll()).thenReturn(List.of());
