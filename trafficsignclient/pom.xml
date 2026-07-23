@@ -10,6 +10,7 @@
   </parent>
   <artifactId>trafficsignclient</artifactId>
   <name>Traffic sign client v5</name>
+
   <properties>
     <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.trafficsignclient.feign</openapi-generator.base.classpath>
   </properties>
