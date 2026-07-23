@@ -50,7 +50,7 @@ nu:
           cache:
             name: "Traffic sign"
             folder: "./cache/trafficSigns"
-            cache-version: 3
+            cache-version: 4
         speedLimit:
           cache:
             name: "Speed limit"
