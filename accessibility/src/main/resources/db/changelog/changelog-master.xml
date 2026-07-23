@@ -18,4 +18,9 @@
         dbms="postgresql"/>
   </changeSet>
 
+  <changeSet id="4" author="gsenff" context="main">
+    <sqlFile relativeToChangelogFile='true' path="changes/04_change_active_version_primary_keys.sql" splitStatements="false"
+        dbms="postgresql"/>
+  </changeSet>
+
 </databaseChangeLog>
