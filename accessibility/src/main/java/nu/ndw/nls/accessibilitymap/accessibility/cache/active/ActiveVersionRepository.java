@@ -53,7 +53,7 @@ public class ActiveVersionRepository {
         dsl.insertInto(activeVersionTable)
                 .columns(nameField, versionField, cacheVersionField)
                 .values(cacheName, activeVersion, cacheVersion)
-                .onConflict(nameField)
+                .onConflict(nameField, cacheVersionField)
                 .doUpdate()
                 .set(versionField, activeVersion)
                 .execute();
