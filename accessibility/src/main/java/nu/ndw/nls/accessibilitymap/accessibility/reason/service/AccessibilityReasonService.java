@@ -17,6 +17,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper.PathsToReasonsMapper;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
@@ -78,9 +79,12 @@ public class AccessibilityReasonService {
             return List.of();
         }
 
+        NwbNetworkData nwbNetworkData = accessibilityNetwork.getNetworkData().getNwbNetworkData();
+
         List<AccessibilityReasonGroup> reasons = pathsToReasonsMapper.mapRoutesToReasons(
                 routes,
-                directionalSegmentsById);
+                directionalSegmentsById,
+                nwbNetworkData);
         log.debug("Calculating accessibility reasons took: {} ms", stopwatch.elapsed().toMillis());
 
         return reasons;

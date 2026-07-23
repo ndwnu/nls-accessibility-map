@@ -61,22 +61,27 @@ public class GraphHopperDriver {
     }
 
     public GraphHopperDriver insertNwbData() {
-        return insertNwbData(null, Map.of());
+        return insertNwbData(null, Map.of(), null);
     }
 
     public GraphHopperDriver insertNwbDataWithVersion(String version) {
-        return insertNwbData(version, Map.of());
+        return insertNwbData(version, Map.of(), null);
     }
 
     public GraphHopperDriver insertNwbDataWithCarriagewayOverrides(Map<Long, CarriagewayTypeCode> carriagewayOverrides) {
-        return insertNwbData(null, carriagewayOverrides);
+        return insertNwbData(null, carriagewayOverrides, null);
     }
 
-    private GraphHopperDriver insertNwbData(String version, Map<Long, CarriagewayTypeCode> carriagewayOverrides) {
+    public GraphHopperDriver insertNwbDataWithRoadOperatorCode(String roadOperatorCode) {
+        return insertNwbData(null, Map.of(), roadOperatorCode);
+    }
+
+    private GraphHopperDriver insertNwbData(String version, Map<Long, CarriagewayTypeCode> carriagewayOverrides,
+            String roadOperatorCode) {
         lastBuiltGraph = graphDataBuilder.build();
 
         NwbDataAccessSettingsBuilder nwbDataAccessSettingsBuilder = NwbDataAccessSettings.builder()
-                .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier(carriagewayOverrides));
+                .nwbRoadSectionDtoSupplier(new AccessibilityNwbRoadSectionDtoSupplier(carriagewayOverrides, roadOperatorCode));
         if (Objects.nonNull(version)) {
             nwbDataAccessSettingsBuilder.versionDtoSupplier(new AccessibilityVersionSupplier(version));
         }

@@ -45,6 +45,15 @@ public class GraphHopperStepDefinitions {
         accessibilityMapServicesClient.reloadCaches();
     }
 
+    @Given("a simple network with road operator code {word}")
+    public void graphHopperNetworkWithRoadOperatorCode(String roadOperatorCode) {
+
+        graphHopperTestDataService.buildSimpleNetwork()
+                .insertNwbDataWithRoadOperatorCode(roadOperatorCode)
+                .rebuildCache();
+        accessibilityMapServicesClient.reloadCaches();
+    }
+
     @Given("a simple network with nwb version {word}")
     public void graphHopperNetworkWithNwbVersion(String version) {
 

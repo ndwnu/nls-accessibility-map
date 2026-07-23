@@ -22,6 +22,7 @@
                   "roadSectionId": 9
                 }
               ],
+              "requestExemptionUrls": [],
               "condition": "equals",
               "unitSymbol": "boolean",
               "value": false

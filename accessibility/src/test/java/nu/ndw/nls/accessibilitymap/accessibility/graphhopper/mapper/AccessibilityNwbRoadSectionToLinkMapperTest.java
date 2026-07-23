@@ -68,7 +68,8 @@ class AccessibilityNwbRoadSectionToLinkMapperTest {
                 forwardAccessible,
                 backwardAccessible,
                 CarriagewayTypeCode.RB,
-                "1"
+                "1",
+                "WS14"
         );
     }
 }
