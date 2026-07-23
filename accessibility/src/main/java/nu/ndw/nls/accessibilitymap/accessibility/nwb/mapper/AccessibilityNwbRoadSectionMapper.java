@@ -27,6 +27,7 @@ public class AccessibilityNwbRoadSectionMapper {
                 forwardAccessible,
                 reverseAccessible,
                 CarriagewayTypeCode.valueOf(nwbRoadSectionDto.getCarriagewayTypeCode()),
-                nwbRoadSectionDto.getFunctionalRoadClass());
+                nwbRoadSectionDto.getFunctionalRoadClass(),
+                nwbRoadSectionDto.getRoadOperatorCode());
     }
 }

@@ -167,8 +167,8 @@ class MissingRoadSectionProviderTest {
 
     private List<AccessibilityNwbRoadSection> buildRoadSections(boolean hasForwardSection, boolean hasBackwardSection) {
         return List.of(
-                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_ONE, 2, 3, 4, null, true, true, CarriagewayTypeCode.RB, "1"),
-                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_TWO, 23, 34, 4, null, true, true, CarriagewayTypeCode.FP, "1"),
+                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_ONE, 2, 3, 4, null, true, true, CarriagewayTypeCode.RB, "1", "WS14"),
+                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_TWO, 23, 34, 4, null, true, true, CarriagewayTypeCode.FP, "1", "WS14"),
                 new AccessibilityNwbRoadSection(
                         ROAD_SECTION_ID_THREE,
                         22,
@@ -178,8 +178,9 @@ class MissingRoadSectionProviderTest {
                         hasForwardSection,
                         hasBackwardSection,
                         CarriagewayTypeCode.RB,
-                        "1"),
-                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_FOUR, 32, 33, 34, null, true, true, CarriagewayTypeCode.RB, "1")
+                        "1",
+                        "WS14"),
+                new AccessibilityNwbRoadSection(ROAD_SECTION_ID_FOUR, 32, 33, 34, null, true, true, CarriagewayTypeCode.RB, "1", "WS14")
         );
     }
 
@@ -245,7 +246,8 @@ class MissingRoadSectionProviderTest {
         when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
         when(nwbNetworkData.findAllAccessibilityNwbRoadSections()).thenReturn(buildRoadSections(true, true));
         when(networkData.findGeometryInNetwork(ROAD_SECTION_ID_THREE)).thenReturn(Optional.empty());
-        assertThatThrownBy(() -> missingRoadSectionProvider.findAll(networkData, null, List.of(roadSectionExisting), true, searchArea))
+        var existingRoadSections = List.of(roadSectionExisting);
+        assertThatThrownBy(() -> missingRoadSectionProvider.findAll(networkData, null, existingRoadSections, true, searchArea))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Road section geometry not found for road section id: 45648");
     }

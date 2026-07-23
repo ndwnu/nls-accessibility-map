@@ -14,6 +14,8 @@ import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.response.reas
 import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.response.reason.restriction.AccessibilityRestrictionJsonMapperV2;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.repository.dto.RoadOperator;
+import nu.ndw.nls.accessibilitymap.backend.roadoperator.service.RoadOperatorService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,32 +27,61 @@ public class AccessibilityReasonsJsonMapperV2 {
     @SuppressWarnings({"java:S3740", "java:S6411"})
     private final Map<Class<? extends Restriction>, AccessibilityRestrictionJsonMapperV2> restrictionsMapper;
 
+    private final RoadOperatorService roadOperatorService;
+
     @SuppressWarnings("java:S3740")
     public AccessibilityReasonsJsonMapperV2(
             List<AccessibilityReasonJsonMapperV2<?>> restrictionMapperList,
-            List<AccessibilityRestrictionJsonMapperV2<?>> restrictionsMapperList) {
+            List<AccessibilityRestrictionJsonMapperV2<?>> restrictionsMapperList,
+            RoadOperatorService roadOperatorService) {
 
         reasonMapper = restrictionMapperList.stream()
                 .collect(Collectors.toMap(AccessibilityReasonJsonMapperV2::getReasonType, Function.identity()));
 
         restrictionsMapper = restrictionsMapperList.stream()
                 .collect(Collectors.toMap(AccessibilityRestrictionJsonMapperV2::getRestrictionType, Function.identity()));
+
+        this.roadOperatorService = roadOperatorService;
     }
 
     public List<List<ReasonJson>> map(List<AccessibilityReasonGroup> reasonGroups) {
+        Map<String, String> codeToExemptionUrl = roadOperatorService.findAll().stream()
+                .filter(roadOperator -> roadOperator.requestExemptionUrl() != null)
+                .collect(Collectors.toMap(
+                        RoadOperator::roadOperatorCode,
+                        roadOperator -> roadOperator.requestExemptionUrl().toString(),
+                        (a, b) -> a));
+
         return reasonGroups.stream()
                 .map(reasonsList -> reasonsList.stream()
-                        .map(this::mapReasonToReasonJson)
+                        .map(reason -> mapReasonToReasonJson(reason, codeToExemptionUrl))
                         .filter(Objects::nonNull)
                         .toList())
                 .toList();
     }
 
     @SuppressWarnings("unchecked")
-    private ReasonJson mapReasonToReasonJson(AccessibilityReason<?> reason) {
-        return reasonMapper.containsKey(reason.getReasonType())
-                ? reasonMapper.get(reason.getReasonType()).map(reason, mapReasonRestrictionsToRestrictionJson(reason.getRestrictions()))
-                : null;
+    private ReasonJson mapReasonToReasonJson(AccessibilityReason<?> reason, Map<String, String> codeToExemptionUrl) {
+        if (!reasonMapper.containsKey(reason.getReasonType())) {
+            return null;
+        }
+
+        ReasonJson reasonJson = reasonMapper.get(reason.getReasonType())
+                .map(reason, mapReasonRestrictionsToRestrictionJson(reason.getRestrictions()));
+        if (reasonJson == null) {
+            return null;
+        }
+
+        Set<String> codes = reason.getRoadOperatorCodes() == null ? Set.of() : reason.getRoadOperatorCodes();
+        List<String> urls = codes.stream()
+                .map(codeToExemptionUrl::get)
+                .filter(Objects::nonNull)
+                .distinct()
+                .sorted()
+                .toList();
+        reasonJson.setRequestExemptionUrls(urls);
+
+        return reasonJson;
     }
 
     @SuppressWarnings("unchecked")

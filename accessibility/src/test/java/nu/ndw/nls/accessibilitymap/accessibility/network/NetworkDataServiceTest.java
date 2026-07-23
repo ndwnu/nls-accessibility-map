@@ -257,6 +257,19 @@ class NetworkDataServiceTest {
         assertThat(cacheLoadedEventCaptor.getValue().getType()).isEqualTo(Type.NETWORK_DATA);
     }
 
+    @SneakyThrows
+    @Test
+    void roadSectionCache_preservesRoadOperatorCode() {
+
+        AccessibilityNwbRoadSection roadSection = buildAccessibilityRoadSections().getFirst();
+
+        String json = jsonMapper.writeValueAsString(roadSection);
+        AccessibilityNwbRoadSection deserialized = jsonMapper.readValue(json, AccessibilityNwbRoadSection.class);
+
+        assertThat(json).contains("roadOperatorCode");
+        assertThat(deserialized.roadOperatorCode()).isEqualTo("WS14");
+    }
+
     @Test
     void dataExists() throws IOException {
         when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME, CACHE_VERSION))
@@ -284,7 +297,8 @@ class NetworkDataServiceTest {
                         true,
                         false,
                         CarriagewayTypeCode.RB,
-                        "1")
+                        "1",
+                        "WS14")
         );
     }
 

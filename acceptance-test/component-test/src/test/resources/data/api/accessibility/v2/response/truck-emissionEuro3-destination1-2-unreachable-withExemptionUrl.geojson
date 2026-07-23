@@ -23,7 +23,9 @@
                   "trafficSignType": "C22a"
                 }
               ],
-              "requestExemptionUrls": [],
+              "requestExemptionUrls": [
+                "https://www.wshd.nl/verkeersontheffingen"
+              ],
               "condition": "equals",
               "unitSymbol": "enum",
               "values": [
@@ -40,7 +42,9 @@
                   "trafficSignType": "C22a"
                 }
               ],
-              "requestExemptionUrls": [],
+              "requestExemptionUrls": [
+                "https://www.wshd.nl/verkeersontheffingen"
+              ],
               "condition": "greater_than_or_equals",
               "unitSymbol": "tons",
               "value": 12.00
@@ -68,7 +72,7 @@
       "id": 2,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
@@ -268,7 +272,7 @@
       "id": 10,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
@@ -493,7 +497,7 @@
       "id": 19,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
