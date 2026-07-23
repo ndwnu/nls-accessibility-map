@@ -69,3 +69,28 @@ nu:
 ```
 
 Also the 'MessagingBeansRegistrarTest' class MESSAGE_LISTENER_NAME property needs to be updated
+
+## Caches
+
+The `backend` application and the analysis jobs require the following caches to be available: 
+- network
+- speedLimits
+- trafficSigns
+
+Without them, the backend application will start, but will not become healthy until the caches become available. The `jobs` module contains
+jobs that keep the caches up to date, `InitializeCacheCommand` should always run after deployment as it will verify that the required
+caches are available and will rebuild any missing caches. Caches are stored on a shared persistent volume claim and database table
+`active_version` points to the active `version` on disk.
+
+### Incompatible cache versions
+
+When using rolling updates, there will be a brief moment where the old and new application will run alongside of each other. By incrementing
+the `cache-version`, you isolate the caches and prevent that the old and new deployment use each others caches. If the cache format changes,
+the `cache-version` should be incremented in the `application.yaml` configuration of the `jobs` and `backend` applications. A new 
+`PersistentVolumeClaim` should be used for the deployment to separate the old caches from the new caches. After deployment, the 
+`InitializeCacheCommand` should automatically run and initialize the new caches after which the `backend` should become healthy. 
+With rolling updates, this should cause zero downtime. Don't forget to delete the old persistent storage.
+
+
+
+

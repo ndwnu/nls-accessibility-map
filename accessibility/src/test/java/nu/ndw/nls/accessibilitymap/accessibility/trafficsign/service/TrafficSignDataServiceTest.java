@@ -30,6 +30,8 @@ import tools.jackson.databind.json.JsonMapper;
 @ExtendWith(MockitoExtension.class)
 class TrafficSignDataServiceTest {
 
+    private static final int CACHE_VERSION = 1;
+
     private TrafficSignDataService trafficSignDataService;
 
     @Mock
@@ -65,6 +67,7 @@ class TrafficSignDataServiceTest {
 
         trafficSignCacheConfiguration = TrafficSignCacheConfiguration.builder()
                 .name("testCache")
+                .cacheVersion(CACHE_VERSION)
                 .folder(testDir.resolve("testFolder"))
                 .build();
 
@@ -89,7 +92,7 @@ class TrafficSignDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName())).thenReturn(Optional.of(
+        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName(), CACHE_VERSION)).thenReturn(Optional.of(
                 "2022-03-11T09:03:01.433-01:00"));
         trafficSignDataService.write(() -> new TrafficSigns(trafficSign1, trafficSign2));
 
@@ -103,7 +106,7 @@ class TrafficSignDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.123-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse("2022-03-11T09:03:01.433-01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName()))
+        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName(), CACHE_VERSION))
                 .thenReturn(Optional.of("2022-03-11T09:03:01.123-01:00"));
         trafficSignDataService.write(() -> new TrafficSigns(trafficSign1, trafficSign2));
         trafficSignDataService.read();
@@ -114,7 +117,7 @@ class TrafficSignDataServiceTest {
 
     @Test
     void dataExists() throws IOException {
-        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName()))
+        when(activeVersionRepository.findActiveVersion(trafficSignCacheConfiguration.getName(), CACHE_VERSION))
                 .thenReturn(Optional.of("2022-03-11T09:03:01.123-01:00"));
         Files.createDirectories(trafficSignCacheConfiguration.getFolder().resolve("2022-03-11T09:03:01.123-01:00"));
 
