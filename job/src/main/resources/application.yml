@@ -139,7 +139,7 @@ nu:
             folder: "./cache/trafficSigns"
             load-data-on-startup: false
             watch-for-updates: false
-            cache-version: 3
+            cache-version: 4
         trafficsignclient:
           currentStateControllerV5:
             url: http://localhost:8888
