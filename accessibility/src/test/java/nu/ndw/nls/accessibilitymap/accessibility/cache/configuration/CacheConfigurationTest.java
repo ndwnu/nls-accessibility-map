@@ -19,6 +19,7 @@ public class CacheConfigurationTest extends ValidationTest {
         cacheConfiguration = CacheConfiguration.builder()
                 .name("name")
                 .folder(Path.of("folder"))
+                .cacheVersion(1)
                 .build();
     }
 
@@ -50,6 +51,16 @@ public class CacheConfigurationTest extends ValidationTest {
     }
 
     @Test
+    void validate_cacheVersion_null() {
+
+        cacheConfiguration.setCacheVersion(null);
+        validate(
+                cacheConfiguration,
+                List.of("cacheVersion"),
+                List.of("must not be null"));
+    }
+
+    @Test
     void validate_folder_null() {
 
         cacheConfiguration.setFolder(null);
@@ -58,8 +69,6 @@ public class CacheConfigurationTest extends ValidationTest {
                 List.of("folder"),
                 List.of("must not be null"));
     }
-
-
 
     @Override
     protected Class<?> getClassToTest() {

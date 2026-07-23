@@ -4,6 +4,7 @@ import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass.E
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
@@ -127,6 +128,17 @@ class TransportConditionsMapperTest {
     }
 
     @Test
+    void map_categories_filterOutNullValues() {
+        HashSet<CategoryEnum> categories = new HashSet<>();
+        categories.add(null);
+        TransportConditions result = transportConditionsMapper.map(ConditionPropertiesDtoV5Json.builder()
+                        .category(categories)
+                .build());
+
+        assertThat(result.categories()).isEmpty();
+    }
+
+    @Test
     void map_null() {
         assertThat(transportConditionsMapper.map(null)).isEqualTo(TransportConditions.unrestricted());
     }
@@ -136,8 +148,8 @@ class TransportConditionsMapperTest {
         TransportConditions result = transportConditionsMapper.map(ConditionPropertiesDtoV5Json.builder()
                 .build());
 
-        assertThat(result.transportTypes()).isNotNull().isEmpty();
-        assertThat(result.categories()).isNotNull().isEmpty();
+        assertThat(result.transportTypes()).isEmpty();
+        assertThat(result.categories()).isEmpty();
         assertThat(result.vehicleAxleLoadInKg()).isNull();
         assertThat(result.vehicleWeightInKg()).isNull();
         assertThat(result.vehicleHeightInCm()).isNull();

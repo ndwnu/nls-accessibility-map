@@ -55,6 +55,8 @@ class NetworkDataServiceTest {
 
     private static final String UPDATED_TIMESTAMP = "2022-03-11T09:03:01.433-01:00";
 
+    private static final int CACHE_VERSION = 1;
+
     private NetworkDataService networkDataService;
 
     @Mock
@@ -109,6 +111,7 @@ class NetworkDataServiceTest {
         networkCacheConfiguration = NetworkCacheConfiguration.builder()
                 .folder(testDir)
                 .name(TEST_CACHE_NAME)
+                .cacheVersion(1)
                 .maxLockWaitTime(MAX_LOCK_WAIT_TIME)
                 .build();
 
@@ -141,7 +144,7 @@ class NetworkDataServiceTest {
                         false,
                         CarriagewayTypeCode.HR)
         );
-        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME))
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME, CACHE_VERSION))
                 .thenReturn(Optional.empty())
                 .thenReturn(Optional.of(INITIAL_TIMESTAMP))
                 .thenReturn(Optional.of(INITIAL_TIMESTAMP))
@@ -180,7 +183,7 @@ class NetworkDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(accessibilityNwbRoadSectionService.getLatestNwbData()).thenReturn(nwbData);
 
         networkDataService.recompileData();
@@ -196,7 +199,7 @@ class NetworkDataServiceTest {
         when(clockService.now())
                 .thenReturn(OffsetDateTime.parse(INITIAL_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME))
                 .thenReturn(OffsetDateTime.parse(UPDATED_TIMESTAMP, DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME, CACHE_VERSION)).thenReturn(Optional.of(UPDATED_TIMESTAMP));
         when(graphHopperNetwork.network()).thenReturn(networkGraphHopper);
         when(graphHopperNetwork.nwbVersion()).thenReturn(1);
         NetworkData networkData = new NetworkData(graphHopperNetwork, nwbData, nwbDataUpdates);
@@ -212,7 +215,7 @@ class NetworkDataServiceTest {
 
     @Test
     void read() throws IOException {
-        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME))
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME, CACHE_VERSION))
                 .thenReturn(Optional.of(INITIAL_TIMESTAMP));
 
         when(clockService.now())
@@ -269,7 +272,7 @@ class NetworkDataServiceTest {
 
     @Test
     void dataExists() throws IOException {
-        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME))
+        when(activeVersionRepository.findActiveVersion(TEST_CACHE_NAME, CACHE_VERSION))
                 .thenReturn(Optional.of(INITIAL_TIMESTAMP));
         Files.createDirectories(networkCacheConfiguration.getFolder().resolve(INITIAL_TIMESTAMP));
 
