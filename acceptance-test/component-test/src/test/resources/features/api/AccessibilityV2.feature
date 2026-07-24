@@ -107,3 +107,18 @@ Feature: Accessibility V2
     Given a simple network with uni-directional road sections and car inaccessible carriageway types
     When request accessibility geojson for truck2MetersWide-destination9-1
     Then we expect accessibility geojson response truck2MetersWide-destination9-1-snapped-to-2
+
+  Scenario: Get - request with destination on fastest route over bike path
+    Given a simple network with uni-directional road sections and car inaccessible carriageway on shortest route
+    And with traffic sign conditions
+      | name | vehicleType |
+      | C12  | truck       |
+    And with traffic signs
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | exemptions | directionType | regulationOrderId | id                                   |
+      | 7           | 8         | 0.1      | C12     | C12          |            | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
+      | 7           | 8         | 0.9      | C12     | C12          |            | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
+      | 11          | 7         | 0.1      | C12     | C12          |            | FORTH         |                   | 00000000-0000-4000-0000-000000000003 |
+      | 11          | 7         | 0.9      | C12     | C12          |            | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
+    And run TrafficSignUpdateCache
+    When request accessibility geojson for truck2MetersWide-destination5-4-unreachable
+    Then we expect accessibility geojson response truck2MetersWide-destination9-1-snapped-to-2

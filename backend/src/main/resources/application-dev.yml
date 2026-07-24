@@ -36,6 +36,9 @@ nu:
           cache:
             load-data-on-startup: false
             watch-for-updates: false
+        accessibility:
+          debug:
+            enabled: true
       springboot:
         message:
           stream:
