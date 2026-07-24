@@ -29,11 +29,10 @@ public class CarAccessibleRoadsWeighting implements Weighting {
     @Override
     public double calcEdgeWeight(EdgeIteratorState edgeState, boolean reverse) {
         int roadSectionId = getRoadSectionId(edgeState, encodingManager);
-        boolean travellingInReversedDirection = edgeIteratorStateReverseExtractor.hasReversed(edgeState);
         return nwbNetworkData.findAccessibilityNwbRoadSectionById(roadSectionId).stream()
                 .allMatch(accessibilityNwbRoadSection ->
-                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, travellingInReversedDirection)) ?
-                sourceWeighting.calcEdgeWeight(edgeState, travellingInReversedDirection) : Double.POSITIVE_INFINITY;
+                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, reverse)) ?
+                sourceWeighting.calcEdgeWeight(edgeState, reverse) : Double.POSITIVE_INFINITY;
     }
 
     @Override
