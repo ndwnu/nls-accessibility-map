@@ -812,7 +812,7 @@ class AccessibilityDebuggerTest {
                 mock(Restrictions.class),
                 Map.of(),
                 from,
-                destination, weighting);
+                destination, weighting, weighting);
 
         when(jtsPointJsonMapper.map(any(Point.class))).thenAnswer(invocation -> {
             Point p = invocation.getArgument(0, Point.class);
@@ -874,7 +874,7 @@ class AccessibilityDebuggerTest {
                 mock(Restrictions.class),
                 Map.of(),
                 from,
-                null, weighting);
+                null, weighting, weighting);
 
         when(jtsPointJsonMapper.map(any(Point.class))).thenAnswer(invocation -> {
             Point p = invocation.getArgument(0, Point.class);

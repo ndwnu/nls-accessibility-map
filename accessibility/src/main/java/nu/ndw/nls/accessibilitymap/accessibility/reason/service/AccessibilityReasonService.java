@@ -68,7 +68,7 @@ public class AccessibilityReasonService {
 
         RoutingAlgorithm router = routingAlgorithmFactory.createAlgo(
                 accessibilityNetwork.getQueryGraph(),
-                accessibilityNetwork.getWeighting(),
+                accessibilityNetwork.getWeightingOnlyCarAccessible(),
                 createAlgorithmOptions());
 
         List<Path> routes = router.calcPaths(from.getClosestNode(), destination.getClosestNode()).stream()

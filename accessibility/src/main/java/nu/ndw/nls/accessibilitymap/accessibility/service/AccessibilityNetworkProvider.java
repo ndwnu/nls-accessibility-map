@@ -72,7 +72,7 @@ public class AccessibilityNetworkProvider {
                 snapRestrictions);
 
         Weighting weighting = weightingFactory.createWeighting(queryGraph, networkData, speedLimits);
-
+        Weighting weightingOnlyCarAccessible = weightingFactory.createWeightingOnlyCarAccessible(queryGraph, networkData, speedLimits);
         return new AccessibilityNetwork(
                 networkData,
                 queryGraph,
@@ -80,6 +80,7 @@ public class AccessibilityNetworkProvider {
                 restrictionsByEdgeKey,
                 fromSnap.get(),
                 destinationSnap.orElse(null),
-                weighting);
+                weighting,
+                weightingOnlyCarAccessible);
     }
 }
