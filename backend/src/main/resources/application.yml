@@ -94,13 +94,15 @@ management:
       environment: ${environment}
 springdoc:
   api-docs:
+    enabled: true
     path: /api-docs
   swagger-ui:
+    enabled: true
+    path: /swagger-ui
     groups-order: DESC
     urls:
       - name: V2 / Latest
         url: /api-docs/v2.yaml
-    path: /api-docs
     show-extensions: true
     show-common-extensions: true
 
