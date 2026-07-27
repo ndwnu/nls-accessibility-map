@@ -124,7 +124,7 @@ Feature: Accessibility V2
     Then we expect accessibility geojson response truck2MetersWide-destination5-4-unreachable
 
   Scenario: Get - request with unreachable destination on unidirectional road will return reasons
-    Given a simple network with uni-directional road sections and car inaccessible carriageway on shortest route
+    Given a simple network with uni-directional road sections and bike path on shortest route
     And with traffic sign conditions
       | name | vehicleType |
       | C12  | truck       |

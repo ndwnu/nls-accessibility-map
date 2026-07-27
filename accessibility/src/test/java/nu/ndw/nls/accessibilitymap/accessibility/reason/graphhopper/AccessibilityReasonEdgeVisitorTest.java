@@ -1,7 +1,6 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.graphhopper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.Level;
@@ -96,11 +95,13 @@ class AccessibilityReasonEdgeVisitorTest {
     }
 
     @Test
-    void visit_noDirectionalSegment_exception() {
+    void visit_noDirectionalSegment() {
         when(edgeIteratorState.getEdgeKey()).thenReturn(2);
+        accessibilityReasonEdgeVisitor.next(edgeIteratorState, 0, 0);
+        accessibilityReasonEdgeVisitor.finish();
 
-        assertThatThrownBy(() -> accessibilityReasonEdgeVisitor.next(edgeIteratorState, 0, 0))
-                .isInstanceOf(IllegalStateException.class).hasMessage("No directional segment found for direction id 2");
+        assertThat(accessibilityReasonEdgeVisitor.getReasons()).isEmpty();
+        assertThat(accessibilityReasonEdgeVisitor.getPathFollowed()).isEmpty();
     }
 
     @Test
