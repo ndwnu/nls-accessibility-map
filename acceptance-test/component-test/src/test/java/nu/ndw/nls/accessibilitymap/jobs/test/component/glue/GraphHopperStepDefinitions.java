@@ -71,7 +71,7 @@ public class GraphHopperStepDefinitions {
         accessibilityMapServicesClient.reloadCaches();
     }
 
-    @Given("a simple network with uni-directional road sections and car inaccessible carriageway on shortest route")
+    @Given("a simple network with uni-directional road sections and bike path on shortest route")
     public void graphHopperNetworkWithUniDirectionalRoadSectionsAndCarInaccessibleCarriagewayShortestRoute() {
         GraphHopperDriver graphHopperDriver = graphHopperTestDataService.buildDirectionalNetworkWithCarInaccessibleLinks()
                 .insertNwbDataWithCarriagewayOverrides(Map.of(13L, CarriagewayTypeCode.FP));

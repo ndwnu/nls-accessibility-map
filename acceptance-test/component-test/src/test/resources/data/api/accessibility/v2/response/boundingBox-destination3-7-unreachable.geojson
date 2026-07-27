@@ -22,8 +22,8 @@
                   "roadSectionId": 9
                 }
               ],
-              "requestExemptionUrls": [],
               "condition": "equals",
+              "requestExemptionUrls": [],
               "unitSymbol": "boolean",
               "value": false
             }
@@ -138,6 +138,31 @@
         "type": "LineString",
         "coordinates": [
           [
+            7.000000579995452,
+            5.600137522457288
+          ],
+          [
+            7.0000005,
+            8.000001
+          ]
+        ]
+      },
+      "id": 6,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 9
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
             7.0000005,
             8.000001
           ],
@@ -147,7 +172,7 @@
           ]
         ]
       },
-      "id": 6,
+      "id": 7,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -172,7 +197,7 @@
           ]
         ]
       },
-      "id": 7,
+      "id": 8,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
@@ -197,7 +222,7 @@
           ]
         ]
       },
-      "id": 8,
+      "id": 9,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
@@ -222,7 +247,7 @@
           ]
         ]
       },
-      "id": 9,
+      "id": 10,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
@@ -247,7 +272,7 @@
           ]
         ]
       },
-      "id": 10,
+      "id": 11,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
@@ -272,7 +297,7 @@
           ]
         ]
       },
-      "id": 11,
+      "id": 12,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -297,7 +322,7 @@
           ]
         ]
       },
-      "id": 12,
+      "id": 13,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
@@ -322,7 +347,7 @@
           ]
         ]
       },
-      "id": 13,
+      "id": 14,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -347,7 +372,7 @@
           ]
         ]
       },
-      "id": 14,
+      "id": 15,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -372,7 +397,7 @@
           ]
         ]
       },
-      "id": 15,
+      "id": 16,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -397,7 +422,7 @@
           ]
         ]
       },
-      "id": 16,
+      "id": 17,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -422,7 +447,7 @@
           ]
         ]
       },
-      "id": 17,
+      "id": 18,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -447,7 +472,7 @@
           ]
         ]
       },
-      "id": 18,
+      "id": 19,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -472,7 +497,7 @@
           ]
         ]
       },
-      "id": 19,
+      "id": 20,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -497,7 +522,7 @@
           ]
         ]
       },
-      "id": 20,
+      "id": 21,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
@@ -522,7 +547,7 @@
           ]
         ]
       },
-      "id": 21,
+      "id": 22,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": true,
