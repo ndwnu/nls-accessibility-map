@@ -15,5 +15,7 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 public class BoundingBoxAreaConfiguration {
 
-    private double searchDistanceMultiplier = 1.5;
+    private static final double DEFAULT_SEARCH_MULTIPLIER = 1.5;
+
+    private double searchDistanceMultiplier = DEFAULT_SEARCH_MULTIPLIER;
 }
