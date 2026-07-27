@@ -26,6 +26,7 @@ public class GraphHopperTestDataService {
          |    8--9  |
          |    |     |
          1----2-----3
+         In geographic and map data, X corresponds to longitude (east-west) and Y corresponds to latitude (north-south)
          */
 
         return graphHopperDriver

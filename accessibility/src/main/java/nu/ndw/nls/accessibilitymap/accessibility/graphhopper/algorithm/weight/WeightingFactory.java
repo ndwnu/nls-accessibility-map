@@ -41,8 +41,7 @@ public class WeightingFactory {
         CarAccessibleRoadsWeighting carAccessibleRoadsWeighting = new CarAccessibleRoadsWeighting(
                 variableSpeedLimitWeighting,
                 networkData.getNwbNetworkData(),
-                networkData.getNetworkGraphHopper().getEncodingManager(),
-                edgeIteratorStateReverseExtractor);
+                networkData.getNetworkGraphHopper().getEncodingManager());
 
         return queryGraph.wrapWeighting(carAccessibleRoadsWeighting);
     }

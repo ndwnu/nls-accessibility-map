@@ -4,7 +4,6 @@ import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.IsCarAccessibleUtil;
@@ -18,8 +17,6 @@ public class CarAccessibleRoadsWeighting implements Weighting {
     private final NwbNetworkData nwbNetworkData;
 
     private final EncodingManager encodingManager;
-
-    public final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
     @Override
     public double calcMinWeightPerDistance() {

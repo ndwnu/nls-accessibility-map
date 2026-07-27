@@ -116,7 +116,7 @@ class AccessibilityReasonServiceTest {
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
                                 && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);
@@ -165,7 +165,7 @@ class AccessibilityReasonServiceTest {
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
                                 && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);
@@ -194,7 +194,7 @@ class AccessibilityReasonServiceTest {
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
                                 && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);

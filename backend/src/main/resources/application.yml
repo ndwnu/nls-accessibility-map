@@ -56,6 +56,9 @@ nu:
             name: "Speed limit"
             folder: "./cache/speedLimits"
             cache-version: 3
+        accessibility:
+          debug:
+            enabled: true
       springboot:
         message:
           stream:

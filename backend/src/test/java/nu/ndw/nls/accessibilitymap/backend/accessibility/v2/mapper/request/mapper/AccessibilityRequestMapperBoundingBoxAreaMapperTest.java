@@ -3,31 +3,41 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.request.mapp
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.graphhopper.util.shapes.BBox;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest.AccessibilityRequestBuilder;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.configuration.BoundingBoxAreaConfiguration;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AreaRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.BoundingBoxAreaRequestJson;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityRequestMapperBoundingBoxAreaMapperTest {
+
+    private GeometryFactoryWgs84 geometryFactoryWgs84 = new GeometryFactoryWgs84();
+
+    @Mock
+    private BoundingBoxAreaConfiguration boundingBoxAreaConfiguration;
 
     private AccessibilityRequestMapperBoundingBoxAreaMapper accessibilityRequestMapperBoundingBoxAreaMapper;
 
     @BeforeEach
     void setUp() {
 
-        accessibilityRequestMapperBoundingBoxAreaMapper = new AccessibilityRequestMapperBoundingBoxAreaMapper();
+        accessibilityRequestMapperBoundingBoxAreaMapper = new AccessibilityRequestMapperBoundingBoxAreaMapper(geometryFactoryWgs84,
+                boundingBoxAreaConfiguration);
     }
 
     @Test
     void build() {
-
+        when(boundingBoxAreaConfiguration.getSearchDistanceMultiplier()).thenReturn(1.5);
         BoundingBoxAreaRequestJson boundingBoxAreaRequestJson = BoundingBoxAreaRequestJson.builder()
                 .minLatitude(1D)
                 .minLongitude(2D)
@@ -84,5 +94,4 @@ class AccessibilityRequestMapperBoundingBoxAreaMapperTest {
         assertThat(accessibilityRequestMapperBoundingBoxAreaMapper.canProcessAreaRequest(mock(AreaRequestJson.class)))
                 .isFalse();
     }
-
 }
