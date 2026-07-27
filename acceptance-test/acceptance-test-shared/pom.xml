@@ -174,7 +174,8 @@
               <modelPackage>${openapi-generator.base.classpath}.model.v2</modelPackage>
               <configOptions>
                 <useSpringBoot4>true</useSpringBoot4>
-                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
+                <generateBuilders>true</generateBuilders>
+                <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
 
                 <!-- Whether to generate the server files using the delegate pattern -->
                 <delegatePattern>true</delegatePattern>
@@ -192,12 +193,6 @@
                 <performBeanValidation>true</performBeanValidation>
 
                 <openApiNullable>false</openApiNullable>
-
-                <additionalModelTypeAnnotations>
-                  @lombok.experimental.SuperBuilder
-                  @lombok.NoArgsConstructor
-                  @lombok.AllArgsConstructor
-                </additionalModelTypeAnnotations>
               </configOptions>
               <modelNameSuffix>Json</modelNameSuffix>
               <generateApis>false</generateApis>

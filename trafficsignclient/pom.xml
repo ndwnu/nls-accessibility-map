@@ -97,6 +97,7 @@
               <library>spring-cloud</library>
               <configOptions>
                 <useSpringBoot4>true</useSpringBoot4>
+                <generateBuilders>true</generateBuilders>
                 <!-- Split endpoints into different classes according to tags -->
                 <useTags>true</useTags>
                 <!--
@@ -105,13 +106,6 @@
                  -->
                 <openApiNullable>false</openApiNullable>
                 <configPackage>${openapi-generator.base.classpath}.config</configPackage>
-
-
-                <additionalModelTypeAnnotations>
-                  @lombok.experimental.SuperBuilder
-                  @lombok.NoArgsConstructor
-                </additionalModelTypeAnnotations>
-
               </configOptions>
             </configuration>
           </execution>
@@ -156,42 +150,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>add-test-source</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>add-test-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>src/test-integration/java</source>
-              </sources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>add-test-resource</id>
-            <phase>generate-test-resources</phase>
-            <goals>
-              <goal>add-test-resource</goal>
-            </goals>
-            <configuration>
-              <resources>
-                <resource>
-                  <directory>src/test-integration/resources</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
