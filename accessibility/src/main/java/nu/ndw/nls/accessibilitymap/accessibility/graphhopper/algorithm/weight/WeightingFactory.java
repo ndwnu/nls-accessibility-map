@@ -20,11 +20,10 @@ public class WeightingFactory {
 
         Weighting baseWeighting = networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
 
-        VariableSpeedLimitWeighting variableSpeedLimitWeighting = new VariableSpeedLimitWeighting(
-                baseWeighting,
+        final VariableSpeedLimitWeighting variableSpeedLimitWeighting = createVariableSpeedWeighting(
+                networkData,
                 speedLimits,
-                networkData.getNetworkGraphHopper().getEncodingManager(),
-                edgeIteratorStateReverseExtractor);
+                baseWeighting);
 
         return queryGraph.wrapWeighting(variableSpeedLimitWeighting);
     }
@@ -32,11 +31,10 @@ public class WeightingFactory {
     public Weighting createWeightingOnlyCarAccessible(QueryGraph queryGraph, NetworkData networkData, SpeedLimits speedLimits) {
         Weighting baseWeighting = networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
 
-        VariableSpeedLimitWeighting variableSpeedLimitWeighting = new VariableSpeedLimitWeighting(
-                baseWeighting,
+        final VariableSpeedLimitWeighting variableSpeedLimitWeighting = createVariableSpeedWeighting(
+                networkData,
                 speedLimits,
-                networkData.getNetworkGraphHopper().getEncodingManager(),
-                edgeIteratorStateReverseExtractor);
+                baseWeighting);
 
         CarAccessibleRoadsWeighting carAccessibleRoadsWeighting = new CarAccessibleRoadsWeighting(
                 variableSpeedLimitWeighting,
@@ -44,5 +42,17 @@ public class WeightingFactory {
                 networkData.getNetworkGraphHopper().getEncodingManager());
 
         return queryGraph.wrapWeighting(carAccessibleRoadsWeighting);
+    }
+
+    private VariableSpeedLimitWeighting createVariableSpeedWeighting(NetworkData networkData,
+            SpeedLimits speedLimits,
+            Weighting baseWeighting
+    ) {
+        VariableSpeedLimitWeighting variableSpeedLimitWeighting = new VariableSpeedLimitWeighting(
+                baseWeighting,
+                speedLimits,
+                networkData.getNetworkGraphHopper().getEncodingManager(),
+                edgeIteratorStateReverseExtractor);
+        return variableSpeedLimitWeighting;
     }
 }
