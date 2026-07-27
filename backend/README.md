@@ -10,8 +10,9 @@ This will start the preconfigured Keycloak container.
 Run the Spring Boot application in IntelliJ.
 
 The following public endpoints will be available without authorization:
-* [Swagger UI](http://localhost:8080/api-docs)
-* [Health endpoint](http://localhost:8080/actuator/health)
+* [Swagger UI](http://localhost:8080/api/rest/static-road-data/accessibility-map/swagger-ui)
+* [API docs (V2)](http://localhost:8080/api/rest/static-road-data/accessibility-map/api-docs/v2.yaml)
+* [Health endpoint](http://localhost:8080/api/rest/static-road-data/accessibility-map/actuator/health)
 
 ## Authorizing Swagger UI in frontend
 Use `client-id` and `client-secret` from `application-test.yml`.
