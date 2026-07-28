@@ -302,7 +302,7 @@
               <configOptions>
                 <useSpringBoot4>true</useSpringBoot4>
                 <generateBuilders>true</generateBuilders>
-                <generateConstructorWithAllArgs>true</generateConstructorWithAllArgs>
+                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
 
                 <!-- Whether to generate the server files using the delegate pattern -->
                 <delegatePattern>true</delegatePattern>

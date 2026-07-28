@@ -98,6 +98,7 @@
               <configOptions>
                 <useSpringBoot4>true</useSpringBoot4>
                 <generateBuilders>true</generateBuilders>
+                <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
                 <!-- Split endpoints into different classes according to tags -->
                 <useTags>true</useTags>
                 <!--
