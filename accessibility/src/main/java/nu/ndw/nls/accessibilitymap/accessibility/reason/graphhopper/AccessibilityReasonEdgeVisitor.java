@@ -54,9 +54,8 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
         DirectionalSegment directionalSegment = directionalSegmentsById.get(directionId);
 
         if (Objects.isNull(directionalSegment)) {
-            log.warn("No directional segment found for direction id {}", directionId);
+            log.error("No directional segment found for direction id {}", directionId);
             return;
-            // throw new IllegalStateException("No directional segment found for direction id %d".formatted(directionId));
         }
         pathFollowed.add(directionalSegment);
 
