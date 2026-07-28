@@ -174,7 +174,6 @@
               <modelPackage>${openapi-generator.base.classpath}.model.v2</modelPackage>
               <configOptions>
                 <useSpringBoot4>true</useSpringBoot4>
-                <generateBuilders>true</generateBuilders>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
 
                 <!-- Whether to generate the server files using the delegate pattern -->

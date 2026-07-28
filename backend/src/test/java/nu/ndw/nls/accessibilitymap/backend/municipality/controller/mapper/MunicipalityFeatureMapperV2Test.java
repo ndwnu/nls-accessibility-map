@@ -74,17 +74,19 @@ class MunicipalityFeatureMapperV2Test {
         List<Double> boundsStart = List.of(bounds.longitudeFrom(), bounds.latitudeFrom());
         List<Double> boundsEnd = List.of(bounds.longitudeTo(), bounds.latitudeTo());
 
-        MunicipalityPropertiesJson propertiesJson = new MunicipalityPropertiesJson(
-                municipality.name(),
-                municipality.searchDistanceInMetres(),
-                List.of(boundsStart, boundsEnd),
-                dateLastCheck);
+        MunicipalityPropertiesJson propertiesJson = new MunicipalityPropertiesJson()
+                .name(municipality.name())
+                .searchDistance(municipality.searchDistanceInMetres())
+                .bounds(List.of(boundsStart, boundsEnd))
+                .dateLastCheck(dateLastCheck);
 
-        MunicipalityFeatureJson featureJson = new MunicipalityFeatureJson(
-                FEATURE,
-                municipalityId,
-                pointJson,
-                propertiesJson);
-        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION, List.of(featureJson));
+        MunicipalityFeatureJson featureJson = new MunicipalityFeatureJson()
+                .type(FEATURE)
+                .id(municipalityId)
+                .geometry(pointJson)
+                .properties(propertiesJson);
+        return new MunicipalityFeatureCollectionJson()
+                .type(FEATURE_COLLECTION)
+                .features(List.of(featureJson));
     }
 }

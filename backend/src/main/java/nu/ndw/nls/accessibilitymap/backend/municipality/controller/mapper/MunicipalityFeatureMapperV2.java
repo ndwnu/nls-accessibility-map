@@ -24,21 +24,23 @@ public class MunicipalityFeatureMapperV2 {
     private final RoundDoubleMapper doubleMapper;
 
     public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
-        return new MunicipalityFeatureCollectionJson(FEATURE_COLLECTION, municipalities.stream().map(this::mapMunicipality).toList());
+        return new MunicipalityFeatureCollectionJson()
+                .type(FEATURE_COLLECTION)
+                .features(municipalities.stream().map(this::mapMunicipality).toList());
     }
 
     private MunicipalityFeatureJson mapMunicipality(Municipality municipality) {
         List<List<Double>> bounds = mapMunicipalityBounds(municipality.bounds());
 
-        return new MunicipalityFeatureJson(
-                FEATURE,
-                municipality.id(),
-                mapStartPoint(municipality),
-                new MunicipalityPropertiesJson(
-                        municipality.name(),
-                        municipality.searchDistanceInMetres(),
-                        bounds,
-                        municipality.dateLastCheck()));
+        return new MunicipalityFeatureJson()
+                .type(FEATURE)
+                .id(municipality.id())
+                .geometry(mapStartPoint(municipality))
+                .properties(new MunicipalityPropertiesJson()
+                        .name(municipality.name())
+                        .searchDistance(municipality.searchDistanceInMetres())
+                        .bounds(bounds)
+                        .dateLastCheck(municipality.dateLastCheck()));
     }
 
     private PointJson mapStartPoint(Municipality municipality) {
