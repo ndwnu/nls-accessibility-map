@@ -4,8 +4,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          7.0,
-          3.0
+          1.0,
+          1.0
         ]
       },
       "id": 1,
@@ -15,21 +15,29 @@
         "reasons": [
           [
             {
-              "type": "accessibleReason",
+              "type": "vehicleTypeReason",
               "becauseOf": [
                 {
-                  "type": "roadSection",
-                  "roadSectionId": 9
+                  "type": "trafficSign",
+                  "trafficSignId": "00000000-0000-4000-0000-000000000001",
+                  "trafficSignType": "C12"
+                },
+                {
+                  "type": "trafficSign",
+                  "trafficSignId": "00000000-0000-4000-0000-000000000002",
+                  "trafficSignType": "C12"
                 }
               ],
               "condition": "equals",
               "requestExemptionUrls": [],
-              "unitSymbol": "boolean",
-              "value": false
+              "unitSymbol": "enum",
+              "values": [
+                "truck"
+              ]
             }
           ]
         ],
-        "roadSectionId": 9
+        "roadSectionId": 1
       },
       "type": "Feature"
     },
@@ -38,23 +46,23 @@
         "type": "LineString",
         "coordinates": [
           [
-            4.0000007,
-            5.000001
+            4.600001071326784,
+            1.000001180000013
           ],
           [
-            5.0000007,
-            2.0000011
+            5.0000008,
+            1.0000012
           ]
         ]
       },
       "id": 2,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
-        "roadSectionId": 7
+        "roadSectionId": 1
       },
       "type": "Feature"
     },
@@ -63,23 +71,23 @@
         "type": "LineString",
         "coordinates": [
           [
-            5.0000007,
-            2.0000011
+            5.0000008,
+            1.0000012
           ],
           [
-            4.0000007,
-            5.000001
+            4.600001071326784,
+            1.000001180000013
           ]
         ]
       },
       "id": 3,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
-        "roadSectionId": 7
+        "roadSectionId": 1
       },
       "type": "Feature"
     },
@@ -88,23 +96,23 @@
         "type": "LineString",
         "coordinates": [
           [
-            5.0000007,
-            2.0000011
+            1.0000009,
+            1.000001
           ],
           [
-            7.0000007,
-            2.0000012
+            4.600001071326784,
+            1.000001180000013
           ]
         ]
       },
       "id": 4,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
-        "roadSectionId": 8
+        "roadSectionId": 1
       },
       "type": "Feature"
     },
@@ -113,23 +121,23 @@
         "type": "LineString",
         "coordinates": [
           [
-            7.0000007,
-            2.0000012
+            4.600001071326784,
+            1.000001180000013
           ],
           [
-            5.0000007,
-            2.0000011
+            1.0000009,
+            1.000001
           ]
         ]
       },
       "id": 5,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
-        "delayInMilliSecondsBecauseOfRestrictions": 4081815,
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
-        "roadSectionId": 8
+        "roadSectionId": 1
       },
       "type": "Feature"
     },
@@ -138,12 +146,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            7.000000579995452,
-            5.600137522457288
+            5.0000008,
+            1.0000012
           ],
           [
-            7.0000005,
-            8.000001
+            10.0000006,
+            1.0000013
           ]
         ]
       },
@@ -154,7 +162,7 @@
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
-        "roadSectionId": 9
+        "roadSectionId": 2
       },
       "type": "Feature"
     },
@@ -163,23 +171,23 @@
         "type": "LineString",
         "coordinates": [
           [
-            7.0000005,
-            8.000001
+            10.0000006,
+            1.0000013
           ],
           [
-            7.000000579995452,
-            5.600137522457288
+            5.0000008,
+            1.0000012
           ]
         ]
       },
       "id": 7,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
-        "roadSectionId": 9
+        "roadSectionId": 2
       },
       "type": "Feature"
     },
@@ -188,12 +196,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            7.000000666666706,
-            3.000000000000022
+            10.0000006,
+            1.0000013
           ],
           [
-            7.000000579995452,
-            5.600137522457288
+            10.0000003,
+            10.000001
           ]
         ]
       },
@@ -204,7 +212,7 @@
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
-        "roadSectionId": 9
+        "roadSectionId": 3
       },
       "type": "Feature"
     },
@@ -213,12 +221,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            7.000000579995452,
-            5.600137522457288
+            10.0000003,
+            10.000001
           ],
           [
-            7.000000666666706,
-            3.000000000000022
+            10.0000006,
+            1.0000013
           ]
         ]
       },
@@ -229,7 +237,7 @@
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
-        "roadSectionId": 9
+        "roadSectionId": 3
       },
       "type": "Feature"
     },
@@ -238,12 +246,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            7.0000006799986245,
-            2.600042440092127
+            10.0000003,
+            10.000001
           ],
           [
-            7.000000666666706,
-            3.000000000000022
+            5.0000005,
+            10.0000008
           ]
         ]
       },
@@ -254,7 +262,7 @@
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
-        "roadSectionId": 9
+        "roadSectionId": 4
       },
       "type": "Feature"
     },
@@ -263,12 +271,12 @@
         "type": "LineString",
         "coordinates": [
           [
-            7.000000666666706,
-            3.000000000000022
+            5.0000005,
+            10.0000008
           ],
           [
-            7.0000006799986245,
-            2.600042440092127
+            10.0000003,
+            10.000001
           ]
         ]
       },
@@ -279,7 +287,207 @@
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
-        "roadSectionId": 9
+        "roadSectionId": 4
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            4.600008060044127,
+            10.00000079000019
+          ],
+          [
+            1.0000006,
+            10.0000007
+          ]
+        ]
+      },
+      "id": 12,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1.0000006,
+            10.0000007
+          ],
+          [
+            4.600008060044127,
+            10.00000079000019
+          ]
+        ]
+      },
+      "id": 13,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": true,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "backward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.0000005,
+            10.0000008
+          ],
+          [
+            4.600008060044127,
+            10.00000079000019
+          ]
+        ]
+      },
+      "id": 14,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            4.600008060044127,
+            10.00000079000019
+          ],
+          [
+            5.0000005,
+            10.0000008
+          ]
+        ]
+      },
+      "id": 15,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "backward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 5
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1.0000009,
+            1.000001
+          ],
+          [
+            1.0000006,
+            10.0000007
+          ]
+        ]
+      },
+      "id": 16,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "backward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 6
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            4.0000007,
+            5.000001
+          ],
+          [
+            5.0000007,
+            2.0000011
+          ]
+        ]
+      },
+      "id": 17,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.0000007,
+            2.0000011
+          ],
+          [
+            4.0000007,
+            5.000001
+          ]
+        ]
+      },
+      "id": 18,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "backward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 7
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.0000007,
+            2.0000011
+          ],
+          [
+            7.0000007,
+            2.0000012
+          ]
+        ]
+      },
+      "id": 19,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 8
       },
       "type": "Feature"
     },
@@ -292,16 +500,41 @@
             2.0000012
           ],
           [
-            7.0000006799986245,
-            2.600042440092127
+            5.0000007,
+            2.0000011
           ]
         ]
       },
-      "id": 12,
+      "id": 20,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
-        "delayInMilliSecondsBecauseOfRestrictions": 4081815,
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "backward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 8
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            7.0000007,
+            2.0000012
+          ],
+          [
+            7.0000005,
+            8.000001
+          ]
+        ]
+      },
+      "id": 21,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
         "roadSectionId": 9
@@ -313,8 +546,8 @@
         "type": "LineString",
         "coordinates": [
           [
-            7.0000006799986245,
-            2.600042440092127
+            7.0000005,
+            8.000001
           ],
           [
             7.0000007,
@@ -322,7 +555,7 @@
           ]
         ]
       },
-      "id": 13,
+      "id": 22,
       "properties": {
         "type": "roadSectionSegment",
         "accessible": false,
@@ -338,8 +571,8 @@
         "type": "LineString",
         "coordinates": [
           [
-            5.099999999999954,
-            8.000000904999975
+            7.0000005,
+            8.000001
           ],
           [
             5.0000005,
@@ -347,10 +580,10 @@
           ]
         ]
       },
-      "id": 14,
+      "id": 23,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
@@ -367,65 +600,15 @@
             8.0000009
           ],
           [
-            5.099999999999954,
-            8.000000904999975
-          ]
-        ]
-      },
-      "id": 15,
-      "properties": {
-        "type": "roadSectionSegment",
-        "accessible": true,
-        "delayInMilliSecondsBecauseOfRestrictions": 0,
-        "direction": "backward",
-        "functionalRoadClass": "1",
-        "roadSectionId": 10
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            7.0000005,
-            8.000001
-          ],
-          [
-            5.099999999999954,
-            8.000000904999975
-          ]
-        ]
-      },
-      "id": 16,
-      "properties": {
-        "type": "roadSectionSegment",
-        "accessible": true,
-        "delayInMilliSecondsBecauseOfRestrictions": 0,
-        "direction": "forward",
-        "functionalRoadClass": "1",
-        "roadSectionId": 10
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            5.099999999999954,
-            8.000000904999975
-          ],
-          [
             7.0000005,
             8.000001
           ]
         ]
       },
-      "id": 17,
+      "id": 24,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
@@ -447,12 +630,37 @@
           ]
         ]
       },
-      "id": 18,
+      "id": 25,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 11
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            4.0000007,
+            5.000001
+          ],
+          [
+            5.0000005,
+            8.0000009
+          ]
+        ]
+      },
+      "id": 26,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": false,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 11
       },
@@ -472,10 +680,10 @@
           ]
         ]
       },
-      "id": 19,
+      "id": 27,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "forward",
         "functionalRoadClass": "1",
@@ -497,64 +705,14 @@
           ]
         ]
       },
-      "id": 20,
+      "id": 28,
       "properties": {
         "type": "roadSectionSegment",
-        "accessible": true,
+        "accessible": false,
         "delayInMilliSecondsBecauseOfRestrictions": 0,
         "direction": "backward",
         "functionalRoadClass": "1",
         "roadSectionId": 12
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            5.0000005,
-            10.0000008
-          ],
-          [
-            5.0000005,
-            8.0000009
-          ]
-        ]
-      },
-      "id": 21,
-      "properties": {
-        "type": "roadSectionSegment",
-        "accessible": true,
-        "delayInMilliSecondsBecauseOfRestrictions": 0,
-        "direction": "forward",
-        "functionalRoadClass": "1",
-        "roadSectionId": 13
-      },
-      "type": "Feature"
-    },
-    {
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [
-            5.0000005,
-            8.0000009
-          ],
-          [
-            5.0000005,
-            10.0000008
-          ]
-        ]
-      },
-      "id": 22,
-      "properties": {
-        "type": "roadSectionSegment",
-        "accessible": true,
-        "delayInMilliSecondsBecauseOfRestrictions": 0,
-        "direction": "backward",
-        "functionalRoadClass": "1",
-        "roadSectionId": 13
       },
       "type": "Feature"
     }

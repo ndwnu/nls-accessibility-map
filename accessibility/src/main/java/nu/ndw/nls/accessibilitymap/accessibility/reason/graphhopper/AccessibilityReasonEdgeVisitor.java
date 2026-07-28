@@ -52,6 +52,11 @@ public class AccessibilityReasonEdgeVisitor implements EdgeVisitor {
         int directionId = edgeIteratorState.getEdgeKey();
 
         DirectionalSegment directionalSegment = directionalSegmentsById.get(directionId);
+
+        if (Objects.isNull(directionalSegment)) {
+            log.error("No directional segment found for direction id {}", directionId);
+            return;
+        }
         pathFollowed.add(directionalSegment);
 
         collectedReasons.addAll(restrictionMappers.stream()

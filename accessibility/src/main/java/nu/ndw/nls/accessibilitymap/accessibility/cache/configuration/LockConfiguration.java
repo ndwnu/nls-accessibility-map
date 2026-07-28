@@ -20,7 +20,7 @@ public class LockConfiguration {
 
     private static final int RETRY_INTERVAL_MS = 500;
 
-    Duration defaultLockTtl = Duration.ofSeconds(LOCK_TIMEOUT_SECONDS);
+    private Duration defaultLockTtl = Duration.ofSeconds(LOCK_TIMEOUT_SECONDS);
 
-    Duration lockRetryInterval = Duration.ofMillis(RETRY_INTERVAL_MS);
+    private Duration lockRetryInterval = Duration.ofMillis(RETRY_INTERVAL_MS);
 }

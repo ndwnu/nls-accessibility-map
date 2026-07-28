@@ -13,6 +13,7 @@ import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.PMap;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
+import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.dto.SpeedLimits;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class WeightingFactoryTest {
 
     private WeightingFactory weightingFactory;
+
+    @Mock
+    private NwbNetworkData nwbNetworkData;
 
     @Mock
     private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
@@ -55,6 +59,9 @@ class WeightingFactoryTest {
     @Captor
     private ArgumentCaptor<VariableSpeedLimitWeighting> variableSpeedLimitWeightingCaptor;
 
+    @Captor
+    private ArgumentCaptor<CarAccessibleRoadsWeighting> carAccessibleRoadsWeightingCaptor;
+
     @BeforeEach
     void setUp() {
         weightingFactory = new WeightingFactory(edgeIteratorStateReverseExtractor);
@@ -70,6 +77,26 @@ class WeightingFactoryTest {
         assertThat(weightingFactory.createWeighting(queryGraph, networkData, speedLimits)).isEqualTo(wrappedWeighting);
 
         VariableSpeedLimitWeighting captured = variableSpeedLimitWeightingCaptor.getValue();
+        verifyVariableSpeedsWeighting(captured);
+    }
+
+    @Test
+    void createWeightingOnlyCarAccessible() {
+        when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
+        when(networkGraphHopper.createWeighting(eq(NetworkConstants.CAR_PROFILE), any(PMap.class))).thenReturn(baseWeighting);
+        when(networkGraphHopper.getEncodingManager()).thenReturn(encodingManager);
+        when(queryGraph.wrapWeighting(carAccessibleRoadsWeightingCaptor.capture())).thenReturn(wrappedWeighting);
+        when(networkData.getNwbNetworkData()).thenReturn(nwbNetworkData);
+
+        assertThat(weightingFactory.createWeightingOnlyCarAccessible(queryGraph, networkData, speedLimits)).isEqualTo(wrappedWeighting);
+
+        CarAccessibleRoadsWeighting captured = carAccessibleRoadsWeightingCaptor.getValue();
+        assertThat(getField(captured, "sourceWeighting")).isInstanceOf(VariableSpeedLimitWeighting.class);
+        assertThat(getField(captured, "encodingManager")).isEqualTo(encodingManager);
+        assertThat(getField(captured, "nwbNetworkData")).isEqualTo(nwbNetworkData);
+    }
+
+    private void verifyVariableSpeedsWeighting(VariableSpeedLimitWeighting captured) {
         assertThat(getField(captured, "sourceWeighting")).isEqualTo(baseWeighting);
         assertThat(getField(captured, "speedLimits")).isEqualTo(speedLimits);
         assertThat(getField(captured, "encodingManager")).isEqualTo(encodingManager);

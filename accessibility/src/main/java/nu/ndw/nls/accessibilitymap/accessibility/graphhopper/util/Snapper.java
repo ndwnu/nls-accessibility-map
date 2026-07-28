@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Objects;
@@ -12,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Location;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
-import nu.ndw.nls.accessibilitymap.accessibility.nwb.dto.AccessibilityNwbRoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.service.PointMatchService;
-import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.routingmapmatcher.model.singlepoint.SinglePointMatch.CandidateMatch;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import org.locationtech.jts.geom.Geometry;
@@ -26,6 +25,8 @@ import org.springframework.stereotype.Service;
 public class Snapper {
 
     private final PointMatchService pointMatchService;
+
+    private final EdgeIteratorStateReverseExtractor reverseExtractor;
 
     public Optional<Snap> snapLocation(NetworkData networkData, Location location) {
 
@@ -40,7 +41,7 @@ public class Snapper {
                 .map(snappedPoint -> networkGraphHopper.getLocationIndex().findClosest(
                         snappedPoint.getY(),
                         snappedPoint.getX(),
-                        edgeIteratorState -> locationIsCarAccessible(networkData, edgeIteratorState)));
+                        edgeIteratorState -> locationIsAccessible(networkData, edgeIteratorState)));
     }
 
     public Optional<Snap> snapRestriction(NetworkGraphHopper networkGraphHopper, Restriction restriction) {
@@ -69,16 +70,15 @@ public class Snapper {
         return encodedRoadSectionId == restriction.roadSectionId();
     }
 
-    private static boolean locationIsCarAccessible(
+    private boolean locationIsAccessible(
             NetworkData networkData,
             EdgeIteratorState edgeIteratorState
     ) {
         EncodingManager encodingManager = networkData.getNetworkGraphHopper().getEncodingManager();
         int roadSectionId = edgeIteratorState.get(encodingManager.getIntEncodedValue(WAY_ID_KEY));
-
-        CarriagewayTypeCode carriagewayTypeCode = networkData.getNwbNetworkData().findAccessibilityNwbRoadSectionById(roadSectionId)
-                .map(AccessibilityNwbRoadSection::carriagewayTypeCode)
-                .orElseThrow(() -> new IllegalStateException("Road section not found for link id: " + roadSectionId));
-        return IsCarAccessibleUtil.isAccessible(carriagewayTypeCode);
+        boolean reverse = reverseExtractor.hasReversed(edgeIteratorState);
+        return networkData.getNwbNetworkData().findAccessibilityNwbRoadSectionById(roadSectionId).stream()
+                .allMatch(accessibilityNwbRoadSection ->
+                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, reverse));
     }
 }

@@ -1,28 +1,27 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.request.mapper;
 
 import com.graphhopper.util.shapes.BBox;
+import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest.AccessibilityRequestBuilder;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.configuration.BoundingBoxAreaConfiguration;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AreaRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.BoundingBoxAreaRequestJson;
+import nu.ndw.nls.geometry.factories.GeometryFactoryWgs84;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.operation.distance.DistanceOp;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AccessibilityRequestMapperBoundingBoxAreaMapper implements AccessibilityRequestBuilderAreaMapper {
 
     private static final int METERS_PER_DEGREE = 111_320;
 
     private static final double SEARCH_GRID_DISTANCE_FROM_REQUEST_AREA = 10_000.0; // 10KM
 
-    private static final double SEARCH_DISTANCE_MULTIPLIER = 1.5;
+    private final GeometryFactoryWgs84 geometryFactory;
 
-    private final GeometryFactory geometryFactory;
-
-    public AccessibilityRequestMapperBoundingBoxAreaMapper() {
-        geometryFactory = new GeometryFactory();
-    }
+    private final BoundingBoxAreaConfiguration boundingBoxAreaConfiguration;
 
     public void build(AccessibilityRequestBuilder accessibilityRequestBuilder, AreaRequestJson areaRequestJson) {
         if (areaRequestJson instanceof BoundingBoxAreaRequestJson boundingBoxAreaRequestJson) {
@@ -59,6 +58,6 @@ public class AccessibilityRequestMapperBoundingBoxAreaMapper implements Accessib
         double maxDistance = DistanceOp.distance(
                 geometryFactory.createPoint(new Coordinate(searchArea.minLon, searchArea.minLat)),
                 geometryFactory.createPoint(new Coordinate(searchArea.maxLon, searchArea.maxLat)));
-        return maxDistance * METERS_PER_DEGREE * SEARCH_DISTANCE_MULTIPLIER;
+        return maxDistance * METERS_PER_DEGREE * boundingBoxAreaConfiguration.getSearchDistanceMultiplier();
     }
 }

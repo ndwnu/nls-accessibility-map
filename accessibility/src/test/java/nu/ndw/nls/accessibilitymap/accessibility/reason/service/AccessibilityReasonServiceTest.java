@@ -110,13 +110,13 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeightingOnlyCarAccessible()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
                                 && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);
@@ -159,13 +159,13 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeightingOnlyCarAccessible()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
                                 && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);
@@ -188,13 +188,13 @@ class AccessibilityReasonServiceTest {
         when(accessibilityNetwork.getFrom()).thenReturn(from);
         when(accessibilityNetwork.getDestination()).thenReturn(destination);
         when(accessibilityNetwork.getQueryGraph()).thenReturn(queryGraph);
-        when(accessibilityNetwork.getWeighting()).thenReturn(weighting);
+        when(accessibilityNetwork.getWeightingOnlyCarAccessible()).thenReturn(weighting);
 
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
                                 && algorithmOptions.getAlgorithm().equals("dijkstrabi")
-                                && algorithmOptions.getTraversalMode() == TraversalMode.NODE_BASED)))
+                                && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
         when(from.getClosestNode()).thenReturn(1);

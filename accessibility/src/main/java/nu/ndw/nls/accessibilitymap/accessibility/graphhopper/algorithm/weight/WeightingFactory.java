@@ -20,12 +20,39 @@ public class WeightingFactory {
 
         Weighting baseWeighting = networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
 
+        final VariableSpeedLimitWeighting variableSpeedLimitWeighting = createVariableSpeedWeighting(
+                networkData,
+                speedLimits,
+                baseWeighting);
+
+        return queryGraph.wrapWeighting(variableSpeedLimitWeighting);
+    }
+
+    public Weighting createWeightingOnlyCarAccessible(QueryGraph queryGraph, NetworkData networkData, SpeedLimits speedLimits) {
+        Weighting baseWeighting = networkData.getNetworkGraphHopper().createWeighting(NetworkConstants.CAR_PROFILE, new PMap());
+
+        final VariableSpeedLimitWeighting variableSpeedLimitWeighting = createVariableSpeedWeighting(
+                networkData,
+                speedLimits,
+                baseWeighting);
+
+        CarAccessibleRoadsWeighting carAccessibleRoadsWeighting = new CarAccessibleRoadsWeighting(
+                variableSpeedLimitWeighting,
+                networkData.getNwbNetworkData(),
+                networkData.getNetworkGraphHopper().getEncodingManager());
+
+        return queryGraph.wrapWeighting(carAccessibleRoadsWeighting);
+    }
+
+    private VariableSpeedLimitWeighting createVariableSpeedWeighting(NetworkData networkData,
+            SpeedLimits speedLimits,
+            Weighting baseWeighting
+    ) {
         VariableSpeedLimitWeighting variableSpeedLimitWeighting = new VariableSpeedLimitWeighting(
                 baseWeighting,
                 speedLimits,
                 networkData.getNetworkGraphHopper().getEncodingManager(),
                 edgeIteratorStateReverseExtractor);
-
-        return queryGraph.wrapWeighting(variableSpeedLimitWeighting);
+        return variableSpeedLimitWeighting;
     }
 }

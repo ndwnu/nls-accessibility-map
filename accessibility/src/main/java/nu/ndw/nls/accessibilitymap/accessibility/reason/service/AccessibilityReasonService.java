@@ -1,6 +1,8 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.service;
 
-import static com.graphhopper.routing.util.TraversalMode.NODE_BASED;
+import static com.graphhopper.routing.util.TraversalMode.EDGE_BASED;
+import static com.graphhopper.util.Parameters.Algorithms.DIJKSTRA_BI;
+import static com.graphhopper.util.Parameters.Routing.PASS_THROUGH;
 
 import com.google.common.base.Stopwatch;
 import com.graphhopper.routing.AlgorithmOptions;
@@ -37,7 +39,8 @@ public class AccessibilityReasonService {
             Optional<DirectionalSegment> toSegment,
             Map<Integer, DirectionalSegment> directionalSegmentsById,
             AccessibilityNetwork accessibilityNetwork,
-            boolean effectivelyAccessible) {
+            boolean effectivelyAccessible
+    ) {
         return toSegment
                 .filter(directionalSegment -> isInaccessible(directionalSegment, effectivelyAccessible))
                 .map(directionalSegment -> calculateReasons(directionalSegmentsById, accessibilityNetwork))
@@ -55,7 +58,8 @@ public class AccessibilityReasonService {
     @SuppressWarnings("java:S1941")
     private List<AccessibilityReasonGroup> calculateReasons(
             Map<Integer, DirectionalSegment> directionalSegmentsById,
-            AccessibilityNetwork accessibilityNetwork) {
+            AccessibilityNetwork accessibilityNetwork
+    ) {
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 
@@ -68,7 +72,7 @@ public class AccessibilityReasonService {
 
         RoutingAlgorithm router = routingAlgorithmFactory.createAlgo(
                 accessibilityNetwork.getQueryGraph(),
-                accessibilityNetwork.getWeighting(),
+                accessibilityNetwork.getWeightingOnlyCarAccessible(),
                 createAlgorithmOptions());
 
         List<Path> routes = router.calcPaths(from.getClosestNode(), destination.getClosestNode()).stream()
@@ -93,10 +97,10 @@ public class AccessibilityReasonService {
     public static AlgorithmOptions createAlgorithmOptions() {
 
         AlgorithmOptions algorithmOptions = new AlgorithmOptions();
-        algorithmOptions.setAlgorithm("dijkstrabi");
-        algorithmOptions.setTraversalMode(NODE_BASED);
+        algorithmOptions.setAlgorithm(DIJKSTRA_BI);
+        algorithmOptions.setTraversalMode(EDGE_BASED);
         algorithmOptions.setHints(new PMap(Map.of(
-                "pass_through", true
+                PASS_THROUGH, true
         )));
 
         return algorithmOptions;

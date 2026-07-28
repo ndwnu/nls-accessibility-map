@@ -68,7 +68,9 @@ class AccessibilityReasonEdgeVisitorTest {
     @BeforeEach
     void setUp() {
 
-        accessibilityReasonEdgeVisitor = AccessibilityReasonEdgeVisitor.create(Map.of(1, directionalSegment), List.of(restrictionMapper), nwbNetworkData);
+        accessibilityReasonEdgeVisitor = AccessibilityReasonEdgeVisitor.create(Map.of(1, directionalSegment),
+                List.of(restrictionMapper),
+                nwbNetworkData);
     }
 
     @Test
@@ -90,6 +92,16 @@ class AccessibilityReasonEdgeVisitorTest {
         assertThat(accessibilityReasonEdgeVisitor.getPathFollowed()).containsExactly(directionalSegment);
 
         loggerExtension.containsLog(Level.DEBUG, "Reduced reason type reasonType1 to accessibilityReason3");
+    }
+
+    @Test
+    void visit_noDirectionalSegment() {
+        when(edgeIteratorState.getEdgeKey()).thenReturn(2);
+        accessibilityReasonEdgeVisitor.next(edgeIteratorState, 0, 0);
+        accessibilityReasonEdgeVisitor.finish();
+
+        assertThat(accessibilityReasonEdgeVisitor.getReasons()).isEmpty();
+        assertThat(accessibilityReasonEdgeVisitor.getPathFollowed()).isEmpty();
     }
 
     @Test

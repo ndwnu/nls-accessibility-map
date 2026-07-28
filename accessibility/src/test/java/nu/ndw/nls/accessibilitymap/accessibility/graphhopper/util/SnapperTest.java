@@ -2,7 +2,6 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util;
 
 import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +9,7 @@ import ch.qos.logback.classic.Level;
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.index.LocationIndexTree;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.EdgeIteratorState;
@@ -41,6 +41,9 @@ class SnapperTest {
 
     @Mock
     private PointMatchService pointMatchService;
+
+    @Mock
+    private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
 
     @Mock
     private NetworkGraphHopper networkGraphHopper;
@@ -93,14 +96,14 @@ class SnapperTest {
     @BeforeEach
     void setUp() {
 
-        snapper = new Snapper(pointMatchService);
+        snapper = new Snapper(pointMatchService, edgeIteratorStateReverseExtractor);
     }
 
     @Test
     void snapLocation() {
 
         setupFixtureForSnapLocation(CarriagewayTypeCode.RB);
-
+        when(accessibilityNwbRoadSection.forwardAccessible()).thenReturn(true);
         Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
 
         assertThat(foundSnap).contains(actualSnap);
@@ -118,20 +121,9 @@ class SnapperTest {
         assertThat(edgeFilterCaptor.getValue().accept(edgeIteratorState)).isFalse();
     }
 
-    @Test
-    void snapLocation_roadSectionNotPresentInNetworkGraphHopper() {
-
-        setupFixtureForSnapLocation(null);
-
-        Optional<Snap> foundSnap = snapper.snapLocation(networkData, location);
-
-        assertThat(foundSnap).contains(actualSnap);
-        assertThatThrownBy(() -> edgeFilterCaptor.getValue().accept(edgeIteratorState))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Road section not found for link id: 23");
-    }
 
     private void setupFixtureForSnapLocation(CarriagewayTypeCode carriageWayTypeCode) {
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(false);
         when(location.point()).thenReturn(point);
         when(networkData.getNetworkGraphHopper()).thenReturn(networkGraphHopper);
         when(networkGraphHopper.getLocationIndex()).thenReturn(locationIndexTree);

@@ -224,7 +224,8 @@ class IsochroneServiceIT {
             int edgeKey,
             long time,
             double distance,
-            double weight) {
+            double weight
+    ) {
         assertThat(label).isInstanceOf(RestrictionsIsochroneLabel.class);
         assertThat(label.getNode()).isEqualTo(node);
         assertThat(label.getEdge()).isEqualTo(edge);
@@ -245,7 +246,8 @@ class IsochroneServiceIT {
 
         Weighting weighting = queryGraph.wrapWeighting(
                 networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()));
-
+        Weighting weightingOnlyCarAccessible = queryGraph.wrapWeighting(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE,
+                new PMap()));
         return new AccessibilityNetwork(
                 networkData,
                 queryGraph,
@@ -253,6 +255,7 @@ class IsochroneServiceIT {
                 Map.of(),
                 fromSnap,
                 null,
-                weighting);
+                weighting,
+                weightingOnlyCarAccessible);
     }
 }

@@ -80,6 +80,9 @@ class AccessibilityNetworkProviderTest {
     @Mock
     private Weighting weighting;
 
+    @Mock
+    private Weighting onlyCarAccessibleWeighting;
+
     private Location from;
 
     private Location destination;
@@ -121,7 +124,8 @@ class AccessibilityNetworkProviderTest {
             queryGraphMockStatic.when(() -> QueryGraph.create(baseGraph, List.of(restrictionSnap, fromSnap, destinationSnap)))
                     .thenReturn(queryGraph);
             when(weightingFactory.createWeighting(queryGraph, networkData, speedLimits)).thenReturn(weighting);
-
+            when(weightingFactory.createWeightingOnlyCarAccessible(queryGraph, networkData, speedLimits)).thenReturn(
+                    onlyCarAccessibleWeighting);
             AccessibilityNetwork accessibilityNetwork = accessibilityNetworkProvider.get(
                     networkData,
                     restrictions,
@@ -136,6 +140,7 @@ class AccessibilityNetworkProviderTest {
             assertThat(accessibilityNetwork.getFrom()).isEqualTo(fromSnap);
             assertThat(accessibilityNetwork.getDestination()).isEqualTo(destinationSnap);
             assertThat(accessibilityNetwork.getWeighting()).isEqualTo(weighting);
+            assertThat(accessibilityNetwork.getWeightingOnlyCarAccessible()).isEqualTo(onlyCarAccessibleWeighting);
         }
     }
 

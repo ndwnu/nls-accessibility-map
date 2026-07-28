@@ -9,21 +9,12 @@ spring:
     url: jdbc:postgresql://${hostDatabase}:5432/nls-maps?ApplicationName=nls-accessibility-map&stringtype=unspecified
     username: nls-maps
     password: nls-maps
-
-nls:
-  keycloak:
-    url: http://${hostKeycloak}:8000/auth
-
-management:
-  datadog:
-    metrics:
-      export:
-        enabled: false
-
 nu:
   ndw:
     nls:
       accessibilitymap:
+        bounding-box-area:
+          search-distance-multiplier: 3
         network:
           cache:
             load-data-on-startup: false
@@ -43,6 +34,16 @@ nu:
               updateRoadSection:
                 messages-to-skip:
                 listener-auto-start: true
+nls:
+  keycloak:
+    url: http://${hostKeycloak}:8000/auth
+
+management:
+  datadog:
+    metrics:
+      export:
+        enabled: false
+
 logging:
   level:
     root: INFO
