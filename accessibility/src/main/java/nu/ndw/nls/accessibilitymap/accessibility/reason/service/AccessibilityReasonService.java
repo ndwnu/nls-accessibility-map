@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.reason.service;
 
 import static com.graphhopper.routing.util.TraversalMode.EDGE_BASED;
-import static com.graphhopper.util.Parameters.Algorithms.DIJKSTRA_BI;
+import static com.graphhopper.util.Parameters.Algorithms.DIJKSTRA;
 import static com.graphhopper.util.Parameters.Routing.PASS_THROUGH;
 
 import com.google.common.base.Stopwatch;
@@ -66,6 +66,8 @@ public class AccessibilityReasonService {
         Snap from = accessibilityNetwork.getFrom();
         Snap destination = accessibilityNetwork.getDestination();
 
+        // debug write geojson with the snapped from and destination
+
         if (Objects.isNull(destination)) {
             return List.of();
         }
@@ -97,7 +99,7 @@ public class AccessibilityReasonService {
     public static AlgorithmOptions createAlgorithmOptions() {
 
         AlgorithmOptions algorithmOptions = new AlgorithmOptions();
-        algorithmOptions.setAlgorithm(DIJKSTRA_BI);
+        algorithmOptions.setAlgorithm(DIJKSTRA);
         algorithmOptions.setTraversalMode(EDGE_BASED);
         algorithmOptions.setHints(new PMap(Map.of(
                 PASS_THROUGH, true
