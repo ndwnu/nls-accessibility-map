@@ -44,6 +44,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.service.debug.services.BoundingBoxService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
@@ -97,6 +98,9 @@ class AccessibilityDebuggerTest {
     @Mock
     private Weighting weighting;
 
+    @Mock
+    private BoundingBoxService boundingBoxService;
+
     @BeforeEach
     void setUp() throws IOException {
 
@@ -106,7 +110,8 @@ class AccessibilityDebuggerTest {
                 debugConfiguration,
                 jtsPointJsonMapper,
                 jtsLineStringJsonMapper,
-                jtsPolygonJsonMapper);
+                jtsPolygonJsonMapper,
+                boundingBoxService);
     }
 
     @AfterEach

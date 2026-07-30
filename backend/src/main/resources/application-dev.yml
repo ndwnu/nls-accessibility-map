@@ -27,6 +27,9 @@ nu:
           cache:
             load-data-on-startup: false
             watch-for-updates: false
+        accessibility:
+          debug:
+            enabled: true
       springboot:
         message:
           stream:
@@ -47,4 +50,4 @@ management:
 logging:
   level:
     root: INFO
-    nu.ndw.nls: TRACE
+    nu.ndw.nls: INFO
