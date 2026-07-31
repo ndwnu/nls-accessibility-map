@@ -33,7 +33,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.RestrictionProperties.RestrictionPropertiesBuilder;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
-import nu.ndw.nls.accessibilitymap.accessibility.service.debug.services.BoundingBoxService;
+import nu.ndw.nls.accessibilitymap.accessibility.service.debug.services.GeoJsonBoundingService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
@@ -62,6 +62,8 @@ public class AccessibilityDebugger {
 
     private static final String FILE_PART_NAME_GRAPH_HOPPER_EDGES = "graphHopper.edges";
 
+    private static final String FILE_PART_NAME_GRAPH_HOPPER_NODES = "graphHopper.nodes";
+
     private static final String FILE_PART_NAME_GRAPH_HOPPER_NODES_BOUND_TO_ACCESSIBILITY = "graphHopper.nodes.bound.to.acccessiblity";
 
     private static final String FILE_PART_NAME_GRAPH_HOPPER_EDGES_BOUND_TO_ACCESSIBILITY = "graphHopper.edges.bound.to.acccessiblity";
@@ -73,8 +75,6 @@ public class AccessibilityDebugger {
 
     private static final String FILE_PART_NAME_ACCESSIBILITY_UNROUTABLE_ROAD_SECTIONS = "accessibility.unroutableRoadSections";
 
-    private static final String FILE_PART_NAME_GRAPH_HOPPER_NODES = "graphHopper.nodes";
-
     private final DebugConfiguration debugConfiguration;
 
     private final JtsPointJsonMapper jtsPointJsonMapper;
@@ -85,7 +85,7 @@ public class AccessibilityDebugger {
 
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
-    private final BoundingBoxService boundingBoxService;
+    private final GeoJsonBoundingService geoJsonBoundingService;
 
     public void writeDebug(Accessibility accessibility) {
 
@@ -102,8 +102,16 @@ public class AccessibilityDebugger {
         writeDebug(FILE_PART_NAME_ACCESSIBILITY_UNROUTABLE_ROAD_SECTIONS, accessibility.unroutableRoadSections());
         writeDebug(FILE_PART_NAME_ACCESSIBILITY_COMBINED_ACCESSIBILITY, accessibility.combinedAccessibility());
 
-        boundGraphHopperNodesToAccessibilityResult();
-        boundGraphHopperEdgesToAccessibilityResult();
+        // Create nodes and edges files for our active accessibility region, useful when debugging large areas
+        boundTargetFileToBoundingBoxFile(
+                FILE_PART_NAME_ACCESSIBILITY_COMBINED_ACCESSIBILITY,
+                FILE_PART_NAME_GRAPH_HOPPER_NODES,
+                FILE_PART_NAME_GRAPH_HOPPER_NODES_BOUND_TO_ACCESSIBILITY);
+
+        boundTargetFileToBoundingBoxFile(
+                FILE_PART_NAME_ACCESSIBILITY_COMBINED_ACCESSIBILITY,
+                FILE_PART_NAME_GRAPH_HOPPER_EDGES,
+                FILE_PART_NAME_GRAPH_HOPPER_EDGES_BOUND_TO_ACCESSIBILITY);
     }
 
     public void writeDebug(String name, Collection<RoadSection> roadSections) {
@@ -279,33 +287,19 @@ public class AccessibilityDebugger {
         writeGraphHopperEdges(queryGraph);
     }
 
-    private void boundGraphHopperNodesToAccessibilityResult() {
-        File accessibilityCombined = resolveGeojsonPath(FILE_PART_NAME_ACCESSIBILITY_COMBINED_ACCESSIBILITY).toFile();
-        File nodes = resolveGeojsonPath(FILE_PART_NAME_GRAPH_HOPPER_NODES).toFile();
 
-        if (!accessibilityCombined.exists() || !nodes.exists()) {
-            return;
-        }
 
-        boundingBoxService.boundTargetFileToBoundingBoxFile(
-                accessibilityCombined,
-                nodes,
-                resolveGeojsonPath(FILE_PART_NAME_GRAPH_HOPPER_NODES_BOUND_TO_ACCESSIBILITY).toFile()
-        );
-    }
+    private void boundTargetFileToBoundingBoxFile(
+            String sourceForBoundsFilePart,
+            String sourceToBoundFilePart,
+            String outputFileFilePart) {
+        File sourceForBoundsFile = resolveGeojsonPath(sourceForBoundsFilePart).toFile();
+        File sourceToBoundFile = resolveGeojsonPath(sourceToBoundFilePart).toFile();
 
-    private void boundGraphHopperEdgesToAccessibilityResult() {
-        File accessibilityCombined = resolveGeojsonPath(FILE_PART_NAME_ACCESSIBILITY_COMBINED_ACCESSIBILITY).toFile();
-        File edges = resolveGeojsonPath(FILE_PART_NAME_GRAPH_HOPPER_EDGES).toFile();
-
-        if (!accessibilityCombined.exists() || !edges.exists()) {
-            return;
-        }
-
-        boundingBoxService.boundTargetFileToBoundingBoxFile(
-                accessibilityCombined,
-                edges,
-                resolveGeojsonPath(FILE_PART_NAME_GRAPH_HOPPER_EDGES_BOUND_TO_ACCESSIBILITY).toFile()
+        geoJsonBoundingService.boundTargetFileToBoundingBoxFile(
+                sourceForBoundsFile,
+                sourceToBoundFile,
+                resolveGeojsonPath(outputFileFilePart).toFile()
         );
     }
 

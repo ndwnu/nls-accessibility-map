@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import lombok.Builder;
+import lombok.With;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.RoadSection;
 import nu.ndw.nls.accessibilitymap.accessibility.reason.dto.AccessibilityReasonGroup;
 
+@With
 @Builder
 public record Accessibility(
         Collection<RoadSection> accessibleRoadsSectionsWithoutAppliedRestrictions,
