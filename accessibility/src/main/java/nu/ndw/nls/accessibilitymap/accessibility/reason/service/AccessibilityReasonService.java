@@ -66,8 +66,6 @@ public class AccessibilityReasonService {
         Snap from = accessibilityNetwork.getFrom();
         Snap destination = accessibilityNetwork.getDestination();
 
-        // debug write geojson with the snapped from and destination
-
         if (Objects.isNull(destination)) {
             return List.of();
         }

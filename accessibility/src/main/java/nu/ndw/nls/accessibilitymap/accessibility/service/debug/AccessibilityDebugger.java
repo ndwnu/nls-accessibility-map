@@ -102,7 +102,6 @@ public class AccessibilityDebugger {
         writeDebug(FILE_PART_NAME_ACCESSIBILITY_UNROUTABLE_ROAD_SECTIONS, accessibility.unroutableRoadSections());
         writeDebug(FILE_PART_NAME_ACCESSIBILITY_COMBINED_ACCESSIBILITY, accessibility.combinedAccessibility());
 
-        // Create nodes and edges files for our active accessibility region, useful when debugging large areas
         boundTargetFileToBoundingBoxFile(
                 FILE_PART_NAME_ACCESSIBILITY_COMBINED_ACCESSIBILITY,
                 FILE_PART_NAME_GRAPH_HOPPER_NODES,
