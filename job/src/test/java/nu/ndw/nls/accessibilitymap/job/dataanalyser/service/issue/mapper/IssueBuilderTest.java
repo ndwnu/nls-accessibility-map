@@ -47,7 +47,6 @@ class IssueBuilderTest {
 
     @Test
     void buildUnroutableNetworkIssue() {
-
         when(roadSection.getId()).thenReturn(234L);
 
         CreateIssueJson issue = issueBuilder.buildUnroutableNetworkIssue(roadSection, 123, "reportId", "reportGroupId");
@@ -74,12 +73,11 @@ class IssueBuilderTest {
                                         .build()
                                 ))
                                 .build()))
-                );
+                        .build());
     }
 
     @Test
     void buildTrafficSignIssue() {
-
         when(directionalSegment.getRestrictions()).thenReturn(new Restrictions(List.of(trafficSign)));
         when(trafficSign.externalId()).thenReturn("id");
         when(directionalSegment.getRoadSectionFragment()).thenReturn(RoadSectionFragment.builder().roadSection(roadSection).build());
@@ -114,12 +112,11 @@ class IssueBuilderTest {
                                                 .build()
                                 ))
                                 .build()))
-                );
+                        .build());
     }
 
     @Test
     void buildTrafficSignIssue_notATrafficSignRestriction() {
-
         Restriction restriction = mock(Restriction.class);
         when(directionalSegment.getRestrictions()).thenReturn(new Restrictions(List.of(restriction)));
 
