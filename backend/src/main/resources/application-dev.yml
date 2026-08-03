@@ -29,11 +29,11 @@ nu:
             watch-for-updates: false
       springboot:
         message:
-          stream:
+          streams:
             queues:
               updateRoadSection:
-                messages-to-skip:
                 listener-auto-start: true
+
 nls:
   keycloak:
     url: http://${hostKeycloak}:8000/auth

@@ -58,7 +58,7 @@ nu:
             cache-version: 3
       springboot:
         message:
-          stream:
+          streams:
             queues:
               updateRoadSection:
                 stream-queue-name: nls_accessibility_map_update_road_section
@@ -67,8 +67,8 @@ nu:
                 max-segment-size-in-kb: 5000
                 max-age-in-days: 60
                 consumer:
-                  flushInterval-in-seconds: 2
-                  messageCountBeforeStorage: 1
+                  flush-interval-in-seconds: 2
+                  message-count-before-storage: 1
                   exponential-backoff:
                     initial-interval-in-seconds: 1
                     multiplier: 1.5
