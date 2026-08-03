@@ -301,6 +301,7 @@
               <generateModelTests>false</generateModelTests>
               <configOptions>
                 <useSpringBoot4>true</useSpringBoot4>
+                <generateBuilders>true</generateBuilders>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
 
                 <!-- Whether to generate the server files using the delegate pattern -->
@@ -319,12 +320,6 @@
                 <performBeanValidation>true</performBeanValidation>
 
                 <openApiNullable>false</openApiNullable>
-
-                <additionalModelTypeAnnotations>
-                  @lombok.experimental.SuperBuilder
-                  @lombok.NoArgsConstructor
-                  @lombok.AllArgsConstructor
-                </additionalModelTypeAnnotations>
               </configOptions>
             </configuration>
           </execution>

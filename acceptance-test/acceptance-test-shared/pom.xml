@@ -192,12 +192,6 @@
                 <performBeanValidation>true</performBeanValidation>
 
                 <openApiNullable>false</openApiNullable>
-
-                <additionalModelTypeAnnotations>
-                  @lombok.experimental.SuperBuilder
-                  @lombok.NoArgsConstructor
-                  @lombok.AllArgsConstructor
-                </additionalModelTypeAnnotations>
               </configOptions>
               <modelNameSuffix>Json</modelNameSuffix>
               <generateApis>false</generateApis>

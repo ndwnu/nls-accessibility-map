@@ -248,6 +248,7 @@ class AccessibilityV2ApiDelegateImplTest {
                                           "trafficSignType": "C1"
                                         }
                                       ],
+                                      "requestExemptionUrls": [],
                                       "values": [
                                         "car"
                                       ]
@@ -262,6 +263,7 @@ class AccessibilityV2ApiDelegateImplTest {
                                           "roadSectionId": 123
                                         }
                                       ],
+                                      "requestExemptionUrls": [],
                                       "value": false
                                     }
                                   ]
