@@ -33,6 +33,14 @@ Run any component test.
 
 
 ## Running with representative data locally
+A common pitfall is to connect your dev environment to the staging database, but this should not be done, as this will also update the
+active cache versions in the staging database, which will then break the staging environment. It's better to copy the staging disk caches
+to your local caches and then point to it in your local database:
+1. copy data to local disk `kubectl cp nls-accessibility-map-api-5<some-pod-id>:cache`
+2. copy staging `active_versions` table to local and make sure your application runs with the same `cache_version`
+3. in `src/main/resources/data` copy the `municipalities.yml` to `municipalities-<your-profile>.yml`
+4. in `src/main/resources/data` copy the `road-operators.yml` to `road-operators-<your-profile>.yml`
+
 First run `make start-infra`. Then run the job `initializeCache` with profiles `acceptance-test,dev,job-initialize-cache,local-<your_name>-staging`. Put the staging credentials in `local-<your_name>-staging` profile. Example:
 ```yaml
 spring:

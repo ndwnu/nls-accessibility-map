@@ -1,10 +1,13 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebuggerTest.AccessibilityParts.COMBINED_ACCESSIBILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
@@ -18,12 +21,19 @@ import com.graphhopper.util.FetchMode;
 import com.graphhopper.util.PointList;
 import com.graphhopper.util.shapes.BBox;
 import com.graphhopper.util.shapes.GHPoint3D;
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import net.javacrumbs.jsonunit.core.Option;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
@@ -44,6 +54,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsig
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.service.debug.configuration.DebugConfiguration;
+import nu.ndw.nls.accessibilitymap.accessibility.service.debug.services.GeoJsonBoundingService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.geojson.geometry.mappers.JtsLineStringJsonMapper;
 import nu.ndw.nls.geojson.geometry.mappers.JtsPointJsonMapper;
@@ -60,6 +71,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
@@ -68,6 +80,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class AccessibilityDebuggerTest {
+
+    private static final String GEOJSON_FEATURE_COLLECTION_EMPTY = """
+          {
+            "type": "FeatureCollection",
+            "features": []
+          }
+          """;
 
     private AccessibilityDebugger accessibilityDebugger;
 
@@ -97,6 +116,9 @@ class AccessibilityDebuggerTest {
     @Mock
     private Weighting weighting;
 
+    @Mock
+    private GeoJsonBoundingService geoJsonBoundingService;
+
     @BeforeEach
     void setUp() throws IOException {
 
@@ -106,7 +128,8 @@ class AccessibilityDebuggerTest {
                 debugConfiguration,
                 jtsPointJsonMapper,
                 jtsLineStringJsonMapper,
-                jtsPolygonJsonMapper);
+                jtsPolygonJsonMapper,
+                geoJsonBoundingService);
     }
 
     @AfterEach
@@ -114,66 +137,71 @@ class AccessibilityDebuggerTest {
         FileUtils.deleteDirectory(testDir.toFile());
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "true, false, false, false",
-            "false, true, false, false",
-            "false, false, true, false",
-            "false, false, false, true"
-    })
-    void writeDebug_accessibility(
-            boolean hasWithoutRestrictions,
-            boolean hasWithRestrictions,
-            boolean hasUnroutable,
-            boolean hasCombined
-    ) throws IOException {
-        debugEnabled();
+    @RequiredArgsConstructor
+    enum AccessibilityParts {
+        ACCESSIBLE_ROADS_SECTIONS_WITHOUT_APPLIED_RESTRICTIONS(
+                "accessibility.roadSectionsWithoutRestrictions.geojson",
+                Accessibility::withAccessibleRoadsSectionsWithoutAppliedRestrictions),
+        ACCESSIBLE_ROAD_SECTIONS_WITH_APPLIED_RESTRICTIONS(
+                "accessibility.roadSectionsWithRestrictions.geojson",
+                Accessibility::withAccessibleRoadSectionsWithAppliedRestrictions),
+        UNROUTABLE_ROAD_SECTIONS(
+                "accessibility.unroutableRoadSections.geojson",
+                Accessibility::withUnroutableRoadSections),
+        COMBINED_ACCESSIBILITY(
+                "accessibility.combinedAccessibility.geojson",
+                Accessibility::withCombinedAccessibility);
 
-        RoadSection roadSection = buildRoadSection();
+        @Getter
+        private final String fileName;
+
+        private final BiFunction<Accessibility, List<RoadSection>, Accessibility> roadSectionMethod;
+
+        public Accessibility createAccessibilityWithRoadSectionsFor(List<RoadSection> roadSections) {
+            return roadSectionMethod.apply(createAccessibilityWithRoadSectionsFor(), roadSections);
+        }
+
+        private Accessibility createAccessibilityWithRoadSectionsFor() {
+            return Accessibility.builder()
+                    .accessibleRoadsSectionsWithoutAppliedRestrictions(Collections.emptyList())
+                    .accessibleRoadSectionsWithAppliedRestrictions(Collections.emptyList())
+                    .combinedAccessibility(Collections.emptyList())
+                    .unroutableRoadSections(Collections.emptyList())
+                    .build();
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(AccessibilityParts.class)
+    void writeDebug_accessibility(AccessibilityParts accessibilityPartsUnderTest) throws IOException {
+        debugEnabled();
 
         List<List<Double>> coordinatesForward = List.of(List.of(0d, 0d), List.of(1d, 1d));
         when(jtsLineStringJsonMapper.map(lineStringForward)).thenReturn(new LineStringJson(coordinatesForward, TypeEnum.LINE_STRING));
         List<List<Double>> coordinatesBackward = List.of(List.of(1d, 1d), List.of(0d, 0d));
         when(jtsLineStringJsonMapper.map(lineStringBackward)).thenReturn(new LineStringJson(coordinatesBackward, TypeEnum.LINE_STRING));
 
-        Accessibility accessibility = Accessibility.builder()
-                .accessibleRoadsSectionsWithoutAppliedRestrictions(hasWithoutRestrictions ? List.of(roadSection) : List.of())
-                .accessibleRoadSectionsWithAppliedRestrictions(hasWithRestrictions ? List.of(roadSection) : List.of())
-                .unroutableRoadSections(hasUnroutable ? List.of(roadSection) : List.of())
-                .combinedAccessibility(hasCombined ? List.of(roadSection) : List.of())
-                .build();
+        Accessibility accessibility = accessibilityPartsUnderTest.createAccessibilityWithRoadSectionsFor(List.of(buildRoadSection()));
 
         accessibilityDebugger.writeDebug(accessibility);
 
-        String emptyFeatureCollection = "{\"features\":[],\"type\":\"FeatureCollection\"}";
-        String fileName = null;
-        if (!hasWithoutRestrictions) {
-            assertThatJson(Files.readString(testDir.resolve("accessibility.roadSectionsWithoutRestrictions.geojson")))
-                    .isEqualTo(emptyFeatureCollection);
-        } else {
-            fileName = "accessibility.roadSectionsWithoutRestrictions.geojson";
-        }
-        if (!hasWithRestrictions) {
-            assertThatJson(Files.readString(testDir.resolve("accessibility.roadSectionsWithRestrictions.geojson")))
-                    .isEqualTo(emptyFeatureCollection);
-        } else {
-            fileName = "accessibility.roadSectionsWithRestrictions.geojson";
-        }
-        if (!hasUnroutable) {
-            assertThatJson(Files.readString(testDir.resolve("accessibility.unroutableRoadSections.geojson")))
-                    .isEqualTo(emptyFeatureCollection);
-        } else {
-            fileName = "accessibility.unroutableRoadSections.geojson";
-        }
-        if (!hasCombined) {
-            assertThatJson(Files.readString(testDir.resolve("accessibility.combinedAccessibility.geojson")))
-                    .isEqualTo(emptyFeatureCollection);
-        } else {
-            fileName = "accessibility.combinedAccessibility.geojson";
+        for (AccessibilityParts accessibilityPart : AccessibilityParts.values()) {
+            if (accessibilityPartsUnderTest != accessibilityPart) {
+                assertThatJson(Files.readString(testDir.resolve(accessibilityPart.getFileName())))
+                        .isEqualTo(GEOJSON_FEATURE_COLLECTION_EMPTY);
+            }
         }
 
-        assertThat(fileName).isNotNull();
-        assertThatJson(Files.readString(testDir.resolve(fileName)))
+        File combinedAccessibility = testDir.resolve( "accessibility.combinedAccessibility.geojson").toFile();
+        File graphHopperNodes = testDir.resolve("graphHopper.nodes.geojson").toFile();
+        File nodesBoundPath = testDir.resolve("graphHopper.nodes.bound.to.acccessiblity.geojson").toFile();
+        verify(geoJsonBoundingService).boundTargetFileToBoundingBoxFile(combinedAccessibility, graphHopperNodes, nodesBoundPath);
+
+        File graphHopperEdges = testDir.resolve("graphHopper.edges.geojson").toFile();
+        File edgesBoundPath = testDir.resolve("graphHopper.edges.bound.to.acccessiblity.geojson").toFile();
+        verify(geoJsonBoundingService).boundTargetFileToBoundingBoxFile(combinedAccessibility, graphHopperEdges, edgesBoundPath);
+
+        assertThatJson(Files.readString(testDir.resolve(accessibilityPartsUnderTest.getFileName())))
                 .isEqualTo("""
                         {
                           "features" : [ {

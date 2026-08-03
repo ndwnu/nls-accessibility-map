@@ -115,7 +115,7 @@ class AccessibilityReasonServiceTest {
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
-                                && algorithmOptions.getAlgorithm().equals("dijkstrabi")
+                                && algorithmOptions.getAlgorithm().equals("dijkstra")
                                 && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
@@ -164,7 +164,7 @@ class AccessibilityReasonServiceTest {
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
-                                && algorithmOptions.getAlgorithm().equals("dijkstrabi")
+                                && algorithmOptions.getAlgorithm().equals("dijkstra")
                                 && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
@@ -193,7 +193,7 @@ class AccessibilityReasonServiceTest {
         when(routingAlgorithmFactory.createAlgo(
                 eq(queryGraph), eq(weighting), argThat(algorithmOptions ->
                         algorithmOptions.getHints().getBool("pass_through", false)
-                                && algorithmOptions.getAlgorithm().equals("dijkstrabi")
+                                && algorithmOptions.getAlgorithm().equals("dijkstra")
                                 && algorithmOptions.getTraversalMode() == TraversalMode.EDGE_BASED)))
                 .thenReturn(routeRoutingAlgorithm);
 
