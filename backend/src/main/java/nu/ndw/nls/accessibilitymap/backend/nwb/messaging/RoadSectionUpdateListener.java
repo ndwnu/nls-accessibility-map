@@ -42,13 +42,13 @@ public class RoadSectionUpdateListener {
 
     private final RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
 
-    @Value("${nu.ndw.nls.accessibilitymap.messaging.stream-queues.updateRoadSection.listener-auto-start:true}")
+    @Value("${nu.ndw.nls.springboot.message.streams.queues.updateRoadSection.listener-auto-start}")
     private boolean autoStartup;
 
     @RabbitListener(id = LISTENER_ID,
             queues = "nls_accessibility_map_update_road_section",
             containerFactory = "updateRoadSectionStreamFactory",
-            autoStartup = "${nu.ndw.nls.accessibilitymap.messaging.stream-queues.updateRoadSection.listener-auto-start:true}"
+            autoStartup = "${nu.ndw.nls.springboot.message.streams.queues.updateRoadSection.listener-auto-start}"
     )
     @Timed(description = "time spend processing road section changes")
     public void handleMessage(Message message) {

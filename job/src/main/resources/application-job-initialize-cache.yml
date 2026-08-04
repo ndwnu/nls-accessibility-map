@@ -8,9 +8,6 @@ nu:
         trafficsigns:
           cache:
             fail-on-startup-cache-read-error: false
-        roadChanges:
-          cache:
-            fail-on-startup-cache-read-error: false
         speedLimit:
           cache:
             fail-on-startup-cache-read-error: false
