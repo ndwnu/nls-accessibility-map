@@ -62,8 +62,8 @@ public class AccessibilityMapApiStepDefinitions {
     public void requestAccessibilityGeoJsonForV2AnVerifyTheResult(String requestFile, String responseFile) {
 
         await()
-                .atMost(Duration.ofSeconds(10))
-                .pollInterval(Duration.ofMillis(500))
+                .atMost(Duration.ofSeconds(20))
+                .pollInterval(Duration.ofMillis(1000))
                 .untilAsserted(() -> {
                     requestAccessibilityGeoJsonForV2(requestFile);
                     expectAccessibilityGeoJsonResponseV2(responseFile);

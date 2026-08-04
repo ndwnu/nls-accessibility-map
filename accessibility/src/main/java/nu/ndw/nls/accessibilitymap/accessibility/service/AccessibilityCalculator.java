@@ -1,6 +1,5 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service;
 
-import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
 import java.util.List;
@@ -55,6 +54,7 @@ public class AccessibilityCalculator {
 
         log.debug("Calculating accessibility {} restrictions for {}", applyRestrictions ? "with" : "without", accessibilityRequest);
 
+        boolean reverseFlow = false;
         List<IsochroneLabel> isochroneLabels = isochroneService.search(
                 accessibilityNetwork,
                 IsochroneArguments.builder()
@@ -63,7 +63,7 @@ public class AccessibilityCalculator {
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(accessibilityRequest.maxSearchDistanceInMeters())
-                        .reverseFlow(false)
+                        .reverseFlow(reverseFlow)
                         .build());
         log.debug("Found {} isochrone labels", isochroneLabels.size());
 
@@ -84,20 +84,18 @@ public class AccessibilityCalculator {
 
     private static ExploreLimit<RestrictionsIsochroneLabel> getExploreLimits(
             AccessibilityNetwork accessibilityNetwork,
-            boolean applyRestrictions) {
-
+            boolean applyRestrictions
+    ) {
         if (applyRestrictions) {
             return new ExploreLimitComposite<>(
                     new ExploreLimitCarAccessible(
                             accessibilityNetwork.getQueryGraph(),
-                            accessibilityNetwork.getNetworkData().getNwbNetworkData(),
-                            new EdgeIteratorStateReverseExtractor()),
+                            accessibilityNetwork.getNetworkData().getNwbNetworkData()),
                     new ExploreLimitRestriction());
         } else {
             return new ExploreLimitCarAccessible(
                     accessibilityNetwork.getQueryGraph(),
-                    accessibilityNetwork.getNetworkData().getNwbNetworkData(),
-                    new EdgeIteratorStateReverseExtractor());
+                    accessibilityNetwork.getNetworkData().getNwbNetworkData());
         }
     }
 }

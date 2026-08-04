@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.util.TraversalMode;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.Graph;
 import com.graphhopper.storage.NodeAccess;
 import com.graphhopper.util.EdgeExplorer;
@@ -55,6 +57,9 @@ class RestrictionIsochroneAlgorithmTest {
     @Mock
     private Restriction restriction;
 
+    @Mock
+    private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
     private Map<Integer, List<Restriction>> restrictionsByEdgeKey;
 
     @BeforeEach
@@ -71,7 +76,46 @@ class RestrictionIsochroneAlgorithmTest {
                 weighting,
                 exploreLimit,
                 Comparator.comparingDouble(RestrictionsIsochroneLabel::getWeight),
-                restrictionsByEdgeKey);
+                restrictionsByEdgeKey,
+                edgeIteratorStateReverseExtractor);
+    }
+
+    @Test
+    void createNewIsoLabel_reverseFlow_usesReverseEdgeKey() {
+
+        restrictionsByEdgeKey = new HashMap<>();
+        restrictionIsochroneAlgorithm = new RestrictionIsochroneAlgorithm(
+                graph,
+                encodingManager,
+                TraversalMode.EDGE_BASED,
+                true,
+                weighting,
+                exploreLimit,
+                Comparator.comparingDouble(RestrictionsIsochroneLabel::getWeight),
+                restrictionsByEdgeKey,
+                edgeIteratorStateReverseExtractor);
+
+        EdgeIterator emptyIterator = mock(EdgeIterator.class);
+        when(edgeExplorer.setBaseNode(1)).thenReturn(edgeIterator);
+        when(edgeExplorer.setBaseNode(2)).thenReturn(emptyIterator);
+        when(edgeIterator.next()).thenReturn(true, false);
+        when(edgeIterator.getEdge()).thenReturn(10);
+        when(edgeIterator.getEdgeKey()).thenReturn(4);
+        when(emptyIterator.getReverseEdgeKey()).thenReturn(11);
+        when(edgeIterator.getAdjNode()).thenReturn(2);
+        when(edgeIterator.getDistance()).thenReturn(100.0);
+        when(weighting.calcEdgeWeight(edgeIterator, true)).thenReturn(10.0);
+        when(weighting.calcEdgeMillis(edgeIterator, true)).thenReturn(3600L);
+        when(emptyIterator.next()).thenReturn(false);
+        when(exploreLimit.isInLimit(any(RestrictionsIsochroneLabel.class), eq(encodingManager))).thenReturn(true);
+        when(graph.getEdgeIteratorStateForKey(4)).thenReturn(emptyIterator);
+        when(edgeIteratorStateReverseExtractor.hasReversed(emptyIterator)).thenReturn(false);
+        List<RestrictionsIsochroneLabel> visited = new ArrayList<>();
+        restrictionIsochroneAlgorithm.search(1, visited::add);
+
+        assertThat(visited).hasSize(2);
+        assertThat(visited.get(1).getRestrictions()).isEmpty();
+        verify(emptyIterator).getReverseEdgeKey();
     }
 
     @Test

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
@@ -34,9 +33,6 @@ class ExploreLimitCarAccessibleTest {
     private NwbNetworkData nwbNetworkData;
 
     @Mock
-    private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
-
-    @Mock
     private EncodingManager encodingManager;
 
     @Mock
@@ -51,7 +47,7 @@ class ExploreLimitCarAccessibleTest {
     @BeforeEach
     void setUp() {
 
-        exploreLimitCarAccessible = new ExploreLimitCarAccessible(queryGraph, nwbNetworkData, edgeIteratorStateReverseExtractor);
+        exploreLimitCarAccessible = new ExploreLimitCarAccessible(queryGraph, nwbNetworkData);
     }
 
     @Test
@@ -73,7 +69,7 @@ class ExploreLimitCarAccessibleTest {
     }
 
     private static RestrictionsIsochroneLabel createRestrictionsIsochroneLabel(Restrictions restrictions) {
-        return new RestrictionsIsochroneLabel(0, 5, 5, null, 0L, 0.0, 0.0, restrictions);
+        return new RestrictionsIsochroneLabel(0, 5, 5, null, 0L, 0.0, 0.0, restrictions, false, false);
     }
 
     @Test
@@ -101,7 +97,6 @@ class ExploreLimitCarAccessibleTest {
     private void mockWithinLimit(RestrictionsIsochroneLabel label) {
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
         when(queryGraph.getEdgeIteratorState(label.getEdge(), label.getNode())).thenReturn(edgeIteratorState);
-        when(queryGraph.getEdgeIteratorStateForKey(label.getEdgeKey())).thenReturn(edgeIteratorState);
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(3);
         when(nwbNetworkData.findAccessibilityNwbRoadSectionById(3)).thenReturn(Optional.of(AccessibilityNwbRoadSection.builder()
                 .forwardAccessible(true)
@@ -113,7 +108,6 @@ class ExploreLimitCarAccessibleTest {
     private void mockNotWithinLimit(RestrictionsIsochroneLabel label) {
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
         when(queryGraph.getEdgeIteratorState(label.getEdge(), label.getNode())).thenReturn(edgeIteratorState);
-        when(queryGraph.getEdgeIteratorStateForKey(label.getEdgeKey())).thenReturn(edgeIteratorState);
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(3);
         when(nwbNetworkData.findAccessibilityNwbRoadSectionById(3)).thenReturn(Optional.of(AccessibilityNwbRoadSection.builder()
                 .carriagewayTypeCode(CarriagewayTypeCode.FP)

@@ -3,6 +3,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.util.TraversalMode;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -38,7 +39,8 @@ public class IsochroneService {
                         isochroneArguments.exploreLimit()
                 )),
                 Comparator.comparingDouble(IsochroneLabel::getTimeInMilliSeconds),
-                accessibilityNetwork.getRestrictionsByEdgeKey()
+                accessibilityNetwork.getRestrictionsByEdgeKey(),
+                new EdgeIteratorStateReverseExtractor()
         );
 
         List<IsochroneLabel> isoLabels = new ArrayList<>();

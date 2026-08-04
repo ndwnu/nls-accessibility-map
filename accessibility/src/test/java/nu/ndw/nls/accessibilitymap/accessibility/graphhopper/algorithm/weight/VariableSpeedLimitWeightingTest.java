@@ -64,31 +64,45 @@ class VariableSpeedLimitWeightingTest {
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
-            23500,  33,     FORWARD,    1,  2563636
-            23500,  33,     BACKWARD,   1,  2563636
-            23500,  null,   FORWARD,    1,  1
+            23500,  33,     FORWARD,    1,  2563636, false
+            23500,  33,     BACKWARD,   1,  2563636, false
+            23500,  null,   FORWARD,    1,  1, false
+            23500,  33,     FORWARD,    1,  2563636, true
+            23500,  33,     BACKWARD,   1,  2563636, true
+            23500,  null,   FORWARD,    1,  1, true
             """)
     void calcEdgeMillis(
             double distanceInMeters,
             Double speedInKmPerHour,
             Direction direction,
             long sourceWeighingCalcEdgeMillis,
-            long expectedTravelTime) {
+            long expectedTravelTime,
+            boolean reverseSearch
+    ) {
         int roadSectionId = 2;
 
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
-        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(direction.isBackward());
+        boolean edgeIsReversed = direction.isBackward();
+        Direction queryDirection;
+        if (reverseSearch ^ edgeIsReversed) {
+            queryDirection = Direction.BACKWARD;
+        } else {
+            queryDirection = Direction.FORWARD;
+        }
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState)).thenReturn(edgeIsReversed);
         when(edgeIteratorState.get(intEncodedValue)).thenReturn(roadSectionId);
         if (Objects.isNull(speedInKmPerHour)) {
-            when(speedLimits.findByRoadSectionId(roadSectionId, direction)).thenReturn(Optional.empty());
-            when(sourceWeighting.calcEdgeMillis(edgeIteratorState, true)).thenReturn(sourceWeighingCalcEdgeMillis);
-            assertThat(variableSpeedLimitWeighting.calcEdgeMillis(edgeIteratorState, true)).isEqualTo(expectedTravelTime);
+            when(speedLimits.findByRoadSectionId(roadSectionId, queryDirection)).thenReturn(Optional.empty());
+            when(sourceWeighting.calcEdgeMillis(edgeIteratorState, reverseSearch)).thenReturn(sourceWeighingCalcEdgeMillis);
+
+            assertThat(variableSpeedLimitWeighting.calcEdgeMillis(edgeIteratorState, reverseSearch)).isEqualTo(expectedTravelTime);
         } else {
             when(edgeIteratorState.getDistance()).thenReturn(distanceInMeters);
 
-            SpeedLimit speedLimit = new SpeedLimit(roadSectionId, direction, speedInKmPerHour);
-            when(speedLimits.findByRoadSectionId(roadSectionId, direction)).thenReturn(Optional.of(speedLimit));
-            assertThat(variableSpeedLimitWeighting.calcEdgeMillis(edgeIteratorState, true)).isEqualTo(expectedTravelTime);
+            SpeedLimit speedLimit = new SpeedLimit(roadSectionId, queryDirection, speedInKmPerHour);
+            when(speedLimits.findByRoadSectionId(roadSectionId, queryDirection)).thenReturn(Optional.of(speedLimit));
+
+            assertThat(variableSpeedLimitWeighting.calcEdgeMillis(edgeIteratorState, reverseSearch)).isEqualTo(expectedTravelTime);
         }
     }
 

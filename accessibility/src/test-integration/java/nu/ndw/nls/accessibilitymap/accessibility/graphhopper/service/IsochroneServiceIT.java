@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EdgeFilter;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.index.Snap;
 import com.graphhopper.util.PMap;
 import com.graphhopper.util.shapes.BBox;
@@ -147,8 +146,8 @@ class IsochroneServiceIT {
         return IsochroneArguments.builder()
                 .exploreLimit(new ExploreLimitCarAccessible(
                         accessibilityNetwork.getQueryGraph(),
-                        accessibilityNetwork.getNetworkData().getNwbNetworkData(),
-                        new EdgeIteratorStateReverseExtractor()))
+                        accessibilityNetwork.getNetworkData().getNwbNetworkData()
+                ))
                 .weighting(accessibilityNetwork.getWeighting())
                 .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
                 .municipalityId(municipalityId)

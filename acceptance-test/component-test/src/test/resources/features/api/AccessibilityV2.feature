@@ -136,3 +136,15 @@ Feature: Accessibility V2
     And run TrafficSignUpdateCache
     When request accessibility geojson for boundingBox-destination1-1
     Then we expect accessibility geojson response boundingBox-destination1-1
+
+  Scenario: Get - request with unreachable destination on unidirectional network should return reasons
+    Given a simple unidirectional network
+    And with traffic sign conditions
+      | name | vehicleType |
+      | C12  | truck       |
+    And with traffic signs
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | exemptions | directionType | regulationOrderId | id                                   |
+      | 3           | 4         | 0.5      | C12     | C12          |            | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
+    And run TrafficSignUpdateCache
+    When request accessibility geojson for boundingBox-from10-10-destination1-1
+    Then we expect accessibility geojson response boundingBox-from10-10-destination1-1

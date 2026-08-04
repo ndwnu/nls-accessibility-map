@@ -3,7 +3,9 @@ package nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.util.TraversalMode;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.storage.Graph;
+import com.graphhopper.util.EdgeIteratorState;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +18,13 @@ import nu.ndw.nls.routingmapmatcher.isochrone.v2.exploration.ExploreLimit;
 @Slf4j
 public class RestrictionIsochroneAlgorithm extends AbstractDijkstraIsochroneAlgorithm<RestrictionsIsochroneLabel> {
 
+    private static final int ROOT_ID = -1;
+
     private final Map<Integer, List<Restriction>> restrictionsByEdgeKey;
+
+    private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
+    private final boolean traversalInReverseFlow;
 
     @SuppressWarnings("java:S107")
     public RestrictionIsochroneAlgorithm(
@@ -27,11 +35,14 @@ public class RestrictionIsochroneAlgorithm extends AbstractDijkstraIsochroneAlgo
             Weighting weighting,
             ExploreLimit<RestrictionsIsochroneLabel> exploreLimit,
             Comparator<RestrictionsIsochroneLabel> explorePriorityComparator,
-            Map<Integer, List<Restriction>> restrictionsByEdgeKey) {
+            Map<Integer, List<Restriction>> restrictionsByEdgeKey, EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor
+    ) {
 
         super(graph, encodingManager, traversalMode, traversalInReverseFlow, weighting, exploreLimit, explorePriorityComparator);
 
         this.restrictionsByEdgeKey = restrictionsByEdgeKey;
+        this.edgeIteratorStateReverseExtractor = edgeIteratorStateReverseExtractor;
+        this.traversalInReverseFlow = traversalInReverseFlow;
     }
 
     @Override
@@ -43,8 +54,21 @@ public class RestrictionIsochroneAlgorithm extends AbstractDijkstraIsochroneAlgo
             long time,
             double distance,
             double weight,
-            EncodingManager encodingManager) {
+            EncodingManager encodingManager
+    ) {
+        boolean edgeIsReversed = false;
+        int restrictionsLookupKey = edgeKey;
 
+        if (edgeKey != ROOT_ID) {
+            EdgeIteratorState edgeIteratorState = graph.getEdgeIteratorStateForKey(edgeKey);
+            edgeIsReversed = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState);
+
+            /*
+             * If we are traversing in reverse flow, we need to use the reverse edge key for the restrictions lookup.
+             * see docs/technical-details.md ## Bidirectional routing and edge orientation in combination with search direction
+             */
+            restrictionsLookupKey = traversalInReverseFlow ? edgeIteratorState.getReverseEdgeKey() : edgeKey;
+        }
         return new RestrictionsIsochroneLabel(
                 node,
                 edge,
@@ -53,7 +77,9 @@ public class RestrictionIsochroneAlgorithm extends AbstractDijkstraIsochroneAlgo
                 time,
                 distance,
                 weight,
-                new Restrictions(restrictionsByEdgeKey.getOrDefault(edgeKey, List.of())));
+                new Restrictions(restrictionsByEdgeKey.getOrDefault(restrictionsLookupKey, List.of())),
+                traversalInReverseFlow,
+                edgeIsReversed);
     }
 
     @Override

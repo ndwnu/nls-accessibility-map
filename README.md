@@ -14,7 +14,9 @@ Module setup :
 * Job module for various jobs that need to be in the background.
 
 ## GitHub vs Azure DevOps
+
 This project is maintained by Nationaal Dataportaal Wegverkeer (NDW)
+
 * It is primarily maintained within Azure Devops and mirrored to https://github.com/ndwnu/nls-accessibility-map
 * It works within NDW infrastructure, with some of its constraints;
 * This repository contains functionality only, data is gathered from APIs/database, but not included;
@@ -22,26 +24,28 @@ This project is maintained by Nationaal Dataportaal Wegverkeer (NDW)
 * GitHub wiki and issues aren't enabled.
 
 ## Structure
+
 The specification module only versions the
 [API YAML](specification/src/main/resources/nu/ndw/nls/accessibilitymap/specification/v2.yaml) and this JAR is used by
 the `openapi-generator-maven-plugin` to generate controllers for the backend application.
 
 ## Development
+
 Execute `make start-infra`
 Run the backend and the jobs through IntelliJ. Make sure you use at least the profiles `acceptance-test,dev`
 Run any component test.
 
-
 ## Running with representative data locally
+
 A common pitfall is to connect your dev environment to the staging database, but this should not be done, as this will also update the
 active cache versions in the staging database, which will then break the staging environment. It's better to copy the staging disk caches
 to your local caches and then point to it in your local database:
 1. copy data to local disk `kubectl cp nls-accessibility-map-api-5<some-pod-id>:cache`
 2. copy staging `active_versions` table to local and make sure your application runs with the same `cache_version`
 3. in `src/main/resources/data` copy the `municipalities.yml` to `municipalities-<your-profile>.yml`
-4. in `src/main/resources/data` copy the `road-operators.yml` to `road-operators-<your-profile>.yml`
-
-First run `make start-infra`. Then run the job `initializeCache` with profiles `acceptance-test,dev,job-initialize-cache,local-<your_name>-staging`. Put the staging credentials in `local-<your_name>-staging` profile. Example:
+4. in `src/main/resources/data` copy the `road-operators.yml` to `road-operators-<your-profile>.yml`First run `make start-infra`. Then run the job `initializeCache` with profiles
+`acceptance-test,dev,job-initialize-cache,local-<your_name>-staging`. Put the staging credentials in `local-<your_name>-staging` profile.
+Example:
 ```yaml
 spring:
   datasource:
@@ -52,11 +56,12 @@ spring:
 
 ## Window Times
 
-In the traffic sign API, traffic signs have text signs and some text signs are of type 'TIJD' and they have a field 
-called 'openingHours'. This field will be using the OSM standard for opening hours: 
+In the traffic sign API, traffic signs have text signs and some text signs are of type 'TIJD' and they have a field
+called 'openingHours'. This field will be using the OSM standard for opening hours:
 https://wiki.openstreetmap.org/wiki/Key:opening_hours
 
 ## Pretty printing geojson
+
 jq . c6WindowTimeSegments.geojson | sponge c6WindowTimeSegments.geojson
 
 ## Resetting the nwb updates tracking key
@@ -80,7 +85,8 @@ Also the 'MessagingBeansRegistrarTest' class MESSAGE_LISTENER_NAME property need
 
 ## Caches
 
-The `backend` application and the analysis jobs require the following caches to be available: 
+The `backend` application and the analysis jobs require the following caches to be available:
+
 - network
 - speedLimits
 - trafficSigns
@@ -94,11 +100,10 @@ caches are available and will rebuild any missing caches. Caches are stored on a
 
 When using rolling updates, there will be a brief moment where the old and new application will run alongside of each other. By incrementing
 the `cache-version`, you isolate the caches and prevent that the old and new deployment use each others caches. If the cache format changes,
-the `cache-version` should be incremented in the `application.yaml` configuration of the `jobs` and `backend` applications. A new 
-`PersistentVolumeClaim` should be used for the deployment to separate the old caches from the new caches. After deployment, the 
-`InitializeCacheCommand` should automatically run and initialize the new caches after which the `backend` should become healthy. 
+the `cache-version` should be incremented in the `application.yaml` configuration of the `jobs` and `backend` applications. A new
+`PersistentVolumeClaim` should be used for the deployment to separate the old caches from the new caches. After deployment, the
+`InitializeCacheCommand` should automatically run and initialize the new caches after which the `backend` should become healthy.
 With rolling updates, this should cause zero downtime. Don't forget to delete the old persistent storage.
-
 
 
 

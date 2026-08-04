@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.graphhopper.routing.ev.IntEncodedValue;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
@@ -19,6 +20,8 @@ import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -55,6 +58,9 @@ class CarAccessibleRoadsWeightingTest {
     @Mock
     private AccessibilityNwbRoadSection roadSection;
 
+    @Mock
+    private EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
     private CarAccessibleRoadsWeighting weighting;
 
     @BeforeEach
@@ -62,7 +68,8 @@ class CarAccessibleRoadsWeightingTest {
         weighting = new CarAccessibleRoadsWeighting(
                 sourceWeighting,
                 nwbNetworkData,
-                encodingManager);
+                encodingManager,
+                edgeIteratorStateReverseExtractor);
     }
 
     @Test
@@ -73,21 +80,34 @@ class CarAccessibleRoadsWeightingTest {
                 .isEqualTo(MIN_WEIGHT_PER_DISTANCE);
     }
 
-    @Test
-    void calcEdgeWeight_accessible_returnsSourceWeight() {
+    @ParameterizedTest
+    @CsvSource(textBlock = """
+            false,false
+            false,true
+            true,false,
+            true,true
+            """)
+    void calcEdgeWeight_accessible_returnsSourceWeight(boolean reverseSearch, boolean edgeIseReverse) {
         when(encodingManager.getIntEncodedValue(WAY_ID_KEY)).thenReturn(intEncodedValue);
         when(edgeState.get(intEncodedValue)).thenReturn(ROAD_SECTION_ID);
         when(roadSection.carriagewayTypeCode()).thenReturn(CarriagewayTypeCode.HR);
-        when(roadSection.forwardAccessible()).thenReturn(true);
+        when(edgeIteratorStateReverseExtractor.hasReversed(edgeState)).thenReturn(edgeIseReverse);
+
+        if (reverseSearch ^ edgeIseReverse) {
+            when(roadSection.backwardAccessible()).thenReturn(true);
+        } else {
+            when(roadSection.forwardAccessible()).thenReturn(true);
+        }
+
         when(nwbNetworkData.findAccessibilityNwbRoadSectionById(ROAD_SECTION_ID))
                 .thenReturn(Optional.of(roadSection));
-        when(sourceWeighting.calcEdgeWeight(edgeState, false))
+        when(sourceWeighting.calcEdgeWeight(edgeState, reverseSearch))
                 .thenReturn(EDGE_WEIGHT);
 
-        assertThat(weighting.calcEdgeWeight(edgeState, false))
+        assertThat(weighting.calcEdgeWeight(edgeState, reverseSearch))
                 .isEqualTo(EDGE_WEIGHT);
 
-        verify(sourceWeighting).calcEdgeWeight(edgeState, false);
+        verify(sourceWeighting).calcEdgeWeight(edgeState, reverseSearch);
     }
 
     @Test

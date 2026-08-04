@@ -4,6 +4,7 @@ import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.IsCarAccessibleUtil;
@@ -18,18 +19,24 @@ public class CarAccessibleRoadsWeighting implements Weighting {
 
     private final EncodingManager encodingManager;
 
+    private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
+
     @Override
     public double calcMinWeightPerDistance() {
         return sourceWeighting.calcMinWeightPerDistance();
     }
 
     @Override
-    public double calcEdgeWeight(EdgeIteratorState edgeState, boolean reverse) {
+    public double calcEdgeWeight(EdgeIteratorState edgeState, boolean reverseSearch) {
         int roadSectionId = getRoadSectionId(edgeState, encodingManager);
+        boolean edgeIsReversed = edgeIteratorStateReverseExtractor.hasReversed(edgeState);
+        // see docs/technical-details.md ## Bidirectional routing and edge orientation in combination with search direction
+        boolean traversingBackwardRelativeToRoad = reverseSearch ^ edgeIsReversed;
+
         return nwbNetworkData.findAccessibilityNwbRoadSectionById(roadSectionId).stream()
                 .allMatch(accessibilityNwbRoadSection ->
-                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, reverse)) ?
-                sourceWeighting.calcEdgeWeight(edgeState, reverse) : Double.POSITIVE_INFINITY;
+                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, traversingBackwardRelativeToRoad)) ?
+                sourceWeighting.calcEdgeWeight(edgeState, reverseSearch) : Double.POSITIVE_INFINITY;
     }
 
     @Override

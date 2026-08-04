@@ -70,6 +70,6 @@ class ExploreLimitRestrictionTest {
     }
 
     private static RestrictionsIsochroneLabel createLabel(Restrictions restrictions) {
-        return new RestrictionsIsochroneLabel(0, 5, 5, null, 0L, 0.0, 0.0, restrictions);
+        return new RestrictionsIsochroneLabel(0, 5, 5, null, 0L, 0.0, 0.0, restrictions, false, false);
     }
 }

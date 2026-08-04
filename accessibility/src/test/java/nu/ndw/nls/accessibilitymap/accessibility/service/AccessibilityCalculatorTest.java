@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Level;
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.weighting.Weighting;
-import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.shapes.BBox;
 import io.micrometer.core.annotation.Timed;
 import java.util.Collection;
@@ -108,7 +107,7 @@ class AccessibilityCalculatorTest {
                 eq(accessibilityNetwork),
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
                         .weighting(weighting)
-                        .exploreLimit(new ExploreLimitCarAccessible(queryGraph, nwbNetworkData, new EdgeIteratorStateReverseExtractor()))
+                        .exploreLimit(new ExploreLimitCarAccessible(queryGraph, nwbNetworkData))
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
                         .searchDistanceInMetres(2.0)
@@ -147,7 +146,7 @@ class AccessibilityCalculatorTest {
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
                         .weighting(weighting)
                         .exploreLimit(new ExploreLimitComposite<>(
-                                new ExploreLimitCarAccessible(queryGraph, nwbNetworkData, new EdgeIteratorStateReverseExtractor()),
+                                new ExploreLimitCarAccessible(queryGraph, nwbNetworkData),
                                 new ExploreLimitRestriction()))
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
@@ -202,10 +201,7 @@ class AccessibilityCalculatorTest {
             if (expectedExploreLimit instanceof ExploreLimitCarAccessible expectedCarAccessible
                 && actualExploreLimit instanceof ExploreLimitCarAccessible actualCarAccessible) {
                 return expectedCarAccessible.getQueryGraph() == actualCarAccessible.getQueryGraph()
-                       && expectedCarAccessible.getNwbNetworkData() == actualCarAccessible.getNwbNetworkData()
-                       && areEdgeIteratorStateReverseExtractorsEqual(
-                        expectedCarAccessible.getEdgeIteratorStateReverseExtractor(),
-                        actualCarAccessible.getEdgeIteratorStateReverseExtractor());
+                        && expectedCarAccessible.getNwbNetworkData() == actualCarAccessible.getNwbNetworkData();
             }
 
             if (expectedExploreLimit instanceof ExploreLimitRestriction
@@ -230,21 +226,6 @@ class AccessibilityCalculatorTest {
                 }
 
                 return true;
-            }
-
-            return true;
-        }
-
-        private boolean areEdgeIteratorStateReverseExtractorsEqual(
-                EdgeIteratorStateReverseExtractor expected,
-                EdgeIteratorStateReverseExtractor actual) {
-
-            if (expected == null && actual == null) {
-                return true;
-            }
-
-            if (expected == null || actual == null) {
-                return false;
             }
 
             return true;

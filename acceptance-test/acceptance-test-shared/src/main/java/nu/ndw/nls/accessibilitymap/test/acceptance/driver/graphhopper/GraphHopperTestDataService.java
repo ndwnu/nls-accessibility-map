@@ -93,6 +93,30 @@ public class GraphHopperTestDataService {
                 .createRoad(8, 2).createRoad(5, 11);
     }
 
+    /*
+            4----<-----3
+            |          |
+            |          |
+            |          |
+            |          |
+            |          |
+            |          |
+            1---->-----2
+
+            */
+    public GraphHopperDriver buildUniDirectionalNetwork() {
+        return graphHopperDriver
+                .createNode(1, 1, 1)
+                .createNode(2, 10, 1)
+                .createNode(3, 10, 10)
+                .createNode(4, 1, 10)
+                //Outer circle
+                .createDirectionalRoad(1, 2, Set.of(Direction.FORWARD))
+                .createDirectionalRoad(2, 3, Set.of(Direction.FORWARD))
+                .createDirectionalRoad(3, 4, Set.of(Direction.FORWARD))
+                .createDirectionalRoad(4, 1, Set.of(Direction.FORWARD));
+    }
+
     public Graph generate(GenerateSpecification generateSpecification) {
         return graphHopperDriver.generate(generateSpecification);
     }

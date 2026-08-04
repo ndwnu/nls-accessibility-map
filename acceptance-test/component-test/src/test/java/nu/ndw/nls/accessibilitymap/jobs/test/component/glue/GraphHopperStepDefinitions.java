@@ -103,6 +103,16 @@ public class GraphHopperStepDefinitions {
         accessibilityMapServicesClient.reloadCaches();
     }
 
+    @Given("a simple unidirectional network")
+    public void graphHopperUniDirectionalNetwork() {
+
+        GraphHopperDriver graphHopperDriver = graphHopperTestDataService.buildUniDirectionalNetwork()
+                .insertNwbData();
+
+        graphHopperDriver.rebuildCache();
+        accessibilityMapServicesClient.reloadCaches();
+    }
+
     public LineString createRijksdriehoekLineString(LineString latLongLineString) {
 
         return geometryFactoryRijksdriehoek.createLineString(

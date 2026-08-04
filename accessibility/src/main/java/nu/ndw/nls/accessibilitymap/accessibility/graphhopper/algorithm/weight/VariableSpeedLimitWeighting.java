@@ -7,10 +7,12 @@ import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
 import com.graphhopper.util.EdgeIteratorState;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.speedlimit.SpeedLimit;
 import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.dto.SpeedLimits;
 
+@Slf4j
 @RequiredArgsConstructor
 public class VariableSpeedLimitWeighting implements Weighting {
 
@@ -38,13 +40,15 @@ public class VariableSpeedLimitWeighting implements Weighting {
     }
 
     @Override
-    public long calcEdgeMillis(EdgeIteratorState edgeIteratorState, boolean reverse) {
+    public long calcEdgeMillis(EdgeIteratorState edgeIteratorState, boolean reverseSearch) {
         int roadSectionId = getRoadSectionId(edgeIteratorState);
-        Direction direction = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState) ? Direction.BACKWARD : Direction.FORWARD;
-
+        boolean edgeIsReversed = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState);
+        // see docs/technical-details.md ## Bidirectional routing and edge orientation in combination with search direction
+        boolean traversingBackwardRelativeToRoad = reverseSearch ^ edgeIsReversed;
+        Direction direction = traversingBackwardRelativeToRoad ? Direction.BACKWARD : Direction.FORWARD;
         return speedLimits.findByRoadSectionId(roadSectionId, direction)
                 .map(speedLimit -> calculateTraversalTimeInMilliSeconds(edgeIteratorState.getDistance(), speedLimit))
-                .orElse(sourceWeighting.calcEdgeMillis(edgeIteratorState, reverse));
+                .orElse(sourceWeighting.calcEdgeMillis(edgeIteratorState, reverseSearch));
     }
 
     @Override

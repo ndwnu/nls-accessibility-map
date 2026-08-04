@@ -4,8 +4,6 @@ import static nu.ndw.nls.routingmapmatcher.network.model.Link.WAY_ID_KEY;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
-import com.graphhopper.storage.EdgeIteratorStateReverseExtractor;
-import com.graphhopper.util.EdgeIteratorState;
 import lombok.Getter;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.RestrictionsIsochroneLabel;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.util.IsCarAccessibleUtil;
@@ -27,32 +25,24 @@ public class ExploreLimitCarAccessible extends ExploreLimit<RestrictionsIsochron
     @Getter
     private final NwbNetworkData nwbNetworkData;
 
-    @Getter
-    private final EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor;
-
     public ExploreLimitCarAccessible(
             QueryGraph queryGraph,
-            NwbNetworkData nwbNetworkData,
-            EdgeIteratorStateReverseExtractor edgeIteratorStateReverseExtractor) {
+            NwbNetworkData nwbNetworkData
+    ) {
 
         super(LIMIT, false);
 
         this.queryGraph = queryGraph;
         this.nwbNetworkData = nwbNetworkData;
-        this.edgeIteratorStateReverseExtractor = edgeIteratorStateReverseExtractor;
     }
 
     @Override
     protected double getValueForLabel(RestrictionsIsochroneLabel isochroneLabel, EncodingManager encodingManager) {
-
         int roadSectionId = getRoadSectionId(isochroneLabel, encodingManager);
-
-        EdgeIteratorState edgeIteratorState = queryGraph.getEdgeIteratorStateForKey(isochroneLabel.getEdgeKey());
-        boolean travellingInReversedDirection = edgeIteratorStateReverseExtractor.hasReversed(edgeIteratorState);
 
         return nwbNetworkData.findAccessibilityNwbRoadSectionById(roadSectionId).stream()
                 .allMatch(accessibilityNwbRoadSection ->
-                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, travellingInReversedDirection))
+                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, isochroneLabel.isTraversingBackwardRelativeToRoad()))
                 ? ACCESSIBLE
                 : IN_ACCESSIBLE;
     }
