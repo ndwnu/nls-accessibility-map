@@ -143,13 +143,6 @@ nu:
         trafficsignclient:
           currentStateControllerV5:
             url: http://localhost:8888
-        roadChanges:
-          cache:
-            name: "Road changes"
-            folder: "./cache/roadChanges"
-            load-data-on-startup: false
-            watch-for-updates: false
-            cache-version: 3
         speedLimit:
           cache:
             name: "Speed limit"
