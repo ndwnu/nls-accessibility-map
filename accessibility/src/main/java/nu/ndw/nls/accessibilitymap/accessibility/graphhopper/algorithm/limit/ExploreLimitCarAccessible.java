@@ -42,7 +42,7 @@ public class ExploreLimitCarAccessible extends ExploreLimit<RestrictionsIsochron
 
         return nwbNetworkData.findAccessibilityNwbRoadSectionById(roadSectionId).stream()
                 .allMatch(accessibilityNwbRoadSection ->
-                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, isochroneLabel.isTraversingBackwardRelativeToRoad()))
+                        IsCarAccessibleUtil.isAccessible(accessibilityNwbRoadSection, isochroneLabel.isTraversedInReversedDirection()))
                 ? ACCESSIBLE
                 : IN_ACCESSIBLE;
     }

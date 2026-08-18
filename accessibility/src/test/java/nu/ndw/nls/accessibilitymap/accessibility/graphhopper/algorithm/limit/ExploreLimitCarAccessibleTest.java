@@ -9,7 +9,6 @@ import com.graphhopper.routing.querygraph.QueryGraph;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.util.EdgeIteratorState;
 import java.util.Optional;
-import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.RestrictionsIsochroneLabel;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
@@ -34,9 +33,6 @@ class ExploreLimitCarAccessibleTest {
 
     @Mock
     private EncodingManager encodingManager;
-
-    @Mock
-    private Restriction restriction;
 
     @Mock
     private EdgeIteratorState edgeIteratorState;
@@ -69,7 +65,7 @@ class ExploreLimitCarAccessibleTest {
     }
 
     private static RestrictionsIsochroneLabel createRestrictionsIsochroneLabel(Restrictions restrictions) {
-        return new RestrictionsIsochroneLabel(0, 5, 5, null, 0L, 0.0, 0.0, restrictions, false, false);
+        return new RestrictionsIsochroneLabel(0, 5, 5, null, 0L, 0.0, 0.0, restrictions, false);
     }
 
     @Test
