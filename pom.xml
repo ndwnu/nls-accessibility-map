@@ -64,6 +64,10 @@
     <wiremock-spring-boot.version>4.2.2</wiremock-spring-boot.version>
     <netty.version>4.2.17.Final</netty.version>
     <apache.commons.version>3.20.0</apache.commons.version>
+
+    <!-- Overrides for transitive dependencies to fix vulnerabilities -->
+    <!-- CVE-2026-63337, CVE-2026-69219, CVE-2026-69220 -->
+    <amqp-client.version>5.34.0</amqp-client.version>
   </properties>
   <distributionManagement>
     <repository>
@@ -118,6 +122,11 @@
   </pluginRepositories>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.rabbitmq</groupId>
+        <artifactId>amqp-client</artifactId>
+        <version>${amqp-client.version}</version>
+      </dependency>
       <dependency>
         <groupId>nu.ndw.nls.springboot</groupId>
         <artifactId>client-feign</artifactId>
