@@ -64,6 +64,7 @@
     <wiremock-spring-boot.version>4.2.2</wiremock-spring-boot.version>
     <netty.version>4.2.17.Final</netty.version>
     <apache.commons.version>3.20.0</apache.commons.version>
+    <antlr.version>4.13.2</antlr.version>
   </properties>
   <distributionManagement>
     <repository>
@@ -118,6 +119,11 @@
   </pluginRepositories>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <version>${antlr.version}</version>
+      </dependency>
       <dependency>
         <groupId>nu.ndw.nls.springboot</groupId>
         <artifactId>client-feign</artifactId>
@@ -290,6 +296,11 @@
         <groupId>nu.ndw.nls</groupId>
         <artifactId>routing-map-matcher-library</artifactId>
         <version>${nls-routing-map-matcher.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>${antlr.version}</version>
       </dependency>
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
