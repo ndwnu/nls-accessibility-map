@@ -1,9 +1,9 @@
-FROM ndwnls.azurecr.io/docker.io/library/eclipse-temurin:21-jre-jammy@sha256:3097cbbebb7d490494a98aed2301f284b38f79eba158eef098c6fc8c8af11c23 AS builder
+FROM ndwnls.azurecr.io/docker.io/library/eclipse-temurin:21-jre-jammy@sha256:8208b3a3733529f42c4b565bfcbf16d914eb628f3ead8488b6b4d6363fcbe7cf AS builder
 WORKDIR /builder
 COPY application.jar application.jar
 RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
-FROM ndwnls.azurecr.io/docker.io/library/eclipse-temurin:21-jre-jammy@sha256:3097cbbebb7d490494a98aed2301f284b38f79eba158eef098c6fc8c8af11c23
+FROM ndwnls.azurecr.io/docker.io/library/eclipse-temurin:21-jre-jammy@sha256:8208b3a3733529f42c4b565bfcbf16d914eb628f3ead8488b6b4d6363fcbe7cf
 
 # Add non-privileged user
 RUN useradd -u 1000 java
