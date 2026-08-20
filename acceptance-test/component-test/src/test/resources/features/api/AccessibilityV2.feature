@@ -153,11 +153,11 @@ Feature: Accessibility V2
     Given a simple network
 
     And with traffic sign conditions
-      | name  | vehicleType                                                         | widthInM | heightInM |
-      | C12   | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |          |           |
-      | C18   |                                                                     | 1.9      |           |
-      | C19   |                                                                     |          | 1.9       |
-      | truck | truck                                                               |          |           |
+      | name  | vehicleType                                                         | widthInM | heightInM | timeValidity      |
+      | C12   | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |          |           | Mo-Fr 06:00-09:00 |
+      | C18   |                                                                     | 1.9      |           | Mo-Fr 06:00-09:00 |
+      | C19   |                                                                     |          | 1.9       | Mo-Fr 06:00-09:00 |
+      | truck | truck                                                               |          |           | Mo-Fr 06:00-09:00 |
 
     And with traffic signs
       | startNodeId | endNodeId | fraction | rvvCode | restrictions | exemptions | directionType | regulationOrderId | id                                   |
@@ -171,8 +171,8 @@ Feature: Accessibility V2
       | startNodeId | endNodeId | forwardAverageSpeedLimit | backwardAverageSpeedLimit |
       | 5           | 11        | 30                       | 20                        |
     And run SpeedLimitUpdateCache
-    When request accessibility geojson for truck2MetersWide-destination3-7
+    When request accessibility geojson for truck2MetersWide-destination3-7-insideTimeValidity
     Then we expect accessibility geojson response truck2MetersWide-destination3-7
 
-#    When request accessibility geojson for truck2MetersWide-destination3-7-outsideTimeValidity
-#    Then we expect accessibility geojson response truck2MetersWide-destination3-7-outsideTimeValidity
+    When request accessibility geojson for truck2MetersWide-destination3-7-outsideTimeValidity
+    Then we expect accessibility geojson response truck2MetersWide-destination3-7-outsideTimeValidity
