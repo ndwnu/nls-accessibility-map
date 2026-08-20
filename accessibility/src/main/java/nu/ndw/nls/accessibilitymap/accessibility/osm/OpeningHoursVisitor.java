@@ -81,7 +81,7 @@ public class OpeningHoursVisitor extends OpeningHoursBaseVisitor<List<Window>> {
         return PARSED_WINDOWS_BY_EXPRESSION.computeIfAbsent(openingHoursExpression, OpeningHoursVisitor::doParse);
     }
 
-    static void clearCache() {
+    public static void clearCache() {
         PARSED_WINDOWS_BY_EXPRESSION.clear();
     }
 
