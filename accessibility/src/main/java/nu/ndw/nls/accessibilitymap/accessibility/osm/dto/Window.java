@@ -10,8 +10,8 @@ import java.util.List;
 public record Window(List<MonthDayRange> dateRanges, EnumSet<DayOfWeek> days, LocalTime start, LocalTime end) {
 
     /**
-     * @param start window start time
-     * @param end   window end time
+     * @param start window start time is treated as inclusive
+     * @param end   window end time is treated as inclusive
      * @return True if the closed interval [start, end] overlaps this window on at least one instant - a visit that only partially covers
      * the window, or that touches it on a single boundary, still matches.
      */
