@@ -40,9 +40,7 @@ class OpeningHoursVisitorTest {
     @ParameterizedTest
     @MethodSource("listOfUnsupportedOpeningHoursExpressionsInTrafficSignApi")
     void parse_emptyForUnsupportedExpressions(String openingHoursExpression) {
-        assertThat(OpeningHoursVisitor.parse(openingHoursExpression)).isEmpty();
-
-        assertParseFailureIsLogged(openingHoursExpression);
+        assertOpeningHourExpressionThatShouldFail(openingHoursExpression);
     }
 
     @ParameterizedTest
@@ -54,14 +52,16 @@ class OpeningHoursVisitorTest {
     @ParameterizedTest
     @MethodSource("theoreticalUnsupportedOpeningHoursExpressions")
     void parse_emptyForTheoreticalUnsupportedExpressions(String openingHoursExpression) {
-        assertThat(OpeningHoursVisitor.parse(openingHoursExpression)).isEmpty();
-
-        assertParseFailureIsLogged(openingHoursExpression);
+        assertOpeningHourExpressionThatShouldFail(openingHoursExpression);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"not an opening hours expression", "Mo-Fr 09:00-", "99:99-10:00"})
     void parse_emptyForSyntacticallyInvalidExpressions(String openingHoursExpression) {
+        assertOpeningHourExpressionThatShouldFail(openingHoursExpression);
+    }
+
+    private void assertOpeningHourExpressionThatShouldFail(String openingHoursExpression) {
         assertThat(OpeningHoursVisitor.parse(openingHoursExpression)).isEmpty();
 
         assertParseFailureIsLogged(openingHoursExpression);
