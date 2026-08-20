@@ -1,6 +1,6 @@
 services:
   nls-postgres:
-    image: ndwnls.azurecr.io/nls-postgres-it-container:20260812.1@sha256:cc827e2470776a060e9f27d095604bf0a3edfa788645e32aa187d9e8abd640af
+    image: ndwnls.azurecr.io/nls-postgres-it-container:20260819.1@sha256:85415fde99928026d548e1bc287cbc8d361045513256db844b1dcbb896be2f90
     platform: linux/amd64
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
@@ -17,7 +17,7 @@ services:
       - nls-accessibility-map-network
 
   nls-nwb-schema-manager:
-    image: ndwnls.azurecr.io/nls-nwb-schema-manager:20260819.2@sha256:a0069c9cf860dc30606aecd5c22a51353c96a43b06b44d18029735adbb60df45
+    image: ndwnls.azurecr.io/nls-nwb-schema-manager:20260820.2@sha256:fec3b982f4fd36e21387b43585ea3a9360702c8b8b1dcaa6ea659a4935a59a8b
     platform: linux/amd64
     environment:
       - SPRING_PROFILES_ACTIVE=docker
