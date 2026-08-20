@@ -1,7 +1,9 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.validator;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestJson;
@@ -10,12 +12,14 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleCharacteristicsJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VisitingWindowJson;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
@@ -144,4 +148,74 @@ class AccessibilityRequestValidatorTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "2026-08-24T07:00:00+02:00",
+            "2026-08-24T07:00:01+02:00",
+            "2026-08-25T07:00:00+02:00",
+            "2026-08-25T06:00:00+01:00"
+    })
+    void verify_visitingWindow(String end) {
+        AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
+                .vehicle(VehicleCharacteristicsJson.builder().build())
+                .visitingWindow(VisitingWindowJson.builder()
+                        .start(OffsetDateTime.parse("2026-08-24T07:00:00+02:00"))
+                        .end(OffsetDateTime.parse(end))
+                        .build())
+                .build();
+
+        assertThat(accessibilityRequestValidator.verify(accessibilityRequestJson)).isTrue();
+    }
+
+    @Test
+    void verify_visitingWindow_notDefined() {
+        AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
+                .vehicle(VehicleCharacteristicsJson.builder().build())
+                .visitingWindow(null)
+                .build();
+
+        assertThat(accessibilityRequestValidator.verify(accessibilityRequestJson)).isTrue();
+    }
+
+    @Test
+    void verify_visitingWindow_endBeforeStart() {
+        AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
+                .vehicle(VehicleCharacteristicsJson.builder().build())
+                .visitingWindow(VisitingWindowJson.builder()
+                        .start(OffsetDateTime.parse("2026-08-24T07:00:00+02:00"))
+                        .end(OffsetDateTime.parse("2026-08-24T06:59:59+02:00"))
+                        .build())
+                .build();
+
+        assertThatThrownBy(() -> accessibilityRequestValidator.verify(accessibilityRequestJson))
+                .isInstanceOf(ApiException.class)
+                .satisfies(thrown -> {
+                    ApiException exception = (ApiException) thrown;
+                    assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("c2dd2f9c-bd41-48e8-bd97-61474ce490dd"));
+                    assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                    assertThat(exception.getTitle()).isEqualTo("Invalid Request");
+                    assertThat(exception.getDescription()).isEqualTo("The end of the visiting window may not be before its start.");
+                });
+    }
+
+    @Test
+    void verify_visitingWindow_longerThanADay() {
+        AccessibilityRequestJson accessibilityRequestJson = AccessibilityRequestJson.builder()
+                .vehicle(VehicleCharacteristicsJson.builder().build())
+                .visitingWindow(VisitingWindowJson.builder()
+                        .start(OffsetDateTime.parse("2026-08-24T07:00:00+02:00"))
+                        .end(OffsetDateTime.parse("2026-08-25T07:00:01+02:00"))
+                        .build())
+                .build();
+
+        assertThatThrownBy(() -> accessibilityRequestValidator.verify(accessibilityRequestJson))
+                .isInstanceOf(ApiException.class)
+                .satisfies(thrown -> {
+                    ApiException exception = (ApiException) thrown;
+                    assertThat(exception.getErrorId()).isEqualTo(UUID.fromString("d9e6db51-7876-4b93-86ef-1d945f3009c9"));
+                    assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+                    assertThat(exception.getTitle()).isEqualTo("Invalid Request");
+                    assertThat(exception.getDescription()).isEqualTo("The visiting window may not be longer than 24 hours.");
+                });
+    }
 }

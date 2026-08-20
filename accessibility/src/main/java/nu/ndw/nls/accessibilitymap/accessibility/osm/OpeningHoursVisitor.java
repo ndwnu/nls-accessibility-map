@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.accessibility.osm.openinghours;
+package nu.ndw.nls.accessibilitymap.accessibility.osm;
 
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -73,6 +73,10 @@ public class OpeningHoursVisitor extends OpeningHoursBaseVisitor<List<Window>> {
 
     private static final Map<String, Optional<List<Window>>> PARSED_WINDOWS_BY_EXPRESSION = new ConcurrentHashMap<>();
 
+    public static final int END_OF_MONTH = 31;
+
+    public static final int HOURS_IN_A_DAY = 24;
+
     public static Optional<List<Window>> parse(String openingHoursExpression) {
         return PARSED_WINDOWS_BY_EXPRESSION.computeIfAbsent(openingHoursExpression, OpeningHoursVisitor::doParse);
     }
@@ -97,9 +101,9 @@ public class OpeningHoursVisitor extends OpeningHoursBaseVisitor<List<Window>> {
     }
 
     @Override
-    public List<Window> visitOpeningHours(OpeningHoursContext ctx) {
+    public List<Window> visitOpeningHours(OpeningHoursContext context) {
         List<Window> windows = new ArrayList<>();
-        for (Rule_sequenceContext ruleSequence : ctx.rule_sequence()) {
+        for (Rule_sequenceContext ruleSequence : context.rule_sequence()) {
             windows.addAll(visitRule_sequence(ruleSequence));
         }
 
@@ -107,32 +111,32 @@ public class OpeningHoursVisitor extends OpeningHoursBaseVisitor<List<Window>> {
     }
 
     @Override
-    public List<Window> visitRule_sequence(Rule_sequenceContext ctx) {
-        if (ctx.rule_modifier() != null) {
+    public List<Window> visitRule_sequence(Rule_sequenceContext context) {
+        if (context.rule_modifier() != null) {
             throw new UnsupportedOperationException(
-                    "Rule modifiers ('open', 'closed', 'off', 'unknown' or comments) are not supported: " + ctx.getText());
+                    "Rule modifiers ('open', 'closed', 'off', 'unknown' or comments) are not supported: " + context.getText());
         }
 
-        return visitSelector_sequence(ctx.selector_sequence());
+        return visitSelector_sequence(context.selector_sequence());
     }
 
     @Override
-    public List<Window> visitSelector_sequence(Selector_sequenceContext ctx) {
-        if ("24/7".equals(ctx.getText())) {
+    public List<Window> visitSelector_sequence(Selector_sequenceContext context) {
+        if ("24/7".equals(context.getText())) {
             return List.of(new Window(
                     List.of(), EnumSet.noneOf(DayOfWeek.class),
                     LocalTime.MIDNIGHT, LocalTime.MIDNIGHT));
         }
 
         List<MonthDayRange> dateRanges = List.of();
-        if (ctx.wide_range_selector() != null) {
-            dateRanges = toDateRanges(ctx.wide_range_selector());
+        if (context.wide_range_selector() != null) {
+            dateRanges = toDateRanges(context.wide_range_selector());
         }
 
         EnumSet<DayOfWeek> days = EnumSet.noneOf(DayOfWeek.class);
         List<TimespanContext> timespans = List.of();
-        if (ctx.small_range_selector() != null) {
-            Small_range_selectorContext smallRangeSelector = ctx.small_range_selector();
+        if (context.small_range_selector() != null) {
+            Small_range_selectorContext smallRangeSelector = context.small_range_selector();
             if (smallRangeSelector.weekday_selector() != null) {
                 days.addAll(toDays(smallRangeSelector.weekday_selector()));
             }
@@ -153,14 +157,14 @@ public class OpeningHoursVisitor extends OpeningHoursBaseVisitor<List<Window>> {
         return windows;
     }
 
-    private List<MonthDayRange> toDateRanges(Wide_range_selectorContext ctx) {
-        if (ctx.year_selector() != null || ctx.week_selector() != null) {
-            throw new UnsupportedOperationException("Year and week selectors are not supported: " + ctx.getText());
+    private List<MonthDayRange> toDateRanges(Wide_range_selectorContext context) {
+        if (context.year_selector() != null || context.week_selector() != null) {
+            throw new UnsupportedOperationException("Year and week selectors are not supported: " + context.getText());
         }
 
-        Monthday_selectorContext monthdaySelector = ctx.monthday_selector();
+        Monthday_selectorContext monthdaySelector = context.monthday_selector();
         if (monthdaySelector == null) {
-            throw new UnsupportedOperationException("Unsupported wide range selector: " + ctx.getText());
+            throw new UnsupportedOperationException("Unsupported wide range selector: " + context.getText());
         }
 
         List<MonthDayRange> dateRanges = new ArrayList<>();
@@ -171,12 +175,13 @@ public class OpeningHoursVisitor extends OpeningHoursBaseVisitor<List<Window>> {
         return List.copyOf(dateRanges);
     }
 
-    private MonthDayRange toDateRange(Monthday_rangeContext ctx) {
-        validateSupportedMonthdayRange(ctx);
+    @SuppressWarnings("java:S1142")
+    private MonthDayRange toDateRange(Monthday_rangeContext context) {
+        validateSupportedMonthdayRange(context);
 
-        Date_fromContext dateFrom = ctx.date_from();
+        Date_fromContext dateFrom = context.date_from();
         if (dateFrom == null) {
-            List<MonthContext> monthContexts = ctx.month();
+            List<MonthContext> monthContexts = context.month();
             Month fromMonth = toMonth(monthContexts.getFirst());
             Month toMonth = monthContexts.size() > 1 ? toMonth(monthContexts.get(1)) : fromMonth;
 
@@ -184,61 +189,61 @@ public class OpeningHoursVisitor extends OpeningHoursBaseVisitor<List<Window>> {
         }
 
         Month fromMonth = toMonth(dateFrom.month());
-        MonthDay from = toMonthDay(fromMonth, dateFrom.month_day(), ctx);
+        MonthDay from = toMonthDay(fromMonth, dateFrom.month_day(), context);
 
-        // The grammar exposes the trailing plus of an open ended range only as unlabelled text, never as an accessor.
-        if (ctx.getText().endsWith("+")) {
-            return new MonthDayRange(from, MonthDay.of(Month.DECEMBER, 31));
+        // The grammar exposes the trailing plus of an open-ended range only as unlabelled text, never as an accessor.
+        if (context.getText().endsWith("+")) {
+            return new MonthDayRange(from, MonthDay.of(Month.DECEMBER, END_OF_MONTH));
         }
 
-        Date_toContext dateTo = ctx.date_to();
+        Date_toContext dateTo = context.date_to();
         if (dateTo == null) {
             return new MonthDayRange(from, from);
         }
 
         if (dateTo.date_from() != null) {
             Month toMonth = toMonth(dateTo.date_from().month());
-            return new MonthDayRange(from, toMonthDay(toMonth, dateTo.date_from().month_day(), ctx));
+            return new MonthDayRange(from, toMonthDay(toMonth, dateTo.date_from().month_day(), context));
         }
 
-        // A bare day of month on the right hand side ('Apr 01-15') repeats the month of the left hand side.
-        return new MonthDayRange(from, toMonthDay(fromMonth, dateTo.month_day(), ctx));
+        // A bare day of month on the right-hand side ('Apr 01-15') repeats the month of the left-hand side.
+        return new MonthDayRange(from, toMonthDay(fromMonth, dateTo.month_day(), context));
     }
 
-    private void validateSupportedMonthdayRange(Monthday_rangeContext ctx) {
+    private void validateSupportedMonthdayRange(Monthday_rangeContext context) {
         // A date offset can match the empty string, so its context always exists and emptiness is the only reliable check.
-        for (Date_offsetContext dateOffset : ctx.date_offset()) {
+        for (Date_offsetContext dateOffset : context.date_offset()) {
             if (dateOffset.getChildCount() > 0) {
-                throw new UnsupportedOperationException("Date offsets are not supported: " + ctx.getText());
+                throw new UnsupportedOperationException("Date offsets are not supported: " + context.getText());
             }
         }
 
-        if (ctx.year() != null) {
-            throw new UnsupportedOperationException("Year qualified dates are not supported: " + ctx.getText());
+        if (context.year() != null) {
+            throw new UnsupportedOperationException("Year qualified dates are not supported: " + context.getText());
         }
 
-        validateSupportedDateFrom(ctx.date_from(), ctx);
-        if (ctx.date_to() != null) {
-            validateSupportedDateFrom(ctx.date_to().date_from(), ctx);
+        validateSupportedDateFrom(context.date_from(), context);
+        if (context.date_to() != null) {
+            validateSupportedDateFrom(context.date_to().date_from(), context);
         }
     }
 
-    private void validateSupportedDateFrom(Date_fromContext ctx, Monthday_rangeContext monthdayRange) {
-        if (ctx == null) {
+    private void validateSupportedDateFrom(Date_fromContext context, Monthday_rangeContext monthdayRange) {
+        if (context == null) {
             return;
         }
 
-        if (ctx.variable_date() != null) {
+        if (context.variable_date() != null) {
             throw new UnsupportedOperationException("Variable dates such as 'easter' are not supported: " + monthdayRange.getText());
         }
 
-        if (ctx.year() != null) {
+        if (context.year() != null) {
             throw new UnsupportedOperationException("Year qualified dates are not supported: " + monthdayRange.getText());
         }
     }
 
-    private MonthDay toMonthDay(Month month, Month_dayContext ctx, Monthday_rangeContext monthdayRange) {
-        int dayOfMonth = Integer.parseInt(ctx.getText());
+    private MonthDay toMonthDay(Month month, Month_dayContext context, Monthday_rangeContext monthdayRange) {
+        int dayOfMonth = Integer.parseInt(context.getText());
         try {
             return MonthDay.of(month, dayOfMonth);
         } catch (DateTimeException dateTimeException) {
@@ -248,78 +253,78 @@ public class OpeningHoursVisitor extends OpeningHoursBaseVisitor<List<Window>> {
         }
     }
 
-    private EnumSet<DayOfWeek> toDays(Weekday_selectorContext ctx) {
-        if (ctx.holiday_sequence() != null) {
-            throw new UnsupportedOperationException("Holiday selectors are not supported: " + ctx.getText());
+    private EnumSet<DayOfWeek> toDays(Weekday_selectorContext context) {
+        if (context.holiday_sequence() != null) {
+            throw new UnsupportedOperationException("Holiday selectors are not supported: " + context.getText());
         }
 
         EnumSet<DayOfWeek> days = EnumSet.noneOf(DayOfWeek.class);
-        for (Weekday_rangeContext weekdayRange : ctx.weekday_sequence().weekday_range()) {
-            // The grammar only allows a day offset behind an nth entry, so checking the nth entries covers both.
+        for (Weekday_rangeContext weekdayRange : context.weekday_sequence().weekday_range()) {
+            // The grammar only allows a day offset behind a nth entry, so checking the nth entries covers both.
             if (!weekdayRange.nth_entry().isEmpty()) {
-                throw new UnsupportedOperationException("Nth weekday entries and day offsets are not supported: " + ctx.getText());
+                throw new UnsupportedOperationException("Nth weekday entries and day offsets are not supported: " + context.getText());
             }
 
-            List<WdayContext> wdayContexts = weekdayRange.wday();
-            DayOfWeek from = toDay(wdayContexts.get(0));
-            DayOfWeek to = wdayContexts.size() > 1 ? toDay(wdayContexts.get(1)) : from;
+            List<WdayContext> weekDayContexts = weekdayRange.wday();
+            DayOfWeek from = toDay(weekDayContexts.get(0));
+            DayOfWeek to = weekDayContexts.size() > 1 ? toDay(weekDayContexts.get(1)) : from;
             days.addAll(dayRange(from, to));
         }
 
         return days;
     }
 
-    private void validateSimpleTimespan(TimespanContext ctx) {
-        if (ctx.extended_time() == null || ctx.number() != null || ctx.getText().endsWith("+")) {
+    private void validateSimpleTimespan(TimespanContext context) {
+        if (context.extended_time() == null || context.number() != null || context.getText().endsWith("+")) {
             throw new UnsupportedOperationException(
-                    "Only simple time ranges (e.g. '09:00-17:00') are supported: " + ctx.getText());
+                    "Only simple time ranges (e.g. '09:00-17:00') are supported: " + context.getText());
         }
 
-        if (ctx.time().variable_time() != null || ctx.extended_time().variable_time() != null) {
-            throw new UnsupportedOperationException("Sunrise/sunset relative times are not supported: " + ctx.getText());
+        if (context.time().variable_time() != null || context.extended_time().variable_time() != null) {
+            throw new UnsupportedOperationException("Sunrise/sunset relative times are not supported: " + context.getText());
         }
     }
 
-    private LocalTime toStartTime(TimespanContext ctx) {
-        validateSimpleTimespan(ctx);
-        return toLocalTime(ctx.time().hour_minutes());
+    private LocalTime toStartTime(TimespanContext context) {
+        validateSimpleTimespan(context);
+        return toLocalTime(context.time().hour_minutes());
     }
 
-    private LocalTime toEndTime(TimespanContext ctx) {
-        validateSimpleTimespan(ctx);
-        Extended_timeContext extendedTime = ctx.extended_time();
-        int hour = Integer.parseInt(extendedTime.extended_hour().getText()) % 24;
+    private LocalTime toEndTime(TimespanContext context) {
+        validateSimpleTimespan(context);
+        Extended_timeContext extendedTime = context.extended_time();
+        int hour = Integer.parseInt(extendedTime.extended_hour().getText()) % HOURS_IN_A_DAY;
         int minute = Integer.parseInt(extendedTime.minute().getText());
 
         return LocalTime.of(hour, minute);
     }
 
-    private LocalTime toLocalTime(Hour_minutesContext ctx) {
-        int hour = Integer.parseInt(ctx.hour().getText());
-        int minute = Integer.parseInt(ctx.minute().getText());
+    private LocalTime toLocalTime(Hour_minutesContext context) {
+        int hour = Integer.parseInt(context.hour().getText());
+        int minute = Integer.parseInt(context.minute().getText());
 
         return LocalTime.of(hour, minute);
     }
 
     private EnumSet<DayOfWeek> dayRange(DayOfWeek from, DayOfWeek to) {
         EnumSet<DayOfWeek> days = EnumSet.noneOf(DayOfWeek.class);
-        DayOfWeek day = from;
+        DayOfWeek dayOfWeek = from;
         while (true) {
-            days.add(day);
-            if (day == to) {
+            days.add(dayOfWeek);
+            if (dayOfWeek == to) {
                 break;
             }
-            day = day.plus(1);
+            dayOfWeek = dayOfWeek.plus(1);
         }
 
         return days;
     }
 
-    private Month toMonth(MonthContext ctx) {
-        return MONTHS_BY_ABBREVIATION.get(ctx.getText());
+    private Month toMonth(MonthContext context) {
+        return MONTHS_BY_ABBREVIATION.get(context.getText());
     }
 
-    private DayOfWeek toDay(WdayContext ctx) {
-        return DAYS_BY_ABBREVIATION.get(ctx.getText());
+    private DayOfWeek toDay(WdayContext context) {
+        return DAYS_BY_ABBREVIATION.get(context.getText());
     }
 }

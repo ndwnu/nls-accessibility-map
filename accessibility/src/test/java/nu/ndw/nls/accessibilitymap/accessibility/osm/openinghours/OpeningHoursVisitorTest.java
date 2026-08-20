@@ -10,6 +10,7 @@ import java.time.MonthDay;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Stream;
+import nu.ndw.nls.accessibilitymap.accessibility.osm.OpeningHoursVisitor;
 import nu.ndw.nls.accessibilitymap.accessibility.osm.dto.MonthDayRange;
 import nu.ndw.nls.accessibilitymap.accessibility.osm.dto.Window;
 import nu.ndw.nls.springboot.test.logging.LoggerExtension;

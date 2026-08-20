@@ -6,11 +6,14 @@ import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ReasonJson.Ty
 import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson.TypeEnum.ROAD_SECTION;
 import static nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.RestrictionJson.TypeEnum.TRAFFIC_SIGN;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.assertArg;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessibility;
@@ -46,6 +49,7 @@ import nu.ndw.nls.geojson.geometry.model.LineStringJson;
 import nu.ndw.nls.geojson.geometry.model.PointJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.tracing.TracingService;
+import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -196,12 +200,16 @@ class AccessibilityV2ApiDelegateImplTest {
                                       "diesel"
                                     ]
                                   },
+                                  "visitingWindow": {
+                                    "start": "2026-08-24T07:00:00+02:00",
+                                    "end": "2026-08-24T08:30:00+02:00"
+                                  },
                                   "exclusions": {
                                      "emissionZoneTypes": ["low_emission_zone", "zero_emission_zone"],
                                      "emissionZoneIds": ["zone1","zone2"]
                                   }
                                 }
-                                
+
                                 """));
 
         mockMvcBuilder.andExpect(status().is(HttpStatus.OK.value()));
@@ -275,6 +283,38 @@ class AccessibilityV2ApiDelegateImplTest {
                         """);
     }
 
+    @Test
+    void getAccessibilityAsGeoJson_invalidVisitingWindow() throws Exception {
+
+        doThrow(new ApiException(
+                UUID.fromString("c2dd2f9c-bd41-48e8-bd97-61474ce490dd"),
+                HttpStatus.BAD_REQUEST,
+                "Invalid Request",
+                "The end of the visiting window may not be before its start."))
+                .when(accessibilityRequestValidator).verify(any(AccessibilityRequestJson.class));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/v2/accessibility.geojson")
+                        .accept("application/geo+json")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(SecurityMockMvcRequestPostProcessors.anonymous())
+                        .content("""
+                                {
+                                  "area": {
+                                    "type": "municipality",
+                                    "id": "GM0001"
+                                  },
+                                  "vehicle": {
+                                    "type": "truck"
+                                  },
+                                  "visitingWindow": {
+                                    "start": "2026-08-24T07:00:00+02:00",
+                                    "end": "2026-08-24T06:59:59+02:00"
+                                  }
+                                }
+                                """))
+                .andExpect(status().is(HttpStatus.BAD_REQUEST.value()));
+    }
+
     private static void assertAccessibilityReqeustJson(AccessibilityRequestJson accessibilityRequestJson) {
         assertThat(accessibilityRequestJson.getVehicle().getType()).isEqualTo(VehicleTypeJson.TRUCK);
         assertThat(accessibilityRequestJson.getVehicle().getFuelTypes()).containsExactlyInAnyOrder(
@@ -301,6 +341,11 @@ class AccessibilityV2ApiDelegateImplTest {
 
         assertThat(accessibilityRequestJson.getDestination().getLatitude()).isEqualTo(1.1D);
         assertThat(accessibilityRequestJson.getDestination().getLongitude()).isEqualTo(2.2D);
+
+        assertThat(accessibilityRequestJson.getVisitingWindow().getStart())
+                .isEqualTo(OffsetDateTime.parse("2026-08-24T07:00:00+02:00"));
+        assertThat(accessibilityRequestJson.getVisitingWindow().getEnd())
+                .isEqualTo(OffsetDateTime.parse("2026-08-24T08:30:00+02:00"));
 
         assertThat(accessibilityRequestJson.getIncludeAccessibleRoadSections()).isTrue();
         assertThat(accessibilityRequestJson.getIncludeInaccessibleRoadSections()).isTrue();

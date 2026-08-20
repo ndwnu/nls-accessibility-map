@@ -16,8 +16,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.VisitingWindow;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
+import nu.ndw.nls.accessibilitymap.accessibility.osm.OpeningHoursVisitor;
 import nu.ndw.nls.accessibilitymap.accessibility.osm.dto.Window;
-import nu.ndw.nls.accessibilitymap.accessibility.osm.openinghours.OpeningHoursVisitor;
 import org.apache.commons.collections4.CollectionUtils;
 
 @Slf4j

@@ -1,0 +1,22 @@
+{
+  "destination": {
+    "latitude": 3.0,
+    "longitude": 7.0
+  },
+  "area": {
+    "type": "municipality",
+    "id": "GM0001"
+  },
+  "vehicle": {
+    "type": "truck",
+    "width": 2.0,
+    "emissionClass": "euro_3",
+    "fuelTypes": [
+      "diesel"
+    ]
+  },
+  "visitingWindow": {
+    "start": "2026-08-24T07:00:00+02:00",
+    "end": "2026-08-24T08:00:00+02:00"
+  }
+}

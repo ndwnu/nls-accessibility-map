@@ -10,21 +10,23 @@ import java.util.List;
 public record Window(List<MonthDayRange> dateRanges, EnumSet<DayOfWeek> days, LocalTime start, LocalTime end) {
 
     /**
-     * True if the closed interval [start, end] overlaps this window on at least one instant - a visit that only
-     * partially covers the window, or that touches it on a single boundary, still matches.
+     * @param start window start time
+     * @param end   window end time
+     * @return True if the closed interval [start, end] overlaps this window on at least one instant - a visit that only partially covers
+     * the window, or that touches it on a single boundary, still matches.
      */
     public boolean matches(LocalDateTime start, LocalDateTime end) {
-        LocalDate date = start.toLocalDate();
-        LocalDate lastDate = end.toLocalDate();
+        LocalDate startDate = start.toLocalDate();
+        LocalDate endDate = end.toLocalDate();
 
-        while (!date.isAfter(lastDate)) {
-            LocalTime rangeStart = date.equals(start.toLocalDate()) ? start.toLocalTime() : LocalTime.MIDNIGHT;
-            LocalTime rangeEnd = date.equals(lastDate) ? end.toLocalTime() : LocalTime.MAX;
-            if (matchesDate(date) && overlapsTimeRange(rangeStart, rangeEnd)) {
+        while (!startDate.isAfter(endDate)) {
+            LocalTime startTime = startDate.equals(start.toLocalDate()) ? start.toLocalTime() : LocalTime.MIDNIGHT;
+            LocalTime endTime = startDate.equals(endDate) ? end.toLocalTime() : LocalTime.MAX;
+            if (matchesDate(startDate) && overlapsTimeRange(startTime, endTime)) {
                 return true;
             }
 
-            date = date.plusDays(1);
+            startDate = startDate.plusDays(1);
         }
 
         return false;
@@ -47,8 +49,6 @@ public record Window(List<MonthDayRange> dateRanges, EnumSet<DayOfWeek> days, Lo
             return !rangeStart.isAfter(end) && !rangeEnd.isBefore(start);
         }
 
-        // A window whose end lies before its start runs over midnight, so it is the union of an evening part
-        // [start, end of day] and a morning part [start of day, end]; overlapping either one is enough.
         return !rangeStart.isAfter(end) || !rangeEnd.isBefore(start);
     }
 }

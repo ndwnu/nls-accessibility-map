@@ -378,6 +378,30 @@ components:
           $ref: "#/components/schemas/Latitude"
         longitude:
           $ref: "#/components/schemas/Longitude"
+    VisitingWindow:
+      type: "object"
+      description: "The period during which the vehicle intends to use the road network. Traffic signs with a time validity that does not
+        overlap this period are not taken into account. The period is evaluated in the Europe/Amsterdam time zone, because the 
+        time validity of a traffic sign is expressed in Dutch local time. When omitted, every traffic sign with a time validity is treated 
+        as always applicable. The period may not be longer than 24 hours and end may not be before start."
+      required:
+        - start
+        - end
+      properties:
+        start:
+          description: "Start of the period, inclusive."
+          type: "string"
+          format: "date-time"
+          example: "2026-08-24T07:00:00+02:00"
+          externalDocs:
+            url: "https://www.rfc-editor.org/info/rfc3339/"
+        end:
+          description: "End of the period, inclusive. May be equal to start to evaluate a single moment in time."
+          type: "string"
+          format: "date-time"
+          example: "2026-08-24T08:30:00+02:00"
+          externalDocs:
+            url: "https://www.rfc-editor.org/info/rfc3339/"
     AreaRequest:
       type: "object"
       required:
@@ -505,6 +529,8 @@ components:
           $ref: "#/components/schemas/Location"
         vehicle:
           $ref: "#/components/schemas/VehicleCharacteristics"
+        visitingWindow:
+          $ref: "#/components/schemas/VisitingWindow"
         exclusions:
           $ref: "#/components/schemas/Exclusions"
         restrictions:

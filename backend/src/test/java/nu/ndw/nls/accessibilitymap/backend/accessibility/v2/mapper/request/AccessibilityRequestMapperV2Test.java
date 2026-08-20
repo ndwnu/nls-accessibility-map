@@ -11,6 +11,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.VisitingWindow;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -30,6 +31,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.MunicipalityAreaRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleCharacteristicsJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VehicleTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VisitingWindowJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,6 +119,10 @@ class AccessibilityRequestMapperV2Test {
                         .longitude(21D)
                         .build())
                 .area(municipalityAreaRequestJson)
+                .visitingWindow(VisitingWindowJson.builder()
+                        .start(OffsetDateTime.parse("2026-08-24T07:00:00+02:00"))
+                        .end(OffsetDateTime.parse("2026-08-24T08:30:00+02:00"))
+                        .build())
                 .restrictions(List.of(accessibilityRequestRestrictionJson))
                 .build();
 
@@ -175,8 +181,27 @@ class AccessibilityRequestMapperV2Test {
                 .fuelTypes(Set.of(FuelType.PETROL))
                 .excludeRestrictionsWithEmissionZoneIds(Set.of("id1"))
                 .excludeRestrictionsWithEmissionZoneTypes(Set.of(EmissionZoneType.LOW))
+                .visitingWindow(VisitingWindow.builder()
+                        .start(OffsetDateTime.parse("2026-08-24T07:00:00+02:00"))
+                        .end(OffsetDateTime.parse("2026-08-24T08:30:00+02:00"))
+                        .build())
                 .dynamicRestrictions(Set.of(restriction))
                 .build());
+    }
+
+    @Test
+    void map_noVisitingWindow() {
+
+        when(clockService.now()).thenReturn(timestamp);
+
+        when(areaRequestMapper.canProcessAreaRequest(municipalityAreaRequestJson)).thenReturn(true);
+        when(accessibilityRequestRestrictionMapper.map(networkData, accessibilityRequestRestrictionJson)).thenReturn(restriction);
+
+        accessibilityRequestJson.setVisitingWindow(null);
+
+        AccessibilityRequest accessibilityRequest = accessibilityRequestMapperV2.map(networkData, accessibilityRequestJson);
+
+        assertThat(accessibilityRequest.visitingWindow()).isNull();
     }
 
     @Test
