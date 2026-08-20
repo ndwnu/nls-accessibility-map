@@ -77,10 +77,6 @@ public record TransportConditions(
             activeRestrictions.add(containsCategory());
         }
 
-        if (CollectionUtils.isNotEmpty(categories) && CollectionUtils.isNotEmpty(accessibilityRequest.categories())) {
-            activeRestrictions.add(containsCategory());
-        }
-
         if (Objects.nonNull(fuelType) && CollectionUtils.isNotEmpty(accessibilityRequest.fuelTypes())) {
             activeRestrictions.add(isMatchingFuelType());
         }

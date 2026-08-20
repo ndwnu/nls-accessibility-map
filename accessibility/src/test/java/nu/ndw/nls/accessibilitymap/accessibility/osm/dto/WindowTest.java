@@ -93,11 +93,11 @@ class WindowTest {
     void matches_windowOverMidnight() {
         Window window = new Window(List.of(), EnumSet.noneOf(DayOfWeek.class), LocalTime.of(22, 0), LocalTime.of(6, 0));
 
-        assertThat(window.matches(LocalDateTime.parse("2025-04-01T10:00"), LocalDateTime.parse("2025-04-01T12:00"))).isFalse();
-        assertThat(window.matches(LocalDateTime.parse("2025-04-01T05:00"), LocalDateTime.parse("2025-04-01T07:00"))).isTrue();
-        assertThat(window.matches(LocalDateTime.parse("2025-04-01T06:00"), LocalDateTime.parse("2025-04-01T07:00"))).isTrue();
-        assertThat(window.matches(LocalDateTime.parse("2025-04-01T21:00"), LocalDateTime.parse("2025-04-01T22:00"))).isTrue();
-        assertThat(window.matches(LocalDateTime.parse("2025-04-01T23:00"), LocalDateTime.parse("2025-04-01T23:30"))).isTrue();
+        assertThat(window.matches(LocalDateTime.parse("2025-04-01T06:01"), LocalDateTime.parse("2025-04-01T21:59"))).isFalse();
+        assertThat(window.matches(LocalDateTime.parse("2025-04-01T06:01"), LocalDateTime.parse("2025-04-02T21:59"))).isTrue();
+        assertThat(window.matches(LocalDateTime.parse("2025-04-01T22:00"), LocalDateTime.parse("2025-04-02T06:00"))).isTrue();
+        assertThat(window.matches(LocalDateTime.parse("2025-04-01T21:59"), LocalDateTime.parse("2025-04-02T06:00"))).isTrue();
+        assertThat(window.matches(LocalDateTime.parse("2025-04-01T22:00"), LocalDateTime.parse("2025-04-02T06:01"))).isTrue();
     }
 
     @Test
