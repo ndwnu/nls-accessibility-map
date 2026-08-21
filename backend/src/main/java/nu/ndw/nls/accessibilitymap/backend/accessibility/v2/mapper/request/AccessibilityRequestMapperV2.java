@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest.AccessibilityRequestBuilder;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.VisitingWindow;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restriction;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -20,6 +21,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequest
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequestRestrictionJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.ExclusionsJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.LocationJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VisitingWindowJson;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.springframework.http.HttpStatus;
@@ -73,6 +75,7 @@ public class AccessibilityRequestMapperV2 {
                                         .collect(Collectors.toSet()))
                 .emissionClasses(emissionClassMapperV2.map(accessibilityRequest.getVehicle().getEmissionClass()))
                 .transportTypes(transportTypeMapperV2.map(accessibilityRequest.getVehicle()))
+                .visitingWindow(mapVisitingWindow(accessibilityRequest.getVisitingWindow()))
                 .excludeRestrictionsWithEmissionZoneIds(mapEmissionZoneIds(accessibilityRequest.getExclusions()))
                 .excludeRestrictionsWithEmissionZoneTypes(mapEmissionZoneTypes(accessibilityRequest.getExclusions()))
                 .dynamicRestrictions(mapRestrictions(accessibilityRequest.getRestrictions(), networkData));
@@ -102,6 +105,18 @@ public class AccessibilityRequestMapperV2 {
                     .startLocationLatitude(from.getLatitude())
                     .startLocationLongitude(from.getLongitude());
         }
+    }
+
+    private static VisitingWindow mapVisitingWindow(VisitingWindowJson visitingWindow) {
+
+        if (Objects.isNull(visitingWindow)) {
+            return null;
+        }
+
+        return VisitingWindow.builder()
+                .start(visitingWindow.getStart())
+                .end(visitingWindow.getEnd())
+                .build();
     }
 
     private void mapAreaRequest(

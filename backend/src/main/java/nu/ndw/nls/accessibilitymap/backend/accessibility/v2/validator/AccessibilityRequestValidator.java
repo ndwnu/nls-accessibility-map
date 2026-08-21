@@ -1,5 +1,6 @@
 package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.validator;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -8,6 +9,7 @@ import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AccessibilityRequest
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.BoundingBoxAreaRequestJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.EmissionClassJson;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.FuelTypeJson;
+import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.VisitingWindowJson;
 import nu.ndw.nls.springboot.web.error.exceptions.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -16,10 +18,13 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class AccessibilityRequestValidator {
 
+    private static final Duration MAXIMUM_VISITING_WINDOW_DURATION = Duration.ofHours(24);
+
     public boolean verify(AccessibilityRequestJson accessibilityRequest) {
 
         return meetsEmissionClassAndFuelTypeRequirements()
                 .and(whenBoundingBoxAreaRequestFromMustBeDefined())
+                .and(visitingWindowMustBeValid())
                 .test(accessibilityRequest);
     }
 
@@ -41,6 +46,34 @@ public class AccessibilityRequestValidator {
                         "Invalid Request",
                         "If one of the environmental zone parameters is set, the other must be set as well.");
             }
+            return true;
+        };
+    }
+
+    private Predicate<AccessibilityRequestJson> visitingWindowMustBeValid() {
+
+        return accessibilityRequest -> {
+            VisitingWindowJson visitingWindow = accessibilityRequest.getVisitingWindow();
+            if (Objects.isNull(visitingWindow)) {
+                return true;
+            }
+
+            if (visitingWindow.getEnd().isBefore(visitingWindow.getStart())) {
+                throw new ApiException(
+                        UUID.fromString("c2dd2f9c-bd41-48e8-bd97-61474ce490dd"),
+                        HttpStatus.BAD_REQUEST,
+                        "Invalid Request",
+                        "The end of the visiting window may not be before its start.");
+            }
+
+            if (Duration.between(visitingWindow.getStart(), visitingWindow.getEnd()).compareTo(MAXIMUM_VISITING_WINDOW_DURATION) > 0) {
+                throw new ApiException(
+                        UUID.fromString("d9e6db51-7876-4b93-86ef-1d945f3009c9"),
+                        HttpStatus.BAD_REQUEST,
+                        "Invalid Request",
+                        "The visiting window may not be longer than %d hours.".formatted(MAXIMUM_VISITING_WINDOW_DURATION.toHours()));
+            }
+
             return true;
         };
     }

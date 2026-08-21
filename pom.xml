@@ -8,7 +8,7 @@
   </parent>
   <groupId>nu.ndw.nls.accessibilitymap</groupId>
   <artifactId>parent</artifactId>
-  <version>6.0.76-SNAPSHOT</version>
+  <version>6.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>nls-accessibility-map</name>
   <description>REST API to determine accessible road sections for a given vehicle type</description>
@@ -64,6 +64,7 @@
     <wiremock-spring-boot.version>4.2.2</wiremock-spring-boot.version>
     <netty.version>4.2.17.Final</netty.version>
     <apache.commons.version>3.20.0</apache.commons.version>
+    <antlr.version>4.13.2</antlr.version>
 
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- CVE-2026-63337, CVE-2026-69219, CVE-2026-69220 -->
@@ -122,6 +123,11 @@
   </pluginRepositories>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <version>${antlr.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.rabbitmq</groupId>
         <artifactId>amqp-client</artifactId>
@@ -299,6 +305,11 @@
         <groupId>nu.ndw.nls</groupId>
         <artifactId>routing-map-matcher-library</artifactId>
         <version>${nls-routing-map-matcher.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>${antlr.version}</version>
       </dependency>
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>

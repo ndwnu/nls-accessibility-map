@@ -40,6 +40,7 @@ public record AccessibilityRequest(
         Double vehicleWidthInCm,
         Double vehicleWeightInKg,
         Double vehicleAxleLoadInKg,
+        VisitingWindow visitingWindow,
         Set<FuelType> fuelTypes,
         Set<EmissionClass> emissionClasses,
         Set<TransportType> transportTypes,

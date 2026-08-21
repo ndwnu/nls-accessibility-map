@@ -148,3 +148,31 @@ Feature: Accessibility V2
     And run TrafficSignUpdateCache
     When request accessibility geojson for boundingBox-from10-10-destination1-1
     Then we expect accessibility geojson response boundingBox-from10-10-destination1-1
+
+  Scenario: Get - request with a visiting window only applies traffic signs that are valid during that window
+    Given a simple network
+
+    And with traffic sign conditions
+      | name  | vehicleType                                                         | widthInM | heightInM | timeValidity      |
+      | C12   | bus,car,deliveryVan,moped,motorcycle,taxi,agriculturalVehicle,truck |          |           | Mo-Fr 06:00-09:00 |
+      | C18   |                                                                     | 1.9      |           | Mo-Fr 06:00-09:00 |
+      | C19   |                                                                     |          | 1.9       | Mo-Fr 06:00-09:00 |
+      | truck | truck                                                               |          |           | Mo-Fr 06:00-09:00 |
+
+    And with traffic signs
+      | startNodeId | endNodeId | fraction | rvvCode | restrictions | exemptions | directionType | regulationOrderId | id                                   |
+      | 5           | 11        | 0.5      | C12     | C12          |            | FORTH         |                   | 00000000-0000-4000-0000-000000000001 |
+      | 6           | 1         | 0.9      | C18     | C18          |            | BACK          |                   | 00000000-0000-4000-0000-000000000002 |
+      | 3           | 4         | 0.1      | C19     | C19          |            | BACK          |                   | 00000000-0000-4000-0000-000000000003 |
+      | 3           | 4         | 0.9      | C19     | C19          |            | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
+      | 8           | 2         | 0.5      | C12     | C12          | truck      | BACK          |                   | 00000000-0000-4000-0000-000000000004 |
+    And run TrafficSignUpdateCache
+    And with speed limits
+      | startNodeId | endNodeId | forwardAverageSpeedLimit | backwardAverageSpeedLimit |
+      | 5           | 11        | 30                       | 20                        |
+    And run SpeedLimitUpdateCache
+    When request accessibility geojson for truck2MetersWide-destination3-7-insideTimeValidity
+    Then we expect accessibility geojson response truck2MetersWide-destination3-7
+
+    When request accessibility geojson for truck2MetersWide-destination3-7-outsideTimeValidity
+    Then we expect accessibility geojson response truck2MetersWide-destination3-7-outsideTimeValidity

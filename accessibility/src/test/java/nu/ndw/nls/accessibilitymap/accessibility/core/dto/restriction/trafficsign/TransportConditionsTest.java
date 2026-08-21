@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.trafficsi
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.EmissionClass;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.FuelType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
+import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.VisitingWindow;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +27,7 @@ class TransportConditionsTest {
     void conditionsApply_combinationTest() {
 
         TransportConditions transportConditions = TransportConditions.builder()
+                .timeValidity("01:00-02:00")
                 .transportTypes(Set.of(TransportType.TRUCK))
                 .vehicleLengthInCm(Maximum.builder().value(10d).build())
                 .vehicleWidthInCm(Maximum.builder().value(20d).build())
@@ -34,6 +37,10 @@ class TransportConditionsTest {
                 .build();
 
         assertThat(transportConditions.conditionsApply(accessibilityRequest
+                .withVisitingWindow(VisitingWindow.builder()
+                        .start(OffsetDateTime.parse("2023-01-01T00:00:00Z"))
+                        .end(OffsetDateTime.parse("2023-01-01T01:00:00Z"))
+                        .build())
                 .withTransportTypes(Set.of(TransportType.TRUCK))
                 .withVehicleLengthInCm(transportConditions.vehicleLengthInCm().value() + 1d)
                 .withVehicleWidthInCm(transportConditions.vehicleWidthInCm().value() + 1d)
@@ -43,6 +50,10 @@ class TransportConditionsTest {
         )).isTrue();
 
         assertThat(transportConditions.conditionsApply(accessibilityRequest
+                .withVisitingWindow(VisitingWindow.builder()
+                        .start(OffsetDateTime.parse("2023-01-01T00:00:00Z"))
+                        .end(OffsetDateTime.parse("2023-01-01T01:00:00Z"))
+                        .build())
                 .withTransportTypes(Set.of(TransportType.BUS))
                 .withVehicleLengthInCm(transportConditions.vehicleLengthInCm().value() - 1d)
                 .withVehicleWidthInCm(transportConditions.vehicleWidthInCm().value() - 1d)
@@ -51,6 +62,77 @@ class TransportConditionsTest {
                 .withVehicleAxleLoadInKg(transportConditions.vehicleAxleLoadInKg().value() - 1d)
         )).isFalse();
     }
+
+    @Test
+    void conditionsApply_outsideOfTimeValidityWindow() {
+
+        TransportConditions transportConditions = TransportConditions.builder()
+                .timeValidity("01:00-02:00")
+                .transportTypes(Set.of(TransportType.TRUCK))
+                .build();
+
+        // within window
+        assertThat(transportConditions.conditionsApply(accessibilityRequest
+                .withVisitingWindow(VisitingWindow.builder()
+                        .start(OffsetDateTime.parse("2023-01-01T00:00:00Z"))
+                        .end(OffsetDateTime.parse("2023-01-01T01:00:00Z"))
+                        .build())
+                .withTransportTypes(Set.of(TransportType.TRUCK))
+        )).isTrue();
+
+        // outside window
+        assertThat(transportConditions.conditionsApply(accessibilityRequest
+                .withVisitingWindow(VisitingWindow.builder()
+                        .start(OffsetDateTime.parse("2023-01-01T01:00:01Z"))
+                        .end(OffsetDateTime.parse("2023-01-01T02:00:00Z"))
+                        .build())
+                .withTransportTypes(Set.of(TransportType.TRUCK))
+        )).isFalse();
+    }
+
+    @Test
+    void conditionsApply_outsideOfTimeValidityWindow_conditionNoTimeValidity() {
+
+        TransportConditions transportConditionsNoTimeValidity = TransportConditions.builder()
+                .transportTypes(Set.of(TransportType.TRUCK))
+                .build();
+
+        assertThat(transportConditionsNoTimeValidity.conditionsApply(accessibilityRequest
+                .withVisitingWindow(VisitingWindow.builder()
+                        .start(OffsetDateTime.parse("2023-01-01T01:00:01Z")) // outside window
+                        .end(OffsetDateTime.parse("2023-01-01T02:00:00Z"))
+                        .build())
+                .withTransportTypes(Set.of(TransportType.TRUCK))
+        )).isTrue();
+
+        TransportConditions transportConditionsEmptyTimeValidity = TransportConditions.builder()
+                .timeValidity("")
+                .transportTypes(Set.of(TransportType.TRUCK))
+                .build();
+
+        assertThat(transportConditionsEmptyTimeValidity.conditionsApply(accessibilityRequest
+                .withVisitingWindow(VisitingWindow.builder()
+                        .start(OffsetDateTime.parse("2023-01-01T01:00:01Z")) // outside window
+                        .end(OffsetDateTime.parse("2023-01-01T02:00:00Z"))
+                        .build())
+                .withTransportTypes(Set.of(TransportType.TRUCK))
+        )).isTrue();
+    }
+
+    @Test
+    void conditionsApply_outsideOfTimeValidityWindow_requestNoVisitingWindow() {
+
+        TransportConditions transportConditions = TransportConditions.builder()
+                .timeValidity("01:00-02:00")
+                .transportTypes(Set.of(TransportType.TRUCK))
+                .build();
+
+        assertThat(transportConditions.conditionsApply(accessibilityRequest
+                .withVisitingWindow(null)
+                .withTransportTypes(Set.of(TransportType.TRUCK))
+        )).isTrue();
+    }
+
     @Test
     void unrestricted() {
         TransportConditions unrestricted = TransportConditions.unrestricted();
@@ -150,7 +232,6 @@ class TransportConditionsTest {
             EnumSetContains conditionSetContains,
             boolean conditionsApply) {
 
-
         for (EmissionClass emissionClass : conditionSetContains.mapToSet(EmissionClass.values())) {
             TransportConditions transportConditions = TransportConditions.builder()
                     .emissionClass(emissionClass)
@@ -160,7 +241,6 @@ class TransportConditionsTest {
                     accessibilityRequest.withEmissionClasses(requestSetContains.mapToSet(EmissionClass.values()))))
                     .isEqualTo(conditionsApply);
         }
-
     }
 
     @ParameterizedTest
@@ -252,7 +332,8 @@ class TransportConditionsTest {
                         .build())
                 .build();
 
-        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleWidthInCm(vehicleWidthRequest))).isEqualTo(conditionsApply);
+        assertThat(transportConditions.conditionsApply(accessibilityRequest.withVehicleWidthInCm(vehicleWidthRequest))).isEqualTo(
+                conditionsApply);
     }
 
     @ParameterizedTest
@@ -330,5 +411,4 @@ class TransportConditionsTest {
             return Set.of(values);
         }
     }
-
 }

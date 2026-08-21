@@ -19,16 +19,16 @@ public class CommaDelimitedEnumSetDeserializer extends ValueDeserializer<Set<Enu
     private ValueDeserializer<?> enumDeserializer;
 
     @Override
-    public ValueDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property) {
+    public ValueDeserializer<?> createContextual(DeserializationContext context, BeanProperty property) {
         JavaType contentType = property.getType().getContentType();
         CommaDelimitedEnumSetDeserializer deserializer = new CommaDelimitedEnumSetDeserializer();
         deserializer.enumType = contentType;
-        deserializer.enumDeserializer = ctxt.findContextualValueDeserializer(contentType, property);
+        deserializer.enumDeserializer = context.findContextualValueDeserializer(contentType, property);
         return deserializer;
     }
 
     @Override
-    public Set<Enum<?>> deserialize(JsonParser p, DeserializationContext ctxt) {
+    public Set<Enum<?>> deserialize(JsonParser p, DeserializationContext context) {
         String text = p.getString();
         if (text == null || text.isBlank()) {
             return Set.of();
@@ -37,18 +37,18 @@ public class CommaDelimitedEnumSetDeserializer extends ValueDeserializer<Set<Enu
         return Arrays.stream(text.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
-                .map(token -> (Enum<?>) deserializeToken(token, ctxt))
+                .map(token -> (Enum<?>) deserializeToken(token, context))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private Object deserializeToken(String token, DeserializationContext ctxt) {
+    private Object deserializeToken(String token, DeserializationContext context) {
 
-        try (JsonParser tokenParser = ctxt.createParser(wrapInQuotes(escapeQuotes(token)))) {
+        try (JsonParser tokenParser = context.createParser(wrapInQuotes(escapeQuotes(token)))) {
             tokenParser.nextToken();
-            return enumDeserializer.deserialize(tokenParser, ctxt);
+            return enumDeserializer.deserialize(tokenParser, context);
         } catch (Exception e) {
             log.error("Failed to deserialize enum value '{}'.", token, e);
-            return ctxt.handleWeirdStringValue(enumType.getRawClass(), token, e.getMessage());
+            return context.handleWeirdStringValue(enumType.getRawClass(), token, e.getMessage());
         }
     }
 

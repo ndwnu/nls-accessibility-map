@@ -8,8 +8,10 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 
 @Builder
-public record TransportRestrictions(@NotNull TransportConditions restrictions, @NotNull List<TransportConditions> exemptions,
-                                    EmissionZone emissionZone) {
+public record TransportRestrictions(
+        @NotNull TransportConditions restrictions,
+        @NotNull List<TransportConditions> exemptions,
+        EmissionZone emissionZone) {
 
     public boolean isRestrictive(AccessibilityRequest accessibilityRequest) {
         if (emissionZoneRestrictionsApply(accessibilityRequest)) {

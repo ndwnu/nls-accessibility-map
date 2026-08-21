@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.ndw.nls.accessibilitymap</groupId>
     <artifactId>parent</artifactId>
-    <version>6.0.76-SNAPSHOT</version>
+    <version>6.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>accessibility</artifactId>
   <name>NLS Accessibility library</name>
@@ -67,6 +67,10 @@
       <artifactId>nls-nwb-data-access-jooq</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
@@ -97,6 +101,21 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+            <configuration>
+              <visitor>true</visitor>
+              <sourceDirectory>${basedir}/src/osm/</sourceDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

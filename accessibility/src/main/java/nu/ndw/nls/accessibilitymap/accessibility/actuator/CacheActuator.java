@@ -2,6 +2,7 @@ package nu.ndw.nls.accessibilitymap.accessibility.actuator;
 
 import lombok.extern.slf4j.Slf4j;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
+import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.service.SpeedLimitDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.trafficsign.service.TrafficSignDataService;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.WriteOperation;
@@ -16,18 +17,23 @@ public class CacheActuator {
 
     private final TrafficSignDataService trafficSignDataService;
 
+    private final SpeedLimitDataService speedLimitDataService;
+
     public CacheActuator(
             NetworkDataService networkDataService,
-            TrafficSignDataService trafficSignDataService
+            TrafficSignDataService trafficSignDataService,
+            SpeedLimitDataService speedLimitDataService
     ) {
         this.networkDataService = networkDataService;
         this.trafficSignDataService = trafficSignDataService;
+        this.speedLimitDataService = speedLimitDataService;
     }
 
     @WriteOperation
     public void reloadCache() {
         networkDataService.read();
         trafficSignDataService.read();
+        speedLimitDataService.read();
         log.info("Cache reloaded");
     }
 }
