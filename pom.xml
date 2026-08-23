@@ -30,20 +30,20 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <nls-springboot.version>10.4.30</nls-springboot.version>
+    <nls-springboot.version>10.4.31</nls-springboot.version>
     <nls-springboot.logging.version>9.0.2</nls-springboot.logging.version>
     <nls-springboot.component-test.version>14.1.9</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>9.0.4</nls-springboot.monitoring.version>
     <nls-springboot.test.version>10.0.9</nls-springboot.test.version>
-    <nls-springboot.gatling-test.version>2.0.13</nls-springboot.gatling-test.version>
+    <nls-springboot.gatling-test.version>2.0.14</nls-springboot.gatling-test.version>
     <nls-events.version>6.0.12</nls-events.version>
     <nls-nwb-data-access.version>10.1.16</nls-nwb-data-access.version>
     <nls-routing-map-matcher.version>23.0.6</nls-routing-map-matcher.version>
     <nls-geometry.version>6.0.8</nls-geometry.version>
-    <nls-geojson-geometry.version>2.0.18</nls-geojson-geometry.version>
-    <nls-roadattributesapi.version>2.0.28</nls-roadattributesapi.version>
-    <nls-springboot.test.graph.version>2.0.11</nls-springboot.test.graph.version>
-    <nls-location-data-issues.version>3.0.58</nls-location-data-issues.version>
+    <nls-geojson-geometry.version>2.0.19</nls-geojson-geometry.version>
+    <nls-roadattributesapi.version>2.0.29</nls-roadattributesapi.version>
+    <nls-springboot.test.graph.version>2.0.12</nls-springboot.test.graph.version>
+    <nls-location-data-issues.version>3.0.59</nls-location-data-issues.version>
 
     <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
     <gatling.version>3.15.1</gatling.version>
