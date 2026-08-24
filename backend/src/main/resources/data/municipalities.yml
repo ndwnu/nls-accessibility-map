@@ -1,7 +1,6 @@
 - name: "Groningen"
   start-coordinate-longitude: 6.576083918400632
   start-coordinate-latitude: 53.18282555933817
-  search-distance-in-metres: 50000
   municipality-id: "GM0014"
   date-last-check: null
   bounds:
@@ -12,7 +11,6 @@
 - name: "Almere"
   start-coordinate-longitude: 5.331849936324421
   start-coordinate-latitude: 52.313808669594756
-  search-distance-in-metres: 50000
   municipality-id: "GM0034"
   date-last-check: null
   bounds:
@@ -23,7 +21,6 @@
 - name: "Stadskanaal"
   start-coordinate-longitude: 7.030530315741497
   start-coordinate-latitude: 52.93866602956766
-  search-distance-in-metres: 50000
   municipality-id: "GM0037"
   date-last-check: null
   bounds:
@@ -34,7 +31,6 @@
 - name: "Veendam"
   start-coordinate-longitude: 6.950974014711065
   start-coordinate-latitude: 53.088928572504805
-  search-distance-in-metres: 50000
   municipality-id: "GM0047"
   date-last-check: null
   bounds:
@@ -45,7 +41,6 @@
 - name: "Zeewolde"
   start-coordinate-longitude: 5.469619551732883
   start-coordinate-latitude: 52.265357627967994
-  search-distance-in-metres: 50000
   municipality-id: "GM0050"
   date-last-check: null
   bounds:
@@ -56,7 +51,6 @@
 - name: "Achtkarspelen"
   start-coordinate-longitude: 6.106484246506641
   start-coordinate-latitude: 53.241627530307696
-  search-distance-in-metres: 50000
   municipality-id: "GM0059"
   date-last-check: null
   bounds:
@@ -67,7 +61,6 @@
 - name: "Ameland"
   start-coordinate-longitude: 5.6651872485611445
   start-coordinate-latitude: 53.437131762289575
-  search-distance-in-metres: 50000
   municipality-id: "GM0060"
   date-last-check: null
   bounds:
@@ -78,7 +71,6 @@
 - name: "Harlingen"
   start-coordinate-longitude: 5.486879831781403
   start-coordinate-latitude: 53.19257271161976
-  search-distance-in-metres: 50000
   municipality-id: "GM0072"
   date-last-check: null
   bounds:
@@ -89,7 +81,6 @@
 - name: "Heerenveen"
   start-coordinate-longitude: 5.972392268352382
   start-coordinate-latitude: 52.9889776440474
-  search-distance-in-metres: 50000
   municipality-id: "GM0074"
   date-last-check: null
   bounds:
@@ -100,7 +91,6 @@
 - name: "Leeuwarden"
   start-coordinate-longitude: 5.798041287416462
   start-coordinate-latitude: 53.14087417710878
-  search-distance-in-metres: 50000
   municipality-id: "GM0080"
   date-last-check: null
   bounds:
@@ -111,7 +101,6 @@
 - name: "Ooststellingwerf"
   start-coordinate-longitude: 6.204863201721853
   start-coordinate-latitude: 53.03188261041904
-  search-distance-in-metres: 50000
   municipality-id: "GM0085"
   date-last-check: null
   bounds:
@@ -122,7 +111,6 @@
 - name: "Opsterland"
   start-coordinate-longitude: 6.049922534826686
   start-coordinate-latitude: 53.06001484808389
-  search-distance-in-metres: 50000
   municipality-id: "GM0086"
   date-last-check: null
   bounds:
@@ -133,7 +121,6 @@
 - name: "Schiermonnikoog"
   start-coordinate-longitude: 6.178725557937527
   start-coordinate-latitude: 53.484999194379355
-  search-distance-in-metres: 50000
   municipality-id: "GM0088"
   date-last-check: null
   bounds:
@@ -144,7 +131,6 @@
 - name: "Smallingerland"
   start-coordinate-longitude: 6.139450616000777
   start-coordinate-latitude: 53.10675471294896
-  search-distance-in-metres: 50000
   municipality-id: "GM0090"
   date-last-check: null
   bounds:
@@ -155,7 +141,6 @@
 - name: "Terschelling"
   start-coordinate-longitude: 5.384882502380607
   start-coordinate-latitude: 53.40364388877047
-  search-distance-in-metres: 50000
   municipality-id: "GM0093"
   date-last-check: null
   bounds:
@@ -166,7 +151,6 @@
 - name: "Vlieland"
   start-coordinate-longitude: 5.076779389654054
   start-coordinate-latitude: 53.296549402982755
-  search-distance-in-metres: 50000
   municipality-id: "GM0096"
   date-last-check: null
   bounds:
@@ -177,7 +161,6 @@
 - name: "Weststellingwerf"
   start-coordinate-longitude: 6.025002795886286
   start-coordinate-latitude: 52.87761862505926
-  search-distance-in-metres: 50000
   municipality-id: "GM0098"
   date-last-check: null
   bounds:
@@ -188,7 +171,6 @@
 - name: "Assen"
   start-coordinate-longitude: 6.577077398530734
   start-coordinate-latitude: 53.031957795867285
-  search-distance-in-metres: 50000
   municipality-id: "GM0106"
   date-last-check: null
   bounds:
@@ -199,7 +181,6 @@
 - name: "Coevorden"
   start-coordinate-longitude: 6.6371248823414986
   start-coordinate-latitude: 52.71395053034571
-  search-distance-in-metres: 50000
   municipality-id: "GM0109"
   date-last-check: null
   bounds:
@@ -210,7 +191,6 @@
 - name: "Emmen"
   start-coordinate-longitude: 6.841344797235295
   start-coordinate-latitude: 52.725942927639856
-  search-distance-in-metres: 50000
   municipality-id: "GM0114"
   date-last-check: null
   bounds:
@@ -221,7 +201,6 @@
 - name: "Hoogeveen"
   start-coordinate-longitude: 6.448279288982383
   start-coordinate-latitude: 52.77078043881858
-  search-distance-in-metres: 50000
   municipality-id: "GM0118"
   date-last-check: null
   bounds:
@@ -232,7 +211,6 @@
 - name: "Meppel"
   start-coordinate-longitude: 6.199822940676057
   start-coordinate-latitude: 52.73234447761299
-  search-distance-in-metres: 50000
   municipality-id: "GM0119"
   date-last-check: null
   bounds:
@@ -243,7 +221,6 @@
 - name: "Almelo"
   start-coordinate-longitude: 6.6914705548107145
   start-coordinate-latitude: 52.31361021687771
-  search-distance-in-metres: 50000
   municipality-id: "GM0141"
   date-last-check: null
   bounds:
@@ -254,7 +231,6 @@
 - name: "Borne"
   start-coordinate-longitude: 6.724254159046421
   start-coordinate-latitude: 52.29622729443091
-  search-distance-in-metres: 50000
   municipality-id: "GM0147"
   date-last-check: null
   bounds:
@@ -265,7 +241,6 @@
 - name: "Dalfsen"
   start-coordinate-longitude: 6.2874004342864005
   start-coordinate-latitude: 52.591755430201026
-  search-distance-in-metres: 50000
   municipality-id: "GM0148"
   date-last-check: null
   bounds:
@@ -276,7 +251,6 @@
 - name: "Deventer"
   start-coordinate-longitude: 6.273132188839186
   start-coordinate-latitude: 52.24235272967694
-  search-distance-in-metres: 50000
   municipality-id: "GM0150"
   date-last-check: null
   bounds:
@@ -287,7 +261,6 @@
 - name: "Enschede"
   start-coordinate-longitude: 6.768040460503668
   start-coordinate-latitude: 52.23474783476802
-  search-distance-in-metres: 50000
   municipality-id: "GM0153"
   date-last-check: null
   bounds:
@@ -298,7 +271,6 @@
 - name: "Haaksbergen"
   start-coordinate-longitude: 6.7876514584617
   start-coordinate-latitude: 52.176652847701774
-  search-distance-in-metres: 50000
   municipality-id: "GM0158"
   date-last-check: null
   bounds:
@@ -309,7 +281,6 @@
 - name: "Hardenberg"
   start-coordinate-longitude: 6.453525431774509
   start-coordinate-latitude: 52.60718289207793
-  search-distance-in-metres: 50000
   municipality-id: "GM0160"
   date-last-check: null
   bounds:
@@ -320,7 +291,6 @@
 - name: "Hellendoorn"
   start-coordinate-longitude: 6.4947416220442955
   start-coordinate-latitude: 52.36317866288604
-  search-distance-in-metres: 50000
   municipality-id: "GM0163"
   date-last-check: null
   bounds:
@@ -331,7 +301,6 @@
 - name: "Hengelo (O)"
   start-coordinate-longitude: 6.768277140983896
   start-coordinate-latitude: 52.23484741067631
-  search-distance-in-metres: 50000
   municipality-id: "GM0164"
   date-last-check: null
   bounds:
@@ -342,7 +311,6 @@
 - name: "Kampen"
   start-coordinate-longitude: 5.842976579644237
   start-coordinate-latitude: 52.61041831578167
-  search-distance-in-metres: 50000
   municipality-id: "GM0166"
   date-last-check: null
   bounds:
@@ -353,7 +321,6 @@
 - name: "Losser"
   start-coordinate-longitude: 7.043396208050448
   start-coordinate-latitude: 52.31372426451994
-  search-distance-in-metres: 50000
   municipality-id: "GM0168"
   date-last-check: "2024-07-11"
   bounds:
@@ -364,7 +331,6 @@
 - name: "Noordoostpolder"
   start-coordinate-longitude: 5.756450571966774
   start-coordinate-latitude: 52.78997490595406
-  search-distance-in-metres: 50000
   municipality-id: "GM0171"
   date-last-check: null
   bounds:
@@ -375,7 +341,6 @@
 - name: "Oldenzaal"
   start-coordinate-longitude: 6.929096061911129
   start-coordinate-latitude: 52.287929176645505
-  search-distance-in-metres: 50000
   municipality-id: "GM0173"
   date-last-check: null
   bounds:
@@ -386,7 +351,6 @@
 - name: "Ommen"
   start-coordinate-longitude: 6.4180961183682275
   start-coordinate-latitude: 52.550332502037506
-  search-distance-in-metres: 50000
   municipality-id: "GM0175"
   date-last-check: null
   bounds:
@@ -397,7 +361,6 @@
 - name: "Raalte"
   start-coordinate-longitude: 6.263882335319894
   start-coordinate-latitude: 52.367814815589995
-  search-distance-in-metres: 50000
   municipality-id: "GM0177"
   date-last-check: null
   bounds:
@@ -408,7 +371,6 @@
 - name: "Staphorst"
   start-coordinate-longitude: 6.19822739176219
   start-coordinate-latitude: 52.6669286178249
-  search-distance-in-metres: 50000
   municipality-id: "GM0180"
   date-last-check: null
   bounds:
@@ -419,7 +381,6 @@
 - name: "Tubbergen"
   start-coordinate-longitude: 6.774141648758523
   start-coordinate-latitude: 52.40409765247543
-  search-distance-in-metres: 50000
   municipality-id: "GM0183"
   date-last-check: null
   bounds:
@@ -430,7 +391,6 @@
 - name: "Urk"
   start-coordinate-longitude: 5.620263010757767
   start-coordinate-latitude: 52.65005464766926
-  search-distance-in-metres: 50000
   municipality-id: "GM0184"
   date-last-check: null
   bounds:
@@ -441,7 +401,6 @@
 - name: "Wierden"
   start-coordinate-longitude: 6.564726890639714
   start-coordinate-latitude: 52.28417908627398
-  search-distance-in-metres: 50000
   municipality-id: "GM0189"
   date-last-check: null
   bounds:
@@ -452,7 +411,6 @@
 - name: "Zwolle"
   start-coordinate-longitude: 6.166022601720456
   start-coordinate-latitude: 52.54213406313331
-  search-distance-in-metres: 50000
   municipality-id: "GM0193"
   date-last-check: null
   bounds:
@@ -463,7 +421,6 @@
 - name: "Aalten"
   start-coordinate-longitude: 6.5941288532421485
   start-coordinate-latitude: 51.932586309150594
-  search-distance-in-metres: 50000
   municipality-id: "GM0197"
   date-last-check: null
   bounds:
@@ -474,7 +431,6 @@
 - name: "Apeldoorn"
   start-coordinate-longitude: 6.010407620176193
   start-coordinate-latitude: 52.18432361868645
-  search-distance-in-metres: 50000
   municipality-id: "GM0200"
   date-last-check: null
   bounds:
@@ -485,7 +441,6 @@
 - name: "Arnhem"
   start-coordinate-longitude: 5.946191496628604
   start-coordinate-latitude: 52.07773466293015
-  search-distance-in-metres: 50000
   municipality-id: "GM0202"
   date-last-check: null
   bounds:
@@ -496,7 +451,6 @@
 - name: "Barneveld"
   start-coordinate-longitude: 5.529740537442248
   start-coordinate-latitude: 52.16311350824204
-  search-distance-in-metres: 50000
   municipality-id: "GM0203"
   date-last-check: null
   bounds:
@@ -507,7 +461,6 @@
 - name: "Beuningen"
   start-coordinate-longitude: 5.72713614233943
   start-coordinate-latitude: 51.854840638571396
-  search-distance-in-metres: 50000
   municipality-id: "GM0209"
   date-last-check: null
   bounds:
@@ -518,7 +471,6 @@
 - name: "Brummen"
   start-coordinate-longitude: 6.167840171816554
   start-coordinate-latitude: 52.108213656929735
-  search-distance-in-metres: 50000
   municipality-id: "GM0213"
   date-last-check: null
   bounds:
@@ -529,7 +481,6 @@
 - name: "Buren"
   start-coordinate-longitude: 5.5497088037082705
   start-coordinate-latitude: 51.91927958709657
-  search-distance-in-metres: 50000
   municipality-id: "GM0214"
   date-last-check: null
   bounds:
@@ -540,7 +491,6 @@
 - name: "Culemborg"
   start-coordinate-longitude: 5.173013195149512
   start-coordinate-latitude: 51.92082418446469
-  search-distance-in-metres: 50000
   municipality-id: "GM0216"
   date-last-check: null
   bounds:
@@ -551,7 +501,6 @@
 - name: "Doesburg"
   start-coordinate-longitude: 6.1394574382456755
   start-coordinate-latitude: 52.0001181290784
-  search-distance-in-metres: 50000
   municipality-id: "GM0221"
   date-last-check: null
   bounds:
@@ -562,7 +511,6 @@
 - name: "Doetinchem"
   start-coordinate-longitude: 6.308434057250215
   start-coordinate-latitude: 51.94524191967565
-  search-distance-in-metres: 50000
   municipality-id: "GM0222"
   date-last-check: null
   bounds:
@@ -573,7 +521,6 @@
 - name: "Druten"
   start-coordinate-longitude: 5.617826525034821
   start-coordinate-latitude: 51.870857806367255
-  search-distance-in-metres: 50000
   municipality-id: "GM0225"
   date-last-check: null
   bounds:
@@ -584,7 +531,6 @@
 - name: "Duiven"
   start-coordinate-longitude: 6.063271974987198
   start-coordinate-latitude: 51.949100818164496
-  search-distance-in-metres: 50000
   municipality-id: "GM0226"
   date-last-check: null
   bounds:
@@ -595,7 +541,6 @@
 - name: "Ede"
   start-coordinate-longitude: 5.639135709276101
   start-coordinate-latitude: 52.0163974567599
-  search-distance-in-metres: 50000
   municipality-id: "GM0228"
   date-last-check: null
   bounds:
@@ -606,7 +551,6 @@
 - name: "Elburg"
   start-coordinate-longitude: 5.895856876128413
   start-coordinate-latitude: 52.412424471145506
-  search-distance-in-metres: 50000
   municipality-id: "GM0230"
   date-last-check: null
   bounds:
@@ -617,7 +561,6 @@
 - name: "Epe"
   start-coordinate-longitude: 6.009698933413816
   start-coordinate-latitude: 52.29190348716799
-  search-distance-in-metres: 50000
   municipality-id: "GM0232"
   date-last-check: null
   bounds:
@@ -628,7 +571,6 @@
 - name: "Ermelo"
   start-coordinate-longitude: 5.550561396875118
   start-coordinate-latitude: 52.29204002226062
-  search-distance-in-metres: 50000
   municipality-id: "GM0233"
   date-last-check: null
   bounds:
@@ -639,7 +581,6 @@
 - name: "Harderwijk"
   start-coordinate-longitude: 5.6914979056817945
   start-coordinate-latitude: 52.3423324528418
-  search-distance-in-metres: 50000
   municipality-id: "GM0243"
   date-last-check: null
   bounds:
@@ -650,7 +591,6 @@
 - name: "Hattem"
   start-coordinate-longitude: 6.037257768702085
   start-coordinate-latitude: 52.46979683491117
-  search-distance-in-metres: 50000
   municipality-id: "GM0244"
   date-last-check: null
   bounds:
@@ -661,7 +601,6 @@
 - name: "Heerde"
   start-coordinate-longitude: 6.0146046362025265
   start-coordinate-latitude: 52.39282931630126
-  search-distance-in-metres: 50000
   municipality-id: "GM0246"
   date-last-check: null
   bounds:
@@ -672,7 +611,6 @@
 - name: "Heumen"
   start-coordinate-longitude: 5.810502205074141
   start-coordinate-latitude: 51.790760045494714
-  search-distance-in-metres: 50000
   municipality-id: "GM0252"
   date-last-check: null
   bounds:
@@ -683,7 +621,6 @@
 - name: "Lochem"
   start-coordinate-longitude: 6.39879916397412
   start-coordinate-latitude: 52.24324653330176
-  search-distance-in-metres: 50000
   municipality-id: "GM0262"
   date-last-check: null
   bounds:
@@ -694,7 +631,6 @@
 - name: "Maasdriel"
   start-coordinate-longitude: 5.304463599534091
   start-coordinate-latitude: 51.73878837613523
-  search-distance-in-metres: 50000
   municipality-id: "GM0263"
   date-last-check: null
   bounds:
@@ -705,7 +641,6 @@
 - name: "Nijkerk"
   start-coordinate-longitude: 5.4442522411327925
   start-coordinate-latitude: 52.21115487160085
-  search-distance-in-metres: 50000
   municipality-id: "GM0267"
   date-last-check: null
   bounds:
@@ -716,7 +651,6 @@
 - name: "Nijmegen"
   start-coordinate-longitude: 5.8108401398620595
   start-coordinate-latitude: 51.79091236450849
-  search-distance-in-metres: 50000
   municipality-id: "GM0268"
   date-last-check: null
   bounds:
@@ -727,7 +661,6 @@
 - name: "Oldebroek"
   start-coordinate-longitude: 6.012991545008373
   start-coordinate-latitude: 52.480983191879346
-  search-distance-in-metres: 50000
   municipality-id: "GM0269"
   date-last-check: null
   bounds:
@@ -738,7 +671,6 @@
 - name: "Putten"
   start-coordinate-longitude: 5.532337467988452
   start-coordinate-latitude: 52.26384424836295
-  search-distance-in-metres: 50000
   municipality-id: "GM0273"
   date-last-check: null
   bounds:
@@ -749,7 +681,6 @@
 - name: "Renkum"
   start-coordinate-longitude: 5.762423624685709
   start-coordinate-latitude: 51.97855813172103
-  search-distance-in-metres: 50000
   municipality-id: "GM0274"
   date-last-check: null
   bounds:
@@ -760,7 +691,6 @@
 - name: "Rheden"
   start-coordinate-longitude: 6.01330801087408
   start-coordinate-latitude: 51.9984697619726
-  search-distance-in-metres: 50000
   municipality-id: "GM0275"
   date-last-check: null
   bounds:
@@ -771,7 +701,6 @@
 - name: "Rozendaal"
   start-coordinate-longitude: 5.956404610358879
   start-coordinate-latitude: 52.008228543662284
-  search-distance-in-metres: 50000
   municipality-id: "GM0277"
   date-last-check: null
   bounds:
@@ -782,7 +711,6 @@
 - name: "Scherpenzeel"
   start-coordinate-longitude: 5.504686489288674
   start-coordinate-latitude: 52.08838501528015
-  search-distance-in-metres: 50000
   municipality-id: "GM0279"
   date-last-check: null
   bounds:
@@ -793,7 +721,6 @@
 - name: "Tiel"
   start-coordinate-longitude: 5.344573061437183
   start-coordinate-latitude: 51.87308534217558
-  search-distance-in-metres: 50000
   municipality-id: "GM0281"
   date-last-check: null
   bounds:
@@ -804,7 +731,6 @@
 - name: "Voorst"
   start-coordinate-longitude: 6.102131728552514
   start-coordinate-latitude: 52.21140833724782
-  search-distance-in-metres: 50000
   municipality-id: "GM0285"
   date-last-check: null
   bounds:
@@ -815,7 +741,6 @@
 - name: "Wageningen"
   start-coordinate-longitude: 5.663984679216478
   start-coordinate-latitude: 51.99394382436018
-  search-distance-in-metres: 50000
   municipality-id: "GM0289"
   date-last-check: null
   bounds:
@@ -826,7 +751,6 @@
 - name: "Westervoort"
   start-coordinate-longitude: 5.98986941636665
   start-coordinate-latitude: 51.97439051883533
-  search-distance-in-metres: 50000
   municipality-id: "GM0293"
   date-last-check: null
   bounds:
@@ -837,7 +761,6 @@
 - name: "Winterswijk"
   start-coordinate-longitude: 6.660738095991866
   start-coordinate-latitude: 52.00473278094567
-  search-distance-in-metres: 50000
   municipality-id: "GM0294"
   date-last-check: null
   bounds:
@@ -848,7 +771,6 @@
 - name: "Wijchen"
   start-coordinate-longitude: 5.693311582490112
   start-coordinate-latitude: 51.84173653303321
-  search-distance-in-metres: 50000
   municipality-id: "GM0296"
   date-last-check: null
   bounds:
@@ -859,7 +781,6 @@
 - name: "Zaltbommel"
   start-coordinate-longitude: 5.260385793354194
   start-coordinate-latitude: 51.81631041615289
-  search-distance-in-metres: 50000
   municipality-id: "GM0297"
   date-last-check: null
   bounds:
@@ -870,7 +791,6 @@
 - name: "Zevenaar"
   start-coordinate-longitude: 6.093762776670753
   start-coordinate-latitude: 51.93689690205037
-  search-distance-in-metres: 50000
   municipality-id: "GM0299"
   date-last-check: null
   bounds:
@@ -881,7 +801,6 @@
 - name: "Zutphen"
   start-coordinate-longitude: 6.267253173271624
   start-coordinate-latitude: 52.139898111209334
-  search-distance-in-metres: 50000
   municipality-id: "GM0301"
   date-last-check: null
   bounds:
@@ -892,7 +811,6 @@
 - name: "Nunspeet"
   start-coordinate-longitude: 5.781016238698832
   start-coordinate-latitude: 52.36177719043931
-  search-distance-in-metres: 50000
   municipality-id: "GM0302"
   date-last-check: null
   bounds:
@@ -903,7 +821,6 @@
 - name: "Dronten"
   start-coordinate-longitude: 5.57337625090246
   start-coordinate-latitude: 52.595047423143534
-  search-distance-in-metres: 50000
   municipality-id: "GM0303"
   date-last-check: null
   bounds:
@@ -914,7 +831,6 @@
 - name: "Amersfoort"
   start-coordinate-longitude: 5.334845116067081
   start-coordinate-latitude: 52.12096528507054
-  search-distance-in-metres: 50000
   municipality-id: "GM0307"
   date-last-check: null
   bounds:
@@ -925,7 +841,6 @@
 - name: "Baarn"
   start-coordinate-longitude: 5.330391360460763
   start-coordinate-latitude: 52.214517823163646
-  search-distance-in-metres: 50000
   municipality-id: "GM0308"
   date-last-check: null
   bounds:
@@ -936,7 +851,6 @@
 - name: "De Bilt"
   start-coordinate-longitude: 5.161215715993417
   start-coordinate-latitude: 52.14719084795029
-  search-distance-in-metres: 50000
   municipality-id: "GM0310"
   date-last-check: null
   bounds:
@@ -947,7 +861,6 @@
 - name: "Bunnik"
   start-coordinate-longitude: 5.217623010166562
   start-coordinate-latitude: 52.05913940586195
-  search-distance-in-metres: 50000
   municipality-id: "GM0312"
   date-last-check: null
   bounds:
@@ -958,7 +871,6 @@
 - name: "Bunschoten"
   start-coordinate-longitude: 5.368942823884378
   start-coordinate-latitude: 52.20834332702484
-  search-distance-in-metres: 50000
   municipality-id: "GM0313"
   date-last-check: null
   bounds:
@@ -969,7 +881,6 @@
 - name: "Eemnes"
   start-coordinate-longitude: 5.246869299157719
   start-coordinate-latitude: 52.24773359495072
-  search-distance-in-metres: 50000
   municipality-id: "GM0317"
   date-last-check: null
   bounds:
@@ -980,7 +891,6 @@
 - name: "Houten"
   start-coordinate-longitude: 5.127080050679259
   start-coordinate-latitude: 52.021173819596655
-  search-distance-in-metres: 50000
   municipality-id: "GM0321"
   date-last-check: null
   bounds:
@@ -991,7 +901,6 @@
 - name: "Leusden"
   start-coordinate-longitude: 5.363992836856216
   start-coordinate-latitude: 52.12831440882398
-  search-distance-in-metres: 50000
   municipality-id: "GM0327"
   date-last-check: null
   bounds:
@@ -1002,7 +911,6 @@
 - name: "Lopik"
   start-coordinate-longitude: 4.968457091837679
   start-coordinate-latitude: 51.99470332923171
-  search-distance-in-metres: 50000
   municipality-id: "GM0331"
   date-last-check: null
   bounds:
@@ -1013,7 +921,6 @@
 - name: "Montfoort"
   start-coordinate-longitude: 4.903019481254423
   start-coordinate-latitude: 52.07031310844039
-  search-distance-in-metres: 50000
   municipality-id: "GM0335"
   date-last-check: null
   bounds:
@@ -1024,7 +931,6 @@
 - name: "Renswoude"
   start-coordinate-longitude: 5.519690036430587
   start-coordinate-latitude: 52.04536209154053
-  search-distance-in-metres: 50000
   municipality-id: "GM0339"
   date-last-check: null
   bounds:
@@ -1035,7 +941,6 @@
 - name: "Rhenen"
   start-coordinate-longitude: 5.599504523678346
   start-coordinate-latitude: 51.954985281102175
-  search-distance-in-metres: 50000
   municipality-id: "GM0340"
   date-last-check: null
   bounds:
@@ -1046,7 +951,6 @@
 - name: "Soest"
   start-coordinate-longitude: 5.304664104828326
   start-coordinate-latitude: 52.11570173135389
-  search-distance-in-metres: 50000
   municipality-id: "GM0342"
   date-last-check: null
   bounds:
@@ -1057,7 +961,6 @@
 - name: "Utrecht"
   start-coordinate-longitude: 5.001547943824298
   start-coordinate-latitude: 52.078092444078244
-  search-distance-in-metres: 50000
   municipality-id: "GM0344"
   date-last-check: "2024-07-11"
   bounds:
@@ -1068,7 +971,6 @@
 - name: "Veenendaal"
   start-coordinate-longitude: 5.560379889705201
   start-coordinate-latitude: 52.042107871115604
-  search-distance-in-metres: 50000
   municipality-id: "GM0345"
   date-last-check: null
   bounds:
@@ -1079,7 +981,6 @@
 - name: "Woudenberg"
   start-coordinate-longitude: 5.457635570220815
   start-coordinate-latitude: 52.05083508795219
-  search-distance-in-metres: 50000
   municipality-id: "GM0351"
   date-last-check: null
   bounds:
@@ -1090,7 +991,6 @@
 - name: "Wijk bij Duurstede"
   start-coordinate-longitude: 5.3273950439477815
   start-coordinate-latitude: 51.99045121568561
-  search-distance-in-metres: 50000
   municipality-id: "GM0352"
   date-last-check: null
   bounds:
@@ -1101,7 +1001,6 @@
 - name: "IJsselstein"
   start-coordinate-longitude: 5.07405877016689
   start-coordinate-latitude: 52.00515878895363
-  search-distance-in-metres: 50000
   municipality-id: "GM0353"
   date-last-check: null
   bounds:
@@ -1112,7 +1011,6 @@
 - name: "Zeist"
   start-coordinate-longitude: 5.268292860533793
   start-coordinate-latitude: 52.108207333425
-  search-distance-in-metres: 50000
   municipality-id: "GM0355"
   date-last-check: null
   bounds:
@@ -1123,7 +1021,6 @@
 - name: "Nieuwegein"
   start-coordinate-longitude: 5.073572380712649
   start-coordinate-latitude: 52.0013511760221
-  search-distance-in-metres: 50000
   municipality-id: "GM0356"
   date-last-check: null
   bounds:
@@ -1134,7 +1031,6 @@
 - name: "Aalsmeer"
   start-coordinate-longitude: 4.768239935837682
   start-coordinate-latitude: 52.244625487840544
-  search-distance-in-metres: 50000
   municipality-id: "GM0358"
   date-last-check: null
   bounds:
@@ -1145,7 +1041,6 @@
 - name: "Alkmaar"
   start-coordinate-longitude: 4.740096590846542
   start-coordinate-latitude: 52.61052101391
-  search-distance-in-metres: 50000
   municipality-id: "GM0361"
   date-last-check: null
   bounds:
@@ -1156,7 +1051,6 @@
 - name: "Amstelveen"
   start-coordinate-longitude: 4.873304701491144
   start-coordinate-latitude: 52.297475242519
-  search-distance-in-metres: 50000
   municipality-id: "GM0362"
   date-last-check: null
   bounds:
@@ -1167,7 +1061,6 @@
 - name: "Amsterdam"
   start-coordinate-longitude: 4.862065999348135
   start-coordinate-latitude: 52.33786720044894
-  search-distance-in-metres: 50000
   municipality-id: "GM0363"
   date-last-check: null
   bounds:
@@ -1178,7 +1071,6 @@
 - name: "Bergen (NH)"
   start-coordinate-longitude: 4.693087104939854
   start-coordinate-latitude: 52.63086835469602
-  search-distance-in-metres: 50000
   municipality-id: "GM0373"
   date-last-check: null
   bounds:
@@ -1189,7 +1081,6 @@
 - name: "Beverwijk"
   start-coordinate-longitude: 4.683751859277428
   start-coordinate-latitude: 52.48415652213772
-  search-distance-in-metres: 50000
   municipality-id: "GM0375"
   date-last-check: null
   bounds:
@@ -1200,7 +1091,6 @@
 - name: "Blaricum"
   start-coordinate-longitude: 5.312618959309285
   start-coordinate-latitude: 52.30265504102761
-  search-distance-in-metres: 50000
   municipality-id: "GM0376"
   date-last-check: null
   bounds:
@@ -1211,7 +1101,6 @@
 - name: "Bloemendaal"
   start-coordinate-longitude: 4.568089895249409
   start-coordinate-latitude: 52.39898412836536
-  search-distance-in-metres: 50000
   municipality-id: "GM0377"
   date-last-check: null
   bounds:
@@ -1222,7 +1111,6 @@
 - name: "Castricum"
   start-coordinate-longitude: 4.719755493330578
   start-coordinate-latitude: 52.54809790808087
-  search-distance-in-metres: 50000
   municipality-id: "GM0383"
   date-last-check: null
   bounds:
@@ -1233,7 +1121,6 @@
 - name: "Diemen"
   start-coordinate-longitude: 4.986005013619173
   start-coordinate-latitude: 52.33965002473205
-  search-distance-in-metres: 50000
   municipality-id: "GM0384"
   date-last-check: null
   bounds:
@@ -1244,7 +1131,6 @@
 - name: "Edam-Volendam"
   start-coordinate-longitude: 4.982129717202658
   start-coordinate-latitude: 52.58556236483793
-  search-distance-in-metres: 50000
   municipality-id: "GM0385"
   date-last-check: null
   bounds:
@@ -1255,7 +1141,6 @@
 - name: "Enkhuizen"
   start-coordinate-longitude: 5.287073880938181
   start-coordinate-latitude: 52.69033685874859
-  search-distance-in-metres: 50000
   municipality-id: "GM0388"
   date-last-check: null
   bounds:
@@ -1266,7 +1151,6 @@
 - name: "Haarlem"
   start-coordinate-longitude: 4.671424658008959
   start-coordinate-latitude: 52.37043087066895
-  search-distance-in-metres: 50000
   municipality-id: "GM0392"
   date-last-check: null
   bounds:
@@ -1277,7 +1161,6 @@
 - name: "Haarlemmermeer"
   start-coordinate-longitude: 4.643670087519128
   start-coordinate-latitude: 52.23011752364216
-  search-distance-in-metres: 50000
   municipality-id: "GM0394"
   date-last-check: null
   bounds:
@@ -1288,7 +1171,6 @@
 - name: "Heemskerk"
   start-coordinate-longitude: 4.694826599932204
   start-coordinate-latitude: 52.487926950624484
-  search-distance-in-metres: 50000
   municipality-id: "GM0396"
   date-last-check: null
   bounds:
@@ -1299,7 +1181,6 @@
 - name: "Heemstede"
   start-coordinate-longitude: 4.634694576359088
   start-coordinate-latitude: 52.34081001783016
-  search-distance-in-metres: 50000
   municipality-id: "GM0397"
   date-last-check: null
   bounds:
@@ -1310,7 +1191,6 @@
 - name: "Heiloo"
   start-coordinate-longitude: 4.718566402198199
   start-coordinate-latitude: 52.58008633798899
-  search-distance-in-metres: 50000
   municipality-id: "GM0399"
   date-last-check: null
   bounds:
@@ -1321,7 +1201,6 @@
 - name: "Den Helder"
   start-coordinate-longitude: 4.79008192865756
   start-coordinate-latitude: 52.913702040883635
-  search-distance-in-metres: 50000
   municipality-id: "GM0400"
   date-last-check: null
   bounds:
@@ -1332,7 +1211,6 @@
 - name: "Hilversum"
   start-coordinate-longitude: 5.193553290904537
   start-coordinate-latitude: 52.20168154214321
-  search-distance-in-metres: 50000
   municipality-id: "GM0402"
   date-last-check: null
   bounds:
@@ -1343,7 +1221,6 @@
 - name: "Hoorn"
   start-coordinate-longitude: 5.047128313273677
   start-coordinate-latitude: 52.67155428637617
-  search-distance-in-metres: 50000
   municipality-id: "GM0405"
   date-last-check: null
   bounds:
@@ -1354,7 +1231,6 @@
 - name: "Huizen"
   start-coordinate-longitude: 5.20401386649166
   start-coordinate-latitude: 52.267191073703174
-  search-distance-in-metres: 50000
   municipality-id: "GM0406"
   date-last-check: null
   bounds:
@@ -1365,7 +1241,6 @@
 - name: "Landsmeer"
   start-coordinate-longitude: 4.911857844633025
   start-coordinate-latitude: 52.420443921574446
-  search-distance-in-metres: 50000
   municipality-id: "GM0415"
   date-last-check: null
   bounds:
@@ -1376,7 +1251,6 @@
 - name: "Laren"
   start-coordinate-longitude: 5.222222018800948
   start-coordinate-latitude: 52.22313579399249
-  search-distance-in-metres: 50000
   municipality-id: "GM0417"
   date-last-check: null
   bounds:
@@ -1387,7 +1261,6 @@
 - name: "Medemblik"
   start-coordinate-longitude: 5.029930154029864
   start-coordinate-latitude: 52.697099930599194
-  search-distance-in-metres: 50000
   municipality-id: "GM0420"
   date-last-check: null
   bounds:
@@ -1398,7 +1271,6 @@
 - name: "Oostzaan"
   start-coordinate-longitude: 4.866072806928948
   start-coordinate-latitude: 52.431885373696744
-  search-distance-in-metres: 50000
   municipality-id: "GM0431"
   date-last-check: null
   bounds:
@@ -1409,7 +1281,6 @@
 - name: "Opmeer"
   start-coordinate-longitude: 4.923466007808113
   start-coordinate-latitude: 52.68172093414126
-  search-distance-in-metres: 50000
   municipality-id: "GM0432"
   date-last-check: null
   bounds:
@@ -1420,7 +1291,6 @@
 - name: "Ouder-Amstel"
   start-coordinate-longitude: 4.945786594178964
   start-coordinate-latitude: 52.28635036982696
-  search-distance-in-metres: 50000
   municipality-id: "GM0437"
   date-last-check: null
   bounds:
@@ -1431,7 +1301,6 @@
 - name: "Purmerend"
   start-coordinate-longitude: 4.955520091139497
   start-coordinate-latitude: 52.544387611068366
-  search-distance-in-metres: 50000
   municipality-id: "GM0439"
   date-last-check: null
   bounds:
@@ -1442,7 +1311,6 @@
 - name: "Schagen"
   start-coordinate-longitude: 4.8095982355098075
   start-coordinate-latitude: 52.79712639597817
-  search-distance-in-metres: 50000
   municipality-id: "GM0441"
   date-last-check: null
   bounds:
@@ -1453,7 +1321,6 @@
 - name: "Texel"
   start-coordinate-longitude: 4.776262421779858
   start-coordinate-latitude: 53.064159029009275
-  search-distance-in-metres: 50000
   municipality-id: "GM0448"
   date-last-check: null
   bounds:
@@ -1464,7 +1331,6 @@
 - name: "Uitgeest"
   start-coordinate-longitude: 4.71537373384525
   start-coordinate-latitude: 52.515734026975544
-  search-distance-in-metres: 50000
   municipality-id: "GM0450"
   date-last-check: null
   bounds:
@@ -1475,7 +1341,6 @@
 - name: "Uithoorn"
   start-coordinate-longitude: 4.824812788952717
   start-coordinate-latitude: 52.25267356033621
-  search-distance-in-metres: 50000
   municipality-id: "GM0451"
   date-last-check: null
   bounds:
@@ -1486,7 +1351,6 @@
 - name: "Velsen"
   start-coordinate-longitude: 4.669201924310818
   start-coordinate-latitude: 52.454602310684365
-  search-distance-in-metres: 50000
   municipality-id: "GM0453"
   date-last-check: null
   bounds:
@@ -1497,7 +1361,6 @@
 - name: "Zandvoort"
   start-coordinate-longitude: 4.535306827905182
   start-coordinate-latitude: 52.388116661857744
-  search-distance-in-metres: 50000
   municipality-id: "GM0473"
   date-last-check: null
   bounds:
@@ -1508,7 +1371,6 @@
 - name: "Zaanstad"
   start-coordinate-longitude: 4.800240425706112
   start-coordinate-latitude: 52.46554193898345
-  search-distance-in-metres: 50000
   municipality-id: "GM0479"
   date-last-check: null
   bounds:
@@ -1519,7 +1381,6 @@
 - name: "Alblasserdam"
   start-coordinate-longitude: 4.680128462267452
   start-coordinate-latitude: 51.849540639589904
-  search-distance-in-metres: 50000
   municipality-id: "GM0482"
   date-last-check: null
   bounds:
@@ -1530,7 +1391,6 @@
 - name: "Alphen aan den Rijn"
   start-coordinate-longitude: 4.586822742905808
   start-coordinate-latitude: 52.12251350322339
-  search-distance-in-metres: 50000
   municipality-id: "GM0484"
   date-last-check: null
   bounds:
@@ -1541,7 +1401,6 @@
 - name: "Barendrecht"
   start-coordinate-longitude: 4.516889888084015
   start-coordinate-latitude: 51.86278537952802
-  search-distance-in-metres: 50000
   municipality-id: "GM0489"
   date-last-check: null
   bounds:
@@ -1552,7 +1411,6 @@
 - name: "Drechterland"
   start-coordinate-longitude: 5.200623550702082
   start-coordinate-latitude: 52.68254521032091
-  search-distance-in-metres: 50000
   municipality-id: "GM0498"
   date-last-check: null
   bounds:
@@ -1563,7 +1421,6 @@
 - name: "Capelle aan den IJssel"
   start-coordinate-longitude: 4.5717864509582204
   start-coordinate-latitude: 51.95890442532597
-  search-distance-in-metres: 50000
   municipality-id: "GM0502"
   date-last-check: null
   bounds:
@@ -1574,7 +1431,6 @@
 - name: "Delft"
   start-coordinate-longitude: 4.375244633157397
   start-coordinate-latitude: 52.013971482248756
-  search-distance-in-metres: 50000
   municipality-id: "GM0503"
   date-last-check: null
   bounds:
@@ -1585,7 +1441,6 @@
 - name: "Dordrecht"
   start-coordinate-longitude: 4.633885521366493
   start-coordinate-latitude: 51.721740025433796
-  search-distance-in-metres: 50000
   municipality-id: "GM0505"
   date-last-check: null
   bounds:
@@ -1596,7 +1451,6 @@
 - name: "Gorinchem"
   start-coordinate-longitude: 4.924791125345978
   start-coordinate-latitude: 51.83902327865032
-  search-distance-in-metres: 50000
   municipality-id: "GM0512"
   date-last-check: null
   bounds:
@@ -1607,7 +1461,6 @@
 - name: "Gouda"
   start-coordinate-longitude: 4.681087130652722
   start-coordinate-latitude: 52.0282551009783
-  search-distance-in-metres: 50000
   municipality-id: "GM0513"
   date-last-check: null
   bounds:
@@ -1618,7 +1471,6 @@
 - name: "'s-Gravenhage"
   start-coordinate-longitude: 4.346974658681276
   start-coordinate-latitude: 52.04238788867627
-  search-distance-in-metres: 50000
   municipality-id: "GM0518"
   date-last-check: null
   bounds:
@@ -1629,7 +1481,6 @@
 - name: "Hardinxveld-Giessendam"
   start-coordinate-longitude: 4.808890376102514
   start-coordinate-latitude: 51.82206758841681
-  search-distance-in-metres: 50000
   municipality-id: "GM0523"
   date-last-check: null
   bounds:
@@ -1640,7 +1491,6 @@
 - name: "Hendrik-Ido-Ambacht"
   start-coordinate-longitude: 4.606448635183519
   start-coordinate-latitude: 51.847843213462966
-  search-distance-in-metres: 50000
   municipality-id: "GM0531"
   date-last-check: null
   bounds:
@@ -1651,7 +1501,6 @@
 - name: "Stede Broec"
   start-coordinate-longitude: 5.207856732969303
   start-coordinate-latitude: 52.68357296485769
-  search-distance-in-metres: 50000
   municipality-id: "GM0532"
   date-last-check: null
   bounds:
@@ -1662,7 +1511,6 @@
 - name: "Hillegom"
   start-coordinate-longitude: 4.571903181829711
   start-coordinate-latitude: 52.27654139219345
-  search-distance-in-metres: 50000
   municipality-id: "GM0534"
   date-last-check: null
   bounds:
@@ -1673,7 +1521,6 @@
 - name: "Katwijk"
   start-coordinate-longitude: 4.4308892957795445
   start-coordinate-latitude: 52.205811795980736
-  search-distance-in-metres: 50000
   municipality-id: "GM0537"
   date-last-check: null
   bounds:
@@ -1684,7 +1531,6 @@
 - name: "Krimpen aan den IJssel"
   start-coordinate-longitude: 4.599034285735048
   start-coordinate-latitude: 51.907269649925034
-  search-distance-in-metres: 50000
   municipality-id: "GM0542"
   date-last-check: null
   bounds:
@@ -1695,7 +1541,6 @@
 - name: "Leiden"
   start-coordinate-longitude: 4.454473181344476
   start-coordinate-latitude: 52.170525234876045
-  search-distance-in-metres: 50000
   municipality-id: "GM0546"
   date-last-check: null
   bounds:
@@ -1706,7 +1551,6 @@
 - name: "Leiderdorp"
   start-coordinate-longitude: 4.5613601071303655
   start-coordinate-latitude: 52.166503623521066
-  search-distance-in-metres: 50000
   municipality-id: "GM0547"
   date-last-check: null
   bounds:
@@ -1717,7 +1561,6 @@
 - name: "Lisse"
   start-coordinate-longitude: 4.551238298401957
   start-coordinate-latitude: 52.22379799179173
-  search-distance-in-metres: 50000
   municipality-id: "GM0553"
   date-last-check: null
   bounds:
@@ -1728,7 +1571,6 @@
 - name: "Maassluis"
   start-coordinate-longitude: 4.264255429183895
   start-coordinate-latitude: 51.91179151862411
-  search-distance-in-metres: 50000
   municipality-id: "GM0556"
   date-last-check: null
   bounds:
@@ -1739,7 +1581,6 @@
 - name: "Nieuwkoop"
   start-coordinate-longitude: 4.78302298896493
   start-coordinate-latitude: 52.20157179040027
-  search-distance-in-metres: 50000
   municipality-id: "GM0569"
   date-last-check: null
   bounds:
@@ -1750,7 +1591,6 @@
 - name: "Noordwijk"
   start-coordinate-longitude: 4.451414896185879
   start-coordinate-latitude: 52.21920152029051
-  search-distance-in-metres: 50000
   municipality-id: "GM0575"
   date-last-check: null
   bounds:
@@ -1761,7 +1601,6 @@
 - name: "Oegstgeest"
   start-coordinate-longitude: 4.456116226609685
   start-coordinate-latitude: 52.175206615807475
-  search-distance-in-metres: 50000
   municipality-id: "GM0579"
   date-last-check: null
   bounds:
@@ -1772,7 +1611,6 @@
 - name: "Oudewater"
   start-coordinate-longitude: 4.845112085564252
   start-coordinate-latitude: 52.05599154256776
-  search-distance-in-metres: 50000
   municipality-id: "GM0589"
   date-last-check: null
   bounds:
@@ -1783,7 +1621,6 @@
 - name: "Papendrecht"
   start-coordinate-longitude: 4.705155741895373
   start-coordinate-latitude: 51.84099723498289
-  search-distance-in-metres: 50000
   municipality-id: "GM0590"
   date-last-check: null
   bounds:
@@ -1794,7 +1631,6 @@
 - name: "Ridderkerk"
   start-coordinate-longitude: 4.571395335098035
   start-coordinate-latitude: 51.87402178991892
-  search-distance-in-metres: 50000
   municipality-id: "GM0597"
   date-last-check: null
   bounds:
@@ -1805,7 +1641,6 @@
 - name: "Rotterdam"
   start-coordinate-longitude: 4.536093051075638
   start-coordinate-latitude: 51.91558575346474
-  search-distance-in-metres: 50000
   municipality-id: "GM0599"
   date-last-check: null
   bounds:
@@ -1816,7 +1651,6 @@
 - name: "Rijswijk"
   start-coordinate-longitude: 4.334042945681224
   start-coordinate-latitude: 52.03498091456819
-  search-distance-in-metres: 50000
   municipality-id: "GM0603"
   date-last-check: null
   bounds:
@@ -1827,7 +1661,6 @@
 - name: "Schiedam"
   start-coordinate-longitude: 4.402951924096618
   start-coordinate-latitude: 51.925982761301526
-  search-distance-in-metres: 50000
   municipality-id: "GM0606"
   date-last-check: null
   bounds:
@@ -1838,7 +1671,6 @@
 - name: "Sliedrecht"
   start-coordinate-longitude: 4.7454120276286185
   start-coordinate-latitude: 51.83140554981529
-  search-distance-in-metres: 50000
   municipality-id: "GM0610"
   date-last-check: null
   bounds:
@@ -1849,7 +1681,6 @@
 - name: "Albrandswaard"
   start-coordinate-longitude: 4.464714869650953
   start-coordinate-latitude: 51.862012566210595
-  search-distance-in-metres: 50000
   municipality-id: "GM0613"
   date-last-check: null
   bounds:
@@ -1860,7 +1691,6 @@
 - name: "Vlaardingen"
   start-coordinate-longitude: 4.349252530539856
   start-coordinate-latitude: 51.922651520749874
-  search-distance-in-metres: 50000
   municipality-id: "GM0622"
   date-last-check: null
   bounds:
@@ -1871,7 +1701,6 @@
 - name: "Voorschoten"
   start-coordinate-longitude: 4.425263925682968
   start-coordinate-latitude: 52.131200258239
-  search-distance-in-metres: 50000
   municipality-id: "GM0626"
   date-last-check: null
   bounds:
@@ -1882,7 +1711,6 @@
 - name: "Waddinxveen"
   start-coordinate-longitude: 4.701973218434512
   start-coordinate-latitude: 52.03842254617116
-  search-distance-in-metres: 50000
   municipality-id: "GM0627"
   date-last-check: null
   bounds:
@@ -1893,7 +1721,6 @@
 - name: "Wassenaar"
   start-coordinate-longitude: 4.4385337296869425
   start-coordinate-latitude: 52.1525271574282
-  search-distance-in-metres: 50000
   municipality-id: "GM0629"
   date-last-check: null
   bounds:
@@ -1904,7 +1731,6 @@
 - name: "Woerden"
   start-coordinate-longitude: 4.902839970796754
   start-coordinate-latitude: 52.0711566664803
-  search-distance-in-metres: 50000
   municipality-id: "GM0632"
   date-last-check: null
   bounds:
@@ -1915,7 +1741,6 @@
 - name: "Zoetermeer"
   start-coordinate-longitude: 4.421769808974654
   start-coordinate-latitude: 52.051909235413206
-  search-distance-in-metres: 50000
   municipality-id: "GM0637"
   date-last-check: null
   bounds:
@@ -1926,7 +1751,6 @@
 - name: "Zoeterwoude"
   start-coordinate-longitude: 4.544764451803857
   start-coordinate-latitude: 52.12855446904544
-  search-distance-in-metres: 50000
   municipality-id: "GM0638"
   date-last-check: null
   bounds:
@@ -1937,7 +1761,6 @@
 - name: "Zwijndrecht"
   start-coordinate-longitude: 4.628766038986521
   start-coordinate-latitude: 51.81540548737399
-  search-distance-in-metres: 50000
   municipality-id: "GM0642"
   date-last-check: null
   bounds:
@@ -1948,7 +1771,6 @@
 - name: "Borsele"
   start-coordinate-longitude: 3.792090720764817
   start-coordinate-latitude: 51.401602450135776
-  search-distance-in-metres: 50000
   municipality-id: "GM0654"
   date-last-check: null
   bounds:
@@ -1959,7 +1781,6 @@
 - name: "Goes"
   start-coordinate-longitude: 3.9040706771152847
   start-coordinate-latitude: 51.47991091127861
-  search-distance-in-metres: 50000
   municipality-id: "GM0664"
   date-last-check: null
   bounds:
@@ -1970,7 +1791,6 @@
 - name: "West Maas en Waal"
   start-coordinate-longitude: 5.497512422774536
   start-coordinate-latitude: 51.88629293539758
-  search-distance-in-metres: 50000
   municipality-id: "GM0668"
   date-last-check: null
   bounds:
@@ -1981,7 +1801,6 @@
 - name: "Hulst"
   start-coordinate-longitude: 4.0814526257499315
   start-coordinate-latitude: 51.27828493751818
-  search-distance-in-metres: 50000
   municipality-id: "GM0677"
   date-last-check: null
   bounds:
@@ -1992,7 +1811,6 @@
 - name: "Kapelle"
   start-coordinate-longitude: 3.913194115143967
   start-coordinate-latitude: 51.479295376476415
-  search-distance-in-metres: 50000
   municipality-id: "GM0678"
   date-last-check: null
   bounds:
@@ -2003,7 +1821,6 @@
 - name: "Middelburg"
   start-coordinate-longitude: 3.655507242526112
   start-coordinate-latitude: 51.48410765181338
-  search-distance-in-metres: 50000
   municipality-id: "GM0687"
   date-last-check: null
   bounds:
@@ -2014,7 +1831,6 @@
 - name: "Reimerswaal"
   start-coordinate-longitude: 4.008627589566976
   start-coordinate-latitude: 51.46697525926637
-  search-distance-in-metres: 50000
   municipality-id: "GM0703"
   date-last-check: null
   bounds:
@@ -2025,7 +1841,6 @@
 - name: "Terneuzen"
   start-coordinate-longitude: 3.8287273123585526
   start-coordinate-latitude: 51.29285777854328
-  search-distance-in-metres: 50000
   municipality-id: "GM0715"
   date-last-check: null
   bounds:
@@ -2036,7 +1851,6 @@
 - name: "Tholen"
   start-coordinate-longitude: 4.184919474578919
   start-coordinate-latitude: 51.500338794132624
-  search-distance-in-metres: 50000
   municipality-id: "GM0716"
   date-last-check: null
   bounds:
@@ -2047,7 +1861,6 @@
 - name: "Veere"
   start-coordinate-longitude: 3.62851521575138
   start-coordinate-latitude: 51.585267278480856
-  search-distance-in-metres: 50000
   municipality-id: "GM0717"
   date-last-check: null
   bounds:
@@ -2058,7 +1871,6 @@
 - name: "Vlissingen"
   start-coordinate-longitude: 3.6354132513373356
   start-coordinate-latitude: 51.476651307207696
-  search-distance-in-metres: 50000
   municipality-id: "GM0718"
   date-last-check: null
   bounds:
@@ -2069,7 +1881,6 @@
 - name: "De Ronde Venen"
   start-coordinate-longitude: 4.979483216973928
   start-coordinate-latitude: 52.23062809283296
-  search-distance-in-metres: 50000
   municipality-id: "GM0736"
   date-last-check: null
   bounds:
@@ -2080,7 +1891,6 @@
 - name: "Tytsjerksteradiel"
   start-coordinate-longitude: 5.973665475527745
   start-coordinate-latitude: 53.15282935687621
-  search-distance-in-metres: 50000
   municipality-id: "GM0737"
   date-last-check: null
   bounds:
@@ -2091,7 +1901,6 @@
 - name: "Asten"
   start-coordinate-longitude: 5.815464942846105
   start-coordinate-latitude: 51.40351598825496
-  search-distance-in-metres: 50000
   municipality-id: "GM0743"
   date-last-check: null
   bounds:
@@ -2102,7 +1911,6 @@
 - name: "Baarle-Nassau"
   start-coordinate-longitude: 4.933008332860972
   start-coordinate-latitude: 51.42887995049066
-  search-distance-in-metres: 50000
   municipality-id: "GM0744"
   date-last-check: null
   bounds:
@@ -2113,7 +1921,6 @@
 - name: "Bergen op Zoom"
   start-coordinate-longitude: 4.316692905387215
   start-coordinate-latitude: 51.48755427881738
-  search-distance-in-metres: 50000
   municipality-id: "GM0748"
   date-last-check: null
   bounds:
@@ -2124,7 +1931,6 @@
 - name: "Best"
   start-coordinate-longitude: 5.390032360928522
   start-coordinate-latitude: 51.52663756095811
-  search-distance-in-metres: 50000
   municipality-id: "GM0753"
   date-last-check: null
   bounds:
@@ -2135,7 +1941,6 @@
 - name: "Boekel"
   start-coordinate-longitude: 5.752363563893248
   start-coordinate-latitude: 51.61035633293888
-  search-distance-in-metres: 50000
   municipality-id: "GM0755"
   date-last-check: null
   bounds:
@@ -2146,7 +1951,6 @@
 - name: "Boxtel"
   start-coordinate-longitude: 5.317402454259584
   start-coordinate-latitude: 51.61619018886015
-  search-distance-in-metres: 50000
   municipality-id: "GM0757"
   date-last-check: null
   bounds:
@@ -2157,7 +1961,6 @@
 - name: "Breda"
   start-coordinate-longitude: 4.823584730304359
   start-coordinate-latitude: 51.57575433612276
-  search-distance-in-metres: 50000
   municipality-id: "GM0758"
   date-last-check: null
   bounds:
@@ -2168,7 +1971,6 @@
 - name: "Deurne"
   start-coordinate-longitude: 5.869674083955589
   start-coordinate-latitude: 51.38996271160284
-  search-distance-in-metres: 50000
   municipality-id: "GM0762"
   date-last-check: null
   bounds:
@@ -2179,7 +1981,6 @@
 - name: "Pekela"
   start-coordinate-longitude: 6.9900952340844364
   start-coordinate-latitude: 53.054610319761146
-  search-distance-in-metres: 50000
   municipality-id: "GM0765"
   date-last-check: null
   bounds:
@@ -2190,7 +1991,6 @@
 - name: "Dongen"
   start-coordinate-longitude: 4.9480275265178255
   start-coordinate-latitude: 51.676453756701676
-  search-distance-in-metres: 50000
   municipality-id: "GM0766"
   date-last-check: null
   bounds:
@@ -2201,7 +2001,6 @@
 - name: "Eersel"
   start-coordinate-longitude: 5.279474131244309
   start-coordinate-latitude: 51.353653701835995
-  search-distance-in-metres: 50000
   municipality-id: "GM0770"
   date-last-check: null
   bounds:
@@ -2212,7 +2011,6 @@
 - name: "Eindhoven"
   start-coordinate-longitude: 5.404852458505651
   start-coordinate-latitude: 51.47007430479034
-  search-distance-in-metres: 50000
   municipality-id: "GM0772"
   date-last-check: null
   bounds:
@@ -2223,7 +2021,6 @@
 - name: "Etten-Leur"
   start-coordinate-longitude: 4.591967720275121
   start-coordinate-latitude: 51.56052423784498
-  search-distance-in-metres: 50000
   municipality-id: "GM0777"
   date-last-check: null
   bounds:
@@ -2234,7 +2031,6 @@
 - name: "Geertruidenberg"
   start-coordinate-longitude: 4.874563697057598
   start-coordinate-latitude: 51.68547581259728
-  search-distance-in-metres: 50000
   municipality-id: "GM0779"
   date-last-check: null
   bounds:
@@ -2245,7 +2041,6 @@
 - name: "Gilze en Rijen"
   start-coordinate-longitude: 4.876385829095808
   start-coordinate-latitude: 51.5588879284118
-  search-distance-in-metres: 50000
   municipality-id: "GM0784"
   date-last-check: null
   bounds:
@@ -2256,7 +2051,6 @@
 - name: "Goirle"
   start-coordinate-longitude: 5.108491890392226
   start-coordinate-latitude: 51.536284774607694
-  search-distance-in-metres: 50000
   municipality-id: "GM0785"
   date-last-check: null
   bounds:
@@ -2267,7 +2061,6 @@
 - name: "Helmond"
   start-coordinate-longitude: 5.586580217224224
   start-coordinate-latitude: 51.465683545140166
-  search-distance-in-metres: 50000
   municipality-id: "GM0794"
   date-last-check: null
   bounds:
@@ -2278,7 +2071,6 @@
 - name: "'s-Hertogenbosch"
   start-coordinate-longitude: 5.267810111986667
   start-coordinate-latitude: 51.71178223729753
-  search-distance-in-metres: 50000
   municipality-id: "GM0796"
   date-last-check: null
   bounds:
@@ -2289,7 +2081,6 @@
 - name: "Heusden"
   start-coordinate-longitude: 5.237359301731458
   start-coordinate-latitude: 51.695155009886015
-  search-distance-in-metres: 50000
   municipality-id: "GM0797"
   date-last-check: null
   bounds:
@@ -2300,7 +2091,6 @@
 - name: "Hilvarenbeek"
   start-coordinate-longitude: 5.115644257238572
   start-coordinate-latitude: 51.5330947008684
-  search-distance-in-metres: 50000
   municipality-id: "GM0798"
   date-last-check: null
   bounds:
@@ -2311,7 +2101,6 @@
 - name: "Loon op Zand"
   start-coordinate-longitude: 5.0638053596921555
   start-coordinate-latitude: 51.62426354911201
-  search-distance-in-metres: 50000
   municipality-id: "GM0809"
   date-last-check: null
   bounds:
@@ -2322,7 +2111,6 @@
 - name: "Nuenen, Gerwen en Nederwetten"
   start-coordinate-longitude: 5.564704151405193
   start-coordinate-latitude: 51.46155262214787
-  search-distance-in-metres: 50000
   municipality-id: "GM0820"
   date-last-check: null
   bounds:
@@ -2333,7 +2121,6 @@
 - name: "Oirschot"
   start-coordinate-longitude: 5.356468256876705
   start-coordinate-latitude: 51.492464150093376
-  search-distance-in-metres: 50000
   municipality-id: "GM0823"
   date-last-check: null
   bounds:
@@ -2344,7 +2131,6 @@
 - name: "Oisterwijk"
   start-coordinate-longitude: 5.182185794834627
   start-coordinate-latitude: 51.53478732703338
-  search-distance-in-metres: 50000
   municipality-id: "GM0824"
   date-last-check: null
   bounds:
@@ -2355,7 +2141,6 @@
 - name: "Oosterhout"
   start-coordinate-longitude: 4.843766458593538
   start-coordinate-latitude: 51.60381124482384
-  search-distance-in-metres: 50000
   municipality-id: "GM0826"
   date-last-check: null
   bounds:
@@ -2366,7 +2151,6 @@
 - name: "Oss"
   start-coordinate-longitude: 5.624909297986895
   start-coordinate-latitude: 51.75670695376859
-  search-distance-in-metres: 50000
   municipality-id: "GM0828"
   date-last-check: null
   bounds:
@@ -2377,7 +2161,6 @@
 - name: "Rucphen"
   start-coordinate-longitude: 4.524074315000891
   start-coordinate-latitude: 51.54719440600422
-  search-distance-in-metres: 50000
   municipality-id: "GM0840"
   date-last-check: null
   bounds:
@@ -2388,7 +2171,6 @@
 - name: "Sint-Michielsgestel"
   start-coordinate-longitude: 5.3044878532249555
   start-coordinate-latitude: 51.665838765207724
-  search-distance-in-metres: 50000
   municipality-id: "GM0845"
   date-last-check: null
   bounds:
@@ -2399,7 +2181,6 @@
 - name: "Someren"
   start-coordinate-longitude: 5.659478481177175
   start-coordinate-latitude: 51.42373432312757
-  search-distance-in-metres: 50000
   municipality-id: "GM0847"
   date-last-check: null
   bounds:
@@ -2410,7 +2191,6 @@
 - name: "Son en Breugel"
   start-coordinate-longitude: 5.4684092900732715
   start-coordinate-latitude: 51.51728275693058
-  search-distance-in-metres: 50000
   municipality-id: "GM0848"
   date-last-check: null
   bounds:
@@ -2421,7 +2201,6 @@
 - name: "Steenbergen"
   start-coordinate-longitude: 4.2910807733778285
   start-coordinate-latitude: 51.58649446345508
-  search-distance-in-metres: 50000
   municipality-id: "GM0851"
   date-last-check: null
   bounds:
@@ -2432,7 +2211,6 @@
 - name: "Waterland"
   start-coordinate-longitude: 5.030215725561835
   start-coordinate-latitude: 52.45643860959216
-  search-distance-in-metres: 50000
   municipality-id: "GM0852"
   date-last-check: null
   bounds:
@@ -2443,7 +2221,6 @@
 - name: "Tilburg"
   start-coordinate-longitude: 5.1030754586303235
   start-coordinate-latitude: 51.53654007403997
-  search-distance-in-metres: 50000
   municipality-id: "GM0855"
   date-last-check: null
   bounds:
@@ -2454,7 +2231,6 @@
 - name: "Valkenswaard"
   start-coordinate-longitude: 5.516103338364752
   start-coordinate-latitude: 51.37813374145545
-  search-distance-in-metres: 50000
   municipality-id: "GM0858"
   date-last-check: null
   bounds:
@@ -2465,7 +2241,6 @@
 - name: "Veldhoven"
   start-coordinate-longitude: 5.386258299279755
   start-coordinate-latitude: 51.3960863841184
-  search-distance-in-metres: 50000
   municipality-id: "GM0861"
   date-last-check: null
   bounds:
@@ -2476,7 +2251,6 @@
 - name: "Vught"
   start-coordinate-longitude: 5.293327336238047
   start-coordinate-latitude: 51.6617903505319
-  search-distance-in-metres: 50000
   municipality-id: "GM0865"
   date-last-check: null
   bounds:
@@ -2487,7 +2261,6 @@
 - name: "Waalre"
   start-coordinate-longitude: 5.516234677591948
   start-coordinate-latitude: 51.378219709295536
-  search-distance-in-metres: 50000
   municipality-id: "GM0866"
   date-last-check: null
   bounds:
@@ -2498,7 +2271,6 @@
 - name: "Waalwijk"
   start-coordinate-longitude: 4.955330602370395
   start-coordinate-latitude: 51.69334032446914
-  search-distance-in-metres: 50000
   municipality-id: "GM0867"
   date-last-check: null
   bounds:
@@ -2509,7 +2281,6 @@
 - name: "Woensdrecht"
   start-coordinate-longitude: 4.276221095123117
   start-coordinate-latitude: 51.42680206235231
-  search-distance-in-metres: 50000
   municipality-id: "GM0873"
   date-last-check: null
   bounds:
@@ -2520,7 +2291,6 @@
 - name: "Zundert"
   start-coordinate-longitude: 4.649983715720152
   start-coordinate-latitude: 51.45936091624328
-  search-distance-in-metres: 50000
   municipality-id: "GM0879"
   date-last-check: null
   bounds:
@@ -2531,7 +2301,6 @@
 - name: "Wormerland"
   start-coordinate-longitude: 4.9254765142562
   start-coordinate-latitude: 52.503455979319035
-  search-distance-in-metres: 50000
   municipality-id: "GM0880"
   date-last-check: null
   bounds:
@@ -2542,7 +2311,6 @@
 - name: "Landgraaf"
   start-coordinate-longitude: 6.018914390263805
   start-coordinate-latitude: 50.92163446360401
-  search-distance-in-metres: 50000
   municipality-id: "GM0882"
   date-last-check: null
   bounds:
@@ -2553,7 +2321,6 @@
 - name: "Beek"
   start-coordinate-longitude: 5.7786133346967885
   start-coordinate-latitude: 50.929707432664856
-  search-distance-in-metres: 50000
   municipality-id: "GM0888"
   date-last-check: null
   bounds:
@@ -2564,7 +2331,6 @@
 - name: "Beesel"
   start-coordinate-longitude: 6.067042290586486
   start-coordinate-latitude: 51.26271532994715
-  search-distance-in-metres: 50000
   municipality-id: "GM0889"
   date-last-check: null
   bounds:
@@ -2575,7 +2341,6 @@
 - name: "Bergen (L)"
   start-coordinate-longitude: 6.034568093430405
   start-coordinate-latitude: 51.674826590683814
-  search-distance-in-metres: 50000
   municipality-id: "GM0893"
   date-last-check: null
   bounds:
@@ -2586,7 +2351,6 @@
 - name: "Brunssum"
   start-coordinate-longitude: 5.93251983745382
   start-coordinate-latitude: 50.93742969261003
-  search-distance-in-metres: 50000
   municipality-id: "GM0899"
   date-last-check: null
   bounds:
@@ -2597,7 +2361,6 @@
 - name: "Gennep"
   start-coordinate-longitude: 6.030422062333432
   start-coordinate-latitude: 51.674933371716754
-  search-distance-in-metres: 50000
   municipality-id: "GM0907"
   date-last-check: null
   bounds:
@@ -2608,7 +2371,6 @@
 - name: "Heerlen"
   start-coordinate-longitude: 6.018687851438123
   start-coordinate-latitude: 50.8248292159432
-  search-distance-in-metres: 50000
   municipality-id: "GM0917"
   date-last-check: null
   bounds:
@@ -2619,7 +2381,6 @@
 - name: "Kerkrade"
   start-coordinate-longitude: 6.0455356637954685
   start-coordinate-latitude: 50.90002332754194
-  search-distance-in-metres: 50000
   municipality-id: "GM0928"
   date-last-check: null
   bounds:
@@ -2630,7 +2391,6 @@
 - name: "Maastricht"
   start-coordinate-longitude: 5.7219232772663995
   start-coordinate-latitude: 50.81478746712901
-  search-distance-in-metres: 50000
   municipality-id: "GM0935"
   date-last-check: null
   bounds:
@@ -2641,7 +2401,6 @@
 - name: "Meerssen"
   start-coordinate-longitude: 5.772925274320635
   start-coordinate-latitude: 50.87783286121806
-  search-distance-in-metres: 50000
   municipality-id: "GM0938"
   date-last-check: null
   bounds:
@@ -2652,7 +2411,6 @@
 - name: "Mook en Middelaar"
   start-coordinate-longitude: 5.869288306851388
   start-coordinate-latitude: 51.762805692121546
-  search-distance-in-metres: 50000
   municipality-id: "GM0944"
   date-last-check: null
   bounds:
@@ -2663,7 +2421,6 @@
 - name: "Nederweert"
   start-coordinate-longitude: 5.7257965612660175
   start-coordinate-latitude: 51.291729788388565
-  search-distance-in-metres: 50000
   municipality-id: "GM0946"
   date-last-check: null
   bounds:
@@ -2674,7 +2431,6 @@
 - name: "Roermond"
   start-coordinate-longitude: 6.054742256686591
   start-coordinate-latitude: 51.251669375906914
-  search-distance-in-metres: 50000
   municipality-id: "GM0957"
   date-last-check: null
   bounds:
@@ -2685,7 +2441,6 @@
 - name: "Simpelveld"
   start-coordinate-longitude: 5.985425020978028
   start-coordinate-latitude: 50.81780832042937
-  search-distance-in-metres: 50000
   municipality-id: "GM0965"
   date-last-check: null
   bounds:
@@ -2696,7 +2451,6 @@
 - name: "Stein"
   start-coordinate-longitude: 5.754678296035806
   start-coordinate-latitude: 50.95850384773569
-  search-distance-in-metres: 50000
   municipality-id: "GM0971"
   date-last-check: null
   bounds:
@@ -2707,7 +2461,6 @@
 - name: "Vaals"
   start-coordinate-longitude: 5.988843004505842
   start-coordinate-latitude: 50.78814495993792
-  search-distance-in-metres: 50000
   municipality-id: "GM0981"
   date-last-check: null
   bounds:
@@ -2718,7 +2471,6 @@
 - name: "Venlo"
   start-coordinate-longitude: 6.131400864742923
   start-coordinate-latitude: 51.39386059389067
-  search-distance-in-metres: 50000
   municipality-id: "GM0983"
   date-last-check: null
   bounds:
@@ -2729,7 +2481,6 @@
 - name: "Venray"
   start-coordinate-longitude: 6.025036015006215
   start-coordinate-latitude: 51.50270876984243
-  search-distance-in-metres: 50000
   municipality-id: "GM0984"
   date-last-check: null
   bounds:
@@ -2740,7 +2491,6 @@
 - name: "Voerendaal"
   start-coordinate-longitude: 5.900951171022586
   start-coordinate-latitude: 50.88035635875206
-  search-distance-in-metres: 50000
   municipality-id: "GM0986"
   date-last-check: null
   bounds:
@@ -2751,7 +2501,6 @@
 - name: "Weert"
   start-coordinate-longitude: 5.768051621300775
   start-coordinate-latitude: 51.25408551977722
-  search-distance-in-metres: 50000
   municipality-id: "GM0988"
   date-last-check: null
   bounds:
@@ -2762,7 +2511,6 @@
 - name: "Valkenburg aan de Geul"
   start-coordinate-longitude: 5.787454803059944
   start-coordinate-latitude: 50.877181488481654
-  search-distance-in-metres: 50000
   municipality-id: "GM0994"
   date-last-check: null
   bounds:
@@ -2773,7 +2521,6 @@
 - name: "Lelystad"
   start-coordinate-longitude: 5.48621313476484
   start-coordinate-latitude: 52.47255778881827
-  search-distance-in-metres: 50000
   municipality-id: "GM0995"
   date-last-check: null
   bounds:
@@ -2784,7 +2531,6 @@
 - name: "Horst aan de Maas"
   start-coordinate-longitude: 6.040967142601778
   start-coordinate-latitude: 51.48825406485463
-  search-distance-in-metres: 50000
   municipality-id: "GM1507"
   date-last-check: null
   bounds:
@@ -2795,7 +2541,6 @@
 - name: "Oude IJsselstreek"
   start-coordinate-longitude: 6.388202721796605
   start-coordinate-latitude: 51.94493281161171
-  search-distance-in-metres: 50000
   municipality-id: "GM1509"
   date-last-check: null
   bounds:
@@ -2806,7 +2551,6 @@
 - name: "Teylingen"
   start-coordinate-longitude: 4.543710164146219
   start-coordinate-latitude: 52.22171969297738
-  search-distance-in-metres: 50000
   municipality-id: "GM1525"
   date-last-check: null
   bounds:
@@ -2817,7 +2561,6 @@
 - name: "Utrechtse Heuvelrug"
   start-coordinate-longitude: 5.394912853416314
   start-coordinate-latitude: 52.05734358398929
-  search-distance-in-metres: 50000
   municipality-id: "GM1581"
   date-last-check: null
   bounds:
@@ -2828,7 +2571,6 @@
 - name: "Oost Gelre"
   start-coordinate-longitude: 6.63009039211225
   start-coordinate-latitude: 52.05931698883827
-  search-distance-in-metres: 50000
   municipality-id: "GM1586"
   date-last-check: null
   bounds:
@@ -2839,7 +2581,6 @@
 - name: "Koggenland"
   start-coordinate-longitude: 5.005961111560706
   start-coordinate-latitude: 52.629283159296136
-  search-distance-in-metres: 50000
   municipality-id: "GM1598"
   date-last-check: null
   bounds:
@@ -2850,7 +2591,6 @@
 - name: "Lansingerland"
   start-coordinate-longitude: 4.539158320442865
   start-coordinate-latitude: 52.036945773000106
-  search-distance-in-metres: 50000
   municipality-id: "GM1621"
   date-last-check: null
   bounds:
@@ -2861,7 +2601,6 @@
 - name: "Leudal"
   start-coordinate-longitude: 5.826999654456793
   start-coordinate-latitude: 51.202463842101984
-  search-distance-in-metres: 50000
   municipality-id: "GM1640"
   date-last-check: null
   bounds:
@@ -2872,7 +2611,6 @@
 - name: "Maasgouw"
   start-coordinate-longitude: 5.852643183667447
   start-coordinate-latitude: 51.17471895037557
-  search-distance-in-metres: 50000
   municipality-id: "GM1641"
   date-last-check: null
   bounds:
@@ -2883,7 +2621,6 @@
 - name: "Gemert-Bakel"
   start-coordinate-longitude: 5.71393852250706
   start-coordinate-latitude: 51.50079375585806
-  search-distance-in-metres: 50000
   municipality-id: "GM1652"
   date-last-check: null
   bounds:
@@ -2894,7 +2631,6 @@
 - name: "Halderberge"
   start-coordinate-longitude: 4.499858773704038
   start-coordinate-latitude: 51.60471912907023
-  search-distance-in-metres: 50000
   municipality-id: "GM1655"
   date-last-check: null
   bounds:
@@ -2905,7 +2641,6 @@
 - name: "Heeze-Leende"
   start-coordinate-longitude: 5.564714450947936
   start-coordinate-latitude: 51.339396265217474
-  search-distance-in-metres: 50000
   municipality-id: "GM1658"
   date-last-check: null
   bounds:
@@ -2916,7 +2651,6 @@
 - name: "Laarbeek"
   start-coordinate-longitude: 5.60689197578542
   start-coordinate-latitude: 51.51834237436994
-  search-distance-in-metres: 50000
   municipality-id: "GM1659"
   date-last-check: null
   bounds:
@@ -2927,7 +2661,6 @@
 - name: "Reusel-De Mierden"
   start-coordinate-longitude: 5.145396665914534
   start-coordinate-latitude: 51.35658598981683
-  search-distance-in-metres: 50000
   municipality-id: "GM1667"
   date-last-check: null
   bounds:
@@ -2938,7 +2671,6 @@
 - name: "Roerdalen"
   start-coordinate-longitude: 5.934873575519242
   start-coordinate-latitude: 51.14621225922504
-  search-distance-in-metres: 50000
   municipality-id: "GM1669"
   date-last-check: null
   bounds:
@@ -2949,7 +2681,6 @@
 - name: "Roosendaal"
   start-coordinate-longitude: 4.3970260843607045
   start-coordinate-latitude: 51.508198128303555
-  search-distance-in-metres: 50000
   municipality-id: "GM1674"
   date-last-check: null
   bounds:
@@ -2960,7 +2691,6 @@
 - name: "Schouwen-Duiveland"
   start-coordinate-longitude: 4.1546922069403065
   start-coordinate-latitude: 51.68132761652489
-  search-distance-in-metres: 50000
   municipality-id: "GM1676"
   date-last-check: null
   bounds:
@@ -2971,7 +2701,6 @@
 - name: "Aa en Hunze"
   start-coordinate-longitude: 6.828443682638117
   start-coordinate-latitude: 53.04374126664347
-  search-distance-in-metres: 50000
   municipality-id: "GM1680"
   date-last-check: null
   bounds:
@@ -2982,7 +2711,6 @@
 - name: "Borger-Odoorn"
   start-coordinate-longitude: 6.780095985863933
   start-coordinate-latitude: 52.96164734815831
-  search-distance-in-metres: 50000
   municipality-id: "GM1681"
   date-last-check: null
   bounds:
@@ -2993,7 +2721,6 @@
 - name: "De Wolden"
   start-coordinate-longitude: 6.382818768860837
   start-coordinate-latitude: 52.6851286933992
-  search-distance-in-metres: 50000
   municipality-id: "GM1690"
   date-last-check: null
   bounds:
@@ -3004,7 +2731,6 @@
 - name: "Noord-Beveland"
   start-coordinate-longitude: 3.838792119209052
   start-coordinate-latitude: 51.57091767577402
-  search-distance-in-metres: 50000
   municipality-id: "GM1695"
   date-last-check: null
   bounds:
@@ -3015,7 +2741,6 @@
 - name: "Wijdemeren"
   start-coordinate-longitude: 5.077239807584286
   start-coordinate-latitude: 52.2286676961358
-  search-distance-in-metres: 50000
   municipality-id: "GM1696"
   date-last-check: null
   bounds:
@@ -3026,7 +2751,6 @@
 - name: "Noordenveld"
   start-coordinate-longitude: 6.409543937331863
   start-coordinate-latitude: 53.07462647941371
-  search-distance-in-metres: 50000
   municipality-id: "GM1699"
   date-last-check: null
   bounds:
@@ -3037,7 +2761,6 @@
 - name: "Twenterand"
   start-coordinate-longitude: 6.639572280945875
   start-coordinate-latitude: 52.40446618949709
-  search-distance-in-metres: 50000
   municipality-id: "GM1700"
   date-last-check: null
   bounds:
@@ -3048,7 +2771,6 @@
 - name: "Westerveld"
   start-coordinate-longitude: 6.186613535061956
   start-coordinate-latitude: 52.7550331336131
-  search-distance-in-metres: 50000
   municipality-id: "GM1701"
   date-last-check: null
   bounds:
@@ -3059,7 +2781,6 @@
 - name: "Lingewaard"
   start-coordinate-longitude: 5.882063192854158
   start-coordinate-latitude: 51.899103501997615
-  search-distance-in-metres: 50000
   municipality-id: "GM1705"
   date-last-check: null
   bounds:
@@ -3070,7 +2791,6 @@
 - name: "Cranendonck"
   start-coordinate-longitude: 5.592185318154697
   start-coordinate-latitude: 51.32413474074722
-  search-distance-in-metres: 50000
   municipality-id: "GM1706"
   date-last-check: null
   bounds:
@@ -3081,7 +2801,6 @@
 - name: "Steenwijkerland"
   start-coordinate-longitude: 6.082828601669087
   start-coordinate-latitude: 52.812011625403336
-  search-distance-in-metres: 50000
   municipality-id: "GM1708"
   date-last-check: null
   bounds:
@@ -3092,7 +2811,6 @@
 - name: "Moerdijk"
   start-coordinate-longitude: 4.599221904734475
   start-coordinate-latitude: 51.667977722237254
-  search-distance-in-metres: 50000
   municipality-id: "GM1709"
   date-last-check: null
   bounds:
@@ -3103,7 +2821,6 @@
 - name: "Echt-Susteren"
   start-coordinate-longitude: 5.89481170522473
   start-coordinate-latitude: 51.13128015934515
-  search-distance-in-metres: 50000
   municipality-id: "GM1711"
   date-last-check: null
   bounds:
@@ -3114,7 +2831,6 @@
 - name: "Sluis"
   start-coordinate-longitude: 3.6362083571497337
   start-coordinate-latitude: 51.32252288540836
-  search-distance-in-metres: 50000
   municipality-id: "GM1714"
   date-last-check: null
   bounds:
@@ -3125,7 +2841,6 @@
 - name: "Drimmelen"
   start-coordinate-longitude: 4.781140396727793
   start-coordinate-latitude: 51.663727977214876
-  search-distance-in-metres: 50000
   municipality-id: "GM1719"
   date-last-check: null
   bounds:
@@ -3136,7 +2851,6 @@
 - name: "Bernheze"
   start-coordinate-longitude: 5.570136200146617
   start-coordinate-latitude: 51.711145622115524
-  search-distance-in-metres: 50000
   municipality-id: "GM1721"
   date-last-check: null
   bounds:
@@ -3147,7 +2861,6 @@
 - name: "Alphen-Chaam"
   start-coordinate-longitude: 4.8009255561640005
   start-coordinate-latitude: 51.536510564091394
-  search-distance-in-metres: 50000
   municipality-id: "GM1723"
   date-last-check: null
   bounds:
@@ -3158,7 +2871,6 @@
 - name: "Bergeijk"
   start-coordinate-longitude: 5.398788898211309
   start-coordinate-latitude: 51.27080781474818
-  search-distance-in-metres: 50000
   municipality-id: "GM1724"
   date-last-check: null
   bounds:
@@ -3169,7 +2881,6 @@
 - name: "Bladel"
   start-coordinate-longitude: 5.2791625461779335
   start-coordinate-latitude: 51.353495413518026
-  search-distance-in-metres: 50000
   municipality-id: "GM1728"
   date-last-check: null
   bounds:
@@ -3180,7 +2891,6 @@
 - name: "Gulpen-Wittem"
   start-coordinate-longitude: 5.875921499388494
   start-coordinate-latitude: 50.81069928416179
-  search-distance-in-metres: 50000
   municipality-id: "GM1729"
   date-last-check: null
   bounds:
@@ -3191,7 +2901,6 @@
 - name: "Tynaarlo"
   start-coordinate-longitude: 6.603957634374221
   start-coordinate-latitude: 53.08442758442824
-  search-distance-in-metres: 50000
   municipality-id: "GM1730"
   date-last-check: null
   bounds:
@@ -3202,7 +2911,6 @@
 - name: "Midden-Drenthe"
   start-coordinate-longitude: 6.49620575802539
   start-coordinate-latitude: 52.85810753420971
-  search-distance-in-metres: 50000
   municipality-id: "GM1731"
   date-last-check: null
   bounds:
@@ -3213,7 +2921,6 @@
 - name: "Overbetuwe"
   start-coordinate-longitude: 5.750562329798769
   start-coordinate-latitude: 51.9149935185145
-  search-distance-in-metres: 50000
   municipality-id: "GM1734"
   date-last-check: null
   bounds:
@@ -3224,7 +2931,6 @@
 - name: "Hof van Twente"
   start-coordinate-longitude: 6.44082709130704
   start-coordinate-latitude: 52.256089836421886
-  search-distance-in-metres: 50000
   municipality-id: "GM1735"
   date-last-check: null
   bounds:
@@ -3235,7 +2941,6 @@
 - name: "Neder-Betuwe"
   start-coordinate-longitude: 5.609640462637235
   start-coordinate-latitude: 51.9231648926015
-  search-distance-in-metres: 50000
   municipality-id: "GM1740"
   date-last-check: null
   bounds:
@@ -3246,7 +2951,6 @@
 - name: "Rijssen-Holten"
   start-coordinate-longitude: 6.3922010710821455
   start-coordinate-latitude: 52.24832656064638
-  search-distance-in-metres: 50000
   municipality-id: "GM1742"
   date-last-check: null
   bounds:
@@ -3257,7 +2961,6 @@
 - name: "Geldrop-Mierlo"
   start-coordinate-longitude: 5.639307862915074
   start-coordinate-latitude: 51.422838834714284
-  search-distance-in-metres: 50000
   municipality-id: "GM1771"
   date-last-check: null
   bounds:
@@ -3268,7 +2971,6 @@
 - name: "Olst-Wijhe"
   start-coordinate-longitude: 6.220152110179359
   start-coordinate-latitude: 52.34469430149501
-  search-distance-in-metres: 50000
   municipality-id: "GM1773"
   date-last-check: null
   bounds:
@@ -3279,7 +2981,6 @@
 - name: "Dinkelland"
   start-coordinate-longitude: 6.8477189240560445
   start-coordinate-latitude: 52.27997667907815
-  search-distance-in-metres: 50000
   municipality-id: "GM1774"
   date-last-check: null
   bounds:
@@ -3290,7 +2991,6 @@
 - name: "Westland"
   start-coordinate-longitude: 4.240971114647476
   start-coordinate-latitude: 51.94301236161552
-  search-distance-in-metres: 50000
   municipality-id: "GM1783"
   date-last-check: null
   bounds:
@@ -3301,7 +3001,6 @@
 - name: "Midden-Delfland"
   start-coordinate-longitude: 4.267190482323786
   start-coordinate-latitude: 51.925329176593074
-  search-distance-in-metres: 50000
   municipality-id: "GM1842"
   date-last-check: null
   bounds:
@@ -3312,7 +3011,6 @@
 - name: "Berkelland"
   start-coordinate-longitude: 6.649674605788794
   start-coordinate-latitude: 52.12484424574364
-  search-distance-in-metres: 50000
   municipality-id: "GM1859"
   date-last-check: null
   bounds:
@@ -3323,7 +3021,6 @@
 - name: "Bronckhorst"
   start-coordinate-longitude: 6.4434301253649915
   start-coordinate-latitude: 51.971297343296705
-  search-distance-in-metres: 50000
   municipality-id: "GM1876"
   date-last-check: null
   bounds:
@@ -3334,7 +3031,6 @@
 - name: "Sittard-Geleen"
   start-coordinate-longitude: 5.824429543067522
   start-coordinate-latitude: 51.06455561113685
-  search-distance-in-metres: 50000
   municipality-id: "GM1883"
   date-last-check: null
   bounds:
@@ -3345,7 +3041,6 @@
 - name: "Kaag en Braassem"
   start-coordinate-longitude: 4.5617959783720785
   start-coordinate-latitude: 52.16634442966388
-  search-distance-in-metres: 50000
   municipality-id: "GM1884"
   date-last-check: null
   bounds:
@@ -3356,7 +3051,6 @@
 - name: "Dantumadiel"
   start-coordinate-longitude: 5.972084357149783
   start-coordinate-latitude: 53.30812273335637
-  search-distance-in-metres: 50000
   municipality-id: "GM1891"
   date-last-check: null
   bounds:
@@ -3367,7 +3061,6 @@
 - name: "Zuidplas"
   start-coordinate-longitude: 4.58455428282175
   start-coordinate-latitude: 51.96494200299748
-  search-distance-in-metres: 50000
   municipality-id: "GM1892"
   date-last-check: null
   bounds:
@@ -3378,7 +3071,6 @@
 - name: "Peel en Maas"
   start-coordinate-longitude: 5.97704094056045
   start-coordinate-latitude: 51.37750960749019
-  search-distance-in-metres: 50000
   municipality-id: "GM1894"
   date-last-check: null
   bounds:
@@ -3389,7 +3081,6 @@
 - name: "Oldambt"
   start-coordinate-longitude: 7.047246595474219
   start-coordinate-latitude: 53.15771183487216
-  search-distance-in-metres: 50000
   municipality-id: "GM1895"
   date-last-check: null
   bounds:
@@ -3400,7 +3091,6 @@
 - name: "Zwartewaterland"
   start-coordinate-longitude: 6.031373815102911
   start-coordinate-latitude: 52.61305590689176
-  search-distance-in-metres: 50000
   municipality-id: "GM1896"
   date-last-check: null
   bounds:
@@ -3411,7 +3101,6 @@
 - name: "Súdwest-Fryslân"
   start-coordinate-longitude: 5.496370265933683
   start-coordinate-latitude: 53.067133144047766
-  search-distance-in-metres: 50000
   municipality-id: "GM1900"
   date-last-check: null
   bounds:
@@ -3422,7 +3111,6 @@
 - name: "Bodegraven-Reeuwijk"
   start-coordinate-longitude: 4.730539358945939
   start-coordinate-latitude: 52.060375804242724
-  search-distance-in-metres: 50000
   municipality-id: "GM1901"
   date-last-check: null
   bounds:
@@ -3433,7 +3121,6 @@
 - name: "Eijsden-Margraten"
   start-coordinate-longitude: 5.722896301106632
   start-coordinate-latitude: 50.811436754807026
-  search-distance-in-metres: 50000
   municipality-id: "GM1903"
   date-last-check: null
   bounds:
@@ -3444,7 +3131,6 @@
 - name: "Stichtse Vecht"
   start-coordinate-longitude: 4.986786315445515
   start-coordinate-latitude: 52.18730263854455
-  search-distance-in-metres: 50000
   municipality-id: "GM1904"
   date-last-check: null
   bounds:
@@ -3455,7 +3141,6 @@
 - name: "Hollands Kroon"
   start-coordinate-longitude: 5.010036237020076
   start-coordinate-latitude: 52.809466071659415
-  search-distance-in-metres: 50000
   municipality-id: "GM1911"
   date-last-check: null
   bounds:
@@ -3466,7 +3151,6 @@
 - name: "Leidschendam-Voorburg"
   start-coordinate-longitude: 4.463615811456227
   start-coordinate-latitude: 52.113305598237574
-  search-distance-in-metres: 50000
   municipality-id: "GM1916"
   date-last-check: null
   bounds:
@@ -3477,7 +3161,6 @@
 - name: "Goeree-Overflakkee"
   start-coordinate-longitude: 4.398214086296065
   start-coordinate-latitude: 51.695778911371725
-  search-distance-in-metres: 50000
   municipality-id: "GM1924"
   date-last-check: null
   bounds:
@@ -3488,7 +3171,6 @@
 - name: "Pijnacker-Nootdorp"
   start-coordinate-longitude: 4.389915116146206
   start-coordinate-latitude: 51.99731342406591
-  search-distance-in-metres: 50000
   municipality-id: "GM1926"
   date-last-check: null
   bounds:
@@ -3499,7 +3181,6 @@
 - name: "Nissewaard"
   start-coordinate-longitude: 4.26220268226468
   start-coordinate-latitude: 51.85882947549687
-  search-distance-in-metres: 50000
   municipality-id: "GM1930"
   date-last-check: null
   bounds:
@@ -3510,7 +3191,6 @@
 - name: "Krimpenerwaard"
   start-coordinate-longitude: 4.630763048399661
   start-coordinate-latitude: 51.909157281584406
-  search-distance-in-metres: 50000
   municipality-id: "GM1931"
   date-last-check: null
   bounds:
@@ -3521,7 +3201,6 @@
 - name: "De Fryske Marren"
   start-coordinate-longitude: 5.794996451207999
   start-coordinate-latitude: 52.95051389391383
-  search-distance-in-metres: 50000
   municipality-id: "GM1940"
   date-last-check: null
   bounds:
@@ -3532,7 +3211,6 @@
 - name: "Gooise Meren"
   start-coordinate-longitude: 5.175158502087314
   start-coordinate-latitude: 52.29721968987163
-  search-distance-in-metres: 50000
   municipality-id: "GM1942"
   date-last-check: null
   bounds:
@@ -3543,7 +3221,6 @@
 - name: "Berg en Dal"
   start-coordinate-longitude: 5.950265348136925
   start-coordinate-latitude: 51.819987487089286
-  search-distance-in-metres: 50000
   municipality-id: "GM1945"
   date-last-check: null
   bounds:
@@ -3554,7 +3231,6 @@
 - name: "Meierijstad"
   start-coordinate-longitude: 5.511221073401528
   start-coordinate-latitude: 51.59754273105812
-  search-distance-in-metres: 50000
   municipality-id: "GM1948"
   date-last-check: null
   bounds:
@@ -3565,7 +3241,6 @@
 - name: "Waadhoeke"
   start-coordinate-longitude: 5.6432273655200325
   start-coordinate-latitude: 53.200751590108716
-  search-distance-in-metres: 50000
   municipality-id: "GM1949"
   date-last-check: null
   bounds:
@@ -3576,7 +3251,6 @@
 - name: "Westerwolde"
   start-coordinate-longitude: 7.076842703558984
   start-coordinate-latitude: 53.097803333575186
-  search-distance-in-metres: 50000
   municipality-id: "GM1950"
   date-last-check: null
   bounds:
@@ -3587,7 +3261,6 @@
 - name: "Midden-Groningen"
   start-coordinate-longitude: 6.706904625450661
   start-coordinate-latitude: 53.19155229826768
-  search-distance-in-metres: 50000
   municipality-id: "GM1952"
   date-last-check: null
   bounds:
@@ -3598,7 +3271,6 @@
 - name: "Beekdaelen"
   start-coordinate-longitude: 5.885853299687664
   start-coordinate-latitude: 50.927839622564015
-  search-distance-in-metres: 50000
   municipality-id: "GM1954"
   date-last-check: null
   bounds:
@@ -3609,7 +3281,6 @@
 - name: "Montferland"
   start-coordinate-longitude: 6.192204288905855
   start-coordinate-latitude: 51.941805402591775
-  search-distance-in-metres: 50000
   municipality-id: "GM1955"
   date-last-check: null
   bounds:
@@ -3620,7 +3291,6 @@
 - name: "Altena"
   start-coordinate-longitude: 4.893164975709056
   start-coordinate-latitude: 51.72469953738115
-  search-distance-in-metres: 50000
   municipality-id: "GM1959"
   date-last-check: null
   bounds:
@@ -3631,7 +3301,6 @@
 - name: "West Betuwe"
   start-coordinate-longitude: 5.30130295602121
   start-coordinate-latitude: 51.85941897516845
-  search-distance-in-metres: 50000
   municipality-id: "GM1960"
   date-last-check: null
   bounds:
@@ -3642,7 +3311,6 @@
 - name: "Vijfheerenlanden"
   start-coordinate-longitude: 5.140954120273332
   start-coordinate-latitude: 51.94558804538421
-  search-distance-in-metres: 50000
   municipality-id: "GM1961"
   date-last-check: null
   bounds:
@@ -3653,7 +3321,6 @@
 - name: "Hoeksche Waard"
   start-coordinate-longitude: 4.419863570734144
   start-coordinate-latitude: 51.76306602016831
-  search-distance-in-metres: 50000
   municipality-id: "GM1963"
   date-last-check: null
   bounds:
@@ -3664,7 +3331,6 @@
 - name: "Het Hogeland"
   start-coordinate-longitude: 6.805975512085905
   start-coordinate-latitude: 53.434500287876986
-  search-distance-in-metres: 50000
   municipality-id: "GM1966"
   date-last-check: null
   bounds:
@@ -3675,7 +3341,6 @@
 - name: "Westerkwartier"
   start-coordinate-longitude: 6.343338676644667
   start-coordinate-latitude: 53.173164946341586
-  search-distance-in-metres: 50000
   municipality-id: "GM1969"
   date-last-check: null
   bounds:
@@ -3686,7 +3351,6 @@
 - name: "Noardeast-Fryslân"
   start-coordinate-longitude: 6.092075948710135
   start-coordinate-latitude: 53.3705617990184
-  search-distance-in-metres: 50000
   municipality-id: "GM1970"
   date-last-check: null
   bounds:
@@ -3697,7 +3361,6 @@
 - name: "Molenlanden"
   start-coordinate-longitude: 4.9656125833572835
   start-coordinate-latitude: 51.874497335843735
-  search-distance-in-metres: 50000
   municipality-id: "GM1978"
   date-last-check: null
   bounds:
@@ -3708,7 +3371,6 @@
 - name: "Eemsdelta"
   start-coordinate-longitude: 6.881969642294306
   start-coordinate-latitude: 53.31677337871578
-  search-distance-in-metres: 50000
   municipality-id: "GM1979"
   date-last-check: null
   bounds:
@@ -3719,7 +3381,6 @@
 - name: "Dijk en Waard"
   start-coordinate-longitude: 4.792043394989626
   start-coordinate-latitude: 52.642882040725404
-  search-distance-in-metres: 50000
   municipality-id: "GM1980"
   date-last-check: null
   bounds:
@@ -3730,7 +3391,6 @@
 - name: "Land van Cuijk"
   start-coordinate-longitude: 5.891103775491728
   start-coordinate-latitude: 51.68635316993805
-  search-distance-in-metres: 50000
   municipality-id: "GM1982"
   date-last-check: null
   bounds:
@@ -3741,7 +3401,6 @@
 - name: "Maashorst"
   start-coordinate-longitude: 5.5992441351650815
   start-coordinate-latitude: 51.674042137432366
-  search-distance-in-metres: 50000
   municipality-id: "GM1991"
   date-last-check: null
   bounds:
@@ -3752,7 +3411,6 @@
 - name: "Voorne aan Zee"
   start-coordinate-longitude: 4.183111346454005
   start-coordinate-latitude: 51.871638521819605
-  search-distance-in-metres: 50000
   municipality-id: "GM1992"
   date-last-check: null
   bounds:

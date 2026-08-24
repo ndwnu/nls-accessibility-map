@@ -30,7 +30,6 @@ public record AccessibilityRequest(
         Integer municipalityId,
         boolean addMissingRoadsSectionsFromNwb,
         boolean effectivelyAccessible,
-        @NotNull Double maxSearchDistanceInMeters,
         @NotNull Double startLocationLatitude,
         @NotNull Double startLocationLongitude,
         Double endLocationLatitude,

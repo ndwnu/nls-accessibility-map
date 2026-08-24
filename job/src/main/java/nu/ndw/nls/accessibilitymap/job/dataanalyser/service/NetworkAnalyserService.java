@@ -57,7 +57,6 @@ public class NetworkAnalyserService extends IssueReporterService {
                 networkData,
                 AccessibilityRequest.builder()
                         .timestamp(clockService.now())
-                        .maxSearchDistanceInMeters(analyseNetworkConfiguration.maxSearchDistanceInMeters())
                         .startLocationLatitude(analyseNetworkConfiguration.startLocationLatitude())
                         .startLocationLongitude(analyseNetworkConfiguration.startLocationLongitude())
                         .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)

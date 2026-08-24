@@ -37,11 +37,6 @@ public class AnalyseBaseNetworkCommand implements Callable<Integer> {
             required = true)
     private double startLocationLongitude;
 
-    @Option(names = {"--search-radius-in-meters"},
-            description = "Search radius in meters",
-            required = true)
-    private double searchRadiusInMeters;
-
     @Override
     public Integer call() {
 
@@ -54,7 +49,6 @@ public class AnalyseBaseNetworkCommand implements Callable<Integer> {
             AnalyseNetworkConfiguration analyseNetworkConfiguration = AnalyseNetworkConfiguration.builder()
                     .startLocationLatitude(startLocationLatitude)
                     .startLocationLongitude(startLocationLongitude)
-                    .maxSearchDistanceInMeters(searchRadiusInMeters)
                     .reportIssues(reportIssues)
                     .build();
 

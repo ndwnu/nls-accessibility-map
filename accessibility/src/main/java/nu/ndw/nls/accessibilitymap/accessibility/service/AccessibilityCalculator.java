@@ -10,6 +10,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.Accessib
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.RestrictionsIsochroneLabel;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit.ExploreLimitCarAccessible;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit.ExploreLimitRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit.ExploreLimitSearchArea;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
@@ -58,11 +59,10 @@ public class AccessibilityCalculator {
         List<IsochroneLabel> isochroneLabels = isochroneService.search(
                 accessibilityNetwork,
                 IsochroneArguments.builder()
-                        .exploreLimit(getExploreLimits(accessibilityNetwork, applyRestrictions))
+                        .exploreLimit(getExploreLimits(accessibilityNetwork, accessibilityRequest, applyRestrictions))
                         .weighting(accessibilityNetwork.getWeighting())
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
-                        .searchDistanceInMetres(accessibilityRequest.maxSearchDistanceInMeters())
                         .reverseFlow(reverseFlow)
                         .build());
         log.debug("Found {} isochrone labels", isochroneLabels.size());
@@ -84,18 +84,22 @@ public class AccessibilityCalculator {
 
     private static ExploreLimit<RestrictionsIsochroneLabel> getExploreLimits(
             AccessibilityNetwork accessibilityNetwork,
+            AccessibilityRequest accessibilityRequest,
             boolean applyRestrictions
     ) {
         if (applyRestrictions) {
             return new ExploreLimitComposite<>(
+                    new ExploreLimitSearchArea(accessibilityRequest.searchArea(), accessibilityNetwork.getQueryGraph()),
                     new ExploreLimitCarAccessible(
                             accessibilityNetwork.getQueryGraph(),
                             accessibilityNetwork.getNetworkData().getNwbNetworkData()),
                     new ExploreLimitRestriction());
         } else {
-            return new ExploreLimitCarAccessible(
-                    accessibilityNetwork.getQueryGraph(),
-                    accessibilityNetwork.getNetworkData().getNwbNetworkData());
+            return new ExploreLimitComposite<>(
+                    new ExploreLimitSearchArea(accessibilityRequest.searchArea(), accessibilityNetwork.getQueryGraph()),
+                    new ExploreLimitCarAccessible(
+                            accessibilityNetwork.getQueryGraph(),
+                            accessibilityNetwork.getNetworkData().getNwbNetworkData()));
         }
     }
 }

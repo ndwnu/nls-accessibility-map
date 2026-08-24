@@ -26,6 +26,8 @@ class MunicipalityFeatureMapperV2Test {
 
     private static final LocalDate DATE_LAST_CHECK = LocalDate.of(2024, 7, 11);
 
+    public static final int DEFAULT_SEARCH_DISTANCE = 50000;
+
     private MunicipalityFeatureMapperV2 municipalityFeatureMapper;
 
     private Municipality municipality;
@@ -36,7 +38,6 @@ class MunicipalityFeatureMapperV2Test {
 
         municipality = new Municipality(
                 52.0d, 5d,
-                50000,
                 MUNICIPALITY_ID,
                 "GM0307",
                 new MunicipalityBoundingBox(1.0, 1.1, 2.1, 2.2),
@@ -76,7 +77,7 @@ class MunicipalityFeatureMapperV2Test {
 
         MunicipalityPropertiesJson propertiesJson = new MunicipalityPropertiesJson()
                 .name(municipality.name())
-                .searchDistance(municipality.searchDistanceInMetres())
+                .searchDistance(DEFAULT_SEARCH_DISTANCE)
                 .bounds(List.of(boundsStart, boundsEnd))
                 .dateLastCheck(dateLastCheck);
 

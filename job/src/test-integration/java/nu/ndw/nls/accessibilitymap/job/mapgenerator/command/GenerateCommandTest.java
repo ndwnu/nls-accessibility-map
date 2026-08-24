@@ -72,7 +72,6 @@ class GenerateCommandTest {
                 .execute(
                         "--start-location-latitude=1d",
                         "--start-location-longitude=2d",
-                        "--search-radius-in-meters=3d",
                         "--export-name=%s".formatted(trafficSignType.name()),
                         "--traffic-sign=%s".formatted(trafficSignType.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
@@ -106,7 +105,6 @@ class GenerateCommandTest {
                 .execute(
                         "--start-location-latitude=1d",
                         "--start-location-longitude=2d",
-                        "--search-radius-in-meters=3d",
                         "--export-name=%s".formatted(trafficSignType.name()),
                         "--traffic-sign=%s".formatted(trafficSignType.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
@@ -139,7 +137,6 @@ class GenerateCommandTest {
                 .execute(
                         "--start-location-latitude=1d",
                         "--start-location-longitude=2d",
-                        "--search-radius-in-meters=3d",
                         "--export-name=%s".formatted(trafficSignType.name()),
                         "--traffic-sign=%s".formatted(trafficSignType.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
@@ -169,7 +166,6 @@ class GenerateCommandTest {
                 .execute(
                         "--start-location-latitude=1d",
                         "--start-location-longitude=2d",
-                        "--search-radius-in-meters=3d",
                         "--export-name=%s".formatted(TrafficSignType.C6.name()),
                         "--traffic-sign=%s".formatted(TrafficSignType.C6.name()),
                         "--export-type=%s".formatted(ExportType.LINE_STRING_GEO_JSON.name()),
@@ -191,7 +187,6 @@ class GenerateCommandTest {
                 .execute(
                         "--start-location-latitude=1d",
                         "--start-location-longitude=2d",
-                        "--search-radius-in-meters=3d",
                         "--export-name=%s".formatted(TrafficSignType.C6.name()),
                         "--traffic-sign=%s".formatted(TrafficSignType.C6.name()),
                         "--traffic-sign=%s".formatted(TrafficSignType.C7.name()),
@@ -223,7 +218,6 @@ class GenerateCommandTest {
                         .trafficSignTypes(trafficSignTypes)
                         .startLocationLatitude(1d)
                         .startLocationLongitude(2d)
-                        .maxSearchDistanceInMeters(3d)
                         .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                         .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                         .trafficSignSupplementarySignTypes(includeTimeWindowedSigns ? SupplementarySignType.getWindowTimeTypes() : null)

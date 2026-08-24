@@ -73,11 +73,6 @@ public class GenerateCommand implements Callable<Integer> {
             required = true)
     private double startLocationLongitude;
 
-    @Option(names = {"--search-radius-in-meters"},
-            description = "Search radius in meters",
-            required = true)
-    private double searchRadiusInMeters;
-
     @Override
     public Integer call() {
 
@@ -95,7 +90,6 @@ public class GenerateCommand implements Callable<Integer> {
                             .trafficSignTypes(trafficSignTypes)
                             .startLocationLatitude(startLocationLatitude)
                             .startLocationLongitude(startLocationLongitude)
-                            .maxSearchDistanceInMeters(searchRadiusInMeters)
                             .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                             .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                             .trafficSignSupplementarySignTypes(

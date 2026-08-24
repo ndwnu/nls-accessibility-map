@@ -20,6 +20,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictio
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.RestrictionsIsochroneLabel;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit.ExploreLimitCarAccessible;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit.ExploreLimitRestriction;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit.ExploreLimitSearchArea;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.service.IsochroneService;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
@@ -66,6 +67,9 @@ class AccessibilityCalculatorTest {
     private BBox requestArea;
 
     @Mock
+    private BBox searchArea;
+
+    @Mock
     private Weighting weighting;
 
     @RegisterExtension
@@ -87,8 +91,8 @@ class AccessibilityCalculatorTest {
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .municipalityId(1)
-                .maxSearchDistanceInMeters(2D)
                 .requestArea(requestArea)
+                .searchArea(searchArea)
                 .build();
 
         accessibilityCalculator = new AccessibilityCalculator(isochroneService, roadSectionMapper);
@@ -107,10 +111,11 @@ class AccessibilityCalculatorTest {
                 eq(accessibilityNetwork),
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
                         .weighting(weighting)
-                        .exploreLimit(new ExploreLimitCarAccessible(queryGraph, nwbNetworkData))
+                        .exploreLimit(new ExploreLimitComposite<>(
+                                new ExploreLimitSearchArea(searchArea, queryGraph),
+                                new ExploreLimitCarAccessible(queryGraph, nwbNetworkData)))
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
-                        .searchDistanceInMetres(2.0)
                         .build()))))
                 .thenReturn(List.of(isochroneLabel));
 
@@ -125,11 +130,11 @@ class AccessibilityCalculatorTest {
 
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Calculating accessibility without restrictions for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=null, municipalityId=1, addMissingRoadsSectionsFromNwb=false, effectivelyAccessible=false, maxSearchDistanceInMeters=2.0, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, visitingWindow=null, fuelTypes=null, emissionClasses=null, transportTypes=null, categories=null, trafficSignTypes=null, trafficSignSupplementarySignTypes=null, excludeTrafficSignSupplementarySignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
+                "Calculating accessibility without restrictions for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=searchArea, municipalityId=1, addMissingRoadsSectionsFromNwb=false, effectivelyAccessible=false, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, visitingWindow=null, fuelTypes=null, emissionClasses=null, transportTypes=null, categories=null, trafficSignTypes=null, trafficSignSupplementarySignTypes=null, excludeTrafficSignSupplementarySignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
         loggerExtension.containsLog(Level.DEBUG, "Found 1 isochrone labels");
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Calculated accessibility without restrictions, found 1 road sections for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=null, municipalityId=1, addMissingRoadsSectionsFromNwb=false, effectivelyAccessible=false, maxSearchDistanceInMeters=2.0, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, visitingWindow=null, fuelTypes=null, emissionClasses=null, transportTypes=null, categories=null, trafficSignTypes=null, trafficSignSupplementarySignTypes=null, excludeTrafficSignSupplementarySignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
+                "Calculated accessibility without restrictions, found 1 road sections for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=searchArea, municipalityId=1, addMissingRoadsSectionsFromNwb=false, effectivelyAccessible=false, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, visitingWindow=null, fuelTypes=null, emissionClasses=null, transportTypes=null, categories=null, trafficSignTypes=null, trafficSignSupplementarySignTypes=null, excludeTrafficSignSupplementarySignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
     }
 
     @Test
@@ -146,11 +151,11 @@ class AccessibilityCalculatorTest {
                 argThat(new IsochroneArgumentMatcher(IsochroneArguments.builder()
                         .weighting(weighting)
                         .exploreLimit(new ExploreLimitComposite<>(
+                                new ExploreLimitSearchArea(searchArea, queryGraph),
                                 new ExploreLimitCarAccessible(queryGraph, nwbNetworkData),
                                 new ExploreLimitRestriction()))
                         .municipalityId(accessibilityRequest.municipalityId())
                         .boundingBox(accessibilityRequest.requestArea())
-                        .searchDistanceInMetres(2.0)
                         .build()))))
                 .thenReturn(List.of(isochroneLabel));
 
@@ -164,11 +169,11 @@ class AccessibilityCalculatorTest {
         assertThat(baseAccessibility).containsExactly(roadSection);
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Calculating accessibility with restrictions for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=null, municipalityId=1, addMissingRoadsSectionsFromNwb=false, effectivelyAccessible=false, maxSearchDistanceInMeters=2.0, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, visitingWindow=null, fuelTypes=null, emissionClasses=null, transportTypes=null, categories=null, trafficSignTypes=null, trafficSignSupplementarySignTypes=null, excludeTrafficSignSupplementarySignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
+                "Calculating accessibility with restrictions for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=searchArea, municipalityId=1, addMissingRoadsSectionsFromNwb=false, effectivelyAccessible=false, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, visitingWindow=null, fuelTypes=null, emissionClasses=null, transportTypes=null, categories=null, trafficSignTypes=null, trafficSignSupplementarySignTypes=null, excludeTrafficSignSupplementarySignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
         loggerExtension.containsLog(Level.DEBUG, "Found 1 isochrone labels");
         loggerExtension.containsLog(
                 Level.DEBUG,
-                "Calculated accessibility with restrictions, found 1 road sections for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=null, municipalityId=1, addMissingRoadsSectionsFromNwb=false, effectivelyAccessible=false, maxSearchDistanceInMeters=2.0, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, visitingWindow=null, fuelTypes=null, emissionClasses=null, transportTypes=null, categories=null, trafficSignTypes=null, trafficSignSupplementarySignTypes=null, excludeTrafficSignSupplementarySignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
+                "Calculated accessibility with restrictions, found 1 road sections for AccessibilityRequest[timestamp=null, requestArea=requestArea, searchArea=searchArea, municipalityId=1, addMissingRoadsSectionsFromNwb=false, effectivelyAccessible=false, startLocationLatitude=null, startLocationLongitude=null, endLocationLatitude=null, endLocationLongitude=null, vehicleLengthInCm=null, vehicleHeightInCm=null, vehicleWidthInCm=null, vehicleWeightInKg=null, vehicleAxleLoadInKg=null, visitingWindow=null, fuelTypes=null, emissionClasses=null, transportTypes=null, categories=null, trafficSignTypes=null, trafficSignSupplementarySignTypes=null, excludeTrafficSignSupplementarySignTypes=null, excludeTrafficSignZoneCodeTypes=null, excludeRestrictionsWithEmissionZoneIds=null, excludeRestrictionsWithEmissionZoneTypes=null, dynamicRestrictions=null]");
     }
 
     private record IsochroneArgumentMatcher(IsochroneArguments expected) implements
@@ -181,7 +186,6 @@ class AccessibilityCalculatorTest {
                 return false;
             }
             return Objects.equals(expected.municipalityId(), actual.municipalityId()) &&
-                   expected.searchDistanceInMetres() == actual.searchDistanceInMetres() &&
                    expected.boundingBox() == actual.boundingBox() &&
                    exploreLimitsAreEqual(expected.exploreLimit(), actual.exploreLimit());
         }
@@ -202,6 +206,12 @@ class AccessibilityCalculatorTest {
                 && actualExploreLimit instanceof ExploreLimitCarAccessible actualCarAccessible) {
                 return expectedCarAccessible.getQueryGraph() == actualCarAccessible.getQueryGraph()
                         && expectedCarAccessible.getNwbNetworkData() == actualCarAccessible.getNwbNetworkData();
+            }
+
+            if (expectedExploreLimit instanceof ExploreLimitSearchArea expectedSearchArea
+                && actualExploreLimit instanceof ExploreLimitSearchArea actualSearchArea) {
+                return expectedSearchArea.getQueryGraph() == actualSearchArea.getQueryGraph()
+                        && expectedSearchArea.getSearchArea() == actualSearchArea.getSearchArea();
             }
 
             if (expectedExploreLimit instanceof ExploreLimitRestriction

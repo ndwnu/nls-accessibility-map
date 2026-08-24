@@ -13,10 +13,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.restriction.Restrictions;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.NetworkConstants;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.RestrictionsIsochroneLabel;
-import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit.ExploreLimitCarAccessible;
+import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.limit.ExploreLimitSearchArea;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.AccessibilityLink;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.mapper.AccessibilityLinkCarMapper;
@@ -28,6 +29,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwor
 import nu.ndw.nls.data.api.nwb.helpers.types.CarriagewayTypeCode;
 import nu.ndw.nls.routingmapmatcher.exception.GraphHopperNotImportedException;
 import nu.ndw.nls.routingmapmatcher.isochrone.v2.dto.IsochroneLabel;
+import nu.ndw.nls.routingmapmatcher.isochrone.v2.exploration.ExploreLimit;
+import nu.ndw.nls.routingmapmatcher.isochrone.v2.exploration.NoExploreLimit;
 import nu.ndw.nls.routingmapmatcher.network.GraphHopperNetworkService;
 import nu.ndw.nls.routingmapmatcher.network.NetworkGraphHopper;
 import nu.ndw.nls.routingmapmatcher.network.model.DirectionalDto;
@@ -61,8 +64,6 @@ class IsochroneServiceIT {
     private static final int MUNICIPALITY_ID = 100;
 
     private static final int NON_MATCHING_MUNICIPALITY_ID = 999;
-
-    private static final double SEARCH_DISTANCE_IN_METRES = 100_000;
 
     private static final String NETWORK_FOLDER_NAME = "latest";
 
@@ -108,25 +109,43 @@ class IsochroneServiceIT {
 
     @Test
     void search() {
-        IsochroneArguments isochroneArguments = buildIsochroneArguments(null, null);
+        IsochroneArguments isochroneArguments = buildIsochroneArguments(null, null, null);
 
         List<IsochroneLabel> result = isochroneService.search(accessibilityNetwork, isochroneArguments);
 
         assertThat(result)
                 .hasSize(4)
                 .satisfiesExactly(
-                        label -> assertRestrictionsIsochroneLabel(label, 2, 1, 2, 802987L, 11152.592, 802.986624),
-                        label -> assertRestrictionsIsochroneLabel(label, 0, 0, 0, 1605963L, 22305.032, 1605.9623040000001),
-                        label -> assertRestrictionsIsochroneLabel(label, 1, 1, 3, 1605974L, 22305.184, 1605.973248),
-                        label -> assertRestrictionsIsochroneLabel(label, 2, 0, 1, 2408939L, 33457.472, 2408.937984)
+                        label -> assertRestrictionsIsochroneLabel(label, 2, 1, 2, 802987L, 11152.592, 802.986624, false),
+                        label -> assertRestrictionsIsochroneLabel(label, 0, 0, 0, 1605963L, 22305.032, 1605.9623040000001, false),
+                        label -> assertRestrictionsIsochroneLabel(label, 1, 1, 3, 1605974L, 22305.184, 1605.973248, false),
+                        label -> assertRestrictionsIsochroneLabel(label, 2, 0, 1, 2408939L, 33457.472, 2408.937984, false)
                 )
                 .noneMatch(IsochroneLabel::isRoot)
                 .allMatch(IsochroneLabel::isDeleted);
     }
 
     @Test
+    void search_withSearchAreaExploreLimit_stopsExploringOutsideSearchArea() {
+        IsochroneArguments isochroneArguments = buildIsochroneArguments(
+                new ExploreLimitSearchArea(new BBox(4.5, 4.515, 52.0, 52.15), accessibilityNetwork.getQueryGraph()),
+                null,
+                null);
+
+        List<IsochroneLabel> result = isochroneService.search(accessibilityNetwork, isochroneArguments);
+
+        assertThat(result)
+                .hasSize(2)
+                .satisfiesExactly(
+                        label -> assertRestrictionsIsochroneLabel(label, 2, 1, 2, 802987L, 11152.592, 802.986624, true),
+                        label -> assertRestrictionsIsochroneLabel(label, 1, 1, 3, 1605974L, 22305.184, 1605.973248, false)
+                )
+                .noneMatch(IsochroneLabel::isRoot);
+    }
+
+    @Test
     void search_withNonMatchingMunicipalityId_returnsEmpty() {
-        IsochroneArguments isochroneArguments = buildIsochroneArguments(NON_MATCHING_MUNICIPALITY_ID, null);
+        IsochroneArguments isochroneArguments = buildIsochroneArguments(null, NON_MATCHING_MUNICIPALITY_ID, null);
 
         List<IsochroneLabel> result = isochroneService.search(accessibilityNetwork, isochroneArguments);
 
@@ -135,21 +154,20 @@ class IsochroneServiceIT {
 
     @Test
     void search_withNonIntersectingBoundingBox_returnsEmpty() {
-        IsochroneArguments isochroneArguments = buildIsochroneArguments(null, new BBox(0.0, 1.0, 0.0, 1.0));
+        IsochroneArguments isochroneArguments = buildIsochroneArguments(null, null, new BBox(0.0, 1.0, 0.0, 1.0));
 
         List<IsochroneLabel> result = isochroneService.search(accessibilityNetwork, isochroneArguments);
 
         assertThat(result).isEmpty();
     }
 
-    private IsochroneArguments buildIsochroneArguments(Integer municipalityId, BBox boundingBox) {
+    private IsochroneArguments buildIsochroneArguments(
+            ExploreLimit<RestrictionsIsochroneLabel> exploreLimit,
+            Integer municipalityId,
+            BBox boundingBox) {
         return IsochroneArguments.builder()
-                .exploreLimit(new ExploreLimitCarAccessible(
-                        accessibilityNetwork.getQueryGraph(),
-                        accessibilityNetwork.getNetworkData().getNwbNetworkData()
-                ))
+                .exploreLimit(Objects.isNull(exploreLimit) ? (new NoExploreLimit<>()) : exploreLimit)
                 .weighting(accessibilityNetwork.getWeighting())
-                .searchDistanceInMetres(SEARCH_DISTANCE_IN_METRES)
                 .municipalityId(municipalityId)
                 .boundingBox(boundingBox)
                 .reverseFlow(false)
@@ -216,6 +234,7 @@ class IsochroneServiceIT {
         return new NetworkData(networkGraphHopper, nwbData, nwbDataUpdates);
     }
 
+    @SuppressWarnings("java:S107")
     private static void assertRestrictionsIsochroneLabel(
             IsochroneLabel label,
             int node,
@@ -223,7 +242,8 @@ class IsochroneServiceIT {
             int edgeKey,
             long time,
             double distance,
-            double weight
+            double weight,
+            boolean leafNode
     ) {
         assertThat(label).isInstanceOf(RestrictionsIsochroneLabel.class);
         assertThat(label.getNode()).isEqualTo(node);
@@ -232,7 +252,7 @@ class IsochroneServiceIT {
         assertThat(label.getTimeInMilliSeconds()).isEqualTo(time);
         assertThat(label.getDistanceInMeters()).isCloseTo(distance, Offset.offset(1e-6));
         assertThat(label.getWeight()).isCloseTo(weight, Offset.offset(1e-6));
-        assertThat(label.isLeafNode()).isFalse();
+        assertThat(label.isLeafNode()).isEqualTo(leafNode);
         assertThat(label.isDeleted()).isTrue();
         assertThat(((RestrictionsIsochroneLabel) label).getRestrictions()).isEmpty();
     }
@@ -243,10 +263,11 @@ class IsochroneServiceIT {
 
         QueryGraph queryGraph = QueryGraph.create(networkGraphHopper.getBaseGraph(), List.of(fromSnap));
 
-        Weighting weighting = queryGraph.wrapWeighting(
-                networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()));
-        Weighting weightingOnlyCarAccessible = queryGraph.wrapWeighting(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE,
+        Weighting weighting = queryGraph.wrapWeighting(networkGraphHopper.createWeighting(NetworkConstants.CAR_PROFILE, new PMap()));
+        Weighting weightingOnlyCarAccessible = queryGraph.wrapWeighting(networkGraphHopper.createWeighting(
+                NetworkConstants.CAR_PROFILE,
                 new PMap()));
+
         return new AccessibilityNetwork(
                 networkData,
                 queryGraph,

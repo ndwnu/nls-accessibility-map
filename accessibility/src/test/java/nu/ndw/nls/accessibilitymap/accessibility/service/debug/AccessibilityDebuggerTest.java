@@ -1,13 +1,11 @@
 package nu.ndw.nls.accessibilitymap.accessibility.service.debug;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-import static nu.ndw.nls.accessibilitymap.accessibility.service.debug.AccessibilityDebuggerTest.AccessibilityParts.COMBINED_ACCESSIBILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.graphhopper.routing.querygraph.QueryGraph;
@@ -23,7 +21,6 @@ import com.graphhopper.util.shapes.BBox;
 import com.graphhopper.util.shapes.GHPoint3D;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -33,7 +30,6 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import net.javacrumbs.jsonunit.core.Option;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.Direction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.DirectionalSegment;
@@ -70,7 +66,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -712,7 +707,6 @@ class AccessibilityDebuggerTest {
                 .endLocationLongitude(4D)
                 .requestArea(BBox.fromPoints(10, 11, 12, 13))
                 .searchArea(BBox.fromPoints(20, 21, 22, 23))
-                .maxSearchDistanceInMeters(123D)
                 .build();
 
         when(jtsPolygonJsonMapper.map(any(Polygon.class))).thenAnswer(invocation -> {
@@ -800,17 +794,7 @@ class AccessibilityDebuggerTest {
                               "name" : "destination"
                             },
                             "type" : "Feature"
-                          }, {
-                            "id" : 5,
-                            "geometry" : {
-                              "type" : "Polygon",
-                              "coordinates" : [ [ [ 1.0, 1.0 ], [ 1.0, 2.0 ], [ 2.0, 2.0 ], [ 2.0, 1.0 ], [ 1.0, 1.0 ] ] ]
-                            },
-                            "properties" : {
-                              "name" : "searchRadius"
-                            },
-                            "type" : "Feature"
-                          } ],
+                          }],
                           "type" : "FeatureCollection"
                         }
                         """);

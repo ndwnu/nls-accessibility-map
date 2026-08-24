@@ -1,0 +1,29 @@
+{
+  "from": {
+    "latitude": 10,
+    "longitude": 10
+  },
+  "destination": {
+    "latitude": 1,
+    "longitude": 1
+  },
+  "area": {
+    "type": "boundingBox",
+    "minLongitude": 0,
+    "maxLongitude": 11,
+    "minLatitude": 0,
+    "maxLatitude": 11
+  },
+  "vehicle": {
+    "type": "truck",
+    "width": 2.0,
+    "emissionClass": "euro_3",
+    "fuelTypes": [
+      "diesel"
+    ]
+  },
+  "visitingWindow": {
+    "start": "2026-08-24T07:00:00+02:00",
+    "end": "2026-08-24T08:00:00+02:00"
+  }
+}

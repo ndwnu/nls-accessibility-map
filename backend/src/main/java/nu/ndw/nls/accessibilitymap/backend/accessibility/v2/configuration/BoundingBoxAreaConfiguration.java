@@ -17,5 +17,9 @@ public class BoundingBoxAreaConfiguration {
 
     private static final double DEFAULT_SEARCH_MULTIPLIER = 1.5;
 
+    private static final double DEFAULT_SEARCH_DISTANCE_GAP_FROM_REQUESTED_SEARCH_AREA_IN_METERS = 10_000.0;
+
     private double searchDistanceMultiplier = DEFAULT_SEARCH_MULTIPLIER;
+
+    private double searchDistanceGapFromRequestedSearchAreaInMeters = DEFAULT_SEARCH_DISTANCE_GAP_FROM_REQUESTED_SEARCH_AREA_IN_METERS;
 }

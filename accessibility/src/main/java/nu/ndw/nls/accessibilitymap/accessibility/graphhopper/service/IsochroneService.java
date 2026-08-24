@@ -13,8 +13,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.algorithm.Restricti
 import nu.ndw.nls.accessibilitymap.accessibility.graphhopper.dto.IsochroneArguments;
 import nu.ndw.nls.accessibilitymap.accessibility.service.dto.AccessibilityNetwork;
 import nu.ndw.nls.routingmapmatcher.isochrone.v2.dto.IsochroneLabel;
-import nu.ndw.nls.routingmapmatcher.isochrone.v2.exploration.ExploreDistanceLimit;
-import nu.ndw.nls.routingmapmatcher.isochrone.v2.exploration.ExploreLimitComposite;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -34,10 +32,7 @@ public class IsochroneService {
                 TraversalMode.EDGE_BASED,
                 isochroneArguments.reverseFlow(),
                 isochroneArguments.weighting(),
-                new ExploreLimitComposite<>(List.of(
-                        new ExploreDistanceLimit<>(isochroneArguments.searchDistanceInMetres(), true),
-                        isochroneArguments.exploreLimit()
-                )),
+                isochroneArguments.exploreLimit(),
                 Comparator.comparingDouble(IsochroneLabel::getTimeInMilliSeconds),
                 accessibilityNetwork.getRestrictionsByEdgeKey(),
                 new EdgeIteratorStateReverseExtractor()

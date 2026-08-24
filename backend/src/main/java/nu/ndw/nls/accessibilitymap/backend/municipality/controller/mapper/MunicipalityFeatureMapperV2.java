@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MunicipalityFeatureMapperV2 {
 
+    public static final int DEFAULT_SEARCH_DISTANCE = 50000;
+
     private final RoundDoubleMapper doubleMapper;
 
     public MunicipalityFeatureCollectionJson mapToMunicipalitiesToGeoJson(Collection<Municipality> municipalities) {
@@ -38,7 +40,7 @@ public class MunicipalityFeatureMapperV2 {
                 .geometry(mapStartPoint(municipality))
                 .properties(new MunicipalityPropertiesJson()
                         .name(municipality.name())
-                        .searchDistance(municipality.searchDistanceInMetres())
+                        .searchDistance(DEFAULT_SEARCH_DISTANCE)
                         .bounds(bounds)
                         .dateLastCheck(municipality.dateLastCheck()));
     }

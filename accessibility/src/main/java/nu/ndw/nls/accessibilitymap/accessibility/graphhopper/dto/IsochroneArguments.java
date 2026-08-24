@@ -10,7 +10,6 @@ import nu.ndw.nls.routingmapmatcher.isochrone.v2.exploration.ExploreLimit;
 public record IsochroneArguments(
         ExploreLimit<RestrictionsIsochroneLabel> exploreLimit,
         Weighting weighting,
-        double searchDistanceInMetres,
         Integer municipalityId,
         BBox boundingBox,
         boolean reverseFlow) {

@@ -179,7 +179,6 @@ class AccessibilityServiceTest {
                 .endLocationLatitude(3.0)
                 .endLocationLongitude(4.0)
                 .municipalityId(5)
-                .maxSearchDistanceInMeters(6.0)
                 .addMissingRoadsSectionsFromNwb(true)
                 .build();
     }

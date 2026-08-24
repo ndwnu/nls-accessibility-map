@@ -1,0 +1,122 @@
+{
+  "features": [
+    {
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          1.0,
+          1.0
+        ]
+      },
+      "id": 1,
+      "properties": {
+        "type": "destination",
+        "accessible": true,
+        "reasons": [],
+        "roadSectionId": 1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1.0000009,
+            1.000001
+          ],
+          [
+            10.0000006,
+            1.0000013
+          ]
+        ]
+      },
+      "id": 2,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": true,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 1
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.0000006,
+            1.0000013
+          ],
+          [
+            10.0000003,
+            10.000001
+          ]
+        ]
+      },
+      "id": 3,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": true,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 2
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            10.0000003,
+            10.000001
+          ],
+          [
+            1.0000006,
+            10.0000007
+          ]
+        ]
+      },
+      "id": 4,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": true,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 3
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            1.0000006,
+            10.0000007
+          ],
+          [
+            1.0000009,
+            1.000001
+          ]
+        ]
+      },
+      "id": 5,
+      "properties": {
+        "type": "roadSectionSegment",
+        "accessible": true,
+        "delayInMilliSecondsBecauseOfRestrictions": 0,
+        "direction": "forward",
+        "functionalRoadClass": "1",
+        "roadSectionId": 4
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}
