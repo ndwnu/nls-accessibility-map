@@ -13,7 +13,7 @@
       },
       "properties": {
         "name": "Groningen",
-        "searchDistance": 5000000,
+        "searchDistance": 50000,
         "bounds": [
           [
             0.0,

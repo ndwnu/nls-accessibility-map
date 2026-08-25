@@ -16,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 public record Municipality(
         @NotNull @JsonProperty("start-coordinate-latitude") Double startCoordinateLatitude,
         @NotNull @JsonProperty("start-coordinate-longitude") Double startCoordinateLongitude,
-        @NotNull @JsonProperty("search-distance-in-metres") Integer searchDistanceInMetres,
         @NotNull @JsonProperty("municipality-id") String id,
         @NotNull String name,
         @NotNull @Valid MunicipalityBoundingBox bounds,

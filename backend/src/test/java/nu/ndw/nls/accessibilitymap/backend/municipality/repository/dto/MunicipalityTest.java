@@ -28,7 +28,6 @@ class MunicipalityTest extends ValidationTest {
                 .name("name")
                 .startCoordinateLatitude(2D)
                 .startCoordinateLongitude(3D)
-                .searchDistanceInMetres(4)
                 .id("ABC123")
                 .bounds(new MunicipalityBoundingBox(11D, 12D, 13D, 14D))
                 .dateLastCheck(LocalDate.MAX)
@@ -71,17 +70,6 @@ class MunicipalityTest extends ValidationTest {
         validate(
                 municipality,
                 List.of("startCoordinateLongitude"),
-                List.of("must not be null"));
-    }
-
-    @Test
-    void validate_searchDistanceInMetres_null() {
-
-        municipality = municipality.withSearchDistanceInMetres(null);
-
-        validate(
-                municipality,
-                List.of("searchDistanceInMetres"),
                 List.of("must not be null"));
     }
 

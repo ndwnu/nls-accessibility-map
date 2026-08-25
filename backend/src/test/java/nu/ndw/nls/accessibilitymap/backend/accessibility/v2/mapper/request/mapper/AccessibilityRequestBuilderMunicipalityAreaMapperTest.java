@@ -9,6 +9,7 @@ import com.graphhopper.util.shapes.BBox;
 import java.util.UUID;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest.AccessibilityRequestBuilder;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.configuration.BoundingBoxAreaConfiguration;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.MunicipalityBoundingBox;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
@@ -30,14 +31,19 @@ class AccessibilityRequestBuilderMunicipalityAreaMapperTest {
     @Mock
     private MunicipalityService municipalityService;
 
+    @Mock
+    private BoundingBoxAreaConfiguration boundingBoxAreaConfiguration;
+
     @BeforeEach
     void setUp() {
-
-        accessibilityRequestBuilderMunicipalityAreaMapper = new AccessibilityRequestBuilderMunicipalityAreaMapper(municipalityService);
+        accessibilityRequestBuilderMunicipalityAreaMapper = new AccessibilityRequestBuilderMunicipalityAreaMapper(
+                municipalityService,
+                boundingBoxAreaConfiguration);
     }
 
     @Test
     void build() {
+        when(boundingBoxAreaConfiguration.getSearchDistanceGapFromRequestedSearchAreaInMeters()).thenReturn(10_000D);
 
         MunicipalityAreaRequestJson municipalityAreaRequestJson = MunicipalityAreaRequestJson.builder()
                 .id("GM0001")
@@ -51,7 +57,6 @@ class AccessibilityRequestBuilderMunicipalityAreaMapperTest {
                         .latitudeFrom(3D)
                         .longitudeFrom(4D)
                         .build())
-                .searchDistanceInMetres(5)
                 .startCoordinateLatitude(6D)
                 .startCoordinateLongitude(7D)
                 .build();
@@ -63,19 +68,25 @@ class AccessibilityRequestBuilderMunicipalityAreaMapperTest {
 
         AccessibilityRequest accessibilityRequest = accessibilityRequestBuilder.build();
         assertThat(accessibilityRequest).isNotNull();
-        assertThat(accessibilityRequest.requestArea()).isEqualTo(BBox.fromPoints(
+
+        BBox expectedRequestArea = BBox.fromPoints(
                 municipality.bounds().latitudeFrom(),
                 municipality.bounds().longitudeFrom(),
                 municipality.bounds().latitudeTo(),
                 municipality.bounds().longitudeTo()
-        ));
+        );
+        assertThat(accessibilityRequest.requestArea()).isEqualTo(expectedRequestArea);
+
+        int metersPerDegree = 111_320;
+        double expansionSearchAreaInMeters = 10_000;
+        double expansionInDegrees = expansionSearchAreaInMeters / metersPerDegree;
         assertThat(accessibilityRequest.searchArea()).isEqualTo(BBox.fromPoints(
-                municipality.bounds().latitudeFrom(),
-                municipality.bounds().longitudeFrom(),
-                municipality.bounds().latitudeTo(),
-                municipality.bounds().longitudeTo()
+                expectedRequestArea.getBounds().minLat - expansionInDegrees,
+                expectedRequestArea.getBounds().minLon - expansionInDegrees,
+                expectedRequestArea.getBounds().maxLat + expansionInDegrees,
+                expectedRequestArea.getBounds().maxLon + expansionInDegrees
         ));
-        assertThat(accessibilityRequest.maxSearchDistanceInMeters()).isEqualTo(municipality.searchDistanceInMetres().doubleValue());
+
         assertThat(accessibilityRequest.startLocationLatitude()).isEqualTo(municipality.startCoordinateLatitude());
         assertThat(accessibilityRequest.startLocationLongitude()).isEqualTo(municipality.startCoordinateLongitude());
     }
@@ -83,7 +94,6 @@ class AccessibilityRequestBuilderMunicipalityAreaMapperTest {
     @Test
     @SuppressWarnings("java:S5778")
     void build_invalidType() {
-
         assertThatThrownBy(() -> accessibilityRequestBuilderMunicipalityAreaMapper
                 .build(AccessibilityRequest.builder(), mock(AreaRequestJson.class)))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -92,7 +102,6 @@ class AccessibilityRequestBuilderMunicipalityAreaMapperTest {
 
     @Test
     void build_municipalityNotFound() {
-
         MunicipalityAreaRequestJson municipalityAreaRequestJson = MunicipalityAreaRequestJson.builder()
                 .id("GM0001")
                 .build();
@@ -111,14 +120,12 @@ class AccessibilityRequestBuilderMunicipalityAreaMapperTest {
 
     @Test
     void canProcessAreaRequest() {
-
         assertThat(accessibilityRequestBuilderMunicipalityAreaMapper.canProcessAreaRequest(mock(MunicipalityAreaRequestJson.class)))
                 .isTrue();
     }
 
     @Test
     void canProcessAreaRequest_false() {
-
         assertThat(accessibilityRequestBuilderMunicipalityAreaMapper.canProcessAreaRequest(mock(AreaRequestJson.class)))
                 .isFalse();
     }

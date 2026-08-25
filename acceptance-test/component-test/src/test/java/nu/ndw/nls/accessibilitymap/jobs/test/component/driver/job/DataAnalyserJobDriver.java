@@ -28,10 +28,6 @@ public class DataAnalyserJobDriver implements StateManagement {
                                 JobArgument.builder()
                                         .parameter("--start-location-longitude")
                                         .value(String.valueOf(jobConfiguration.startNode().getLongitude()))
-                                        .build(),
-                                JobArgument.builder()
-                                        .parameter("--search-radius-in-meters")
-                                        .value("1000000000")
                                         .build()),
                         buildArgumentsFromJobConfiguration(jobConfiguration)).toList(),
                 "analyse-base-network"
@@ -50,10 +46,6 @@ public class DataAnalyserJobDriver implements StateManagement {
                                 JobArgument.builder()
                                         .parameter("--start-location-longitude")
                                         .value(String.valueOf(jobConfiguration.startNode().getLongitude()))
-                                        .build(),
-                                JobArgument.builder()
-                                        .parameter("--search-radius-in-meters")
-                                        .value("1000000000")
                                         .build()),
                         buildArgumentsFromJobConfiguration(jobConfiguration)).toList(),
                 "analyse-asymmetric-traffic-signs"

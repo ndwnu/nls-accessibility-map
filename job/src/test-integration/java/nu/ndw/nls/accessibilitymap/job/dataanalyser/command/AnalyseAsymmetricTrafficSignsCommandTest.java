@@ -64,7 +64,6 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
                         "--traffic-signs=%s".formatted(trafficSignType.name()),
                         "--start-location-latitude=2d",
                         "--start-location-longitude=3d",
-                        "--search-radius-in-meters=4d",
                         "--report-issues")
         ).isZero();
 
@@ -76,7 +75,6 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
                                 .startLocationLatitude(2d)
                                 .startLocationLongitude(3d)
                                 .trafficSignTypes(Set.of(trafficSignType))
-                                .maxSearchDistanceInMeters(4d)
                                 .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                                 .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                                 .build())
@@ -98,7 +96,6 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
                         "--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
                         "--start-location-latitude=2d",
                         "--start-location-longitude=3d",
-                        "--search-radius-in-meters=4d",
                         "--report-issues")
         ).isZero();
 
@@ -119,7 +116,6 @@ class AnalyseAsymmetricTrafficSignsCommandTest {
                         "--traffic-signs=%s".formatted(TrafficSignType.C18.name()),
                         "--start-location-latitude=2d",
                         "--start-location-longitude=3d",
-                        "--search-radius-in-meters=4d",
                         "--report-issues")
         ).isOne();
 

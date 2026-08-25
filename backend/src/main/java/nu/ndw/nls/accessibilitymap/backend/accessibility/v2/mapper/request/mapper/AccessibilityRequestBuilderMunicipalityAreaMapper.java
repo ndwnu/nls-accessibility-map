@@ -3,8 +3,8 @@ package nu.ndw.nls.accessibilitymap.backend.accessibility.v2.mapper.request.mapp
 import com.graphhopper.util.shapes.BBox;
 import java.util.Objects;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.accessibility.AccessibilityRequest.AccessibilityRequestBuilder;
+import nu.ndw.nls.accessibilitymap.backend.accessibility.v2.configuration.BoundingBoxAreaConfiguration;
 import nu.ndw.nls.accessibilitymap.backend.municipality.repository.dto.Municipality;
 import nu.ndw.nls.accessibilitymap.backend.municipality.service.MunicipalityService;
 import nu.ndw.nls.accessibilitymap.backend.openapi.model.v2.AreaRequestJson;
@@ -14,11 +14,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-public class AccessibilityRequestBuilderMunicipalityAreaMapper implements
+public class AccessibilityRequestBuilderMunicipalityAreaMapper extends
         AccessibilityRequestBuilderAreaMapper {
 
     private final MunicipalityService municipalityService;
+
+    protected AccessibilityRequestBuilderMunicipalityAreaMapper(
+            MunicipalityService municipalityService,
+            BoundingBoxAreaConfiguration boundingBoxAreaConfiguration) {
+        super(boundingBoxAreaConfiguration);
+        this.municipalityService = municipalityService;
+    }
 
     public void build(AccessibilityRequestBuilder accessibilityRequestBuilder, AreaRequestJson areaRequestJson) {
         if (areaRequestJson instanceof MunicipalityAreaRequestJson municipalityAreaRequestJson) {
@@ -31,21 +37,20 @@ public class AccessibilityRequestBuilderMunicipalityAreaMapper implements
                         "Municipality with id '%s' not found."
                                 .formatted(municipalityAreaRequestJson.getId()));
             }
+            BBox requestArea = BBox.fromPoints(
+                    municipality.bounds().latitudeFrom(),
+                    municipality.bounds().longitudeFrom(),
+                    municipality.bounds().latitudeTo(),
+                    municipality.bounds().longitudeTo()
+            );
+            BBox searchArea = applySearchDistance(
+                    requestArea,
+                    getBoundingBoxAreaConfiguration().getSearchDistanceGapFromRequestedSearchAreaInMeters());
+
             accessibilityRequestBuilder
                     .municipalityId(municipality.idAsInteger())
-                    .requestArea(BBox.fromPoints(
-                            municipality.bounds().latitudeFrom(),
-                            municipality.bounds().longitudeFrom(),
-                            municipality.bounds().latitudeTo(),
-                            municipality.bounds().longitudeTo()
-                    ))
-                    .searchArea(BBox.fromPoints(
-                            municipality.bounds().latitudeFrom(),
-                            municipality.bounds().longitudeFrom(),
-                            municipality.bounds().latitudeTo(),
-                            municipality.bounds().longitudeTo()
-                    ))
-                    .maxSearchDistanceInMeters(Double.valueOf(municipality.searchDistanceInMetres()))
+                    .requestArea(requestArea)
+                    .searchArea(searchArea)
                     .startLocationLatitude(municipality.startCoordinateLatitude())
                     .startLocationLongitude(municipality.startCoordinateLongitude());
         } else {

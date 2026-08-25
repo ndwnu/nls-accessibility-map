@@ -26,7 +26,6 @@ class AccessibilityRequestTest extends ValidationTest {
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .timestamp(OffsetDateTime.now())
-                .maxSearchDistanceInMeters(1d)
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
                 .requestArea(BBox.fromPoints(1.0, 2.0, 3.0, 4.0))
@@ -51,13 +50,6 @@ class AccessibilityRequestTest extends ValidationTest {
 
         accessibilityRequest = accessibilityRequest.withTimestamp(null);
         validate(accessibilityRequest, List.of("timestamp"), List.of("must not be null"));
-    }
-
-    @Test
-    void validate_searchRadiusInMeters_null() {
-
-        accessibilityRequest = accessibilityRequest.withMaxSearchDistanceInMeters(null);
-        validate(accessibilityRequest, List.of("maxSearchDistanceInMeters"), List.of("must not be null"));
     }
 
     @Test

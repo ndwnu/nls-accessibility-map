@@ -61,7 +61,6 @@ class AnalyseBaseNetworkCommandTest {
         assertThat(new CommandLine(analyseBaseNetworkCommand).execute(
                 "--start-location-latitude=2d",
                 "--start-location-longitude=3d",
-                "--search-radius-in-meters=4d",
                 "--report-issues")
         ).isZero();
 
@@ -69,7 +68,6 @@ class AnalyseBaseNetworkCommandTest {
                 AnalyseNetworkConfiguration.builder()
                         .startLocationLatitude(2d)
                         .startLocationLongitude(3d)
-                        .maxSearchDistanceInMeters(4d)
                         .reportIssues(true)
                         .build()
         );
@@ -89,7 +87,6 @@ class AnalyseBaseNetworkCommandTest {
         assertThat(new CommandLine(analyseBaseNetworkCommand).execute(
                 "--start-location-latitude=2d",
                 "--start-location-longitude=3d",
-                "--search-radius-in-meters=4d",
                 "--report-issues")
         ).isOne();
 

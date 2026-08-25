@@ -87,14 +87,12 @@ class NetworkAnalyserServiceTest {
                 .reportIssues(true)
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
-                .maxSearchDistanceInMeters(4d)
                 .build();
 
         accessibilityRequest = AccessibilityRequest.builder()
                 .timestamp(timestamp)
                 .startLocationLatitude(2d)
                 .startLocationLongitude(3d)
-                .maxSearchDistanceInMeters(4d)
                 .addMissingRoadsSectionsFromNwb(true)
                 .requestArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
                 .searchArea(AccessibilityRequest.BOUNDING_BOX_GLOBE)
@@ -141,7 +139,7 @@ class NetworkAnalyserServiceTest {
                                    .equals("UnreachableNetworkSegments");
                 }));
         loggerExtension.containsLog(
-                Level.INFO, "Analysing with the following properties: AnalyseNetworkConfiguration[name=name, "
-                            + "reportIssues=true, maxSearchDistanceInMeters=4.0, startLocationLatitude=2.0, startLocationLongitude=3.0]");
+                Level.INFO, "Analysing with the following properties: AnalyseNetworkConfiguration[name=name, reportIssues=true, "
+                            + "startLocationLatitude=2.0, startLocationLongitude=3.0]");
     }
 }

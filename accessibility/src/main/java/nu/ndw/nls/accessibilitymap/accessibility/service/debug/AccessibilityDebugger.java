@@ -216,13 +216,7 @@ public class AccessibilityDebugger {
                                         idSupplier,
                                         "destination",
                                         accessibilityRequest.endLocationLatitude(),
-                                        accessibilityRequest.endLocationLongitude()),
-                                buildCircle(
-                                        idSupplier,
-                                        "searchRadius",
-                                        accessibilityRequest.startLocationLatitude(),
-                                        accessibilityRequest.startLocationLongitude(),
-                                        accessibilityRequest.maxSearchDistanceInMeters())
+                                        accessibilityRequest.endLocationLongitude())
                         )
                         .flatMap(Optional::stream)
                         .toList())

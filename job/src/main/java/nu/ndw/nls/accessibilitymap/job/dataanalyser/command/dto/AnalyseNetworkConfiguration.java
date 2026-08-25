@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 public record AnalyseNetworkConfiguration(
         @NotNull String name,
         @NotNull Boolean reportIssues,
-        @NotNull Double maxSearchDistanceInMeters,
         @NotNull Double startLocationLatitude,
         @NotNull Double startLocationLongitude) {
 

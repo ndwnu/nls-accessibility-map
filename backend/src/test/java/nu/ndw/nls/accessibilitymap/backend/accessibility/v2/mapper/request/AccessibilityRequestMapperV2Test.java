@@ -128,7 +128,6 @@ class AccessibilityRequestMapperV2Test {
 
         municipality = Municipality.builder()
                 .id("GM0001")
-                .searchDistanceInMetres(2)
                 .startCoordinateLatitude(3D)
                 .startCoordinateLongitude(4D)
                 .bounds(MunicipalityBoundingBox.builder()
