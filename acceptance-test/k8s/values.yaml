@@ -13,7 +13,7 @@ pods:
         javaOptions: -XX:MaxRAMPercentage=70
   database:
     container:
-      image: "ndwnls.azurecr.io/nls-postgres-it-container:20260819.1@sha256:85415fde99928026d548e1bc287cbc8d361045513256db844b1dcbb896be2f90"
+      image: "ndwnls.azurecr.io/nls-postgres-it-container:20260825.1@sha256:f755f8c784caa4a03035435f4b989a5030d3c294d5445ed7216c73df77b3112e"
       resources:
         requests:
           memory: "512Mi"
