@@ -27,7 +27,6 @@ class EmissionZoneRestrictionTest extends ValidationTest {
 
         emissionZoneRestriction = EmissionZoneRestriction.builder()
                 .id("id")
-                .vehicleWeightInKg(Maximum.builder().value(3d).build())
                 .fuelTypes(Set.of(FuelType.DIESEL, FuelType.ELECTRIC))
                 .transportTypes(Set.of(TransportType.CAR, TransportType.TAXI))
                 .build();
@@ -64,7 +63,7 @@ class EmissionZoneRestrictionTest extends ValidationTest {
         emissionZoneRestriction = emissionZoneRestriction
                 .withVehicleWeightInKg(
                         Objects.nonNull(vehicleWeightInKgRestriction) ? Maximum.builder().value(vehicleWeightInKgRestriction).build()
-                                : Maximum.noMaximum())
+                                : null)
                 .withFuelTypes(Objects.nonNull(fuelTypeRestriction) ? Set.of(FuelType.valueOf(fuelTypeRestriction)) : Set.of())
                 .withTransportTypes(
                         Objects.nonNull(transportTypeRestriction) ? Set.of(TransportType.valueOf(transportTypeRestriction)) : Set.of());
@@ -115,13 +114,6 @@ class EmissionZoneRestrictionTest extends ValidationTest {
 
         emissionZoneRestriction = emissionZoneRestriction.withTransportTypes(null);
         validate(emissionZoneRestriction, List.of("transportTypes"), List.of("must not be null"));
-    }
-
-    @Test
-    void validate_vehicleWeightInKg_null() {
-
-        emissionZoneRestriction = emissionZoneRestriction.withVehicleWeightInKg(null);
-        validate(emissionZoneRestriction, List.of("vehicleWeightInKg"), List.of("must not be null"));
     }
 
     @Override

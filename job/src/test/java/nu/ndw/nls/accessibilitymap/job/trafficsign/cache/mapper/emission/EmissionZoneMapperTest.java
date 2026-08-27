@@ -18,7 +18,6 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZone;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneExemption;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission.EmissionZoneRestriction;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
-import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.MaximumWeightMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.TransportTypeMapper;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.EmissionZoneStatus;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.EmissionZoneType;

@@ -21,7 +21,7 @@ public record EmissionZoneRestriction(
         @NotNull String id,
         @NotNull Set<FuelType> fuelTypes,
         @NotNull Set<TransportType> transportTypes,
-        @NotNull Maximum vehicleWeightInKg) {
+        Maximum vehicleWeightInKg) {
 
     public boolean isRelevant(
             Double vehicleWeightInKg,
@@ -38,8 +38,8 @@ public record EmissionZoneRestriction(
             activeExemptions.add(() -> transportTypes().stream().anyMatch(relevantTransportTypes::contains));
         }
 
-        if (Objects.nonNull(vehicleWeightInKg)) {
-            activeExemptions.add(() -> !vehicleWeightInKg().isExceeding(vehicleWeightInKg, false));
+        if (Objects.nonNull(vehicleWeightInKg) && Objects.nonNull(this.vehicleWeightInKg)) {
+            activeExemptions.add(() -> !this.vehicleWeightInKg.isExceeding(vehicleWeightInKg, false));
         }
 
         return activeExemptions.stream().allMatch(Supplier::get);

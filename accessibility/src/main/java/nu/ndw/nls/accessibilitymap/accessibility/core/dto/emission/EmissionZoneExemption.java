@@ -24,7 +24,7 @@ public record EmissionZoneExemption(
         @NotNull OffsetDateTime endTime,
         @NotEmpty Set<EmissionClass> emissionClasses,
         @NotEmpty Set<TransportType> transportTypes,
-        @NotNull Maximum vehicleWeightInKg) {
+        Maximum vehicleWeightInKg) {
 
     public boolean isActive(OffsetDateTime time) {
 

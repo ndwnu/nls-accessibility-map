@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
+package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.emission;
 
 import java.util.Objects;
 import java.util.Set;
@@ -13,7 +13,18 @@ public class MaximumWeightMapper {
     public Maximum map(Set<VehicleCategory> vehicleCategories, Double maximumWeightInKg) {
 
         Maximum vehicleCategoriesMaximumWeightInKg = map(vehicleCategories);
-        if (Objects.isNull(maximumWeightInKg) || vehicleCategoriesMaximumWeightInKg.isExceeding(maximumWeightInKg, false)) {
+        if (Objects.isNull(vehicleCategoriesMaximumWeightInKg) && Objects.isNull(maximumWeightInKg)) {
+            return null;
+        }
+
+        if (Objects.nonNull(vehicleCategoriesMaximumWeightInKg)
+            && Objects.nonNull(maximumWeightInKg)) {
+            return vehicleCategoriesMaximumWeightInKg.isExceeding(maximumWeightInKg, false)
+                    ? vehicleCategoriesMaximumWeightInKg
+                    : Maximum.builder().value(maximumWeightInKg).build();
+        }
+
+        if (Objects.nonNull(vehicleCategoriesMaximumWeightInKg)) {
             return vehicleCategoriesMaximumWeightInKg;
         }
 
@@ -24,7 +35,7 @@ public class MaximumWeightMapper {
     public Maximum map(Set<VehicleCategory> vehicleCategories) {
 
         if (Objects.isNull(vehicleCategories)) {
-            return Maximum.noMaximum();
+            return null;
         }
 
         return vehicleCategories.stream()
@@ -42,6 +53,6 @@ public class MaximumWeightMapper {
                 .map(minimalWeightRestriction -> Maximum.builder()
                         .value(minimalWeightRestriction)
                         .build())
-                .orElse(Maximum.noMaximum());
+                .orElse(null);
     }
 }

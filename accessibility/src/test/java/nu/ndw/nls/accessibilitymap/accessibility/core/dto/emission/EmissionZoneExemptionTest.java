@@ -33,7 +33,6 @@ class EmissionZoneExemptionTest extends ValidationTest {
                 .endTime(OffsetDateTime.MAX)
                 .emissionClasses(Set.of(EmissionClass.EURO_5, EmissionClass.EURO_6))
                 .transportTypes(Set.of(TransportType.CAR, TransportType.TAXI))
-                .vehicleWeightInKg(Maximum.builder().value(3d).build())
                 .build();
     }
 
@@ -131,13 +130,6 @@ class EmissionZoneExemptionTest extends ValidationTest {
 
         emissionZoneExemption = emissionZoneExemption.withTransportTypes(transportTypes);
         validate(emissionZoneExemption, List.of("transportTypes"), List.of("must not be empty"));
-    }
-
-    @Test
-    void validate_vehicleWeightInKg_null() {
-
-        emissionZoneExemption = emissionZoneExemption.withVehicleWeightInKg(null);
-        validate(emissionZoneExemption, List.of("vehicleWeightInKg"), List.of("must not be null"));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
+package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.emission;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -32,11 +32,12 @@ class MaximumWeightMapperTest {
     @Test
     void map_noVehicleCategoryNoMaximumWeightInKgNoMaximum() {
         Maximum maximumWeight = maximumWeightMapper.map(null, null);
-        assertThat(maximumWeight).isEqualTo(Maximum.noMaximum());
+        assertThat(maximumWeight).isNull();
     }
 
     @ParameterizedTest
     @CsvSource(nullValues = "null", textBlock = """
+            null, null, null
             M_2, null, 5000
             null, 123, 123
             M_2, 123, 123
@@ -48,7 +49,11 @@ class MaximumWeightMapperTest {
 
         Maximum maximumWeight = maximumWeightMapper.map(vehicleCategory, maximumWeightInKg);
 
-        assertThat(maximumWeight).isEqualTo(Maximum.builder().value(expectedValue).build());
+        if (Objects.isNull(expectedValue)) {
+            assertThat(maximumWeight).isNull();
+        } else {
+            assertThat(maximumWeight).isEqualTo(Maximum.builder().value(expectedValue).build());
+        }
     }
 
     @ParameterizedTest
@@ -67,7 +72,7 @@ class MaximumWeightMapperTest {
             if (Objects.nonNull(expectedMaxWeight)) {
                 assertThat(maximumWeight).isEqualTo(Maximum.builder().value(expectedMaxWeight).build());
             } else {
-                assertThat(maximumWeight).isEqualTo(Maximum.noMaximum());
+                assertThat(maximumWeight).isNull();
             }
         }
     }
