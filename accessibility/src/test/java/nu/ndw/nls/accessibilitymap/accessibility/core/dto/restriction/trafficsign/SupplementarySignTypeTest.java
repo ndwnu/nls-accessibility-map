@@ -110,17 +110,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.EnumSet;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 class SupplementarySignTypeTest {
-
-    private static final Set<SupplementarySignType> PRE_ANNOUNCEMENTS = EnumSet.of(OB401, OB411);
-
-    private static final Set<SupplementarySignType> TIME_WINDOWED_TYPES = EnumSet.of(OB254, OB256, OB259);
 
     @Test
     void getDescription() {
@@ -344,28 +339,32 @@ class SupplementarySignTypeTest {
 
     @Test
     void getWindowTimeTypes() {
+        EnumSet<SupplementarySignType> expectedTimeWindowTypes = EnumSet.of(OB254, OB256, OB259);
+
         assertThat(SupplementarySignType.getWindowTimeTypes())
-                .as("getWindowTimeTypes() should always return the same Set instance with window times: %s", TIME_WINDOWED_TYPES)
-                .isSameAs(SupplementarySignType.getWindowTimeTypes())
-                .isEqualTo(TIME_WINDOWED_TYPES);
+                .as("getWindowTimeTypes() should always return the same Set instance with window times: %s", expectedTimeWindowTypes)
+                .isEqualTo(expectedTimeWindowTypes);
     }
 
     @Test
     void getPreAnnouncementTypes() {
+        EnumSet<SupplementarySignType> expectedPreAnnouncementTypes = EnumSet.of(OB401, OB411, OB501L, OB501R);
+
         assertThat(SupplementarySignType.getPreAnnouncementTypes())
-                .as("getPreAnnouncementTypes() should always return the same Set instance with pre-announcements: %s", PRE_ANNOUNCEMENTS)
-                .isSameAs(SupplementarySignType.getPreAnnouncementTypes())
-                .isEqualTo(PRE_ANNOUNCEMENTS);
+                .as(
+                        "getPreAnnouncementTypes() should always return the same Set instance with pre-announcements: %s",
+                        expectedPreAnnouncementTypes)
+                .isEqualTo(expectedPreAnnouncementTypes);
     }
 
     @ParameterizedTest
-    @EnumSource(value = SupplementarySignType.class, names = {"OB254","OB256","OB259"}, mode = EnumSource.Mode.EXCLUDE)
+    @EnumSource(value = SupplementarySignType.class, names = {"OB254", "OB256", "OB259"}, mode = EnumSource.Mode.EXCLUDE)
     void isTimeWindowed_false(SupplementarySignType supplementarySignType) {
         assertThat(supplementarySignType.isWindowTime()).isFalse();
     }
 
     @ParameterizedTest
-    @EnumSource(value = SupplementarySignType.class, names = {"OB254","OB256","OB259"}, mode = Mode.INCLUDE)
+    @EnumSource(value = SupplementarySignType.class, names = {"OB254", "OB256", "OB259"}, mode = Mode.INCLUDE)
     void isTimeWindowed_true(SupplementarySignType supplementarySignType) {
         assertThat(supplementarySignType.isWindowTime()).isTrue();
     }
