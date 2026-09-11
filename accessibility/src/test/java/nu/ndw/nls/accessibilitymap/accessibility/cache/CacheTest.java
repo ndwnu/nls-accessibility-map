@@ -175,6 +175,10 @@ class CacheTest {
         };
 
         cache.read();
+        loggerExtension.containsLog(
+                Level.WARN,
+                "Failed to read %s".formatted(cacheConfiguration.getName()),
+                "test");
 
         assertThat(cache.get()).isNull();
         loggerExtension.containsLog(
@@ -183,12 +187,12 @@ class CacheTest {
                 "test");
 
         cache.read();
-
         loggerExtension.containsLog(
                 Level.ERROR,
                 "Failed to read %s".formatted(cacheConfiguration.getName()),
                 "test",
                 VerificationMode.times(2));
+
         assertThat(cache.get()).isNull();
         loggerExtension.containsLog(
                 Level.ERROR,
