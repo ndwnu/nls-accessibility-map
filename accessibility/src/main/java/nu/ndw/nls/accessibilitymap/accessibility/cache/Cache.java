@@ -21,6 +21,7 @@ import nu.ndw.nls.accessibilitymap.accessibility.cache.exception.ActiveVersionNo
 import nu.ndw.nls.accessibilitymap.accessibility.cache.locking.DistributedLockService;
 import nu.ndw.nls.springboot.core.time.ClockService;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.event.Level;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.retry.RetryException;
@@ -148,9 +149,10 @@ public abstract class Cache<TYPE> {
             afterCacheLoaded();
         } catch (Exception exception) {
             consecutiveReadFailures += 1;
-            if (consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures()) {
-                log.error("Failed to read {}", cacheConfiguration.getName(), exception);
-            }
+
+            log.atLevel(consecutiveReadFailures > cacheConfiguration.getAcceptableConsequentReadFailures() ? Level.ERROR : Level.WARN)
+                    .log("Failed to read {}", cacheConfiguration.getName(), exception);
+
             if (triggeredOnStartup && cacheConfiguration.isFailOnStartupCacheReadError()) {
                 throw new IllegalStateException("Failed to read %s".formatted(cacheConfiguration.getName()), exception);
             }
