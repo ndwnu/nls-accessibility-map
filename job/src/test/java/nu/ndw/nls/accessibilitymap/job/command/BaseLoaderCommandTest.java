@@ -7,6 +7,7 @@ import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.AnalyseAsymmetricTra
 import nu.ndw.nls.accessibilitymap.job.dataanalyser.command.AnalyseBaseNetworkCommand;
 import nu.ndw.nls.accessibilitymap.job.mapgenerator.command.GenerateCommand;
 import nu.ndw.nls.accessibilitymap.job.network.command.RebuildNetworkCacheCommand;
+import nu.ndw.nls.accessibilitymap.job.speedlimits.RebuildSpeedLimitCacheCommand;
 import nu.ndw.nls.accessibilitymap.job.trafficsign.command.RebuildTrafficSignCacheCommand;
 import nu.ndw.nls.springboot.messaging.commands.ConfigureRabbitMQCommand;
 import nu.ndw.nls.springboot.test.util.annotation.AnnotationUtil;
@@ -18,7 +19,6 @@ class BaseLoaderCommandTest {
 
     @Test
     void annotation_class_component() {
-
         AnnotationUtil.classContainsAnnotation(
                 BaseLoaderCommand.class,
                 Component.class,
@@ -28,7 +28,6 @@ class BaseLoaderCommandTest {
 
     @Test
     void annotation_class_command() {
-
         AnnotationUtil.classContainsAnnotation(
                 BaseLoaderCommand.class,
                 Command.class,
@@ -41,7 +40,8 @@ class BaseLoaderCommandTest {
                             GenerateCommand.class,
                             RebuildNetworkCacheCommand.class,
                             InitializeCacheCommand.class,
-                            RebuildTrafficSignCacheCommand.class);
+                            RebuildTrafficSignCacheCommand.class,
+                            RebuildSpeedLimitCacheCommand.class);
                 }
         );
     }
