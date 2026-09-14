@@ -1159,8 +1159,8 @@
     longitude-to: 4.6869211361522085
     latitude-to: 52.42856966190616
 - name: "Haarlemmermeer"
-  start-coordinate-longitude: 4.643670087519128
-  start-coordinate-latitude: 52.23011752364216
+  start-coordinate-longitude: 4.643928320367089
+  start-coordinate-latitude: 52.22980333817722
   municipality-id: "GM0394"
   date-last-check: null
   bounds:
