@@ -77,7 +77,6 @@ class RebuildSpeedLimitCacheCommandTest {
 
     @BeforeEach
     void setUp() {
-
         rebuildSpeedLimitCacheCommand = new RebuildSpeedLimitCacheCommand(
                 speedLimitsApiClient,
                 speedLimitDataService,
@@ -88,14 +87,13 @@ class RebuildSpeedLimitCacheCommandTest {
 
     @Test
     void call() {
-
-        LocalDate nwbVersionLocatDate = mockNwbVersion();
+        LocalDate nwbVersion = mockNwbVersion();
 
         when(roadSectionSpeedLimitJson.getDirectionalSpeedLimit()).thenReturn(List.of(
                 roadSectionDirectionalSpeedLimitJson1,
                 roadSectionDirectionalSpeedLimitJson2));
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersionLocatDate, 0, 1000)).thenReturn(speedLimitApiResponse);
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersionLocatDate, 1, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 1, 1000)).thenReturn(speedLimitApiResponse);
 
         when(speedLimitApiResponse.getBody()).thenReturn(speedLimitsRoadSectionResponseJson);
 
@@ -130,18 +128,22 @@ class RebuildSpeedLimitCacheCommandTest {
                     .filteredOn(speedLimit -> speedLimit.direction() == Direction.BACKWARD)
                     .hasSize(1999);
         }));
+
+        loggerExtension.containsLog(Level.INFO, "Downloading speed limits page 0, 1000 items per page.");
+        loggerExtension.containsLog(Level.INFO, "Downloading speed limits page 1, 1000 items per page.");
+        loggerExtension.containsLog(Level.INFO, "Downloaded 3998 speed limits");
+        loggerExtension.containsLog(Level.INFO, "Downloading speed limits for nwb version: %s".formatted(nwbVersion));
     }
 
     @Test
     void call_error_generic() {
-
-        LocalDate nwbVersionLocatDate = mockNwbVersion();
+        LocalDate nwbVersion = mockNwbVersion();
 
         when(roadSectionSpeedLimitJson.getDirectionalSpeedLimit()).thenReturn(List.of(
                 roadSectionDirectionalSpeedLimitJson1,
                 roadSectionDirectionalSpeedLimitJson2));
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersionLocatDate, 0, 1000)).thenReturn(speedLimitApiResponse);
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersionLocatDate, 1, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 1, 1000)).thenReturn(speedLimitApiResponse);
 
         when(speedLimitApiResponse.getBody()).thenReturn(speedLimitsRoadSectionResponseJson);
 
@@ -164,10 +166,9 @@ class RebuildSpeedLimitCacheCommandTest {
 
     @Test
     void call_error_noResponseBodyFromSpeedLimitsApi() {
+        LocalDate nwbVersion = mockNwbVersion();
 
-        LocalDate nwbVersionLocatDate = mockNwbVersion();
-
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersionLocatDate, 0, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
         when(speedLimitApiResponse.getBody()).thenReturn(null);
 
         assertThat(new CommandLine(rebuildSpeedLimitCacheCommand).execute()).isEqualTo(1);

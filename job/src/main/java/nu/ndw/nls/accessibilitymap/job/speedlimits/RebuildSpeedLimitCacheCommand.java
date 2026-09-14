@@ -58,8 +58,10 @@ public class RebuildSpeedLimitCacheCommand implements Callable<Integer> {
 
     private void loadSpeedLimits(LocalDate nwbVersion, Consumer<SpeedLimit> speedLimitConsumer) throws IllegalAccessException {
 
+        log.info("Downloading speed limits for nwb version: {}", nwbVersion);
         int currentPage = 0;
         while (true) {
+            log.info("Downloading speed limits page {}, {} items per page.", currentPage, ITEMS_PER_PAGE);
             var speedLimitsResponse = speedLimitsApiClient.getSpeedLimits(nwbVersion, currentPage, ITEMS_PER_PAGE)
                     .getBody();
 
