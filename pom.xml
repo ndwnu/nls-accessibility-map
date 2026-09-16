@@ -69,6 +69,9 @@
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- CVE-2026-63337, CVE-2026-69219, CVE-2026-69220 -->
     <amqp-client.version>5.36.0</amqp-client.version>
+
+    <!-- CVE-2026-65182, CVE-2026-65905 and CVE-2026-68525 -->
+    <tomcat.version>11.0.25</tomcat.version>
   </properties>
   <distributionManagement>
     <repository>
