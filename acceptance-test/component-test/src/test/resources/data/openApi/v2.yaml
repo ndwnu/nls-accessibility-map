@@ -864,6 +864,7 @@ components:
         - "C22"
         - "C22a"
         - "C22c"
+        - "C22e"
         - "unknown"
       type: "string"
       default: "unknown"
