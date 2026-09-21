@@ -21,6 +21,7 @@ public enum TransportType {
     TRUCK("Truck"),
     TRACTOR("Tractor"),
     VEHICLE_WITH_TRAILER("VehicleWithTrailer"),
+    MICROCAR("Microcar"),
     VEHICLE_WITH_DANGEROUS_SUPPLIES("VehicleWithDangerousSupplies"),
     DELIVERY_VAN("DeliveryVan"),
     RIDERS("Riders"),

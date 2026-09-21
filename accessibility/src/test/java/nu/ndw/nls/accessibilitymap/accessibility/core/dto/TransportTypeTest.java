@@ -2,8 +2,8 @@ package nu.ndw.nls.accessibilitymap.accessibility.core.dto;
 
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.BUS;
 import static nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType.CAR;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -67,6 +67,7 @@ class TransportTypeTest {
             case MOTORCYCLE -> "Motorcycle";
             case CARAVAN -> "Caravan";
             case CAR -> "Car";
+            case MICROCAR -> "Microcar";
             case TRUCK -> "Truck";
             case TRACTOR -> "Tractor";
             case VEHICLE_WITH_TRAILER -> "VehicleWithTrailer";

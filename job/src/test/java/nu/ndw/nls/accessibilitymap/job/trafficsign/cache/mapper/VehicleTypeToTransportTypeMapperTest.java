@@ -22,7 +22,7 @@ class VehicleTypeToTransportTypeMapperTest {
             AGRICULTURAL_VEHICLE,   TRACTOR
             CARAVAN,                CARAVAN
             TRAILER,                VEHICLE_WITH_TRAILER
-            MICROCAR,               CAR
+            MICROCAR,               MICROCAR
             PEDESTRIAN,             PEDESTRIAN
             TRUCK,                  TRUCK
             DELIVERY_VAN,           DELIVERY_VAN

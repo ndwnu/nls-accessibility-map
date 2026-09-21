@@ -23,7 +23,7 @@ public class VehicleTypeToTransportTypeMapper {
             case AGRICULTURAL_VEHICLE -> Set.of(TransportType.TRACTOR);
             case CARAVAN -> Set.of(TransportType.CARAVAN);
             case TRAILER -> Set.of(TransportType.VEHICLE_WITH_TRAILER);
-            case MICROCAR -> Set.of(TransportType.CAR);
+            case MICROCAR -> Set.of(TransportType.MICROCAR);
             case PEDESTRIAN -> Set.of(TransportType.PEDESTRIAN);
             case TRUCK -> Set.of(TransportType.TRUCK);
             case DELIVERY_VAN -> Set.of(TransportType.DELIVERY_VAN);
