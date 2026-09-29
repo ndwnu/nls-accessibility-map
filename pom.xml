@@ -38,7 +38,7 @@
     <nls-springboot.gatling-test.version>2.0.23</nls-springboot.gatling-test.version>
     <nls-events.version>6.0.17</nls-events.version>
     <nls-nwb-data-access.version>11.0.1</nls-nwb-data-access.version>
-    <nls-routing-map-matcher.version>23.0.16</nls-routing-map-matcher.version>
+    <nls-routing-map-matcher.version>24.0.1</nls-routing-map-matcher.version>
     <nls-geometry.version>7.0.2</nls-geometry.version>
     <nls-geojson-geometry.version>2.0.27</nls-geojson-geometry.version>
     <nls-roadattributesapi.version>2.0.46</nls-roadattributesapi.version>
