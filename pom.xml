@@ -30,20 +30,20 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <nls-springboot.version>10.4.51</nls-springboot.version>
+    <nls-springboot.version>10.4.52</nls-springboot.version>
     <nls-springboot.logging.version>9.0.3</nls-springboot.logging.version>
     <nls-springboot.component-test.version>14.2.1</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>9.0.6</nls-springboot.monitoring.version>
     <nls-springboot.test.version>10.0.17</nls-springboot.test.version>
-    <nls-springboot.gatling-test.version>2.0.23</nls-springboot.gatling-test.version>
+    <nls-springboot.gatling-test.version>2.0.25</nls-springboot.gatling-test.version>
     <nls-events.version>6.0.17</nls-events.version>
-    <nls-nwb-data-access.version>11.0.3</nls-nwb-data-access.version>
+    <nls-nwb-data-access.version>11.0.5</nls-nwb-data-access.version>
     <nls-routing-map-matcher.version>24.0.1</nls-routing-map-matcher.version>
     <nls-geometry.version>7.0.2</nls-geometry.version>
-    <nls-geojson-geometry.version>2.0.27</nls-geojson-geometry.version>
+    <nls-geojson-geometry.version>2.0.28</nls-geojson-geometry.version>
     <nls-roadattributesapi.version>2.0.46</nls-roadattributesapi.version>
     <nls-springboot.test.graph.version>2.0.27</nls-springboot.test.graph.version>
-    <nls-location-data-issues.version>3.0.89</nls-location-data-issues.version>
+    <nls-location-data-issues.version>3.0.91</nls-location-data-issues.version>
 
     <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
     <gatling.version>3.16.0</gatling.version>
@@ -68,14 +68,14 @@
 
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- CVE-2026-63337, CVE-2026-69219, CVE-2026-69220 -->
-    <amqp-client.version>5.36.0</amqp-client.version>
+    <amqp-client.version>5.37.0</amqp-client.version>
 
     <!-- CVE-2026-65182, CVE-2026-65905 and CVE-2026-68525 -->
     <tomcat.version>11.0.25</tomcat.version>
 
     <!-- CVE-2026-68497 -->
-    <jackson-2-bom.version>2.21.7</jackson-2-bom.version>
-    <jackson-bom.version>3.1.7</jackson-bom.version>
+    <jackson-2-bom.version>2.22.3</jackson-2-bom.version>
+    <jackson-bom.version>3.2.3</jackson-bom.version>
   </properties>
   <distributionManagement>
     <repository>
