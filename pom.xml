@@ -43,7 +43,7 @@
     <nls-geojson-geometry.version>2.0.28</nls-geojson-geometry.version>
     <nls-roadattributesapi.version>2.0.46</nls-roadattributesapi.version>
     <nls-springboot.test.graph.version>2.0.27</nls-springboot.test.graph.version>
-    <nls-location-data-issues.version>3.0.93</nls-location-data-issues.version>
+    <nls-location-data-issues.version>3.0.94</nls-location-data-issues.version>
 
     <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
     <gatling.version>3.16.0</gatling.version>
