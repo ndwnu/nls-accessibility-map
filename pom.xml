@@ -41,7 +41,7 @@
     <nls-routing-map-matcher.version>24.0.2</nls-routing-map-matcher.version>
     <nls-geometry.version>7.0.2</nls-geometry.version>
     <nls-geojson-geometry.version>2.0.28</nls-geojson-geometry.version>
-    <nls-roadattributesapi.version>2.0.46</nls-roadattributesapi.version>
+    <nls-roadattributesapi.version>3.0.6</nls-roadattributesapi.version>
     <nls-springboot.test.graph.version>2.0.27</nls-springboot.test.graph.version>
     <nls-location-data-issues.version>3.0.94</nls-location-data-issues.version>
 
