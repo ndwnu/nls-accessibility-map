@@ -2279,8 +2279,8 @@
     longitude-to: 5.111506127714036
     latitude-to: 51.723061892444846
 - name: "Woensdrecht"
-  start-coordinate-longitude: 4.276221095123117
-  start-coordinate-latitude: 51.42680206235231
+  start-coordinate-longitude: 4.2763892
+  start-coordinate-latitude: 51.4267871
   municipality-id: "GM0873"
   date-last-check: null
   bounds:
@@ -2339,8 +2339,8 @@
     longitude-to: 6.124757904013862
     latitude-to: 51.29745438170268
 - name: "Bergen (L)"
-  start-coordinate-longitude: 6.034568093430405
-  start-coordinate-latitude: 51.674826590683814
+  start-coordinate-longitude: 6.0611264
+  start-coordinate-latitude: 51.5903469
   municipality-id: "GM0893"
   date-last-check: null
   bounds:
@@ -2879,8 +2879,8 @@
     longitude-to: 5.433922673052114
     latitude-to: 51.38390500892574
 - name: "Bladel"
-  start-coordinate-longitude: 5.2791625461779335
-  start-coordinate-latitude: 51.353495413518026
+  start-coordinate-longitude: 5.2747871
+  start-coordinate-latitude: 51.3513067
   municipality-id: "GM1728"
   date-last-check: null
   bounds:
