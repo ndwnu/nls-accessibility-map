@@ -3,6 +3,14 @@ info:
   title: "Accessibility map V2 API"
   description: >
     <p>
+      <strong>Intended for road operators only: the map is still in beta</strong>
+    </p>
+    <p>
+      NDW is still developing the Accessibility Map. The map is currently intended only for road operators, for
+      testing and for checking the underlying data. The map has <strong>not</strong> been released to road users.
+      The situation on the road always takes precedence. No rights can be derived from the map.
+    </p>
+    <p>
       Query the accessibility for vehicle characteristics within a municipality. More information available on 
       <a href="https://docs.ndw.nu">docs.ndw.nu</a>
     </p>
