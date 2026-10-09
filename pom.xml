@@ -33,16 +33,16 @@
     <nls-springboot.version>10.4.56</nls-springboot.version>
     <nls-springboot.logging.version>9.0.4</nls-springboot.logging.version>
     <nls-springboot.component-test.version>14.2.5</nls-springboot.component-test.version>
-    <nls-springboot.monitoring.version>9.0.7</nls-springboot.monitoring.version>
+    <nls-springboot.monitoring.version>9.0.8</nls-springboot.monitoring.version>
     <nls-springboot.test.version>10.0.18</nls-springboot.test.version>
     <nls-springboot.gatling-test.version>2.0.27</nls-springboot.gatling-test.version>
     <nls-events.version>6.0.17</nls-events.version>
-    <nls-nwb-data-access.version>11.0.8</nls-nwb-data-access.version>
-    <nls-routing-map-matcher.version>24.0.3</nls-routing-map-matcher.version>
+    <nls-nwb-data-access.version>11.0.9</nls-nwb-data-access.version>
+    <nls-routing-map-matcher.version>24.0.4</nls-routing-map-matcher.version>
     <nls-geometry.version>7.0.2</nls-geometry.version>
     <nls-geojson-geometry.version>2.0.29</nls-geojson-geometry.version>
-    <nls-roadattributesapi.version>3.0.8</nls-roadattributesapi.version>
-    <nls-springboot.test.graph.version>2.0.29</nls-springboot.test.graph.version>
+    <nls-roadattributesapi.version>3.0.9</nls-roadattributesapi.version>
+    <nls-springboot.test.graph.version>2.0.30</nls-springboot.test.graph.version>
     <nls-location-data-issues.version>3.0.96</nls-location-data-issues.version>
 
     <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
@@ -69,6 +69,9 @@
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- CVE-2026-63337, CVE-2026-69219, CVE-2026-69220 -->
     <amqp-client.version>5.37.0</amqp-client.version>
+
+    <!-- CVE-2026-106451 -->
+    <lz4-java.version>1.11.4</lz4-java.version>
 
     <!-- CVE-2026-65182, CVE-2026-65905 and CVE-2026-68525 -->
     <tomcat.version>11.0.25</tomcat.version>
@@ -134,6 +137,11 @@
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>
         <version>${antlr.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>at.yawk.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>${lz4-java.version}</version>
       </dependency>
       <dependency>
         <groupId>com.rabbitmq</groupId>
