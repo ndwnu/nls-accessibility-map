@@ -30,7 +30,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <nls-springboot.version>10.4.56</nls-springboot.version>
+    <nls-springboot.version>10.4.57</nls-springboot.version>
     <nls-springboot.logging.version>9.0.4</nls-springboot.logging.version>
     <nls-springboot.component-test.version>14.2.5</nls-springboot.component-test.version>
     <nls-springboot.monitoring.version>9.0.8</nls-springboot.monitoring.version>
@@ -71,7 +71,7 @@
     <amqp-client.version>5.37.0</amqp-client.version>
 
     <!-- CVE-2026-106451 -->
-    <lz4-java.version>1.11.4</lz4-java.version>
+    <lz4-java.version>1.12.0</lz4-java.version>
 
     <!-- CVE-2026-65182, CVE-2026-65905 and CVE-2026-68525 -->
     <tomcat.version>11.0.25</tomcat.version>
