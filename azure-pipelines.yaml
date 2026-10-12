@@ -11,7 +11,7 @@ resources:
     - repository: nls-pipeline-templates
       type: git
       name: NLS/nls-pipeline-templates
-      ref: main
+      ref: feature/pipeline-speedup
 
 parameters:
   - name: skipSonar
@@ -57,6 +57,7 @@ extends:
     cleanupNamespaces: ${{ parameters.cleanupNamespaces }}
     mavenDeployToNdwShared: true
     mavenAdditionalBuildOptions: '-Pintegration-test'
+    mavenThreads: '2'
     jdkVersion: 1.25
     sonarOptionalCoverageExclusions: '**/generated/**,acceptance-test/acceptance-test-shared/**,**nu/ndw/nls/accessibilitymap/accessibility/RetryConfiguration**'
     sonarOptionalExclusions: '**/generated/**'
