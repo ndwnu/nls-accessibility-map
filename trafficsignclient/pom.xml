@@ -12,6 +12,7 @@
   <name>Traffic sign client v5</name>
 
   <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
     <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.trafficsignclient.feign</openapi-generator.base.classpath>
   </properties>
 

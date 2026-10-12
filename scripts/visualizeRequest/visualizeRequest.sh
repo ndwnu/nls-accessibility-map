@@ -8,14 +8,14 @@ curl 'https://data.ndw.nu/api/rest/static-road-data/accessibility-map/v2/accessi
       "id": "GM0363"
     },
     "vehicle": {
-      "type": "bus",
+      "type": "car",
       "width": 0,
       "height": 0,
-      "weight": 7.504,
+      "weight": 0,
       "length": 0,
       "axleLoad": 0,
       "hasTrailer": false,
-      "emissionClass": "euro_2",
+      "emissionClass": "euro_1",
       "fuelTypes": [
         "hydrogen"
       ]
