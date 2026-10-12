@@ -301,6 +301,8 @@
               <generateModelTests>false</generateModelTests>
               <configOptions>
                 <useSpringBoot4>true</useSpringBoot4>
+                <generateJsonIncludeAnnotations>false</generateJsonIncludeAnnotations>
+                <generateJsonSetterNullsAnnotations>false</generateJsonSetterNullsAnnotations>
                 <generateBuilders>true</generateBuilders>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
 

@@ -43,5 +43,6 @@ public class CacheConfiguration {
     @Default
     private int acceptableConsequentReadFailures = 1;
 
+    @Default
     private Duration maxLockWaitTime = Duration.ofSeconds(DEFAULT_MAX_LOCK_WAIT_TIME);
 }

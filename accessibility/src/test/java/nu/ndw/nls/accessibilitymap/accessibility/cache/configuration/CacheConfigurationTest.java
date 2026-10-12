@@ -32,6 +32,18 @@ public class CacheConfigurationTest extends ValidationTest {
         assertThat(cacheConfiguration.isWatchForUpdates()).isTrue();
         assertThat(cacheConfiguration.getFileWatcherInterval()).isEqualTo(Duration.ofSeconds(1));
         assertThat(cacheConfiguration.getAcceptableConsequentReadFailures()).isEqualTo(1);
+        assertThat(cacheConfiguration.getMaxLockWaitTime()).isEqualTo(Duration.ofSeconds(60));
+    }
+
+    @Test
+    void initValue_builder() {
+
+        assertThat(cacheConfiguration.isLoadDataOnStartup()).isTrue();
+        assertThat(cacheConfiguration.isFailOnStartupCacheReadError()).isTrue();
+        assertThat(cacheConfiguration.isWatchForUpdates()).isTrue();
+        assertThat(cacheConfiguration.getFileWatcherInterval()).isEqualTo(Duration.ofSeconds(1));
+        assertThat(cacheConfiguration.getAcceptableConsequentReadFailures()).isEqualTo(1);
+        assertThat(cacheConfiguration.getMaxLockWaitTime()).isEqualTo(Duration.ofSeconds(60));
     }
 
     @Test
