@@ -45,6 +45,8 @@ import org.wiremock.spring.EnableWireMock;
 })
 class SpeedLimitsServiceRetryTest {
 
+    public static final String API_ENDPOINT = "/api/rest/static-road-data/road-attributes/v1/speed-limits/";
+
     @Autowired
     private SpeedLimitsService speedLimitsService;
 
@@ -61,7 +63,7 @@ class SpeedLimitsServiceRetryTest {
 
     @Test
     void getSpeedLimits() {
-        stubFor(get(urlEqualTo("/api/rest/static-road-data/road-attributes/v1/speed-limits/1999-12-01?page=2&size=1000"))
+        stubFor(get(urlEqualTo(API_ENDPOINT + "1999-12-01?page=2&size=1000"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -81,19 +83,18 @@ class SpeedLimitsServiceRetryTest {
         assertThat(speedLimitsResponse.getSpeedLimits())
                 .extracting(RoadSectionSpeedLimitJson::getNwbRoadSectionId)
                 .containsExactly(600454559L);
-        verify(1,
-                getRequestedFor(urlEqualTo("/api/rest/static-road-data/road-attributes/v1/speed-limits/1999-12-01?page=2&size=1000")));
+        verify(1, getRequestedFor(urlEqualTo(API_ENDPOINT + "1999-12-01?page=2&size=1000")));
     }
 
     @Test
     void getSpeedLimits_retryAfterInternalServerError() {
-        stubFor(get(urlEqualTo("/api/rest/static-road-data/road-attributes/v1/speed-limits/1999-12-01?page=2&size=1000"))
+        stubFor(get(urlEqualTo(API_ENDPOINT + "1999-12-01?page=2&size=1000"))
                 .inScenario("retry")
                 .whenScenarioStateIs(STARTED)
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                 .willSetStateTo("valid-response"));
-        stubFor(get(urlEqualTo("/api/rest/static-road-data/road-attributes/v1/speed-limits/1999-12-01?page=2&size=1000"))
+        stubFor(get(urlEqualTo(API_ENDPOINT + "1999-12-01?page=2&size=1000"))
                 .inScenario("retry")
                 .whenScenarioStateIs("valid-response")
                 .willReturn(aResponse()
@@ -115,20 +116,19 @@ class SpeedLimitsServiceRetryTest {
         assertThat(speedLimitsResponse.getSpeedLimits())
                 .extracting(RoadSectionSpeedLimitJson::getNwbRoadSectionId)
                 .containsExactly(600454559L);
-        verify(2,
-                getRequestedFor(urlEqualTo("/api/rest/static-road-data/road-attributes/v1/speed-limits/1999-12-01?page=2&size=1000")));
+        verify(2, getRequestedFor(urlEqualTo(API_ENDPOINT + "1999-12-01?page=2&size=1000")));
     }
 
     @Test
+    @SuppressWarnings("java:S5778")
     void getSpeedLimits_maxAttemptsExceeded() {
-        stubFor(get(urlEqualTo("/api/rest/static-road-data/road-attributes/v1/speed-limits/1999-12-01?page=2&size=1000"))
+        stubFor(get(urlEqualTo(API_ENDPOINT + "1999-12-01?page=2&size=1000"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())));
 
         assertThatThrownBy(() -> speedLimitsService.getSpeedLimits(LocalDate.of(1999, 12, 1), 2, 1000))
                 .isInstanceOf(RetryableException.class);
-        verify(5,
-                getRequestedFor(urlEqualTo("/api/rest/static-road-data/road-attributes/v1/speed-limits/1999-12-01?page=2&size=1000")));
+        verify(5, getRequestedFor(urlEqualTo(API_ENDPOINT + "1999-12-01?page=2&size=1000")));
     }
 
     @Test
