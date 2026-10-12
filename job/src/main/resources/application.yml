@@ -148,9 +148,9 @@ nu:
 
 resilience4j:
   retry:
-    instances:
-      emissionZone:
-        maxAttempts: 3
+    configs:
+      default:
+        maxAttempts: 5
         waitDuration: 1s
         enableExponentialBackoff: true
         exponentialBackoffMultiplier: 2

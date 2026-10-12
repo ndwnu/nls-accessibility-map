@@ -19,8 +19,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.network.dto.NwbNetworkData;
 import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.dto.SpeedLimits;
 import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.service.SpeedLimitDataService;
+import nu.ndw.nls.accessibilitymap.job.speedlimits.client.SpeedLimitsService;
 import nu.ndw.nls.accessibilitymap.job.speedlimits.mapper.SpeedLimitMapper;
-import nu.ndw.nls.roadattributesapi.client.feign.generated.api.v1.SpeedLimitsApiClient;
 import nu.ndw.nls.roadattributesapi.client.feign.generated.model.v1.RoadSectionDirectionalSpeedLimitJson;
 import nu.ndw.nls.roadattributesapi.client.feign.generated.model.v1.RoadSectionSpeedLimitJson;
 import nu.ndw.nls.roadattributesapi.client.feign.generated.model.v1.SpeedLimitsRoadSectionResponseJson;
@@ -40,7 +40,7 @@ class RebuildSpeedLimitCacheCommandTest {
     private RebuildSpeedLimitCacheCommand rebuildSpeedLimitCacheCommand;
 
     @Mock
-    private SpeedLimitsApiClient speedLimitsApiClient;
+    private SpeedLimitsService speedLimitsService;
 
     @Mock
     private SpeedLimitDataService speedLimitDataService;
@@ -78,7 +78,7 @@ class RebuildSpeedLimitCacheCommandTest {
     @BeforeEach
     void setUp() {
         rebuildSpeedLimitCacheCommand = new RebuildSpeedLimitCacheCommand(
-                speedLimitsApiClient,
+                speedLimitsService,
                 speedLimitDataService,
                 networkDataService,
                 speedLimitMapper
@@ -92,8 +92,8 @@ class RebuildSpeedLimitCacheCommandTest {
         when(roadSectionSpeedLimitJson.getDirectionalSpeedLimit()).thenReturn(List.of(
                 roadSectionDirectionalSpeedLimitJson1,
                 roadSectionDirectionalSpeedLimitJson2));
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 1, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsService.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsService.getSpeedLimits(nwbVersion, 1, 1000)).thenReturn(speedLimitApiResponse);
 
         when(speedLimitApiResponse.getBody()).thenReturn(speedLimitsRoadSectionResponseJson);
 
@@ -142,8 +142,8 @@ class RebuildSpeedLimitCacheCommandTest {
         when(roadSectionSpeedLimitJson.getDirectionalSpeedLimit()).thenReturn(List.of(
                 roadSectionDirectionalSpeedLimitJson1,
                 roadSectionDirectionalSpeedLimitJson2));
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 1, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsService.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsService.getSpeedLimits(nwbVersion, 1, 1000)).thenReturn(speedLimitApiResponse);
 
         when(speedLimitApiResponse.getBody()).thenReturn(speedLimitsRoadSectionResponseJson);
 
@@ -168,7 +168,7 @@ class RebuildSpeedLimitCacheCommandTest {
     void call_error_noResponseBodyFromSpeedLimitsApi() {
         LocalDate nwbVersion = mockNwbVersion();
 
-        when(speedLimitsApiClient.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
+        when(speedLimitsService.getSpeedLimits(nwbVersion, 0, 1000)).thenReturn(speedLimitApiResponse);
         when(speedLimitApiResponse.getBody()).thenReturn(null);
 
         assertThat(new CommandLine(rebuildSpeedLimitCacheCommand).execute()).isEqualTo(1);

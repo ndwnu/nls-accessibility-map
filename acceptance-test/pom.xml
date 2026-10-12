@@ -11,6 +11,11 @@
   <version>6.1.56-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>NLS Accessibility Map - Acceptance tests</name>
+
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+  </properties>
+
   <modules>
     <module>acceptance-test-shared</module>
     <module>component-test</module>

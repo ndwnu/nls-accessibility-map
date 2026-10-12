@@ -12,6 +12,7 @@
   <name>Traffic sign client v5</name>
 
   <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
     <openapi-generator.base.classpath>nu.ndw.nls.accessibilitymap.trafficsignclient.feign</openapi-generator.base.classpath>
   </properties>
 
@@ -19,6 +20,10 @@
     <dependency>
       <groupId>nu.ndw.nls.springboot</groupId>
       <artifactId>client-feign</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.resilience4j</groupId>
+      <artifactId>resilience4j-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
@@ -64,7 +69,7 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-
+        <version>${openapi-generator-maven-plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>nu.ndw.nls.springboot</groupId>
@@ -97,6 +102,8 @@
               <library>spring-cloud</library>
               <configOptions>
                 <useSpringBoot4>true</useSpringBoot4>
+                <generateJsonIncludeAnnotations>false</generateJsonIncludeAnnotations>
+                <generateJsonSetterNullsAnnotations>false</generateJsonSetterNullsAnnotations>
                 <generateBuilders>true</generateBuilders>
                 <generatedConstructorWithRequiredArgs>false</generatedConstructorWithRequiredArgs>
                 <!-- Split endpoints into different classes according to tags -->
