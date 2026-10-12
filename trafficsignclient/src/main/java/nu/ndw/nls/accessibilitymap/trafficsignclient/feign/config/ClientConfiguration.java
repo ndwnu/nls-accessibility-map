@@ -1,6 +1,8 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.feign.config;
 
+import feign.Retryer;
 import nu.ndw.nls.springboot.client.feign.configuration.NlsClientConfiguration;
+import org.springframework.context.annotation.Bean;
 
 /**
  * In open api generator, set generateSupportingFiles property to false to allow supplying a custom implementation. Do
@@ -9,4 +11,12 @@ import nu.ndw.nls.springboot.client.feign.configuration.NlsClientConfiguration;
  */
 public class ClientConfiguration extends NlsClientConfiguration {
 
+    /**
+     * Retrying is handled by resilience4j with exponential backoff, disabling the feign retryer prevents nested retries.
+     */
+    @Bean
+    @Override
+    public Retryer getRetryer() {
+        return Retryer.NEVER_RETRY;
+    }
 }

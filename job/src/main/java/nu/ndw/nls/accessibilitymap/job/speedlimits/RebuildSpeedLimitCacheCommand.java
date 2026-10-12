@@ -12,8 +12,8 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.speedlimit.SpeedLimit;
 import nu.ndw.nls.accessibilitymap.accessibility.network.NetworkDataService;
 import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.dto.SpeedLimits;
 import nu.ndw.nls.accessibilitymap.accessibility.speedlimit.service.SpeedLimitDataService;
+import nu.ndw.nls.accessibilitymap.job.speedlimits.client.SpeedLimitsService;
 import nu.ndw.nls.accessibilitymap.job.speedlimits.mapper.SpeedLimitMapper;
-import nu.ndw.nls.roadattributesapi.client.feign.generated.api.v1.SpeedLimitsApiClient;
 import nu.ndw.nls.roadattributesapi.client.feign.generated.model.v1.RoadSectionSpeedLimitJson;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
@@ -26,7 +26,7 @@ public class RebuildSpeedLimitCacheCommand implements Callable<Integer> {
 
     private static final int ITEMS_PER_PAGE = 1000;
 
-    private final SpeedLimitsApiClient speedLimitsApiClient;
+    private final SpeedLimitsService speedLimitsService;
 
     private final SpeedLimitDataService speedLimitDataService;
 
@@ -62,7 +62,7 @@ public class RebuildSpeedLimitCacheCommand implements Callable<Integer> {
         int currentPage = 0;
         while (true) {
             log.info("Downloading speed limits page {}, {} items per page.", currentPage, ITEMS_PER_PAGE);
-            var speedLimitsResponse = speedLimitsApiClient.getSpeedLimits(nwbVersion, currentPage, ITEMS_PER_PAGE)
+            var speedLimitsResponse = speedLimitsService.getSpeedLimits(nwbVersion, currentPage, ITEMS_PER_PAGE)
                     .getBody();
 
             if (Objects.isNull(speedLimitsResponse)) {

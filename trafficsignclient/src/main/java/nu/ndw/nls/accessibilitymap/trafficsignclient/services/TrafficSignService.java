@@ -1,6 +1,6 @@
 package nu.ndw.nls.accessibilitymap.trafficsignclient.services;
 
-
+import io.github.resilience4j.retry.annotation.Retry;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +19,7 @@ public class TrafficSignService {
 
     private final CurrentStateControllerV5ApiClient currentStateControllerV5ApiClient;
 
+    @Retry(name = "trafficSign")
     public List<TrafficSignGeoJsonDtoV5Json> getTrafficSigns(Set<String> rvvCodes) {
         return findTrafficSignByRvvCodes(rvvCodes.stream()
                 .sorted()
