@@ -17,7 +17,7 @@ services:
       - nls-accessibility-map-network
 
   nls-nwb-schema-manager:
-    image: ndwnls.azurecr.io/nls-nwb-schema-manager:20261030.3@sha256:2c4fdc1102b523dc8ed6a37890b613ead1aab6452cefc5a433b2c1d1c6c90431
+    image: ndwnls.azurecr.io/nls-nwb-schema-manager:20261030.4@sha256:d2cbeeb4358c1a47b3e5980e6f3ed946f78df1df1fc052688f408c7859917c67
     platform: linux/amd64
     environment:
       - SPRING_PROFILES_ACTIVE=docker
