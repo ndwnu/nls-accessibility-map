@@ -41,9 +41,9 @@
     <nls-routing-map-matcher.version>24.0.13</nls-routing-map-matcher.version>
     <nls-geometry.version>7.0.6</nls-geometry.version>
     <nls-geojson-geometry.version>2.0.35</nls-geojson-geometry.version>
-    <nls-roadattributesapi.version>4.0.18</nls-roadattributesapi.version>
-    <nls-springboot.test.graph.version>2.0.48</nls-springboot.test.graph.version>
-    <nls-location-data-issues.version>3.0.110</nls-location-data-issues.version>
+    <nls-roadattributesapi.version>4.0.19</nls-roadattributesapi.version>
+    <nls-springboot.test.graph.version>2.0.49</nls-springboot.test.graph.version>
+    <nls-location-data-issues.version>3.0.111</nls-location-data-issues.version>
 
     <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
     <gatling.version>3.16.0</gatling.version>
@@ -68,7 +68,7 @@
 
     <!-- Overrides for transitive dependencies to fix vulnerabilities -->
     <!-- CVE-2026-63337, CVE-2026-69219, CVE-2026-69220 -->
-    <amqp-client.version>5.37.0</amqp-client.version>
+    <amqp-client.version>5.37.1</amqp-client.version>
 
     <!-- CVE-2026-106451 -->
     <lz4-java.version>1.13.0</lz4-java.version>
