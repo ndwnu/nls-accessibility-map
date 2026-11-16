@@ -47,7 +47,7 @@ public record EmissionZoneExemption(
             activeExemptions.add(() -> transportTypes().stream().anyMatch(transportTypes::contains));
         }
 
-        if (Objects.nonNull(vehicleWeightInKg)) {
+        if (Objects.nonNull(vehicleWeightInKg) && Objects.nonNull(vehicleWeightInKg())) {
             activeExemptions.add(() -> !vehicleWeightInKg().isExceeding(vehicleWeightInKg, false));
         }
 

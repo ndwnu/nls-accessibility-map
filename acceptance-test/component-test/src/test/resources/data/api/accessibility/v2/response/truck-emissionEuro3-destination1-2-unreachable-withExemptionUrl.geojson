@@ -32,22 +32,6 @@
                 "light_commercial_vehicle",
                 "truck"
               ]
-            },
-            {
-              "type": "vehicleWeightReason",
-              "becauseOf": [
-                {
-                  "type": "trafficSign",
-                  "trafficSignId": "00000000-0000-4000-0000-000000000004",
-                  "trafficSignType": "C22a"
-                }
-              ],
-              "requestExemptionUrls": [
-                "https://www.wshd.nl/verkeersontheffingen"
-              ],
-              "condition": "greater_than_or_equals",
-              "unitSymbol": "tons",
-              "value": 12.00
             }
           ]
         ],

@@ -28,9 +28,12 @@ public class TransportTypeMapper {
         return vehicleCategories.stream()
                 .map(vehicleCategory ->
                         switch (vehicleCategory) {
-                            case M, M_1, M_2, M_3 ->
-                                    Set.of(TransportType.BUS, TransportType.CAR, TransportType.TAXI, TransportType.CARAVAN);
-                            case N, N_1, N_2, N_3 -> Set.of(TransportType.TRUCK, TransportType.DELIVERY_VAN);
+                            case M -> Set.of(TransportType.BUS, TransportType.CAR, TransportType.TAXI);
+                            case M_1 -> Set.of(TransportType.CAR, TransportType.TAXI);
+                            case M_2, M_3 -> Set.of(TransportType.BUS);
+                            case N -> Set.of(TransportType.TRUCK, TransportType.DELIVERY_VAN);
+                            case N_1 -> Set.of(TransportType.DELIVERY_VAN);
+                            case N_2, N_3 -> Set.of(TransportType.TRUCK);
                             case UNKNOWN -> throw new IllegalStateException("Unknown vehicle category '%s'.".formatted(vehicleCategory));
                         })
                 .flatMap(Collection::stream)

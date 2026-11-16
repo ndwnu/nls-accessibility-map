@@ -6,50 +6,54 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Official definition can be found here:
- * <a href="https://alternative-fuels-observatory.ec.europa.eu/general-information/vehicle-types">...</a>
+ * <a href="https://www.rdw.nl/paginas/voertuigcategorieen">...</a>
  */
 @Getter
 @RequiredArgsConstructor
 public enum VehicleCategory {
     /*
-        Power-driven vehicles having at least four wheels and used for the carriage of passengers.
+        Motor vehicle with 4 or more wheels, designed and constructed for the carriage of passengers.
      */
     M("M"),
 
     /*
-        Vehicles used for the carriage of passengers and comprising not more than eight seats in addition to the driver's seat.
+        Passenger car (personenauto). Motor vehicle with 4 or more wheels, designed and constructed for the carriage of passengers,
+        with a maximum of 9 seats including the driver's seat.
      */
     M_1("M_1"),
 
     /*
-        Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat
-        and having a maximum mass not exceeding 5 tonnes.
+        Bus. Motor vehicle with 4 or more wheels, designed and constructed for the carriage of passengers, with more than 9 seats
+        including the driver's seat.
      */
     M_2("M_2"),
 
     /*
-        Vehicles used for the carriage of passengers, comprising more than eight seats in addition to the driver's seat
-        and having a maximum mass exceeding 5 tonnes.
+        Bus. Motor vehicle with 4 or more wheels, designed and constructed for the carriage of passengers, with more than 9 seats
+        including the driver's seat.
      */
     M_3("M_3"),
 
     /*
-        Power-driven vehicles having at least four wheels and used for the carriage of goods
+        Motor vehicle with 4 or more wheels, designed and constructed for the carriage of goods.
      */
     N("N"),
 
     /*
-        Vehicles used for the carriage of goods and having a maximum mass not exceeding 3.5 tonnes.
+        Light commercial vehicle (lichte bedrijfsauto), lighter than 3500 kg (F.1 on the registration certificate). Motor vehicle with
+        4 or more wheels, designed and constructed for the carriage of goods.
      */
     N_1("N_1"),
 
     /*
-        Vehicles used for the carriage of goods and having a maximum mass exceeding 3.5 tonnes but not exceeding 12 tonnes.
+        Heavy commercial vehicle (zware bedrijfsauto), heavier than 3500 kg (F.1 on the registration certificate). Motor vehicle with
+        4 or more wheels, designed and constructed for the carriage of goods.
      */
     N_2("N_2"),
 
     /*
-        Vehicles used for the carriage of goods and having a maximum mass exceeding 12 tonnes.
+        Heavy commercial vehicle (zware bedrijfsauto), heavier than 3500 kg (F.1 on the registration certificate). Motor vehicle with
+        4 or more wheels, designed and constructed for the carriage of goods.
      */
     N_3("N_3"),
 

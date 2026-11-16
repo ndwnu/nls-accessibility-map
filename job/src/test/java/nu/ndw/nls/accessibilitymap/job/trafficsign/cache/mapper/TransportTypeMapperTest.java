@@ -1,17 +1,11 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper;
 
-import static nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.VehicleCategory.M;
 import static nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.VehicleCategory.M_1;
-import static nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.VehicleCategory.M_2;
-import static nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.VehicleCategory.M_3;
-import static nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.VehicleCategory.N;
 import static nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.VehicleCategory.N_1;
 import static nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.VehicleCategory.N_2;
-import static nu.ndw.nls.accessibilitymap.job.trafficsign.emission.dto.VehicleCategory.N_3;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.TransportType;
@@ -66,7 +60,7 @@ class TransportTypeMapperTest {
     void map_vehicleTypeAndVehicleCategory() {
         Set<TransportType> transportTypes = transportTypeMapper.map(VehicleType.CAR, Set.of(N_1));
 
-        assertThat(transportTypes).containsExactlyInAnyOrder(TransportType.CAR, TransportType.DELIVERY_VAN, TransportType.TRUCK);
+        assertThat(transportTypes).containsExactlyInAnyOrder(TransportType.CAR, TransportType.DELIVERY_VAN);
     }
 
     @ParameterizedTest
@@ -82,18 +76,17 @@ class TransportTypeMapperTest {
 
             Set<TransportType> transportTypes = transportTypeMapper.map(Objects.nonNull(vehicleCategory) ? Set.of(vehicleCategory) : null);
 
-            if (Objects.isNull(vehicleCategory)) {
-                assertThat(transportTypes).isEmpty();
-            } else if (List.of(M, M_1, M_2, M_3).contains(vehicleCategory)) {
-                assertThat(transportTypes)
-                        .isEqualTo(Set.of(TransportType.BUS, TransportType.CAR, TransportType.TAXI, TransportType.CARAVAN));
-            } else if (List.of(N, N_1, N_2, N_3).contains(vehicleCategory)) {
-                assertThat(transportTypes)
-                        .isEqualTo(Set.of(TransportType.TRUCK, TransportType.DELIVERY_VAN));
-            } else {
-                assertThat(transportTypes).isEmpty();
-            }
+            assertThat(transportTypes).containsExactlyInAnyOrderElementsOf(mapVehicleCategory(vehicleCategory));
         }
+    }
+
+    @Test
+    void map_vehicleCategory_multipleCategories() {
+
+        Set<TransportType> transportTypes = transportTypeMapper.map(Set.of(M_1, N_2));
+
+        assertThat(transportTypes)
+                .containsExactlyInAnyOrder(TransportType.CAR, TransportType.TAXI, TransportType.TRUCK);
     }
 
     private static Set<TransportType> mapVehicleType(VehicleType vehicleType) {
@@ -118,6 +111,23 @@ class TransportTypeMapperTest {
             case ARROW_BOARD_VEHICLE, CONSTRUCTION_OR_MAINTENANCE_VEHICLE, CRASH_DAMPENING_VEHICLE, MOBILE_VARIABLE_MESSAGE_SIGN_VEHICLE,
                  MOBILE_LANE_SIGNALING_VEHICLE -> Set.of();
             default -> throw new IllegalStateException("Supported vehicle type '%s'.".formatted(vehicleType));
+        };
+    }
+
+    private static Set<TransportType> mapVehicleCategory(VehicleCategory vehicleCategory) {
+
+        if (Objects.isNull(vehicleCategory)) {
+            return Set.of();
+        }
+
+        return switch (vehicleCategory) {
+            case M -> Set.of(TransportType.BUS, TransportType.CAR, TransportType.TAXI);
+            case M_1 -> Set.of(TransportType.CAR, TransportType.TAXI);
+            case M_2, M_3 -> Set.of(TransportType.BUS);
+            case N -> Set.of(TransportType.TRUCK, TransportType.DELIVERY_VAN);
+            case N_1 -> Set.of(TransportType.DELIVERY_VAN);
+            case N_2, N_3 -> Set.of(TransportType.TRUCK);
+            case UNKNOWN -> throw new IllegalStateException("Unsupported vehicle category '%s'.".formatted(vehicleCategory));
         };
     }
 }

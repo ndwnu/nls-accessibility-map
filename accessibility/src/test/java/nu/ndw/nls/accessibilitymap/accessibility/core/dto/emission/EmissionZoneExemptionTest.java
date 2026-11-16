@@ -1,7 +1,7 @@
 package nu.ndw.nls.accessibilitymap.accessibility.core.dto.emission;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,14 +13,11 @@ import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
 import nu.ndw.nls.springboot.test.util.validation.ValidationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class EmissionZoneExemptionTest extends ValidationTest {
 
     private EmissionZoneExemption emissionZoneExemption;
@@ -37,11 +34,12 @@ class EmissionZoneExemptionTest extends ValidationTest {
     }
 
     @ParameterizedTest
-    @CsvSource(textBlock = """
-                       2022-03-11T08:59:59Z, false,
-                       2022-03-11T09:00:00Z, true,
-                       2022-03-11T09:59:59Z, true,
-                       2022-03-11T10:00:00Z, false,
+    @CsvSource(useHeadersInDisplayName = true, textBlock = """
+            now,                    expected active
+            2022-03-11T08:59:59Z,   false
+            2022-03-11T09:00:00Z,   true
+            2022-03-11T09:59:59Z,   true
+            2022-03-11T10:00:00Z,   false
             """)
     void isActive(OffsetDateTime now, boolean expectedActive) {
 
@@ -53,31 +51,36 @@ class EmissionZoneExemptionTest extends ValidationTest {
     }
 
     @ParameterizedTest
-    @CsvSource(nullValues = "null", textBlock = """
-            2d,     EURO5,   CAR,    true,
-            4d,     EURO5,   CAR,    false,
-            2d,     EURO4,   CAR,    false,
-            2d,     EURO5,   BUS,    false,
-            null,   EURO5,   CAR,    true,
-            2d,     null,   CAR,    true,
-            2d,     EURO5,   null,   true,
+    @CsvSource(nullValues = "null", useHeadersInDisplayName = true, textBlock = """
+            vehicle weight, exemption maximum weight,   emission class, transport type, expected exempt
+            2,              3,                          EURO_5,         CAR,            true
+            3,              3,                          EURO_5,         CAR,            true
+            4,              3,                          EURO_5,         CAR,            false
+            2,              3,                          EURO_6,         CAR,            true
+            2,              3,                          EURO_4,         CAR,            false
+            2,              3,                          EURO_5,         BUS,            false
+            null,           3,                          EURO_5,         CAR,            true
+            2,              null,                       EURO_5,         CAR,            true
+            null,           null,                       EURO_5,         CAR,            true
+            2,              3,                          null,           CAR,            true
+            2,              3,                          EURO_5,         null,           true
             """)
     void isExempt(
             Double vehicleWeightInKg,
-            String emissionClass,
-            String transportType,
-            boolean expectedExemption) {
+            Double exemptionMaximumVehicleWeightInKg,
+            EmissionClass emissionClass,
+            TransportType transportType,
+            boolean expectedExempt) {
 
-        emissionZoneExemption = emissionZoneExemption
-                .withTransportTypes(Set.of(TransportType.CAR, TransportType.TAXI))
-                .withEmissionClasses(Set.of(EmissionClass.EURO_5, EmissionClass.EURO_6))
-                .withVehicleWeightInKg(Maximum.builder().value(3d).build());
+        emissionZoneExemption = emissionZoneExemption.withVehicleWeightInKg(Objects.nonNull(exemptionMaximumVehicleWeightInKg)
+                ? Maximum.builder().value(exemptionMaximumVehicleWeightInKg).build()
+                : null);
 
         assertThat(emissionZoneExemption.isExempt(
                 vehicleWeightInKg,
-                Objects.nonNull(emissionClass) ? Set.of(emissionClass.equals("EURO5") ? EmissionClass.EURO_5 : EmissionClass.EURO_4) : Set.of(),
-                Objects.nonNull(transportType) ? Set.of(TransportType.valueOf(transportType)) : Set.of()))
-                .isEqualTo(expectedExemption);
+                Objects.nonNull(emissionClass) ? Set.of(emissionClass) : Set.of(),
+                Objects.nonNull(transportType) ? Set.of(transportType) : Set.of()))
+                .isEqualTo(expectedExempt);
     }
 
     @Test

@@ -1,5 +1,7 @@
 package nu.ndw.nls.accessibilitymap.job.trafficsign.cache.mapper.emission;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import nu.ndw.nls.accessibilitymap.accessibility.core.dto.value.Maximum;
@@ -31,28 +33,33 @@ public class MaximumWeightMapper {
         return Maximum.builder().value(maximumWeightInKg).build();
     }
 
-    @SuppressWarnings("java:S109")
     public Maximum map(Set<VehicleCategory> vehicleCategories) {
 
         if (Objects.isNull(vehicleCategories)) {
             return null;
         }
 
-        return vehicleCategories.stream()
-                .map(vehicleCategory ->
-                        switch (vehicleCategory) {
-                            case M, N, M_1 -> null;
-                            case M_2 -> 5_000D;
-                            case N_1 -> 35_000D;
-                            case N_2 -> 12_000D;
-                            case M_3, N_3 -> Double.MAX_VALUE;
-                            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle category '%s'.".formatted(vehicleCategory));
-                        })
-                .filter(Objects::nonNull)
-                .min(Double::compareTo)
-                .map(minimalWeightRestriction -> Maximum.builder()
-                        .value(minimalWeightRestriction)
-                        .build())
-                .orElse(null);
+        List<Double> maximumWeightsInKg = vehicleCategories.stream()
+                .map(this::mapMaximumWeightInKg)
+                .toList();
+
+        // A vehicle in any of the categories is covered, so a single category without an upper limit means the whole set has none.
+        if (maximumWeightsInKg.isEmpty() || maximumWeightsInKg.stream().anyMatch(Objects::isNull)) {
+            return null;
+        }
+
+        return Maximum.builder()
+                .value(Collections.max(maximumWeightsInKg))
+                .build();
+    }
+
+    @SuppressWarnings("java:S109")
+    private Double mapMaximumWeightInKg(VehicleCategory vehicleCategory) {
+
+        return switch (vehicleCategory) {
+            case M, M_1, M_2, M_3, N, N_2, N_3 -> null;
+            case N_1 -> 3_500D;
+            case UNKNOWN -> throw new IllegalStateException("Unknown vehicle category '%s'.".formatted(vehicleCategory));
+        };
     }
 }
